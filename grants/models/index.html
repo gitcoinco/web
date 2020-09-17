@@ -2334,6 +2334,17 @@ object the first time, the query is executed.</p>
 
 <p>Just like the FileDescriptor, but for ImageFields. The only difference is
 assigning the width/height to the width_field/height_field, if appropriate.</p>
+<h3 id="grants.models.GrantCLR.matchpledge_set">matchpledge_set</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.GrantCLR.round_num">round_num</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -3564,6 +3575,19 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.MatchPledge.amount">amount</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.MatchPledge.clr_round_num">clr_round_num</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.MatchPledge.clr_round_num_id">clr_round_num_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
