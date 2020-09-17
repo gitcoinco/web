@@ -645,9 +645,9 @@ def grants_by_grant_type(request, grant_type):
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
 
     if total_clr_pot:
-        if total_clr_pot > 1000 * 100:
+        if total_clr_pot > 1000 * 1000:
             int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
-        elif total_clr_pot > 100:
+        elif total_clr_pot > 1000:
             int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
         else:
             int_total_clr_pot = intword(total_clr_pot)
