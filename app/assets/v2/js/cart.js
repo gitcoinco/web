@@ -445,6 +445,8 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    // TODO: SMS related methos and state should be removed and refactored into the component that
+    // should be shared between the cart and the Trust Bonus tab
     dismissVerification() {
       localStorage.setItem('dismiss-sms-validation', true);
       this.showValidation = false;

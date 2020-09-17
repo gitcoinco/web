@@ -448,8 +448,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </div>
 
             </div>
-
-            {% comment %} SMS Verification Modal {% endcomment %}
+            {% comment %}
+              SMS Verification Modal
+              TODO: Much of this code is repeated in the Trust Bonus tab, specifically as a standalone component in
+              profile-trust.js. After Grants Round 7, this should be refactored to use a shared component between the
+              cart and the Trust Bonus tab.
+            {% endcomment %}
             <b-modal id="sms-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
               <template v-slot:default="{ hide }">
                 <div class="mx-5 mt-5 mb-4 text-center" v-if="validationStep == 'intro'">
