@@ -187,7 +187,7 @@ def get_stats(round_type):
                     )
             results.append(cht)
             counter += 1
-        except:
+        except Exception as e:
             logger.exception(e)
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
     return results, chart_list_str
