@@ -54,7 +54,7 @@ def create_grant_clr_cache():
         grant = Grant.objects.get(pk=pk)
         clr_round = None
 
-        if grant.in_active_clrs.count() > 0:
+        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
             clr_round = grant.in_active_clrs.first()
 
         if clr_round:
@@ -62,7 +62,7 @@ def create_grant_clr_cache():
             grant.clr_round_num = clr_round.round_num
         else:
             grant.is_clr_active = False
-            grant.clr_round_num = 'LAST'
+            grant.clr_round_num = ''
         grant.save()
 
 def create_grant_type_cache():
@@ -79,7 +79,6 @@ def create_grant_type_cache():
                 key=keyword,
                 data=data,
                 )
-
 
 
 def create_grant_category_size_cache():
@@ -352,9 +351,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         create_grant_type_cache()
+        create_grant_clr_cache()
+        create_grant_category_size_cache()
         if not settings.DEBUG:
-            create_grant_clr_cache()
-            create_grant_category_size_cache()
             create_results_cache()
             create_hidden_profiles_cache()
             create_tribes_cache()
