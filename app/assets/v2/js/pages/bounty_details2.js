@@ -288,8 +288,8 @@ Vue.mixin({
           break;
         
         case 'BTC':
-        tenant = 'BTC';
-        break;
+          tenant = 'BTC';
+          break;
 
         case 'CELO':
         case 'cUSD':
