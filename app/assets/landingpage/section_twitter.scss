@@ -1,0 +1,96 @@
+section#twitter{
+
+	margin: 0em 3em;
+	margin-top: 12em;
+	margin-bottom: 3em;
+
+
+	h1{
+		text-align: center;
+		margin-bottom:2.5em;
+	}
+
+	div.grid{
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+
+		grid-row-gap: 4em;
+		grid-column-gap: 2em;
+	}
+
+	svg.twitter-icon{
+		position: absolute;
+		top:1rem;
+		right:1rem;
+		width: 46px;
+		height: 46px;
+		fill: var(--polarisblue);
+		stroke: none;
+	}
+
+	figure{
+
+		//background-color: var(--polarisblue);
+
+		border: 2px solid var(--polarisblue);
+
+		position: relative;
+		padding: 2em;
+		padding-top: 0em;
+
+
+		img{
+			width: 80px;
+			height: auto;
+			border-radius: 80px;
+			margin: auto;
+			position: relative;
+			top: - 40px;
+		}
+
+		figcaption{		
+			color: var(--starwhite);
+		}
+
+
+		a{
+			text-decoration: none;
+			color: var(--cosmicteal);
+			font-weight: 800;
+		}
+
+
+	}
+
+
+}
+
+
+
+
+@media #{$tablet} { 
+	section#twitter{
+
+		div.grid{
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+    }
+}
+
+
+@media #{$phone} { 
+	section#twitter{
+
+		margin-left: 1.5em;
+		margin-right: 1.5em;
+
+		div.grid{
+			grid-template-columns: 1fr;
+			
+		}
+
+    }
+}
+
+

@@ -8,6 +8,11 @@ window.addEventListener('dataWalletReady', function(e) {
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.mixin({
   methods: {
+    estHoursValidator: function() {
+      this.form.hours = parseFloat(this.form.hours || 0);
+      this.form.hours = Math.ceil(this.form.hours);
+      this.calcValues('token');
+    },
     getIssueDetails: function(url) {
       let vm = this;
 

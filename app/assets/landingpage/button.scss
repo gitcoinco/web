@@ -1,0 +1,51 @@
+a.btn, button.btn{
+
+	display: inline-grid;
+	grid-template-columns: auto;
+	grid-gap: 0.7em;
+
+	padding:1em 1.5em;
+	border-radius: 3px;
+	cursor: pointer;
+
+	margin-bottom: 1rem;
+
+	color: var(--starwhite);
+	background-color: var(--polarisblue);
+	text-decoration: none;
+
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+
+	&:hover{
+		filter: brightness(75%);
+	};
+
+	span{
+		margin: auto;
+		text-decoration: none;
+	}
+
+
+
+	/* enhance to a 2col grid for icon */
+	&.icon {
+		grid-template-columns: auto auto;
+
+		img{
+			width: 32px;
+			height: 32px;
+			margin: auto;
+		}
+
+	}
+
+
+}
+
+
+
+
+
+

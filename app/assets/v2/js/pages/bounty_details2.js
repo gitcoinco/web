@@ -132,11 +132,11 @@ Vue.mixin({
             `ethereum:${address}`;
           break;
 
-        case 'CELO':
+        case 'CELO': // waiting : pending
         case 'cUSD':
           qr_string = value ?
-            `celo://${address}/${token_name}?v=${value}` :
-            `celo://${address}/${token_name}`;
+            `celo://wallet/pay?address=${address}&amount=${value}` :
+            `celo://wallet/pay?address=${address}`;
           break;
 
         case 'ZIL':

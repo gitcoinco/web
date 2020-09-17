@@ -698,3 +698,8 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
+
+.collapsed > .when-open,
+.not-collapsed > .when-closed {
+  display: none;
+}

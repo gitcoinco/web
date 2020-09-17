@@ -9,18 +9,19 @@
               <span class="heading">{% trans "Sort by" %}</span>
               <select @change="filter_grants({sort: sort})" v-model="sort" name="sort_option" id="sort_option2">
                 <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
-                {% if is_staff %}
-                <option value="-weighted_risk_score">{% trans "Weighted Risk Score" %}</option>
-                <option value="-sybil_score">{% trans "Sybil Score" %}</option>
-                {% endif %}
                 <option value="-clr_prediction_curve__0__1">{% trans "Match Estimate" %}</option>
                 <option value="-amount_received_in_round">{% trans "Amount Raised (Round)" %}</option>
-                <option value="-positive_round_contributor_count">{% trans "Contributors" %}</option>
+                <option value="-positive_round_contributor_count">{% trans "Contributors (Round)" %}</option>
+                <option value="-last_update">{% trans "Updated: Recent" %}</option>
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
                 <option value="-amount_received">{% trans "Amount Raised (Alltime)" %}</option>
                 <option value="-contribution_count">{% trans "Most Contributions (Alltime)" %}</option>
                 <option value="-contributor_count">{% trans "Most Contributors (Alltime)" %}</option>
+                {% if is_staff %}
+                <option value="-weighted_risk_score">{% trans "ADMIN: Risk Score" %}</option>
+                <option value="-sybil_score">{% trans "ADMIN:Sybil Score" %}</option>
+                {% endif %}
               </select>
             </div>
 
