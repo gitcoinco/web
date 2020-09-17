@@ -707,7 +707,7 @@ Vue.component('grants-cart', {
       let wei;
 
       try {
-        wei = web3.utils.toWei(String(number));
+        wei = Web3.utils.toWei(String(number));
       } catch (e) {
         // When numbers are too small toWei fails because there's too many decimal places
         wei = Math.round(number * 10 ** 18);
@@ -2481,8 +2481,8 @@ Vue.component('grants-cart', {
     // Show user cart
 
     // Check zkSync balance. Used to find which checkout option is cheaper
+    this.isLoading = false;
     window.addEventListener('dataWalletReady', async (e) => {
-      this.isLoading = false;
       try {
         await needWalletConnection()
         // Setup zkSync and check balances
