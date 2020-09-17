@@ -81,7 +81,8 @@ def create_grant_type_cache():
                 )
 
 
-def create_gran_active_clr_mapping():
+def create_grant_active_clr_mapping():
+    print('create_grant_active_clr_mapping')
     # Upate grants mppping to active CLR rounds
     from grants.models import Grant, GrantCLR
 
@@ -380,7 +381,7 @@ class Command(BaseCommand):
         create_grant_type_cache()
         create_grant_clr_cache()
         create_grant_category_size_cache()
-        create_gran_active_clr_mapping()
+        create_grant_active_clr_mapping()
         if not settings.DEBUG:
             create_results_cache()
             create_hidden_profiles_cache()
