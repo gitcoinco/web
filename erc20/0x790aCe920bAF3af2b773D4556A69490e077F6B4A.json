@@ -1,0 +1,20 @@
+{
+  "symbol": "KANI",
+  "address": "0x790aCe920bAF3af2b773D4556A69490e077F6B4A",
+  "overview":{
+        "zh": "kani.finance（KANI）是基于YFI、YFII、Balancer的基础上，创造性地提出了Initial Pool、AIP Pool、与Claim&治理即挖矿的聚合协议。该项目完全0预挖，0私募。"
+  },
+  "email": "kanifi@88.com",
+  "website": "https://kani.finance",
+  "whitepaper": "https://kani.finance",
+  "state": "NORMAL",
+  "published_on": "2020-09-05",
+  "initial_price":{
+        "USD":"0.9 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/eat_kani",
+    "telegram": "https://t.me/EAT_KANI",
+    "github": "https://github.com/kani-fi/"
+  }
+}
