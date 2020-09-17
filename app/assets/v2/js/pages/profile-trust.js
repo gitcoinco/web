@@ -260,7 +260,7 @@ Vue.component('sms-verify-modal', {
           vm.verified = true;
           vm.validationStep = 'verifyNumber';
           vm.showValidation = false;
-          _alert('You have been verified', 'success');
+          _alert('You have been verified. <a href="" style="color: white; text-decoration: underline;">Refresh Page</a>.', 'success');
         }).catch((e) => {
           vm.errorMessage = e.responseJSON.msg;
         });
