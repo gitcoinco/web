@@ -2484,9 +2484,9 @@ Vue.component('grants-cart', {
 
     // Check zkSync balance. Used to find which checkout option is cheaper
     this.isLoading = false;
-    window.addEventListener('dataWalletReady', async (e) => {
+    window.addEventListener('dataWalletReady', async(e) => {
       try {
-        await needWalletConnection()
+        await needWalletConnection();
         // Setup zkSync and check balances
         this.userAddress = (await web3.eth.getAccounts())[0];
         await this.setupZkSync();
