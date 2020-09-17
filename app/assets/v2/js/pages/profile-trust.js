@@ -364,7 +364,7 @@ $(document).ready(function() {
 
 if (document.getElementById('gc-sms-modal')) {
 
-  const app = new Vue({
+  const smsVerificationApp = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-sms-modal',
     data: { }
