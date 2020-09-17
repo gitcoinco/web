@@ -92,6 +92,7 @@ from marketing.mails import (
 )
 from marketing.models import EmailSubscriber, Keyword, UpcomingDate
 from oauth2_provider.decorators import protected_resource
+from perftools.models import JSONStore
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
@@ -2868,7 +2869,15 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'trust':
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-        context['upcoming_calls'] = UpcomingDate.objects.filter(context_tag='brightid').filter(date__gte=today).order_by('date').values()
+        if settings.DEBUG:
+            context['brightid_status'] = 'not_verified'
+
+        try:
+            context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+        except JSONStore.DoesNotExist:
+            context['upcoming_calls'] = []
+
+        context['is_sms_verified'] = profile.sms_verification
     else:
         raise Http404
     return context
@@ -4538,7 +4547,7 @@ def get_hackathons(request):
 
     if settings.DEBUG:
         from perftools.management.commands import create_page_cache
-        
+
         create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [
