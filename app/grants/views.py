@@ -1476,8 +1476,6 @@ def zksync_set_interrupt_status(request):
 
     user_address = request.POST.get('user_address')
     deposit_tx_hash = request.POST.get('deposit_tx_hash')
-    print('deposit_tx_hash')
-    print(deposit_tx_hash)
 
     try:
         # Look for existing entry, and if present we overwrite it
@@ -1507,8 +1505,6 @@ def zksync_get_interrupt_status(request):
     try:
         result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
         deposit_tx_hash = result.data
-        print('deposit_tx_hash')
-        print(deposit_tx_hash)
     except JSONStore.DoesNotExist:
         # If there's no entry for this user, assume they haven't been interrupted
         deposit_tx_hash = False
