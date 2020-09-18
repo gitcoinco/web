@@ -1315,14 +1315,25 @@ class Contribution(SuperModel):
             # If case 1, proceed as normal
             if case_number == 1:
                 # actually validate token transfers
+                try:
                 response = grants_transaction_validator(self, w3)
-                if len(response['originator']):
-                    self.originated_address = response['originator'][0]
-                self.validator_passed = response['validation']['passed']
-                self.validator_comment = response['validation']['comment']
-                self.tx_cleared = True
-                self.split_tx_confirmed = True
-                self.success = self.validator_passed
+                    if len(response['originator']):
+                        self.originated_address = response['originator'][0]
+                    self.validator_passed = response['validation']['passed']
+                    self.validator_comment = response['validation']['comment']
+                    self.tx_cleared = True
+                    self.split_tx_confirmed = True
+                    self.success = self.validator_passed
+                except Exception as e:
+                    if 'Expecting value' in str(e):
+                        self.validator_passed = True
+                        self.validator_comment = 'temporary stopgap success, alethio API failed/re-running'
+                        self.tx_cleared = True
+                        self.split_tx_confirmed = True
+                        self.success = self.validator_passed
+                    else:
+                        raise e
+
 
             elif case_number == 2:
                 # If Case 2, we get the address of the gitcoin zkSync account from events
