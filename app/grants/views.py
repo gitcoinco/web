@@ -388,7 +388,7 @@ def get_grants(request):
             collections = _collections
         else:
             paginator = Paginator(_collections, limit)
-            collections = paginator.get_page(collections_page)
+            collections = paginator.get_page(page)
     else:
         _grants = build_grants_by_type(**filters)
 
