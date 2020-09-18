@@ -140,13 +140,6 @@ class GrantCLR(SuperModel):
         decimal_places=2,
         max_digits=10
     )
-    contribution_multiplier = models.DecimalField(
-        help_text="A contribution multipler to be applied to each contribution",
-        default=1.0,
-        decimal_places=4,
-        max_digits=10,
-    )
-
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
