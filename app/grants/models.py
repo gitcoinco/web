@@ -1383,7 +1383,10 @@ class Contribution(SuperModel):
                     is_correct_token = transaction['tx']['token'] == expected_token
 
                     transfer_amount = Decimal(transaction['tx']['amount'])
-                    is_correct_amount = transfer_amount == expected_transfer_amount
+                    transfer_tolerance = 0.05 # use a 5% tolerance
+                    transfer_amount_min = transfer_amount * (Decimal(1 - transfer_tolerance))
+                    transfer_amount_max = transfer_amount * (Decimal(1 + transfer_tolerance))
+                    is_correct_amount = transfer_amount > transfer_amount_min and transfer_amount < transfer_amount_max
 
                     if is_correct_recipient and is_correct_token and is_correct_amount:
                         self.tx_cleared = True
