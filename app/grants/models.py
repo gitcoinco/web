@@ -698,7 +698,7 @@ class Subscription(SuperModel):
     )
     gas_price = models.DecimalField(
         default=1,
-        decimal_places=4,
+        decimal_places=18,
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
     )
@@ -1443,6 +1443,20 @@ class Contribution(SuperModel):
                         self.tx_cleared = True
                         self.success = transaction['success']
                         break
+
+                if not is_correct_recipient or not is_correct_token or not is_correct_amount:
+                    # Transaction was not found, let's find out why
+                    if len(transactions) == 0:
+                        # No transfers were found for user
+                        self.validator_comment = f"{self.validator_comment}. No transactions found"
+                    else:
+                        # Could not find expected transfer, so try list specifics about why. We
+                        # Ascannot find exactly what went wrong because: We cycle through a list of
+                        # transactions. Some may have correct recipient and token but wrong amount.
+                        # Others may have correct token and amount but wrong recipient. In such a
+                        # case we cannot distinguish exactly what the cause was for not finding the
+                        # desired transasction.
+                        self.validator_comment = f"{self.validator_comment}. Transaction not found, unknown reason"
 
             if self.success:
                 print("TODO: do stuff related to successful contribs, like emails")

@@ -187,7 +187,7 @@ def get_stats(round_type):
                     )
             results.append(cht)
             counter += 1
-        except:
+        except Exception as e:
             logger.exception(e)
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
     return results, chart_list_str
@@ -239,6 +239,7 @@ def grants_addr_as_json(request):
     response = list(set(_grants.values_list('title', 'admin_address')))
     return JsonResponse(response, safe=False)
 
+@cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = None, None
     try:
@@ -693,9 +694,9 @@ def grants_by_grant_type(request, grant_type):
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
 
     if total_clr_pot:
-        if total_clr_pot > 1000 * 100:
+        if total_clr_pot > 1000 * 1000:
             int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
-        elif total_clr_pot > 100:
+        elif total_clr_pot > 1000:
             int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
         else:
             int_total_clr_pot = intword(total_clr_pot)
@@ -1007,14 +1008,13 @@ def grant_details(request, grant_id, grant_slug):
                     [f'{grant.grant_type.name} {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type, index_on=item)],
                     [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
                 ]
-        if tab in ['transactions', 'contributors']:
-            _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
-            contributions = list(_contributions.order_by('-created_on'))
-            #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
-            if tab == 'contributors':
-                phantom_funds = grant.phantom_funding.all().cache(timeout=60)
-                contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
-            activity_count = len(cancelled_subscriptions) + len(contributions)
+        _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+        contributions = list(_contributions.order_by('-created_on'))
+        #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+        if tab == 'contributors':
+            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+        activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -1527,8 +1527,6 @@ def zksync_set_interrupt_status(request):
 
     user_address = request.POST.get('user_address')
     deposit_tx_hash = request.POST.get('deposit_tx_hash')
-    print('deposit_tx_hash')
-    print(deposit_tx_hash)
 
     try:
         # Look for existing entry, and if present we overwrite it
@@ -1558,8 +1556,6 @@ def zksync_get_interrupt_status(request):
     try:
         result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
         deposit_tx_hash = result.data
-        print('deposit_tx_hash')
-        print(deposit_tx_hash)
     except JSONStore.DoesNotExist:
         # If there's no entry for this user, assume they haven't been interrupted
         deposit_tx_hash = False
