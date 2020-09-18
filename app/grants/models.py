@@ -1316,7 +1316,7 @@ class Contribution(SuperModel):
             if case_number == 1:
                 # actually validate token transfers
                 try:
-                response = grants_transaction_validator(self, w3)
+                    response = grants_transaction_validator(self, w3)
                     if len(response['originator']):
                         self.originated_address = response['originator'][0]
                     self.validator_passed = response['validation']['passed']
