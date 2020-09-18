@@ -1,7 +1,8 @@
 {% extends 'onepager/base.html' %}
-{% load i18n static %}
+{% load i18n static date_fromisoformat timesince_fromisoformat %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/lib/jquery.js"%}"></script>
+<script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
 {% endblock %}
 <!-- Main -->
 
@@ -13,42 +14,134 @@
 {% block 'main' %}
 
 <section id=main style="max-width: 90%;">
-{% include 'shared/gas_nav.html' %}
+  <div>
+    {% include 'shared/gas_nav.html' %}
 
-<h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
+    <h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
 
-  <ul class="gas_nav small">
-    {% for granularity in granularity_options %}
-    <li>
-      <a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">{{granularity}} view</a>
-    </li>
-    {% endfor %}
-  </ul>
+    <ul class="gas_nav small">
+      {% for granularity in granularity_options %}
+      <li>
+        <a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">{{granularity}} view</a>
+      </li>
+      {% endfor %}
+    </ul>
 
 
-  <div id="key">
-    {% for key, val in lines.items %}
-    <p style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</p>
-    {% endfor %}
+    <div id="key">
+      {% for key, val in lines.items %}
+      <p style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</p>
+      {% endfor %}
+    </div>
+
+    {% if gas_histories == '[]' %}
+      <p>
+        {% blocktrans %} We are unable to sync gas data at this time.  We recommend you check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
+      </p>
+    {% else %}
+      <svg id="graph"></svg>
+      {% include 'shared/gas_history.html' with y_axis="Gas Price (gwei)" %}
+    {% endif %}
   </div>
+  <div>
+    <div id="tabs" class="row my-4">
+      <div class="container">
+        <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
+          {% for id, title in tabs %}
+            <li class="nav-item">
+              <a class="nav-link nav-line no-pink {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
 
-{% if gas_histories == '[]' %}
-  <p>
-    {% blocktrans %} We are unable to sync gas data at this time.  We recommend you check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
-  </p>
-{% else %}
-  <svg id="graph"></svg>
-  {% include 'shared/gas_history.html' with y_axis="Gas Price (gwei)" %}
-  {% include 'shared/disqus.html' with page_url='https://gitcoin.co/gas/history?' %}
+    <div class="row my-4">
+      {% if events|length %}
+      <div class="container custom-container">
+      <div class="row">
+        {% for event in events %}
+          <style>
+            #{{event.slug}} .card-header {
+              background: {{ event.background_color }};
+            }
+          </style>
 
+          <div class="col-xs-12 col-md-9 col-lg-8 col-xl-6 mx-auto hackathon-list {{ event.type }} {% if event.type != default_tab %}hidden{% endif %}">
+
+            <div class="card flex-row flex-wrap mb-5" id="{{ event.slug }}">
+
+              <div class="card-header text-center col-12 col-sm-4 px-0">
+                <a href="{% url 'hackathon' event.slug %}">
+                {% if event.logo %}
+                  <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ event.logo }}" alt="Hackathon logo" />
+                {% else %}
+                  <div class="hackathon-card-logo text-center px-3 font-caption">
+                    {{ event.name }}
+                  </div>
+                {% endif %}
+                </a>
+              </div>
+
+              <div class="card-body col-12 col-sm-8 text-left">
+                <h5 class="font-subheader font-weight-semibold text-left">
+                  <a href="{% url 'hackathon' event.slug %}" class="no-pink text-black" rel="noopener noreferrer">
+                    {{ event.name }}
+                  </a>
+                </h5>
+                <div class="font-smaller-2 text-left">
+                  <span class>From</span>
+                  <time class="font-weight-bold" datetime="{{ event.start_date|date_fromisoformat:'c' }}">{{ event.start_date|date_fromisoformat:"m/d/Y" }}</time>
+                  <span>To</span>
+                  <time class="font-weight-bold" datetime="{{ event.end_date|date_fromisoformat:'c' }}">{{ event.end_date|date_fromisoformat:"m/d/Y" }}</time>
+                </div>
+                <div class="mt-3 font-smaller-2 hackathon-summary text-left">
+                  <p>{{ event.summary }}</p>
+                </div>
+                {% if event.sponsor_profiles|length %}
+                  <div class="mt-3 font-smaller-2">
+                    <span class="pr-1">Sponsored by</span>
+                    {% for sponsor in event.sponsor_profiles %}
+                      <a href="{{ sponsor.absolute_url }}" target="_blank"><img class="rounded-circle" style="width:21px;" src="{{ sponsor.avatar_url }}" /></a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                <div class="mt-3 hackathon-actions">
+                  {% if event.end_date|timesince_fromisoformat <= "1 min" %}
+                    <a href="{% url 'hackathon_onboard' event.slug %}" class="btn no-pink btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
+                      Join
+                    </a>
+                  {% endif %}
+                  {% if event.display_showcase %}
+                  <a href="{% url 'hackathon_showcase_proxy' event.slug %}" class="btn no-pink btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                    <i class="fas fa-star d-none d-sm-inline" style="font-size:6.5px;position:relative;top:0.2rem;left:0.2rem;"></i>
+                    <i class="fas fa-star mr-1 d-none d-sm-inline"></i>
+                    Showcase
+                  </a>
+                  {% endif %}
+                  {% if event.start_date|timesince_fromisoformat >= "1 min" and event.end_date|timesince_fromisoformat <= "1 min"%}
+                    <a href="{% url 'hackathon_prizes' event.slug %}" class="btn no-pink button--secondary font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
+                      Prizes
+                    </a>
+                  {% endif %}
+                  {% if event.show_results %}
+                    <a href="{% url 'hackathon_projects' event.slug %}" class="btn no-pink button--secondary font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
+                      Projects
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      </div>
+      {% endif %}
+      </div>
   </div>
-
-  </div>
-  <script>
-  </script>
-
-
-{% endif %}
 
 </section>
 
