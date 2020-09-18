@@ -45,7 +45,7 @@ along with this program. If not, see
   {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'grants/nav.html' %}
   <div class="container-fluid header dash {% if not clr_round %} grants_hero_img {% endif %}"
-      style="{% if not clr_round %} background: url('{% static '/v2/images/bg/'%}{{styles.bg}} ') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
+      style="{% if not clr_round %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
   >
 
     {% include 'shared/grant_thanks_modal.html' %}
