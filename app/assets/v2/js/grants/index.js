@@ -147,6 +147,7 @@ if (document.getElementById('grants-showcase')) {
       cart_lock: false,
       collection_id: document.collection_id,
       round_num: document.round_num,
+      activeCollection: null,
       grantsNumPages,
       grantsHasNext,
       numGrants
@@ -157,11 +158,18 @@ if (document.getElementById('grants-showcase')) {
         localStorage.setItem('grants_view', mode);
         this.view = mode;
       },
-      setCurrentType: function(currentType, q) {
-        let vm = this;
-
+      setCurrentType: function(currentType) {
         this.current_type = currentType;
 
+        if (this.current_type === 'collections') {
+          this.clearSingleCollection();
+        }
+
+        this.updateURI();
+      },
+      updateURI: function() {
+        let vm = this;
+        const q = vm.getQueryParams();
 
         if (vm.round_num) {
           let uri = `/grants/clr/${vm.round_num}/`;
@@ -224,7 +232,6 @@ if (document.getElementById('grants-showcase')) {
           if (this.collection_id) {
             query_elements['collection_id'] = this.collection_id;
           }
-          this.collections = [];
         }
 
         return $.param(query_elements);
@@ -267,10 +274,26 @@ if (document.getElementById('grants-showcase')) {
         }
 
         this.page = 1;
-        const q = this.getQueryParams();
-
-        this.setCurrentType(this.current_type, q);
+        this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
+      },
+      clearSingleCollection: function() {
+        this.grants = [];
+        this.collections = [];
+        this.collection_id = null;
+        this.activeCollection = null;
+        this.page = 1;
+        this.updateURI();
+        this.fetchGrants();
+      },
+      showSingleCollection: function(collectionId) {
+        this.collection_id = collectionId;
+        this.collections = [];
+        this.keyword = '';
+        this.grants = [];
+        this.current_type = 'collections';
+        this.updateURI();
+        this.fetchGrants();
       },
       fetchGrants: async function(page, append_mode) {
         let vm = this;
@@ -322,29 +345,35 @@ if (document.getElementById('grants-showcase')) {
           vm.grants.push(item);
         });
 
-        getGrants.collections.forEach(function(item) {
-          vm.collections.push(item);
-        });
+        if (this.collection_id) {
+          if (getGrants.collections.length > 0) {
+            this.activeCollection = getGrants.collections[0];
+          }
+        } else {
+          if (this.current_type === 'collections') {
+            getGrants.collections.forEach(function(item) {
+              vm.collections.push(item);
+            });
+          } else {
+            vm.collections = getGrants.collections;
+          }
 
-        vm.credentials = getGrants.credentials;
-        vm.grant_types = getGrants.grant_types;
-        vm.contributions = getGrants.contributions;
-        vm.grantsNumPages = getGrants.num_pages;
-        vm.grantsHasNext = getGrants.has_next;
-        vm.numGrants = getGrants.count;
+          vm.credentials = getGrants.credentials;
+          vm.grant_types = getGrants.grant_types;
+          vm.contributions = getGrants.contributions;
+          vm.grantsNumPages = getGrants.num_pages;
+          vm.grantsHasNext = getGrants.has_next;
+          vm.numGrants = getGrants.count;
+
+          if (vm.grantsHasNext) {
+            vm.page = ++vm.page;
+          } else {
+            vm.page = 1;
+          }
+        }
+
         vm.lock = false;
 
-        if (this.current_type === 'collections') {
-          if (vm.grantsHasNext) {
-            vm.collectionsPage = ++vm.collectionsPage;
-          } else {
-            vm.collectionsPage = 1;
-          }
-        } else if (vm.grantsHasNext) {
-          vm.page = ++vm.page;
-        } else {
-          vm.page = 1;
-        }
         return vm.grants;
       },
       scrollEnd: async function(event) {
@@ -354,6 +383,10 @@ if (document.getElementById('grants-showcase')) {
         const visible = document.documentElement.clientHeight;
         const pageHeight = document.documentElement.scrollHeight - 500;
         const bottomOfPage = visible + scrollY >= pageHeight;
+
+        if (this.collection_id) {
+          return;
+        }
 
         if (bottomOfPage || pageHeight < visible) {
           if (vm.grantsHasNext) {
@@ -401,7 +434,7 @@ if (document.getElementById('grants-showcase')) {
         showSideCart();
         _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grant were' : 'grants was'} added to your cart!`, 'success');
         this.cart_lock = false;
-      },
+      }
     },
     beforeMount() {
       window.addEventListener('scroll', () => {

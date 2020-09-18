@@ -51,7 +51,7 @@
   background: linear-gradient(0deg, #FFFFFF, #FFFFFF), linear-gradient(0deg, #FFFFFF, #FFFFFF), linear-gradient(0deg, #FFFFFF, #FFFFFF), linear-gradient(0deg, #FFFFFF, #FFFFFF), #FFFFFF;
   border-radius: 2px;
   height: 75px;
-  width: 154px;
+  width: 96%;
   margin: 2px;
 }
 
@@ -108,4 +108,12 @@
 .collection-item__info a:hover {
   color: white;
   text-decoration: underline;
+}
+
+
+.vertica-scroll {
+  flex-direction: row;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  margin-bottom: 25px;
 }

@@ -265,10 +265,24 @@ def grants(request):
     return grants_by_grant_type(request, _type)
 
 
-def get_collections(user, keyword, sort='-modified_on', collection_id=None):
+def get_collections(user, keyword, sort='-modified_on', collection_id=None, following=None,
+                    idle_grants=None, only_contributions=None):
+    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+
     _collections = GrantCollections.objects.filter(hidden=False)
     if collection_id:
         _collections = _collections.filter(pk=int(collection_id))
+
+    if idle_grants:
+        _collections = _collections.filter(grants__last_update__gt=three_months_ago)
+
+    if only_contributions:
+        contributions = user.profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+        _collections = _collections.filter(grants__in=Subquery(contributions))
+
+    if following and user.is_authenticated:
+        favorite_grants = Favorite.grants().filter(user=user).values('grant_id')
+        _collections = _collections.filter(grants__in=Subquery(favorite_grants))
 
     _collections = _collections.keyword(keyword).order_by(sort, 'pk')
     _collections = _collections.prefetch_related('grants')
@@ -323,7 +337,7 @@ def clr_grants(request, round_num):
 
 def get_grants(request):
     grants = []
-    collections = []
+    paginator = None
     grant_type = request.GET.get('type', 'all')
 
     limit = request.GET.get('limit', 6)
@@ -362,11 +376,23 @@ def get_grants(request):
     }
 
     if grant_type == 'collections':
-        _collections = get_collections(request.user, keyword, collection_id=collection_id)
-        paginator = Paginator(_collections, limit)
-        collections = paginator.get_page(collections_page)
+        _collections = get_collections(request.user, keyword, collection_id=collection_id,
+                                       following=following, idle_grants=idle_grants,
+                                       only_contributions=only_contributions)
+
+        if collection_id:
+            collection = _collections.first()
+            if collection:
+                grants = collection.grants.all()
+            collections = _collections
+        else:
+            paginator = Paginator(_collections, limit)
+            collections = paginator.get_page(collections_page)
     else:
         _grants = build_grants_by_type(**filters)
+
+        collections = GrantCollections.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:12]
+
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
 
@@ -406,9 +432,9 @@ def get_grants(request):
             'is_authenticated': request.user.is_authenticated
         },
         'contributions': contributions_by_grant,
-        'has_next': paginator.page(page).has_next(),
-        'count': paginator.count,
-        'num_pages': paginator.num_pages,
+        'has_next': paginator.page(page).has_next() if paginator else False,
+        'count': paginator.count if paginator else 0,
+        'num_pages': paginator.num_pages if paginator else 0,
     })
 
 
