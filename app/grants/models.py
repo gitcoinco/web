@@ -1371,6 +1371,10 @@ class Contribution(SuperModel):
                 )
 
                 # Look through zkSync transfers to find one with the expected amounts
+                is_correct_recipient = False
+                is_correct_token = False
+                is_correct_amount = False
+
                 for transaction in transactions:
                     if transaction['tx']['type'] != "Transfer":
                         continue
