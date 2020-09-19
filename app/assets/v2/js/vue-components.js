@@ -702,13 +702,13 @@ Vue.component('suggested-profile', {
     </a>
   </template>
   <div class="col">
-    <span class="row-6 row-md-12 row-xl-7 font-caption">
+    <span class="row font-caption">
         <a :href="profile_url" class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize text-black">{{profile.name}}</a>
         <p class="mb-0">
           <span class="font-weight-semibold">{{profile.handle}}</span>
         </p>
     </span>
-    <p class="row-6 row-md-12 row-xl-7 font-caption mb-0 mt-1">
+    <p class="row font-caption mb-0 mt-1">
       <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-green font-smaller-5">following</b-button>
       <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-gc-blue font-smaller-5">follow</b-button>
     </p>
