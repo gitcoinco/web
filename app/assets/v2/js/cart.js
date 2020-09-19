@@ -329,11 +329,13 @@ Vue.component('grants-cart', {
 
     // Array of supported tokens
     zkSyncSupportedTokens() {
+      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN', 'SNT' ];
+      
       if (!this.selectedNetwork)
-        return [];
+        return mainnetTokens;
       if (this.selectedNetwork === 'rinkeby')
         return [ 'ETH', 'USDT', 'LINK' ];
-      return [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN' ];
+      return mainnetTokens;
     },
 
     // Estimated gas limit for zkSync checkout
