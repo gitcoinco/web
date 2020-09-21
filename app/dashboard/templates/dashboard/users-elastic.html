@@ -39,32 +39,32 @@
         <nav class="search-section p-5 text-center">
           <div>
             <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
-            <searchbox :id="'searchbox'" :autofocus="true" :realtime="true" :timeout="200" :field="'keywords'" :placeholder="'Search by keyword'"></searchbox>
+
+              <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed">
+              </autocomplete>
+              <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
           </div>
         </nav>
       </div>
       <div class="sidebar-container flex-column flex-lg-row">
         <transition name="fade">
           <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-            <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed"></autocomplete>
-
             <template v-for="filter in filters">
-              <refinement-list-filter v-if="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :size="50" :title="filter.text" operator="OR" >
+              <numeric-list-filter v-if="filter.type == 'float' || filter.type == 'long' || filter.type == 'date'" :id="filter.text" :field="filter.text" operator="OR">
+                <template slot="header">
+                    <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
+                </template>
+              </numeric-list-filter>
+              <refinement-list-filter v-else="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :size="50" :title="filter.text" operator="OR">
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
-                    <select2 class="select2-filter" multiple minInputLength="0" name="" placeholder="select multiple" id="filter.type" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
+                    <select2 class="select2-filter" multiple minInputLength="0" name="" :placeholder="'select multiple'" id="filter.type" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
                         <option v-for="(item, index) in items" :value="item.key">
                           <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
                         </option>
                     </select2>
                 </template>
               </refinement-list-filter>
-              <numeric-list-filter v-else-if="filter.type == 'float' || filter.type == 'long'" :id="filter.text" :field="filter.text" operator="OR">
-                <template slot="header">
-                    <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
-                </template>
-              </numeric-list-filter>
             </template>
-            <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
             {% if is_staff %}
               <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="outputToCSV($event)">Export</b-button>
             {% endif %}
@@ -257,7 +257,6 @@
         </div>
       </div>
     </div>
-
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>

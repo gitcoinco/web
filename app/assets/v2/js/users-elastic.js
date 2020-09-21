@@ -299,6 +299,7 @@ Vue.component('autocomplete', {
       allowClear: true,
       placeholder: 'Search for another filter to add',
       minimumInputLength: 1,
+      templateSelection: this.formatSelection,
       escapeMarkup: function(markup) {
         return markup;
       }
@@ -452,30 +453,11 @@ Vue.component('user-directory-elastic', {
       this.filters = filters;
     },
     outputToCSV: function() {
-
-      let output = [];
-
-      $.map(this.items, function(obj, key) {
-        output.push(obj.profile_id);
-      });
-
       let url = '/api/v0.1/users_csv/';
 
-      $.get(url, {profile_ids: output})
-        .then(resp => resp.blob())
-        .then(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-
-          a.style.display = 'none';
-          a.href = url;
-          a.download = `users_csv-${Date.now()}.json`;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          _alert('File download complete');
-        })
-        .catch(() => _alert('There was an issue downloading your file'));
+      $.get(url, this.body).then(resp => resp.json()).then(json => {
+        _alert(json.message);
+      }).catch(() => _alert('There was an issue processing your request'));
     },
     fetchMappings: function() {
       let vm = this;
@@ -555,6 +537,9 @@ if (document.getElementById('gc-users-elastic')) {
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
     methods: {
+      resetCallback: function() {
+        this.checkedItems = [];
+      },
       autoCompleteDestroyed: function() {
         this.filters = [];
       },
@@ -595,6 +580,7 @@ if (document.getElementById('gc-users-elastic')) {
       this.setHost(document.contxt.search_url);
       this.setIndex('haystack');
       this.setType('modelresult');
+
       // this.extractURLFilters();
     },
     beforeMount() {
