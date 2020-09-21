@@ -2035,7 +2035,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
-                "txid":'',
+                "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
             }
@@ -5273,6 +5273,10 @@ class Earning(SuperModel):
 def post_save_earning(sender, instance, created, **kwargs):
     if created:
         instance.create_auto_follow()
+
+        from economy.utils import watch_txn
+        if instance.txid:
+            watch_txn(instance.txid)
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with

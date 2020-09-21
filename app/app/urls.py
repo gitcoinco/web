@@ -681,6 +681,9 @@ urlpatterns = [
     re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
 
+
+    url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
+
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),

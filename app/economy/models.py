@@ -208,6 +208,32 @@ def reverse_conversion_rate(sender, instance, **kwargs):
         )
 
 
+class TXUpdate(SuperModel):
+    """Define the TXUpdate model."""
+
+    body = JSONField(null=True, default=dict, blank=True)
+    processed = models.BooleanField(default=False)
+
+    def __str__(self):
+        """Define the string representation of this object."""
+        return f"{self.body['hash']}"
+
+    def process_callbacks(self):
+        tx_id = self.body['hash']
+        status = self.body.get('status')
+        replaceHash = self.body.get('replaceHash')
+        if status:
+            # https://docs.blocknative.com/webhook-api#transaction-events-state-changes
+            # TODO: move processing of failed, dropped, txns from update_tx_status to here
+            pass
+        if replaceHash:
+            # TODO: find/replace any txids that are wrong here
+            # example replacement payload
+            # {"r": "0x667f3b3c35715598bc244a8fef7ca432eb725806571c99c4dca00454d08ee4ce", "s": "0x67de52717d0eef915a33250c5a849458f44215e79f7df1ea0867035c0359c5e3", "v": "0x25", "to": "0x00De4B13153673BCAE2616b67bf822500d325Fc3", "gas": 21000, "from": "0x00De4B13153673BCAE2616b67bf822500d325Fc3", "hash": "0x797a61f94f7fb20528fdbedb9d28ebdedd721ad5a2b0f4d4ac991f2ca1dcfc9b", "asset": "ETH", "input": "0x", "nonce": 4154, "value": "0", "apiKey": "d1ff5891-98f0-4324-9541-e56f54252149", "status": "speedup", "system": "ethereum", "network": "main", "gasPrice": "60000000000", "blockHash": null, "monitorId": "GETH_1_C_PROD", "timeStamp": "2020-09-21T20:27:33.924Z", "blockNumber": null, "replaceHash": "0x16903550083ee036077e67539f5da0c3bea44d874845083007cdd934e152e015", "timePending": "46956", "serverVersion": "0.64.3", "monitorVersion": "0.69.1"}
+            pass
+        self.processed = True
+        return
+
 class Token(SuperModel):
     """Define the Token model."""
 
