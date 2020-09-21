@@ -300,7 +300,8 @@ def grants():
         total_usdt_in_carts += val[1]
     pprint(f"{round(total_usdt_in_carts/1000, 1)}k DAI-equivilent in carts, but not yet checked out yet:")
     for key, val in amount_in_carts.items():
-        pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
+        if val[1] > 10 and key:
+            pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
 
     ############################################################################3
     # top contributors

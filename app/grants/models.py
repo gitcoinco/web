@@ -140,6 +140,13 @@ class GrantCLR(SuperModel):
         decimal_places=2,
         max_digits=10
     )
+    contribution_multiplier = models.DecimalField(
+        help_text="A contribution multipler to be applied to each contribution",
+        default=1.0,
+        decimal_places=4,
+        max_digits=10,
+    )
+
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -640,7 +647,7 @@ class Subscription(SuperModel):
     )
     gas_price = models.DecimalField(
         default=1,
-        decimal_places=4,
+        decimal_places=18,
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
     )
@@ -1315,14 +1322,25 @@ class Contribution(SuperModel):
             # If case 1, proceed as normal
             if case_number == 1:
                 # actually validate token transfers
-                response = grants_transaction_validator(self, w3)
-                if len(response['originator']):
-                    self.originated_address = response['originator'][0]
-                self.validator_passed = response['validation']['passed']
-                self.validator_comment = response['validation']['comment']
-                self.tx_cleared = True
-                self.split_tx_confirmed = True
-                self.success = self.validator_passed
+                try:
+                    response = grants_transaction_validator(self, w3)
+                    if len(response['originator']):
+                        self.originated_address = response['originator'][0]
+                    self.validator_passed = response['validation']['passed']
+                    self.validator_comment = response['validation']['comment']
+                    self.tx_cleared = True
+                    self.split_tx_confirmed = True
+                    self.success = self.validator_passed
+                except Exception as e:
+                    if 'Expecting value' in str(e):
+                        self.validator_passed = True
+                        self.validator_comment = 'temporary stopgap success, alethio API failed/re-running'
+                        self.tx_cleared = True
+                        self.split_tx_confirmed = True
+                        self.success = self.validator_passed
+                    else:
+                        raise e
+
 
             elif case_number == 2:
                 # If Case 2, we get the address of the gitcoin zkSync account from events
@@ -1371,6 +1389,10 @@ class Contribution(SuperModel):
                 )
 
                 # Look through zkSync transfers to find one with the expected amounts
+                is_correct_recipient = False
+                is_correct_token = False
+                is_correct_amount = False
+
                 for transaction in transactions:
                     if transaction['tx']['type'] != "Transfer":
                         continue
@@ -1379,12 +1401,29 @@ class Contribution(SuperModel):
                     is_correct_token = transaction['tx']['token'] == expected_token
 
                     transfer_amount = Decimal(transaction['tx']['amount'])
-                    is_correct_amount = transfer_amount == expected_transfer_amount
+                    transfer_tolerance = 0.05 # use a 5% tolerance
+                    transfer_amount_min = transfer_amount * (Decimal(1 - transfer_tolerance))
+                    transfer_amount_max = transfer_amount * (Decimal(1 + transfer_tolerance))
+                    is_correct_amount = transfer_amount > transfer_amount_min and transfer_amount < transfer_amount_max
 
                     if is_correct_recipient and is_correct_token and is_correct_amount:
                         self.tx_cleared = True
                         self.success = transaction['success']
                         break
+
+                if not is_correct_recipient or not is_correct_token or not is_correct_amount:
+                    # Transaction was not found, let's find out why
+                    if len(transactions) == 0:
+                        # No transfers were found for user
+                        self.validator_comment = f"{self.validator_comment}. No transactions found"
+                    else:
+                        # Could not find expected transfer, so try list specifics about why. We
+                        # Ascannot find exactly what went wrong because: We cycle through a list of
+                        # transactions. Some may have correct recipient and token but wrong amount.
+                        # Others may have correct token and amount but wrong recipient. In such a
+                        # case we cannot distinguish exactly what the cause was for not finding the
+                        # desired transasction.
+                        self.validator_comment = f"{self.validator_comment}. Transaction not found, unknown reason"
 
             if self.success:
                 print("TODO: do stuff related to successful contribs, like emails")

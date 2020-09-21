@@ -131,7 +131,7 @@ def get_stats(round_type):
             continue
         keys = []
         if ele[3] == 'grants':
-            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).order_by(order_by)[0:50]
+            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).exclude(pk=86).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
@@ -187,7 +187,7 @@ def get_stats(round_type):
                     )
             results.append(cht)
             counter += 1
-        except:
+        except Exception as e:
             logger.exception(e)
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
     return results, chart_list_str
@@ -239,6 +239,7 @@ def grants_addr_as_json(request):
     response = list(set(_grants.values_list('title', 'admin_address')))
     return JsonResponse(response, safe=False)
 
+@cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = None, None
     try:
@@ -544,7 +545,7 @@ def get_bg(grant_type):
     if grant_type in ['about', 'activity']:
         bg = '3.jpg'
     if grant_type != 'matic':
-        bg = '../grants/grants_header_donors_round_7.png'
+        bg = '../grants/grants_header_donors_round_7-2.png'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'
@@ -644,10 +645,10 @@ def grants_by_grant_type(request, grant_type):
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
 
     if total_clr_pot:
-        if total_clr_pot > 1000 * 100:
+        if total_clr_pot > 1000 * 1000:
             int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
-        elif total_clr_pot > 100:
-            int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
+        elif total_clr_pot > 1000:
+            int_total_clr_pot = f"{round(total_clr_pot/1000, 0)}k"
         else:
             int_total_clr_pot = intword(total_clr_pot)
         live_now = f'❇️ LIVE NOW! Up to ${int_total_clr_pot} Matching Funding on Gitcoin Grants' if total_clr_pot > 0 else ""
@@ -1476,8 +1477,6 @@ def zksync_set_interrupt_status(request):
 
     user_address = request.POST.get('user_address')
     deposit_tx_hash = request.POST.get('deposit_tx_hash')
-    print('deposit_tx_hash')
-    print(deposit_tx_hash)
 
     try:
         # Look for existing entry, and if present we overwrite it
@@ -1507,8 +1506,6 @@ def zksync_get_interrupt_status(request):
     try:
         result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
         deposit_tx_hash = result.data
-        print('deposit_tx_hash')
-        print(deposit_tx_hash)
     except JSONStore.DoesNotExist:
         # If there's no entry for this user, assume they haven't been interrupted
         deposit_tx_hash = False
