@@ -1,0 +1,17 @@
+{
+    "symbol": "CART",
+    "address": "0x45B5fa7f41bC09FEaA9a815059E29e29a86e6fDE",
+    "overview":{
+          "en": "Cartridge is a distributed financial system based on blockchain. It is committed to promoting the development and improvement of the distributed financial DeFi ecosystem, creating on-chain finance, and then building an efficient distributed financial DeFi ecological infrastructure.",
+          "zh": "Cartridge是基于区块链的分布式金融系统，致力于推动分布式金融DeFi生态的发展和完善，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "cartdefiservice@gmail.com",
+    "website": "http://cartdefi.me/",
+    "whitepaper": "http://cartdefi.me/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-17",
+    "links": {
+        "telegram": "https://t.me/cartgroup",
+        "twitter": "https://twitter.com/cartdefi"
+      }
+}
