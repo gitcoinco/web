@@ -69,7 +69,9 @@ Vue.component('grants-cart', {
       maxPossibleSignatures: 4, // for Flow A, start by assuming 4 -- two logins, set signing key, one transfer
       isZkSyncModalLoading: false, // modal requires async actions before loading, so show loading spinner to improve UX
       zkSyncWalletState: undefined, // state of user's nominal zkSync wallet
-      selectedNetwork: undefined, // use to force computed properties to update when document.web3network changes
+      selectedNetwork: undefined, // used to force computed properties to update when document.web3network changes
+      zkSyncFeeTotals: {}, // used to dispaly a string showing the total zkSync fees when checking out with Flow B
+      zkSyncFeesString: undefined, // string generated from the above property
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -1716,6 +1718,10 @@ Vue.component('grants-cart', {
           const requiredAmount = ethers.utils.parseUnits(String(this.donationsTotal[tokenSymbol]), decimals);
           const totalRequiredAmount = await this.getTotalAmountToTransfer(tokenSymbol, requiredAmount);
 
+          // Get worst case fee amount
+          this.zkSyncFeeTotals[tokenSymbol] = await this.getMaxFee(tokenSymbol);
+          this.setZkSyncFeesString();
+
           // Balance will be undefined if the user does not have that token, so we can break
           if (!balance) {
             this.hasSufficientZkSyncBalance = false;
@@ -1760,6 +1766,63 @@ Vue.component('grants-cart', {
       });
 
       return amount.add(fee.mul(String(numberOfFees)));
+    },
+
+    /**
+     * @notice Calculates the maximum possible fees for a specific token
+     */
+    async getMaxFee(tokenSymbol) {
+      const numberOfFees = 3 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
+      const fee = await this.syncProvider.getTransactionFee(
+        'Transfer', // transaction type
+        ethers.Wallet.createRandom().address, // recipient address
+        tokenSymbol // token name
+      );
+
+      return fee.totalFee.mul(String(numberOfFees));
+    },
+
+    /**
+     * @notice String describing the user's zkSync fees, used for Flow A
+     */
+    setZkSyncFeesString() {
+      // If no fees, default to empty string
+      if (Object.keys(this.zkSyncFeeTotals).length === 0)
+        return '';
+
+
+      // Conver token amounts to human-readable values (from wei)
+      const tokens = Object.keys(this.zkSyncFeeTotals);
+      const feeTotals = {};
+
+      for (let i = 0; i < tokens.length; i += 1) {
+        const tokenName = tokens[i];
+        const decimals = this.getTokenByName(tokenName).decimals;
+        const amount = ethers.utils.formatUnits(this.zkSyncFeeTotals[tokenName].toString(), decimals);
+
+        feeTotals[tokenName] = amount;
+      }
+
+      // Generate the string
+      let string = '';
+
+      tokens.forEach(tokenName => {
+        // Round to 2 digits
+        const amount = feeTotals[tokenName];
+        const formattedAmount = amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+        if (string === '') {
+          string += `${formattedAmount} ${tokenName}`;
+        } else {
+          string += `+ ${formattedAmount} ${tokenName}`;
+        }
+      });
+
+      // Set value
+      this.zkSyncFeesString = string;
     },
 
     // ==================================== Main functionality =====================================
