@@ -1261,10 +1261,20 @@ Vue.component('grants-cart', {
       const txHash = json.deposit_tx_hash;
 
       if (txHash.length === 66 && txHash.startsWith('0x')) {
-        // Valid transaction hash, return it
+        // Valid transaction hash. Check if tx failed
+        const receipt = await this.ethersProvider.getTransactionReceipt(txHash);
+
+        if (receipt.status === 0) {
+          // Transaction failed, user must start over so mark them as not interrupted
+          await this.setInterruptStatus(null, this.userAddress);
+          return false;
+        }
+
+        // Transaction was mined, user must complete checkout
         return txHash;
       }
-      // Otherwise, user was not interrupted
+
+      // User was not interrupted
       return false;
     },
 
