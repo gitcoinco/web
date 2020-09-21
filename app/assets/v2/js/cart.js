@@ -69,6 +69,7 @@ Vue.component('grants-cart', {
       maxPossibleSignatures: 4, // for Flow A, start by assuming 4 -- two logins, set signing key, one transfer
       isZkSyncModalLoading: false, // modal requires async actions before loading, so show loading spinner to improve UX
       zkSyncWalletState: undefined, // state of user's nominal zkSync wallet
+      selectedNetwork: undefined, // use to force computed properties to update when document.web3network changes
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -313,26 +314,28 @@ Vue.component('grants-cart', {
     zkSyncBlockExplorerUrl() {
       // Flow A, zkScan link
       if (this.hasSufficientZkSyncBalance) {
-        if (document.web3network === 'rinkeby')
-          return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+        if (this.selectedNetwork === 'rinkeby')
+          return `https://${this.selectedNetwork}.zkscan.io/explorer/accounts/${this.userAddress}`;
         return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
       }
 
       // Flow B, etherscan link
       if (!this.zkSyncDepositTxHash)
         return undefined;
-      if (document.web3network === 'rinkeby')
-        return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      if (this.selectedNetwork === 'rinkeby')
+        return `https://${this.selectedNetwork}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
       return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
     },
 
     // Array of supported tokens
     zkSyncSupportedTokens() {
-      if (!document.web3network)
-        return [];
-      if (document.web3network === 'rinkeby')
+      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN', 'SNT' ];
+      
+      if (!this.selectedNetwork)
+        return mainnetTokens;
+      if (this.selectedNetwork === 'rinkeby')
         return [ 'ETH', 'USDT', 'LINK' ];
-      return [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN' ];
+      return mainnetTokens;
     },
 
     // Estimated gas limit for zkSync checkout
@@ -445,6 +448,8 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    // TODO: SMS related methos and state should be removed and refactored into the component that
+    // should be shared between the cart and the Trust Bonus tab
     dismissVerification() {
       localStorage.setItem('dismiss-sms-validation', true);
       this.showValidation = false;
@@ -707,7 +712,7 @@ Vue.component('grants-cart', {
       let wei;
 
       try {
-        wei = web3.utils.toWei(String(number));
+        wei = Web3.utils.toWei(String(number));
       } catch (e) {
         // When numbers are too small toWei fails because there's too many decimal places
         wei = Math.round(number * 10 ** 18);
@@ -1599,7 +1604,7 @@ Vue.component('grants-cart', {
           // We now need to subtract the fee from this amount, and must ensure there is
           // actually enough balance left to send this transfer. Otherwise we do not have enough
           // balance to cover the transfer fee
-          
+
           if (amount.gt(fee)) {
             // Packed account balance is greater than fee, so we can proceed with transfer
             const transferAmount = zksync.utils.closestPackableTransactionAmount(amount.sub(fee));
@@ -1618,7 +1623,7 @@ Vue.component('grants-cart', {
             const receipt = await tx.awaitReceipt();
 
             console.log('  ✅ Got transfer receipt', receipt);
-          
+
           } else {
             console.log('  ❗ Remaining balance is less than the fee, skipping this transfer');
             continue;
@@ -2109,7 +2114,7 @@ Vue.component('grants-cart', {
               const tokenAmount = await this.getTotalAmountToTransfer(tokenName, tokenDonation.allowance);
               const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenName)[0];
               let totalAmount;
-              
+
               if (!extra) {
                 totalAmount = tokenAmount;
               } else {
@@ -2141,12 +2146,12 @@ Vue.component('grants-cart', {
           // Check tokens
           for (let i = 0; i < deposits.length; i += 1) {
             const tokenAddress = deposits[i][0];
-            
+
             if (tokenAddress === ETH_ADDRESS) {
               // Skip ETH because we check it later
               continue;
             }
-              
+
             const tokenContract = new web3.eth.Contract(token_abi, tokenAddress);
             const requiredAmount = deposits[i][1];
             const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
@@ -2209,7 +2214,7 @@ Vue.component('grants-cart', {
 
           const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenDonation.tokenName)[0];
           let totalAmount;
-          
+
           if (!extra) {
             totalAmount = tokenAmount;
           } else {
@@ -2479,26 +2484,35 @@ Vue.component('grants-cart', {
     this.hasSufficientZkSyncBalance = false;
 
     // Show user cart
-    this.isLoading = false;
 
     // Check zkSync balance. Used to find which checkout option is cheaper
-    try {
-      // Setup zkSync and check balances
-      this.userAddress = (await web3.eth.getAccounts())[0];
-      await this.setupZkSync();
-      await this.checkZkSyncBalances();
+    this.isLoading = false;
+    window.addEventListener('dataWalletReady', async(e) => {
+      try {
+        await needWalletConnection();
 
-      // See if user was previously interrupted during checkout
-      await this.checkInterruptStatus();
-      if (this.zkSyncWasInterrupted) {
-        this.showZkSyncModal = true;
+        // Force re-render so computed properties are updated (some are dependent on
+        // document.web3network, and Vue cannot watch document.web3network for an update)
+        this.selectedNetwork = document.web3network;
+        
+        // Setup zkSync and check balances
+        this.userAddress = (await web3.eth.getAccounts())[0];
+        await this.setupZkSync();
+        await this.checkZkSyncBalances();
+
+        // See if user was previously interrupted during checkout
+        await this.checkInterruptStatus();
+        if (this.zkSyncWasInterrupted) {
+          this.showZkSyncModal = true;
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
+
+    }, false);
 
     // Cart is now ready
-    this.isLoading = false;
+    // this.isLoading = false;
   },
 
   beforeDestroy() {
