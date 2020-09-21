@@ -1762,6 +1762,10 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
+        new_receive_txid = getReplacedTX(self.receive_txid)
+        if new_receive_txid:
+            self.receive_txid = new_receive_txid
         self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
         return bool(self.receive_tx_status)
 
