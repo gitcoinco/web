@@ -22,9 +22,9 @@
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
-    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.bubble.css" rel="stylesheet">
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -108,7 +108,7 @@
                   <label class="font-body" for="input-handle2">{% trans "Your Twitter Handle" %}</label>
                   <input type="text" class="form__input form__input-lg " id="input-handle2" name="handle2" placeholder="@georgecostanza"/>
                 </div>
-                
+
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="github_project_url">{% trans "Github Project URL" %}</label>
                   <input type="url" class="form__input form__input-lg " id="github_project_url" name="github_project_url" placeholder="https://github.com/human-fund"/>
@@ -154,7 +154,7 @@
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
-                  <label class="font-body" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent." %}</label>
+                  <label class="font-body mt-3" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent. To ensure you can accept L2 contributions, make sure this is NOT an exchange address, and if using a contract wallet be sure it supports execution of arbitrary transactions." %}</label>
                   <label class="font-body" for="input-admin_address"><i class="fas fa-exclamation-circle"></i> - {% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
                 </div>
 

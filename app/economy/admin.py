@@ -35,7 +35,7 @@ class TokenAdmin(admin.ModelAdmin):
 
     def address_url(self, obj):
         tx_url = 'https://etherscan.io/address/' + obj.address
-        return format_html("<a href='{}' target='_blank'>{}</a>", obj.address, obj.address)
+        return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, obj.address)
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect

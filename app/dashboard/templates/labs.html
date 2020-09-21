@@ -84,7 +84,6 @@
           {% endif %}
 
           <h3 class="sub-title dark-text">{% trans "Tools" %}</h3>
-          <a href="{% url 'tools' %}" class="description">{% trans "See All" %}</a>
           <div class="cards text-center mt-2">
             {% for tool in tools %}
               <div class="card col-md-4 col-lg-3 mx-md-5 mx-lg-4 {{ tool.class }}" id="{{ tool.i18n_name }}">

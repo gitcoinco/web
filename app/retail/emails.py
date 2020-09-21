@@ -593,6 +593,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'date': ele.date.strftime("%Y-%m-%d")
         }]
     upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
+    upcoming_events = upcoming_events[0:7]
 
     params = {
         'old_bounties': old_bounties,
@@ -1205,7 +1206,6 @@ def render_new_bounty_roundup(to_email):
     new_kudos_size_px = '300'
 
     subject = args.subject
-    new_kudos_ids = args.kudos_ids[0:-1].split(',')
     if settings.DEBUG and False:
         # for debugging email styles
         email_style = 2
@@ -1245,11 +1245,16 @@ def render_new_bounty_roundup(to_email):
     else:
         kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
 
-    if new_kudos_ids:
-        new_kudos = Token.objects.filter(id__in=new_kudos_ids)
-    else:
-        new_kudos = None
-    print(new_kudos, new_kudos_ids)
+    new_kudos = []
+    if args.kudos:
+        for requested_kudos in args.kudos:
+            try:
+                kudos = Token.objects.get(id=requested_kudos['id'])
+                kudos.airdrop = requested_kudos.get('airdrop', f'https://gitcoin.co/kudos/{kudos.pk}/')
+                new_kudos.append(kudos)
+            except Token.DoesNotExist:
+                pass
+
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
