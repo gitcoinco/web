@@ -1366,7 +1366,16 @@ Vue.component('grants-cart', {
       const message = 'Access Gitcoin zkSync account.\n\nOnly sign this message for a trusted client!';
 
       indicateMetamaskPopup();
-      const signature = await this.signer.signMessage(message); // web3 prompt to user is here
+      let signature;
+
+      signature = await this.signer.signMessage(message); // web3 prompt to user is here
+      if (!signature) {
+        // Fallback to personal_sign if eth_sign isn't supported (for Status and other wallets)
+        signature = await this.ethersProvider.send(
+          'personal_sign',
+          [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), this.userAddress.toLowerCase() ]
+        );
+      }
 
       indicateMetamaskPopup(true);
       const privateKey = ethers.utils.sha256(signature);
