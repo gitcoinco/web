@@ -1,0 +1,21 @@
+{
+  "symbol": "HUB",
+  "address": "0x4790f605CBDBa5fCe4F209868B5A05B3bFf7272c",
+  "overview": {
+    "en": "SwapHub aims to build a new DeFi ecosystem. The  first stage is to support users to stake LP. Then we will extend the functions."
+  },
+  "email": "info@swaphub.finance",
+  "website": "https://swaphub.finance/",
+  "whitepaper": "https://medium.com/@swaphub/about-swaphub-49c45ba60e8d",
+  "state": "NORMAL",
+  "published_on": "2020-09-09",
+  "initial_price": {
+    "ETH": "0.003 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/swaphubfinance",
+    "telegram": "https://t.me/swaphub",
+    "github": "https://github.com/orgs/swaphub-finace",
+    "medium": "https://medium.com/@swaphub"
+  }
+}
