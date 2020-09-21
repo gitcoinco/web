@@ -143,7 +143,7 @@
                 </div>
               </template>
             </hits>
-            <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="10"></paginate>
+            <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="100"></paginate>
             <div v-if="noResults" class="text-center">
               <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
               <p class="mt-4 font-weight-bold mb-0">No users found</p>
@@ -273,6 +273,7 @@
         selector: '[data-toggle="tooltip"]'
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.csrf = csrftoken;
       document.keywords = {{keywords | safe}};
     </script>
   <script src="{% static "v2/js/users-elastic.js" %}"></script>
