@@ -1332,7 +1332,7 @@ def grant_new(request, project_id=None):
 
             project_pk = request.POST.get('project_pk', '')
             if project_pk:
-                HackathonProject.objects.filter(pk=project_pk).update(grant_link=grant.url)
+                HackathonProject.objects.filter(pk=project_pk).update(grant_link=grant)
 
             return JsonResponse({
                 'success': True,
