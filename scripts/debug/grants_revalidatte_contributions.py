@@ -1,5 +1,6 @@
-from grants.models import *
 from django.utils import timezone
+
+from grants.models import *
 
 search_str = 'Expecting value:' #alethio issue
 search_str = 'tuple index out of range' #unknown
@@ -14,4 +15,3 @@ for contrib in contributions:
     print(contrib.pk)
     contrib.update_tx_status()
     contrib.save()
-
