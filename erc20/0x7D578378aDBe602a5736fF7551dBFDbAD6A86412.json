@@ -1,0 +1,17 @@
+{
+  "symbol": "GDD",
+  "address": "0x7D578378aDBe602a5736fF7551dBFDbAD6A86412",
+  "overview": {
+    "en": "GDigital golden token",
+    "zh": "数字金币"
+  },
+  "email": "support@goldtoken.fun",
+  "website": "https://goldtoken.fun/",
+  "whitepaper": "https://goldtoken.fun/GDD_ENG.pdf",
+  "state": "NORMAL",
+  "published_on": "20-08-31",
+  "links": {
+        "twitter": "https://twitter.com/GDD47878309",
+        "facebook": "https://www.facebook.com/gold.token.927"
+    }
+}
