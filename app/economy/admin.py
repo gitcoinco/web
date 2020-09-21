@@ -67,4 +67,3 @@ class ConvRateAdmin(admin.ModelAdmin):
 admin.site.register(ConversionRate, ConvRateAdmin)
 admin.site.register(Token, TokenAdmin)
 admin.site.register(TXUpdate, TXUpdateAdmin)
-

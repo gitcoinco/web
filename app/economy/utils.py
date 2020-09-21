@@ -136,5 +136,3 @@ def watch_txn(tx_id):
     url = "https://api.blocknative.com/transaction"
     response = requests.post(url, json=args)
     print(response.text)
-
-
