@@ -123,6 +123,8 @@ along with this program. If not, see
     {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+    {{collections|json_script:"collections-object"}}
+
     <script>
       document.current_type = "{{ type|default:'all' }}";
       document.selected_category = "{{ selected_category }}";
@@ -131,8 +133,9 @@ along with this program. If not, see
       document.following = {{ following|yesno:'true,false' }};
       document.idle_grants = {{ idle_grants|yesno:'true,false' }};
       document.show_contributions = {{ show_contributions|yesno:'true,false' }};
-      document.collection_id = {{ collection_id|default:'null' }}
-
+      document.featured = {{ featured|yesno:'true,false' }};
+      document.collection_id = {{ collection_id|default:'null' }};
+      document.collections = JSON.parse(document.getElementById('collections-object').textContent);
       {% if clr_round %}
         document.round_num = "{{clr_round.round_num}}";
       {% endif %}

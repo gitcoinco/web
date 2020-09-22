@@ -76,6 +76,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   @click="shareCart">
                   Share cart <i class="fa fa-share-alt" aria-hidden="true"></i>
                 </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink"
+                     @click="showCreateCollection = true">
+                  Save as Collection <i class="fas fa-heart"></i>
+                </div>
               </div>
             </div>
 
@@ -439,11 +443,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="col-auto">
                           <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
                             Standard Checkout
-                          </button>
-                        </div>
-                        <div class="col-auto text-center">
-                          <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-createCollection-button' @click="showCreateCollection = true">
-                            <i class="fas fa-heart"></i> Save as Collection
                           </button>
                         </div>
                       </div>

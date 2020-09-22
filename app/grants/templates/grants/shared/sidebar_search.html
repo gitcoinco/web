@@ -18,7 +18,7 @@
 <grant-sidebar :grant_types="grant_types" :filter_grants="filter_grants" :type="current_type"
                :selected_category="category" :keyword="keyword" :following="following"
                :set_type="setCurrentType" :idle_grants="idle_grants" :show_contributions="show_contributions"
-               :query_params="getQueryParams" :round_num="round_num"
+               :query_params="getQueryParams" :round_num="round_num" :featured="featured"
                inline-template>
   <div class="sidebar_search font-body pr-0 pl-4" >
     <div class="search font-caption mb-4" style="width: 110%;">
@@ -123,13 +123,18 @@
 
           <hr>
           <li>
-            <a @click="filterLink({type: 'collections',  category: '', keyword: ''})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword != handle ? 'selected':''}`">
-              View Collections <span class="gc-text-green">NEW</span>
+            <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: true})"  :class="`mr-1  px-1  ${ type == 'collections' && featured ? 'selected':''}`">
+              Featured Collections <span class="gc-text-green">NEW</span>
+            </a>
+          </li>
+          <li>
+            <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: false})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword != handle && !featured ? 'selected':''}`">
+              View Collections
             </a>
           </li>
           <li>
             <a @click="filterLink({type: 'collections',  keyword: handle})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword == handle ? 'selected':''}`" v-if="handle">
-              My Collections <span class="gc-text-green">NEW</span>
+              My Collections
             </a>
           </li>
           <hr>

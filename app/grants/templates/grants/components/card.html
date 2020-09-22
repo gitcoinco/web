@@ -16,14 +16,15 @@
 {% endcomment %}
 {% load i18n static humanize grants_extra %}
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
-            :contributions='contributions' :show_contributions="show_contributions">
+            :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
+            v-on:collection:remove='removeCollection'>
   <template>
     <div v-if="view == 'list'">
       <div class="grant-item grant-item--list flex-md-row flex-column" >
         <div class="grant-item__img col-md-1 d-md-block d-none my-auto">
           <img :src="grant.logo_url" />
         </div>
-        <div class="grant-item__content col-md-8 px-3">
+        <div :class="`grant-item__content ${ collection ? 'col-md-7' : 'col-md-8'} px-3`">
           <h2 class="grant-item__title font-subheader">
             <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
             <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="click" data-content='
@@ -89,18 +90,24 @@
                   <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
                   <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
                 </button>
+                <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2">
+                  <template v-slot:button-content>
+                    <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+                  </template>
+                  <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+                </b-dropdown>
               </template>
             </div>
           </div>
         </div>
-        <div class="col-md-3 col-sm-12 py-4 pr-md-5 pl-md-0 grant-action">
-          <form class="js-addDetailToCart-form" v-if="!grant.is_on_team">
-            {% include 'grants/components/hidden_inputs.html' %}
-            <button class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
-              + Add to Cart
-            </button>
-          </form>
-          <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-else>
+        <div :class="`${ collection ? 'col-md-4' : 'col-md-3' } col-sm-12 py-4 pr-md-5 pl-md-0 grant-action`">
+          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`" v-if="!grant.is_on_team">
+            + Add to Cart
+          </button>
+          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="collection">
+            - Remove from collection
+          </button>
+          <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
             <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
           </button>
         </div>
@@ -210,12 +217,13 @@
           </div>
 
           <div class="col-12 pb-4">
-            <form class="js-addDetailToCart-form" v-if="!grant.is_on_team">
-              {% include 'grants/components/hidden_inputs.html' %}
-              <button class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
-                + Add to Cart
-              </button>
-            </form>
+            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+              + Add to Cart
+            </button>
+            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection">
+            - Remove from collection
+            </button>
+
 
             <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-else>
               <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant

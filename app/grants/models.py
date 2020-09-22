@@ -1718,8 +1718,9 @@ class GrantCollections(SuperModel):
     cover = models.ImageField(upload_to=get_upload_filename, null=True,blank=True, max_length=500, help_text=_('Collection image'))
     hidden = models.BooleanField(default=False, help_text=_('Hide the collection'), db_index=True)
     cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
-
+    featured = models.BooleanField(default=False, help_text=_('Show grant as featured'))
     objects = CollectionsQuerySet.as_manager()
+    curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
 
     def generate_cache(self):
         grants = self.grants.all()

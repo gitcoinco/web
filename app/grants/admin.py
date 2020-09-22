@@ -360,8 +360,8 @@ class GrantCLRAdmin(admin.ModelAdmin):
 
 
 class GrantCollectionsAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'title', 'description', 'hidden', 'cache']
-    raw_id_fields = ['profile', 'grants']
+    list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
+    raw_id_fields = ['profile', 'grants', 'curators']
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)

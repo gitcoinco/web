@@ -55,7 +55,7 @@ $(document).ready(() => {
 
 Vue.component('grant-sidebar', {
   props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params', 'round_num'
+    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'featured'
   ],
   data: function() {
     return {
@@ -133,6 +133,7 @@ if (document.getElementById('grants-showcase')) {
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
+      featured: document.featured,
       state: 'active',
       category: document.selected_category,
       credentials: false,
@@ -222,6 +223,9 @@ if (document.getElementById('grants-showcase')) {
         if (this.show_contributions) {
           query_elements['only_contributions'] = this.show_contributions;
         }
+        if (this.featured) {
+          query_elements['featured'] = this.featured;
+        }
         if (this.sort !== 'weighted_shuffle') {
           query_elements['sort'] = this.sort;
         }
@@ -265,6 +269,9 @@ if (document.getElementById('grants-showcase')) {
         if (filters.show_contributions !== null && filters.show_contributions !== undefined) {
           this.show_contributions = filters.show_contributions;
         }
+        if (filters.featured !== null && filters.featured !== undefined) {
+          this.featured = filters.featured;
+        }
         if (filters.network !== null && filters.network !== undefined) {
           this.network = filters.network;
         }
@@ -291,6 +298,7 @@ if (document.getElementById('grants-showcase')) {
         this.collections = [];
         this.keyword = '';
         this.grants = [];
+        this.page = 1;
         this.current_type = 'collections';
         this.updateURI();
         this.fetchGrants();
@@ -327,6 +335,10 @@ if (document.getElementById('grants-showcase')) {
           base_params['only_contributions'] = this.show_contributions;
         }
 
+        if (this.featured) {
+          base_params['featured'] = this.featured;
+        }
+
         if (this.current_type === 'collections' && this.collection_id) {
           base_params['collection_id'] = this.collection_id;
         }
@@ -361,15 +373,16 @@ if (document.getElementById('grants-showcase')) {
           vm.credentials = getGrants.credentials;
           vm.grant_types = getGrants.grant_types;
           vm.contributions = getGrants.contributions;
-          vm.grantsNumPages = getGrants.num_pages;
-          vm.grantsHasNext = getGrants.has_next;
-          vm.numGrants = getGrants.count;
+        }
 
-          if (vm.grantsHasNext) {
-            vm.page = ++vm.page;
-          } else {
-            vm.page = 1;
-          }
+        vm.grantsNumPages = getGrants.num_pages;
+        vm.grantsHasNext = getGrants.has_next;
+        vm.numGrants = getGrants.count;
+
+        if (vm.grantsHasNext) {
+          vm.page = ++vm.page;
+        } else {
+          vm.page = 1;
         }
 
         vm.lock = false;
@@ -383,10 +396,6 @@ if (document.getElementById('grants-showcase')) {
         const visible = document.documentElement.clientHeight;
         const pageHeight = document.documentElement.scrollHeight - 500;
         const bottomOfPage = visible + scrollY >= pageHeight;
-
-        if (this.collection_id) {
-          return;
-        }
 
         if (bottomOfPage || pageHeight < visible) {
           if (vm.grantsHasNext) {
@@ -428,12 +437,19 @@ if (document.getElementById('grants-showcase')) {
 
 
         (getGrants.grants || []).forEach((grant) => {
-          CartData.addToCart(grant);
+          CartData.addToCart(grant, true);
         });
 
         showSideCart();
-        _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grant were' : 'grants was'} added to your cart!`, 'success');
+        _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grants were' : 'grants was'} added to your cart!`, 'success');
         this.cart_lock = false;
+      },
+      removeCollection: async function({collection, grant, event}) {
+        const getGrants = await fetchData(`v1/api/collections/${collection.id}/grants/remove`, 'POST', {
+          'grant': grant.id
+        });
+
+        this.grants = getGrants.grants;
       }
     },
     beforeMount() {

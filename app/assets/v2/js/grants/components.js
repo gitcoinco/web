@@ -1,6 +1,13 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
-  props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions', 'contributions', 'toggle_following' ],
+  props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions',
+    'contributions', 'toggle_following', 'collection'
+  ],
+  data: function() {
+    return {
+      collections: document.collections
+    };
+  },
   methods: {
     get_clr_prediction: function(indexA, indexB) {
       if (this.grant.clr_prediction_curve && this.grant.clr_prediction_curve.length) {
@@ -23,6 +30,22 @@ Vue.component('grant-card', {
       }
 
       return true;
+    },
+    addToCart: async function(grant) {
+      const grantCartPayloadURL = `v1/api/${grant.id}/cart_payload`;
+      const response = await fetchData(grantCartPayloadURL, 'GET');
+
+      CartData.addToCart(response.grant);
+
+      showSideCart();
+    },
+    addToCollection: async function({collection, grant}) {
+      const collectionAddGrantURL = `v1/api/collections/${collection.id}/grants/add`;
+      const response = await fetchData(collectionAddGrantURL, 'POST', {
+        'grant': grant.id
+      });
+
+      _alert('Grant added successfully', 'success', 1000);
     }
   }
 });

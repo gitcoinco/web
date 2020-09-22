@@ -267,10 +267,11 @@ def grants(request):
 
 
 def get_collections(user, keyword, sort='-modified_on', collection_id=None, following=None,
-                    idle_grants=None, only_contributions=None):
+                    idle_grants=None, only_contributions=None, featured=False):
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
 
     _collections = GrantCollections.objects.filter(hidden=False)
+
     if collection_id:
         _collections = _collections.filter(pk=int(collection_id))
 
@@ -285,7 +286,15 @@ def get_collections(user, keyword, sort='-modified_on', collection_id=None, foll
         favorite_grants = Favorite.grants().filter(user=user).values('grant_id')
         _collections = _collections.filter(grants__in=Subquery(favorite_grants))
 
-    _collections = _collections.keyword(keyword).order_by(sort, 'pk')
+    if user.profile.handle == keyword:
+        _collections = _collections.filter(Q(profile=user.profile) | Q(curators=user.profile))
+    else:
+        _collections = _collections.keyword(keyword)
+
+    if featured:
+        _collections = _collections.filter(featured=featured)
+
+    _collections = _collections.order_by('-featured', sort, 'pk')
     _collections = _collections.prefetch_related('grants')
 
     return _collections
@@ -352,6 +361,7 @@ def get_grants(request):
     idle_grants = request.GET.get('idle', '') == 'true'
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
+    featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
     round_num = request.GET.get('round_num', None)
 
@@ -379,12 +389,13 @@ def get_grants(request):
     if grant_type == 'collections':
         _collections = get_collections(request.user, keyword, collection_id=collection_id,
                                        following=following, idle_grants=idle_grants,
-                                       only_contributions=only_contributions)
+                                       only_contributions=only_contributions, featured=featured)
 
         if collection_id:
             collection = _collections.first()
             if collection:
-                grants = collection.grants.all()
+                paginator = Paginator(collection.grants.all(), 5)
+                grants = paginator.get_page(page)
             collections = _collections
         else:
             paginator = Paginator(_collections, limit)
@@ -615,6 +626,7 @@ def grants_by_grant_type(request, grant_type):
     following = request.GET.get('following', '') == 'true'
     idle_grants = request.GET.get('idle', '') == 'true'
     only_contributions = request.GET.get('only_contributions', '') == 'true'
+    featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
 
     if keyword:
@@ -677,11 +689,19 @@ def grants_by_grant_type(request, grant_type):
 
     prev_grants = Grant.objects.none()
     grants_following = Favorite.objects.none()
+    collections = []
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         # KO 9/10/2020
         # prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
         # rev_grants = Grant.objects.filter(pk__in=prev_grants)
+        allowed_collections = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
+        collections = [
+            {
+                'id': collection.id,
+                'title': collection.title
+            } for collection in allowed_collections.distinct()
+        ]
 
 
     active_rounds = GrantCLR.objects.filter(is_active=True)
@@ -763,7 +783,9 @@ def grants_by_grant_type(request, grant_type):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
-        'collection_id': collection_id
+        'collection_id': collection_id,
+        'collections': collections,
+        'featured': featured
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -837,8 +859,17 @@ def grants_by_grant_clr(request, clr_round):
     grant_types = get_grant_clr_types(clr_round, network=network)
 
     grants_following = Favorite.objects.none()
+    collections = []
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
+        allowed_collections = GrantCollections.objects.filter(
+            Q(profile=request.user.profile) | Q(curators=request.user.profile))
+        collections = [
+            {
+                'id': collection.id,
+                'title': collection.title
+            } for collection in allowed_collections.distinct()
+        ]
 
 
     # populate active round info
@@ -895,6 +926,7 @@ def grants_by_grant_clr(request, clr_round):
         'grants_following': grants_following,
         'only_contributions': only_contributions,
         'clr_round': clr_round,
+        'collections': collections
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -2124,4 +2156,48 @@ def get_collection(request, collection_id):
             'handle': collection.profile.handle,
             'avatar_url': collection.profile.avatar_url
         },
+    })
+
+
+def get_grant_payload(request, grant_id):
+    grant = Grant.objects.get(pk=grant_id)
+
+    return JsonResponse({
+        'grant': grant.cart_payload(),
+    })
+
+
+@csrf_exempt
+@login_required
+@require_POST
+def remove_grant_from_collection(request, collection_id):
+    grant_id = request.POST.get('grant')
+    grant = Grant.objects.get(pk=grant_id)
+    collection = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile)).get(pk=collection_id)
+
+    collection.grants.remove(grant)
+    collection.generate_cache()
+
+    grants = [grant.repr(request.user, request.build_absolute_uri) for grant in collection.grants.all()]
+
+    return JsonResponse({
+        'grants': grants,
+    })
+
+
+@csrf_exempt
+@login_required
+@require_POST
+def add_grant_from_collection(request, collection_id):
+    grant_id = request.POST.get('grant')
+    grant = Grant.objects.get(pk=grant_id)
+    collection = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile)).get(pk=collection_id)
+
+    collection.grants.add(grant)
+    collection.generate_cache()
+
+    grants = [grant.repr(request.user, request.build_absolute_uri) for grant in collection.grants.all()]
+
+    return JsonResponse({
+        'grants': grants,
     })
