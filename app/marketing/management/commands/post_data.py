@@ -131,6 +131,11 @@ def welcome():
     if len(welcome_to) < 2:
         return
 
+    from townsquare.models import Announcement
+    announcement = Announcement.objects.filter(key='founders_note_daily_email', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).first()
+    if announcement:
+        prompt2 = f"{announcement.title} - {announcement.desc}"
+
     welcome_to = ", ".join(welcome_to)
     pprint(f"Welcome to {welcome_to} - {prompt1}")
     pprint("")
@@ -336,7 +341,7 @@ def grants():
     pprint("=======================")
     pprint("")
 
-    limit = 25
+    limit = 10
     pprint(f"Top Contributors by Num Contributions")
     counter = 0
     for obj in all_contributors_by_num[0:limit]:
