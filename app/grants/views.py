@@ -131,7 +131,7 @@ def get_stats(round_type):
             continue
         keys = []
         if ele[3] == 'grants':
-            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).order_by(order_by)[0:50]
+            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).exclude(pk=86).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
@@ -604,7 +604,7 @@ def get_bg(grant_type):
     if grant_type in ['about', 'activity']:
         bg = '3.jpg'
     if grant_type != 'matic':
-        bg = '../grants/grants_header_donors_round_7.png'
+        bg = '../grants/grants_header_donors_round_7-3.png'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'
@@ -717,7 +717,7 @@ def grants_by_grant_type(request, grant_type):
         if total_clr_pot > 1000 * 1000:
             int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
         elif total_clr_pot > 1000:
-            int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
+            int_total_clr_pot = f"{round(total_clr_pot/1000, 0)}k"
         else:
             int_total_clr_pot = intword(total_clr_pot)
         live_now = f'❇️ LIVE NOW! Up to ${int_total_clr_pot} Matching Funding on Gitcoin Grants' if total_clr_pot > 0 else ""
@@ -1240,6 +1240,9 @@ def grant_new_whitelabel(request):
 @login_required
 def grant_new(request):
     """Handle new grant."""
+
+    from grants.utils import add_grant_to_active_clrs
+
     profile = get_profile(request)
 
     if request.method == 'POST':
@@ -1297,6 +1300,7 @@ def grant_new(request):
             grant.save()
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
+            add_grant_to_active_clrs(grant)
 
             return JsonResponse({
                 'success': True,

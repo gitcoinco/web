@@ -69,6 +69,7 @@ Vue.component('grants-cart', {
       maxPossibleSignatures: 4, // for Flow A, start by assuming 4 -- two logins, set signing key, one transfer
       isZkSyncModalLoading: false, // modal requires async actions before loading, so show loading spinner to improve UX
       zkSyncWalletState: undefined, // state of user's nominal zkSync wallet
+      selectedNetwork: undefined, // use to force computed properties to update when document.web3network changes
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -317,26 +318,28 @@ Vue.component('grants-cart', {
     zkSyncBlockExplorerUrl() {
       // Flow A, zkScan link
       if (this.hasSufficientZkSyncBalance) {
-        if (document.web3network === 'rinkeby')
-          return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+        if (this.selectedNetwork === 'rinkeby')
+          return `https://${this.selectedNetwork}.zkscan.io/explorer/accounts/${this.userAddress}`;
         return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
       }
 
       // Flow B, etherscan link
       if (!this.zkSyncDepositTxHash)
         return undefined;
-      if (document.web3network === 'rinkeby')
-        return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      if (this.selectedNetwork === 'rinkeby')
+        return `https://${this.selectedNetwork}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
       return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
     },
 
     // Array of supported tokens
     zkSyncSupportedTokens() {
-      if (!document.web3network)
-        return [];
-      if (document.web3network === 'rinkeby')
+      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN', 'SNT' ];
+      
+      if (!this.selectedNetwork)
+        return mainnetTokens;
+      if (this.selectedNetwork === 'rinkeby')
         return [ 'ETH', 'USDT', 'LINK' ];
-      return [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN' ];
+      return mainnetTokens;
     },
 
     // Estimated gas limit for zkSync checkout
@@ -1367,7 +1370,16 @@ Vue.component('grants-cart', {
       const message = 'Access Gitcoin zkSync account.\n\nOnly sign this message for a trusted client!';
 
       indicateMetamaskPopup();
-      const signature = await this.signer.signMessage(message); // web3 prompt to user is here
+      let signature;
+
+      signature = await this.signer.signMessage(message); // web3 prompt to user is here
+      if (!signature) {
+        // Fallback to personal_sign if eth_sign isn't supported (for Status and other wallets)
+        signature = await this.ethersProvider.send(
+          'personal_sign',
+          [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), this.userAddress.toLowerCase() ]
+        );
+      }
 
       indicateMetamaskPopup(true);
       const privateKey = ethers.utils.sha256(signature);
@@ -2521,6 +2533,11 @@ Vue.component('grants-cart', {
     window.addEventListener('dataWalletReady', async(e) => {
       try {
         await needWalletConnection();
+
+        // Force re-render so computed properties are updated (some are dependent on
+        // document.web3network, and Vue cannot watch document.web3network for an update)
+        this.selectedNetwork = document.web3network;
+        
         // Setup zkSync and check balances
         this.userAddress = (await web3.eth.getAccounts())[0];
         await this.setupZkSync();
