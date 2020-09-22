@@ -769,7 +769,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </div>
                     </div>
                     {% comment %} Step 3 {% endcomment %}
-                    <div class="row align-items-center justify-content-between mb-4 text-left">
+                    <div class="row align-items-center justify-content-between mb-2 text-left">
                       <div class="col-8">
                         <div class="font-weight-bold">
                           Step 3
@@ -803,6 +803,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             Completed
                           </span>
                         </div>
+                      </div>
+                    </div>
+                    {% comment %} Fees {% endcomment %}
+                    <div v-if="!hasSufficientZkSyncBalance" class="row align-items-center justify-content-between mb-4 text-left font-smaller-2">
+                      {% comment %}
+                      If user has sufficient zkSync balance, fees are shown when signing the message.
+                      If user does not have sufficient zkSync balance, the fees are hidden so 
+                      in that case we display them here.
+                      {% endcomment %}
+                      <div class="col-12">
+                        Amount in cart: [[ donationsTotalString ]]
+                      </div>
+                      <div class="col-12">
+                        Estimated fees: [[ zkSyncFeesString ]]
+                      </div>
+                      <div class="col-12">
+                        <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
+                          Read more about fees and the zkSync checkout process.
+                        </a>
                       </div>
                     </div>
                   </div>
