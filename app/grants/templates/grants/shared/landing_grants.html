@@ -12,7 +12,7 @@
             {% include 'grants/components/collection.html' %}
           </div>
         </div>
-        <div v-if="!collections.length && !activeCollection">
+        <div v-if="!grants && !collections.length && !activeCollection">
           <div class="text-center my-4">
             <p class="font-bigger-2 my-5 ">To create a collection, add some <a href="/grants">grants</a> to cart + click <b class="text-highlight-gc-blue"><i class="fas fa-heart"></i> save to collection</b> at checkout</p>
             <img src="{% static 'v2/images/quickstart-box.svg' %}" alt="">
