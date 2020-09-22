@@ -8,7 +8,7 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     profile_id = indexes.IntegerField(null=True,model_attr='profile_id')
     join_date = indexes.DateTimeField(null=True,model_attr='join_date')
     github_created_at = indexes.DateTimeField(null=True,model_attr='github_created_at')
-    email = indexes.CharField(null=True,model_attr='email')
+    email = indexes.CharField(null=True,model_attr='email_if_not_supressed')
     first_name = indexes.CharField(null=True,model_attr='first_name')
     last_name = indexes.CharField(null=True,model_attr='last_name')
     handle = indexes.CharField(null=True,model_attr='handle')
