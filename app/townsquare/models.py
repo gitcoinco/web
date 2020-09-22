@@ -408,6 +408,8 @@ class Favorite(SuperModel):
         return Favorite.objects.filter(activity=None)
 
     def __str__(self):
+        if not self.activity:
+            return 'Broken Fav'
         return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
 
 
