@@ -5,10 +5,19 @@ Vue.component('grant-card', {
   ],
   data: function() {
     return {
-      collections: document.collections
+      collections: document.collections,
+      currentUser: document.contxt.github_handle,
+      isCurator: false
     };
   },
   methods: {
+    checkIsCurator: function() {
+      if (this.currentUser && this.collection && this.collection.curators.length) {
+        const curators = this.collection.curators.map(collection => collection.handle);
+
+        this.isCurator = curators.indexOf(this.currentUser) !== -1;
+      }
+    },
     get_clr_prediction: function(indexA, indexB) {
       if (this.grant.clr_prediction_curve && this.grant.clr_prediction_curve.length) {
         return this.grant.clr_prediction_curve[indexA][indexB];
@@ -47,6 +56,9 @@ Vue.component('grant-card', {
 
       _alert('Grant added successfully', 'success', 1000);
     }
+  },
+  mounted() {
+   this.checkIsCurator();
   }
 });
 

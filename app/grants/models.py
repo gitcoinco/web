@@ -1450,7 +1450,7 @@ class Contribution(SuperModel):
                 is_correct_recipient = False
                 is_correct_token = False
                 is_correct_amount = False
-                
+
                 number_of_transfers = 0
                 number_of_deposits = 0
 
@@ -1490,10 +1490,10 @@ class Contribution(SuperModel):
                         self.validator_comment = f"{self.validator_comment}. Found deposit but no transfer. User likely closed page before transfers were sent and should revisit cart to complete checkout. User may not be aware so send them email reminders"
 
                     elif len(transactions) > 100:
-                        # See the TODO above for more info -- the validator current is likely to 
+                        # See the TODO above for more info -- the validator current is likely to
                         # miss some transfers if the user has over 100 transactions in zkSync
                         self.validator_comment = f"{self.validator_comment}. User has over 100 transactions on zkSync, so transaction may exist but not have been found. Update validator to use pagination on zkSync API to resolve this"
-                    
+
                     else:
                         # Could not find expected transfer, so try list specifics about why. We
                         # Ascannot find exactly what went wrong because: We cycle through a list of
@@ -1782,11 +1782,9 @@ class GrantCollections(SuperModel):
         self.save()
 
     def to_json_dict(self):
-        self.generate_cache()
-
         return {
             'id': self.id,
-            'curator': {
+            'owner': {
                 'url': self.profile.url,
                 'handle': self.profile.handle,
                 'avatar_url': self.profile.avatar_url
@@ -1795,6 +1793,11 @@ class GrantCollections(SuperModel):
             'description': self.description,
             'cover': self.cover.url if self.cover else '',
             'count': self.cache['count'],
-            'grants': self.cache['grants']
+            'grants': self.cache['grants'],
+            'curators': [{
+                'url': curator.url,
+                'handle': curator.handle,
+                'avatar_url': curator.avatar_url
+            } for curator in self.curators.all()]
         }
 

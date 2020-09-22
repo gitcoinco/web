@@ -286,7 +286,7 @@ def get_collections(user, keyword, sort='-modified_on', collection_id=None, foll
         favorite_grants = Favorite.grants().filter(user=user).values('grant_id')
         _collections = _collections.filter(grants__in=Subquery(favorite_grants))
 
-    if user.profile.handle == keyword:
+    if user.is_authenticated and user.profile.handle == keyword:
         _collections = _collections.filter(Q(profile=user.profile) | Q(curators=user.profile))
     else:
         _collections = _collections.keyword(keyword)
@@ -726,7 +726,6 @@ def grants_by_grant_type(request, grant_type):
         live_now = 'Gitcoin Grants helps you find funding for your projects'
         title = 'Grants'
 
-
     grant_label = None
     for _type in grant_types:
         if _type.get("keyword") == grant_type:
@@ -800,6 +799,15 @@ def grants_by_grant_type(request, grant_type):
         except Exception as e:
             logger.debug(e)
             pass
+
+    if collection_id:
+        collections = GrantCollections.objects.filter(pk=collection_id)
+        if collections.exists():
+            collection = collections.first()
+            params['title'] = collection.title
+            params['meta_title'] = collection.title
+            params['meta_description'] = collection.description
+            params['card_desc'] = collection.description
 
     response = TemplateResponse(request, 'grants/index.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -2155,11 +2163,16 @@ def get_collection(request, collection_id):
         'id': collection.id,
         'title': collection.title,
         'grants': grants,
-        'curator': {
+        'owner': {
             'url': collection.profile.url,
             'handle': collection.profile.handle,
             'avatar_url': collection.profile.avatar_url
         },
+        'curators': [{
+            'url': curator.url,
+            'handle': curator.handle,
+            'avatar_url': curator.avatar_url
+        } for curator in collection.curators.all()]
     })
 
 

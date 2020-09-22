@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="collection-item__owner-image--cover">
-            <img :src="collection.curator.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+            <img :src="collection.owner.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
           </div>
         </div>
         <div class="collection-item__content px-3">
@@ -43,14 +43,14 @@
           </h2>
 
           <div class="d-flex mb-2">
-            <a :href="collection.curator.url" class="mr-2" target="_blank" rel="noopener noreferrer">
+            <a :href="collection.owner.url" class="mr-2" target="_blank" rel="noopener noreferrer">
               <div class="d-flex">
                 <div class="collection-item__owner-image position-relative" style="top: -4px;">
-                  <img :src="collection.curator.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+                  <img :src="collection.owner.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
                 </div>
                 <div class="collection-item__owner-handle font-smaller-3">
                   <span class="ml-2">
-                    [[ collection.curator.handle || 'anonymous' ]]
+                    [[ collection.owner.handle || 'anonymous' ]]
                   </span>
                 </div>
               </div>

@@ -24,7 +24,7 @@
         <div class="grant-item__img col-md-1 d-md-block d-none my-auto">
           <img :src="grant.logo_url" />
         </div>
-        <div :class="`grant-item__content ${ collection ? 'col-md-7' : 'col-md-8'} px-3`">
+        <div :class="`grant-item__content ${ collection && isCurator ? 'col-md-7' : 'col-md-8'} px-3`">
           <h2 class="grant-item__title font-subheader">
             <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
             <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="click" data-content='
@@ -100,11 +100,11 @@
             </div>
           </div>
         </div>
-        <div :class="`${ collection ? 'col-md-4' : 'col-md-3' } col-sm-12 py-4 pr-md-5 pl-md-0 grant-action`">
-          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`" v-if="!grant.is_on_team">
+        <div :class="`${ collection && isCurator ? 'col-md-4' : 'col-md-3' } col-sm-12 py-4 pr-md-5 pl-md-0 grant-action`">
+          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection && isCurator ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`" v-if="!grant.is_on_team">
             + Add to Cart
           </button>
-          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="collection">
+          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
           </button>
           <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
@@ -217,15 +217,13 @@
           </div>
 
           <div class="col-12 pb-4">
-            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="!grant.is_on_team">
               + Add to Cart
             </button>
-            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection">
+            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
             </button>
-
-
-            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-else>
+            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
               <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
             </button>
           </div>

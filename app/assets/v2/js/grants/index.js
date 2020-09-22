@@ -89,6 +89,18 @@ Vue.component('grant-sidebar', {
     filterLink: function(params) {
       if (params.type === this.type) {
         this.filter_grants(params);
+      } else if (params.type === 'collections') {
+        const collections_query = {};
+
+        if (params.featured) {
+          collections_query.featured = true;
+        }
+
+        if (params.keyword) {
+          collections_query.keyword = params.keyword;
+        }
+
+        document.location.href = `/grants/collections?${$.param(collections_query)}`;
       } else {
         document.location.href = this.round_num ?
           `/grants/clr/${this.round_num}?type=${params.type}` :
