@@ -396,7 +396,24 @@ def grants():
         pprint(f"{counter} {key} - ${round(val, 2)} ({allocation_pct}% allocated)")
 
 
+    pprint("")
+    pprint("=======================")
+    pprint("")
+    pprint("Misc Stats:")
+    brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
+    sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
+    contributor_count = contributions.distinct('subscription__contributor_profile').count()
+    sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
+    brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
 
+    zksync_contribution_count = contributions.filter(validator_comment__icontains='zkSync').count()
+    contribution_count = contributions.count()
+    zksync_contribution_pct = round(100 * zksync_contribution_count / contribution_count)
+    sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
+
+    pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
+    pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
+    pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
 
     ############################################################################3
     # new feature stats for round {clr_round}
