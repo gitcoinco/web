@@ -1,4 +1,4 @@
-﻿{
+{
   "symbol": "MSK",
   "address": "0x6954874e3E9cCb527d0CaA602BE5502dB2A1D76a",
   "overview":{
@@ -8,7 +8,7 @@
   "website": "http://maskdao.finance/",
   "whitepaper": "http://maskdao.finance/MaskDAO.pdf",
   "state": "NORMAL",
-  "published_on": "2020-09-07",
+  "published_on": "",
   "initial_price":{
         "USD":"0.5 USD"
   },
