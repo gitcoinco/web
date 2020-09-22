@@ -17,6 +17,8 @@
         tabChange: function(input) {
           let vm = this;
 
+          vm.activePanel = input;
+
           switch (input) {
             default:
             case 0:
@@ -30,6 +32,20 @@
           let newUrl = `/hackathon/${vm.hackathon['slug']}/projects/${vm.project.id}/${vm.project.name}/${newPathName}?${window.location.search}`;
 
           history.pushState({}, `${vm.hackathon['slug']} - ${newPathName}`, newUrl);
+        },
+        getVideoId(videoURL) {
+          const metadata = getVideoMetadata(videoURL);
+
+          if (metadata) {
+            return metadata['id'];
+          }
+
+          return '';
+        },
+        toggleLike: async function() {
+          const context = await fetchData(`/api/v0.1/projects/${this.project.id}/like`);
+
+          this.project.likes = context.count;
         }
       },
       data: function() {

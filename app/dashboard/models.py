@@ -5038,6 +5038,9 @@ class HackathonProject(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     winner = models.BooleanField(default=False)
     extra = JSONField(default=dict, blank=True, null=True)
+    categories = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    tech_stack = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+
     grant_link = models.CharField(
         blank=True,
         null=True,

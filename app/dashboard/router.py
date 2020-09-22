@@ -30,6 +30,7 @@ from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
 from retail.helpers import get_ip
+from townsquare.models import Like
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
@@ -209,12 +210,19 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
+    likes = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_link', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_link', 'admin_url', 'comments', 'likes')
         depth = 1
 
+    def get_likes(self, obj):
+        return Like.objects.filter(activity__project=obj).count()
+
+    def get_comments(self, obj):
+        return Activity.objects.filter(activity_type='wall_post', project=obj).count()
 
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10
