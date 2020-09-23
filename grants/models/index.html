@@ -2262,8 +2262,12 @@ object the first time, the query is executed.</p>
 <pre><code class="python">GrantCLR(self, *args, **kwargs)
 </code></pre>
 
-<p>GrantCLR(id, created_on, modified_on, round_num, is_active, start_date, end_date, grant_filters, subscription_filters, verified_threshold, unverified_threshold, total_pot, logo)
-<h3 id="grants.models.GrantCLR.end_date">end_date</h3></p>
+<p>GrantCLR(id, created_on, modified_on, round_num, is_active, start_date, end_date, grant_filters, subscription_filters, verified_threshold, unverified_threshold, total_pot, contribution_multiplier, logo)
+<h3 id="grants.models.GrantCLR.contribution_multiplier">contribution_multiplier</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLR.end_date">end_date</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.GrantCLR.get_next_by_created_on">_method</h3>

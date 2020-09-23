@@ -2198,7 +2198,7 @@ DATABASE_URL=psql://gitcoin_user:password@localhost:5432/gitcoin
 <p>Alternatively, if any installation errors occur:</p>
 <p>*Note: A single error will stop the entire installation process when installing from a requirements file, this will install each module one at a time keeping installation failures isolated</p>
 <pre><code class="shell">
-~/web$ awk '!/^(-r)/' requirements/base.txt requirements/test.txt | xargs -n 1 pip3 install
+~/web$ awk '!/^(-r)/' requirements/prod.txt requirements/test.txt | xargs -n 1 pip3 install
 
 </code></pre>
 
