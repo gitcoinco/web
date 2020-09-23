@@ -545,7 +545,7 @@ def get_bg(grant_type):
     if grant_type in ['about', 'activity']:
         bg = '3.jpg'
     if grant_type != 'matic':
-        bg = '../grants/grants_header_donors_round_7-2.png'
+        bg = '../grants/grants_header_donors_round_7-3.png'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'
@@ -1158,6 +1158,9 @@ def grant_new_whitelabel(request):
 @login_required
 def grant_new(request):
     """Handle new grant."""
+
+    from grants.utils import add_grant_to_active_clrs
+
     profile = get_profile(request)
 
     if request.method == 'POST':
@@ -1215,6 +1218,7 @@ def grant_new(request):
             grant.save()
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
+            add_grant_to_active_clrs(grant)
 
             return JsonResponse({
                 'success': True,

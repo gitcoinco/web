@@ -1368,7 +1368,7 @@ class Contribution(SuperModel):
 
                 # Get last 100 executed zkSync transfers for that address
                 #   - TODO support users with more than 100 transfers (i.e. more than 100 grant
-                #      donations)
+                #      donations). This can be done with the pagination from the zkSync API
                 #   - TODO this fails if a user makes the exact same donation twice, as the second
                 #     will already be marked as completed because of the first. For this failure
                 #     mode to occur the (1) recipient, (2) token used, and (3) amount donated must
@@ -1392,10 +1392,19 @@ class Contribution(SuperModel):
                 is_correct_recipient = False
                 is_correct_token = False
                 is_correct_amount = False
+                
+                number_of_transfers = 0
+                number_of_deposits = 0
 
                 for transaction in transactions:
+                    if transaction['tx']['type'] == "Deposit":
+                        number_of_deposits += 1
+                        continue
+
                     if transaction['tx']['type'] != "Transfer":
                         continue
+
+                    number_of_transfers += 1
 
                     is_correct_recipient = transaction['tx']['to'].lower() == expected_recipient.lower()
                     is_correct_token = transaction['tx']['token'] == expected_token
@@ -1414,8 +1423,19 @@ class Contribution(SuperModel):
                 if not is_correct_recipient or not is_correct_token or not is_correct_amount:
                     # Transaction was not found, let's find out why
                     if len(transactions) == 0:
-                        # No transfers were found for user
-                        self.validator_comment = f"{self.validator_comment}. No transactions found"
+                        # No activity was found for user
+                        self.validator_comment = f"{self.validator_comment}. User has not interacted with zkSync"
+                    elif number_of_deposits > 0 and number_of_transfers == 0:
+                        # User deposited funds, but did not send their donation transactions. This
+                        # occurs if the user closes the page after sending their deposit transaction
+                        # and before zkSync transfers are sent
+                        self.validator_comment = f"{self.validator_comment}. Found deposit but no transfer. User likely closed page before transfers were sent and should revisit cart to complete checkout. User may not be aware so send them email reminders"
+
+                    elif len(transactions) > 100:
+                        # See the TODO above for more info -- the validator current is likely to 
+                        # miss some transfers if the user has over 100 transactions in zkSync
+                        self.validator_comment = f"{self.validator_comment}. User has over 100 transactions on zkSync, so transaction may exist but not have been found. Update validator to use pagination on zkSync API to resolve this"
+                    
                     else:
                         # Could not find expected transfer, so try list specifics about why. We
                         # Ascannot find exactly what went wrong because: We cycle through a list of
