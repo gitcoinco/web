@@ -60,7 +60,7 @@ def get_sitewide_announcements():
     announcement = announcements.filter(key='header').first()
     if announcement:
         header_msg = announcement.title + announcement.desc
-        nav_salt = announcement.rank
+        nav_salt = announcement.salt
     return header_msg, footer_msg, nav_salt
 
 
@@ -172,6 +172,7 @@ def preprocess(request):
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
         'is_alpha_tester': profile.is_alpha_tester if profile else False,
+        'user_groups': list(profile.user_groups) if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'pref_do_not_track': profile.pref_do_not_track if profile else False,

@@ -27,8 +27,8 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
-    Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
+    PhantomFunding, Subscription,
 )
 
 
@@ -87,14 +87,14 @@ class GrantAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = [
         'migrated_to',
-        'title', 'description', 'description_rich', 'reference_url', 'github_project_url', 'admin_address', 'active',
+        'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
         'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
+        'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
+        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at'
     ]
     readonly_fields = [
@@ -355,9 +355,13 @@ class GrantCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ['pk']
 
 
-
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active']
+
+
+class GrantCollectionAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
+    raw_id_fields = ['profile', 'grants', 'curators']
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
@@ -371,3 +375,4 @@ admin.site.register(CartActivity, CartActivityAdmin)
 admin.site.register(GrantType, GrantTypeAdmin)
 admin.site.register(GrantCategory, GrantCategoryAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
+admin.site.register(GrantCollection, GrantCollectionAdmin)

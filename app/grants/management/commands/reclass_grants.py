@@ -21,8 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from grants.models import *
 
+from grants.models import *
 
 
 class Command(BaseCommand):
@@ -1028,4 +1028,3 @@ class Command(BaseCommand):
                 print(f"******DERP {ele[0]} {ele[1].strip().lower()} *****")
                 print(f"******DERP {e}")
                 print("*****************************")
-

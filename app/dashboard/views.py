@@ -1012,18 +1012,16 @@ def users_autocomplete(request):
         'results': results
     })
 
-
-@require_GET
+@csrf_exempt
 def output_users_to_csv(request):
 
     if request.user.is_authenticated and not request.user.is_staff:
         return Http404()
+    from .tasks import export_search_to_csv
 
-    profile_ids = request.GET.getlist('profile_ids[]')
+    export_search_to_csv.delay(body=request.body.decode('utf-8'), user_handle=request.user.profile.handle)
 
-    user_query = UserDirectory.objects.filter(profile_id__in=profile_ids)
-    from djqscsv import render_to_csv_response
-    return render_to_csv_response(user_query)
+    return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'})
 
 @require_GET
 def users_fetch(request):
@@ -1143,7 +1141,7 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-earnings_count', 'id').exclude(handle__iexact='gitcoinbot')
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-rank_coder', 'id').exclude(handle__iexact='gitcoinbot')
 
         this_page = profile_list
 
@@ -1188,6 +1186,7 @@ def users_fetch(request):
             profile_json['previously_worked'] = False # user.previous_worked_count > 0
             profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
             profile_json['position_funder'] = user.get_funder_leaderboard_index()
+            profile_json['rank_coder'] = user.rank_coder
             profile_json['work_done'] = count_work_completed
             profile_json['verification'] = user.get_my_verified_check
             profile_json['avg_rating'] = user.get_average_star_rating()
@@ -2244,6 +2243,9 @@ def user_card(request, handle):
         },
         'profile_dict':profile_dict
     }
+    if response.get('profile',{}).get('data',{}).get('email'):
+        del response['profile']['data']['email']
+
 
     return JsonResponse(response, safe=False)
 
@@ -4320,7 +4322,7 @@ def hackathon_save_project(request):
         project.save()
         profiles.append(str(profile.id))
         project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
-        invalidate_obj(project.first())
+        invalidate_obj(project)
 
     return JsonResponse({
             'success': True,

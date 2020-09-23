@@ -242,6 +242,11 @@ class Announcement(SuperModel):
     def __str__(self):
         return f"{self.created_on} => {self.title}"
 
+    @property
+    def salt(self):
+        if self.pk < 49:
+            return self.rank
+        return self.pk
 
 class MatchRoundQuerySet(models.QuerySet):
     """Handle the manager queryset for MatchRanking."""

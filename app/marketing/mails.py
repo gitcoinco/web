@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 """Define the standard marketing email logic.
-
 Copyright (C) 2020 Gitcoin Core
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
-
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
 import base64
 import datetime
@@ -1009,21 +1004,16 @@ def grant_match_distribution_kyc(match):
         body = f"""
 <pre>
 Hello @{match.grant.admin_profile.handle},
-
 This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
-
 We are required by law to collect the following information from you in order to administer your payout.  Please respond to this email with the following information.
-
 Full Name:
 Physical Address:
-(Only if you’re a US Citizen) Social Security Number:
+(Only if you’re a US Citizen) Social Security Number:
 Proof of physical address (utility bill, or bank statement)
 Proof of identity (government issued ID)
-
 Thanks,
 Gitcoin Grants KYC Team
 </pre>
-
         """
         send_mail(
             from_email,
@@ -1060,25 +1050,18 @@ def grant_match_distribution_test_txn(match):
         body = f"""
 <pre>
 Hello @{match.grant.admin_profile.handle},
-
 This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
-
 We have sent a test transaction of {rounded_amount} {token_name} tokens to the address on file at {match.grant.admin_address}.  THESE TOKENS ARE NOT WORTH *ANYTHING*, AND THIS TEST TRANSACTION WAS MADE AS A REMINDER TO MAKE SURE YOU HAVE ACCESS TO YOUR GRANTS WALLET.
-
 The txid of this test transaction is {match.test_payout_tx}.
-
 We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
-
 If you're looking to kill time before your payout is administered:
 1. {coupon} (The Gitcoin Spring 2020 Edition is available at https://store.gitcoin.co/collections/ethereal-2020 )
 2. Mind helping us make Grants Round 6 even better? Fill out this donor survey:  https://gitcoin.typeform.com/to/tAxEwe
 3. Attend the Gitcoin livestream this week to let us know what you think should change for Grants Round 6: https://twitter.com/owocki/status/1250760421637644288
-
 Thanks,
 Kevin, Scott, Vivek and the Gitcoin Community
 "Our mission is to Grow Open Source & provide economic opportunities to our community" https://gitcoin.co/mission
 </pre>
-
         """
         send_mail(
             from_email,
@@ -1105,23 +1088,17 @@ def grant_match_distribution_final_txn(match):
         body = f"""
 <pre>
 Hello @{match.grant.admin_profile.handle},
-
 This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
-
 We have sent your {rounded_amount} DAI to the address on file at {match.grant.admin_address}.  The txid of this transaction is {match.payout_tx}.
-
 Congratulations on a successful Gitcoin Grants Round {match.round_number}.
-
 What now?
 1. Send a tweet letting us know how these grant funds are being used to support your project (our twitter username is @gitcoin).
 2. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
 3. Celebrate 🎉 and then get back to BUIDLing something great. 🛠
-
 Thanks,
 Kevin, Scott, Vivek and the Gitcoin Community
 "Our mission is to Grow Open Source & provide economic opportunities to our community" https://gitcoin.co/mission
 </pre>
-
         """
         send_mail(
             from_email,
@@ -1771,10 +1748,8 @@ def start_work_applicant_expired(interest, bounty):
 
 def setup_lang(to_email):
     """Activate the User's language preferences based on their email address.
-
     Args:
         to_email (str): The email address to lookup language preferences for.
-
     """
     from django.contrib.auth.models import User
     user = None

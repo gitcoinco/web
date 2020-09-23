@@ -81,6 +81,34 @@ def create_grant_type_cache():
                 )
 
 
+def create_grant_active_clr_mapping():
+    print('create_grant_active_clr_mapping')
+    # Upate grants mppping to active CLR rounds
+    from grants.models import Grant, GrantCLR
+
+    grants = Grant.objects.all()
+    clr_rounds = GrantCLR.objects.all()
+
+    # remove all old mapping
+    for clr_round in clr_rounds:
+        _grants = clr_round.grants
+        for _grant in grants:
+            _grant.in_active_clrs.remove(clr_round)
+            _grant.save()
+
+    # update new mapping
+    active_clr_rounds = clr_rounds.filter(is_active=True)
+    for clr_round in active_clr_rounds:
+        grants_in_clr_round = grants.filter(**clr_round.grant_filters)
+
+        for grant in grants_in_clr_round:
+            grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
+
+            if not grant_has_mapping_to_round:
+                grant.in_active_clrs.add(clr_round)
+                grant.save()
+
+
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
     redis = RedisService().redis
@@ -353,6 +381,7 @@ class Command(BaseCommand):
         create_grant_type_cache()
         create_grant_clr_cache()
         create_grant_category_size_cache()
+        create_grant_active_clr_mapping()
         if not settings.DEBUG:
             create_results_cache()
             create_hidden_profiles_cache()

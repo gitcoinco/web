@@ -20,7 +20,7 @@
 <html lang="en">
 
   <head>
-    <link rel="stylesheet" href="https://unpkg.com/vue-innersearch/default-innersearch-theme.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/default-innersearch-theme.min.css">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
@@ -39,32 +39,32 @@
         <nav class="search-section p-5 text-center">
           <div>
             <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
-            <searchbox :id="'searchbox'" :autofocus="true" :realtime="true" :timeout="200" :field="'keywords'" :placeholder="'Search by keyword'"></searchbox>
+
+              <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed">
+              </autocomplete>
+              <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
           </div>
         </nav>
       </div>
       <div class="sidebar-container flex-column flex-lg-row">
         <transition name="fade">
           <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-            <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed"></autocomplete>
-
             <template v-for="filter in filters">
-              <refinement-list-filter v-if="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :size="50" :title="filter.text" operator="OR" >
+              <numeric-list-filter v-if="filter.type == 'float' || filter.type == 'long' || filter.type == 'date'" :id="filter.text" :field="filter.text" operator="OR">
+                <template slot="header">
+                    <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
+                </template>
+              </numeric-list-filter>
+              <refinement-list-filter v-else="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :size="50" :title="filter.text" operator="OR">
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
-                    <select2 class="select2-filter" multiple minInputLength="0" name="" placeholder="select multiple" id="filter.type" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
+                    <select2 class="select2-filter" multiple minInputLength="0" name="" :placeholder="'select multiple'" id="filter.type" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
                         <option v-for="(item, index) in items" :value="item.key">
                           <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
                         </option>
                     </select2>
                 </template>
               </refinement-list-filter>
-              <numeric-list-filter v-else-if="filter.type == 'float' || filter.type == 'long'" :id="filter.text" :field="filter.text" operator="OR">
-                <template slot="header">
-                    <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
-                </template>
-              </numeric-list-filter>
             </template>
-            <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
             {% if is_staff %}
               <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="outputToCSV($event)">Export</b-button>
             {% endif %}
@@ -143,7 +143,7 @@
                 </div>
               </template>
             </hits>
-            <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="10"></paginate>
+            <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="100"></paginate>
             <div v-if="noResults" class="text-center">
               <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
               <p class="mt-4 font-weight-bold mb-0">No users found</p>
@@ -257,7 +257,6 @@
         </div>
       </div>
     </div>
-
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
@@ -267,12 +266,13 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim="1" %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.5.1/vuex.min.js"></script>
-    <script src="https://unpkg.com/vue-innersearch@0.0.12/vue-innersearch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/vue-innersearch.min.js"></script>
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.csrf = csrftoken;
       document.keywords = {{keywords | safe}};
     </script>
   <script src="{% static "v2/js/users-elastic.js" %}"></script>
