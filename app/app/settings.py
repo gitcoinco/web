@@ -63,6 +63,7 @@ PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
 RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
+BLOCKNATIVE_API = env('BLOCKNATIVE_API', default='')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
