@@ -593,6 +593,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'date': ele.date.strftime("%Y-%m-%d")
         }]
     upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
+    upcoming_events = upcoming_events[0:7]
 
     params = {
         'old_bounties': old_bounties,
@@ -1202,10 +1203,9 @@ def render_new_bounty_roundup(to_email):
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
     hide_dynamic = args.hide_dynamic
+    new_kudos_size_px = '300'
 
     subject = args.subject
-    new_kudos_pks = args.kudos_ids.split(',')
-    new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
         email_style = 2
@@ -1239,11 +1239,22 @@ def render_new_bounty_roundup(to_email):
     }
 
 
-    from kudos.models import KudosTransfer
+    from kudos.models import KudosTransfer, Token
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
         kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
+
+    new_kudos = []
+    if args.kudos:
+        for requested_kudos in args.kudos:
+            try:
+                kudos = Token.objects.get(id=requested_kudos['id'])
+                kudos.airdrop = requested_kudos.get('airdrop', f'https://gitcoin.co/kudos/{kudos.pk}/')
+                new_kudos.append(kudos)
+            except Token.DoesNotExist:
+                pass
+
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
@@ -1280,7 +1291,7 @@ def render_new_bounty_roundup(to_email):
         'email_style': email_style,
         'hide_dynamic': hide_dynamic,
         'hide_bottom_logo': True,
-        'new_kudos_pks': new_kudos_pks,
+        'new_kudos': new_kudos,
         'new_kudos_size_px': new_kudos_size_px,
         'videos': args.videos,
         'news': args.news,

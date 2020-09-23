@@ -70,6 +70,28 @@ var get_etherscan_url = function(id, network, type = 'tx') {
   }
 };
 
+/**
+ * Returns zkScan link of an transaction or address /
+ * @param {string} id
+ * @param {string} network zkScan is on mainnet, rinkeby, and ropsten
+ * @param {enum} type accounts | transactions
+ */
+var get_zkscan_url = function(id, network, type = 'transactions') {
+  let _network = network ? network : document.web3network;
+  switch (_network) {
+    case 'mainnet':
+      return 'https://zkscan.io/explorer/' + type + '/' + id;
+    case 'ropsten':
+      return 'https://ropsten.zkscan.io/explorer/' + type + '/' + id;
+    case 'rinkeby':
+      return 'https://rinkeby.zkscan.io/explorer/' + type + '/' + id;
+    case 'custom network':
+      return 'https://localhost/explorer/' + type + '/' + id;
+    default:
+      return 'https://zkscan.io/explorer/' + type + '/' + id;
+  }
+};
+
 var erc20_approve_gas = 560000;
 var max_gas_for_erc20_bounty_post = 517849;
 var gasLimitMultiplier = 4;

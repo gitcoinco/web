@@ -22,6 +22,7 @@ import base64
 import collections
 import json
 import logging
+import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
@@ -520,6 +521,8 @@ class Bounty(SuperModel):
         return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
 
     def get_natural_value(self):
+        if not self.value_in_token:
+            return 0
         token = addr_to_token(self.token_address)
         if not token:
             return 0
@@ -1977,6 +1980,15 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
 
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1600019142065700
+    if not instance.value_true:
+        instance.value_true = 0
+    if not instance.value_in_token:
+        instance.value_in_token = 0
+    if not instance.balance:
+        instance.balance = 0
+
+
     if not instance.bounty_owner_profile:
         if instance.bounty_owner_github_username:
             profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
@@ -2437,10 +2449,13 @@ class Activity(SuperModel):
         if self.likes.exists():
             vp.metadata['liked'] = self.likes.filter(profile=user.profile).exists()
             vp.metadata['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
-        vp.metadata['favorite'] = self.favorite_set.filter(user=user).exists()
+        vp.metadata['favorite'] = self.favorites(user)
         vp.metadata['poll_answered'] = self.has_voted(user)
 
         return vp
+
+    def favorites(self, user):
+        self.favorite_set.filter(user=user, grant=None)
 
     @property
     def tip_count_usd(self):
@@ -2854,6 +2869,8 @@ class Profile(SuperModel):
     ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+    brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
+    is_brightid_verified=models.BooleanField(default=False)
 
     @property
     def is_blocked(self):
@@ -5481,6 +5498,15 @@ class Investigation(SuperModel):
             total_sybil_score += 1
             htmls.append('(DING)')
 
+        from dashboard.brightid_utils import get_brightid_status
+        bright_id_status = get_brightid_status(instance.brightid_uuid)
+        htmls.append(f'Bright ID Status: {bright_id_status}')
+        if bright_id_status == 'not_verified':
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+        elif bright_id_status == 'verified':
+            total_sybil_score -= 2
+            htmls.append('(REDEMPTIONx2)')
 
         if instance.squelches.filter(active=True).exists():
             htmls.append('USER HAS ACTIVE SQUELCHES')

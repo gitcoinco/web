@@ -131,6 +131,7 @@
             <div class="card flex-row flex-wrap mb-5" id="{{ event.slug }}">
 
               <div class="card-header text-center col-12 col-sm-4 px-0">
+                <a href="{% url 'hackathon' event.slug %}">
                 {% if event.logo %}
                   <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ event.logo }}" alt="Hackathon logo" />
                 {% else %}
@@ -138,11 +139,12 @@
                     {{ event.name }}
                   </div>
                 {% endif %}
+                </a>
               </div>
 
               <div class="card-body col-12 col-sm-8">
                 <h5 class="font-subheader font-weight-semibold">
-                  <a href="{% url 'hackathon' event.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
+                  <a href="{% url 'hackathon' event.slug %}" class="text-black" rel="noopener noreferrer">
                     {{ event.name }}
                   </a>
                 </h5>
