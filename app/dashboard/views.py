@@ -4322,7 +4322,7 @@ def hackathon_save_project(request):
         project.save()
         profiles.append(str(profile.id))
         project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
-        invalidate_obj(project.first())
+        invalidate_obj(project)
 
     return JsonResponse({
             'success': True,
