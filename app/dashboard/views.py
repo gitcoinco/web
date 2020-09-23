@@ -2242,6 +2242,9 @@ def user_card(request, handle):
         },
         'profile_dict':profile_dict
     }
+    if response.get('profile',{}).get('data',{}).get('email'):
+        del response['profile']['data']['email']
+
 
     return JsonResponse(response, safe=False)
 

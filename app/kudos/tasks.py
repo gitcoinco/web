@@ -41,6 +41,8 @@ def mint_token_request(self, token_req_id, retry=False):
             if gas_price > delay_if_gas_prices_gt_mint and self.request.retries < self.max_retries:
                 self.retry(countdown=120)
                 return
+            if obj.gas_price_overide:
+                gas_price = obj.gas_price_overide
             tx_id = obj.mint(gas_price)
             if tx_id:
                 while not has_tx_mined(tx_id, obj.network):
