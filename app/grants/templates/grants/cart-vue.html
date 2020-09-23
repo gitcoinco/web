@@ -598,6 +598,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </button>
               </template>
               <template v-if="isZkSyncModalLoading" v-slot:default="{ hide }">
+                <div v-if="isZkSyncDown" class="p-2" style="background-color: #FFF6CF; width: 100%;">
+                  The zkSync servers are currently having some issues. If you are stuck on this
+                  loading screen, try refreshing the page. If that does not resolve the issue,
+                  you may want to proceed with Standard Checkout or try again later.
+                </div>
                 <div class="my-5 py-5">
                   <loading-screen></loading-screen>
                   <div class="text-center my-5">Loading...</div>

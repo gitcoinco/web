@@ -3414,6 +3414,10 @@ class Profile(SuperModel):
         return self.user.groups.filter(name='Alpha_Testers').cache().exists() if self.user else False
 
     @property
+    def user_groups(self):
+        return self.user.groups.all().cache().values_list('name', flat=True) if self.user else False
+
+    @property
     def is_staff(self):
         """Determine whether or not the user is a staff member.
 
