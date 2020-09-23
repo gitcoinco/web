@@ -356,7 +356,10 @@ if (
   !document.contxt.persona_is_funder &&
   !document.contxt.persona_is_hunter
 ) {
-  show_persona_modal();
+  // show_persona_modal();
+}
+function popOnboard() {
+  appOnboard.$refs['onboard-modal'].openModal();
 }
 
 $('body').on('click', '[data-persona]', function(e) {

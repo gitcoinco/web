@@ -25,12 +25,17 @@
   }
 </style>
 <div id="gc-onboard">
-  <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" hide-close="true" backdrop="static" keyboard="false">
+  <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" backdrop="static" keyboard="false">
     <template v-if="step === 1">
 
-      <div slot="header">Setup your profile</div>
+      <div slot="header">
+        <img src="{% static 'v2/images/modals/persona-choose.svg' %}" width="160" height="137" class="mx-auto d-block mb-3">
+        <h2 class="h4 pt-0">Setup your profile</h2>
+      </div>
       <div slot="body">
-        Tell us a little more about you:
+        <p>
+          Tell us a little about you:
+        </p>
         <div class="form-group">
           <label for="">Skills</label>
           <v-select @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
@@ -71,7 +76,10 @@
       </div>
     </template>
     <template v-if="step === 2">
-      <div slot="header">Setup your </div>
+      <div slot="header">
+        <img src="{% static 'v2/images/modals/persona-choose.svg' %}" width="160" height="137" class="mx-auto d-block mb-3">
+        <h2 class="h4 pt-0">Setup your profile</h2>
+      </div>
       <div slot="body">
 
         <p>Our tools are based on the principes of earn (💰), learn (📖), and meet (💬).
@@ -154,7 +162,10 @@
 
     </template>
     <template v-if="step === 3">
-      <div slot="header">Enable your organization profile</div>
+      <div slot="header">
+        <img src="{% static 'v2/images/modals/persona-choose.svg' %}" width="160" height="137" class="mx-auto d-block mb-3">
+        <h2 class="h4 pt-0">Enable your organization profile</h2>
+      </div>
       <div slot="body">
         <p>Gitcoin products can help grow community around your brand. Create your tribe, events, and incentivize your community with bounties. Announce new and upcoming events using townsquare. Find top-quality hackers and fund them to work with you on a grant.</p>
         <p>These are the organizations you own. If you don't see your organization here please be sure that information is public on your GitHub profile. Gitcoin will sync this information for you.</p>

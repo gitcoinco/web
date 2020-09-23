@@ -94,9 +94,13 @@ if (document.getElementById('gc-onboard')) {
       submitData() {
         let vm = this;
         const apiUrlPersona = '/api/v1/choose_persona/';
-        const postPersonaData = fetchData(apiUrlPersona, 'POST', data);
+        const postPersonaData = fetchData(apiUrlPersona, 'POST', vm.data);
 
         $.when(postPersonaData).then((response) => {
+
+          if (vm.step === 3 && vm.orgSelected) {
+            document.location.href = `/${vm.orgSelected}`
+          }
 
         }).catch((err) => {
           console.log(err);
@@ -151,6 +155,13 @@ if (document.getElementById('gc-onboard')) {
 
     },
     mounted() {
+      if (
+        document.contxt.github_handle &&
+        !document.contxt.persona_is_funder &&
+        !document.contxt.persona_is_hunter
+      ) {
+        // show_persona_modal();
+      }
       this.$refs['onboard-modal'].openModal();
       this.fetchSkills();
     },
