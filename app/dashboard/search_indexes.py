@@ -6,8 +6,9 @@ from .models import UserDirectory
 class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     profile_id = indexes.IntegerField(null=True,model_attr='profile_id')
-    join_date = indexes.CharField(null=True,model_attr='join_date')
-    github_created_at = indexes.CharField(null=True,model_attr='github_created_at')
+    join_date = indexes.DateTimeField(null=True,model_attr='join_date')
+    github_created_at = indexes.DateTimeField(null=True,model_attr='github_created_at')
+    email = indexes.CharField(null=True,model_attr='email_if_not_supressed')
     first_name = indexes.CharField(null=True,model_attr='first_name')
     last_name = indexes.CharField(null=True,model_attr='last_name')
     handle = indexes.CharField(null=True,model_attr='handle')
@@ -71,13 +72,6 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     following_count = indexes.IntegerField(null=True,model_attr='following_count',faceted=True)
     num_repeated_relationships = indexes.IntegerField(null=True,model_attr='num_repeated_relationships',faceted=True)
     verification_status = indexes.CharField(null=True,model_attr='verification_status',faceted=True)
-
-    # We add this for autocomplete.
-    handle_auto = indexes.EdgeNgramField(model_attr='handle')
-    keywords_auto = indexes.EdgeNgramField(model_attr='keywords')
-    first_name_auto = indexes.EdgeNgramField(null=True,model_attr='first_name')
-    last_name_auto = indexes.EdgeNgramField(null=True,model_attr='last_name')
-    persona_auto = indexes.EdgeNgramField(null=True,model_attr='persona')
 
     def get_model(self):
         return UserDirectory

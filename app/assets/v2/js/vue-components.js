@@ -83,11 +83,11 @@ Vue.component('select2', {
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({
-      data: this.options,
-      placeHolder: this.placeholder !== null ? this.placeholder : 'filter here',
-      minimumInputLength: this.inputlength !== null ? this.inputlength : 1})
-      .val(this.value)
+    $(vm.$el).select2({
+      data: vm.options,
+      placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      .val(vm.value)
       .trigger('change')
       .on('change', function() {
         vm.$emit('input', $(this).val());
