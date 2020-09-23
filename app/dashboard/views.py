@@ -1013,18 +1013,16 @@ def users_autocomplete(request):
         'results': results
     })
 
-
-@require_GET
+@csrf_exempt
 def output_users_to_csv(request):
 
     if request.user.is_authenticated and not request.user.is_staff:
         return Http404()
+    from .tasks import export_search_to_csv
 
-    profile_ids = request.GET.getlist('profile_ids[]')
+    export_search_to_csv.delay(body=request.body.decode('utf-8'), user_handle=request.user.profile.handle)
 
-    user_query = UserDirectory.objects.filter(profile_id__in=profile_ids)
-    from djqscsv import render_to_csv_response
-    return render_to_csv_response(user_query)
+    return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'})
 
 @require_GET
 def users_fetch(request):

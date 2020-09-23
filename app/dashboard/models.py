@@ -68,7 +68,7 @@ from git.utils import (
     repo_name,
 )
 from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
-from marketing.models import LeaderboardRank
+from marketing.models import LeaderboardRank, EmailSupressionList
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
 from web3 import Web3
@@ -1409,6 +1409,7 @@ class BountyFulfillment(SuperModel):
     ]
 
     TENANT = [
+        ('BTC', 'BTC'),
         ('ETH', 'ETH'),
         ('ETC', 'ETC'),
         ('ZIL', 'ZIL'),
@@ -4546,6 +4547,14 @@ class UserDirectory(models.Model):
     following_count = models.IntegerField()
     num_repeated_relationships  = models.IntegerField()
     verification_status = models.CharField(null=True, max_length=255)
+
+
+    def email_if_not_supressed(self):
+        is_on_global_suppression_list = EmailSupressionList.objects.filter(email__iexact=self.email).exists()
+        if is_on_global_suppression_list:
+            return ''
+        return self.email
+
 
     objects = UserDirectoryManager()
 
