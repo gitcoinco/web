@@ -68,7 +68,7 @@ from git.utils import (
     repo_name,
 )
 from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
-from marketing.models import LeaderboardRank, EmailSupressionList
+from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
 from web3 import Web3

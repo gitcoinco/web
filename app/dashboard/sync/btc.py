@@ -1,8 +1,8 @@
 from django.utils import timezone
 
 import requests
-from oogway import Net
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
+from oogway import Net
 
 
 def find_txn_on_btc_explorer(fulfillment, network='mainnet'):

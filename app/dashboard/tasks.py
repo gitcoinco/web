@@ -1,5 +1,9 @@
-from dashboard.models import Activity, Bounty, ObjectView, Profile
+import csv
+import json
+import math
+import os
 from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -9,13 +13,10 @@ from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-import csv
-import json
+from dashboard.models import Activity, Bounty, ObjectView, Profile
 from marketing.mails import func_name, grant_update_email, send_mail
-import math
-from retail.emails import render_share_bounty
 from proxy.views import proxy_view
-import os
+from retail.emails import render_share_bounty
 
 logger = get_task_logger(__name__)
 
