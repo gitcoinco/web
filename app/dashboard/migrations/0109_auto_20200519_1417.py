@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bountyfulfillment',
             name='tenant',
-            field=models.CharField(blank=True, choices=[('ETH', 'ETH'), ('ETC', 'ETC'), ('ZIL', 'ZIL'), ('CELO', 'CELO'), ('PYPL', 'PYPL')], help_text='specific tenant type under the payout_type', max_length=10, null=True),
+            field=models.CharField(blank=True, choices=[('BTC', 'BTC'), ('ETH', 'ETH'), ('ETC', 'ETC'), ('ZIL', 'ZIL'), ('CELO', 'CELO'), ('PYPL', 'PYPL')], help_text='specific tenant type under the payout_type', max_length=10, null=True),
         ),
         migrations.AlterField(
             model_name='bountyfulfillment',
