@@ -20,10 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    bulk_fund, clr_grants, flag, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details,
-    grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
+    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, clr_grants, flag, get_collection, get_collections_list,
+    get_grant_payload, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_fund,
+    grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
-    subscription_cancel, toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
+    remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
+    zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
 
 app_name = 'grants'
@@ -36,6 +38,7 @@ urlpatterns = [
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('cards_info', get_grants, name='grant_cards_info'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
+    path('bulk_cart', bulk_grants_for_cart, name='bulk_grants_for_cart'),
     path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
     path('activity', grant_activity, name='log_activity'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
@@ -67,5 +70,11 @@ urlpatterns = [
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/clr', grants_clr, name='grants_clr'),
-    path('v1/api/<int:grant_id>/verify', verify_grant, name='verify_grant')
+    path('v1/api/<int:grant_id>/cart_payload', get_grant_payload, name='grant_payload'),
+    path('v1/api/<int:grant_id>/verify', verify_grant, name='verify_grant'),
+    path('v1/api/collections/new', save_collection, name='create_collection'),
+    path('v1/api/collections/<int:collection_id>', get_collection, name='get_collection'),
+    path('v1/api/collections/<int:collection_id>/grants/add', add_grant_from_collection, name='add_grant'),
+    path('v1/api/collections/<int:collection_id>/grants/remove', remove_grant_from_collection, name='remove_grant'),
+    path('v1/api/collections/', get_collections_list, name='get_collection'),
 ]

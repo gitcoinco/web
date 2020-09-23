@@ -22,11 +22,14 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.templatetags.static import static
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
@@ -37,7 +40,7 @@ from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from grants.utils import get_upload_filename
+from grants.utils import get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
@@ -563,6 +566,61 @@ class Grant(SuperModel):
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
+
+    def cart_payload(self):
+        return {
+            'grant_id': str(self.id),
+            'grant_slug': self.slug,
+            'grant_url': self.url,
+            'grant_title': self.title,
+            'grant_contract_version': self.contract_version,
+            'grant_contract_address': self.contract_address,
+            'grant_token_symbol': self.token_symbol,
+            'grant_admin_address': self.admin_address,
+            'grant_token_address': self.token_address,
+            'grant_logo': self.logo.url if self.logo and self.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+            'grant_clr_prediction_curve': self.clr_prediction_curve,
+            'grant_image_css': self.image_css,
+            'is_clr_eligible': self.is_clr_eligible
+        }
+
+    def repr(self, user, build_absolute_uri):
+        return {
+                'id': self.id,
+                'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
+                'details_url': reverse('grants:details', args=(self.id, self.slug)),
+                'title': self.title,
+                'description': self.description,
+                'last_update': self.last_update,
+                'last_update_natural': naturaltime(self.last_update),
+                'sybil_score': self.sybil_score,
+                'weighted_risk_score': self.weighted_risk_score,
+                'is_clr_active': self.is_clr_active,
+                'clr_round_num': self.clr_round_num,
+                'admin_profile': {
+                    'url': self.admin_profile.url,
+                    'handle': self.admin_profile.handle,
+                    'avatar_url': self.admin_profile.avatar_url
+                },
+                'favorite': self.favorite(user) if user.is_authenticated else False,
+                'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
+                'clr_prediction_curve': self.clr_prediction_curve,
+                'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
+                'safe_next_clr_calc_date': naturaltime(self.safe_next_clr_calc_date) if self.safe_next_clr_calc_date else None,
+                'amount_received_in_round': self.amount_received_in_round,
+                'positive_round_contributor_count': self.positive_round_contributor_count,
+                'monthly_amount_subscribed': self.monthly_amount_subscribed,
+                'is_clr_eligible': self.is_clr_eligible,
+                'slug': self.slug,
+                'url': self.url,
+                'contract_version': self.contract_version,
+                'contract_address': self.contract_address,
+                'token_symbol': self.token_symbol,
+                'admin_address': self.admin_address,
+                'token_address': self.token_address,
+                'image_css': self.image_css,
+                'verified': self.twitter_verified,
+            }
 
     def favorite(self, user):
         return Favorite.objects.filter(user=user, grant=self).exists()
@@ -1392,7 +1450,7 @@ class Contribution(SuperModel):
                 is_correct_recipient = False
                 is_correct_token = False
                 is_correct_amount = False
-                
+
                 number_of_transfers = 0
                 number_of_deposits = 0
 
@@ -1432,10 +1490,10 @@ class Contribution(SuperModel):
                         self.validator_comment = f"{self.validator_comment}. Found deposit but no transfer. User likely closed page before transfers were sent and should revisit cart to complete checkout. User may not be aware so send them email reminders"
 
                     elif len(transactions) > 100:
-                        # See the TODO above for more info -- the validator current is likely to 
+                        # See the TODO above for more info -- the validator current is likely to
                         # miss some transfers if the user has over 100 transactions in zkSync
                         self.validator_comment = f"{self.validator_comment}. User has over 100 transactions on zkSync, so transaction may exist but not have been found. Update validator to use pagination on zkSync API to resolve this"
-                    
+
                     else:
                         # Could not find expected transfer, so try list specifics about why. We
                         # Ascannot find exactly what went wrong because: We cycle through a list of
@@ -1678,3 +1736,70 @@ class CartActivity(SuperModel):
 
     def __str__(self):
         return f'{self.action} {self.grant.id if self.grant else "bulk"} from the cart {self.profile.handle}'
+
+
+class CollectionsQuerySet(models.QuerySet):
+    """Handle the manager queryset for Collections."""
+
+    def visible(self):
+        """Filter results down to visible collections only."""
+        return self.filter(hidden=False)
+
+    def keyword(self, keyword):
+        if not keyword:
+            return self
+        return self.filter(
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(profile__handle__icontains=keyword)
+        )
+
+
+class GrantCollection(SuperModel):
+    grants = models.ManyToManyField(blank=True, to=Grant, help_text=_('References to grants related to this collection'))
+    profile = models.ForeignKey('dashboard.Profile', help_text=_('Owner of the collection'), related_name='curator', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, help_text=_('Name of the collection'))
+    description = models.TextField(default='', blank=True, help_text=_('The description of the collection'))
+    cover = models.ImageField(upload_to=get_upload_filename, null=True,blank=True, max_length=500, help_text=_('Collection image'))
+    hidden = models.BooleanField(default=False, help_text=_('Hide the collection'), db_index=True)
+    cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
+    featured = models.BooleanField(default=False, help_text=_('Show grant as featured'))
+    objects = CollectionsQuerySet.as_manager()
+    curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
+
+    def generate_cache(self):
+        grants = self.grants.all()
+
+        cache = {
+            'count': grants.count(),
+            'grants': [{
+                'id': grant.id,
+                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+            } for grant in grants]
+        }
+
+        self.cache = cache
+        self.save()
+
+    def to_json_dict(self):
+        curators = [{
+            'url': curator.url,
+            'handle': curator.handle,
+            'avatar_url': curator.avatar_url
+        } for curator in self.curators.all()]
+
+        owner = {
+            'url': self.profile.url,
+            'handle': self.profile.handle,
+            'avatar_url': self.profile.avatar_url
+        }
+        return {
+            'id': self.id,
+            'owner': owner,
+            'title': self.title,
+            'description': self.description,
+            'cover': self.cover.url if self.cover else '',
+            'count': self.cache['count'],
+            'grants': self.cache['grants'],
+            'curators': curators + [owner]
+        }

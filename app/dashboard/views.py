@@ -1141,7 +1141,7 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-earnings_count', 'id').exclude(handle__iexact='gitcoinbot')
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-rank_coder', 'id').exclude(handle__iexact='gitcoinbot')
 
         this_page = profile_list
 
@@ -1186,6 +1186,7 @@ def users_fetch(request):
             profile_json['previously_worked'] = False # user.previous_worked_count > 0
             profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
             profile_json['position_funder'] = user.get_funder_leaderboard_index()
+            profile_json['rank_coder'] = user.rank_coder
             profile_json['work_done'] = count_work_completed
             profile_json['verification'] = user.get_my_verified_check
             profile_json['avg_rating'] = user.get_average_star_rating()

@@ -1763,6 +1763,10 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
+        new_receive_txid = getReplacedTX(self.receive_txid)
+        if new_receive_txid:
+            self.receive_txid = new_receive_txid
         self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
         return bool(self.receive_tx_status)
 
@@ -2036,7 +2040,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
-                "txid":'',
+                "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
             }
@@ -5282,6 +5286,10 @@ class Earning(SuperModel):
 def post_save_earning(sender, instance, created, **kwargs):
     if created:
         instance.create_auto_follow()
+
+        from economy.utils import watch_txn
+        if instance.txid:
+            watch_txn(instance.txid)
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
