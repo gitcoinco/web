@@ -677,6 +677,7 @@ class TokenRequest(SuperModel):
         'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
     )
     rejection_reason = models.TextField(max_length=500, default='', blank=True)
+    gas_price_overide = models.IntegerField(default=0, help_text=('If non-zero, then the celery task will use this gas price to mint hte kudos'))
 
     def __str__(self):
         """Define the string representation of a conversion rate."""

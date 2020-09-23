@@ -26,6 +26,7 @@ from django.utils import timezone
 from dashboard.models import Bounty
 from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
+from marketing.utils import should_suppress_notification_email
 from townsquare.utils import is_email_townsquare_enabled
 
 warnings.filterwarnings("ignore")
@@ -74,8 +75,8 @@ class Command(BaseCommand):
             print("not active in non prod environments")
             return
         hours_back = 24
-        eses = EmailSubscriber.objects.filter(active=True).distinct('email')
-        counter_grant_total = 0
+        eses = EmailSubscriber.objects.filter(active=True).distinct('email').order_by('-email')
+        counter_eval_total = 0
         counter_total = 0
         counter_sent = 0
         start_time = time.time()
@@ -83,9 +84,11 @@ class Command(BaseCommand):
         print("got {} emails".format(total_count))
         for es in eses:
             try:
+                counter_eval_total += 1
+                if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+                    continue
                 # prep
                 now = timezone.now()
-                counter_grant_total += 1
                 to_email = es.email
                 keywords = es.keywords
                 town_square_enabled = is_email_townsquare_enabled(to_email)
@@ -101,9 +104,9 @@ class Command(BaseCommand):
                     expires_date__gt=now).order_by('metadata__hyper_tweet_counter')[:2]
 
                 # stats
-                speed = round((time.time() - start_time) / counter_grant_total, 2)
-                ETA = round((total_count - counter_grant_total) / speed / 3600, 1)
-                print(f"{counter_sent} sent/{counter_total} enabled/{counter_grant_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
+                speed = round((time.time() - start_time) / counter_eval_total, 2)
+                ETA = round((total_count - counter_eval_total) / speed / 3600, 1)
+                print(f"{counter_sent} sent/{counter_total} enabled/{counter_eval_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
 
                 # send
                 should_send = new_bounties.count() or town_square_enabled

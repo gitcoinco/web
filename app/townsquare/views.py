@@ -142,7 +142,7 @@ def get_sidebar_tabs(request):
             tabs = [new_tab] + tabs
             default_tab = 'grants'
 
-        num_favorites = request.user.favorites.all().count()
+        num_favorites = request.user.favorites.filter(grant=None).all().count()
         if num_favorites:
             key = 'my_favorites'
             activities = get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()
@@ -224,7 +224,7 @@ def get_offers(request):
     offer_pks = []
     offers_by_category = {}
     available_offers = Offer.objects.current()
-    
+
     if request.user.is_authenticated:
         available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
     for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:

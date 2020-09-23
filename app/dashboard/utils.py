@@ -40,6 +40,7 @@ from dashboard.models import (
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
@@ -502,6 +503,9 @@ def sync_payout(fulfillment):
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'polkadot_ext':
+         sync_polkadot_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
