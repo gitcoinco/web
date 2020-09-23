@@ -25,7 +25,7 @@ from grants.views import (
     grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
     subscription_cancel, toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
     save_collection, bulk_grants_for_cart, get_collection, remove_grant_from_collection, get_grant_payload,
-    add_grant_from_collection,
+    add_grant_from_collection, get_collections_list,
 )
 
 app_name = 'grants'
@@ -75,5 +75,6 @@ urlpatterns = [
     path('v1/api/collections/new', save_collection, name='create_collection'),
     path('v1/api/collections/<int:collection_id>', get_collection, name='get_collection'),
     path('v1/api/collections/<int:collection_id>/grants/add', add_grant_from_collection, name='add_grant'),
-    path('v1/api/collections/<int:collection_id>/grants/remove', remove_grant_from_collection, name='remove_grant')
+    path('v1/api/collections/<int:collection_id>/grants/remove', remove_grant_from_collection, name='remove_grant'),
+    path('v1/api/collections/', get_collections_list, name='get_collection'),
 ]

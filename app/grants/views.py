@@ -2120,12 +2120,29 @@ def verify_grant(request, grant_id):
     })
 
 
+def get_collections_list(request):
+    if request.user.is_authenticated:
+        collections = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
+        return JsonResponse({
+            'collections': [{
+                'id': collection['id'],
+                'title': collection['title'],
+                'description': collection['description']
+            } for collection in collections.values('id', 'title', 'description')]
+        })
+
+    return JsonResponse({
+        'collections': []
+    })
+
+
 @login_required
 @require_POST
 def save_collection(request):
     title = request.POST.get('collectionTitle')
     description = request.POST.get('collectionDescription')
     grant_ids = request.POST.getlist('grants[]')
+    collection_id = request.POST.get('collection')
     profile = request.user.profile
     grant_ids = [int(grant_id) for grant_id in grant_ids]
 
@@ -2135,13 +2152,21 @@ def save_collection(request):
             'msg': 'We can\'t create empty collections'
 
         }, status=422)
-    kwargs = {
-        'title': title,
-        'description': description,
-        'profile': profile,
-    }
 
-    collection = GrantCollections.objects.create(**kwargs)
+    if collection_id:
+        collection = GrantCollections.objects.filter(
+            Q(profile=request.user.profile) | Q(curators=request.user.profile)
+        ).get(pk=collection_id)
+
+        grant_ids = grant_ids + list(collection.grants.all().values_list('id', flat=True))
+    else:
+        kwargs = {
+            'title': title,
+            'description': description,
+            'profile': profile,
+        }
+        collection = GrantCollections.objects.create(**kwargs)
+
     collection.grants.set(grant_ids)
     collection.generate_cache()
 
@@ -2158,21 +2183,24 @@ def get_collection(request, collection_id):
     collection = GrantCollections.objects.get(pk=collection_id)
 
     grants = [grant.cart_payload() for grant in collection.grants.all()]
+    curators = [{
+        'url': curator.url,
+        'handle': curator.handle,
+        'avatar_url': curator.avatar_url
+    } for curator in collection.curators.all()]
+
+    owner = {
+        'url': collection.profile.url,
+        'handle': collection.profile.handle,
+        'avatar_url': collection.profile.avatar_url
+    }
 
     return JsonResponse({
         'id': collection.id,
         'title': collection.title,
         'grants': grants,
-        'owner': {
-            'url': collection.profile.url,
-            'handle': collection.profile.handle,
-            'avatar_url': collection.profile.avatar_url
-        },
-        'curators': [{
-            'url': curator.url,
-            'handle': curator.handle,
-            'avatar_url': curator.avatar_url
-        } for curator in collection.curators.all()]
+        'owner': owner,
+        'curators': curators + [owner]
     })
 
 

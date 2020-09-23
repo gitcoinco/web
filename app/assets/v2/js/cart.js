@@ -88,7 +88,9 @@ Vue.component('grants-cart', {
       // Collection
       showCreateCollection: false,
       collectionTitle: '',
-      collectionDescription: ''
+      collectionDescription: '',
+      collections: [],
+      selectedCollection: null
     };
   },
 
@@ -96,6 +98,17 @@ Vue.component('grants-cart', {
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
+    },
+
+    // Determine when activate the save collection button
+    isValidCollection() {
+      if (this.selectedCollection !== null) {
+        return true;
+      } else if (this.collectionTitle.length > 3 && this.collectionDescription.length < 140) {
+        return true;
+      }
+
+      return false;
     },
 
     // Returns true of screen size is smaller than 576 pixels (Bootstrap's small size)
@@ -334,7 +347,7 @@ Vue.component('grants-cart', {
     // Array of supported tokens
     zkSyncSupportedTokens() {
       const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN', 'SNT' ];
-      
+
       if (!this.selectedNetwork)
         return mainnetTokens;
       if (this.selectedNetwork === 'rinkeby')
@@ -2342,6 +2355,8 @@ Vue.component('grants-cart', {
     // =============================================================================================
     // ==================================== END ZKSYNC METHODS =====================================
     // =============================================================================================
+
+    // ================== Start collection logic ==================
     createCollection: async function() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const cart = CartData.loadCart();
@@ -2353,6 +2368,10 @@ Vue.component('grants-cart', {
         collectionDescription: this.collectionDescription,
         grants: grantIds
       };
+
+      if (this.selectedCollection) {
+        body['collection'] = this.selectedCollection;
+      }
 
       try {
 
@@ -2373,6 +2392,7 @@ Vue.component('grants-cart', {
       this.collectionTitle = '';
       this.collectionDescription = '';
     }
+    // ================== End collection logic ==================
   },
 
   watch: {
@@ -2537,7 +2557,7 @@ Vue.component('grants-cart', {
         // Force re-render so computed properties are updated (some are dependent on
         // document.web3network, and Vue cannot watch document.web3network for an update)
         this.selectedNetwork = document.web3network;
-        
+
         // Setup zkSync and check balances
         this.userAddress = (await web3.eth.getAccounts())[0];
         await this.setupZkSync();
@@ -2554,6 +2574,9 @@ Vue.component('grants-cart', {
 
     }, false);
 
+    const collections_response = await fetchData('/grants/v1/api/collections');
+
+    this.collections = collections_response.collections;
     // Cart is now ready
     // this.isLoading = false;
   },

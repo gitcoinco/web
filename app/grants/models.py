@@ -1782,22 +1782,25 @@ class GrantCollections(SuperModel):
         self.save()
 
     def to_json_dict(self):
+        curators = [{
+            'url': curator.url,
+            'handle': curator.handle,
+            'avatar_url': curator.avatar_url
+        } for curator in self.curators.all()]
+
+        owner = {
+            'url': self.profile.url,
+            'handle': self.profile.handle,
+            'avatar_url': self.profile.avatar_url
+        }
         return {
             'id': self.id,
-            'owner': {
-                'url': self.profile.url,
-                'handle': self.profile.handle,
-                'avatar_url': self.profile.avatar_url
-            },
+            'owner': owner,
             'title': self.title,
             'description': self.description,
             'cover': self.cover.url if self.cover else '',
             'count': self.cache['count'],
             'grants': self.cache['grants'],
-            'curators': [{
-                'url': curator.url,
-                'handle': curator.handle,
-                'avatar_url': curator.avatar_url
-            } for curator in self.curators.all()]
+            'curators': curators + [owner]
         }
 

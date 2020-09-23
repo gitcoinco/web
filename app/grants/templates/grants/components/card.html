@@ -105,7 +105,7 @@
           <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection && isCurator ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`" v-if="!grant.is_on_team">
             + Add to Cart
           </button>
-          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="collection && has_collections && isCurator">
+          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="isCurator">
             - Remove from collection
           </button>
           <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
@@ -221,7 +221,7 @@
             <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="!grant.is_on_team">
               + Add to Cart
             </button>
-            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && has_collections && isCurator">
+            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
             </button>
             <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
