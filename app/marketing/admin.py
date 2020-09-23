@@ -26,6 +26,8 @@ from .models import (
     GithubOrgToTwitterHandleMapping, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, RoundupEmail,
     SlackPresence, SlackUser, Stat, UpcomingDate,
 )
+
+
 class RoundupEmailAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
