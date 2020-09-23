@@ -8,10 +8,7 @@
   "website": "http://maskdao.finance/",
   "whitepaper": "http://maskdao.finance/MaskDAO.pdf",
   "state": "NORMAL",
-  "published_on": "",
-  "initial_price":{
-        "USD":"0.5 USD"
-  },
+  "published_on": "2020-09-07",
   "links": {
     "twitter": "https://twitter.com/DaoMask",
     "telegram": "https://t.me/MaskDAO",
