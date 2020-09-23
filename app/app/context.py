@@ -60,7 +60,7 @@ def get_sitewide_announcements():
     announcement = announcements.filter(key='header').first()
     if announcement:
         header_msg = announcement.title + announcement.desc
-        nav_salt = announcement.rank
+        nav_salt = announcement.salt
     return header_msg, footer_msg, nav_salt
 
 

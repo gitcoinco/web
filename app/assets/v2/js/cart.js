@@ -69,7 +69,9 @@ Vue.component('grants-cart', {
       maxPossibleSignatures: 4, // for Flow A, start by assuming 4 -- two logins, set signing key, one transfer
       isZkSyncModalLoading: false, // modal requires async actions before loading, so show loading spinner to improve UX
       zkSyncWalletState: undefined, // state of user's nominal zkSync wallet
-      selectedNetwork: undefined, // use to force computed properties to update when document.web3network changes
+      selectedNetwork: undefined, // used to force computed properties to update when document.web3network changes
+      zkSyncFeeTotals: {}, // used to dispaly a string showing the total zkSync fees when checking out with Flow B
+      zkSyncFeesString: undefined, // string generated from the above property
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -84,7 +86,13 @@ Vue.component('grants-cart', {
       display_email_option: false,
       countDownActive: false,
       // BrightID
-      isBrightIDVerified: false
+      isBrightIDVerified: false,
+      // Collection
+      showCreateCollection: false,
+      collectionTitle: '',
+      collectionDescription: '',
+      collections: [],
+      selectedCollection: null
     };
   },
 
@@ -92,6 +100,17 @@ Vue.component('grants-cart', {
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
+    },
+
+    // Determine when activate the save collection button
+    isValidCollection() {
+      if (this.selectedCollection !== null) {
+        return true;
+      } else if (this.collectionTitle.length > 3 && this.collectionDescription.length < 140) {
+        return true;
+      }
+
+      return false;
     },
 
     // Returns true of screen size is smaller than 576 pixels (Bootstrap's small size)
@@ -330,7 +349,7 @@ Vue.component('grants-cart', {
     // Array of supported tokens
     zkSyncSupportedTokens() {
       const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN', 'SNT' ];
-      
+
       if (!this.selectedNetwork)
         return mainnetTokens;
       if (this.selectedNetwork === 'rinkeby')
@@ -1259,10 +1278,20 @@ Vue.component('grants-cart', {
       const txHash = json.deposit_tx_hash;
 
       if (txHash.length === 66 && txHash.startsWith('0x')) {
-        // Valid transaction hash, return it
+        // Valid transaction hash. Check if tx failed
+        const receipt = await this.ethersProvider.getTransactionReceipt(txHash);
+
+        if (receipt.status === 0) {
+          // Transaction failed, user must start over so mark them as not interrupted
+          await this.setInterruptStatus(null, this.userAddress);
+          return false;
+        }
+
+        // Transaction was mined, user must complete checkout
         return txHash;
       }
-      // Otherwise, user was not interrupted
+
+      // User was not interrupted
       return false;
     },
 
@@ -1716,6 +1745,10 @@ Vue.component('grants-cart', {
           const requiredAmount = ethers.utils.parseUnits(String(this.donationsTotal[tokenSymbol]), decimals);
           const totalRequiredAmount = await this.getTotalAmountToTransfer(tokenSymbol, requiredAmount);
 
+          // Get worst case fee amount
+          this.zkSyncFeeTotals[tokenSymbol] = await this.getMaxFee(tokenSymbol);
+          this.setZkSyncFeesString();
+
           // Balance will be undefined if the user does not have that token, so we can break
           if (!balance) {
             this.hasSufficientZkSyncBalance = false;
@@ -1760,6 +1793,63 @@ Vue.component('grants-cart', {
       });
 
       return amount.add(fee.mul(String(numberOfFees)));
+    },
+
+    /**
+     * @notice Calculates the maximum possible fees for a specific token
+     */
+    async getMaxFee(tokenSymbol) {
+      const numberOfFees = 3 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
+      const fee = await this.syncProvider.getTransactionFee(
+        'Transfer', // transaction type
+        ethers.Wallet.createRandom().address, // recipient address
+        tokenSymbol // token name
+      );
+
+      return fee.totalFee.mul(String(numberOfFees));
+    },
+
+    /**
+     * @notice String describing the user's zkSync fees, used for Flow A
+     */
+    setZkSyncFeesString() {
+      // If no fees, default to empty string
+      if (Object.keys(this.zkSyncFeeTotals).length === 0)
+        return '';
+
+
+      // Conver token amounts to human-readable values (from wei)
+      const tokens = Object.keys(this.zkSyncFeeTotals);
+      const feeTotals = {};
+
+      for (let i = 0; i < tokens.length; i += 1) {
+        const tokenName = tokens[i];
+        const decimals = this.getTokenByName(tokenName).decimals;
+        const amount = ethers.utils.formatUnits(this.zkSyncFeeTotals[tokenName].toString(), decimals);
+
+        feeTotals[tokenName] = amount;
+      }
+
+      // Generate the string
+      let string = '';
+
+      tokens.forEach(tokenName => {
+        // Round to 2 digits
+        const amount = feeTotals[tokenName];
+        const formattedAmount = amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+        if (string === '') {
+          string += `${formattedAmount} ${tokenName}`;
+        } else {
+          string += `+ ${formattedAmount} ${tokenName}`;
+        }
+      });
+
+      // Set value
+      this.zkSyncFeesString = string;
     },
 
     // ==================================== Main functionality =====================================
@@ -2332,13 +2422,50 @@ Vue.component('grants-cart', {
       // Final processing
       await this.setInterruptStatus(null, this.userAddress);
       await this.finalizeCheckout();
-    }
+    },
 
 
     // =============================================================================================
     // ==================================== END ZKSYNC METHODS =====================================
     // =============================================================================================
 
+    // ================== Start collection logic ==================
+    createCollection: async function() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const cart = CartData.loadCart();
+      const grantIds = cart.map(grant => grant.grant_id);
+      let response;
+
+      const body = {
+        collectionTitle: this.collectionTitle,
+        collectionDescription: this.collectionDescription,
+        grants: grantIds
+      };
+
+      if (this.selectedCollection) {
+        body['collection'] = this.selectedCollection;
+      }
+
+      try {
+
+        response = await fetchData('/grants/v1/api/collections/new', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+        const redirect = `/grants/collections?collection_id=${response.collection.id}`;
+
+        _alert('Congratulations, your new collection was created successfully!', 'success');
+        this.cleanCollectionModal();
+        this.showCreateCollection = false;
+
+        window.location = redirect;
+
+      } catch (e) {
+        _alert(e.msg, 'error');
+      }
+    },
+    cleanCollectionModal: function() {
+      this.collectionTitle = '';
+      this.collectionDescription = '';
+    }
+    // ================== End collection logic ==================
   },
 
   watch: {
@@ -2503,7 +2630,7 @@ Vue.component('grants-cart', {
         // Force re-render so computed properties are updated (some are dependent on
         // document.web3network, and Vue cannot watch document.web3network for an update)
         this.selectedNetwork = document.web3network;
-        
+
         // Setup zkSync and check balances
         this.userAddress = (await web3.eth.getAccounts())[0];
         await this.setupZkSync();
@@ -2520,6 +2647,9 @@ Vue.component('grants-cart', {
 
     }, false);
 
+    const collections_response = await fetchData('/grants/v1/api/collections');
+
+    this.collections = collections_response.collections;
     // Cart is now ready
     // this.isLoading = false;
   },

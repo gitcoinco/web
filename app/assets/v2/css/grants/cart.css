@@ -131,3 +131,16 @@
   color: white !important;
   font-weight: 600;
 }
+
+.middle-line {
+   width: 100%;
+   text-align: center;
+   border-bottom: 1px solid #ccc;
+   line-height: 0.1em;
+   margin: 10px 0 20px;
+}
+
+.middle-line span {
+  background-color: white;
+  padding:0 10px;
+}
