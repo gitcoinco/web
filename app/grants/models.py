@@ -1247,7 +1247,7 @@ class Contribution(SuperModel):
     def update_tx_status(self):
         """Updates tx status."""
         try:
-            from economy.tx import grants_transaction_validator
+            from economy.tx import grants_transaction_validator_v2
             from dashboard.utils import get_tx_status
             from economy.tx import getReplacedTX
             if self.tx_override:
@@ -1323,13 +1323,13 @@ class Contribution(SuperModel):
             if case_number == 1:
                 # actually validate token transfers
                 try:
-                    response = grants_transaction_validator(self, w3)
+                    response = grants_transaction_validator_v2(self, w3)
                     if len(response['originator']):
                         self.originated_address = response['originator'][0]
                     self.validator_passed = response['validation']['passed']
                     self.validator_comment = response['validation']['comment']
-                    self.tx_cleared = True
-                    self.split_tx_confirmed = True
+                    self.tx_cleared = response['tx_cleared']
+                    self.split_tx_confirmed = response['split_tx_confirmed']
                     self.success = self.validator_passed
                 except Exception as e:
                     if 'Expecting value' in str(e):
@@ -1387,6 +1387,9 @@ class Contribution(SuperModel):
                 expected_transfer_amount = Decimal(
                     self.subscription.amount_per_period_minus_gas_price * 10 ** decimals
                 )
+                transfer_tolerance = 0.05 # use a 5% tolerance
+                expected_amount_min = expected_transfer_amount * (Decimal(1 - transfer_tolerance))
+                expected_amount_max = expected_transfer_amount * (Decimal(1 + transfer_tolerance))
 
                 # Look through zkSync transfers to find one with the expected amounts
                 is_correct_recipient = False
@@ -1410,14 +1413,12 @@ class Contribution(SuperModel):
                     is_correct_token = transaction['tx']['token'] == expected_token
 
                     transfer_amount = Decimal(transaction['tx']['amount'])
-                    transfer_tolerance = 0.05 # use a 5% tolerance
-                    transfer_amount_min = transfer_amount * (Decimal(1 - transfer_tolerance))
-                    transfer_amount_max = transfer_amount * (Decimal(1 + transfer_tolerance))
-                    is_correct_amount = transfer_amount > transfer_amount_min and transfer_amount < transfer_amount_max
+                    is_correct_amount = transfer_amount > expected_amount_min and transfer_amount < expected_amount_max
 
                     if is_correct_recipient and is_correct_token and is_correct_amount:
                         self.tx_cleared = True
                         self.success = transaction['success']
+                        self.validator_comment = f"{self.validator_comment}. Success"
                         break
 
                 if not is_correct_recipient or not is_correct_token or not is_correct_amount:
