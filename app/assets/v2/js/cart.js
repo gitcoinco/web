@@ -1732,17 +1732,18 @@ Vue.component('grants-cart', {
           // Get worst case fee amount
           this.zkSyncFeeTotals[tokenSymbol] = await this.getMaxFee(tokenSymbol);
           this.setZkSyncFeesString();
-
+          
+          // Note: Don't `break` out of the if statements if insufficient balance, because we
+          // also use this function to set the fee string shown to the user on the checkout modal
+          
           // Balance will be undefined if the user does not have that token, so we can break
           if (!balance) {
             this.hasSufficientZkSyncBalance = false;
-            break;
           }
 
           // Otherwise, we compare their balance against the required amount
           if (ethers.BigNumber.from(balance).lt(totalRequiredAmount)) {
             this.hasSufficientZkSyncBalance = false;
-            break;
           }
         }
       } catch (e) {
