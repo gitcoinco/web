@@ -66,14 +66,14 @@
             {{ primer }}
           {% elif bounty.title %}
             {% if bounty.value_true and bounty.token_name %}
-              ({{ bounty.value_true|floatformat }} {{ bounty.token_name }}) - 
+              ({{ bounty.value_true|floatformat }} {{ bounty.token_name }}) -
             {% endif %}
             {{ bounty.title }}
           {% endif %}
         </p>
       </li>
     </ul>
-      
+
       {% if not small %}
         {% if bounty.keywords %}
           <p>
@@ -137,5 +137,5 @@
           </p>
         {%  endif %}
       {% endif %}
-    {% include 'emails/shared_bounty_actions.html' %}
+    {% include 'emails/shared_bounty_actions.html' with featured=featured %}
 </div>

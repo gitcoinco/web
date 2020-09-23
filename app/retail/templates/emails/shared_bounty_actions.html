@@ -20,7 +20,11 @@
   </div>
 {% else %}
   <div style="margin-bottom: 1em; margin-top: 1em;">
-    <a class="button" href="{{ bounty.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
+    {% if featured %}
+      <a class="button" href="{{ bounty.absolute_url }}?utm_source=hypercharge-auto-daily&utm_medium=email&utm_campaign={{ bounty.title }}">{% trans "View on Gitcoin.co" %}</a>
+    {% else %}
+      <a class="button" href="{{ bounty.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
+    {% endif %}
   </div>
 {% endif %}
 {% if action2 == 'custom' %}

@@ -156,8 +156,11 @@ def maybe_market_to_twitter(bounty, event_name):
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
+    utm = ''
+    if bounty.metadata.get('hyper_tweet_counter', False):
+        utm = f'utm_source=hypercharge-auto&utm_medium=twitter&utm_campaign={bounty.title}'
 
-    url = bounty.get_absolute_url()
+    url = f'{bounty.get_absolute_url()}?{utm}'
     is_short = False
     for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
         try:
@@ -539,7 +542,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             issue_message = interest.issue_message.strip()
             if issue_message:
                 msg += f"\n\n{issue_message}"
-        
+
         msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':

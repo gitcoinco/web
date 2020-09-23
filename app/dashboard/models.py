@@ -1333,11 +1333,13 @@ def post_save_bounty(sender, instance, created, **kwargs):
 
         # Publish and pin on townsquare
         profile = Profile.objects.filter(handle=HYPERCHARGE_BOUNTIES_PROFILE_HANDLE).first()
+
+        utm = f'utm_source=hypercharge-auto-pinned-post&utm_medium=twitter&utm_campaign={instance.title}'
         if profile:
             metadata = {
                     'title': title,
                     'description': truncatechars(instance.issue_description_text, 500),
-                    'url': instance.get_absolute_url(),
+                    'url': f'{instance.get_absolute_url()}?{utm}',
                     'ask': '#announce'
             }
             activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
