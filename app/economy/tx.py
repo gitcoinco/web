@@ -330,17 +330,14 @@ def grants_transaction_validator(contribution, w3):
                 transaction = w3.eth.getTransaction(transaction_hash)
                 if transaction.value > 0.001:
                     recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
-                    print(1111)
                     transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
                     if not transfer:
-                        print(2222)
                         transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
                     if transfer:
                         token_transfer = transfer
                 maybeprint(148, round(time.time(),2))
                 if not token_originators:
 
-                    print(3333)
                     token_originators = get_token_originators(from_address, '0x0', from_address=None, return_what='originators')
 
             maybeprint(150, round(time.time(),2))
@@ -356,13 +353,11 @@ def grants_transaction_validator(contribution, w3):
                 maybeprint(160, round(time.time(),2))
                 # get token transfers
                 if not token_transfer:
-                    print(4444)
                     transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
                     if transfers:
                         token_transfer = transfers
                 maybeprint(169, round(time.time(),2))
                 if not token_originators:
-                    print(5555)
                     token_originators = get_token_originators(from_address, token_address, from_address=None, return_what='originators')
                 maybeprint(170, round(time.time(),2))
 
@@ -482,10 +477,8 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
     endpoint = 'token-transfers' if token != '0x0' else 'ether-transfers'
     url = f'https://api.aleth.io/v1/{endpoint}?filter[to]=' + address + '&filter[token]=' + token + '&page%5Blimit%5D=100'
     if token == '0x0':
-        print('qqqq')
         url = f'https://api.aleth.io/v1/{endpoint}?filter[account]=' + address + '&page%5Blimit%5D=100'
     if from_address:
-        print('wwww')
         url += '&filter[from]=' + from_address
 
     # OLD: THIS REQUEST THROWS WITH A 500 INTERNAL SERVER ERROR
@@ -501,7 +494,6 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
     # TODO - pull more than one page in case there are many transfers.
 
     if return_what == 'transfers':
-        print(1)
         for transfer in transfers.get('data', {}):
             this_is_the_one = tx_id and tx_id.lower() in str(transfer).lower()
             _decimals = transfer.get('attributes', {}).get('decimals', 18)
