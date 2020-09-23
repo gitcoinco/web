@@ -1755,7 +1755,7 @@ class CollectionsQuerySet(models.QuerySet):
         )
 
 
-class GrantCollections(SuperModel):
+class GrantCollection(SuperModel):
     grants = models.ManyToManyField(blank=True, to=Grant, help_text=_('References to grants related to this collection'))
     profile = models.ForeignKey('dashboard.Profile', help_text=_('Owner of the collection'), related_name='curator', on_delete=models.CASCADE)
     title = models.CharField(max_length=255, help_text=_('Name of the collection'))
@@ -1803,4 +1803,3 @@ class GrantCollections(SuperModel):
             'grants': self.cache['grants'],
             'curators': curators + [owner]
         }
-

@@ -20,12 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    bulk_fund, clr_grants, flag, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details,
-    grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
+    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, clr_grants, flag, get_collection, get_collections_list,
+    get_grant_payload, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_fund,
+    grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
-    subscription_cancel, toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
-    save_collection, bulk_grants_for_cart, get_collection, remove_grant_from_collection, get_grant_payload,
-    add_grant_from_collection, get_collections_list,
+    remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
+    zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
 
 app_name = 'grants'

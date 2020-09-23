@@ -65,8 +65,8 @@ from economy.models import Token as FTokens
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
-    Subscription, GrantCollections,
+    CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
+    PhantomFunding, Subscription,
 )
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
@@ -270,7 +270,7 @@ def get_collections(user, keyword, sort='-modified_on', collection_id=None, foll
                     idle_grants=None, only_contributions=None, featured=False):
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
 
-    _collections = GrantCollections.objects.filter(hidden=False)
+    _collections = GrantCollection.objects.filter(hidden=False)
 
     if collection_id:
         _collections = _collections.filter(pk=int(collection_id))
@@ -403,7 +403,7 @@ def get_grants(request):
     else:
         _grants = build_grants_by_type(**filters)
 
-        collections = GrantCollections.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:12]
+        collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:12]
 
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
@@ -695,7 +695,7 @@ def grants_by_grant_type(request, grant_type):
         # KO 9/10/2020
         # prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
         # rev_grants = Grant.objects.filter(pk__in=prev_grants)
-        allowed_collections = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
+        allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
             {
                 'id': collection.id,
@@ -801,7 +801,7 @@ def grants_by_grant_type(request, grant_type):
             pass
 
     if collection_id:
-        collections = GrantCollections.objects.filter(pk=collection_id)
+        collections = GrantCollection.objects.filter(pk=collection_id)
         if collections.exists():
             collection = collections.first()
             params['title'] = collection.title
@@ -870,7 +870,7 @@ def grants_by_grant_clr(request, clr_round):
     collections = []
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
-        allowed_collections = GrantCollections.objects.filter(
+        allowed_collections = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
             {
@@ -2122,7 +2122,7 @@ def verify_grant(request, grant_id):
 
 def get_collections_list(request):
     if request.user.is_authenticated:
-        collections = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
+        collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         return JsonResponse({
             'collections': [{
                 'id': collection['id'],
@@ -2154,7 +2154,7 @@ def save_collection(request):
         }, status=422)
 
     if collection_id:
-        collection = GrantCollections.objects.filter(
+        collection = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile)
         ).get(pk=collection_id)
 
@@ -2165,7 +2165,7 @@ def save_collection(request):
             'description': description,
             'profile': profile,
         }
-        collection = GrantCollections.objects.create(**kwargs)
+        collection = GrantCollection.objects.create(**kwargs)
 
     collection.grants.set(grant_ids)
     collection.generate_cache()
@@ -2180,7 +2180,7 @@ def save_collection(request):
 
 
 def get_collection(request, collection_id):
-    collection = GrantCollections.objects.get(pk=collection_id)
+    collection = GrantCollection.objects.get(pk=collection_id)
 
     grants = [grant.cart_payload() for grant in collection.grants.all()]
     curators = [{
@@ -2218,7 +2218,7 @@ def get_grant_payload(request, grant_id):
 def remove_grant_from_collection(request, collection_id):
     grant_id = request.POST.get('grant')
     grant = Grant.objects.get(pk=grant_id)
-    collection = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile)).get(pk=collection_id)
+    collection = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile)).get(pk=collection_id)
 
     collection.grants.remove(grant)
     collection.generate_cache()
@@ -2236,7 +2236,7 @@ def remove_grant_from_collection(request, collection_id):
 def add_grant_from_collection(request, collection_id):
     grant_id = request.POST.get('grant')
     grant = Grant.objects.get(pk=grant_id)
-    collection = GrantCollections.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile)).get(pk=collection_id)
+    collection = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile)).get(pk=collection_id)
 
     collection.grants.add(grant)
     collection.generate_cache()
