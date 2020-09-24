@@ -337,7 +337,7 @@ def clr_grants(request, round_num):
     """CLR grants explorer."""
 
     try:
-        clr_round = GrantCLR.objects.get(round_num=round_num)
+        clr_round = GrantCLR.objects.get(round_num__icontains=round_num)
 
     except GrantCLR.DoesNotExist:
         return redirect('/grants')
