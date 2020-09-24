@@ -60,9 +60,6 @@ fix-stylelint: ## Run stylelint --fix against the project directory. Requires no
 fix-black: ## Run black against any included or newly introduced Python code.
 	@docker-compose exec web black "app" --exclude "app/static/"
 
-fix-yapf: ## Run yapf against any included or newly introduced Python code.
-	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/github/
-
 fix: fix-eslint fix-stylelint fix-isort fix-black ## Attempt to run all fixes against the project directory.
 
 fresh: ## Completely destroy all compose assets and start compose with a fresh build.
