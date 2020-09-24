@@ -1044,9 +1044,9 @@ def grant_details(request, grant_id, grant_slug):
                 if item == 'grants_contribution.originated_address':
                     title = 'Funds origination address'
                 sybil_profiles += [
-                    [f'THIS {title} Summary Last 90 days', get_grant_sybil_profile(grant.pk, 90 * 24, index_on=item)],
-                    [f'{grant.grant_type.name} {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type, index_on=item)],
-                    [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
+                    [f'THIS {title} Summary Last 60 days', get_grant_sybil_profile(grant.pk, 60 * 24, index_on=item)],
+                    [f'{grant.grant_type.name} {title} Summary Last 60 Days', get_grant_sybil_profile(None, 60 * 24, grant.grant_type, index_on=item)],
+                    [f'All {title} Summary Last 60 Days', get_grant_sybil_profile(None, 60 * 24, None, index_on=item)],
                 ]
         _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
         contributions = list(_contributions.order_by('-created_on'))
