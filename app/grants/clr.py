@@ -64,6 +64,8 @@ def translate_data(grants_data):
                 verification_status = 'sms'
             elif c.get('is_brightid_verified'):
                 verification_status = 'brightid'
+            elif c.get('is_twitter_verified'):
+                verification_status = 'twitter'
             if profile_id:
                 val = [grant_id] + [c.get('id')] + [verification_status] + [c.get('sum_of_each_profiles_contributions')]
                 grants_list.append(val)
@@ -90,13 +92,16 @@ def translate_data(grants_data):
 def get_verified_list(grant_contributions):
     sms_verified_list = []
     bright_verified_list = []
+    twitter_verified_list = []
     for _, user, ver_stat, _ in grant_contributions:
         if ver_stat == 'sms' and user not in sms_verified_list:
             sms_verified_list.append(user)
         elif ver_stat == 'brightid' and user not in bright_verified_list:
             bright_verified_list.append(user)
+        elif ver_stat == 'twitter' and user not in twitter_verified_list:
+            twitter_verified_list.append(user)
 
-    return sms_verified_list, bright_verified_list
+    return sms_verified_list, bright_verified_list, twitter_verified_list
 
 
 
@@ -189,7 +194,7 @@ def get_totals_by_pair(contrib_dict):
         saturation point
             boolean
 '''
-def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, bright_verified_list, v_threshold, uv_threshold, total_pot):
+def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, bright_verified_list, twitter_verified_list, v_threshold, uv_threshold, total_pot):
     bigtot = 0
     totals = []
     
@@ -205,21 +210,33 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                # both sms
-                if k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
+                # both twitter
+                elif k2 > k1 and all(i in twitter_verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.25) + 1)
                 # both bright
                 elif k2 > k1 and all(i in bright_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.2) + 1)
-                # both none
-                elif k2 > k1 and not any(i in sms_verified_list + bright_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
-                # one bright or sms, one none
-                elif k2 > k1 and (((k2 in sms_verified_list + bright_verified_list) and (k1 not in sms_verified_list + bright_verified_list)) or ((k1 in sms_verified_list + bright_verified_list) and (k2 not in sms_verified_list + bright_verified_list))):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
+                # both sms
+                if k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
+                # one bright, one twitter
+                elif k2 > k1 and (((k2 in bright_verified_list) and (k1 in twitter_verified_list)) or ((k1 in bright_verified_list) and (k2 in twitter_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.225) + 1)
+                # one sms, one twitter
+                elif k2 > k1 and (((k2 in twitter_verified_list) and (k1 in sms_verified_list)) or ((k1 in twitter_verified_list) and (k2 in sms_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.15) + 1)
                 # one bright, one sms
+                elif k2 > k1 and (((k2 in bright_verified_list) and (k1 in sms_verified_list)) or ((k1 in bright_verified_list) and (k2 in sms_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.125) + 1)
+                # one bright / sms / twitter, one none
+                elif k2 > k1 and (((k2 in sms_verified_list + bright_verified_list + twitter_verified_list) and (k1 not in sms_verified_list + bright_verified_list + twitter_verified_list)) or ((k1 in sms_verified_list + bright_verified_list + twitter_verified_list) and (k2 not in sms_verified_list + bright_verified_list + twitter_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.08) + 1)
+                # both none
+                elif k2 > k1 and not any(i in sms_verified_list + bright_verified_list + twitter_verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
+                # everything else
                 elif k2 > k1:
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.125) + 1)
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / v_threshold + 1)
 
         if type(tot) == complex:
             tot = float(tot.real)
@@ -270,7 +287,7 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     # get data
     curr_round = translate_data(grant_contribs_curr)
 
-    sms_list, bright_list = get_verified_list(curr_round)
+    sms_list, bright_list, twitter_list = get_verified_list(curr_round)
 
     # aggregate data
     curr_agg = aggregate_contributions(curr_round)
@@ -279,7 +296,7 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     ptots = get_totals_by_pair(curr_agg)
 
     # clr calcluation
-    totals = calculate_clr(curr_agg, ptots, sms_list, bright_list, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(curr_agg, ptots, sms_list, bright_list, twitter_list, v_threshold, uv_threshold, total_pot)
 
     return totals
 
@@ -298,7 +315,8 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
                     'id': '999999999999',
                     'sum_of_each_profiles_contributions': amount,
                     'is_sms_verified': True,
-                    'is_brightid_verified': True
+                    'is_brightid_verified': True,
+                    'is_twitter_verified': True
                 })
 
     grants_clr = run_clr_calcs(_grant_contributions_curr, v_threshold, uv_threshold, total_pot)
@@ -399,6 +417,11 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         brightid_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.is_brightid_verified]
         brightid_verified_profile = list(set(brightid_verified_contribution_ids + brightid_verified_phantom_funding_contribution_ids))
 
+        # Twitter verified contributions
+        twitter_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_twitter_verified]
+        twitter_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.is_twitter_verified]
+        twitter_verified_profile = list(set(twitter_verified_contribution_ids + twitter_verified_phantom_funding_contribution_ids))
+
         # combine
         contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_contributions]))
 
@@ -417,7 +440,8 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
                     'id': str(profile_id),
                     'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
                     'is_sms_verified': True if profile_id in sms_verified_profile else False,
-                    'is_brightid_verified': True if profile_id in brightid_verified_profile else False
+                    'is_brightid_verified': True if profile_id in brightid_verified_profile else False,
+                    'is_twitter_verified': True if profile_id in twitter_verified_profile else False
                 })
 
             contrib_data_list.append({
