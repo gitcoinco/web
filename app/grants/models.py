@@ -165,6 +165,18 @@ class GrantCLR(SuperModel):
     def grants(self):
         return Grant.objects.filter(**self.grant_filters)
 
+    def record_clr_prediction_curve(self, grant, clr_prediction_curve):
+        for obj in self.clr_calculations.filter(grant=grant):
+            obj.latest = False
+            obj.save()
+
+        GrantCLRCalculation.objects.create(
+            grantclr=self,
+            grant=grant,
+            clr_prediction_curve=clr_prediction_curve,
+            latest=True,
+            )
+
 
 class Grant(SuperModel):
     """Define the structure of a Grant."""
@@ -316,18 +328,6 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The fundingamount across all rounds with phantom funding'),
     )
-    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
-    clr_prediction_curve = ArrayField(
-        ArrayField(
-            models.FloatField(),
-            size=2,
-        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
-    # TODO: REMOVE
-    backup_clr_prediction_curve = ArrayField(
-        ArrayField(
-            models.FloatField(),
-            size=2,
-        ), blank=True, default=list, help_text=_('backup 5 point curve to predict CLR donations - used to store a secondary backup of the clr prediction curve, in the case a new identity mechanism is used'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
@@ -375,6 +375,12 @@ class Grant(SuperModel):
 
     funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
 
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
     weighted_risk_score = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -396,6 +402,32 @@ class Grant(SuperModel):
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
 
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
+
+    @property
+    def calc_clr_round_nums(self):
+        roudn_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
+        return ", ".join(roudn_nums)
+
+    @property
+    def calc_clr_prediction_curve(self):
+        # [amount_donated, match amount, bonus_from_match_amount ], etc..
+        # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
+        _clr_prediction_curve = []
+        for insert_clr_calc in self.clr_calculations.filter(latest=True).order_by('-created_on'):
+            insert_clr_calc = insert_clr_calc.clr_prediction_curve
+            if not _clr_prediction_curve:
+                _clr_prediction_curve = insert_clr_calc
+            else:
+                for j in [1,2]:
+                    for i in [0,1,2,3,4,5]:
+                        # add the 1 and 2 index of each clr prediction cuve
+                        _clr_prediction_curve[i][j] += insert_clr_calc[i][j]
+        return _clr_prediction_curve
+
+    
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
@@ -1087,8 +1119,18 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
+    # TODO: move to grant task
+    instance.clr_prediction_curve = instance.calc_clr_prediction_curve
+    instance.clr_round_num = instance.calc_clr_round_nums
+
+    # todo: move to grant task
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+    for clr_round in active_clr_rounds:
+        if clr_round.grants.filter(pk=instance.pk).exists():
+            instance.in_active_clrs.add(clr_round)
+
+    from grants.tasks import update_grant_metadata
     if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=5)):
-        from grants.tasks import update_grant_metadata
         update_grant_metadata.delay(instance.pk)
 
 class DonationQuerySet(models.QuerySet):
@@ -1824,3 +1866,21 @@ class GrantStat(SuperModel):
 
     def __str__(self):
         return f'{self.snapshot_type} {self.created_on} for {self.grant.title}'
+
+
+class GrantCLRCalculation(SuperModel):
+
+    latest = models.BooleanField(default=False, db_index=True, help_text="Is this calc the latest?")
+    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant'))
+    grantclr = models.ForeignKey(GrantCLR, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant CLR Round'))
+
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
+    def __str__(self):
+        return f'{self.created_on} for g:{self.grant.pk} / gclr:{self.grantclr.pk} : {self.clr_prediction_curve}'

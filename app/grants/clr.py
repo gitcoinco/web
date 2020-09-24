@@ -468,37 +468,39 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
         if save_to_db:
             _grant = Grant.objects.get(pk=grant.pk)
-            _grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
-            base = _grant.clr_prediction_curve[0][1]
+            clr_prediction_curve = list(zip(potential_donations, potential_clr))
+            base = clr_prediction_curve[0][1]
             _grant.last_clr_calc_date = timezone.now()
             _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=20)
 
-            can_estimate = True if base or _grant.clr_prediction_curve[1][1] or _grant.clr_prediction_curve[2][1] or _grant.clr_prediction_curve[3][1] else False
+            can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
 
             if can_estimate :
-                _grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in _grant.clr_prediction_curve ]
+                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in clr_prediction_curve ]
             else:
-                _grant.clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+                clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
             JSONStore.objects.create(
                 created_on=from_date,
                 view='clr_contribution',
                 key=f'{grant.id}',
-                data=_grant.clr_prediction_curve,
+                data=clr_prediction_curve,
             )
+            clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
+            
             try:
-                if _grant.clr_prediction_curve[0][1]:
+                if clr_prediction_curve[0][1]:
                     Stat.objects.create(
                         created_on=from_date,
                         key=_grant.title[0:43] + "_match",
-                        val=_grant.clr_prediction_curve[0][1],
+                        val=clr_prediction_curve[0][1],
                         )
                     max_twitter_followers = max(_grant.twitter_handle_1_follower_count, _grant.twitter_handle_2_follower_count)
                     if max_twitter_followers:
                         Stat.objects.create(
                             created_on=from_date,
                             key=_grant.title[0:43] + "_admt1",
-                            val=int(100 * _grant.clr_prediction_curve[0][1]/max_twitter_followers),
+                            val=int(100 * clr_prediction_curve[0][1]/max_twitter_followers),
                             )
 
                 if _grant.positive_round_contributor_count:
