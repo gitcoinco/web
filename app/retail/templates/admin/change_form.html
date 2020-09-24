@@ -14,6 +14,9 @@
             <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
         {% elif 'dashboard/activity' in request.build_absolute_uri %}
             <input type="submit" value="Make Into Nano Bounty" name="_make_nano_bounty" value="1">
+        {% elif 'arketing/roundupemail' in request.build_absolute_uri %}
+            <input type="submit" value="Send Roundup Email to myself" name="_send_roundup_email_myself" value="1">
+            <input type="submit" value="Send Roundup Email to EVERYONE (WARNING: BE CAREFUL!)" name="_send_roundup_email_everyone" onclick='javascript:if(!confirm("are you sure")){return false};' value="1">
         {% elif 'townsquare/offer/' in request.build_absolute_uri %}
             <input type="submit" value="Schedule Offer" name="_schedule_offer" value="1">
             <input type="submit" value="Copy Offer" name="_copy_offer" value="1">
