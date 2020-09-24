@@ -1182,6 +1182,7 @@ def grant_details(request, grant_id, grant_slug):
     if tab == 'stats':
         params['max_graph'] = grant.history_by_month_max
         params['history'] = json.dumps(grant.history_by_month)
+        params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')
 
     if add_cancel_params:
         add_in_params = {

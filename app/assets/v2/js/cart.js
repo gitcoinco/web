@@ -72,7 +72,7 @@ Vue.component('grants-cart', {
       selectedNetwork: undefined, // used to force computed properties to update when document.web3network changes
       zkSyncFeeTotals: {}, // used to dispaly a string showing the total zkSync fees when checking out with Flow B
       zkSyncFeesString: undefined, // string generated from the above property
-      isZkSyncDown: true, // true if zkSync is having issues with their servers
+      isZkSyncDown: false, // true if zkSync is having issues with their servers
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
