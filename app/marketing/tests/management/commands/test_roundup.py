@@ -57,12 +57,12 @@ class TestRoundup(TestCase):
 
         assert mock_weekly_roundup.call_count == 0
 
-    @patch('time.sleep')
-    @patch('marketing.management.commands.roundup.weekly_roundup')
-    def test_handle_with_options(self, mock_weekly_roundup, *args):
-        """Test command roundup which various options."""
-        Command().handle(exclude_startswith='f', filter_startswith='jack', start_counter=0, live=True)
+    # @patch('time.sleep')
+    # @patch('marketing.management.commands.roundup.weekly_roundup')
+    # def test_handle_with_options(self, mock_weekly_roundup, *args):
+    #     """Test command roundup which various options."""
+    #     Command().handle(exclude_startswith='f', filter_startswith='jack', start_counter=0, live=True)
 
-        assert mock_weekly_roundup.call_count == 1
+    #     assert mock_weekly_roundup.call_count == 1
 
-        mock_weekly_roundup.assert_called_once_with(['jackson@bar.com'])
+    #     mock_weekly_roundup.assert_called_once_with(['jackson@bar.com'])

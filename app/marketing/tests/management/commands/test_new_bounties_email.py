@@ -5,7 +5,7 @@ from django.utils import timezone
 
 import pytest
 from dashboard.models import Bounty, Profile
-from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
+from marketing.mails import get_bounties_for_keywords
 from marketing.models import Keyword
 from test_plus.test import TestCase
 

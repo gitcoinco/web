@@ -65,6 +65,10 @@ def get_eth_txn_status(fulfillment):
 
 def sync_eth_payout(fulfillment):
     if fulfillment.payout_tx_id:
+        from economy.tx import getReplacedTX
+        replacement_payout_tx_id = fulfillment.payout_tx_id
+        if replacement_payout_tx_id:
+            fulfillment.payout_tx_id = replacement_payout_tx_id
         txn_status = get_eth_txn_status(fulfillment)
         if txn_status:
             if txn_status.get('status') == 'done':

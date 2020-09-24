@@ -51,20 +51,14 @@ check_event_transfer =  lambda contract_address, search, txid : w3.eth.filter({ 
 get_decimals = lambda contract : int(contract.functions.decimals().call())
 
 
-# scrapes etherscan to get the replaced tx
 def getReplacedTX(tx):
-    response = requests.get(ethurl + tx + '/', headers=headers)
-    soup = BeautifulSoup(response.content, "html.parser")
-    # look for span that contains the dropped&replaced msg
-    p = soup.find("span", "u-label u-label--sm u-label--warning rounded")
-    if not p:
-        return None
-    if "Replaced" in p.text:  # check if it's a replaced tx
-        # get the id for the replaced tx
-        q = soup.find(href=re.compile("/tx/0x"))
-        return q.text
-    else:
-        return None
+    from economy.models import TXUpdate
+    txus = TXUpdate.objects.filter(body__hash__iexact=tx)
+    for txu in txus:
+        replace_hash = txu.body.get('replaceHash')
+        if replace_hash:
+            return replace_hash
+    return None
 
 
 def transaction_status(transaction, txid):
