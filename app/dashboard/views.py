@@ -2821,6 +2821,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'portfolio':
         title = request.POST.get('project_title')
+        pk = request.POST.get('project_pk')
         if title:
             if request.POST.get('URL')[0:4] != "http":
                 messages.error(request, 'Invalid link.')
@@ -2836,6 +2837,14 @@ def get_profile_tab(request, profile, tab, prev_context):
                     tags=request.POST.get('tags').split(','),
                     )
                 messages.info(request, 'Portfolio Item added.')
+        if pk:
+            # delete portfolio item
+            if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
+                messages.error(request, 'Not Authorized')
+            pi = PortfolioItem.objects.filter(pk=pk).first()
+            if pi:
+                pi.delete()
+                messages.info(request, 'Portfolio Item has been deleted.')
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':
