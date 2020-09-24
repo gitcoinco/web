@@ -87,12 +87,7 @@
         </button>
 
 
-      {% elif is_team_member %}
-        <button class="mt-3 btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1">
-          <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
-        </button>
-
-      {% elif not is_team_member %}
+      {% else %}
         <div class="pt-2 mb-1 d-flex justify-content-between">
           {% is_favorite grant profile.user as is_grant_favorite %}
           {% if profile.user.is_authenticated %}
