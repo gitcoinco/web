@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='twitter_handle',
-            field=models.CharField(blank=True, max_length=15)
+            field=models.CharField(blank=True, null=True, max_length=15)
         ),
     ]
