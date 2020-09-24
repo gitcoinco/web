@@ -514,17 +514,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
-# https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
-CELERY_ROUTES = [
-    ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
-    ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
-    ('marketing.tasks.*', {'queue': 'marketing'}),
-    ('grants.tasks.*', {'queue': 'default'}),
-    ('chat.tasks.*', {'queue': 'default'}),
-    ('dashboard.tasks.*', {'queue': 'default'}),
-    ('townsquare.tasks.*', {'queue': 'default'}),
-    ('kudos.tasks.*', {'queue': 'default'}),
-    ]
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
