@@ -123,7 +123,7 @@ life easier for you if you are the kind who enjoys multiple things parallely.
 These should also be created directly off of the `master` branch.
 
 ```shell
-git checkout -b my-branch -t upstream/master
+git checkout -b my-branch
 ```
 
 ### Step 3: Code
