@@ -2876,6 +2876,8 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
+    is_twitter_verified=models.BooleanField(default=False)
+    twitter_handle=models.CharField(blank=True, max_length=15)
 
     @property
     def is_blocked(self):
@@ -5519,15 +5521,15 @@ class Investigation(SuperModel):
             total_sybil_score += 1
             htmls.append('(DING)')
 
-        from dashboard.brightid_utils import get_brightid_status
-        bright_id_status = get_brightid_status(instance.brightid_uuid)
-        htmls.append(f'Bright ID Status: {bright_id_status}')
-        if bright_id_status == 'not_verified':
-            total_sybil_score -= 1
-            htmls.append('(REDEMPTIONx1)')
-        elif bright_id_status == 'verified':
+        htmls.append(f'Bright ID Verified: {instance.is_brightid_verified}')
+        if instance.is_brightid_verified:
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
+
+        htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
+        if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
 
         if instance.squelches.filter(active=True).exists():
             htmls.append('USER HAS ACTIVE SQUELCHES')
