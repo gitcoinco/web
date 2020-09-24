@@ -56,7 +56,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False, zip_path=None):
+              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False, zip_path=None, csv=None):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
@@ -118,6 +118,17 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
 
+    if csv is not None:
+        with open(csv, 'rb') as f:
+            data = f.read()
+            f.close()
+        encoded = base64.b64encode(data).decode()
+        attachment = Attachment()
+        attachment.content = encoded
+        attachment.type = 'text/csv'
+        attachment.filename = csv.replace('/tmp/', '')
+        attachment.disposition = 'attachment'
+        mail.add_attachment(attachment)
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:

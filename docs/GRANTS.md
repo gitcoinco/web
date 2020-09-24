@@ -23,7 +23,7 @@ can use this account to send transfers without prompting you for each transfer! 
 only held by this account temporarily to improve UX. Because it does not permanently hold funds
 there is no additional security risk.
 
-### Checkout Fow
+### Checkout Flow
 
 Based on the items in your cart, we check your zkSync balances to see if you already have enough
 funds on zkSync to complete checkout. 
@@ -64,7 +64,7 @@ you elected to deposit into zkSync) are transferred back to your regular zkSync 
 ### Transfer Fees
 
 zkSync transfer costs can be found in their [documentation](https://zksync.io/faq/tokens.html#fee-costs).
-Right now it costs about 2000 gas per transfer, compared to ~60k gas to transfer DAI on L1, and
+Right now it costs about 2k gas per transfer, compared to ~60k gas to transfer DAI on L1, and
 ~180k gas to deposit funds into zkSync. Once zkSync 1.1 is released, these transfer fees will be
 reduced to about 400 gas per transfer.
 
