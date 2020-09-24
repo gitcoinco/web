@@ -5041,12 +5041,11 @@ class HackathonProject(SuperModel):
     categories = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     tech_stack = ArrayField(models.CharField(max_length=200), blank=True, default=list)
 
-    grant_link = models.CharField(
-        blank=True,
+    grant_link = models.ForeignKey(
+        'grants.Grant',
         null=True,
-        db_index=True,
-        max_length=255,
-        help_text='Grant Link'
+        on_delete=models.SET_NULL,
+        help_text=_('Link to grant if project is converted to grant') 
     )
 
     class Meta:
