@@ -1,26 +1,22 @@
 {
 
-  "symbol": “SMT-Witmed”,
+  "symbol": "SMT",
 
   "address": "0x8879976f936019C896Ff1183BeC34D171FbE8cbf",
 
   "overview":{
 
-        "en": "A token for smart medicine,for trade.Drive scientific and technological development.”,
-
-        "zh": “一种通证支持智慧医疗和交易，促进科技发展”
+        "en": "A token for smart medicine,for trade.Drive scientific and technological development."
 
   },
 
-  "email": "ysm1986@sina.com",
+  "email": "smt@smt001.co",
 
-  "website": "http://www.zsf001.com/",
+  "website": "http://www.smt001.co/",
 
-  "whitepaper": "http://www.zsf001.com/whitepaper/SMT-Witmed_EN.pdf",
+  "whitepaper": "http://www.smt001.co/whitepaper/SMT-Witmed_EN.pdf",
 
-  "state": "NORMAL",
-
-  "published_on": "2020-09-15”,
+  "published_on": "2020-09-15",
 
   "initial_price":{
 
@@ -33,15 +29,14 @@
   },
 
   "links": {
-
     "blog": "https://medium.com/SMT-Witmed",
     "twitter": "https://twitter.com/SMT-Witmed",
     "telegram": "https://t.me/joinchat/SMT-Witmed",
-   "github": "https://github.com/prideqx/token-profile"
+    "github": "https://github.com/prideqx/token-profile"
     "facebook": "https://www.facebook.com/SMT-Witmed",
     "reddit": "https://www.reddit.com/r/SMT-Witmed/",
     "slack": "https://imtoken.slack.com",
-    "medium": "https://medium.com/imtoken”
+    "medium": "https://medium.com/imtoken"
   }
 
 }
