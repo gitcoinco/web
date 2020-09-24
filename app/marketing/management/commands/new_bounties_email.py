@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 print(f"{counter_sent} sent/{counter_total} enabled/ {total_count} total, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} ")
 
                 # send
-                did_send = new_bounty_daily(es.pk)
+                did_send = new_bounty_daily.delay(es.pk)
                 if did_send:
                     counter_sent += 1
 
