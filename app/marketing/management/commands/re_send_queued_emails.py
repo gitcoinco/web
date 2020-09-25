@@ -32,7 +32,7 @@ class Command(BaseCommand):
             while True:
                 _next = redis.spop('weekly_roundup_retry').decode('utf-8')
                 weekly_roundup.delay(_next)
-                print(_next)
+                time.sleep(THROTTLE_S)
                 print(round(time.time(), 2), _next)
         except Exception as e:
             print(e)
