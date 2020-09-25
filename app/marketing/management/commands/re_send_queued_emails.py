@@ -33,5 +33,5 @@ class Command(BaseCommand):
                 weekly_roundup.delay(_next)
                 print(_next)
                 print(round(time.time(), 2), _next)
-            except Exception as e:
-                print(e)
+        except Exception as e:
+            print(e)
