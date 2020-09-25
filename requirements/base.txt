@@ -99,3 +99,4 @@ elasticsearch
 pdfrw
 django-admin-sortable2==0.7.6
 twilio
+daphne==2.4.0
