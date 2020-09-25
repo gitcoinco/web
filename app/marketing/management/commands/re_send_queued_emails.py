@@ -20,6 +20,7 @@ import time
 from app.services import RedisService
 from marketing.tasks import weekly_roundup
 THROTTLE_S = 0.3
+redis = RedisService().redis
 
 class Command(BaseCommand):
 
