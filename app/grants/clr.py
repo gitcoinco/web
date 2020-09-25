@@ -210,27 +210,15 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                # both twitter
-                elif k2 > k1 and all(i in twitter_verified_list for i in [k2, k1]):
+                # one twitter
+                if k2 > k1 and any(i in twitter_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.25) + 1)
-                # both bright
-                elif k2 > k1 and all(i in bright_verified_list for i in [k2, k1]):
+                # one bright
+                elif k2 > k1 and any(i in bright_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.2) + 1)
-                # both sms
-                if k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
+                # one sms
+                elif k2 > k1 and any(i in sms_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
-                # one bright, one twitter
-                elif k2 > k1 and (((k2 in bright_verified_list) and (k1 in twitter_verified_list)) or ((k1 in bright_verified_list) and (k2 in twitter_verified_list))):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.225) + 1)
-                # one sms, one twitter
-                elif k2 > k1 and (((k2 in twitter_verified_list) and (k1 in sms_verified_list)) or ((k1 in twitter_verified_list) and (k2 in sms_verified_list))):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.15) + 1)
-                # one bright, one sms
-                elif k2 > k1 and (((k2 in bright_verified_list) and (k1 in sms_verified_list)) or ((k1 in bright_verified_list) and (k2 in sms_verified_list))):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.125) + 1)
-                # one bright / sms / twitter, one none
-                elif k2 > k1 and (((k2 in sms_verified_list + bright_verified_list + twitter_verified_list) and (k1 not in sms_verified_list + bright_verified_list + twitter_verified_list)) or ((k1 in sms_verified_list + bright_verified_list + twitter_verified_list) and (k2 not in sms_verified_list + bright_verified_list + twitter_verified_list))):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (uv_threshold * 1.08) + 1)
                 # both none
                 elif k2 > k1 and not any(i in sms_verified_list + bright_verified_list + twitter_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
