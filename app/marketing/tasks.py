@@ -47,18 +47,21 @@ def weekly_roundup(self, to_email, retry: bool = True) -> None:
     weekly_roundup_email([to_email])
 
 
+THROTTLE_S = 0.1
+BUFFER_S = 0.05
+num_users = 50000
+time_limit = num_users * (BUFFER_S + THROTTLE_S)
 
-@app.shared_task(bind=True, max_retries=1)
+@app.shared_task(bind=True, max_retries=1, time_limit=time_limit)
 def send_all_weekly_roundup(self, retry: bool = True) -> None:
     """
     :param self:
     :param pk:
     :return:
     """
-    #THROTTLE_S = 0.005
-    #import time
+    import time
     queryset = EmailSubscriber.objects.all()
     email_list = list(set(queryset.values_list('email', flat=True)))
     for to_email in email_list:
         weekly_roundup.delay(to_email)
-        #time.sleep(THROTTLE_S)
+        time.sleep(THROTTLE_S)
