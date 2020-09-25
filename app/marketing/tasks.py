@@ -31,7 +31,7 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     es = EmailSubscriber.objects.get(pk=email_subscriber_id)
     new_bounty_daily_email(es)
 
-@app.shared_task(bind=True, rate_limit='1/s')
+@app.shared_task(bind=True, rate_limit='2/s')
 def weekly_roundup(self, to_email, retry: bool = True) -> None:
     """
     :param self:
@@ -43,7 +43,7 @@ def weekly_roundup(self, to_email, retry: bool = True) -> None:
     if socket.gethostname() == 'ip-172-31-5-127':
         self.retry(countdown=5)
         return
-
+    
     # actually do the task
     weekly_roundup_email([to_email])
 
