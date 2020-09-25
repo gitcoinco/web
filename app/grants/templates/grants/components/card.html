@@ -91,7 +91,7 @@
                   <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
                   <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
                 </button>
-                <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2">
+                <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
                   <template v-slot:button-content>
                     <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
                   </template>
@@ -102,14 +102,11 @@
           </div>
         </div>
         <div :class="`${ collection && isCurator ? 'col-md-4' : 'col-md-3' } col-sm-12 py-4 pr-md-5 pl-md-0 grant-action`">
-          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection && isCurator ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`" v-if="!grant.is_on_team">
+          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection && isCurator ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`">
             + Add to Cart
           </button>
           <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="isCurator">
             - Remove from collection
-          </button>
-          <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
-            <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
           </button>
         </div>
       </div>
@@ -216,16 +213,19 @@
           <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
             {% include 'grants/components/clr_estimate.html' %}
           </div>
+          <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
+            <template v-slot:button-content>
+              <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+            </template>
+            <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+          </b-dropdown>
 
           <div class="col-12 pb-4">
-            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="!grant.is_on_team">
+            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
               + Add to Cart
             </button>
             <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
-            </button>
-            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="grant.is_on_team">
-              <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
             </button>
           </div>
 

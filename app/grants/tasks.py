@@ -73,6 +73,8 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     try:
         ss = float(instance.sybil_score)
         instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
+        if ss < 0:
+            instance.weighted_risk_score = 0
     except Exception as e:
         print(e)
 
