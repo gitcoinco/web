@@ -28,7 +28,6 @@
       "required_gas_price": "0",
       "admin_profile": 17,
       "image_css": "",
-      "clr_matching": "0.00",
       "activeSubscriptions": "[]",
       "hidden": false,
       "team_members": [33]
@@ -63,7 +62,6 @@
       "required_gas_price": "0",
       "admin_profile": 33,
       "image_css": "",
-      "clr_matching": "0.00",
       "activeSubscriptions": "[]",
       "hidden": false,
       "team_members": [33]
@@ -98,7 +96,6 @@
       "required_gas_price": "0",
       "admin_profile": 33,
       "image_css": "",
-      "clr_matching": "0.00",
       "activeSubscriptions": "[]",
       "hidden": false,
       "team_members": [33]

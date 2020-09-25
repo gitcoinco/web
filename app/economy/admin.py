@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import ConversionRate, Token
+from .models import ConversionRate, Token, TXUpdate
 
 
 class TokenAdmin(admin.ModelAdmin):
@@ -35,7 +35,7 @@ class TokenAdmin(admin.ModelAdmin):
 
     def address_url(self, obj):
         tx_url = 'https://etherscan.io/address/' + obj.address
-        return format_html("<a href='{}' target='_blank'>{}</a>", obj.address, obj.address)
+        return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, obj.address)
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
@@ -48,7 +48,14 @@ class TokenAdmin(admin.ModelAdmin):
         return redirect(obj.admin_url)
 
 
-# Register your models here.
+class TXUpdateAdmin(admin.ModelAdmin):
+    """Handle displaying conversion rates in the django admin."""
+
+    ordering = ['-id']
+    search_fields = ['body']
+    list_display = ['id', 'created_on', 'processed', '__str__']
+
+
 class ConvRateAdmin(admin.ModelAdmin):
     """Handle displaying conversion rates in the django admin."""
 
@@ -59,3 +66,4 @@ class ConvRateAdmin(admin.ModelAdmin):
 
 admin.site.register(ConversionRate, ConvRateAdmin)
 admin.site.register(Token, TokenAdmin)
+admin.site.register(TXUpdate, TXUpdateAdmin)

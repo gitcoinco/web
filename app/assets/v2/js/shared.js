@@ -206,6 +206,10 @@ var add_interest = function(bounty_pk, data) {
     fbq('trackCustom', 'Start Work');
   }
 
+  if (typeof ga !== 'undefined') {
+    ga('send', 'event', 'Start Work', 'click', 'Bounty Hunter');
+  }
+
   return mutate_interest(bounty_pk, 'new', data);
 };
 

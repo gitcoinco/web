@@ -37,6 +37,12 @@ function initWallet() {
       options: {
         infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
+    },
+    portis: {
+      'package': Portis,
+      options: {
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
+      }
     }
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
@@ -59,6 +65,13 @@ const needWalletConnection = async() => {
   window.addEventListener('walletReady', async function(e) {
     if (!web3Modal || !web3Modal.cachedProvider) {
       return await onConnect().then(console.log);
+    } else if (web3Modal.cachedProvider === 'injected' && window.Web3Modal.getInjectedProviderName() === 'MetaMask') {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+      if (!accounts.length) {
+        return await onConnect().then(console.log);
+      }
+
     }
   }, false);
 };

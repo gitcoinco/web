@@ -78,13 +78,16 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({data: this.options})
-      .val(this.value)
+    $(vm.$el).select2({
+      data: vm.options,
+      placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      .val(vm.value)
       .trigger('change')
       .on('change', function() {
         vm.$emit('input', $(this).val());
@@ -203,23 +206,21 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
-Vue.component('manage-sponsor', {
-  props: ['hackathon_id'],
+Vue.component('manage-mentors', {
+  props: [ 'hackathon_id', 'org_name' ],
   methods: {
     onMentorChange: function(event) {
 
       this.bountyMentors = $('.mentor-users').select2('data').map(element => {
         return element.id;
       });
-      console.log(event);
-      console.log(this.bountyMentors);
     },
     updateBountyMentors: function() {
       let vm = this;
       const url = '/api/v0.1/bounty_mentor/';
 
       const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
-        has_overrides: false,
+        bounty_org: vm.org_name,
         hackathon_id: vm.hackathon_id,
         set_default_mentors: true,
         new_default_mentors: vm.bountyMentors
@@ -238,7 +239,6 @@ Vue.component('manage-sponsor', {
       return element.id;
     });
 
-    console.log(this.bountyMentors);
   },
   data: function() {
     return {
@@ -518,6 +518,14 @@ Vue.component('project-card', {
     };
   },
   props: [ 'project', 'edit', 'is_staff' ],
+  computed: {
+    project_url: function() {
+      let project = this.$props.project;
+      let project_name = (project.name || '').replace(/ /g, '-');
+
+      return `/hackathon/${project.hackathon.slug}/projects/${project.pk}/${project_name}`;
+    }
+  },
   methods: {
     markWinner: function($event, project) {
       let vm = this;
@@ -559,7 +567,7 @@ Vue.component('project-card', {
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
             <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
             <template v-slot:button-content>
@@ -600,11 +608,6 @@ Vue.component('project-card', {
 
 Vue.component('suggested-profiles', {
   props: ['id'],
-  computed: {
-    orderedUsers: function() {
-      return _.orderBy(this.users, 'position_contributor', 'asc');
-    }
-  },
   data: function() {
     return {
       users: []
@@ -648,7 +651,7 @@ Vue.component('suggested-profiles', {
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in orderedUsers" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in users" :key="profile.id" :profile="profile" />
         </ul>
       </div>
     </div>`
@@ -659,8 +662,7 @@ Vue.component('suggested-profile', {
   props: ['profile'],
   data: function() {
     return {
-      follow: this.profile.user_is_following || false,
-      follower_count: this.profile.followers_count || 0
+      follow: this.profile.user_is_following || false
     };
   },
   computed: {
@@ -693,28 +695,23 @@ Vue.component('suggested-profile', {
     }
   },
   template: `
-<b-media tag="li" class="row mx-auto mx-md-n1">
+<b-media tag="li" class="row mx-auto mx-md-n1 mb-1">
   <template v-slot:aside>
     <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
       <b-img :src="avatar_url" class="nav_avatar"></b-img>
     </a>
   </template>
-  <div class="row">
-    <span class="col-6 col-md-12 col-xl-7 font-caption">
+  <div class="col">
+    <span class="row font-caption">
         <a :href="profile_url" class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize text-black">{{profile.name}}</a>
         <p class="mb-0">
-          <i class="fas fa-user font-smaller-4 mr-1"></i>
-          <span class="font-weight-semibold">{{follower_count}}</span> followers
+          <span class="font-weight-semibold">{{profile.handle}}</span>
         </p>
     </span>
-    <span class="col-6 col-md-12 col-xl-5 p-0 my-auto text-center">
-      <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
-        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
-      </a>
-      <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
-        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
-      </a>
-    </span>
+    <p class="row font-caption mb-0 mt-1">
+      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-green font-smaller-5">following</b-button>
+      <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-gc-blue font-smaller-5">follow</b-button>
+    </p>
   </div>
 </b-media>
 `

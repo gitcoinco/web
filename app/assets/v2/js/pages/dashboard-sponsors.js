@@ -119,6 +119,9 @@
             case 1:
               newPathName = 'stats';
               break;
+            case 2:
+              newPathName = 'mentors';
+              break;
           }
           let newUrl = `/hackathon/dashboard/${vm.hackathonObj['slug']}/${newPathName}`;
 
