@@ -2183,7 +2183,7 @@ def save_collection(request):
 def get_collection(request, collection_id):
     collection = GrantCollection.objects.get(pk=collection_id)
 
-    grants = [grant.cart_payload() for grant in collection.grants.all()]
+    grants = [grant.cart_payload() for grant in collection.grants.order_by('-clr_prediction_curve__0__1')]
     curators = [{
         'url': curator.url,
         'handle': curator.handle,
