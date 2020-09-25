@@ -12,8 +12,9 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
+rate_limit = '2/s' if not settings.FLUSH_QUEUE else '100/s'
 
-@app.shared_task(bind=True, rate_limit='2/s')
+@app.shared_task(bind=True, rate_limit=rate_limit)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     """
     :param self:
@@ -29,7 +30,7 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     es = EmailSubscriber.objects.get(pk=email_subscriber_id)
     new_bounty_daily_email(es)
 
-@app.shared_task(bind=True, rate_limit='2/s')
+@app.shared_task(bind=True, rate_limit=rate_limit)
 def weekly_roundup(self, to_email, retry: bool = True) -> None:
     """
     :param self:
