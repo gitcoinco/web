@@ -23,6 +23,13 @@
     background-color: rgb(62 0 255 / 94%);
     background-size: cover;
   }
+  .vs-blue .vs__selected {
+    background-color: var(--gc-blue);
+    color: white;
+  }
+  .vs-blue .vs__deselect {
+    fill: white;
+  }
 </style>
 <div id="gc-onboard">
   <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" backdrop="static" keyboard="false">
@@ -38,7 +45,7 @@
         </p>
         <div class="form-group">
           <label for="">Skills</label>
-          <v-select @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
+          <v-select class="vs-blue" @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
             <template slot="no-options">
               Type to search skills..
             </template>
@@ -71,7 +78,7 @@
           </v-select>
         </div>
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-gc-blue" @click="goStep(2)">Next</button>
+          <button class="btn btn-gc-blue" @click="goStep(2)" :disabled="!data.skillsSelected.length">Next</button>
         </div>
       </div>
     </template>
