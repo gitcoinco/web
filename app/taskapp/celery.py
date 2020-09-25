@@ -4,6 +4,7 @@ from django.apps import AppConfig, apps
 
 from celery import Celery
 from celery.signals import setup_logging
+from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 
@@ -24,3 +25,4 @@ class CeleryConfig(AppConfig):
         app.config_from_object('django.conf:settings', namespace='CELERY')
         installed_apps = [app_config.name for app_config in apps.get_app_configs()]
         app.autodiscover_tasks(lambda: installed_apps, force=True)
+        app.conf.task_routes = {ele[0]: ele[1] for ele in settings.CELERY_ROUTES}
