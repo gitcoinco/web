@@ -2880,6 +2880,20 @@ class Profile(SuperModel):
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
 
     @property
+    def trust_bonus(self):
+        # returns a percentage trust bonus, for this curent user.
+        # trust bonus compounds for every new verification added
+        tb = 1
+        if self.is_brightid_verified:
+            tb *= 1.25
+        if self.is_twitter_verified:
+            tb *= 1.05
+        if self.sms_verification:
+            tb *= 1.05
+        return tb
+
+
+    @property
     def is_blocked(self):
         if not self.user:
             return False
