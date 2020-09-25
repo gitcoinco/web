@@ -2569,6 +2569,7 @@ Vue.component('grants-cart', {
     const grantIds = this.grantData.map(grant => grant.grant_id);
 
     // Fetch updated CLR curves for all grants
+    // TODO : UPDATE URL
     const url = `${window.location.origin}/grants/v1/api/clr?pks=${grantIds.join(',')}`;
     const response = await fetch(url);
     const clrCurves = (await response.json()).grants;

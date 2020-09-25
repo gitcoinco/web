@@ -59,8 +59,10 @@ import pytz
 import requests
 import tweepy
 from app.services import RedisService, TwilioService
-from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_SECRET, \
-    TWITTER_ACCESS_TOKEN
+from app.settings import (
+    EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
+    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+)
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user

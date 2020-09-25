@@ -1992,7 +1992,7 @@ def grant_activity(request, grant_id=None):
     })
 
 @require_GET
-def grants_clr(request):
+def grants_info(request):
     response = {
         'status': 400,
         'message': 'error: Bad Request. Unable to fetch grant clr'
@@ -2008,11 +2008,7 @@ def grants_clr(request):
 
     try:
         for grant in Grant.objects.filter(pk__in=pks.split(',')):
-           grants.append({
-               'pk': grant.pk,
-               'title': grant.title,
-               'clr_prediction_curve': grant.clr_prediction_curve
-           })
+            grants.append(grant.repr(request.user, request.build_absolute_uri))
     except Exception as e:
         print(e)
         response = {
