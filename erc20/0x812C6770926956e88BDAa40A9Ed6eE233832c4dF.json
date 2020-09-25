@@ -6,7 +6,7 @@
     "zh": "基于Uniswap协议的去中心化交易所"
   },
   "email": "admin@peachswap.exchange",
-  "website": "https://peachswap.github.io",
+  "website": "https://peachswap.exchange",
   "whitepaper": "https://github.com/peachswap/whitepaper/blob/master/whitepaper.pdf",
   "state": "NORMAL",
   "published_on": "2020-09-22",
@@ -16,7 +16,7 @@
     "BTC":"0.00001 BTC"
   },
   "links": {
-    "blog": "https://peachswap.github.io",
+    "blog": "https://peachswap.exchange",
     "twitter": "https://twitter.com/peachswapex",
     "telegram": "https://t.me/peachswap",
     "github": "https://github.com/peachswap",
