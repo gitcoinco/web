@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 check_already_sent = False
 
-THROTTLE_S = 0.05
+THROTTLE_S = 0.005
 
 def is_already_sent_this_week(email):
     from marketing.models import EmailEvent

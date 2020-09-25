@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-rate_limit = '2/s' if not settings.FLUSH_QUEUE else '30000/s'
+rate_limit = '3/s' if not settings.FLUSH_QUEUE else '30000/s'
 
 @app.shared_task(bind=True, rate_limit=rate_limit)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
@@ -47,21 +47,22 @@ def weekly_roundup(self, to_email, retry: bool = True) -> None:
     weekly_roundup_email([to_email])
 
 
-THROTTLE_S = 0.1
-BUFFER_S = 0.05
-num_users = 50000
-time_limit = num_users * (BUFFER_S + THROTTLE_S)
+#THROTTLE_S = 0.1
+#BUFFER_S = 0.05
+#num_users = 50000
+#time_limit = num_users * (BUFFER_S + THROTTLE_S)
 
-@app.shared_task(bind=True, max_retries=1, time_limit=time_limit)
+#@app.shared_task(bind=True, max_retries=1, time_limit=time_limit)
+@app.shared_task(bind=True, max_retries=1)
 def send_all_weekly_roundup(self, retry: bool = True) -> None:
     """
     :param self:
     :param pk:
     :return:
     """
-    import time
+    #import time
     queryset = EmailSubscriber.objects.all()
     email_list = list(set(queryset.values_list('email', flat=True)))
     for to_email in email_list:
         weekly_roundup.delay(to_email)
-        time.sleep(THROTTLE_S)
+        #time.sleep(THROTTLE_S)
