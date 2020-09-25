@@ -13,7 +13,7 @@ logger = get_task_logger(__name__)
 redis = RedisService().redis
 
 
-@app.shared_task(bind=True, max_retries=1)
+@app.shared_task(bind=True, max_retries=1, rate_limit='2/s')
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     """
     :param self:
@@ -23,7 +23,7 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     es = EmailSubscriber.objects.get(pk=email_subscriber_id)
     new_bounty_daily_email(es)
 
-@app.shared_task(bind=True, max_retries=1)
+@app.shared_task(bind=True, max_retries=1, rate_limit='2/s')
 def weekly_roundup(self, to_email, retry: bool = True) -> None:
     """
     :param self:
