@@ -3,20 +3,10 @@
     return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
   }
 
-  var this_player = 'Player C';
-  var players_to_seats = [
-    "Player A",
-    "Player B",
-    "Player C",
-    "Player D",
-  ]
-  var gameboard = [
-    [1, 1, 4, 5],
-    [1, 1, 1, 1],
-    [1, 1, 0, 0],
-    [1, 1, 1, 1],
-  ];
-  var allocation = 100;
+  var this_player = document.game_config['this_player'];
+  var players_to_seats = document.game_config['players_to_seats'];
+  var gameboard = document.game_config['gameboard'];
+  var allocation = document.game_config['allocation'];
 
   var get_my_seat = function(gameboard){
     for (var key1 in gameboard) {
@@ -82,6 +72,13 @@
     return matches;
   }
 
+  var shorten_text = function(str, n){
+    if(str.length > n){
+      str = str.substring(0,n) + "...";
+    }
+    return str;
+  }
+
   var render_gameboard = function(gameboard){
     let votes_given = get_votes_by_player(gameboard);
     let votes_received = get_votes_by_player(flip_boardgame(gameboard));
@@ -91,13 +88,19 @@
 
     // header
     $target.html('<table>');
-    $target.append('<tr>');
+    $target.append('<tr class="title_row">');
     $target.append('<td>&nbsp;</td>');
     for (var key1 in gameboard) {
-      $target.append(`<td>${players_to_seats[key1]}</td>`);
+        $target.append(`<td>
+          <img src=/dynamic/avatar/${players_to_seats[key1]}>
+          <br>
+          <a href="/${players_to_seats[key1]}" target=blank>
+            ${shorten_text(players_to_seats[key1], 5)}
+          </a>
+          </td>`);
     }
-    $target.append(`<td>Votes Given</td>`);
-    $target.append(`<td>Match Amount Given</td>`);
+    $target.append(`<td>Credits Used</td>`);
+    $target.append(`<td>Voting Power</td>`);
     $target.append('</tr>');
 
     // gameboard
@@ -112,17 +115,20 @@
       }
       let html = `
       <tr class=player_row>
-      <td>
-      ${players_to_seats[key1]}
+      <td class=player_cell>
+      <div>
+        <img src=/dynamic/avatar/${players_to_seats[key1]}>
+        <br>
+        <a href="/${players_to_seats[key1]}" target=blank>
+          ${players_to_seats[key1]}
+        </a>
+      </div>
       </td> ${subhtml} 
       <td>
         ${votes_given[key1]} 
       </td>
       <td>
         ${round(matches_given[key1], 2)} 
-      </td>
-      <td>
-        <span class=comment><span>
       </td>
       </tr>
             `;
@@ -131,12 +137,12 @@
 
     // footer
     $target.append('<tr>');
-    $target.append('<td>Votes Recevied</td>');
+    $target.append('<td>Credits Received</td>');
     for (var key1 in gameboard) {
       $target.append(`<td>${votes_received[key1]}</td>`);
     }
     $target.append('</tr><tr>');
-    $target.append('<td>Match Amount Received</td>');
+    $target.append('<td>Votes Received</td>');
     for (var key1 in gameboard) {
       $target.append(`<td>${round(matches_received[key1],2)}</td>`);
     }
@@ -176,6 +182,7 @@
     }
 
     // validation passed; update board
+    $("#usage").text(my_votes);
     gameboard = new_gameboard
     render_gameboard(gameboard);
   });
