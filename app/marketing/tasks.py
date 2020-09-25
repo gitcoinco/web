@@ -8,8 +8,6 @@ from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
 
-import socket
-
 logger = get_task_logger(__name__)
 
 redis = RedisService().redis
@@ -23,9 +21,9 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     :return:
     """
 
-    # dont send roundup emails on this server, dispurse them back into the queue
-    if socket.gethostname() == 'ip-172-31-5-127':
-        self.retry(countdown=5)
+    # dont send emails on this server, dispurse them back into the queue
+    if settings.FLUSH_QUEUE:
+        redis.sadd('bounty_daily_retry', email_subscriber_id)
         return
     # actually do the task
     es = EmailSubscriber.objects.get(pk=email_subscriber_id)
@@ -39,9 +37,9 @@ def weekly_roundup(self, to_email, retry: bool = True) -> None:
     :return:
     """
 
-    # dont send roundup emails on this server, dispurse them back into the queue
-    if socket.gethostname() == 'ip-172-31-5-127':
-        self.retry(countdown=5)
+    # dont send emails on this server, dispurse them back into the queue
+    if settings.FLUSH_QUEUE:
+        redis.sadd('weekly_roundup_retry', to_email)
         return
     
     # actually do the task

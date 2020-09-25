@@ -60,6 +60,7 @@ FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-F
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
+FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
 RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
