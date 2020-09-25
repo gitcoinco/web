@@ -418,6 +418,10 @@ class RoundupEmail(SuperModel):
 
 class UpcomingDate(SuperModel):
     """Define the upcoming date model"""
+    # This fields are meant to use for update UpcomingDate based on the icalendar updates
+    uid = models.CharField(max_length=255, null=True, blank=True)
+    last_modified = models.DateTimeField(db_index=True, default=datetime.now())
+    sequence = models.SmallIntegerField(default=0)
 
     title = models.CharField(max_length=255)
     date = models.DateTimeField(db_index=True)
