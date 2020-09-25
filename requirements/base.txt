@@ -91,7 +91,7 @@ ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
 pandas
-channels=2.4.0
+channels==2.4.0
 channels_redis
 wiki
 django-bulk-update
