@@ -2603,7 +2603,7 @@ Vue.component('grants-cart', {
     const grantIds = this.grantData.map(grant => grant.grant_id);
 
     // Fetch updated CLR curves for all grants
-    const url = `${window.location.origin}/grants/v1/api/clr?pks=${grantIds.join(',')}`;
+    const url = `${window.location.origin}/grants/v1/api/grants?pks=${grantIds.join(',')}`;
     const response = await fetch(url);
     const clrCurves = (await response.json()).grants;
 
@@ -2611,7 +2611,7 @@ Vue.component('grants-cart', {
     this.grantData.forEach((grant, index) => {
       // Find the clrCurves entry with the same grant ID as this grant
       const clrIndex = clrCurves.findIndex(item => {
-        return Number(item.pk) === Number(grant.grant_id);
+        return Number(item.id) === Number(grant.grant_id);
       });
 
       // Replace the CLR prediction curve
