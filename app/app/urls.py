@@ -743,8 +743,6 @@ if settings.DEBUG:
         re_path(r'^403/$', retail.views.handler403, name='403'),
         re_path(r'^404/$', retail.views.handler404, name='404'),
         re_path(r'^500/$', retail.views.handler500, name='500'),
-        path('channels', instant.views.index, name='index'),
-        path('channels/<str:room_name>/', instant.views.room, name='room'),
     ]
 
 urlpatterns += [

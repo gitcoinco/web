@@ -1,14 +1,30 @@
 {% load static %}
 <h1>Quadratic Diplomacy</h1>
 
-<h2>Token Allocation: 100</h2>
-
-<div id=gameboard>
-
-</div>
-
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" as="style">
 <link rel="stylesheet" href="{% static "v2/css/governance/diplomacy.css" %}" as="style">
+
+<div id="call">
+
+  <div id="meet">
+  </div>
+</div>
+
+
+<div id=gameboard>
+  <script type="text/javascript">
+    document.game_config = {{game_config_json|safe}};
+  </script>
+</div>
+<h2>My Credit Allocation Usage: <span id="usage">0</span>/<span id="allocation">{{game_config.allocation}}</h2>
+
+{% include "chat/room.html" %}
+
+<script type="text/javascript">
+  document.contxt = {{ json_context|safe }};
+</script>
+<script src='https://meet.jit.si/external_api.js'></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static 'v2/js/pages/governance-diplomacy.js' %}"></script>
+<script src="{% static 'v2/js/pages/governance-chat.js' %}"></script>

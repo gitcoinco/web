@@ -1,6 +1,7 @@
 td{
   padding: 5px;
   font-size: 20px;
+    border: #ddd 1px solid;
 }
 input{
   width: 50px;
@@ -9,4 +10,17 @@ input{
 }
 input[readonly]{
   background-color: #eee;
+}
+
+#call{
+    float: right;
+}
+
+#chat-message-input{
+    width: 50%;
+}
+#gameboard img{
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
 }
