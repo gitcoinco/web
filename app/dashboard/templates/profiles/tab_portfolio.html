@@ -97,6 +97,11 @@
         {% if pi.link %}
           <a class="btn btn-gc-blue btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
         {% endif %}
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" value="{{ pi.pk }}" name="project_pk">
+          <input class="btn btn-gc-pink btn-sm m-2" type="submit" name="submit" id="submit" value="Delete">
+        </form>
       </div>
     </div>
   {% endfor %}

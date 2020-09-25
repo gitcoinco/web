@@ -67,7 +67,7 @@ class Command(BaseCommand):
             grant.save()
 
         # get grants, and apply weighted shuffle rank to them
-        grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False).order_by('pk')
+        grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False, is_clr_active=True).order_by('pk')
         weighted_list = [(grant, int(max(1, grant.clr_prediction_curve[0][1]))) for grant in grants]
         og_weighted_list = weighted_list.copy()
         ws = weighted_shuffle(weighted_list)

@@ -48,7 +48,6 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
-from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
@@ -953,10 +952,9 @@ def day_email_campaign(request, day):
     return HttpResponse(response_html)
 
 def trending_quests():
+    from quests.models import QuestAttempt
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
-    quests = Quest.objects.annotate(recent_attempts=Count('attempts', filter=Q(
-        created_on__gte=cutoff_date))
-        ).order_by('?').all()[0:10]
+    quests = [ele.quest for ele in QuestAttempt.objects.order_by('?').all()[0:10]]
     return quests
 
 def trending_avatar():
@@ -991,12 +989,22 @@ def latest_activities(user):
     increment_view_counts.delay(activities_pks)
     return activities
 
+def static_proxy(request, filepath):
+    # TODO: if this is ever extended with a dynamic filepath
+    # make sure it is VERY VERY security conscious
+    filepath = 'assets/landingpage/fusion/fusion-interface.svg'
+    content_type = 'image/svg+xml'
+    with open(filepath) as file:
+        response = HttpResponse(file, content_type=content_type)
+        return response
+
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
     keywords = profile.keywords
     hours_back = 2000
 
+    from marketing.mails import get_bounties_for_keywords
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
     max_bounties = 5
     if len(new_bounties) > max_bounties:

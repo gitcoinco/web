@@ -49,6 +49,10 @@ Vue.mixin({
       let url;
 
       switch (token_name) {
+        case 'BTC':
+          url = `https://blockstream.info/tx/${txn}`;
+          break;
+
         case 'ETC':
           url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
           break;
@@ -80,6 +84,10 @@ Vue.mixin({
       let url;
 
       switch (token_name) {
+        case 'BTC':
+          url = `https://blockstream.info/address/${address}`;
+          break;
+
         case 'ETC':
           url = `https://blockscout.com/etc/mainnet/address/${address}`;
           break;
@@ -112,17 +120,23 @@ Vue.mixin({
       let qr_string;
 
       switch (token_name) {
+        case 'BTC':
+          qr_string = value ?
+            `bitcoin:${address}?amount=${value}` :
+            `bitcoin:${address}`;
+          break;
+
         case 'ETC':
           qr_string = value ?
             `ethereum:${address}?value=${value}` :
             `ethereum:${address}`;
           break;
 
-        case 'CELO':
+        case 'CELO': // waiting : pending
         case 'cUSD':
           qr_string = value ?
-            `celo://${address}/${token_name}?v=${value}` :
-            `celo://${address}/${token_name}`;
+            `celo://wallet/pay?address=${address}&amount=${value}` :
+            `celo://wallet/pay?address=${address}`;
           break;
 
         case 'ZIL':
@@ -271,6 +285,10 @@ Vue.mixin({
 
         case 'ETC':
           tenant = 'ETC';
+          break;
+        
+        case 'BTC':
+          tenant = 'BTC';
           break;
 
         case 'CELO':

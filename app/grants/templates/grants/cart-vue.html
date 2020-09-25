@@ -27,9 +27,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static "v2/css/grants/cart.css" %}">
   </head>
 
@@ -76,6 +76,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   @click="shareCart">
                   Share cart <i class="fa fa-share-alt" aria-hidden="true"></i>
                 </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink"
+                     @click="showCreateCollection = true">
+                  Save as Collection <i class="fas fa-heart"></i>
+                </div>
               </div>
             </div>
 
@@ -83,6 +87,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             <div>
               <div class="separator" />
             </div>
+
 
             {% comment %} Main container {% endcomment %}
             <div v-if="grantData.length === 0" class="flex-container font-bigger-1 text-left grant-header-row"
@@ -96,6 +101,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             </div>
 
             <div v-else class="container" style="padding-bottom: 10rem;">
+              <div v-if="!isBrightIDVerified" class="grant-row-style">
+                <div class="row align-items-center justify-content-between">
+                  <div class="col col-12 col-md-8 col-lg-9">
+                    <strong>Get up to 30% greater CLR Match Amount by improving your Trust Bonus</strong> <br />
+                    <font size="2">
+                      Increase your CLR Match Amount by verifying your profile, and help Gitcoin be more sybil-resistant.
+                      Do this anytime before the end of the grants round to earn the match retroactively for all your contributions.
+                    </font>
+                  </div>
+                  <div class="col col-12 col-md-4 col-lg-3 mt-3 mt-md-0 mx-auto text-center">
+                    <a href="/{{ username }}/trust" class="button button--primary text-nowrap" role="button" target="_blank">Improve Trust Bonus</a>
+                  </div>
+                </div>
+              </div>
               {% comment %} Cart header {% endcomment %}
               <div v-if="!isMobileDevice"
                 class="row align-items-center justify-content-between font-smaller-2 text-left grant-header-row">
@@ -226,7 +245,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     {% comment %} CLR Match Amount {% endcomment %}
                     <div class="col-2">
                       <div class="row align-items-center justify-content-between clr-match-box">
-                        <template v-if="grant.is_clr_eligible == 'True'">
+                        <template v-if="grant.is_clr_eligible == true">
                           <div>[[grant.grant_donation_clr_match]] DAI</div>
                           <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                           width="20">
@@ -384,8 +403,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         to the Gitcoin Mainainter Grant
                       </li>
                       <li>
-                        Note: You will have to approve up to [[maxPossibleTransactions]]
-                        transactions via your Web3 wallet on submit.
+                        Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
                         <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
                           Read how this works</a>.
                       </li>
@@ -402,15 +420,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <i class="fab fa-github"></i>
                       Login with GitHub to Continue
                     </button>
-                    <button v-else class="btn btn-gc-blue button--full shadow-none py-3" id='js-fundGrants-button'
-                      @click="checkout">
-                      Fund [[this.grantData.length]] Items
-                    </button>
+                    <div v-else>
+                      <div class="mb-1">
+                        <div v-if="zkSyncUnsupportedTokens.length > 0">
+                          zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+                        </div>
+                        <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
+                          zkSync checkout not supported
+                        </div>
+                        <div v-else>
+                          Save
+                          <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
+                          on gas costs with [[ checkoutRecommendation.name ]]
+                        </div>
+                      </div>
+                      <div class="row align-items-center justify-content-between">
+                        <div class="col-auto">
+                          <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
+                            Checkout with zkSync
+                          </button>
+                          </div>
+                        <div class="col-auto">
+                          <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
+                            Standard Checkout
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
             </div>
+            {% comment %}
+              SMS Verification Modal
+              TODO: Much of this code is repeated in the Trust Bonus tab, specifically as a standalone component in
+              profile-trust.js. After Grants Round 7, this should be refactored to use a shared component between the
+              cart and the Trust Bonus tab.
+            {% endcomment %}
             <b-modal id="sms-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
               <template v-slot:default="{ hide }">
                 <div class="mx-5 mt-5 mb-4 text-center" v-if="validationStep == 'intro'">
@@ -489,6 +536,352 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </template>
             </b-modal>
+
+          {% comment %} Create Collection Modal {% endcomment %}
+            <b-modal id="createCollection" @hide="showCreateCollection = false" :visible="showCreateCollection" center hide-header hide-footer>
+              <template v-slot:modal-header="{ close }">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  @click="showCreateCollection = false"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </template>
+              <template>
+                <div class="mx-5 my-5 ">
+                  <div class="mb-3 text-center">
+                    <h1 class="mb-5 font-bigger-4 font-weight-bold">Save Cart as Collection</h1>
+                  </div>
+                  <div class="mb-3">
+                    <p class="font-subheader">Collection Name.</p>
+                    <b-form-input v-model="collectionTitle" placeholder="What would your collection be called?"></b-form-input>
+                  </div>
+                  <div class="mb-2">
+                    <p class="font-subheader">Description (Optional)</p>
+                    <b-form-textarea rows="3" max-rows="6" :state=" collectionDescription.length == 0 ? null : collectionDescription.length < 140" v-model="collectionDescription" placeholder="Short description about your collection"></b-form-textarea>
+                    <p class="text-right">[[ collectionDescription.length ]]/140</p>
+                  </div>
+
+                  <div class="mb-3" v v-if="collections.length">
+                    <h2 class="middle-line mb-3"><span class="text-muted font-body">or</span></h2>
+                    <p class="font-subheader mt-3 mb-0">Save to existing collection</p>
+                    <b-form-select v-model="selectedCollection" text-field="title" value-field="id" :options="collections" size="md" class="mt-3"></b-form-select>
+                  </div>
+
+                  <b-button @click="createCollection()" class="btn-gc-blue mt-2 mb-2" size="lg" :disabled="!isValidCollection">Save Collection</b-button>
+                  <br>
+                </div>
+              </template>
+            </b-modal>
+
+
+            {% comment %} ========================================================= {% endcomment %}
+            {% comment %} ================== START ZKSYNC MODAL =================== {% endcomment %}
+            {% comment %} ========================================================= {% endcomment %}
+
+            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false"
+              class="modal-dialog modal-lg" header-border-variant="transparent"
+              center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+            >
+              <template v-slot:modal-header="{ close }">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  @click="close()"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </template>
+              <template v-if="isZkSyncModalLoading" v-slot:default="{ hide }">
+                <div v-if="isZkSyncDown" class="p-2" style="background-color: #FFF6CF; width: 100%;">
+                  The zkSync servers are currently having some issues. If you are stuck on this
+                  loading screen, try refreshing the page. If that does not resolve the issue,
+                  you may want to proceed with Standard Checkout or try again later.
+                </div>
+                <div class="my-5 py-5">
+                  <loading-screen></loading-screen>
+                  <div class="text-center my-5">Loading...</div>
+                </div>
+              </template>
+              <template v-else v-slot:default="{ hide }">
+                <div class="mx-2 mb-4 text-center">
+                  {% comment %} Header {% endcomment %}
+                  <div class="mb-3">
+                    <img src="{% static 'v2/images/grants/zksync.svg' %}" alt="zkSync Logo" width="150">
+                    {% comment %} Header {% endcomment %}
+                    <div v-if="!zkSyncWasInterrupted">
+                      <h1 class="font-bigger-4 font-weight-bold mt-2">Pay with zkSync</h1>
+                    </div>
+                    <div v-else>
+                      <h1 class="font-bigger-4 font-weight-bold mt-2">
+                        <i class="fas fa-exclamation-triangle" style="color: #ECC94B"></i>
+                        Complete zkSync Checkout
+                      </h1>
+                    </div>
+                    {% comment %} Body {% endcomment %}
+                    <div v-if="zkSyncCheckoutStep2Status !== 'not-started'"
+                      class="mt-4 p-2 text-left font-smaller-1" style="background-color: #FFF6CF; width: 100%;"
+                    >
+                      {% comment %} Status updates for user {% endcomment %}
+                      <div class="font-weight-bold">PLEASE DO NOT CLOSE THIS WINDOW!</div>
+                      <div>
+                        <div>
+                          <span v-if="hasSufficientZkSyncBalance">
+                            Estimated processing time: <span class="font-weight-bold">&lt; 1m</span>.&nbsp;
+                          </span>
+                          <span v-else>
+                            Estimated processing time: <span class="font-weight-bold">2m&ndash;4m</span>.&nbsp;
+                          </span>
+                          <span v-if="zkSyncBlockExplorerUrl">
+                            <a :href="zkSyncBlockExplorerUrl" target="_blank">
+                              View transaction<span v-if="hasSufficientZkSyncBalance">s</span>
+                              &nbsp;<i class="fas fa-external-link-alt"></i>
+                            </a>
+                          </span>
+                        </div>
+                        <div v-if="zkSyncBlockExplorerUrl && zkSyncCheckoutStep3Status !== 'not-started'">
+                          <div v-if="zkSyncCheckoutFlowStep === 0">
+                            Confirmations received: [[currentConfirmationNumber]] of [[numberOfConfirmationsNeeded]]
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 1">
+                            {% comment %} Wait for state change commitment {% endcomment %}
+                            Waiting for confirmation that deposit was received by zkSync...
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 2">
+                            {% comment %} Get signatures for each transfer {% endcomment %}
+                            Preparing transfer [[currentTxNumber]] of [[donationInputs.length]]
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 3">
+                            {% comment %} Dispatch transfers to the zkSync network {% endcomment %}
+                            Sending transfer [[currentTxNumber]] of [[donationInputs.length]]
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 4">
+                            {% comment %} Transfer remaining balances to user's main wallet {% endcomment %}
+                            Finalizing contributions...
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 5">
+                            Checkout complete!
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p v-if="!zkSyncWasInterrupted" class="mt-4 text-left">
+                      <span v-if="zkSyncCheckoutStep2Status === 'not-started'">
+                        zkSync is powered by zkRollup with a universal setup &mdash; an L2
+                        scaling solution. Save gas fees and get faster confirmations.
+                        <a href="https://zksync.io/" target="_blank">Learn more</a>.
+                        <br><br>
+                      </span>
+                      <span v-if="hasSufficientZkSyncBalance">
+                        To pay with zkSync, you will have to sign
+                        <span v-if="zkSyncCheckoutStep2Status !== 'complete'">up to</span>
+                        [[maxPossibleSignatures]] messages with your Web3 wallet.
+                      </span>
+                      <span v-else>
+                        To pay with zkSync, you will have to sign one message and send up to
+                        [[maxPossibleTransactions]] transactions with your Web3 wallet.
+                      </span>
+                    </p>
+                    <p v-else class="mt-4 text-left">
+                      You started checking out with zkSync but never completed the process.
+                      You must complete this checkout before proceeding with any other checkouts.
+                      Please follow the prompts below to complete the process.
+                    </p>
+                    </div>
+                  </div>
+                  {% comment %} Advanced settings {% endcomment %}
+                  <div v-if="!zkSyncWasInterrupted && !hasSufficientZkSyncBalance" class="mb-3">
+                    <div class="row justify-content-end font-smaller-1 font-weight-semibold text-highlight-dark-blue">
+                      <div @click="showAdvancedSettings = !showAdvancedSettings" class="col-auto" style="cursor: pointer;">
+                        Advanced settings <i class="ml-1 fas fa-cog"></i>
+                      </div>
+                    </div>
+                    <div v-if="showAdvancedSettings" class="p-3 text-left" style="background-color: #F1F1F1; width: 100%;">
+                      <div>
+                        Save 98% on future checkouts!
+                      </div>
+                      <div class="mt-1 font-smaller-1 text-medium-dark-grey">
+                        When you have enough funds on zkSync there is no need for an L1 transaction.
+                        The funds can also be accessed via
+                        <a href="https://wallet.zksync.io/" target="_blank">https://wallet.zksync.io/</a>
+                        for use outside of Gitcoin.
+                      </div>
+                      <div class="row justify-content-start align-items-center mt-3">
+                        <div class="col-4 font-smaller-1 text-medium-dark-grey">
+                          Current deposit
+                        </div>
+                        <div class="col-1">
+                          &nbsp;
+                        </div>
+                        <div class="col-7 font-smaller-1 text-medium-dark-grey">
+                          Additional deposit
+                        </div>
+                      </div>
+                      <div>
+                        {% comment %} v-for each token in cart {% endcomment %}
+                        <div v-for="(additionalDeposit, index) in zkSyncAdditionalDeposits"
+                          class="row justify-content-start align-items-center mt-1"
+                        >
+                          <div class="col-4">
+                            [[ donationsTotal[additionalDeposit.tokenSymbol] ]] [[ additionalDeposit.tokenSymbol ]]
+                          </div>
+                          <div class="col-1">
+                            +
+                          </div>
+                          <div class="col-7">
+                            <div class="row justify-content-start align-items-center">
+                              {% comment %} User must input amount before {% endcomment %}
+                              <input v-model.number="additionalDeposit.amount" class="col-5 form-control"
+                                style="margin-left:0.5rem" min="0" step="any" type="number"
+                                :disabled="zkSyncCheckoutStep2Status !== 'not-started'"
+                              >
+                              <div class="col-5">[[ additionalDeposit.tokenSymbol ]]</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% comment %} Body {% endcomment %}
+                  <div>
+                    {% comment %} Step 1 {% endcomment %}
+                    <div class="row align-items-center justify-content-between mb-4 text-left">
+                      <div class="col-8">
+                        <div class="font-weight-bold">
+                          Step 1
+                        </div>
+                        <div>
+                          Sign in to zkSync via Gitcoin
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'"
+                          class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlow"
+                        >
+                          Sign in
+                        </button>
+                        <div v-else-if="zkSyncCheckoutStep1Status === 'pending'">
+                          <span class="text-medium-dark-grey">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processing
+                          </span>
+                        </div>
+                        <div v-else-if="zkSyncCheckoutStep1Status === 'complete'">
+                          <span class="text-highlight-green">
+                            <i class="fas fa-check"></i>
+                            Completed
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    {% comment %} Step 2 {% endcomment %}
+                    <div class="row align-items-center justify-content-between mb-4 text-left">
+                      <div class="col-8">
+                        <div class="font-weight-bold">
+                          Step 2
+                        </div>
+                        <div>
+                          <span v-if="hasSufficientZkSyncBalance">Sign in to zkSync directly</span>
+                          <span v-else>ERC20 token approvals</span>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'"
+                          :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none"
+                          @click="zkSyncBeginStep2"
+                        >
+                          <span v-if="hasSufficientZkSyncBalance">Sign in</span>
+                          <span v-else>Approve</span>
+                        </button>
+                        <div v-else-if="zkSyncCheckoutStep2Status === 'not-applicable'">
+                          <span class="text-highlight-green">
+                            <i class="fas fa-check"></i>
+                            Not required
+                          </span>
+                        </div>
+                        <div v-else-if="zkSyncCheckoutStep2Status === 'pending'">
+                          <span class="text-medium-dark-grey">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processing
+                          </span>
+                        </div>
+                        <div v-else-if="zkSyncCheckoutStep2Status === 'complete'">
+                          <span class="text-highlight-green">
+                            <i class="fas fa-check"></i>
+                            Completed
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    {% comment %} Step 3 {% endcomment %}
+                    <div class="row align-items-center justify-content-between mb-2 text-left">
+                      <div class="col-8">
+                        <div class="font-weight-bold">
+                          Step 3
+                        </div>
+                        <div>
+                          Confirm donation transaction
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted"
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'"
+                          class="btn btn-gc-blue button--full shadow-none" @click="zkSyncBeginStep3"
+                        >
+                          Confirm
+                        </button>
+                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted"
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'"
+                          class="btn btn-gc-blue button--full shadow-none" @click="resumeZkSyncDonation"
+                        >
+                          Confirm
+                        </button>
+                        <div v-else-if="zkSyncCheckoutStep3Status === 'pending'">
+                          <span class="text-medium-dark-grey">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processing
+                          </span>
+                        </div>
+                        <div v-else-if="zkSyncCheckoutStep3Status === 'complete'">
+                          <span class="text-highlight-green">
+                            <i class="fas fa-check"></i>
+                            Completed
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    {% comment %} Fees {% endcomment %}
+                    <div v-if="!hasSufficientZkSyncBalance" class="row align-items-center justify-content-between mb-4 text-left font-smaller-2">
+                      {% comment %}
+                      If user has sufficient zkSync balance, fees are shown when signing the message.
+                      If user does not have sufficient zkSync balance, the fees are hidden so 
+                      in that case we display them here.
+                      {% endcomment %}
+                      <div class="col-12">
+                        Amount in cart: [[ donationsTotalString ]]
+                      </div>
+                      <div class="col-12">
+                        Estimated fees: [[ zkSyncFeesString ]]
+                      </div>
+                      <div class="col-12">
+                        <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
+                          Read more about fees and the zkSync checkout process.
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </b-modal>
+
+            {% comment %} ========================================================= {% endcomment %}
+            {% comment %} =================== END ZKSYNC MODAL ==================== {% endcomment %}
+            {% comment %} ========================================================= {% endcomment %}
           </div>
         </grants-cart>
       </div>
@@ -508,11 +901,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 
+    {% comment %} ================================================================= {% endcomment %}
+    {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
+    {% comment %} ================================================================= {% endcomment %}
+
+    <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/zksync@0.6.4/dist/main.js"></script>
+    <script type="text/javascript">
+    (async () => {
+        // Loads and compiles wasm library
+        await zksync.crypto.loadZkSyncCrypto();
+        console.log('zkSync library is ready');
+        // Now we are ready to use zkSync with ethers, both are attached to the window
+    })();
+    </script>
+
+    {% comment %} ================================================================= {% endcomment %}
+    {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
+    {% comment %} ================================================================= {% endcomment %}
+
     <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
     <script>
+      // MOVE VERIFIED STATUS INTO JS
       document.verified = {{ verified | yesno:"true,false" }};
       document.authenticated = {{ authenticated | yesno:"true,false" }};
+      document.brightid_uuid = "{{ brightid_uuid }}";
     </script>
     <script src="{% static "v2/js/cart.js" %}"></script>
   </body>

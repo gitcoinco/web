@@ -37,7 +37,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-alpine
+          - deps37-{{ .Branch }}-{{ checksum "requirements/ci.txt" }}-alpine
           # fallback to using the latest cache if no exact match is found
           - deps37-{{ .Branch }}-alpine
 
@@ -52,7 +52,7 @@ jobs:
             echo "Requirements installed!"
 
       - save_cache:
-          key: deps37-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-alpine
+          key: deps37-{{ .Branch }}-{{ checksum "requirements/ci.txt" }}-alpine
           paths:
             - ./venv
             - "/usr/local/bin"
