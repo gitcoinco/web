@@ -7,13 +7,19 @@ import grants.utils
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0063_auto_20200622_1218'),
+        ("grants", "0063_auto_20200622_1218"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='grant',
-            name='logo',
-            field=models.ImageField(blank=True, help_text='The Grant logo image.', max_length=500, null=True, upload_to=grants.utils.get_upload_filename),
+            model_name="grant",
+            name="logo",
+            field=models.ImageField(
+                blank=True,
+                help_text="The Grant logo image.",
+                max_length=500,
+                null=True,
+                upload_to=grants.utils.get_upload_filename,
+            ),
         ),
     ]

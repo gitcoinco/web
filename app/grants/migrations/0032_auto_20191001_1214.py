@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0031_grant_weighted_shuffle'),
+        ("grants", "0031_grant_weighted_shuffle"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='contribution_count',
+            model_name="grant",
+            name="contribution_count",
             field=models.PositiveIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='grant',
-            name='contributor_count',
+            model_name="grant",
+            name="contributor_count",
             field=models.PositiveIntegerField(blank=True, default=0),
         ),
     ]

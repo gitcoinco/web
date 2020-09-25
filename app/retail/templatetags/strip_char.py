@@ -26,4 +26,4 @@ register = template.Library()
 def strip_char(h, _str):
     if type(h) == list:
         h = "-".join(h)
-    return h.replace(_str,'')
+    return h.replace(_str, "")

@@ -35,14 +35,14 @@ from grants.models import (
 class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
-    ordering = ['-id']
+    ordering = ["-id"]
 
 
 class FlagAdmin(admin.ModelAdmin):
     """Define the FlagAdmin administration layout."""
 
-    ordering = ['-id']
-    raw_id_fields = ['profile', 'grant']
+    ordering = ["-id"]
+    raw_id_fields = ["profile", "grant"]
 
     def response_change(self, request, obj):
         if "_post_flag" in request.POST:
@@ -65,55 +65,112 @@ class FlagAdmin(admin.ModelAdmin):
         return redirect(obj.admin_url)
 
 
-
 class MatchPledgeAdmin(admin.ModelAdmin):
     """Define the MatchPledge administration layout."""
 
-    ordering = ['-id']
-    raw_id_fields = ['profile']
-    list_display =['pk', 'profile', 'active','pledge_type','amount']
+    ordering = ["-id"]
+    raw_id_fields = ["profile"]
+    list_display = ["pk", "profile", "active", "pledge_type", "amount"]
 
 
 class CLRMatchAdmin(admin.ModelAdmin):
     """Define the CLRMatch administration layout."""
 
-    ordering = ['-id']
-    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
+    ordering = ["-id"]
+    raw_id_fields = ["grant", "payout_contribution", "test_payout_contribution"]
 
 
 class GrantAdmin(GeneralAdmin):
     """Define the Grant administration layout."""
 
-    ordering = ['-id']
+    ordering = ["-id"]
     fields = [
-        'migrated_to',
-        'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
-        'amount_received', 'monthly_amount_subscribed',
-        'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
-        'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
-        'logo_asset', 'created_on', 'modified_on', 'team_member_list',
-        'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
-        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history'
+        "migrated_to",
+        "title",
+        "grant_type",
+        "categories",
+        "description",
+        "description_rich",
+        "github_project_url",
+        "reference_url",
+        "admin_address",
+        "active",
+        "amount_received",
+        "monthly_amount_subscribed",
+        "deploy_tx_id",
+        "cancel_tx_id",
+        "admin_profile",
+        "token_symbol",
+        "token_address",
+        "contract_address",
+        "contract_version",
+        "network",
+        "required_gas_price",
+        "logo_svg_asset",
+        "logo_asset",
+        "created_on",
+        "modified_on",
+        "team_member_list",
+        "subscriptions_links",
+        "contributions_links",
+        "logo",
+        "logo_svg",
+        "image_css",
+        "link",
+        "clr_prediction_curve",
+        "hidden",
+        "next_clr_calc_date",
+        "last_clr_calc_date",
+        "metadata",
+        "twitter_handle_1",
+        "twitter_handle_2",
+        "view_count",
+        "is_clr_eligible",
+        "in_active_clrs",
+        "last_update",
+        "funding_info",
+        "twitter_verified",
+        "twitter_verified_by",
+        "twitter_verified_at",
+        "stats_history",
     ]
     readonly_fields = [
-        'logo_svg_asset', 'logo_asset',
-        'team_member_list', 'clr_prediction_curve',
-        'subscriptions_links', 'contributions_links', 'link',
-        'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
+        "logo_svg_asset",
+        "logo_asset",
+        "team_member_list",
+        "clr_prediction_curve",
+        "subscriptions_links",
+        "contributions_links",
+        "link",
+        "migrated_to",
+        "view_count",
+        "in_active_clrs",
+        "stats_history",
     ]
-    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
-    raw_id_fields = ['admin_profile', 'twitter_verified_by']
-    search_fields = ['description', 'admin_profile__handle']
-
+    list_display = [
+        "pk",
+        "sybil_score",
+        "weighted_risk_score",
+        "match_amount",
+        "positive_round_contributor_count",
+        "is_clr_eligible",
+        "title",
+        "active",
+        "link",
+        "hidden",
+        "migrated_to",
+    ]
+    raw_id_fields = ["admin_profile", "twitter_verified_by"]
+    search_fields = ["description", "admin_profile__handle"]
 
     # Custom Avatars
     def logo_svg_asset(self, instance):
         """Define the logo SVG tag to be displayed in the admin."""
         if instance.logo_svg and instance.logo_svg.url:
-            return mark_safe(f'<img src="{instance.svg.url}" width="300" height="300" />')
-        return mark_safe('N/A')
+            return mark_safe(
+                f'<img src="{instance.svg.url}" width="300" height="300" />'
+            )
+        return mark_safe("N/A")
 
     def view_count(self, instance):
         return instance.get_view_count
@@ -122,7 +179,7 @@ class GrantAdmin(GeneralAdmin):
         try:
             return round(instance.clr_prediction_curve[0][1])
         except:
-            return '-'
+            return "-"
 
     def team_member_list(self, instance):
         items = []
@@ -143,8 +200,10 @@ class GrantAdmin(GeneralAdmin):
     def logo_asset(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         if instance.logo and instance.logo.url:
-            return mark_safe(f'<img src="{instance.logo.url}" width="300" height="300" />')
-        return mark_safe('N/A')
+            return mark_safe(
+                f'<img src="{instance.logo.url}" width="300" height="300" />'
+            )
+        return mark_safe("N/A")
 
     def subscriptions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
@@ -153,7 +212,7 @@ class GrantAdmin(GeneralAdmin):
         # if not self.request.GET('expand'):
         #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
-        for ele in instance.subscriptions.all().order_by('pk'):
+        for ele in instance.subscriptions.all().order_by("pk"):
             html = f"<a href='{ele.admin_url}'>{ele}</a>"
             eles.append(html)
 
@@ -164,13 +223,15 @@ class GrantAdmin(GeneralAdmin):
         eles = []
 
         # todo: figure out how to set request
-        #if not self.request.GET('expand'):
+        # if not self.request.GET('expand'):
         #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for ele in instance.contributions.filter(success=i).order_by('-subscription__amount_per_period_usdt'):
+            for ele in instance.contributions.filter(success=i).order_by(
+                "-subscription__amount_per_period_usdt"
+            ):
                 html = f" - <a href='{ele.admin_url}'>{ele}</a>"
                 eles.append(html)
 
@@ -184,8 +245,10 @@ class GrantAdmin(GeneralAdmin):
     def stats_history(self, instance):
         html = "<table>"
         html += "<tr><td>Date</td><td>Impressions</td><td>Contributions</td></tr>"
-        for ele in instance.stats.filter(snapshot_type='increment').order_by('-created_on'):
-            html += f'''<tr>
+        for ele in instance.stats.filter(snapshot_type="increment").order_by(
+            "-created_on"
+        ):
+            html += f"""<tr>
 <td>
 {ele.created_on.strftime("%m/%d/%Y")}
 </td><td>
@@ -193,22 +256,22 @@ class GrantAdmin(GeneralAdmin):
 </td><td>
 {ele.data.get('contributions')}
 </td>
-            </tr>'''
+            </tr>"""
         html += "</table>"
         return mark_safe(html)
 
-    logo_svg_asset.short_description = 'Logo SVG Asset'
-    logo_asset.short_description = 'Logo Image Asset'
-
+    logo_svg_asset.short_description = "Logo SVG Asset"
+    logo_asset.short_description = "Logo Image Asset"
 
 
 class SubscriptionAdmin(GeneralAdmin):
     """Define the Subscription administration layout."""
-    raw_id_fields = ['grant', 'contributor_profile']
+
+    raw_id_fields = ["grant", "contributor_profile"]
     readonly_fields = [
-        'contributions_links',
-        'error_email_copy_insufficient_balance',
-        'error_email_copy_not_active',
+        "contributions_links",
+        "error_email_copy_insufficient_balance",
+        "error_email_copy_not_active",
     ]
 
     def contributions_links(self, instance):
@@ -223,7 +286,7 @@ class SubscriptionAdmin(GeneralAdmin):
 
     def error_email_copy_insufficient_balance(self, instance):
         if not instance.error:
-            return ''
+            return ""
         reason = "you dont have enough of a balance of DAI in your account"
         amount = int(instance.amount_per_period)
         html = f"""
@@ -243,10 +306,13 @@ kevin (team gitcoin)
 
     def error_email_copy_not_active(self, instance):
         if not instance.error:
-            return ''
+            return ""
         reason = "you need to top up your balance of DAI in your account"
         amount = float(instance.gas_price / 10 ** 18)
-        amount =  str('%.18f' % amount ) + f" {instance.token_symbol} ({amount} {instance.token_symbol})"
+        amount = (
+            str("%.18f" % amount)
+            + f" {instance.token_symbol} ({amount} {instance.token_symbol})"
+        )
         html = f"""
 <textarea>
 hey there,
@@ -263,23 +329,43 @@ kevin (team gitcoin)
         return mark_safe(html)
 
 
-
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
-    raw_id_fields = ['subscription', 'profile_for_clr']
-    list_display = ['pk', 'created_on_nt', 'created_on', 'id', 'user_sybil_score', 'etherscan_links', 'amount_str', 'profile', 'grant', 'tx_cleared', 'success', 'validator_comment']
-    readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
-    search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
+
+    raw_id_fields = ["subscription", "profile_for_clr"]
+    list_display = [
+        "pk",
+        "created_on_nt",
+        "created_on",
+        "id",
+        "user_sybil_score",
+        "etherscan_links",
+        "amount_str",
+        "profile",
+        "grant",
+        "tx_cleared",
+        "success",
+        "validator_comment",
+    ]
+    readonly_fields = [
+        "etherscan_links",
+        "amount_per_period_to_gitcoin",
+        "amount_per_period_minus_gas_price",
+        "amount_per_period",
+    ]
+    search_fields = ["tx_id", "split_tx_id", "subscription__token_symbol"]
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
         if not tx_id:
             tx_id = obj.split_tx_id
-        tx_url = 'https://etherscan.io/tx/' + tx_id
+        tx_url = "https://etherscan.io/tx/" + tx_id
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
-        return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+        return format_html(
+            f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>"
+        )
 
     def created_on_nt(self, obj):
         return naturaltime(obj.created_on)
@@ -294,7 +380,9 @@ class ContributionAdmin(GeneralAdmin):
         return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
 
     def grant(self, obj):
-        return mark_safe(f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>")
+        return mark_safe(
+            f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>"
+        )
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
@@ -305,7 +393,11 @@ class ContributionAdmin(GeneralAdmin):
     def from_ip_address(self, instance):
         end = instance.created_on + timezone.timedelta(hours=1)
         start = instance.created_on - timezone.timedelta(hours=1)
-        visits = set(instance.subscription.contributor_profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = set(
+            instance.subscription.contributor_profile.actions.filter(
+                created_on__gt=start, created_on__lte=end
+            ).values_list("ip_address", flat=True)
+        )
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
@@ -326,6 +418,7 @@ class ContributionAdmin(GeneralAdmin):
     def response_change(self, request, obj):
         if "_notify_contribution_failure" in request.POST:
             from marketing.mails import grant_txn_failed
+
             grant_txn_failed(obj)
             obj.validator_comment += f"User Notified {timezone.now()}"
             obj.save()
@@ -340,9 +433,9 @@ class ContributionAdmin(GeneralAdmin):
 class PhantomFundingAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
-    ordering = ['-id']
-    list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
-    raw_id_fields = ['profile', 'grant']
+    ordering = ["-id"]
+    list_display = ["id", "github_created_on", "from_ip_address", "__str__"]
+    raw_id_fields = ["profile", "grant"]
 
     def github_created_on(self, instance):
         return naturaltime(instance.profile.github_created_on)
@@ -350,34 +443,38 @@ class PhantomFundingAdmin(admin.ModelAdmin):
     def from_ip_address(self, instance):
         end = instance.created_on + timezone.timedelta(hours=1)
         start = instance.created_on - timezone.timedelta(hours=1)
-        visits = set(instance.profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = set(
+            instance.profile.actions.filter(
+                created_on__gt=start, created_on__lte=end
+            ).values_list("ip_address", flat=True)
+        )
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
 
 class CartActivityAdmin(admin.ModelAdmin):
-    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'latest', 'created_on']
-    raw_id_fields = ['grant', 'profile']
-    search_fields = ['bulk', 'action', 'grant']
+    list_display = ["id", "grant", "profile", "action", "bulk", "latest", "created_on"]
+    raw_id_fields = ["grant", "profile"]
+    search_fields = ["bulk", "action", "grant"]
 
 
 class GrantTypeAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name']
-    readonly_fields = ['pk']
+    list_display = ["pk", "name"]
+    readonly_fields = ["pk"]
 
 
 class GrantCategoryAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'category']
-    readonly_fields = ['pk']
+    list_display = ["pk", "category"]
+    readonly_fields = ["pk"]
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active']
+    list_display = ["pk", "round_num", "start_date", "end_date", "is_active"]
 
 
 class GrantCollectionAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
-    raw_id_fields = ['profile', 'grants', 'curators']
+    list_display = ["pk", "title", "description", "hidden", "cache", "featured"]
+    raw_id_fields = ["profile", "grants", "curators"]
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)

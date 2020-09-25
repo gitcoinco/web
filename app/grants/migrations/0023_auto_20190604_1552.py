@@ -6,9 +6,10 @@ from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
+
 def forwards(apps, schema_editor):
     ## ROUND 2 CLR Match Amounts
-    '''
+    """
     from grants.models import CLRMatch
     # array of [grant_id, amount]
     try:
@@ -28,20 +29,20 @@ def forwards(apps, schema_editor):
                         )
     except Exception as e:
         logger.info(e)
-    '''
+    """
     pass
+
 
 def backwards(apps, schema_editor):
     pass
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0022_auto_20190604_1547'),
+        ("grants", "0022_auto_20190604_1547"),
     ]
 
     operations = [
-            migrations.RunPython(forwards, backwards),
+        migrations.RunPython(forwards, backwards),
     ]
-
-

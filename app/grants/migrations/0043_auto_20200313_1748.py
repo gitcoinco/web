@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0042_grant_amount_received_with_phantom_funds'),
+        ("grants", "0042_grant_amount_received_with_phantom_funds"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='grant',
-            name='grant_type',
-            field=models.CharField(choices=[('tech', 'tech'), ('health', 'health'), ('media', 'media')], default='tech', help_text='Grant CLR category', max_length=15),
+            model_name="grant",
+            name="grant_type",
+            field=models.CharField(
+                choices=[("tech", "tech"), ("health", "health"), ("media", "media")],
+                default="tech",
+                help_text="Grant CLR category",
+                max_length=15,
+            ),
         ),
     ]

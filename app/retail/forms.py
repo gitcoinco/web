@@ -25,20 +25,26 @@ from django.utils.translation import gettext_lazy as _
 class FundingLimitIncreaseRequestForm(forms.Form):
     """Define the FundingLimitIncreaseRequestForm handling."""
 
-    usdt_per_tx = forms.DecimalField(label=_('New Limit in USD per Transaction'), initial=500, max_digits=50)
-    usdt_per_week = forms.DecimalField(label=_('New Limit in USD per Week'), initial=1500, max_digits=50)
+    usdt_per_tx = forms.DecimalField(
+        label=_("New Limit in USD per Transaction"), initial=500, max_digits=50
+    )
+    usdt_per_week = forms.DecimalField(
+        label=_("New Limit in USD per Week"), initial=1500, max_digits=50
+    )
     comment = forms.CharField(max_length=500, widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         super(FundingLimitIncreaseRequestForm, self).__init__(*args, **kwargs)
 
-        self.fields['comment'].widget.attrs['placeholder'] = _('Please tell us why you need a limit increase.')
-        self.fields['comment'].widget.attrs['rows'] = '4'
-        self.fields['comment'].widget.attrs['cols'] = '50'
+        self.fields["comment"].widget.attrs["placeholder"] = _(
+            "Please tell us why you need a limit increase."
+        )
+        self.fields["comment"].widget.attrs["rows"] = "4"
+        self.fields["comment"].widget.attrs["cols"] = "50"
 
         for field in self.fields:
-            self.fields[field].widget.attrs['class'] = 'form__input'
+            self.fields[field].widget.attrs["class"] = "form__input"
 
     def clean_comment(self):
-        comment = self.cleaned_data['comment'] or ''
+        comment = self.cleaned_data["comment"] or ""
         return escape(strip_tags(comment))

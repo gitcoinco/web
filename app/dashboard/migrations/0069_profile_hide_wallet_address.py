@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0068_auto_20191211_1458'),
+        ("dashboard", "0068_auto_20191211_1458"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='hide_wallet_address',
-            field=models.BooleanField(default=True, help_text='If this option is chosen, we will remove your wallet information all together'),
+            model_name="profile",
+            name="hide_wallet_address",
+            field=models.BooleanField(
+                default=True,
+                help_text="If this option is chosen, we will remove your wallet information all together",
+            ),
         ),
     ]

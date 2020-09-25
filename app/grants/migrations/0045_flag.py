@@ -8,25 +8,72 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0044_auto_20200320_1438'),
+        ("grants", "0044_auto_20200320_1438"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Flag',
+            name="Flag",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('comments', models.TextField(blank=True, default='', help_text='The comments.')),
-                ('processed', models.BooleanField(default=False, help_text='Was it processed?')),
-                ('comments_admin', models.TextField(blank=True, default='', help_text='The comments of an admin.')),
-                ('tweet', models.URLField(blank=True, help_text='The associated reference URL of the Grant.')),
-                ('grant', models.ForeignKey(help_text='The associated Grant.', on_delete=django.db.models.deletion.CASCADE, related_name='flags', to='grants.Grant')),
-                ('profile', models.ForeignKey(help_text="The flagger's profile.", null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='grantflags', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "comments",
+                    models.TextField(blank=True, default="", help_text="The comments."),
+                ),
+                (
+                    "processed",
+                    models.BooleanField(default=False, help_text="Was it processed?"),
+                ),
+                (
+                    "comments_admin",
+                    models.TextField(
+                        blank=True, default="", help_text="The comments of an admin."
+                    ),
+                ),
+                (
+                    "tweet",
+                    models.URLField(
+                        blank=True,
+                        help_text="The associated reference URL of the Grant.",
+                    ),
+                ),
+                (
+                    "grant",
+                    models.ForeignKey(
+                        help_text="The associated Grant.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="flags",
+                        to="grants.Grant",
+                    ),
+                ),
+                (
+                    "profile",
+                    models.ForeignKey(
+                        help_text="The flagger's profile.",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="grantflags",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

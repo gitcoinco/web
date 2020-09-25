@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core.management.base import BaseCommand
 
@@ -30,47 +30,56 @@ def set_created(activity, date):
 
 
 def create_activities(bounty):
-    act = record_bounty_activity('new_bounty', None, bounty)
+    act = record_bounty_activity("new_bounty", None, bounty)
     set_created(act, bounty.web3_created)
-    approval_required = bounty.permission_type == 'approval'
+    approval_required = bounty.permission_type == "approval"
     for interest in bounty.interested.all():
-        event_name = 'start_work' if not approval_required else 'worker_applied'
-        act = record_bounty_activity_interest(bounty, interest.profile.user, event_name, interest)
+        event_name = "start_work" if not approval_required else "worker_applied"
+        act = record_bounty_activity_interest(
+            bounty, interest.profile.user, event_name, interest
+        )
         set_created(act, interest.created)
         if approval_required and interest.status != Interest.STATUS_REVIEW:
-            act = record_bounty_activity_interest(bounty, interest.profile.user, 'worker_approved', interest)
+            act = record_bounty_activity_interest(
+                bounty, interest.profile.user, "worker_approved", interest
+            )
             set_created(act, interest.acceptance_date)
     done_recorded = False
     for fulfillment in bounty.fulfillments.all():
-        act = record_bounty_activity('work_submitted', bounty.prev_bounty, bounty, fulfillment)
+        act = record_bounty_activity(
+            "work_submitted", bounty.prev_bounty, bounty, fulfillment
+        )
         set_created(act, fulfillment.created_on)
         if fulfillment.accepted:
-            act = record_bounty_activity('work_done', bounty.prev_bounty, bounty, fulfillment)
+            act = record_bounty_activity(
+                "work_done", bounty.prev_bounty, bounty, fulfillment
+            )
             set_created(act, fulfillment.accepted_on)
             done_recorded = True
-    if bounty.status == 'done' and not done_recorded:
-        act = record_bounty_activity('work_done', bounty.prev_bounty, bounty)
+    if bounty.status == "done" and not done_recorded:
+        act = record_bounty_activity("work_done", bounty.prev_bounty, bounty)
         set_created(act, bounty.fulfillment_accepted_on)
-    if bounty.status == 'cancelled':
-        act = record_bounty_activity('killed_bounty', bounty.prev_bounty, bounty)
+    if bounty.status == "cancelled":
+        act = record_bounty_activity("killed_bounty", bounty.prev_bounty, bounty)
         set_created(act, bounty.canceled_on)
 
 
 class Command(BaseCommand):
 
-    help = 'creates activity records for current bounties'
+    help = "creates activity records for current bounties"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-force', '--force',
-            action='store_true',
-            dest='force_refresh',
+            "-force",
+            "--force",
+            action="store_true",
+            dest="force_refresh",
             default=False,
-            help='Force the refresh'
+            help="Force the refresh",
         )
 
     def handle(self, *args, **options):
-        force_refresh = options['force_refresh']
+        force_refresh = options["force_refresh"]
         if force_refresh:
             Activity.objects.all().delete()
         bounties = Bounty.objects.current()

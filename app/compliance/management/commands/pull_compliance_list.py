@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import urllib.request
 import xml.etree as etree
@@ -31,7 +31,9 @@ def insert_countries():
     Country.objects.all().delete()
 
     # pull data
-    countries = 'Balkans, Belarus, Burma, Cote D\'Ivoire , Cuba, Democratic Republic of Congo, Iran, Iraq, Liberia, North Korea, Sudan, Syria, Zimbabwe'.split(',')
+    countries = "Balkans, Belarus, Burma, Cote D'Ivoire , Cuba, Democratic Republic of Congo, Iran, Iraq, Liberia, North Korea, Sudan, Syria, Zimbabwe".split(
+        ","
+    )
 
     # insert data
     for country in countries:
@@ -43,7 +45,7 @@ def insert_entities():
     Entity.objects.all().delete()
 
     # pull data
-    url = 'https://www.treasury.gov/ofac/downloads/consolidated/consolidated.xml'
+    url = "https://www.treasury.gov/ofac/downloads/consolidated/consolidated.xml"
     response = urllib.request.urlopen(url).read()
     tree = ET.fromstring(response)
 
@@ -51,12 +53,23 @@ def insert_entities():
     for ele in tree:
         try:
             response = {}
-            keys = ['firstName', 'lastName', 'sdnType', 'city', 'country', 'program', 'stateOrProvince', 'uid']
+            keys = [
+                "firstName",
+                "lastName",
+                "sdnType",
+                "city",
+                "country",
+                "program",
+                "stateOrProvince",
+                "uid",
+            ]
             for key in keys:
-                elements = ele.findall('{http://tempuri.org/sdnList.xsd}' + f'{key}')
-                element = elements[0].text if len(elements) else ''
+                elements = ele.findall("{http://tempuri.org/sdnList.xsd}" + f"{key}")
+                element = elements[0].text if len(elements) else ""
                 response[key] = element
-            response['fullName'] = (response.get('firstName', '') + ' ' + response.get('lastName', '')).strip()
+            response["fullName"] = (
+                response.get("firstName", "") + " " + response.get("lastName", "")
+            ).strip()
             Entity.objects.create(**response)
         except Exception as e:
             print(e)
@@ -64,7 +77,7 @@ def insert_entities():
 
 class Command(BaseCommand):
 
-    help = 'syncs compliance info from remote server'
+    help = "syncs compliance info from remote server"
 
     def handle(self, *args, **options):
         with transaction.atomic():

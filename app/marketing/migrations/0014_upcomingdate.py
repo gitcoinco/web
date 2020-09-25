@@ -7,24 +7,37 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0013_auto_20200413_1223'),
+        ("marketing", "0013_auto_20200413_1223"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UpcomingDate',
+            name="UpcomingDate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('title', models.CharField(max_length=255)),
-                ('date', models.DateTimeField(db_index=True)),
-                ('img_url', models.URLField(blank=True, db_index=True)),
-                ('url', models.URLField(db_index=True)),
-                ('comment', models.TextField(blank=True, default='', max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("title", models.CharField(max_length=255)),
+                ("date", models.DateTimeField(db_index=True)),
+                ("img_url", models.URLField(blank=True, db_index=True)),
+                ("url", models.URLField(db_index=True)),
+                ("comment", models.TextField(blank=True, default="", max_length=255)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

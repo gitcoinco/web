@@ -29,7 +29,7 @@ from linkshortener.models import Link
 
 class Command(BaseCommand):
 
-    help = 'makes a bunch of request coins'
+    help = "makes a bunch of request coins"
 
     def handle(self, *args, **options):
 
@@ -45,8 +45,8 @@ class Command(BaseCommand):
                 code = get_random_string(8)
                 link = Link.objects.create(
                     shortcode=code,
-                    url=f'https://gitcoin.co/requests?code={code}',
+                    url=f"https://gitcoin.co/requests?code={code}",
                     comments=comments,
                     uses=0,
-                    )
+                )
                 print(f"{comments}, https://gitcoin.co/l/" + link.shortcode)

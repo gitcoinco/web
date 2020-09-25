@@ -8,59 +8,121 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0041_auto_20190718_1222'),
+        ("dashboard", "0041_auto_20190718_1222"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HackathonSponsor',
+            name="HackathonSponsor",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('sponsor_type', models.CharField(choices=[('G', 'Gold'), ('S', 'Silver')], default='G', max_length=1)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "sponsor_type",
+                    models.CharField(
+                        choices=[("G", "Gold"), ("S", "Silver")],
+                        default="G",
+                        max_length=1,
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Sponsor',
+            name="Sponsor",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('name', models.CharField(help_text='sponsor Name', max_length=255)),
-                ('logo', models.ImageField(blank=True, help_text='sponsor logo', upload_to='')),
-                ('logo_svg', models.FileField(blank=True, help_text='sponsor logo svg', upload_to='')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("name", models.CharField(help_text="sponsor Name", max_length=255)),
+                (
+                    "logo",
+                    models.ImageField(
+                        blank=True, help_text="sponsor logo", upload_to=""
+                    ),
+                ),
+                (
+                    "logo_svg",
+                    models.FileField(
+                        blank=True, help_text="sponsor logo svg", upload_to=""
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddField(
-            model_name='hackathonevent',
-            name='background_color',
-            field=models.CharField(blank=True, help_text='hexcode for the banner', max_length=255, null=True),
+            model_name="hackathonevent",
+            name="background_color",
+            field=models.CharField(
+                blank=True,
+                help_text="hexcode for the banner",
+                max_length=255,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='hackathonevent',
-            name='identifier',
-            field=models.CharField(default='', help_text='used for custom styling for the banner', max_length=255),
+            model_name="hackathonevent",
+            name="identifier",
+            field=models.CharField(
+                default="",
+                help_text="used for custom styling for the banner",
+                max_length=255,
+            ),
         ),
         migrations.AddField(
-            model_name='hackathonsponsor',
-            name='hackathon',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='dashboard.HackathonEvent'),
+            model_name="hackathonsponsor",
+            name="hackathon",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="dashboard.HackathonEvent",
+            ),
         ),
         migrations.AddField(
-            model_name='hackathonsponsor',
-            name='sponsor',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='dashboard.Sponsor'),
+            model_name="hackathonsponsor",
+            name="sponsor",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="dashboard.Sponsor",
+            ),
         ),
         migrations.AddField(
-            model_name='hackathonevent',
-            name='sponsors',
-            field=models.ManyToManyField(through='dashboard.HackathonSponsor', to='dashboard.Sponsor'),
+            model_name="hackathonevent",
+            name="sponsors",
+            field=models.ManyToManyField(
+                through="dashboard.HackathonSponsor", to="dashboard.Sponsor"
+            ),
         ),
     ]

@@ -20,8 +20,8 @@ class SilentFileStorage(ManifestFilesMixin, S3Boto3Storage):
     location = settings.STATICFILES_LOCATION
 
     def __init__(self, *args, **kwargs):
-        kwargs['bucket'] = settings.AWS_STORAGE_BUCKET_NAME
-        kwargs['custom_domain'] = settings.AWS_S3_CUSTOM_DOMAIN
+        kwargs["bucket"] = settings.AWS_STORAGE_BUCKET_NAME
+        kwargs["custom_domain"] = settings.AWS_S3_CUSTOM_DOMAIN
         super(SilentFileStorage, self).__init__(*args, **kwargs)
 
     def _save_content(self, obj, content, parameters):
@@ -57,8 +57,10 @@ class SilentFileStorage(ManifestFilesMixin, S3Boto3Storage):
     def _url(self, hashed_name_func, name, force=True, hashed_files=None):
         """Handle catching bad URLs and return the name if route is unavailable."""
         try:
-            hashed_name = self.stored_name or ''
-            return super(SilentFileStorage, self)._url(hashed_name, name, force=force, hashed_files=hashed_files)
+            hashed_name = self.stored_name or ""
+            return super(SilentFileStorage, self)._url(
+                hashed_name, name, force=force, hashed_files=hashed_files
+            )
         except Exception:
             return name
 
@@ -69,10 +71,10 @@ class MediaFileStorage(S3Boto3Storage):
     location = settings.MEDIAFILES_LOCATION
 
     def __init__(self, *args, **kwargs):
-        kwargs['bucket'] = settings.MEDIA_BUCKET
-        kwargs['custom_domain'] = settings.MEDIA_CUSTOM_DOMAIN
+        kwargs["bucket"] = settings.MEDIA_BUCKET
+        kwargs["custom_domain"] = settings.MEDIA_CUSTOM_DOMAIN
         super(MediaFileStorage, self).__init__(*args, **kwargs)
 
 
 def get_salted_path(instance, filename):
-    return f'assets/{token_hex(16)[:15]}/{basename(filename)}'
+    return f"assets/{token_hex(16)[:15]}/{basename(filename)}"

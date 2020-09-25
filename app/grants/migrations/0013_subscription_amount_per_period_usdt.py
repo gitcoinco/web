@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0012_auto_20190222_1611'),
+        ("grants", "0012_auto_20190222_1611"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='subscription',
-            name='amount_per_period_usdt',
-            field=models.DecimalField(decimal_places=18, default=0, help_text='The amount per contribution period in USDT', max_digits=64),
+            model_name="subscription",
+            name="amount_per_period_usdt",
+            field=models.DecimalField(
+                decimal_places=18,
+                default=0,
+                help_text="The amount per contribution period in USDT",
+                max_digits=64,
+            ),
         ),
     ]

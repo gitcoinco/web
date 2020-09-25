@@ -13,6 +13,7 @@ redis = RedisService().redis
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
 
+
 @app.shared_task(bind=True, max_retries=3)
 def increment_view_counts(self, pks, retry=False):
     """
@@ -35,6 +36,7 @@ def increment_view_counts(self, pks, retry=False):
         activities = Activity.objects.filter(pk__in=pks)
         for obj in activities:
             invalidate_obj(obj)
+
 
 @app.shared_task(bind=True, max_retries=3)
 def increment_offer_view_counts(self, pks, retry=False):
@@ -66,10 +68,10 @@ def send_comment_email(self, pk, retry=False):
 
         from townsquare.models import Comment
         from marketing.mails import comment_email
+
         instance = Comment.objects.get(pk=pk)
         comment_email(instance)
         print("SENT EMAIL")
-
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -81,6 +83,7 @@ def calculate_clr_match(self, retry=False):
     with redis.lock("tasks:calculate_clr_match", timeout=LOCK_TIMEOUT):
 
         from townsquare.models import MatchRound
+
         mr = MatchRound.objects.current().first()
         if mr:
             mr.process()

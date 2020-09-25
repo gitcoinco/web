@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0071_remove_grant_grant_type_purge'),
+        ("grants", "0071_remove_grant_grant_type_purge"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='in_active_clrs',
-            field=models.ManyToManyField(help_text='Active Grants CLR Round', to='grants.GrantCLR'),
+            model_name="grant",
+            name="in_active_clrs",
+            field=models.ManyToManyField(
+                help_text="Active Grants CLR Round", to="grants.GrantCLR"
+            ),
         ),
     ]

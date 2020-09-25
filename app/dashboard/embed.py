@@ -9,7 +9,7 @@ from git.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont
 from ratelimit.decorators import ratelimit
 
-AVATAR_BASE = 'assets/other/avatars/'
+AVATAR_BASE = "assets/other/avatars/"
 
 
 def wrap_text(text, w=30):
@@ -26,7 +26,7 @@ def wrap_text(text, w=30):
 
 
 def summarize_bounties(bounties):
-    val_usdt = sum(bounties.values_list('_val_usd_db', flat=True))
+    val_usdt = sum(bounties.values_list("_val_usd_db", flat=True))
 
     if val_usdt < 1:
         return False, ""
@@ -34,91 +34,94 @@ def summarize_bounties(bounties):
     currency_to_value = {bounty.token_name: 0.00 for bounty in bounties}
     for bounty in bounties:
         currency_to_value[bounty.token_name] += float(bounty.value_true)
-    other_values = ", ".join([
-        f"{round(value, 2)} {token_name}"
-        for token_name, value in currency_to_value.items()
-    ])
-    is_plural = 's' if bounties.count() > 1 else ''
-    return True, f"Total: {bounties.count()} issue{is_plural}, {val_usdt} USD, {other_values}"
+    other_values = ", ".join(
+        [
+            f"{round(value, 2)} {token_name}"
+            for token_name, value in currency_to_value.items()
+        ]
+    )
+    is_plural = "s" if bounties.count() > 1 else ""
+    return (
+        True,
+        f"Total: {bounties.count()} issue{is_plural}, {val_usdt} USD, {other_values}",
+    )
 
 
-@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key="ip", rate="50/m", method=ratelimit.UNSAFE, block=True)
 def stat(request, key):
 
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
     from matplotlib.figure import Figure
     from matplotlib.dates import DateFormatter
     from marketing.models import Stat
+
     limit = 10
-    weekly_stats = Stat.objects.filter(key=key).order_by('created_on')
+    weekly_stats = Stat.objects.filter(key=key).order_by("created_on")
     # weekly stats only
     weekly_stats = weekly_stats.filter(
-        created_on__hour=1,
-        created_on__week_day=1
-    ).filter(
-        created_on__gt=(timezone.now() - timezone.timedelta(weeks=7))
-    )
+        created_on__hour=1, created_on__week_day=1
+    ).filter(created_on__gt=(timezone.now() - timezone.timedelta(weeks=7)))
 
-    daily_stats = Stat.objects.filter(key=key) \
-        .filter(
-            created_on__gt=(timezone.now() - timezone.timedelta(days=7))
-        ).order_by('created_on')
+    daily_stats = (
+        Stat.objects.filter(key=key)
+        .filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7)))
+        .order_by("created_on")
+    )
     daily_stats = daily_stats.filter(created_on__hour=1)  # daily stats only
 
     stats = weekly_stats if weekly_stats.count() < limit else daily_stats
 
-    fig = Figure(figsize=(1.6, 1.5), dpi=80, facecolor='w', edgecolor='k')
+    fig = Figure(figsize=(1.6, 1.5), dpi=80, facecolor="w", edgecolor="k")
     ax = fig.add_subplot(111)
     x = []
     y = []
     for stat in stats:
         x.append(stat.created_on)
         y.append(stat.val)
-    x = x[-1 * limit:]
-    y = y[-1 * limit:]
-    ax.plot_date(x, y, '-')
+    x = x[-1 * limit :]
+    y = y[-1 * limit :]
+    ax.plot_date(x, y, "-")
     ax.set_axis_off()
-    ax.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
+    ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
     if stats.count() > 1:
         ax.set_title("Usage over time", y=0.9)
     else:
         ax.set_title("(Not enough data)", y=0.3)
     fig.autofmt_xdate()
     canvas = FigureCanvas(fig)
-    response = HttpResponse(content_type='image/png')
+    response = HttpResponse(content_type="image/png")
     canvas.print_png(response)
     return response
 
 
-@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key="ip", rate="50/m", method=ratelimit.UNSAFE, block=True)
 def embed(request):
     # default response
-    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+    could_not_find = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
     # Get maxAge GET param if provided, else default on the small side
-    max_age = int(request.GET.get('maxAge', 3600))
+    max_age = int(request.GET.get("maxAge", 3600))
 
     # params
-    repo_url = request.GET.get('repo', False)
-    if not repo_url or 'github.com' not in repo_url:
+    repo_url = request.GET.get("repo", False)
+    if not repo_url or "github.com" not in repo_url:
         return err_response
 
     try:
-        badge = request.GET.get('badge', False)
+        badge = request.GET.get("badge", False)
         if badge:
-            open_bounties = Bounty.objects.current() \
-                .filter(
-                    github_url__startswith=repo_url,
-                    network='mainnet',
-                    idx_status__in=['open']
-                )
+            open_bounties = Bounty.objects.current().filter(
+                github_url__startswith=repo_url,
+                network="mainnet",
+                idx_status__in=["open"],
+            )
 
-            tmpl = loader.get_template('svg_badge.txt')
+            tmpl = loader.get_template("svg_badge.txt")
             response = HttpResponse(
-                tmpl.render({'bounties_count': open_bounties.count()}),
-                content_type='image/svg+xml',
+                tmpl.render({"bounties_count": open_bounties.count()}),
+                content_type="image/svg+xml",
             )
             patch_response_headers(response, cache_timeout=max_age)
             return response
@@ -128,21 +131,21 @@ def embed(request):
 
         avatar = None
         filename = f"{_org_name}.png"
-        filepath = 'assets/other/avatars/' + filename
+        filepath = "assets/other/avatars/" + filename
         try:
-            avatar = Image.open(filepath, 'r').convert("RGBA")
+            avatar = Image.open(filepath, "r").convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
-            if not remote_user.get('avatar_url', False):
-                return JsonResponse({'msg': 'invalid user'}, status=422)
-            remote_avatar_url = remote_user['avatar_url']
+            if not remote_user.get("avatar_url", False):
+                return JsonResponse({"msg": "invalid user"}, status=422)
+            remote_avatar_url = remote_user["avatar_url"]
 
             r = requests.get(remote_avatar_url, stream=True)
             chunk_size = 20000
-            with open(filepath, 'wb') as fd:
+            with open(filepath, "wb") as fd:
                 for chunk in r.iter_content(chunk_size):
                     fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGBA")
+            avatar = Image.open(filepath, "r").convert("RGBA")
 
             # make transparent
             datas = avatar.getdata()
@@ -158,19 +161,22 @@ def embed(request):
             avatar.save(filepath, "PNG")
 
         # get issues
-        length = request.GET.get('len', 10)
-        super_bounties = Bounty.objects.current() \
+        length = request.GET.get("len", 10)
+        super_bounties = (
+            Bounty.objects.current()
             .filter(
                 github_url__startswith=repo_url,
-                network='mainnet',
-                idx_status__in=['open', 'started', 'submitted']
-            ).order_by('-_val_usd_db')
+                network="mainnet",
+                idx_status__in=["open", "started", "submitted"],
+            )
+            .order_by("-_val_usd_db")
+        )
         bounties = super_bounties[:length]
 
         # config
         bounty_height = 200
         bounty_width = 572
-        font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
+        font = "assets/v2/fonts/futura/FuturaStd-Medium.otf"
         width = 1776
         height = 576
 
@@ -184,8 +190,8 @@ def embed(request):
         p = ImageFont.truetype(font, 24, encoding="unic")
 
         # background
-        background_image = 'assets/v2/images/embed-widget/background.png'
-        back = Image.open(background_image, 'r').convert("RGBA")
+        background_image = "assets/v2/images/embed-widget/background.png"
+        back = Image.open(background_image, "r").convert("RGBA")
         offset = 0, 0
         img.paste(back, offset)
 
@@ -223,17 +229,21 @@ def embed(request):
 
             # Limit text to 28 chars
             text = f"{bounty.title_or_desc}"
-            text = (text[:28] + '...') if len(text) > 28 else text
+            text = (text[:28] + "...") if len(text) > 28 else text
 
-            x = 620 + (int((i-1)/line_size) * (bounty_width))
-            y = 230 + (abs(i % line_size-1) * bounty_height)
-            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin)
+            x = 620 + (int((i - 1) / line_size) * (bounty_width))
+            y = 230 + (abs(i % line_size - 1) * bounty_height)
+            draw.multiline_text(
+                align="left", xy=(x, y), text=text, fill=black, font=h2_thin
+            )
 
-            unit = 'day'
+            unit = "day"
             num = int(round((bounty.expires_date - timezone.now()).days, 0))
             if num == 0:
-                unit = 'hour'
-                num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+                unit = "hour"
+                num = int(
+                    round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0)
+                )
             unit = unit + ("s" if num != 1 else "")
             draw.multiline_text(
                 align="left",
@@ -251,21 +261,25 @@ def embed(request):
 
             tmp = ImageDraw.Draw(img)
 
-            bounty_value_size = tmp.textsize(f"{round(bounty.value_true, 2)} {bounty.token_name}", p)
+            bounty_value_size = tmp.textsize(
+                f"{round(bounty.value_true, 2)} {bounty.token_name}", p
+            )
 
             draw.multiline_text(
                 align="left",
-                xy=(x + 100 - bounty_value_size[0]/2, y + 67),
+                xy=(x + 100 - bounty_value_size[0] / 2, y + 67),
                 text=f"{round(bounty.value_true, 2)} {bounty.token_name}",
                 fill=(44, 35, 169),
                 font=p,
             )
 
-            bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt_now, 2)} USD", p)
+            bounty_value_size = tmp.textsize(
+                f"{round(bounty.value_in_usdt_now, 2)} USD", p
+            )
 
             draw.multiline_text(
                 align="left",
-                xy=(x + 310 - bounty_value_size[0]/2, y + 67),
+                xy=(x + 310 - bounty_value_size[0] / 2, y + 67),
                 text=f"{round(bounty.value_in_usdt_now, 2)} USD",
                 fill=(45, 168, 116),
                 font=p,
@@ -282,7 +296,7 @@ def embed(request):
             )
 
         if bounties.count() != 0:
-            text = 'Browse issues at: https://gitcoin.co/explorer'
+            text = "Browse issues at: https://gitcoin.co/explorer"
             draw.multiline_text(
                 align="left",
                 xy=(64, height - 70),

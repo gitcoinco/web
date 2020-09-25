@@ -10,29 +10,100 @@ import grants.utils
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0148_add_brightid_status'),
-        ('grants', '0085_grantclr_contribution_multiplier'),
+        ("dashboard", "0148_add_brightid_status"),
+        ("grants", "0085_grantclr_contribution_multiplier"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GrantCollection',
+            name="GrantCollection",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('title', models.CharField(help_text='Name of the collection', max_length=255)),
-                ('description', models.TextField(blank=True, default='', help_text='The description of the collection')),
-                ('cover', models.ImageField(blank=True, help_text='Collection image', max_length=500, null=True, upload_to=grants.utils.get_upload_filename)),
-                ('hidden', models.BooleanField(db_index=True, default=False, help_text='Hide the collection')),
-                ('cache', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, help_text='Easy access to grant info')),
-                ('featured', models.BooleanField(default=False, help_text='Show grant as featured')),
-                ('curators', models.ManyToManyField(blank=True, help_text='List of allowed curators', to='dashboard.Profile')),
-                ('grants', models.ManyToManyField(blank=True, help_text='References to grants related to this collection', to='grants.Grant')),
-                ('profile', models.ForeignKey(help_text='Owner of the collection', on_delete=django.db.models.deletion.CASCADE, related_name='curator', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Name of the collection", max_length=255
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        default="",
+                        help_text="The description of the collection",
+                    ),
+                ),
+                (
+                    "cover",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Collection image",
+                        max_length=500,
+                        null=True,
+                        upload_to=grants.utils.get_upload_filename,
+                    ),
+                ),
+                (
+                    "hidden",
+                    models.BooleanField(
+                        db_index=True, default=False, help_text="Hide the collection"
+                    ),
+                ),
+                (
+                    "cache",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict, help_text="Easy access to grant info"
+                    ),
+                ),
+                (
+                    "featured",
+                    models.BooleanField(
+                        default=False, help_text="Show grant as featured"
+                    ),
+                ),
+                (
+                    "curators",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="List of allowed curators",
+                        to="dashboard.Profile",
+                    ),
+                ),
+                (
+                    "grants",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="References to grants related to this collection",
+                        to="grants.Grant",
+                    ),
+                ),
+                (
+                    "profile",
+                    models.ForeignKey(
+                        help_text="Owner of the collection",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="curator",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

@@ -25,5 +25,5 @@ from django.apps import AppConfig
 class EconomyConfig(AppConfig):
     """Define the Economy application configuration."""
 
-    name = 'economy'
-    verbose_name = 'Economy'
+    name = "economy"
+    verbose_name = "Economy"

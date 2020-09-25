@@ -36,6 +36,7 @@ class ConversionRateNotFoundError(Exception):
 
 def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     from django.conf import settings
+
     """Convert the provided amount to another current.
 
     Args:
@@ -50,38 +51,50 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     """
 
     # hack to handle WETH
-    if from_currency == 'WETH':
-        from_currency = 'ETH'
-    if to_currency == 'WETH':
-        to_currency = 'ETH'
+    if from_currency == "WETH":
+        from_currency = "ETH"
+    if to_currency == "WETH":
+        to_currency = "ETH"
 
     # hack to handle DAI
     if from_currency in settings.STABLE_COINS:
-        from_currency = 'USDT'
+        from_currency = "USDT"
     if to_currency in settings.STABLE_COINS:
-        to_currency = 'USDT'
+        to_currency = "USDT"
 
     if from_currency == to_currency:
         return float(from_amount)
 
     if timestamp:
-        conversion_rate = ConversionRate.objects.filter(
-            from_currency=from_currency,
-            to_currency=to_currency,
-            timestamp__lte=timestamp
-        ).order_by('-timestamp').first()
+        conversion_rate = (
+            ConversionRate.objects.filter(
+                from_currency=from_currency,
+                to_currency=to_currency,
+                timestamp__lte=timestamp,
+            )
+            .order_by("-timestamp")
+            .first()
+        )
         if not conversion_rate:
             return convert_amount(from_amount, from_currency, to_currency)
     else:
-        conversion_rate = ConversionRate.objects.filter(
-            from_currency=from_currency,
-            to_currency=to_currency,
-        ).order_by('-timestamp').first()
+        conversion_rate = (
+            ConversionRate.objects.filter(
+                from_currency=from_currency,
+                to_currency=to_currency,
+            )
+            .order_by("-timestamp")
+            .first()
+        )
 
     if not conversion_rate:
-        raise ConversionRateNotFoundError(f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found")
+        raise ConversionRateNotFoundError(
+            f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found"
+        )
 
-    return (float(conversion_rate.to_amount) / float(conversion_rate.from_amount)) * float(from_amount)
+    return (
+        float(conversion_rate.to_amount) / float(conversion_rate.from_amount)
+    ) * float(from_amount)
 
 
 def convert_token_to_usdt(from_token, timestamp=None):
@@ -98,7 +111,7 @@ def convert_token_to_usdt(from_token, timestamp=None):
         return convert_amount(1, from_token, "USDT", timestamp)
     except ConversionRateNotFoundError:
         in_eth = convert_amount(1, from_token, "ETH", timestamp)
-        return convert_amount(in_eth, 'ETH', "USDT", timestamp)
+        return convert_amount(in_eth, "ETH", "USDT", timestamp)
 
 
 def etherscan_link(txid):
@@ -111,7 +124,7 @@ def etherscan_link(txid):
         str: The Etherscan TX URL.
 
     """
-    return f'https://etherscan.io/tx/{txid}'
+    return f"https://etherscan.io/tx/{txid}"
 
 
 def watch_txn(tx_id):
@@ -127,11 +140,12 @@ def watch_txn(tx_id):
     import json
     import requests
     from django.conf import settings
+
     args = {
-      "apiKey": settings.BLOCKNATIVE_API,
-      "hash": tx_id,
-      "blockchain": "ethereum",
-      "network": "main"
+        "apiKey": settings.BLOCKNATIVE_API,
+        "hash": tx_id,
+        "blockchain": "ethereum",
+        "network": "main",
     }
     url = "https://api.blocknative.com/transaction"
     response = requests.post(url, json=args)

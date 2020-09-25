@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0038_subscription_comments'),
-        ('grants', '0038_grant_link_to_new_grant'),
+        ("grants", "0038_subscription_comments"),
+        ("grants", "0038_grant_link_to_new_grant"),
     ]
 
-    operations = [
-    ]
+    operations = []

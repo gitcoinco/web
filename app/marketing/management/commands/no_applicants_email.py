@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -26,7 +26,7 @@ from marketing.mails import no_applicant_reminder
 
 class Command(BaseCommand):
 
-    help = 'sends reminder emails to funders whose bounties have 0 applications'
+    help = "sends reminder emails to funders whose bounties have 0 applications"
 
     def handle(self, *args, **options):
         if settings.DEBUG:
@@ -39,10 +39,13 @@ class Command(BaseCommand):
         start_time_7_days = timezone.now() - timezone.timedelta(hours=24 * 7)
         end_time_7_days = timezone.now() - timezone.timedelta(hours=24 * 8)
         bounties = Bounty.objects.current().filter(
-            (Q(created_on__range=[end_time_3_days, start_time_3_days]) | Q(created_on__range=[end_time_7_days, start_time_7_days])),
-            idx_status='open',
-            network='mainnet'
-            )
+            (
+                Q(created_on__range=[end_time_3_days, start_time_3_days])
+                | Q(created_on__range=[end_time_7_days, start_time_7_days])
+            ),
+            idx_status="open",
+            network="mainnet",
+        )
 
         for bounty in [b for b in bounties if b.no_of_applicants == 0]:
             no_applicant_reminder(bounty.bounty_owner_email, bounty)

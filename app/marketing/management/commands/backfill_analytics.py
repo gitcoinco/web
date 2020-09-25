@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -26,12 +26,14 @@ import pytz
 
 class Command(BaseCommand):
 
-    help = 'backfills analytics that havent been pull by pull stats'
+    help = "backfills analytics that havent been pull by pull stats"
 
     def handle(self, *args, **options):
         target_date = timezone.now() - timezone.timedelta(days=180)
         now = timezone.now()
-        that_time = timezone.datetime(now.year, now.month, now.day, 1, 1, 1, tzinfo=pytz.UTC)
+        that_time = timezone.datetime(
+            now.year, now.month, now.day, 1, 1, 1, tzinfo=pytz.UTC
+        )
         while that_time > target_date:
             that_time = that_time - timezone.timedelta(days=1)
             stats.joe_dominance_index(that_time)

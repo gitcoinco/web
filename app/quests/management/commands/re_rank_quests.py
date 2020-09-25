@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 
 from django.core.management.base import BaseCommand
@@ -23,7 +23,9 @@ from django.utils import timezone
 
 class Command(BaseCommand):
 
-    help = 'sorts quests into difficulty categories based upon their success percentages '
+    help = (
+        "sorts quests into difficulty categories based upon their success percentages "
+    )
 
     def handle(self, *args, **options):
         from quests.models import Quest
@@ -31,13 +33,17 @@ class Command(BaseCommand):
         # hide quests that have a low feedback ratio
         exempt_quests = [5]
         kwargs = {}
-        kwargs['ui_data__feedbacks__feedback__isnull'] = False
-        kwargs['ui_data__feedbacks__feedback__ne'] = []
-        kwargs['ui_data__feedbacks__stats__-1__gt'] = 2
-        kwargs['ui_data__feedbacks__ratio__lt'] = 0.3
-        hide_quests = Quest.objects.filter(**kwargs).exclude(pk__in=exempt_quests, visible=False).order_by('ui_data__feedbacks__ratio')
+        kwargs["ui_data__feedbacks__feedback__isnull"] = False
+        kwargs["ui_data__feedbacks__feedback__ne"] = []
+        kwargs["ui_data__feedbacks__stats__-1__gt"] = 2
+        kwargs["ui_data__feedbacks__ratio__lt"] = 0.3
+        hide_quests = (
+            Quest.objects.filter(**kwargs)
+            .exclude(pk__in=exempt_quests, visible=False)
+            .order_by("ui_data__feedbacks__ratio")
+        )
         for quest in hide_quests:
-            print(f'hiding {quest.pk}')
+            print(f"hiding {quest.pk}")
             quest.admin_comments = f"hidden on {timezone.now()} bc of low quality"
             quest.visible = False
             quest.save()
@@ -57,4 +63,10 @@ class Command(BaseCommand):
                 else:
                     quest.difficulty = "Expert"
                 quest.save()
-                print(pct, "    ", ac, f"                      {old_difficulty} =>  {quest.difficulty}      ", quest.url)
+                print(
+                    pct,
+                    "    ",
+                    ac,
+                    f"                      {old_difficulty} =>  {quest.difficulty}      ",
+                    quest.url,
+                )

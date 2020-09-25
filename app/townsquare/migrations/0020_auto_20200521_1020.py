@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0019_pinnedpost'),
+        ("townsquare", "0019_pinnedpost"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pinnedpost',
-            name='activity',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pin', to='dashboard.Activity'),
+            model_name="pinnedpost",
+            name="activity",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="pin",
+                to="dashboard.Activity",
+            ),
         ),
     ]

@@ -31,39 +31,37 @@ class BountyStateTest(TestCase):
 
     def setUp(self):
         self.bounty = Bounty.objects.create(
-            title='foo',
-            project_type='traditional',
+            title="foo",
+            project_type="traditional",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=timezone.now() - timedelta(days=7),
-            github_url='https://github.com/danlipert/gitcoin-test/issues/1',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='example',
+            github_url="https://github.com/danlipert/gitcoin-test/issues/1",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="example",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='open',
-            bounty_owner_email='asdfasdf@bar.com',
+            idx_status="open",
+            bounty_owner_email="asdfasdf@bar.com",
             current_bounty=True,
-            bounty_state='open'
+            bounty_state="open",
         )
 
     def test_handle_event(self):
         event = BountyEvent.objects.create(
-            bounty=self.bounty,
-            event_type='express_interest'
+            bounty=self.bounty, event_type="express_interest"
         )
         self.bounty.handle_event(event)
-        assert self.bounty.bounty_state == 'open'
+        assert self.bounty.bounty_state == "open"
         event_accept = BountyEvent.objects.create(
-            bounty=self.bounty,
-            event_type='accept_worker'
+            bounty=self.bounty, event_type="accept_worker"
         )
         self.bounty.handle_event(event_accept)
-        assert self.bounty.bounty_state == 'work_started'
+        assert self.bounty.bounty_state == "work_started"

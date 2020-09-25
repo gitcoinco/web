@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core.management.base import BaseCommand
 
@@ -23,7 +23,7 @@ from dashboard.models import Earning
 
 class Command(BaseCommand):
 
-    help = 'auto follows everyone who user has done economic relationship with'
+    help = "auto follows everyone who user has done economic relationship with"
 
     def handle(self, *args, **options):
         for obj in Earning.objects.all():

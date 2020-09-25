@@ -24,8 +24,7 @@ from dashboard.models import SendCryptoAsset
 
 
 class DigitalGoodPurchase(SendCryptoAsset):
-    """Model that represents a DigitalGoodPurchase.
+    """Model that represents a DigitalGoodPurchase."""
 
-    """
     purchase = JSONField(default=dict, blank=True)
     purchase_expires = models.DateTimeField(null=True, blank=True)

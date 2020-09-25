@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import json
 import time
@@ -39,44 +39,61 @@ from web3 import HTTPProvider, Web3
 
 WAIT_TIME_BETWEEN_PAYOUTS = 15
 
+
 class Command(BaseCommand):
 
-    help = 'finalizes + sends grants round payouts'
+    help = "finalizes + sends grants round payouts"
 
     def add_arguments(self, parser):
-        parser.add_argument('what',
-            default='finalize',
+        parser.add_argument(
+            "what",
+            default="finalize",
             type=str,
-            help="what do we do? (finalize, payout_test, payout_dai, prepare_final_payout)"
-            )
-
+            help="what do we do? (finalize, payout_test, payout_dai, prepare_final_payout)",
+        )
 
     def handle(self, *args, **options):
 
         # setup
         payment_threshold_usd = 0
         KYC_THRESHOLD = settings.GRANTS_PAYOUT_CLR_KYC_THRESHOLD
-        network = 'mainnet' if not settings.DEBUG else 'rinkeby'
+        network = "mainnet" if not settings.DEBUG else "rinkeby"
         from_address = settings.GRANTS_PAYOUT_ADDRESS
         from_pk = settings.GRANTS_PAYOUT_PRIVATE_KEY
         DECIMALS = 18
-        what = options['what']
-        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
-        CLR_TOKEN_ADDRESS = '0xed8306f10a5aa548d09c1d9c622f3f58dd9f2144' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
+        what = options["what"]
+        DAI_ADDRESS = (
+            "0x6b175474e89094c44da98b954eedeac495271d0f"
+            if network == "mainnet"
+            else "0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7"
+        )
+        CLR_TOKEN_ADDRESS = (
+            "0xed8306f10a5aa548d09c1d9c622f3f58dd9f2144"
+            if network == "mainnet"
+            else "0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b"
+        )
 
         # get data
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
-        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=True)
+        grants = Grant.objects.filter(
+            active=True, network="mainnet", link_to_new_grant__isnull=True
+        )
 
         # finalize rankings
-        if what == 'finalize':
-            total_owed_grants = sum(grant.clr_match_estimate_this_round for grant in grants)
+        if what == "finalize":
+            total_owed_grants = sum(
+                grant.clr_match_estimate_this_round for grant in grants
+            )
             total_owed_matches = sum(sm.amount for sm in scheduled_matches)
-            print(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
-            print(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
-            print('------------------------------')
+            print(
+                f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}"
+            )
+            print(
+                f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}"
+            )
+            print("------------------------------")
             user_input = input("continue? (y/n) ")
-            if user_input != 'y':
+            if user_input != "y":
                 return
             for grant in grants:
                 amount = grant.clr_match_estimate_this_round
@@ -95,60 +112,78 @@ class Command(BaseCommand):
                     grant=grant,
                     comments=comments,
                     ready_for_test_payout=ready_for_test_payout,
-                    )
+                )
                 if needs_kyc:
                     grant_match_distribution_kyc(match)
 
-
         # payout rankings (round must be finalized first)
-        if what in ['prepare_final_payout']:
-            payout_matches = scheduled_matches.exclude(test_payout_tx='').filter(ready_for_payout=False)
+        if what in ["prepare_final_payout"]:
+            payout_matches = scheduled_matches.exclude(test_payout_tx="").filter(
+                ready_for_payout=False
+            )
             payout_matches_amount = sum(sm.amount for sm in payout_matches)
-            print(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
-            print('------------------------------')
+            print(
+                f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI"
+            )
+            print("------------------------------")
             user_input = input("continue? (y/n) ")
-            if user_input != 'y':
+            if user_input != "y":
                 return
             for match in payout_matches:
-                match.ready_for_payout=True
+                match.ready_for_payout = True
                 match.save()
-            print('promoted')
-
+            print("promoted")
 
         # payout rankings (round must be finalized first)
-        if what in ['payout_test', 'payout_dai']:
-            is_real_payout = what == 'payout_dai'
+        if what in ["payout_test", "payout_dai"]:
+            is_real_payout = what == "payout_dai"
             TOKEN_ADDRESS = DAI_ADDRESS if is_real_payout else CLR_TOKEN_ADDRESS
             kwargs = {}
-            token_name = f'CLR{clr_round}' if not is_real_payout else 'DAI'
-            key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
+            token_name = f"CLR{clr_round}" if not is_real_payout else "DAI"
+            key = "ready_for_test_payout" if not is_real_payout else "ready_for_payout"
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
             kwargs[key] = True
             kwargs2 = {}
-            key2 = 'test_payout_tx' if not is_real_payout else 'payout_tx'
-            kwargs2[key2] = ''
-            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(**kwargs2)
-            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(**kwargs2)
-            total_not_ready_matches = sum(sm.amount for sm in not_ready_scheduled_matches)
+            key2 = "test_payout_tx" if not is_real_payout else "payout_tx"
+            kwargs2[key2] = ""
+            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(
+                **kwargs2
+            )
+            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(
+                **kwargs2
+            )
+            total_not_ready_matches = sum(
+                sm.amount for sm in not_ready_scheduled_matches
+            )
             total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
             total_paid_matches = sum(sm.amount for sm in paid_scheduled_matches)
-            print(f"there are {not_ready_scheduled_matches.count()} NOT READY Match Payments already created worth ${round(total_not_ready_matches,2)} {network} {token_name}")
-            print(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments already created worth ${round(total_owed_matches,2)} {network} {token_name}")
-            print(f"there are {paid_scheduled_matches.count()} PAID Match Payments already created worth ${round(total_paid_matches,2)} {network} {token_name}")
-            print('------------------------------')
+            print(
+                f"there are {not_ready_scheduled_matches.count()} NOT READY Match Payments already created worth ${round(total_not_ready_matches,2)} {network} {token_name}"
+            )
+            print(
+                f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments already created worth ${round(total_owed_matches,2)} {network} {token_name}"
+            )
+            print(
+                f"there are {paid_scheduled_matches.count()} PAID Match Payments already created worth ${round(total_paid_matches,2)} {network} {token_name}"
+            )
+            print("------------------------------")
             user_input = input("continue? (y/n) ")
-            if user_input != 'y':
+            if user_input != "y":
                 return
 
-            print(f"continuing with {unpaid_scheduled_matches.count()} unpaid scheduled payouts")
+            print(
+                f"continuing with {unpaid_scheduled_matches.count()} unpaid scheduled payouts"
+            )
 
             if is_real_payout:
-                user_input = input(F"THIS IS A REAL PAYOUT FOR {network} {token_name}.  ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
-                if user_input != 'y':
+                user_input = input(
+                    f"THIS IS A REAL PAYOUT FOR {network} {token_name}.  ARE YOU DOUBLE SECRET SUPER SURE? (y/n) "
+                )
+                if user_input != "y":
                     return
 
-            for match in unpaid_scheduled_matches.order_by('amount'):
+            for match in unpaid_scheduled_matches.order_by("amount"):
 
                 # issue payment
                 print(f"- issuing payout {match.pk} worth {match.amount} {token_name}")
@@ -156,16 +191,24 @@ class Command(BaseCommand):
                 amount_owed = match.amount
 
                 w3 = get_web3(network)
-                contract = w3.eth.contract(Web3.toChecksumAddress(TOKEN_ADDRESS), abi=abi)
+                contract = w3.eth.contract(
+                    Web3.toChecksumAddress(TOKEN_ADDRESS), abi=abi
+                )
                 address = Web3.toChecksumAddress(address)
 
-                amount = int(amount_owed * 10**DECIMALS)
+                amount = int(amount_owed * 10 ** DECIMALS)
                 tx_args = {
-                    'nonce': w3.eth.getTransactionCount(from_address),
-                    'gas': 100000,
-                    'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4)
+                    "nonce": w3.eth.getTransactionCount(from_address),
+                    "gas": 100000,
+                    "gasPrice": int(
+                        float(recommend_min_gas_price_to_confirm_in_time(1))
+                        * 10 ** 9
+                        * 1.4
+                    ),
                 }
-                tx = contract.functions.transfer(address, amount).buildTransaction(tx_args)
+                tx = contract.functions.transfer(address, amount).buildTransaction(
+                    tx_args
+                )
 
                 signed = w3.eth.account.signTransaction(tx, from_pk)
                 tx_id = None
@@ -176,17 +219,21 @@ class Command(BaseCommand):
                         tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
                         success = True
                     except Exception as e:
-                        counter +=1
-                        if 'replacement transaction underpriced' in str(e):
-                            print(f'replacement transaction underpriced. retrying {counter}')
+                        counter += 1
+                        if "replacement transaction underpriced" in str(e):
+                            print(
+                                f"replacement transaction underpriced. retrying {counter}"
+                            )
                             time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
-                        elif 'nonce too low' in str(e):
-                            print(f'nonce too low. retrying {counter}')
+                        elif "nonce too low" in str(e):
+                            print(f"nonce too low. retrying {counter}")
                             time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
 
                             # rebuild txn
-                            tx_args['nonce'] = w3.eth.getTransactionCount(from_address)
-                            tx = contract.functions.transfer(address, amount).buildTransaction(tx_args)
+                            tx_args["nonce"] = w3.eth.getTransactionCount(from_address)
+                            tx = contract.functions.transfer(
+                                address, amount
+                            ).buildTransaction(tx_args)
                             signed = w3.eth.account.signTransaction(tx, from_pk)
                         else:
                             raise e
@@ -218,27 +265,29 @@ class Command(BaseCommand):
                 match.save()
 
                 # create payout obj artifacts
-                profile = Profile.objects.get(handle__iexact='gitcoinbot')
+                profile = Profile.objects.get(handle__iexact="gitcoinbot")
                 validator_comment = f"created by ingest payout_round_script"
                 subscription = Subscription()
                 subscription.is_postive_vote = True
                 subscription.active = False
                 subscription.error = True
-                subscription.contributor_address = 'N/A'
+                subscription.contributor_address = "N/A"
                 subscription.amount_per_period = match.amount
                 subscription.real_period_seconds = 2592000
                 subscription.frequency = 30
-                subscription.frequency_unit = 'N/A'
+                subscription.frequency_unit = "N/A"
                 subscription.token_address = TOKEN_ADDRESS
                 subscription.token_symbol = token_name
                 subscription.gas_price = 0
-                subscription.new_approve_tx_id = '0x0'
+                subscription.new_approve_tx_id = "0x0"
                 subscription.num_tx_approved = 1
                 subscription.network = network
                 subscription.contributor_profile = profile
                 subscription.grant = match.grant
                 subscription.comments = validator_comment
-                subscription.amount_per_period_usdt = match.amount if is_real_payout else 0
+                subscription.amount_per_period_usdt = (
+                    match.amount if is_real_payout else 0
+                )
                 subscription.save()
 
                 contrib = Contribution.objects.create(
@@ -249,7 +298,7 @@ class Command(BaseCommand):
                     subscription=subscription,
                     validator_passed=True,
                     validator_comment=validator_comment,
-                    )
+                )
                 print(f"ingested {subscription.pk} / {contrib.pk}")
 
                 if is_real_payout:
@@ -259,28 +308,32 @@ class Command(BaseCommand):
                 match.save()
 
                 metadata = {
-                    'id': subscription.id,
-                    'value_in_token': str(subscription.amount_per_period),
-                    'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
-                    'token_name': subscription.token_symbol,
-                    'title': subscription.grant.title,
-                    'grant_url': subscription.grant.url,
-                    'num_tx_approved': subscription.num_tx_approved,
-                    'category': 'grant',
+                    "id": subscription.id,
+                    "value_in_token": str(subscription.amount_per_period),
+                    "value_in_usdt_now": str(
+                        round(subscription.amount_per_period_usdt, 2)
+                    ),
+                    "token_name": subscription.token_symbol,
+                    "title": subscription.grant.title,
+                    "grant_url": subscription.grant.url,
+                    "num_tx_approved": subscription.num_tx_approved,
+                    "category": "grant",
                 }
                 kwargs = {
-                    'profile': profile,
-                    'subscription': subscription,
-                    'grant': subscription.grant,
-                    'activity_type': 'new_grant_contribution',
-                    'metadata': metadata,
+                    "profile": profile,
+                    "subscription": subscription,
+                    "grant": subscription.grant,
+                    "activity_type": "new_grant_contribution",
+                    "metadata": metadata,
                 }
 
                 activity = Activity.objects.create(**kwargs)
 
                 if is_real_payout:
                     comment = f"CLR Round {clr_round} Payout"
-                    comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
+                    comment = Comment.objects.create(
+                        profile=profile, activity=activity, comment=comment
+                    )
 
                 print("SLEEPING")
                 time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)

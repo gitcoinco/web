@@ -37,9 +37,9 @@ from inbox.models import Notification
 def notifications(request):
     """Handle all notifications."""
 
-    limit = int(request.GET.get('limit', 10))
-    page = int(request.GET.get('page', 1))
-    all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by('-id')
+    limit = int(request.GET.get("limit", 10))
+    page = int(request.GET.get("page", 1))
+    all_notifs = Notification.objects.filter(to_user_id=request.user.id).order_by("-id")
     params = dict()
     all_pages = Paginator(all_notifs, limit)
     if page <= 0 or page > all_pages.num_pages:
@@ -47,45 +47,44 @@ def notifications(request):
     all_notifications = []
     for i in all_pages.page(page):
         new_notif = i.to_standard_dict()
-        new_notif['username'] = i.from_user.username
+        new_notif["username"] = i.from_user.username
         all_notifications.append(new_notif)
-    params['data'] = all_notifications
-    params['has_next'] = all_pages.page(page).has_next()
-    params['count'] = all_pages.count
-    params['num_pages'] = all_pages.num_pages
+    params["data"] = all_notifications
+    params["has_next"] = all_pages.page(page).has_next()
+    params["count"] = all_pages.count
+    params["num_pages"] = all_pages.num_pages
     return JsonResponse(params, status=200, safe=False)
 
 
 @login_required
-@require_http_methods(['DELETE'])
+@require_http_methods(["DELETE"])
 @csrf_exempt
 def delete_notifications(request):
     """For deleting a notification."""
 
     try:
-        req_body = json.loads(request.body.decode('utf-8'))
+        req_body = json.loads(request.body.decode("utf-8"))
     except:
         pass
-    if 'delete' in req_body:
+    if "delete" in req_body:
         Notification.objects.filter(
-            id__in=req_body['delete'],
-            to_user=request.user
+            id__in=req_body["delete"], to_user=request.user
         ).delete()
     return HttpResponse(status=204)
 
 
 @login_required
-@require_http_methods(['PUT'])
+@require_http_methods(["PUT"])
 @csrf_exempt
 def unread_notifications(request):
     """Mark a notification as unread."""
 
     try:
-        req_body = json.loads(request.body.decode('utf-8'))
+        req_body = json.loads(request.body.decode("utf-8"))
     except:
         pass
-    if 'unread' in req_body:
-        for i in req_body['unread']:
+    if "unread" in req_body:
+        for i in req_body["unread"]:
             try:
                 obj = Notification.objects.get(id=i)
                 if obj.to_user.id == request.user.id:
@@ -97,17 +96,17 @@ def unread_notifications(request):
 
 
 @login_required
-@require_http_methods(['PUT'])
+@require_http_methods(["PUT"])
 @csrf_exempt
 def read_notifications(request):
     """Mark a notification as read."""
 
     try:
-        req_body = json.loads(request.body.decode('utf-8'))
+        req_body = json.loads(request.body.decode("utf-8"))
     except:
         pass
-    if 'read' in req_body:
-        for i in req_body['read']:
+    if "read" in req_body:
+        for i in req_body["read"]:
             try:
                 obj = Notification.objects.get(id=i)
                 if obj.to_user.id == request.user.id:
@@ -122,11 +121,11 @@ def inbox(request):
     """Handle the inbox view."""
 
     context = {
-        'is_outside': True,
-        'active': 'inbox',
-        'title': 'Inbox',
-        'card_title': _('Inbox notifications'),
-        'card_desc': _('Manage all your notifications.'),
-        'avatar_url': static('v2/images/helmet.png'),
+        "is_outside": True,
+        "active": "inbox",
+        "title": "Inbox",
+        "card_title": _("Inbox notifications"),
+        "card_desc": _("Manage all your notifications."),
+        "avatar_url": static("v2/images/helmet.png"),
     }
-    return TemplateResponse(request, 'inbox.html', context)
+    return TemplateResponse(request, "inbox.html", context)

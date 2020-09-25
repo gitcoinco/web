@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0030_grant_clr_prediction_curve'),
+        ("grants", "0030_grant_clr_prediction_curve"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='weighted_shuffle',
+            model_name="grant",
+            name="weighted_shuffle",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

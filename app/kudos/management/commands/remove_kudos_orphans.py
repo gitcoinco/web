@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import logging
 import warnings
@@ -34,15 +34,19 @@ logging.basicConfig(level=logging.INFO)
 
 class Command(BaseCommand):
 
-    help = 'remove kudos orphans from the database'
+    help = "remove kudos orphans from the database"
 
     def add_arguments(self, parser):
-        parser.add_argument('--network', default='localhost', type=str,
-                            help='Network such as "localhost", "ropsten", "mainnet"')
+        parser.add_argument(
+            "--network",
+            default="localhost",
+            type=str,
+            help='Network such as "localhost", "ropsten", "mainnet"',
+        )
 
     def handle(self, *args, **options):
         # config
-        network = options['network']
+        network = options["network"]
 
         kudos_contract = KudosContract(network)
         kudos_contract.remove_kudos_orphans_db()

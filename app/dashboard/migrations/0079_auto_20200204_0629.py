@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0078_profile_as_representation'),
+        ("dashboard", "0078_profile_as_representation"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='tribe_priority',
-            field=models.TextField(blank=True, default='', help_text='HTML rich description for what tribe priorities.'),
+            model_name="profile",
+            name="tribe_priority",
+            field=models.TextField(
+                blank=True,
+                default="",
+                help_text="HTML rich description for what tribe priorities.",
+            ),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='tribe_description',
-            field=models.TextField(blank=True, default='', help_text='HTML rich description describing tribe.'),
+            model_name="profile",
+            name="tribe_description",
+            field=models.TextField(
+                blank=True,
+                default="",
+                help_text="HTML rich description describing tribe.",
+            ),
         ),
     ]

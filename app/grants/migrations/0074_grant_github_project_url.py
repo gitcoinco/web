@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0073_remove_grant_clr_matching'),
+        ("grants", "0073_remove_grant_clr_matching"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='github_project_url',
-            field=models.URLField(blank=True, help_text='Grant Github Project URL'),
+            model_name="grant",
+            name="github_project_url",
+            field=models.URLField(blank=True, help_text="Grant Github Project URL"),
         ),
     ]

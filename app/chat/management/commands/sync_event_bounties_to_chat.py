@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import logging
 
 from django.conf import settings
@@ -36,40 +36,58 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         # Positional arguments
-        parser.add_argument('event_id', type=int, help="The event ID to synchronize bounties and channels for")
+        parser.add_argument(
+            "event_id",
+            type=int,
+            help="The event ID to synchronize bounties and channels for",
+        )
 
     def handle(self, *args, **options):
         try:
-            bounties_to_sync = Bounty.objects.filter(
-                Q(event__pk=options['event_id'])
-            )
+            bounties_to_sync = Bounty.objects.filter(Q(event__pk=options["event_id"]))
             tasks = []
             for bounty in bounties_to_sync:
                 profiles_to_connect = []
                 try:
-                    funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username.lower())
+                    funder_profile = Profile.objects.get(
+                        handle=bounty.bounty_owner_github_username.lower()
+                    )
 
                     if funder_profile:
                         if funder_profile.chat_id:
-                            created, funder_profile = associate_chat_to_profile(funder_profile)
+                            created, funder_profile = associate_chat_to_profile(
+                                funder_profile
+                            )
                         profiles_to_connect.append(funder_profile.chat_id)
                         for interest in bounty.interested.all():
                             if interest.profile:
                                 if interest.profile.chat_id:
-                                    created, interest.profile = associate_chat_to_profile(interest.profile)
+                                    (
+                                        created,
+                                        interest.profile,
+                                    ) = associate_chat_to_profile(interest.profile)
                                 profiles_to_connect.append(interest.profile.chat_id)
-                        if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
-                            bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')
+                        if (
+                            bounty.chat_channel_id is None
+                            or bounty.chat_channel_id is ""
+                        ):
+                            bounty_channel_name = slugify(
+                                f"{bounty.github_org_name}-{bounty.github_issue_number}"
+                            )
                             bounty_channel_name = bounty_channel_name[:60]
                             create_channel_opts = {
-                                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                                'channel_display_name': f'{bounty_channel_name}-{bounty.title}'[:60],
-                                'channel_name': bounty_channel_name[:60]
+                                "team_id": settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                                "channel_display_name": f"{bounty_channel_name}-{bounty.title}"[
+                                    :60
+                                ],
+                                "channel_name": bounty_channel_name[:60],
                             }
                             task = create_channel.s(create_channel_opts, bounty.id)
                             task.link(add_to_channel.s(profiles_to_connect))
                         else:
-                            task = add_to_channel.s({'id': bounty.chat_channel_id}, profiles_to_connect)
+                            task = add_to_channel.s(
+                                {"id": bounty.chat_channel_id}, profiles_to_connect
+                            )
                         tasks.append(task)
                 except Exception as e:
                     logger.info(str(e))

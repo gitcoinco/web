@@ -6,33 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0008_matchranking_matchround'),
+        ("townsquare", "0008_matchranking_matchround"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='matchranking',
-            name='final',
-            field=models.BooleanField(default=False, help_text='Is this match ranking final?'),
+            model_name="matchranking",
+            name="final",
+            field=models.BooleanField(
+                default=False, help_text="Is this match ranking final?"
+            ),
         ),
         migrations.AddField(
-            model_name='matchranking',
-            name='paid',
-            field=models.BooleanField(default=False, help_text='Is this match ranking paikd?'),
+            model_name="matchranking",
+            name="paid",
+            field=models.BooleanField(
+                default=False, help_text="Is this match ranking paikd?"
+            ),
         ),
         migrations.AddField(
-            model_name='matchranking',
-            name='payout_tx_issued',
+            model_name="matchranking",
+            name="payout_tx_issued",
             field=models.DateTimeField(db_index=True, null=True),
         ),
         migrations.AddField(
-            model_name='matchranking',
-            name='payout_tx_status',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="matchranking",
+            name="payout_tx_status",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='matchranking',
-            name='payout_txid',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="matchranking",
+            name="payout_txid",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
     ]

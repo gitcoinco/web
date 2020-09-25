@@ -6,23 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0077_grant_funding_info'),
+        ("grants", "0077_grant_funding_info"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='clr_round_num',
-            field=models.CharField(blank=True, default='', help_text='the CLR round number thats active', max_length=255),
+            model_name="grant",
+            name="clr_round_num",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="the CLR round number thats active",
+                max_length=255,
+            ),
         ),
         migrations.AddField(
-            model_name='grant',
-            name='is_clr_active',
-            field=models.BooleanField(default=False, help_text='CLR Round active or not? (auto computed)'),
+            model_name="grant",
+            name="is_clr_active",
+            field=models.BooleanField(
+                default=False, help_text="CLR Round active or not? (auto computed)"
+            ),
         ),
         migrations.AlterField(
-            model_name='grantclr',
-            name='is_active',
-            field=models.BooleanField(db_index=True, default=False, help_text='Is CLR Round currently active'),
+            model_name="grantclr",
+            name="is_active",
+            field=models.BooleanField(
+                db_index=True, default=False, help_text="Is CLR Round currently active"
+            ),
         ),
     ]

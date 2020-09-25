@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0095_hackathonevent_visible'),
+        ("dashboard", "0095_hackathonevent_visible"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonevent',
-            name='banner',
-            field=models.ImageField(blank=True, null=True, upload_to=''),
+            model_name="hackathonevent",
+            name="banner",
+            field=models.ImageField(blank=True, null=True, upload_to=""),
         ),
         migrations.AddField(
-            model_name='hackathonproject',
-            name='looking_members',
+            model_name="hackathonproject",
+            name="looking_members",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='hackathonproject',
-            name='message',
-            field=models.CharField(blank=True, default='', max_length=150),
+            model_name="hackathonproject",
+            name="message",
+            field=models.CharField(blank=True, default="", max_length=150),
         ),
     ]

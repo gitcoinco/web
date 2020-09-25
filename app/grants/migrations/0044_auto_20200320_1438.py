@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0043_auto_20200313_1748'),
+        ("grants", "0043_auto_20200313_1748"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='subscription',
-            name='match_direction',
-            field=models.CharField(blank=True, default='+', help_text='The direction of the match', max_length=255),
+            model_name="subscription",
+            name="match_direction",
+            field=models.CharField(
+                blank=True,
+                default="+",
+                help_text="The direction of the match",
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
-            model_name='matchpledge',
-            name='pledge_type',
-            field=models.CharField(choices=[('tech', 'tech'), ('media', 'media'), ('health', 'health')], default='tech', help_text='CLR pledge type', max_length=15),
+            model_name="matchpledge",
+            name="pledge_type",
+            field=models.CharField(
+                choices=[("tech", "tech"), ("media", "media"), ("health", "health")],
+                default="tech",
+                help_text="CLR pledge type",
+                max_length=15,
+            ),
         ),
     ]

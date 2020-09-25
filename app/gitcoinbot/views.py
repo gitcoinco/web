@@ -40,22 +40,30 @@ def payload(request):
         HttpResponse: The confirmation of Github payload acceptance.
 
     """
-    request_json = json.loads(request.body.decode('utf8'))
-    comment_dict = request_json.get('comment', {})
-    repo_dict = request_json.get('repository', {})
-    sender_dict = request_json.get('sender', {})
-    action = request_json.get('action', '')
+    request_json = json.loads(request.body.decode("utf8"))
+    comment_dict = request_json.get("comment", {})
+    repo_dict = request_json.get("repository", {})
+    sender_dict = request_json.get("sender", {})
+    action = request_json.get("action", "")
 
-    does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in comment_dict.get('body', '')
-    if action == 'deleted' or sender_dict.get('login', '') == 'gitcoinbot[bot]' or not does_address_gitcoinbot:
+    does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in comment_dict.get(
+        "body", ""
+    )
+    if (
+        action == "deleted"
+        or sender_dict.get("login", "") == "gitcoinbot[bot]"
+        or not does_address_gitcoinbot
+    ):
         # Gitcoinbot should not process these actions
         return HttpResponse(status=204)
-    owner = repo_dict.get('owner', {}).get('login')
-    repo = repo_dict.get('name')
-    comment_id = comment_dict.get('id')
-    comment_text = comment_dict.get('body')
-    issue_id = request_json.get('issue', {}).get('number')
-    installation_id = request_json.get('installation', {}).get('id')
-    sender = request_json.get('sender', {}).get('login', '')
-    determine_response(owner, repo, comment_id, comment_text, issue_id, installation_id, sender)
-    return HttpResponse(_('Gitcoinbot Responded'))
+    owner = repo_dict.get("owner", {}).get("login")
+    repo = repo_dict.get("name")
+    comment_id = comment_dict.get("id")
+    comment_text = comment_dict.get("body")
+    issue_id = request_json.get("issue", {}).get("number")
+    installation_id = request_json.get("installation", {}).get("id")
+    sender = request_json.get("sender", {}).get("login", "")
+    determine_response(
+        owner, repo, comment_id, comment_text, issue_id, installation_id, sender
+    )
+    return HttpResponse(_("Gitcoinbot Responded"))

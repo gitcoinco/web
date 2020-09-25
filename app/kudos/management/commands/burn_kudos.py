@@ -30,39 +30,49 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
+formatter = "%(levelname)s:%(name)s.%(funcName)s:%(message)s"
 logging.basicConfig(level=logging.DEBUG)
 
 
 class Command(BaseCommand):
 
-    help = 'clone a kudos to an address'
+    help = "clone a kudos to an address"
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='localhost', type=str)
-        parser.add_argument('owner', type=str, help='The ETH address of the kudos.')
-        parser.add_argument('token_id', type=int, help='The Kudos ID to burn.')
-        parser.add_argument('--skip_sync', action='store_true')
-        parser.add_argument('--gitcoin_account', action='store_true', help='use account stored in .env file')
-        parser.add_argument('--account', help='public account address to use for transaction', type=str)
-        parser.add_argument('--private_key', help='private key for signing transactions', type=str)
+        parser.add_argument("network", default="localhost", type=str)
+        parser.add_argument("owner", type=str, help="The ETH address of the kudos.")
+        parser.add_argument("token_id", type=int, help="The Kudos ID to burn.")
+        parser.add_argument("--skip_sync", action="store_true")
+        parser.add_argument(
+            "--gitcoin_account",
+            action="store_true",
+            help="use account stored in .env file",
+        )
+        parser.add_argument(
+            "--account", help="public account address to use for transaction", type=str
+        )
+        parser.add_argument(
+            "--private_key", help="private key for signing transactions", type=str
+        )
 
     def handle(self, *args, **options):
         # config
-        network = options['network']
-        token_id = options['token_id']
+        network = options["network"]
+        token_id = options["token_id"]
 
-        skip_sync = options['skip_sync']
-        gitcoin_account = options['gitcoin_account']
+        skip_sync = options["skip_sync"]
+        gitcoin_account = options["gitcoin_account"]
         if gitcoin_account:
             account = settings.KUDOS_OWNER_ACCOUNT
             private_key = settings.KUDOS_PRIVATE_KEY
         else:
-            account = options['account']
-            private_key = options['private_key']
+            account = options["account"]
+            private_key = options["private_key"]
 
         kudos_contract = KudosContract(network=network)
-        owner = kudos_contract._w3.toChecksumAddress(options['owner'])
+        owner = kudos_contract._w3.toChecksumAddress(options["owner"])
 
         args = (owner, token_id)
-        kudos_contract.burn(*args, account=account, private_key=private_key, skip_sync=skip_sync)
+        kudos_contract.burn(
+            *args, account=account, private_key=private_key, skip_sync=skip_sync
+        )

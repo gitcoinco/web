@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core import management
 from django.core.management.base import BaseCommand
@@ -24,7 +24,7 @@ from townsquare.models import MatchRound
 
 class Command(BaseCommand):
 
-    help = 'creates round rankings'
+    help = "creates round rankings"
 
     def handle(self, *args, **options):
         mr = MatchRound.objects.current().first()

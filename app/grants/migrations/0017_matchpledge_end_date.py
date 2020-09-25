@@ -7,13 +7,13 @@ import grants.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0016_merge_20190305_1435'),
+        ("grants", "0016_merge_20190305_1435"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='matchpledge',
-            name='end_date',
+            model_name="matchpledge",
+            name="end_date",
             field=models.DateTimeField(default=grants.models.next_month),
         ),
     ]

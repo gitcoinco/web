@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0015_quest_override_background'),
+        ("quests", "0015_quest_override_background"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='quest',
-            name='override_background',
-            field=models.CharField(blank=True, default='', max_length=100),
+            model_name="quest",
+            name="override_background",
+            field=models.CharField(blank=True, default="", max_length=100),
         ),
     ]

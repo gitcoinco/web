@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -23,19 +23,24 @@ from search.models import SearchResult
 
 class Command(BaseCommand):
 
-    help = 'uploads latest search results into elasticsearch'
+    help = "uploads latest search results into elasticsearch"
 
     def add_arguments(self, parser):
-        parser.add_argument('sync_type', type=str, choices=['create', 'update'], help='ethereum network to use')
+        parser.add_argument(
+            "sync_type",
+            type=str,
+            choices=["create", "update"],
+            help="ethereum network to use",
+        )
 
     def handle(self, *args, **options):
-        sync_type = options['sync_type']
+        sync_type = options["sync_type"]
 
-        if sync_type == 'create':
+        if sync_type == "create":
             for sr in SearchResult.objects.all():
                 print(sr.pk)
             sr.put_on_elasticsearch()
-        elif sync_type == 'update':
+        elif sync_type == "update":
             then = timezone.now() - timezone.timedelta(hours=1)
             for sr in SearchResult.objects.filter(modified_on__gt=then):
                 print(sr.pk)

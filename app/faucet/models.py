@@ -39,7 +39,7 @@ class FaucetRequestManager(models.Manager):
             QuerySet: The filtered FaucetRequest results.
 
         """
-        return self.select_related('profile').filter(profile__username=profile)
+        return self.select_related("profile").filter(profile__username=profile)
 
 
 class FaucetRequest(SuperModel):
@@ -54,12 +54,12 @@ class FaucetRequest(SuperModel):
     comment = models.TextField(max_length=500, blank=True)
     comment_admin = models.TextField(max_length=500, blank=True)
     fulfill_date = models.DateTimeField(null=True, blank=True)
-    amount = models.FloatField(default=.00025)
+    amount = models.FloatField(default=0.00025)
     profile = models.ForeignKey(
-        'dashboard.Profile',
+        "dashboard.Profile",
         null=True,
         on_delete=models.SET_NULL,
-        related_name='faucet_requests',
+        related_name="faucet_requests",
     )
 
     objects = FaucetRequestManager()

@@ -31,11 +31,13 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Command(BaseCommand):
 
-    help = 'sends a GDPR re-consent form to all EU residents'
+    help = "sends a GDPR re-consent form to all EU residents"
 
     def handle(self, *args, **options):
         if datetime.now() > datetime(2018, 5, 26):
-            print("cannot send after GDPR is already live.. this email has already been sent")
+            print(
+                "cannot send after GDPR is already live.. this email has already been sent"
+            )
             exit()
 
         queryset = EmailSubscriber.objects.all()

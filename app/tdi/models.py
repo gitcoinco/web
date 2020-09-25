@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from __future__ import unicode_literals
 
 from django.db import models
@@ -24,10 +24,9 @@ from economy.models import SuperModel
 
 
 class AccessCodes(SuperModel):
-
     class Meta:
 
-        verbose_name_plural = 'Access codes'
+        verbose_name_plural = "Access codes"
 
     invitecode = models.CharField(max_length=30)
     maxuses = models.PositiveIntegerField(default=1)
@@ -41,10 +40,9 @@ class AccessCodes(SuperModel):
 
 
 class WhitepaperAccess(SuperModel):
-
     class Meta:
 
-        verbose_name_plural = 'Whitepaper access'
+        verbose_name_plural = "Whitepaper access"
 
     invitecode = models.CharField(max_length=30)
     email = models.CharField(max_length=255)

@@ -10,52 +10,68 @@ from .models import (
 
 # Register your models here.
 class GenericAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['activity', 'profile']
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["activity", "profile"]
 
 
 class SquelchProfileAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['profile']
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["profile"]
 
 
 class SuggestedActionAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
+    list_display = ["created_on", "__str__"]
 
 
 class ActuallyGenericAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
+    list_display = ["created_on", "__str__"]
 
 
 class MatchRankingAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['profile', 'round']
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["profile", "round"]
+
 
 class PinnedPostAdmin(admin.ModelAdmin):
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['user', 'activity']
-    fields = ['what']
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["user", "activity"]
+    fields = ["what"]
+
 
 class OfferActionAdmin(admin.ModelAdmin):
-    list_display = ['created_on', 'github_created_on', 'from_ip_address', '__str__']
-    raw_id_fields = ['profile']
+    list_display = ["created_on", "github_created_on", "from_ip_address", "__str__"]
+    raw_id_fields = ["profile"]
 
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime
+
         return naturaltime(instance.profile.github_created_on)
 
     def from_ip_address(self, instance):
         end = instance.created_on + timezone.timedelta(hours=1)
         start = instance.created_on - timezone.timedelta(hours=1)
-        visits = set(instance.profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
+        visits = set(
+            instance.profile.actions.filter(
+                created_on__gt=start, created_on__lte=end
+            ).values_list("ip_address", flat=True)
+        )
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['created_on', 'active_now', 'key', 'valid_from', 'valid_to', '__str__', 'stats', 'background_preview_small']
-    raw_id_fields = ['persona', 'created_by']
-    readonly_fields = ['active_now', 'stats', 'background_preview', 'schedule_preview']
+    list_display = [
+        "created_on",
+        "active_now",
+        "key",
+        "valid_from",
+        "valid_to",
+        "__str__",
+        "stats",
+        "background_preview_small",
+    ]
+    raw_id_fields = ["persona", "created_by"]
+    readonly_fields = ["active_now", "stats", "background_preview", "schedule_preview"]
 
     def active_now(self, obj):
         if obj.valid_from and obj.valid_to:
@@ -64,16 +80,17 @@ class OfferAdmin(admin.ModelAdmin):
         return "-"
 
     def background_preview(self, instance, size=400):
-        html = ''
-        for ext in ['jpeg']:
-            url = f'/static/v2/images/quests/backs/{instance.style}.{ext}'
+        html = ""
+        for ext in ["jpeg"]:
+            url = f"/static/v2/images/quests/backs/{instance.style}.{ext}"
             html += f"<img style='max-width: {size}px;' src='{url}'>"
         return format_html(html)
 
     def schedule_preview(self, instance, size=400):
         import pytz
+
         html = "<table style='max-width:700px; overflow-x: scroll;'>"
-        for _type in ['monthly', 'weekly', 'daily', 'secret', 'random', 'top']:
+        for _type in ["monthly", "weekly", "daily", "secret", "random", "top"]:
             days = 1
             start = timezone.now() - timezone.timedelta(days=5)
             current = start
@@ -83,12 +100,14 @@ class OfferAdmin(admin.ModelAdmin):
             while current < end:
                 next_current = current + timezone.timedelta(days=days)
                 cursor = current + timezone.timedelta(hours=1)
-                has_offer = Offer.objects.filter(key=_type, valid_from__lte=cursor, valid_to__gt=cursor)
-                is_today = timezone.now().strftime('%m/%d') == cursor.strftime('%m/%d')
-                default_color = '#eeeeee' if is_today else "white"
-                color = 'green' if has_offer.exists() else default_color
+                has_offer = Offer.objects.filter(
+                    key=_type, valid_from__lte=cursor, valid_to__gt=cursor
+                )
+                is_today = timezone.now().strftime("%m/%d") == cursor.strftime("%m/%d")
+                default_color = "#eeeeee" if is_today else "white"
+                color = "green" if has_offer.exists() else default_color
                 if has_offer.filter(pk=instance.pk):
-                    color='red'
+                    color = "red"
                 label = f"{current.strftime('%m/%d')}"
                 if has_offer.exists():
                     url = has_offer.first().admin_url
@@ -101,18 +120,21 @@ class OfferAdmin(admin.ModelAdmin):
         return format_html(html)
 
     def background_preview_small(self, instance):
-        return self.background_preview(instance, 120);
+        return self.background_preview(instance, 120)
 
     def stats(self, obj):
         views = obj.view_count
-        click = obj.actions.filter(what='click').count()
-        go = obj.actions.filter(what='go').count()
-        pct_go = round(go/click*100,0) if click else "-"
-        pct_click = round(click/views*100,0) if views else "-"
-        return format_html(f"views => click => go<BR>{views} => {click} ({pct_click}%) => {go} ({pct_go}%)")
+        click = obj.actions.filter(what="click").count()
+        go = obj.actions.filter(what="go").count()
+        pct_go = round(go / click * 100, 0) if click else "-"
+        pct_click = round(click / views * 100, 0) if views else "-"
+        return format_html(
+            f"views => click => go<BR>{views} => {click} ({pct_click}%) => {go} ({pct_go}%)"
+        )
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+
         if "_copy_offer" in request.POST:
             obj.pk = None
             obj.view_count = 0
@@ -129,26 +151,35 @@ class OfferAdmin(admin.ModelAdmin):
 
 
 def schedule_helper(obj):
-    days = 1 if obj.key == 'daily' else 7
-    if obj.key == 'monthly':
+    days = 1 if obj.key == "daily" else 7
+    if obj.key == "monthly":
         days = 30
     obj.valid_from = timezone.now() - timezone.timedelta(days=days)
     while True:
         next_timestamp = obj.valid_from + timezone.timedelta(days=days)
-        other_offers = Offer.objects.filter(valid_from__gte=obj.valid_from, valid_from__lt=next_timestamp, key=obj.key)
+        other_offers = Offer.objects.filter(
+            valid_from__gte=obj.valid_from, valid_from__lt=next_timestamp, key=obj.key
+        )
         if not other_offers.exists():
             break
         obj.valid_from = next_timestamp
     obj.valid_from = obj.valid_from + timezone.timedelta(days=days)
-    obj.valid_from = obj.valid_from - timezone.timedelta(hours=int(obj.valid_from.strftime('%H')))
-    obj.valid_from = obj.valid_from - timezone.timedelta(minutes=int(obj.valid_from.strftime('%M')))
-    obj.valid_from = obj.valid_from - timezone.timedelta(seconds=int(obj.valid_from.strftime('%S')))
+    obj.valid_from = obj.valid_from - timezone.timedelta(
+        hours=int(obj.valid_from.strftime("%H"))
+    )
+    obj.valid_from = obj.valid_from - timezone.timedelta(
+        minutes=int(obj.valid_from.strftime("%M"))
+    )
+    obj.valid_from = obj.valid_from - timezone.timedelta(
+        seconds=int(obj.valid_from.strftime("%S"))
+    )
     obj.valid_to = obj.valid_from + timezone.timedelta(days=days)
     return obj.valid_to, obj.valid_from
 
 
 class AnnounceAdmin(admin.ModelAdmin):
-    list_display = ['created_on', 'valid_from', 'valid_to', '__str__']
+    list_display = ["created_on", "valid_from", "valid_to", "__str__"]
+
 
 admin.site.register(SuggestedAction, SuggestedActionAdmin)
 admin.site.register(Offer, OfferAdmin)

@@ -27,4 +27,5 @@ class KudosSearchForm(forms.Form):
     Attributes:
         kudos_search (form): Use for kudos search GET request.
     """
-    kudos_search = forms.CharField(label=_('Kudos Search'), max_length=100)
+
+    kudos_search = forms.CharField(label=_("Kudos Search"), max_length=100)

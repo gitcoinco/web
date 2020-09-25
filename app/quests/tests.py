@@ -8,14 +8,17 @@ from dashboard.models import Profile
 from rest_framework import status
 
 CURRENT_USERNAME = "bot_dude"
-CURRENT_PASSWORD = 'mimamamemima'
+CURRENT_PASSWORD = "mimamamemima"
 
 
 class QuestTest(TestCase):
     def setUp(self):
         self.current_user = User.objects.create(
-            password=CURRENT_PASSWORD, username=CURRENT_USERNAME)
-        Profile.objects.create(user=self.current_user, data={}, hide_profile=False, handle=CURRENT_USERNAME)
+            password=CURRENT_PASSWORD, username=CURRENT_USERNAME
+        )
+        Profile.objects.create(
+            user=self.current_user, data={}, hide_profile=False, handle=CURRENT_USERNAME
+        )
 
     # This failed b/c of Django Debug Toolbar for some reason....
     '''
@@ -37,12 +40,15 @@ class QuestTest(TestCase):
 
     def test_new_quests_should_redirect_to_login_when_no_user_is_logged(self):
         """Test when an anonymus user send a request to create a quest he should be redirected to login page """
-        data = urlencode({
-            'points': -10,
-            'seconds_to_respond[]': -10,
-            'question[]': 'one?'})
+        data = urlencode(
+            {"points": -10, "seconds_to_respond[]": -10, "question[]": "one?"}
+        )
 
-        path = reverse('newquest')
-        response = self.client.post(path, data, content_type="application/x-www-form-urlencoded")
+        path = reverse("newquest")
+        response = self.client.post(
+            path, data, content_type="application/x-www-form-urlencoded"
+        )
 
-        self.assertRedirects(response, '/login/github?next=' + path, target_status_code=302)
+        self.assertRedirects(
+            response, "/login/github?next=" + path, target_status_code=302
+        )

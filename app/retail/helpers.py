@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 
 def get_ip(request):
-    forward_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    forward_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if forward_for:
-        ip_addr = forward_for.split(',')[0]
+        ip_addr = forward_for.split(",")[0]
     else:
-        ip_addr = request.META.get('REMOTE_ADDR')
+        ip_addr = request.META.get("REMOTE_ADDR")
     return ip_addr

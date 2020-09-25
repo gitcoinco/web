@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0008_tokenrequest_processed'),
-        ('kudos', '0008_bulktransfercoupon_metadata'),
+        ("kudos", "0008_tokenrequest_processed"),
+        ("kudos", "0008_bulktransfercoupon_metadata"),
     ]
 
-    operations = [
-    ]
+    operations = []

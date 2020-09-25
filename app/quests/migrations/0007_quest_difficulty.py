@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0006_quest_visible'),
+        ("quests", "0006_quest_visible"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quest',
-            name='difficulty',
-            field=models.CharField(choices=[('Beginner', 'Beginner'), ('Intermediate', 'Intermediate'), ('Advanced', 'Advanced')], default='Beginner', max_length=100),
+            model_name="quest",
+            name="difficulty",
+            field=models.CharField(
+                choices=[
+                    ("Beginner", "Beginner"),
+                    ("Intermediate", "Intermediate"),
+                    ("Advanced", "Advanced"),
+                ],
+                default="Beginner",
+                max_length=100,
+            ),
         ),
     ]

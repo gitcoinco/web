@@ -10,23 +10,62 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0128_hackathonevent_showcase'),
+        ("dashboard", "0128_hackathonevent_showcase"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TribesSubscription',
+            name="TribesSubscription",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('expires_on', models.DateTimeField(blank=True, default=datetime.datetime(2021, 7, 20, 20, 59, 14, 763037, tzinfo=utc), null=True)),
-                ('plan_type', models.CharField(choices=[('LITE', 'Lite'), ('PRO', 'Pro'), ('LAUNCH', 'Launch')], max_length=10)),
-                ('hackathon_tokens', models.IntegerField(default=0)),
-                ('tribe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscription', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "expires_on",
+                    models.DateTimeField(
+                        blank=True,
+                        default=datetime.datetime(
+                            2021, 7, 20, 20, 59, 14, 763037, tzinfo=utc
+                        ),
+                        null=True,
+                    ),
+                ),
+                (
+                    "plan_type",
+                    models.CharField(
+                        choices=[
+                            ("LITE", "Lite"),
+                            ("PRO", "Pro"),
+                            ("LAUNCH", "Launch"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                ("hackathon_tokens", models.IntegerField(default=0)),
+                (
+                    "tribe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subscription",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

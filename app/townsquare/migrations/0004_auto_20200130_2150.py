@@ -6,24 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0003_auto_20200128_0725'),
+        ("townsquare", "0003_auto_20200128_0725"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='announcement',
-            name='key',
-            field=models.CharField(choices=[('townsquare', 'townsquare'), ('header', 'header'), ('footer', 'footer')], db_index=True, default='', max_length=50),
+            model_name="announcement",
+            name="key",
+            field=models.CharField(
+                choices=[
+                    ("townsquare", "townsquare"),
+                    ("header", "header"),
+                    ("footer", "footer"),
+                ],
+                db_index=True,
+                default="",
+                max_length=50,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='announcement',
-            name='rank',
+            model_name="announcement",
+            name="rank",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='offer',
-            name='from_link',
+            model_name="offer",
+            name="from_link",
             field=models.URLField(blank=True),
         ),
     ]

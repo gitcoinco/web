@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,23 +14,27 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 
-def get_tokens(network='mainnet'):
+def get_tokens(network="mainnet"):
     from economy.models import Token
-    return [token.to_dict for token in Token.objects.filter(network=network, approved=True).all()]
+
+    return [
+        token.to_dict
+        for token in Token.objects.filter(network=network, approved=True).all()
+    ]
 
 
-def addr_to_token(addr, network='mainnet'):
+def addr_to_token(addr, network="mainnet"):
     for token in get_tokens(network=network):
-        if(token['addr'].lower() == addr.lower()):
+        if token["addr"].lower() == addr.lower():
             return token
     return False
 
 
 def token_by_name(name):
     for token in get_tokens():
-        if token['name'].lower() == name.lower():
+        if token["name"].lower() == name.lower():
             return token
     return False

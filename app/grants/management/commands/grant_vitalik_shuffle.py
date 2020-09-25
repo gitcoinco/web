@@ -37,10 +37,12 @@ def weighted_select(items):
             return i
         pos += i
 
+
 def custom_index(arr, item):
     for i in range(0, len(arr)):
         if arr[i][1] == item:
             return i
+
 
 def weighted_shuffle(items):
     o = []
@@ -49,13 +51,14 @@ def weighted_shuffle(items):
         items.pop(custom_index(items, o[-1]))
     return o
 
+
 class Command(BaseCommand):
 
-    help = 'grant weighted shuffle'
+    help = "grant weighted shuffle"
 
     def handle(self, *args, **options):
 
-        active_clr_rounds =  GrantCLR.objects.filter(is_active=True)
+        active_clr_rounds = GrantCLR.objects.filter(is_active=True)
         if active_clr_rounds.count() == 0:
             return
 
@@ -67,8 +70,12 @@ class Command(BaseCommand):
             grant.save()
 
         # get grants, and apply weighted shuffle rank to them
-        grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False, is_clr_active=True).order_by('pk')
-        weighted_list = [(grant, int(max(1, grant.clr_prediction_curve[0][1]))) for grant in grants]
+        grants = Grant.objects.filter(
+            clr_prediction_curve__0__1__isnull=False, is_clr_active=True
+        ).order_by("pk")
+        weighted_list = [
+            (grant, int(max(1, grant.clr_prediction_curve[0][1]))) for grant in grants
+        ]
         og_weighted_list = weighted_list.copy()
         ws = weighted_shuffle(weighted_list)
         counter = 0
@@ -79,4 +86,4 @@ class Command(BaseCommand):
             grant = grants[grant_idx]
             grant.weighted_shuffle = counter
             grant.save()
-            counter+=1
+            counter += 1

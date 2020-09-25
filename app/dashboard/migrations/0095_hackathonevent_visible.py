@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0094_auto_20200324_2138'),
+        ("dashboard", "0094_auto_20200324_2138"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonevent',
-            name='visible',
-            field=models.BooleanField(default=True, help_text='Can this HackathonEvent be seeing on /hackathons ?'),
+            model_name="hackathonevent",
+            name="visible",
+            field=models.BooleanField(
+                default=True,
+                help_text="Can this HackathonEvent be seeing on /hackathons ?",
+            ),
         ),
     ]

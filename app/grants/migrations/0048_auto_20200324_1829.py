@@ -6,18 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0047_auto_20200323_1724'),
+        ("grants", "0047_auto_20200323_1724"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contribution',
-            name='match',
-            field=models.BooleanField(default=True, help_text='Whether or not this contribution should be matched.'),
+            model_name="contribution",
+            name="match",
+            field=models.BooleanField(
+                default=True,
+                help_text="Whether or not this contribution should be matched.",
+            ),
         ),
         migrations.AlterField(
-            model_name='grant',
-            name='categories',
-            field=models.ManyToManyField(blank=True, to='grants.GrantCategory'),
+            model_name="grant",
+            name="categories",
+            field=models.ManyToManyField(blank=True, to="grants.GrantCategory"),
         ),
     ]

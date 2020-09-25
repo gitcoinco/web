@@ -38,4 +38,4 @@ def is_in_list(value, input_list):
 
     """
     value = str(value)
-    return value in input_list.split(',')
+    return value in input_list.split(",")

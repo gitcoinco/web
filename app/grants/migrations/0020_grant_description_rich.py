@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0019_auto_20190412_0321'),
+        ("grants", "0019_auto_20190412_0321"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='description_rich',
-            field=models.TextField(blank=True, default='', help_text='HTML rich description.'),
+            model_name="grant",
+            name="description_rich",
+            field=models.TextField(
+                blank=True, default="", help_text="HTML rich description."
+            ),
         ),
     ]

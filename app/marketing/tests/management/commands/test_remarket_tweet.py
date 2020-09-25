@@ -26,14 +26,15 @@ from test_plus.test import TestCase
 class TestRemarketTweet(TestCase):
     """Define tests for remarket tweet."""
 
-    @patch('marketing.management.commands.remarket_bounties.maybe_market_to_twitter')
+    @patch("marketing.management.commands.remarket_bounties.maybe_market_to_twitter")
     def test_handle_no_bounties(self, mock_func):
         """Test command remarket tweet with no bounties."""
         Command().handle()
 
         assert mock_func.call_count == 0
 
-#TODO: uncomment when remarket_tweet logic will be activated
+
+# TODO: uncomment when remarket_tweet logic will be activated
 # @patch('marketing.management.commands.remarket_tweet.maybe_market_to_twitter')
 # def test_handle_with_bounties(self, mock_func):
 #     """Test command remarket tweet with bounties."""

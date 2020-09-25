@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 
 def return_to_sender(tip, msg, comments_public):
     old_from = tip.from_name
-    tip.from_name = 'gitcoinbot'
-    tip.metadata['payout_comments'] = msg
+    tip.from_name = "gitcoinbot"
+    tip.metadata["payout_comments"] = msg
     print("     " + msg)
     tip.comments_public = comments_public
     tip.save()
@@ -49,38 +49,43 @@ def assign_tip_to(tip, handle):
     tip.username = handle
     tip.emails = get_emails_master(handle)
     maybe_market_tip_to_email(tip, tip.emails)
-    tip.metadata['is_for_bounty_fulfiller_handled'] = True
+    tip.metadata["is_for_bounty_fulfiller_handled"] = True
     return tip
+
 
 class Command(BaseCommand):
 
-    help = 'sends Tips automagically for anyone where is_for_bounty_fulfiller is True '
+    help = "sends Tips automagically for anyone where is_for_bounty_fulfiller is True "
 
     def handle(self, *args, **options):
         tips = Tip.objects.filter(
             is_for_bounty_fulfiller=True,
-            receive_txid='',
-            metadata__is_for_bounty_fulfiller_handled__isnull=True
-            ).send_success()
+            receive_txid="",
+            metadata__is_for_bounty_fulfiller_handled__isnull=True,
+        ).send_success()
         for tip in tips:
             try:
                 bounty = tip.bounty
                 if bounty:
-                    print(f" - tip {tip.pk} / {bounty.standard_bounties_id} / {bounty.status}")
-                    if bounty.status == 'done':
+                    print(
+                        f" - tip {tip.pk} / {bounty.standard_bounties_id} / {bounty.status}"
+                    )
+                    if bounty.status == "done":
                         fulfillment = bounty.fulfillments.filter(accepted=True)
                         if fulfillment.exists():
-                            fulfillment = fulfillment.latest('fulfillment_id')
+                            fulfillment = fulfillment.latest("fulfillment_id")
                             ######################################################
                             # send to fulfiller
                             ######################################################
                             print(" - 1 ")
                             # assign tip to fulfiller and email them
-                            msg = f'auto assigneed on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                            msg = f"auto assigneed on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment"
                             print("     " + msg)
-                            tip.metadata['payout_comments'] = msg
+                            tip.metadata["payout_comments"] = msg
                             tip.save()
-                            tip = assign_tip_to(tip, fulfillment.fulfiller_github_username)
+                            tip = assign_tip_to(
+                                tip, fulfillment.fulfiller_github_username
+                            )
                             tip.save()
                         else:
                             ######################################################
@@ -89,9 +94,9 @@ class Command(BaseCommand):
                             print(" - 2 ")
                             old_from = tip.from_name
                             comments_public = "[gitcoinbot message] This crowdfunding was auto-returned to you because Gitcoin could not figure out how to distribute the funds.  We recommend that you payout these funds to the bounty hunters, at your discretion, via https://gitcoin.co/tip ."
-                            msg = f'auto assigneed on {timezone.now()}; as bulk payout bounty.  tip was from {tip.from_name}'
+                            msg = f"auto assigneed on {timezone.now()}; as bulk payout bounty.  tip was from {tip.from_name}"
                             return_to_sender(tip, msg, comments_public)
-                    elif bounty.status == 'cancelled':
+                    elif bounty.status == "cancelled":
                         ######################################################
                         # return to funder
                         ######################################################
@@ -99,7 +104,7 @@ class Command(BaseCommand):
                         # assign tip to fulfiller and email them
                         old_from = tip.from_name
                         comments_public = "[gitcoinbot message] This funding was auto-returned to you because the bounty it was associated with was cancelled."
-                        msg = f'auto assigneed on {timezone.now()}; as cancelled bounty.  tip was from {tip.from_name}'
+                        msg = f"auto assigneed on {timezone.now()}; as cancelled bounty.  tip was from {tip.from_name}"
                         return_to_sender(tip, msg, comments_public)
             except Exception as e:
                 print(e)

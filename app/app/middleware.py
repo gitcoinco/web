@@ -12,8 +12,8 @@ def drop_accept_langauge(get_response):
 
     def middleware(request):
         """Define the middleware method that removes the accept-language header."""
-        if 'HTTP_ACCEPT_LANGUAGE' in request.META:
-            del request.META['HTTP_ACCEPT_LANGUAGE']
+        if "HTTP_ACCEPT_LANGUAGE" in request.META:
+            del request.META["HTTP_ACCEPT_LANGUAGE"]
 
         response = get_response(request)
         return response
@@ -28,7 +28,7 @@ def bleach_requests(get_response):
     """
 
     def middleware(request):
-        if request.method == 'POST':
+        if request.method == "POST":
             # make request mutable
             request.POST = request.POST.copy()
             for key in request.POST:

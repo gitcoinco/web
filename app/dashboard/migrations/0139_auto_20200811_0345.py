@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0138_auto_20200810_1301'),
+        ("dashboard", "0138_auto_20200810_1301"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='mandatory',
+            model_name="question",
+            name="mandatory",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='question',
-            name='minimum_character_count',
+            model_name="question",
+            name="minimum_character_count",
             field=models.PositiveIntegerField(default=0),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0017_quest_ui_data'),
+        ("quests", "0017_quest_ui_data"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='quest',
-            old_name='override_background',
-            new_name='background',
+            model_name="quest",
+            old_name="override_background",
+            new_name="background",
         ),
     ]

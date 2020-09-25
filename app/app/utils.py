@@ -36,14 +36,14 @@ logger = logging.getLogger(__name__)
 class NotEqual(Lookup):
     """Allow lookup and exclusion using not equal."""
 
-    lookup_name = 'ne'
+    lookup_name = "ne"
 
     def as_sql(self, compiler, connection):
         """Handle as SQL method for not equal lookup."""
         lhs, lhs_params = self.process_lhs(compiler, connection)
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
-        return f'{lhs} <> {rhs}', params
+        return f"{lhs} <> {rhs}", params
 
 
 def get_query_cache_key(compiler):
@@ -62,8 +62,8 @@ def get_query_cache_key(compiler):
 
     """
     sql, params = compiler.as_sql()
-    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
-    return sha1(cache_key.encode('utf-8')).hexdigest()
+    cache_key = f"{compiler.using}:{sql}:{[str(p) for p in params]}"
+    return sha1(cache_key.encode("utf-8")).hexdigest()
 
 
 def get_table_cache_key(db_alias, table):
@@ -77,11 +77,11 @@ def get_table_cache_key(db_alias, table):
         int: The cache key.
 
     """
-    cache_key = f'{db_alias}:{table}'
-    return sha1(cache_key.encode('utf-8')).hexdigest()
+    cache_key = f"{db_alias}:{table}"
+    return sha1(cache_key.encode("utf-8")).hexdigest()
 
 
-def get_raw_cache_client(backend='default'):
+def get_raw_cache_client(backend="default"):
     """Get a raw Redis cache client connection.
 
     Args:
@@ -97,6 +97,7 @@ def get_raw_cache_client(backend='default'):
 
     """
     from django_redis import get_redis_connection
+
     try:
         return get_redis_connection(backend)
     except Exception as e:
@@ -106,12 +107,12 @@ def get_raw_cache_client(backend='default'):
 
 def get_short_url(url):
     is_short = False
-    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
+    for shortener in ["Tinyurl", "Adfly", "Isgd", "QrCx"]:
         try:
             if not is_short:
                 shortener = Shortener(shortener)
                 response = shortener.short(url)
-                if response != 'Error' and 'http' in response:
+                if response != "Error" and "http" in response:
                     url = response
                 is_short = True
         except Exception:
@@ -120,7 +121,7 @@ def get_short_url(url):
 
 
 def ellipses(data, _len=75):
-    return (data[:_len] + '..') if len(data) > _len else data
+    return (data[:_len] + "..") if len(data) > _len else data
 
 
 def add_contributors(repo_data):
@@ -133,24 +134,26 @@ def add_contributors(repo_data):
         dict: The updated repository data dictionary.
 
     """
-    if repo_data.get('fork', False):
+    if repo_data.get("fork", False):
         return repo_data
 
     params = {}
-    url = repo_data['contributors_url']
+    url = repo_data["contributors_url"]
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
     if response.status_code == 204:  # no content
         return repo_data
 
     response_data = response.json()
-    rate_limited = (isinstance(response_data, dict) and 'documentation_url' in response_data.keys())
+    rate_limited = (
+        isinstance(response_data, dict) and "documentation_url" in response_data.keys()
+    )
     if rate_limited:
         # retry after rate limit
         time.sleep(60)
         return add_contributors(repo_data)
 
     # no need for retry
-    repo_data['contributors'] = response_data
+    repo_data["contributors"] = response_data
     return repo_data
 
 
@@ -166,8 +169,9 @@ def setup_lang(request, user):
 
     """
     from dashboard.models import Profile
+
     profile = None
-    if user.is_authenticated and hasattr(user, 'profile'):
+    if user.is_authenticated and hasattr(user, "profile"):
         profile = user.profile
     else:
         try:
@@ -187,26 +191,32 @@ def get_upload_filename(instance, filename):
 
 def sync_profile(handle, user=None, hide_profile=True):
     from dashboard.models import Profile
-    handle = handle.strip().replace('@', '').lower()
+
+    handle = handle.strip().replace("@", "").lower()
     # data = get_user(handle, scoped=True)
-    if user and hasattr(user, 'profile'):
+    if user and hasattr(user, "profile"):
         try:
-            access_token = user.social_auth.filter(provider='github').latest('pk').access_token
-            data = get_user(handle, '', scoped=True, auth=(handle, access_token))
+            access_token = (
+                user.social_auth.filter(provider="github").latest("pk").access_token
+            )
+            data = get_user(handle, "", scoped=True, auth=(handle, access_token))
 
             user = User.objects.get(username__iexact=handle)
-            if 'login' in data:
+            if "login" in data:
                 profile = user.profile
-                user.username = data['login']
+                user.username = data["login"]
                 user.save()
-                profile.handle = data['login']
+                profile.handle = data["login"]
                 profile.email = user.email
                 profile.save()
 
-                if profile is not None and (profile.chat_id is '' or profile.gitcoin_chat_access_token is ''):
+                if profile is not None and (
+                    profile.chat_id is "" or profile.gitcoin_chat_access_token is ""
+                ):
 
                     try:
                         from chat.tasks import associate_chat_to_profile
+
                         # created, profile = associate_chat_to_profile(profile)
 
                     except Exception as e:
@@ -217,21 +227,27 @@ def sync_profile(handle, user=None, hide_profile=True):
     else:
         data = get_user(handle)
 
-    email = ''
-    is_error = 'name' not in data.keys()
+    email = ""
+    is_error = "name" not in data.keys()
     if is_error:
         print("- error main")
-        logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
+        logger.warning(
+            f"Failed to fetch github username {handle}",
+            exc_info=True,
+            extra={"handle": handle},
+        )
         return None
 
-    defaults = {'last_sync_date': timezone.now(), 'data': data}
+    defaults = {"last_sync_date": timezone.now(), "data": data}
 
     if user and isinstance(user, User):
-        defaults['user'] = user
+        defaults["user"] = user
         try:
-            defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
+            defaults["github_access_token"] = (
+                user.social_auth.filter(provider="github").latest("pk").access_token
+            )
             if user and user.email:
-                defaults['email'] = user.email
+                defaults["email"] = user.email
         except UserSocialAuth.DoesNotExist:
             pass
 
@@ -239,19 +255,31 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile_exists = Profile.objects.filter(handle=handle).count()
         if not profile_exists:
-            defaults['hide_profile'] = hide_profile
-        profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
-        latest_obj = profile.user.social_auth.filter(provider='github').latest('pk') if profile.user else None
+            defaults["hide_profile"] = hide_profile
+        profile, created = Profile.objects.update_or_create(
+            handle=handle, defaults=defaults
+        )
+        latest_obj = (
+            profile.user.social_auth.filter(provider="github").latest("pk")
+            if profile.user
+            else None
+        )
         access_token = latest_obj.access_token if latest_obj else None
-        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token)) if access_token else []
-        profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
+        orgs = (
+            get_user(handle, "/orgs", auth=(profile.handle, access_token))
+            if access_token
+            else []
+        )
+        profile.organizations = (
+            [ele["login"] for ele in orgs if ele and type(ele) is dict] if orgs else []
+        )
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
-            language = repo.get('language') if repo.get('language') else ''
-            _keywords = language.split(',')
+            language = repo.get("language") if repo.get("language") else ""
+            _keywords = language.split(",")
             for key in _keywords:
-                if key != '' and key not in keywords:
+                if key != "" and key not in keywords:
                     keywords.append(key)
 
         profile.keywords = keywords
@@ -270,7 +298,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     if email and profile:
         profile.email = email
         profile.save()
-        get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
+        get_or_save_email_subscriber(email, "sync_profile", profile=profile)
 
     if profile and not profile.github_access_token:
         token = profile.get_access_token(save=False)
@@ -286,24 +314,28 @@ def sync_profile(handle, user=None, hide_profile=True):
                 profile.activate_avatar(github_avatar.pk)
                 profile.save()
             except Exception as e:
-                logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
+                logger.warning(
+                    f"Encountered ({e}) while attempting to save a user's github avatar"
+                )
 
     return profile
 
 
-def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX'):
+def fetch_last_email_id(email_id, password, host="imap.gmail.com", folder="INBOX"):
     mailbox = imaplib.IMAP4_SSL(host)
     try:
         mailbox.login(email_id, password)
     except imaplib.IMAP4.error:
         return None
     response, last_message_set_id = mailbox.select(folder)
-    if response != 'OK':
+    if response != "OK":
         return None
-    return last_message_set_id[0].decode('utf-8')
+    return last_message_set_id[0].decode("utf-8")
 
 
-def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com', folder='INBOX'):
+def fetch_mails_since_id(
+    email_id, password, since_id=None, host="imap.gmail.com", folder="INBOX"
+):
     # searching via id becuase imap does not support time based search and has only date based search
     mailbox = imaplib.IMAP4_SSL(host)
     try:
@@ -315,12 +347,12 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
     all_ids = all_ids[0].decode("utf-8").split()
     print(all_ids)
     if since_id:
-        ids = all_ids[all_ids.index(str(since_id)) + 1:]
+        ids = all_ids[all_ids.index(str(since_id)) + 1 :]
     else:
         ids = all_ids
     emails = {}
     for fetched_id in ids:
-        _, content = mailbox.fetch(str(fetched_id), '(RFC822)')
+        _, content = mailbox.fetch(str(fetched_id), "(RFC822)")
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
 
@@ -368,7 +400,7 @@ def itermerge(gen_a, gen_b, key):
 
 def handle_location_request(request):
     """Handle determining location data from request IP."""
-    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+    ip_address = "24.210.224.38" if settings.DEBUG else get_real_ip(request)
     geolocation_data = {}
     if ip_address:
         geolocation_data = get_location_from_ip(ip_address)
@@ -388,7 +420,7 @@ def get_geoIP_singleton():
 
 def get_geoIP_country_singleton():
     global geoIPCountryobject
-    db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
+    db = f"{settings.GEOIP_PATH}GeoLite2-Country.mmdb"
     if not geoIPCountryobject:
         geoIPCountryobject = geoip2.database.Reader(db)
     return geoIPCountryobject
@@ -415,7 +447,9 @@ def get_location_from_ip(ip_address):
         except AddressNotFoundError:
             pass
     except Exception as e:
-        logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
+        logger.warning(
+            f"Encountered ({e}) while attempting to retrieve a user's geolocation"
+        )
     return city
 
 
@@ -432,30 +466,33 @@ def get_country_from_ip(ip_address):
     except AddressNotFoundError:
         pass
     except Exception as e:
-        logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
+        logger.warning(
+            f"Encountered ({e}) while attempting to retrieve a user's geolocation"
+        )
 
     return country
 
 
 def clean_str(string):
     """Clean the provided string of all non-alpha numeric characters."""
-    return re.sub(r'\W+', '', string)
+    return re.sub(r"\W+", "", string)
 
 
 def get_default_network():
     if settings.DEBUG:
-        return 'rinkeby'
-    return 'mainnet'
+        return "rinkeby"
+    return "mainnet"
 
 
 def get_semaphore(namespace, count=1, db=None, blocking=False, stale_client_timeout=60):
     from redis import Redis
     from redis_semaphore import Semaphore
     from urllib.parse import urlparse
+
     redis = urlparse(settings.SEMAPHORE_REDIS_URL)
 
     if db is None:
-        db = int(redis.path.lstrip('/'))
+        db = int(redis.path.lstrip("/"))
 
     semaphore = Semaphore(
         Redis(host=redis.hostname, port=redis.port, db=db),
@@ -483,7 +520,7 @@ def get_profile(request):
 
     """
     is_authed = request.user.is_authenticated
-    profile = getattr(request.user, 'profile', None) if is_authed else None
+    profile = getattr(request.user, "profile", None) if is_authed else None
 
     if is_authed and not profile:
         profile = sync_profile(request.user.username, request.user, hide_profile=False)
@@ -492,13 +529,16 @@ def get_profile(request):
 
 
 class CustomGithubOAuth2(GithubOAuth2):
-    EXTRA_DATA = [('scope', 'scope'), ]
+    EXTRA_DATA = [
+        ("scope", "scope"),
+    ]
 
     def get_scope(self):
         scope = super(CustomGithubOAuth2, self).get_scope()
-        if self.data.get('extrascope'):
-            scope += ['public_repo', 'read:org']
+        if self.data.get("extrascope"):
+            scope += ["public_repo", "read:org"]
             from dashboard.management.commands.sync_orgs_repos import Command
+
             Command().handle()
         return scope
 
@@ -506,7 +546,7 @@ class CustomGithubOAuth2(GithubOAuth2):
 def get_profiles_from_text(text):
     from dashboard.models import Profile
 
-    username_pattern = re.compile(r'@(\S+)')
+    username_pattern = re.compile(r"@(\S+)")
     mentioned_usernames = re.findall(username_pattern, text)
     return Profile.objects.filter(handle__in=mentioned_usernames).distinct()
 

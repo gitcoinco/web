@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0034_contribution_normalized_data'),
+        ("grants", "0034_contribution_normalized_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='grant_type',
-            field=models.CharField(choices=[('tech', 'tech'), ('media', 'media')], default='tech', help_text='Grant CLR category', max_length=15),
+            model_name="grant",
+            name="grant_type",
+            field=models.CharField(
+                choices=[("tech", "tech"), ("media", "media")],
+                default="tech",
+                help_text="Grant CLR category",
+                max_length=15,
+            ),
         ),
         migrations.AddField(
-            model_name='matchpledge',
-            name='pledge_type',
-            field=models.CharField(choices=[('tech', 'tech'), ('media', 'media')], default='tech', help_text='CLR pledge type', max_length=15),
+            model_name="matchpledge",
+            name="pledge_type",
+            field=models.CharField(
+                choices=[("tech", "tech"), ("media", "media")],
+                default="tech",
+                help_text="CLR pledge type",
+                max_length=15,
+            ),
         ),
     ]

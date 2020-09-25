@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0037_auto_20200111_1709'),
+        ("grants", "0037_auto_20200111_1709"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='link_to_new_grant',
-            field=models.ForeignKey(help_text='Link to new grant if migrated', null=True, on_delete=django.db.models.deletion.SET_NULL, to='grants.Grant'),
+            model_name="grant",
+            name="link_to_new_grant",
+            field=models.ForeignKey(
+                help_text="Link to new grant if migrated",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="grants.Grant",
+            ),
         ),
     ]

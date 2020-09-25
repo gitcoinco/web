@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('inbox', '0001_initial'),
+        ("inbox", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notification',
-            name='cta_url',
+            model_name="notification",
+            name="cta_url",
             field=models.URLField(blank=True, max_length=500),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='message_html',
-            field=models.CharField(blank=True, help_text='Html message', max_length=2000),
+            model_name="notification",
+            name="message_html",
+            field=models.CharField(
+                blank=True, help_text="Html message", max_length=2000
+            ),
         ),
     ]

@@ -29,38 +29,49 @@ from .models import (
 
 
 class GeneralAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
 
 
 class TokenRequestAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    search_fields = ['profile', 'name']
-    list_display = ['pk', 'profile', 'created_on', '__str__']
-    raw_id_fields = ['profile']
-    readonly_fields = ['preview']
+    ordering = ["-id"]
+    search_fields = ["profile", "name"]
+    list_display = ["pk", "profile", "created_on", "__str__"]
+    raw_id_fields = ["profile"]
+    readonly_fields = ["preview"]
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+
         if "_reject_kudos" in request.POST:
             from marketing.mails import notify_kudos_rejected
+
             notify_kudos_rejected(obj)
             self.message_user(request, f"Notified user of rejection")
-            return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
-        if "_change_owner" in request.POST or request.POST.get('_change_owner_mint_kudos', False):
-            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+            return redirect(
+                "/_administrationkudos/tokenrequest/?approved=f&rejection_reason="
+            )
+        if "_change_owner" in request.POST or request.POST.get(
+            "_change_owner_mint_kudos", False
+        ):
+            obj.to_address = "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F"
             obj.save()
             self.message_user(request, f"Changed owner to gitcoin")
-        if "_mint_kudos" in request.POST or request.POST.get('_change_owner_mint_kudos', False):
+        if "_mint_kudos" in request.POST or request.POST.get(
+            "_change_owner_mint_kudos", False
+        ):
             from kudos.tasks import mint_token_request
+
             try:
-                obj.rejection_reason = 'n/a'
+                obj.rejection_reason = "n/a"
                 obj.save()
                 mint_token_request.delay(obj.id)
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))
-            return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
+            return redirect(
+                "/_administrationkudos/tokenrequest/?approved=f&rejection_reason="
+            )
         return redirect(obj.admin_url)
 
     def preview(self, instance):
@@ -69,17 +80,17 @@ class TokenRequestAdmin(admin.ModelAdmin):
 
 
 class TransferEnabledForAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['token', 'profile']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["token", "profile"]
 
 
 class BulkTransferCouponAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['sender_profile', 'token']
-    readonly_fields = ['claim']
-    search_fields = ['comments_to_put_in_kudos_transfer', 'secret', 'token__name']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["sender_profile", "token"]
+    readonly_fields = ["claim"]
+    search_fields = ["comments_to_put_in_kudos_transfer", "secret", "token__name"]
 
     def claim(self, instance):
         url = instance.url
@@ -87,16 +98,16 @@ class BulkTransferCouponAdmin(admin.ModelAdmin):
 
 
 class BulkTransferRedemptionAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['coupon', 'redeemed_by', 'kudostransfer']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["coupon", "redeemed_by", "kudostransfer"]
 
 
 class TokenAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    search_fields = ['name', 'description']
-    raw_id_fields = ['contract']
-    readonly_fields = ['link', 'view_count']
+    ordering = ["-id"]
+    search_fields = ["name", "description"]
+    raw_id_fields = ["contract"]
+    readonly_fields = ["link", "view_count"]
 
     def link(self, instance):
         html = f"<a href={instance.url}>{instance.url}</a>"
@@ -107,50 +118,73 @@ class TokenAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+
         if "btc_coupon" in request.POST:
             # TODO: mint this token
             import random
             from kudos.views import get_profile
-            gitcoinbot = get_profile('gitcoinbot')
+
+            gitcoinbot = get_profile("gitcoinbot")
             btc = BulkTransferCoupon.objects.create(
                 token=obj,
-                tag='admin',
+                tag="admin",
                 num_uses_remaining=1,
                 num_uses_total=1,
                 current_uses=0,
-                secret=random.randint(10**19, 10**20),
+                secret=random.randint(10 ** 19, 10 ** 20),
                 comments_to_put_in_kudos_transfer=f"Hi from the admin",
                 sender_profile=gitcoinbot,
-                metadata={
-                },
+                metadata={},
                 make_paid_for_first_minutes=0,
-                )
-            self.message_user(request, f"Created Bulk Transfer Coupon with default settings")
+            )
+            self.message_user(
+                request, f"Created Bulk Transfer Coupon with default settings"
+            )
             return redirect(btc.admin_url)
         return redirect(obj.admin_url)
 
 
 class TransferAdmin(admin.ModelAdmin):
-    raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token', 'kudos_token_cloned_from']
-    ordering = ['-id']
-    readonly_fields = ['claim']
-    search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'txid', 'receive_txid']
-    list_display = ['created_on', '__str__']
+    raw_id_fields = [
+        "recipient_profile",
+        "sender_profile",
+        "kudos_token",
+        "kudos_token_cloned_from",
+    ]
+    ordering = ["-id"]
+    readonly_fields = ["claim"]
+    search_fields = [
+        "tokenName",
+        "comments_public",
+        "from_name",
+        "username",
+        "network",
+        "github_url",
+        "url",
+        "emails",
+        "from_address",
+        "receive_address",
+        "txid",
+        "receive_txid",
+    ]
+    list_display = ["created_on", "__str__"]
 
     def claim(self, instance):
-        if instance.web3_type == 'yge':
-            return 'n/a'
+        if instance.web3_type == "yge":
+            return "n/a"
         if not instance.txid:
-            return 'n/a'
+            return "n/a"
         if instance.receive_txid:
-            return 'n/a'
+            return "n/a"
         try:
-            if instance.web3_type == 'v2':
+            if instance.web3_type == "v2":
                 html = format_html('<a href="{}">claim</a>', instance.receive_url)
-            if instance.web3_type == 'v3':
-                html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
+            if instance.web3_type == "v3":
+                html = format_html(
+                    f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>'
+                )
         except Exception:
-            html = 'n/a'
+            html = "n/a"
         return html
 
 

@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 
 from django.core.management import call_command
@@ -23,12 +23,12 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
-    help = 'syncs all bounties with geth'
+    help = "syncs all bounties with geth"
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument("network", default="rinkeby", type=str)
 
     def handle(self, *args, **options):
         # config
-        network = options['network']
-        call_command('sync_geth', network, -100, 0)
+        network = options["network"]
+        call_command("sync_geth", network, -100, 0)

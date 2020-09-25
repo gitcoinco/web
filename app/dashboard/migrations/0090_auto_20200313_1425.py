@@ -7,13 +7,13 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0089_merge_20200310_1649'),
+        ("dashboard", "0089_merge_20200310_1649"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='last_calc_date',
+            model_name="profile",
+            name="last_calc_date",
             field=models.DateTimeField(default=economy.models.get_0_time),
         ),
     ]

@@ -6,18 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0007_auto_20190118_1832'),
+        ("dashboard", "0007_auto_20190118_1832"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='job_search_status',
-            field=models.CharField(blank=True, choices=[('AL', 'Actively Looking'), ('PL', 'Passively Looking'), ('N', 'Not Looking')], max_length=2),
+            model_name="profile",
+            name="job_search_status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("AL", "Actively Looking"),
+                    ("PL", "Passively Looking"),
+                    ("N", "Not Looking"),
+                ],
+                max_length=2,
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='show_job_status',
-            field=models.BooleanField(default=False, help_text='If this option is chosen, we will not show job search status'),
+            model_name="profile",
+            name="show_job_status",
+            field=models.BooleanField(
+                default=False,
+                help_text="If this option is chosen, we will not show job search status",
+            ),
         ),
     ]

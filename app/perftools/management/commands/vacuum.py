@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import time
 
@@ -26,7 +26,7 @@ SLEEP_TIME_BETWEEN_VACUUMS_S = 10
 
 class Command(BaseCommand):
 
-    help = 'vacuums all the postgres tables; on our schedule (auto vacuumer cant take site down anymore'
+    help = "vacuums all the postgres tables; on our schedule (auto vacuumer cant take site down anymore"
 
     def handle(self, *args, **options):
         tables = connection.introspection.table_names()

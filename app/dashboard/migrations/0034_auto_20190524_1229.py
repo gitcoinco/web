@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0033_bounty_bounty_categories'),
+        ("dashboard", "0033_bounty_bounty_categories"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='persona_is_funder',
+            model_name="profile",
+            name="persona_is_funder",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='persona_is_hunter',
+            model_name="profile",
+            name="persona_is_hunter",
             field=models.BooleanField(default=False),
         ),
     ]

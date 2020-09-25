@@ -22,7 +22,7 @@ from django.apps import AppConfig
 
 
 class NotificationConfig(AppConfig):
-    name = 'inbox'
+    name = "inbox"
 
     def ready(self):
-        import inbox.signals # noqa
+        import inbox.signals  # noqa

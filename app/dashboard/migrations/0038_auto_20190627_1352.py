@@ -7,28 +7,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0037_merge_20190624_1656'),
+        ("dashboard", "0037_merge_20190624_1656"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bounty',
-            name='admin_override_org_logo',
-            field=models.ImageField(blank=True, help_text='Organization Logo - Override', null=True, upload_to=app.utils.get_upload_filename),
+            model_name="bounty",
+            name="admin_override_org_logo",
+            field=models.ImageField(
+                blank=True,
+                help_text="Organization Logo - Override",
+                null=True,
+                upload_to=app.utils.get_upload_filename,
+            ),
         ),
         migrations.AddField(
-            model_name='bounty',
-            name='admin_override_org_name',
+            model_name="bounty",
+            name="admin_override_org_name",
             field=models.CharField(blank=True, max_length=255),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='admin_override_avatar',
-            field=models.ImageField(blank=True, help_text='override profile avatar', null=True, upload_to=app.utils.get_upload_filename),
+            model_name="profile",
+            name="admin_override_avatar",
+            field=models.ImageField(
+                blank=True,
+                help_text="override profile avatar",
+                null=True,
+                upload_to=app.utils.get_upload_filename,
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='admin_override_name',
-            field=models.CharField(blank=True, help_text='override profile name.', max_length=255),
+            model_name="profile",
+            name="admin_override_name",
+            field=models.CharField(
+                blank=True, help_text="override profile name.", max_length=255
+            ),
         ),
     ]

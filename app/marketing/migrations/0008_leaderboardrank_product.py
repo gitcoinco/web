@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0007_job'),
+        ("marketing", "0007_job"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='leaderboardrank',
-            name='product',
-            field=models.CharField(db_index=True, default='all', max_length=255),
+            model_name="leaderboardrank",
+            name="product",
+            field=models.CharField(db_index=True, default="all", max_length=255),
             preserve_default=False,
         ),
     ]

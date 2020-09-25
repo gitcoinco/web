@@ -33,93 +33,104 @@ from test_plus.test import TestCase
 class DashboardModelsTest(TestCase):
     """Define tests for dashboard models."""
 
-    fixtures = ['tokens.json']
+    fixtures = ["tokens.json"]
 
     def setUp(self):
         """Perform setup for the testcase."""
-        Token.objects.create(priority=999, symbol='ETH', address='0x0000000000000000000000000000000000000000')
+        Token.objects.create(
+            priority=999,
+            symbol="ETH",
+            address="0x0000000000000000000000000000000000000000",
+        )
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=2,
-            source='etherdelta',
-            from_currency='ETH',
-            to_currency='USDT',
+            source="etherdelta",
+            from_currency="ETH",
+            to_currency="USDT",
         )
 
     @staticmethod
     def test_bounty():
         """Test the dashboard Bounty model."""
         fulfiller_profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@localhost'
+            data={}, handle="fred", email="fred@localhost"
         )
         bounty = Bounty.objects.create(
-            title='foo',
-            value_in_token=3 * 10**18,
-            token_name='ETH',
+            title="foo",
+            value_in_token=3 * 10 ** 18,
+            token_name="ETH",
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/11',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/11",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=False,
             accepted=True,
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
             estimated_hours=7,
         )
         bounty_fulfillment = BountyFulfillment.objects.create(
-            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_address="0x0000000000000000000000000000000000000000",
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == f'{bounty.pk}: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
-        assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
-        assert bounty.title_or_desc == 'foo'
-        assert bounty.issue_description_text == 'hello world'
-        assert bounty.org_name == 'gitcoinco'
-        assert bounty.is_hunter('fred') is True
-        assert bounty.is_hunter('flintstone') is False
-        assert bounty.is_funder('fred') is False
-        assert bounty.is_funder('flintstone') is True
-        assert bounty.status == 'done'
+        assert (
+            str(bounty)
+            == f"{bounty.pk}: foo, 0 ETH @ {naturaltime(bounty.web3_created)}"
+        )
+        assert (
+            bounty.url
+            == f"{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}"
+        )
+        assert bounty.title_or_desc == "foo"
+        assert bounty.issue_description_text == "hello world"
+        assert bounty.org_name == "gitcoinco"
+        assert bounty.is_hunter("fred") is True
+        assert bounty.is_hunter("flintstone") is False
+        assert bounty.is_funder("fred") is False
+        assert bounty.is_funder("flintstone") is True
+        assert bounty.status == "done"
         assert bounty.value_true == 0
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
-        assert 'ago 5 Feature Intermediate' in bounty.desc
+        assert "ago 5 Feature Intermediate" in bounty.desc
         assert bounty.is_legacy is False
-        assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
+        assert (
+            bounty.get_github_api_url()
+            == "https://api.github.com/repos/gitcoinco/web/issues/11"
+        )
         assert bounty.estimated_hours == 7
-        assert bounty_fulfillment.profile.handle == 'fred'
-        assert bounty_fulfillment.bounty.title == 'foo'
+        assert bounty_fulfillment.profile.handle == "fred"
+        assert bounty_fulfillment.bounty.title == "foo"
         assert bounty.remarketed_count == 0
         assert bounty.last_remarketed is None
 
     @staticmethod
     def test_exclude_bounty_by_status():
         Bounty.objects.create(
-            title='First',
+            title="First",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
         Bounty.objects.create(
-            title='Second',
+            title="Second",
             idx_status=1,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
         Bounty.objects.create(
-            title='Third',
+            title="Third",
             idx_status=2,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
@@ -127,60 +138,64 @@ class DashboardModelsTest(TestCase):
             raw_data={},
         )
         Bounty.objects.create(
-            title='Fourth',
+            title="Fourth",
             idx_status=3,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
         bounty_stats = Bounty.objects.exclude_by_status()
         assert len(bounty_stats) == 4
-        bounty_stats = Bounty.objects.exclude_by_status(['open'])
+        bounty_stats = Bounty.objects.exclude_by_status(["open"])
         assert len(bounty_stats) == 3
-        bounty_stats = Bounty.objects.exclude_by_status(['cancelled', 'done'])
+        bounty_stats = Bounty.objects.exclude_by_status(["cancelled", "done"])
         assert len(bounty_stats) == 3
-        bounty_stats = Bounty.objects.exclude_by_status(['open', 'expired', 'cancelled'])
+        bounty_stats = Bounty.objects.exclude_by_status(
+            ["open", "expired", "cancelled"]
+        )
         assert not bounty_stats
 
     @staticmethod
     def test_relative_bounty_url_with_malformed_issue_number():
         bounty = Bounty.objects.create(
-            title='First',
+            title="First",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/0xDEADBEEF",
+            raw_data={},
         )
-        expected_url = '/funding/details?url=https://github.com/gitcoinco/web/issues/0xDEADBEEF'
+        expected_url = (
+            "/funding/details?url=https://github.com/gitcoinco/web/issues/0xDEADBEEF"
+        )
         assert bounty.get_relative_url() == expected_url
 
     @staticmethod
     def test_get_natural_value_if_bad_token_address_provided():
         bounty = Bounty.objects.create(
-            title='BadTokenBounty',
+            title="BadTokenBounty",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            token_address='0xDEADDEADDEADDEAD',
-            raw_data={}
+            token_address="0xDEADDEADDEADDEAD",
+            raw_data={},
         )
         assert bounty.get_natural_value() == 0
 
     @staticmethod
     def test_can_submit_legacy_bounty_after_expiration_date():
         bounty = Bounty.objects.create(
-            title='ExpiredBounty',
+            title="ExpiredBounty",
             standard_bounties_id=999999,
-            web3_type='legacy_gitcoin',
+            web3_type="legacy_gitcoin",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
         assert bounty.is_legacy is True
         assert bounty.can_submit_after_expiration_date is True
@@ -188,67 +203,71 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_cannot_submit_standard_bounty_after_expiration_date():
         bounty = Bounty.objects.create(
-            title='ExpiredBounty',
+            title="ExpiredBounty",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
         assert bounty.can_submit_after_expiration_date is False
 
     @staticmethod
     def test_can_submit_standard_bounty_after_expiration_date_if_deadline_extended():
         bounty = Bounty.objects.create(
-            title='ExpiredBounty',
+            title="ExpiredBounty",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={'contract_deadline': 1001, 'ipfs_deadline': 1000}
+            raw_data={"contract_deadline": 1001, "ipfs_deadline": 1000},
         )
         assert bounty.can_submit_after_expiration_date is True
 
     @staticmethod
     def test_title_or_desc():
         bounty = Bounty.objects.create(
-            title='TitleTest',
+            title="TitleTest",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/0xDEADBEEF",
+            raw_data={},
         )
         assert bounty.title_or_desc == "TitleTest"
         bounty.title = None
-        assert bounty.title_or_desc == "https://github.com/gitcoinco/web/issues/0xDEADBEEF"
+        assert (
+            bounty.title_or_desc == "https://github.com/gitcoinco/web/issues/0xDEADBEEF"
+        )
 
     @staticmethod
     def test_github_issue_number():
         bounty = Bounty.objects.create(
-            title='TitleTest',
+            title="TitleTest",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
         assert bounty.github_issue_number == 12345678
-        bounty.github_url = 'https://github.com/gitcoinco/web/issues/THIS_SHALL_RETURN_NONE'
+        bounty.github_url = (
+            "https://github.com/gitcoinco/web/issues/THIS_SHALL_RETURN_NONE"
+        )
         assert not bounty.github_issue_number
 
     @staticmethod
     def test_github_org_name():
         bounty = Bounty.objects.create(
-            title='TitleTest',
+            title="TitleTest",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
         assert bounty.github_org_name == "gitcoinco"
         bounty.github_url = None
@@ -257,13 +276,13 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_github_repo_name():
         bounty = Bounty.objects.create(
-            title='TitleTest',
+            title="TitleTest",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
         assert bounty.github_repo_name == "web"
         bounty.github_url = None
@@ -272,13 +291,13 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_bounty_status():
         bounty = Bounty.objects.create(
-            title='TitleTest',
+            title="TitleTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
         assert bounty.status == "open"
         bounty.web3_type = "legacy_gitcoin"
@@ -308,13 +327,13 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_fetch_issue_comments():
         bounty = Bounty.objects.create(
-            title='TitleTest',
+            title="TitleTest",
             idx_status=0,
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
         assert bounty.github_repo_name == "web"
         bounty.github_url = None
@@ -324,36 +343,36 @@ class DashboardModelsTest(TestCase):
     def test_bounty_expired():
         """Test the status and details of an expired bounty."""
         bounty = Bounty(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='ETH',
+            token_name="ETH",
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/12",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=False,
             accepted=False,
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
         )
-        assert bounty.status == 'expired'
+        assert bounty.status == "expired"
 
     @staticmethod
     def test_can_remarket_is_true_under_valid_conditions():
         bounty = Bounty.objects.create(
-            title='CanRemarketTrueTest',
+            title="CanRemarketTrueTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             last_remarketed=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.last_remarketed == datetime(2008, 10, 31, tzinfo=pytz.UTC)
@@ -363,15 +382,15 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_can_remarket_is_false_if_remarket_count_2():
         bounty = Bounty.objects.create(
-            title='CanRemarketFalseTest',
+            title="CanRemarketFalseTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             last_remarketed=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             remarketed_count=2,
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.can_remarket is False
@@ -380,14 +399,14 @@ class DashboardModelsTest(TestCase):
     def test_can_remarket_is_false_if_remarketed_within_last_hour():
         now = datetime.now(pytz.UTC)
         bounty = Bounty.objects.create(
-            title='CanRemarketFalseTest',
+            title="CanRemarketFalseTest",
             idx_status=0,
             is_open=True,
             web3_created=now,
             expires_date=now + timedelta(hours=1),
             last_remarketed=now,
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.can_remarket is False
@@ -395,24 +414,19 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_can_remarket_is_false_if_workers_have_applied():
         bounty = Bounty.objects.create(
-            title='CanRemarketFalseTest',
+            title="CanRemarketFalseTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             last_remarketed=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
-        dummy_profile = Profile.objects.create(
-            handle='foo',
-            data={}
-        )
+        dummy_profile = Profile.objects.create(handle="foo", data={})
 
-        bounty.interested.create(
-            profile=dummy_profile
-        )
+        bounty.interested.create(profile=dummy_profile)
 
         assert bounty.can_remarket is False
 
@@ -420,90 +434,90 @@ class DashboardModelsTest(TestCase):
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
-            emails=['foo@bar.com'],
-            tokenName='ETH',
+            emails=["foo@bar.com"],
+            tokenName="ETH",
             amount=7,
-            username='fred',
-            network='net',
+            username="fred",
+            network="net",
             expires_date=date.today() + timedelta(days=1),
             created_on=date.today(),
-            tokenAddress='0x0000000000000000000000000000000000000000',
-            web3_type='yge',
+            tokenAddress="0x0000000000000000000000000000000000000000",
+            web3_type="yge",
         )
-        assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
+        assert (
+            str(tip)
+            == "(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow"
+        )
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
-        assert tip.status == 'PENDING'
+        assert tip.status == "PENDING"
 
     @staticmethod
     def test_interest():
         """Test the dashboard Interest model."""
         profile = Profile(
-            handle='foo',
+            handle="foo",
         )
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo / pending: False / status: okay'
+        assert str(interest) == "foo / pending: False / status: okay"
 
     @staticmethod
     def test_profile():
         """Test the dashboard Profile model."""
         bounty = Bounty.objects.create(
-            github_url='https://github.com/gitcoinco/web/issues/305',
+            github_url="https://github.com/gitcoinco/web/issues/305",
             web3_created=datetime.now(tz=pytz.UTC),
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
             is_open=True,
             raw_data={},
             current_bounty=True,
-            bounty_owner_github_username='gitcoinco',
-            network='mainnet',
+            bounty_owner_github_username="gitcoinco",
+            network="mainnet",
         )
         tip = Tip.objects.create(
-            emails=['foo@bar.com'],
-            github_url='https://github.com/gitcoinco/web/issues/305',
+            emails=["foo@bar.com"],
+            github_url="https://github.com/gitcoinco/web/issues/305",
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
         )
         profile = Profile(
-            handle='gitcoinco',
-            data={'type': 'Organization'},
+            handle="gitcoinco",
+            data={"type": "Organization"},
         )
-        assert str(profile) == 'gitcoinco'
+        assert str(profile) == "gitcoinco"
         assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
-        assert profile.github_url == 'https://github.com/gitcoinco'
-        assert profile.get_relative_url() == '/gitcoinco'
+        assert profile.github_url == "https://github.com/gitcoinco"
+        assert profile.get_relative_url() == "/gitcoinco"
 
     def test_tool(self):
         """Test the dashboard Tool model."""
         tool = Tool.objects.create(
-            name='Issue Explorer',
+            name="Issue Explorer",
             category=Tool.CAT_BASIC,
-            img='v2/images/why-different/code_great.png',
-            description='A searchable index of all of the funded work available in the system.',
-            link='http://gitcoin.co/explorer',
-            link_copy='Try It',
+            img="v2/images/why-different/code_great.png",
+            description="A searchable index of all of the funded work available in the system.",
+            link="http://gitcoin.co/explorer",
+            link_copy="Try It",
             active=True,
-            stat_graph='bounties_fulfilled')
+            stat_graph="bounties_fulfilled",
+        )
         profile = Profile.objects.create(
-            handle='gitcoinco',
-            data={'type': 'Organization'},
+            handle="gitcoinco",
+            data={"type": "Organization"},
         )
         vote = ToolVote.objects.create(profile_id=profile.id, value=1)
         tool.votes.add(vote)
         assert tool.vote_score() == 11
-        assert tool.link_url == 'http://gitcoin.co/explorer'
+        assert tool.link_url == "http://gitcoin.co/explorer"
 
     @staticmethod
     def test_profile_activate_avatar():
         """Test the dashboard Profile model activate_avatar method."""
-        profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@localhost'
-        )
+        profile = Profile.objects.create(data={}, handle="fred", email="fred@localhost")
         CustomAvatar.objects.create(profile=profile, config="{}")
         social_avatar = SocialAvatar.objects.create(profile=profile)
         profile.activate_avatar(social_avatar.pk)
@@ -514,109 +528,103 @@ class DashboardModelsTest(TestCase):
     def test_bounty_snooze_url():
         """Test the dashboard Bounty model snooze_url method."""
         bounty = Bounty(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='ETH',
+            token_name="ETH",
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/12",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=False,
             accepted=False,
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
         )
-        assert bounty.snooze_url(1) == f'{bounty.get_absolute_url()}?snooze=1'
+        assert bounty.snooze_url(1) == f"{bounty.get_absolute_url()}?snooze=1"
 
     @staticmethod
     def test_bounty_canonical_url():
         """Test the dashboard Bounty model canonical url property."""
         bounty = Bounty(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='ETH',
+            token_name="ETH",
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/12",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=False,
             accepted=False,
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
         )
-        assert bounty.canonical_url == settings.BASE_URL + 'issue/gitcoinco/web/12'
+        assert bounty.canonical_url == settings.BASE_URL + "issue/gitcoinco/web/12"
 
     @staticmethod
     def test_bounty_clean_gh_url_on_save():
         """Test the dashboard Bounty model with clean_github_url in save method."""
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='ETH',
+            token_name="ETH",
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/305#issuecomment-999999999",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=False,
             accepted=False,
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
         )
-        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
+        assert bounty.github_url == "https://github.com/gitcoinco/web/issues/305"
         bounty.delete()
 
     @staticmethod
     def test_auto_user_auto_approve():
 
-        profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
-        )
-        interest = Interest.objects.create(
-            profile=profile, pending=True
-        )
+        profile = Profile.objects.create(data={}, handle="fred", email="fred@bar.com")
+        interest = Interest.objects.create(profile=profile, pending=True)
         interest.created = timezone.now()
         interest.save()
 
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web/issues/1/',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/1/",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            network='mainnet',
-            idx_status='open',
-            bounty_owner_email='john@bar.com',
+            network="mainnet",
+            idx_status="open",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            permission_type='approval',
-            bounty_reserved_for_user=profile
+            permission_type="approval",
+            bounty_reserved_for_user=profile,
         )
 
         bounty.interested.add(interest)
@@ -628,223 +636,207 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def get_all_tokens_sum():
         """Test all users funded tokens."""
-        token_names = ['ETH', 'ETH', 'DAI']
+        token_names = ["ETH", "ETH", "DAI"]
         for name in token_names:
             Bounty.objects.create(
-                title='foo',
+                title="foo",
                 value_in_token=3,
                 token_name=name,
                 web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-                github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
-                token_address='0x0',
-                issue_description='hello world',
-                bounty_owner_github_username='gitcoinco',
+                github_url="https://github.com/gitcoinco/web/issues/305#issuecomment-999999999",
+                token_address="0x0",
+                issue_description="hello world",
+                bounty_owner_github_username="gitcoinco",
                 is_open=True,
                 expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
                 idx_project_length=5,
-                project_length='Months',
-                bounty_type='Feature',
-                experience_level='Intermediate',
+                project_length="Months",
+                bounty_type="Feature",
+                experience_level="Intermediate",
                 raw_data={},
                 current_bounty=True,
-                network='mainnet',
+                network="mainnet",
             )
 
         profile = Profile(
-            handle='gitcoinco',
-            data={'type': 'Organization'},
+            handle="gitcoinco",
+            data={"type": "Organization"},
         )
-        query = profile.to_dict()['sum_all_funded_tokens']
-        assert query[0]['token_name'] == 'DAI'
-        assert query[0]['value_in_token'] == 3
+        query = profile.to_dict()["sum_all_funded_tokens"]
+        assert query[0]["token_name"] == "DAI"
+        assert query[0]["value_in_token"] == 3
 
-        assert query[1]['token_name'] == 'ETH'
-        assert query[1]['value_in_token'] == 6
+        assert query[1]["token_name"] == "ETH"
+        assert query[1]["value_in_token"] == 6
 
     @staticmethod
     def test_total_reserved_length_label_empty_when_bounty_not_reserved():
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == ''
+        assert bounty.total_reserved_length_label == ""
 
     @staticmethod
     def test_total_reserved_length_label_is_indefinite_when_no_expiration_set():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=timezone.now(),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == 'indefinitely'
+        assert bounty.total_reserved_length_label == "indefinitely"
 
     @staticmethod
     def test_total_reserved_length_label_empty_when_from_and_exp_date_the_same():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now,
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == ''
+        assert bounty.total_reserved_length_label == ""
 
     @staticmethod
     def test_total_reserved_length_label_when_reservation_is_one_week():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(weeks=1),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == '1 week'
+        assert bounty.total_reserved_length_label == "1 week"
 
     @staticmethod
     def test_total_reserved_length_label_when_reservation_is_two_weeks():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(weeks=2),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == '2 weeks'
+        assert bounty.total_reserved_length_label == "2 weeks"
 
     @staticmethod
     def test_total_reserved_length_label_when_reservation_is_one_day():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(days=1),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == '1 day'
+        assert bounty.total_reserved_length_label == "1 day"
 
     @staticmethod
     def test_total_reserved_length_label_when_reservation_is_three_days():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(days=3),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == '3 days'
+        assert bounty.total_reserved_length_label == "3 days"
 
     @staticmethod
     def test_total_reserved_length_label_when_reservation_is_one_hour():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(hours=1),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == '1 hour'
+        assert bounty.total_reserved_length_label == "1 hour"
 
     @staticmethod
     def test_total_reserved_length_label_when_reservation_is_three_hours():
-        dummy_profile = Profile(
-            handle='foo'
-        )
+        dummy_profile = Profile(handle="foo")
 
         now = timezone.now()
         bounty = Bounty(
-            title='ReservedLengthLabelTest',
+            title="ReservedLengthLabelTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
             bounty_reserved_for_user=dummy_profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(hours=3),
-            raw_data={}
+            raw_data={},
         )
 
-        assert bounty.total_reserved_length_label == '3 hours'
+        assert bounty.total_reserved_length_label == "3 hours"

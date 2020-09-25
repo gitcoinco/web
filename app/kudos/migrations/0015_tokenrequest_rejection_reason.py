@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0014_auto_20200505_1330'),
+        ("kudos", "0014_auto_20200505_1330"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tokenrequest',
-            name='rejection_reason',
-            field=models.TextField(blank=True, default='', max_length=500),
+            model_name="tokenrequest",
+            name="rejection_reason",
+            field=models.TextField(blank=True, default="", max_length=500),
         ),
     ]

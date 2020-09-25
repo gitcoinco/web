@@ -33,30 +33,32 @@ logger = logging.getLogger(__name__)
 def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
     """Handle changes to Bounty interests."""
 
-    if action in ['post_add', 'post_remove']:
+    if action in ["post_add", "post_remove"]:
         from dashboard.tasks import m2m_changed_interested
-        m2m_changed_interested.delay(instance.pk)
 
+        m2m_changed_interested.delay(instance.pk)
 
 
 def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):
     """Handle changes to Bounty fulfillments."""
-    event_name = 'work_submitted'
+    event_name = "work_submitted"
     profile_handles = []
 
-    fulfillments = instance.fulfillments.select_related('profile').all().order_by('pk')
+    fulfillments = instance.fulfillments.select_related("profile").all().order_by("pk")
     if fulfillments.filter(accepted=True).exists():
-        event_name = 'work_done'
+        event_name = "work_done"
 
     for fulfillment in fulfillments:
-        profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+        profile_handles.append(
+            (fulfillment.profile.handle, fulfillment.profile.absolute_url)
+        )
 
-    if action in ['post_add', 'post_remove']:
+    if action in ["post_add", "post_remove"]:
         maybe_market_to_github(instance, event_name, profile_pairs=profile_handles)
 
 
 def allow_all_bounties(sender, request, **kwargs):
-    return request.method == 'GET' and request.path.startswith('/api/v0.1/bounties/')
+    return request.method == "GET" and request.path.startswith("/api/v0.1/bounties/")
 
 
 check_request_enabled.connect(allow_all_bounties)

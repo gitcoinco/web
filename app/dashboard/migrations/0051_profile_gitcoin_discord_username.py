@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0050_searchhistory_search_type'),
+        ("dashboard", "0050_searchhistory_search_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='gitcoin_discord_username',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="profile",
+            name="gitcoin_discord_username",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
     ]

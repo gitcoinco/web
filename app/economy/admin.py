@@ -28,19 +28,21 @@ from .models import ConversionRate, Token, TXUpdate
 class TokenAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
-    ordering = ['-id']
-    search_fields = ['symbol', 'address']
-    list_display = ['id', 'created_on' ,'approved', 'symbol', 'address_url']
-    readonly_fields = ['address_url']
+    ordering = ["-id"]
+    search_fields = ["symbol", "address"]
+    list_display = ["id", "created_on", "approved", "symbol", "address_url"]
+    readonly_fields = ["address_url"]
 
     def address_url(self, obj):
-        tx_url = 'https://etherscan.io/address/' + obj.address
+        tx_url = "https://etherscan.io/address/" + obj.address
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, obj.address)
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+
         if "_approve_token" in request.POST:
             from marketing.mails import new_token_request_approved
+
             new_token_request_approved(obj)
             obj.approved = True
             obj.save()
@@ -51,17 +53,26 @@ class TokenAdmin(admin.ModelAdmin):
 class TXUpdateAdmin(admin.ModelAdmin):
     """Handle displaying conversion rates in the django admin."""
 
-    ordering = ['-id']
-    search_fields = ['body']
-    list_display = ['id', 'created_on', 'processed', '__str__']
+    ordering = ["-id"]
+    search_fields = ["body"]
+    list_display = ["id", "created_on", "processed", "__str__"]
 
 
 class ConvRateAdmin(admin.ModelAdmin):
     """Handle displaying conversion rates in the django admin."""
 
-    ordering = ['-id']
-    search_fields = ['from_currency', 'to_currency']
-    list_display =['id', 'timestamp', 'from_currency', 'from_amount','to_currency', 'to_amount', 'source', '__str__']
+    ordering = ["-id"]
+    search_fields = ["from_currency", "to_currency"]
+    list_display = [
+        "id",
+        "timestamp",
+        "from_currency",
+        "from_amount",
+        "to_currency",
+        "to_amount",
+        "source",
+        "__str__",
+    ]
 
 
 admin.site.register(ConversionRate, ConvRateAdmin)

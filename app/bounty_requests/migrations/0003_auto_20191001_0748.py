@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bounty_requests', '0002_auto_20181226_1716'),
+        ("bounty_requests", "0002_auto_20181226_1716"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bountyrequest',
-            name='github_org_email',
-            field=models.CharField(default='', max_length=255),
+            model_name="bountyrequest",
+            name="github_org_email",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='bountyrequest',
-            name='github_org_name',
-            field=models.CharField(default='', max_length=50),
+            model_name="bountyrequest",
+            name="github_org_name",
+            field=models.CharField(default="", max_length=50),
         ),
     ]

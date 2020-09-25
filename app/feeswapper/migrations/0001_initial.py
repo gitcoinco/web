@@ -7,23 +7,33 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CurrencyConversion',
+            name="CurrencyConversion",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('from_amount', models.FloatField()),
-                ('to_amount', models.FloatField()),
-                ('conversion_rate', models.FloatField()),
-                ('txid', models.CharField(db_index=True, max_length=100)),
-                ('transaction_date', models.DateTimeField(db_index=True)),
-                ('from_token_addr', models.CharField(db_index=True, max_length=100)),
-                ('to_token_symbol', models.CharField(db_index=True, max_length=10)),
-                ('from_token_symbol', models.CharField(db_index=True, max_length=10)),
-                ('transaction_result', models.CharField(default='success', max_length=10)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("from_amount", models.FloatField()),
+                ("to_amount", models.FloatField()),
+                ("conversion_rate", models.FloatField()),
+                ("txid", models.CharField(db_index=True, max_length=100)),
+                ("transaction_date", models.DateTimeField(db_index=True)),
+                ("from_token_addr", models.CharField(db_index=True, max_length=100)),
+                ("to_token_symbol", models.CharField(db_index=True, max_length=10)),
+                ("from_token_symbol", models.CharField(db_index=True, max_length=10)),
+                (
+                    "transaction_result",
+                    models.CharField(default="success", max_length=10),
+                ),
             ],
         ),
     ]

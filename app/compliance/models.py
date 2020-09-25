@@ -16,7 +16,7 @@ class Entity(SuperModel):
 
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.fullName}'
+        return f"{self.fullName}"
 
 
 class Country(SuperModel):
@@ -24,4 +24,4 @@ class Country(SuperModel):
 
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.name}'
+        return f"{self.name}"

@@ -32,39 +32,43 @@ from marketing.models import Stat
 
 logger = logging.getLogger(__name__)
 
+
 def chat_presence(request):
     """Sets user presence on mattermost."""
     if not request.user.is_authenticated:
-        return JsonResponse({'status': 'OK'})
+        return JsonResponse({"status": "OK"})
 
     profile = request.user.profile
     if not profile.chat_id:
-        return JsonResponse({'status': 'OK'})
+        return JsonResponse({"status": "OK"})
 
     # setup driver
     driver = get_driver()
 
     # determine current status/ should we set the user as online in mm?
-    current_status = driver.client.post('/users/status/ids', [profile.chat_id])
-    manual = current_status[0]['manual']
-    current_status = current_status[0]['status']
-    set_status = current_status == 'offline' or manual or settings.DEBUG
+    current_status = driver.client.post("/users/status/ids", [profile.chat_id])
+    manual = current_status[0]["manual"]
+    current_status = current_status[0]["status"]
+    set_status = current_status == "offline" or manual or settings.DEBUG
 
     # if so, make it so
     if set_status:
-        new_status = 'online'
-        if current_status in ['away', 'dnd']:
+        new_status = "online"
+        if current_status in ["away", "dnd"]:
             new_status = current_status
-        driver.client.put(f'/users/{profile.chat_id}/status', {'user_id': profile.chat_id, 'status': new_status})
+        driver.client.put(
+            f"/users/{profile.chat_id}/status",
+            {"user_id": profile.chat_id, "status": new_status},
+        )
         # set a marker of when this user was last seen..
         # so that get_user_prsence can clean it up later
         redis = RedisService().redis
         redis.set(profile.chat_id, timezone.now().timestamp())
         redis.set(f"chat:{profile.chat_id}", new_status)
 
-    return JsonResponse({'status': 'OK'})
+    return JsonResponse({"status": "OK"})
 
 
 def chat_login(request):
 
-    return TemplateResponse(request, 'chat_login.html')
+    return TemplateResponse(request, "chat_login.html")

@@ -7,18 +7,18 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gitcoinbot', '0001_initial'),
+        ("gitcoinbot", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gitcoinbotresponses',
-            name='created_on',
+            model_name="gitcoinbotresponses",
+            name="created_on",
             field=models.DateTimeField(db_index=True, default=economy.models.get_time),
         ),
         migrations.AddField(
-            model_name='gitcoinbotresponses',
-            name='modified_on',
+            model_name="gitcoinbotresponses",
+            name="modified_on",
             field=models.DateTimeField(default=economy.models.get_time),
         ),
     ]

@@ -10,12 +10,12 @@ register = template.Library()
 def date_fromisoformat(value, arg=None):
     """Get datetime.datetime from isofromat string then use given format."""
 
-    if value in (None, ''):
-        return ''
+    if value in (None, ""):
+        return ""
     try:
         return date_format(dateutil.parser.parse(value), arg)
     except AttributeError:
         try:
             return format(dateutil.parser.parse(value), arg)
         except AttributeError:
-            return ''
+            return ""

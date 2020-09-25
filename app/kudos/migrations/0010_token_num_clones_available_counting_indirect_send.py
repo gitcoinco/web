@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0009_merge_20191002_1914'),
+        ("kudos", "0009_merge_20191002_1914"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='token',
-            name='num_clones_available_counting_indirect_send',
+            model_name="token",
+            name="num_clones_available_counting_indirect_send",
             field=models.IntegerField(blank=True, default=0),
         ),
     ]

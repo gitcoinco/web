@@ -9,23 +9,54 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='DataPayload',
+            name="DataPayload",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('key', models.CharField(db_index=True, help_text='key for this data report', max_length=255)),
-                ('report', models.CharField(blank=True, help_text='The report associated with this project', max_length=255)),
-                ('payload', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
-                ('comments', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "key",
+                    models.CharField(
+                        db_index=True,
+                        help_text="key for this data report",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "report",
+                    models.CharField(
+                        blank=True,
+                        help_text="The report associated with this project",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "payload",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict
+                    ),
+                ),
+                ("comments", models.TextField(blank=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

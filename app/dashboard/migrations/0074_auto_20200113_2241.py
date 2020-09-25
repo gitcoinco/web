@@ -7,18 +7,23 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0073_merge_20200113_2241'),
+        ("dashboard", "0073_merge_20200113_2241"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activity',
-            name='hidden',
+            model_name="activity",
+            name="hidden",
             field=models.BooleanField(db_index=True, default=False),
         ),
         migrations.AddField(
-            model_name='activity',
-            name='other_profile',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='other_activities', to='dashboard.Profile'),
+            model_name="activity",
+            name="other_profile",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="other_activities",
+                to="dashboard.Profile",
+            ),
         ),
     ]

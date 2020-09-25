@@ -10,25 +10,75 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Avatar',
+            name="Avatar",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('config', django.contrib.postgres.fields.jsonb.JSONField(default=dict, help_text='The JSON configuration of the custom avatar.')),
-                ('github_svg', models.FileField(blank=True, help_text='The Github avatar SVG.', null=True, upload_to=avatar.utils.get_upload_filename)),
-                ('png', models.ImageField(blank=True, help_text='The Github avatar PNG.', null=True, upload_to=avatar.utils.get_upload_filename)),
-                ('custom_avatar_png', models.ImageField(blank=True, help_text='The custom avatar PNG.', null=True, upload_to=avatar.utils.get_upload_filename)),
-                ('svg', models.FileField(blank=True, help_text='The custom avatar SVG.', null=True, upload_to=avatar.utils.get_upload_filename)),
-                ('use_github_avatar', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "config",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=dict,
+                        help_text="The JSON configuration of the custom avatar.",
+                    ),
+                ),
+                (
+                    "github_svg",
+                    models.FileField(
+                        blank=True,
+                        help_text="The Github avatar SVG.",
+                        null=True,
+                        upload_to=avatar.utils.get_upload_filename,
+                    ),
+                ),
+                (
+                    "png",
+                    models.ImageField(
+                        blank=True,
+                        help_text="The Github avatar PNG.",
+                        null=True,
+                        upload_to=avatar.utils.get_upload_filename,
+                    ),
+                ),
+                (
+                    "custom_avatar_png",
+                    models.ImageField(
+                        blank=True,
+                        help_text="The custom avatar PNG.",
+                        null=True,
+                        upload_to=avatar.utils.get_upload_filename,
+                    ),
+                ),
+                (
+                    "svg",
+                    models.FileField(
+                        blank=True,
+                        help_text="The custom avatar SVG.",
+                        null=True,
+                        upload_to=avatar.utils.get_upload_filename,
+                    ),
+                ),
+                ("use_github_avatar", models.BooleanField(default=True)),
             ],
             options={
-                'verbose_name_plural': 'Avatars',
+                "verbose_name_plural": "Avatars",
             },
         ),
     ]

@@ -8,26 +8,47 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('avatar', '0005_customavatar_style'),
+        ("avatar", "0005_customavatar_style"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AvatarTheme',
+            name="AvatarTheme",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('active', models.BooleanField(db_index=True, default=False)),
-                ('name', models.CharField(max_length=256)),
-                ('description', models.TextField(blank=True, default='')),
-                ('artist_bio', models.TextField(blank=True, default='')),
-                ('popularity', models.IntegerField(db_index=True, default=0)),
-                ('tags', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), blank=True, default=list, size=None)),
-                ('img_url', models.CharField(max_length=256)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("active", models.BooleanField(db_index=True, default=False)),
+                ("name", models.CharField(max_length=256)),
+                ("description", models.TextField(blank=True, default="")),
+                ("artist_bio", models.TextField(blank=True, default="")),
+                ("popularity", models.IntegerField(db_index=True, default=0)),
+                (
+                    "tags",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.CharField(max_length=200),
+                        blank=True,
+                        default=list,
+                        size=None,
+                    ),
+                ),
+                ("img_url", models.CharField(max_length=256)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

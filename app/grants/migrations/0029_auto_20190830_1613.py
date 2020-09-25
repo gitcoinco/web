@@ -7,18 +7,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0028_phantomfunding'),
+        ("grants", "0028_phantomfunding"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='phantomfunding',
-            name='grant',
-            field=models.ForeignKey(help_text='The associated grant being Phantom Funding.', on_delete=django.db.models.deletion.CASCADE, related_name='phantom_funding', to='grants.Grant'),
+            model_name="phantomfunding",
+            name="grant",
+            field=models.ForeignKey(
+                help_text="The associated grant being Phantom Funding.",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="phantom_funding",
+                to="grants.Grant",
+            ),
         ),
         migrations.AlterField(
-            model_name='phantomfunding',
-            name='profile',
-            field=models.ForeignKey(help_text='The associated profile doing the Phantom Funding.', on_delete=django.db.models.deletion.CASCADE, related_name='grant_phantom_funding', to='dashboard.Profile'),
+            model_name="phantomfunding",
+            name="profile",
+            field=models.ForeignKey(
+                help_text="The associated profile doing the Phantom Funding.",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="grant_phantom_funding",
+                to="dashboard.Profile",
+            ),
         ),
     ]

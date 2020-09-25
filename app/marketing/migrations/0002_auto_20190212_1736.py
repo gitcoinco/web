@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0001_initial'),
+        ("marketing", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='leaderboardrank',
-            name='amount',
+            model_name="leaderboardrank",
+            name="amount",
             field=models.FloatField(db_index=True),
         ),
         migrations.AlterField(
-            model_name='leaderboardrank',
-            name='leaderboard',
+            model_name="leaderboardrank",
+            name="leaderboard",
             field=models.CharField(db_index=True, max_length=255),
         ),
         migrations.AlterIndexTogether(
-            name='leaderboardrank',
-            index_together={('leaderboard', 'active')},
+            name="leaderboardrank",
+            index_together={("leaderboard", "active")},
         ),
     ]

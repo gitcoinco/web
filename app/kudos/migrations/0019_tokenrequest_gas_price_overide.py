@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0018_auto_20200625_1454'),
+        ("kudos", "0018_auto_20200625_1454"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tokenrequest',
-            name='gas_price_overide',
-            field=models.IntegerField(default=0, help_text='If non-zero, then the celery task will use this gas price to mint hte kudos'),
+            model_name="tokenrequest",
+            name="gas_price_overide",
+            field=models.IntegerField(
+                default=0,
+                help_text="If non-zero, then the celery task will use this gas price to mint hte kudos",
+            ),
         ),
     ]

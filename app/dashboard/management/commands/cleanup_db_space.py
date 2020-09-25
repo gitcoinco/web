@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -27,7 +27,7 @@ from marketing.models import LeaderboardRank, Stat
 
 class Command(BaseCommand):
 
-    help = 'cleans up database objects that are old'
+    help = "cleans up database objects that are old"
 
     def get_then(self, days_back=7):
         return timezone.now() - timezone.timedelta(days=days_back)
@@ -35,37 +35,49 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         for model in [GasGuzzler, GasProfile]:
-            result = model.objects.filter(
-                created_on__lt=self.get_then(7),
-                ).exclude(created_on__minute__lt=10).delete()
-            print(f'{model}: {result}')
+            result = (
+                model.objects.filter(
+                    created_on__lt=self.get_then(7),
+                )
+                .exclude(created_on__minute__lt=10)
+                .delete()
+            )
+            print(f"{model}: {result}")
 
-        result = ConversionRate.objects.filter(
+        result = (
+            ConversionRate.objects.filter(
                 created_on__lt=self.get_then(7),
-            ).exclude(
-                from_currency='ETH',
-                to_currency='USDT',
-            ).exclude(
-                from_currency='USDT',
-                to_currency='ETH'
-            ).exclude(
-                source='manual',
-            ).exclude(
-                source='cryptocompare',
-            ).delete()
-        print(f'ConversionRate: {result}')
+            )
+            .exclude(
+                from_currency="ETH",
+                to_currency="USDT",
+            )
+            .exclude(from_currency="USDT", to_currency="ETH")
+            .exclude(
+                source="manual",
+            )
+            .exclude(
+                source="cryptocompare",
+            )
+            .delete()
+        )
+        print(f"ConversionRate: {result}")
 
-        result = Stat.objects.filter(
+        result = (
+            Stat.objects.filter(
                 created_on__lt=self.get_then(7),
-            ).exclude(
+            )
+            .exclude(
                 created_on__hour=1,
-            ).delete()
-        print(f'Stat: {result}')
+            )
+            .delete()
+        )
+        print(f"Stat: {result}")
 
         results = Activity.objects.filter(
-                modified_on__lt=self.get_then(14),
-            ).exclude(cached_view_props={})
+            modified_on__lt=self.get_then(14),
+        ).exclude(cached_view_props={})
         for result in results:
             result.cached_view_props = {}
             result.save()
-        print(f'Activity: {result}')
+        print(f"Activity: {result}")

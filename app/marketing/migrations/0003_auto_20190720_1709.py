@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0002_auto_20190212_1736'),
+        ("marketing", "0002_auto_20190212_1736"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='leaderboardrank',
-            name='active',
+            model_name="leaderboardrank",
+            name="active",
             field=models.BooleanField(db_index=True),
         ),
     ]

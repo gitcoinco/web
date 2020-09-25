@@ -21,6 +21,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def get_categories_from_list(list, key):
     for sub_category in list:

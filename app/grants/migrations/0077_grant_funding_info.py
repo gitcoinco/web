@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0076_matchpledge_data'),
+        ("grants", "0076_matchpledge_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='funding_info',
-            field=models.CharField(default='', help_text='Is this grant VC funded?', max_length=255),
+            model_name="grant",
+            name="funding_info",
+            field=models.CharField(
+                default="", help_text="Is this grant VC funded?", max_length=255
+            ),
         ),
     ]

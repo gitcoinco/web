@@ -7,8 +7,15 @@ from gitcoinbot.models import GitcoinBotResponses
 
 class GitcoinBotResponsesAdmin(admin.ModelAdmin):
     """Define the Gitcoin Bot response admin model for displaying bot request data."""
-    fields = ('request', 'response', )
-    list_display = ('request', 'response', )
+
+    fields = (
+        "request",
+        "response",
+    )
+    list_display = (
+        "request",
+        "response",
+    )
 
 
 admin.site.register(GitcoinBotResponses, GitcoinBotResponsesAdmin)

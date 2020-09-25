@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0006_bounty_estimated_hours'),
+        ("dashboard", "0006_bounty_estimated_hours"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bounty',
-            name='funder_last_messaged_on',
+            model_name="bounty",
+            name="funder_last_messaged_on",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='bountyfulfillment',
-            name='funder_last_notified_on',
+            model_name="bountyfulfillment",
+            name="funder_last_notified_on",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

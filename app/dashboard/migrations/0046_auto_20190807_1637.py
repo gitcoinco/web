@@ -7,18 +7,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0045_auto_20190803_1827'),
+        ("dashboard", "0045_auto_20190803_1827"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonevent',
-            name='text_color',
-            field=models.CharField(blank=True, help_text='hexcode for the text, default to black', max_length=255, null=True),
+            model_name="hackathonevent",
+            name="text_color",
+            field=models.CharField(
+                blank=True,
+                help_text="hexcode for the text, default to black",
+                max_length=255,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='hackathonevent',
-            name='background_color',
-            field=models.CharField(blank=True, help_text='hexcode for the banner, default to white', max_length=255, null=True),
+            model_name="hackathonevent",
+            name="background_color",
+            field=models.CharField(
+                blank=True,
+                help_text="hexcode for the banner, default to white",
+                max_length=255,
+                null=True,
+            ),
         ),
     ]

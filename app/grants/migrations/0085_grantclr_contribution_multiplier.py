@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0084_auto_20200917_1631'),
+        ("grants", "0084_auto_20200917_1631"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grantclr',
-            name='contribution_multiplier',
-            field=models.DecimalField(decimal_places=4, default=1.0, help_text='A contribution multipler to be applied to each contribution', max_digits=10),
+            model_name="grantclr",
+            name="contribution_multiplier",
+            field=models.DecimalField(
+                decimal_places=4,
+                default=1.0,
+                help_text="A contribution multipler to be applied to each contribution",
+                max_digits=10,
+            ),
         ),
     ]

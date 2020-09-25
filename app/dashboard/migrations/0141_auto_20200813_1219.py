@@ -7,13 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0140_bountyfulfillment_project'),
+        ("dashboard", "0140_bountyfulfillment_project"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bountyfulfillment',
-            name='project',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='submissions', to='dashboard.HackathonProject'),
+            model_name="bountyfulfillment",
+            name="project",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="submissions",
+                to="dashboard.HackathonProject",
+            ),
         ),
     ]

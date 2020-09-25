@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import json
 import time
@@ -33,20 +33,22 @@ from web3 import HTTPProvider, Web3
 
 class Command(BaseCommand):
 
-    help = 'creates avatar text inputs'
+    help = "creates avatar text inputs"
 
     def add_arguments(self, parser):
-        parser.add_argument('amount', default='0.001', type=str, help="how much do we send?")
-        parser.add_argument('number', type=int, help="how many do we send?")
+        parser.add_argument(
+            "amount", default="0.001", type=str, help="how much do we send?"
+        )
+        parser.add_argument("number", type=int, help="how many do we send?")
 
     def handle(self, *args, **options):
         ## creates text inputs which can be hidden in gitcoin avatars
 
         # setup
-        network = 'mainnet' if not settings.DEBUG else 'rinkeby'
-        amount = float(options['amount'])
-        amount = int(amount * 10**18)
-        number = int(options['number'])
+        network = "mainnet" if not settings.DEBUG else "rinkeby"
+        amount = float(options["amount"])
+        amount = int(amount * 10 ** 18)
+        number = int(options["number"])
         from_address = settings.AVATAR_ADDRESS
         from_address = Web3.toChecksumAddress(from_address)
         from_pk = settings.AVATAR_PRIVATE_KEY
@@ -69,13 +71,17 @@ class Command(BaseCommand):
                 private_key = account.privateKey
                 to = Web3.toChecksumAddress(to)
                 txn = {
-                    'to': to,
-                    'from': from_address,
-                    'value': amount,
-                    'nonce': w3.eth.getTransactionCount(from_address),
-                    'gas': 22000,
-                    'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4),
-                    'data': b'',
+                    "to": to,
+                    "from": from_address,
+                    "value": amount,
+                    "nonce": w3.eth.getTransactionCount(from_address),
+                    "gas": 22000,
+                    "gasPrice": int(
+                        float(recommend_min_gas_price_to_confirm_in_time(1))
+                        * 10 ** 9
+                        * 1.4
+                    ),
+                    "data": b"",
                 }
                 signed = w3.eth.account.signTransaction(txn, from_pk)
                 tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
@@ -89,7 +95,7 @@ class Command(BaseCommand):
                 AvatarTextOverlayInput.objects.create(
                     active=True,
                     text=private_key.hex(),
-                    coment='auto avatar text creation',
+                    coment="auto avatar text creation",
                     num_uses_total=1,
                     current_uses=0,
                     num_uses_remaining=1,

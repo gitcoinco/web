@@ -23,8 +23,9 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
 
-if os.environ.get('ENV') in ['prod', 'stage']:
+if os.environ.get("ENV") in ["prod", "stage"]:
     from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
+
     application = Sentry(get_wsgi_application())
 else:
     application = get_wsgi_application()

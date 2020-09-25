@@ -2,21 +2,28 @@
 
 from django.db import migrations
 
+
 def forwards(apps, schema_editor):
     from dashboard.models import Profile
-    Profile.objects.filter(max_tip_amount_usdt_per_tx=500).update(max_tip_amount_usdt_per_tx=2500)
-    Profile.objects.filter(max_tip_amount_usdt_per_week=1500).update(max_tip_amount_usdt_per_week=20000)
+
+    Profile.objects.filter(max_tip_amount_usdt_per_tx=500).update(
+        max_tip_amount_usdt_per_tx=2500
+    )
+    Profile.objects.filter(max_tip_amount_usdt_per_week=1500).update(
+        max_tip_amount_usdt_per_week=20000
+    )
 
 
 def backwards(apps, schema_editor):
     pass
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0032_auto_20190531_1646'),
+        ("dashboard", "0032_auto_20190531_1646"),
     ]
 
     operations = [
-         migrations.RunPython(forwards, backwards),
+        migrations.RunPython(forwards, backwards),
     ]

@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0016_auto_20191023_1430'),
+        ("quests", "0016_auto_20191023_1430"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quest',
-            name='ui_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="quest",
+            name="ui_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
     ]

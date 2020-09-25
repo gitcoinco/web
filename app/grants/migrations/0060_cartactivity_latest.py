@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0059_auto_20200617_1508'),
+        ("grants", "0059_auto_20200617_1508"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cartactivity',
-            name='latest',
+            model_name="cartactivity",
+            name="latest",
             field=models.BooleanField(default=False),
         ),
     ]

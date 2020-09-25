@@ -6,17 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0038_auto_20190627_1352'),
+        ("dashboard", "0038_auto_20190627_1352"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='useraction',
-            name='action',
-            field=models.CharField(choices=[('Login', 'Login'), ('Logout', 'Logout'), ('Visit', 'Visit'), ('added_slack_integration', 'Added Slack Integration'), ('removed_slack_integration', 'Removed Slack Integration'), ('updated_avatar', 'Updated Avatar'), ('account_disconnected', 'Account Disconnected')], db_index=True, max_length=50),
+            model_name="useraction",
+            name="action",
+            field=models.CharField(
+                choices=[
+                    ("Login", "Login"),
+                    ("Logout", "Logout"),
+                    ("Visit", "Visit"),
+                    ("added_slack_integration", "Added Slack Integration"),
+                    ("removed_slack_integration", "Removed Slack Integration"),
+                    ("updated_avatar", "Updated Avatar"),
+                    ("account_disconnected", "Account Disconnected"),
+                ],
+                db_index=True,
+                max_length=50,
+            ),
         ),
         migrations.AlterIndexTogether(
-            name='useraction',
-            index_together={('profile', 'action')},
+            name="useraction",
+            index_together={("profile", "action")},
         ),
     ]

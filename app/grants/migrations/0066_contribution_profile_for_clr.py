@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0125_auto_20200630_1304'),
-        ('grants', '0065_auto_20200702_0518'),
+        ("dashboard", "0125_auto_20200630_1304"),
+        ("grants", "0065_auto_20200702_0518"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contribution',
-            name='profile_for_clr',
-            field=models.ForeignKey(help_text='The profile to attribute this contribution to..', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='clr_pledges', to='dashboard.Profile'),
+            model_name="contribution",
+            name="profile_for_clr",
+            field=models.ForeignKey(
+                help_text="The profile to attribute this contribution to..",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="clr_pledges",
+                to="dashboard.Profile",
+            ),
         ),
     ]

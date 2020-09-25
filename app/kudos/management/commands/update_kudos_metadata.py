@@ -35,25 +35,36 @@ logging.basicConfig(level=logging.INFO)
 
 class Command(BaseCommand):
 
-    help = 'syncs database with kudos on the blockchain'
+    help = "syncs database with kudos on the blockchain"
 
     def add_arguments(self, parser):
-        parser.add_argument('network', type=str, choices=['localhost', 'rinkeby', 'ropsten', 'mainnet'],
-                            help='ethereum network to use')
-        parser.add_argument('--start_id', default=1, type=int,
-                            help='kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.')
-        parser.add_argument('--end_id', type=int,
-                            help='kudos_id to stop syncing at.  By default it will sync to the latest token.')
+        parser.add_argument(
+            "network",
+            type=str,
+            choices=["localhost", "rinkeby", "ropsten", "mainnet"],
+            help="ethereum network to use",
+        )
+        parser.add_argument(
+            "--start_id",
+            default=1,
+            type=int,
+            help="kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.",
+        )
+        parser.add_argument(
+            "--end_id",
+            type=int,
+            help="kudos_id to stop syncing at.  By default it will sync to the latest token.",
+        )
 
     def handle(self, *args, **options):
         # config
-        network = options['network']
-        start_id = options['start_id']
+        network = options["network"]
+        start_id = options["start_id"]
 
         kudos_contract = KudosContract(network)
 
-        if options['end_id']:
-            end_id = options['end_id']
+        if options["end_id"]:
+            end_id = options["end_id"]
         else:
             end_id = kudos_contract._w3.functions.getLatestId().call()
 
@@ -61,61 +72,55 @@ class Command(BaseCommand):
             kudos = kudos_contract.getKudosById(kudos_id, to_dict=True)
 
             # Copied from mint_all_kudos
-            image_name = kudos.get('image')
+            image_name = kudos.get("image")
             if image_name:
                 # Support Open Sea
-                if kudos_contract.network == 'mainnet':
-                    image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
+                if kudos_contract.network == "mainnet":
+                    image_path = (
+                        "http://kudosdemo.gitcoin.co/static/v2/images/kudos/"
+                        + image_name
+                    )
                 else:
-                    image_path = 'v2/images/kudos/' + image_name
+                    image_path = "v2/images/kudos/" + image_name
             else:
-                image_path = ''
+                image_path = ""
 
             attributes = []
             rarity = {
                 "trait_type": "rarity",
-                "value": get_rarity_score(kudos['numClonesAllowed']),
+                "value": get_rarity_score(kudos["numClonesAllowed"]),
             }
             attributes.append(rarity)
 
-            artist = {
-                "trait_type": "artist",
-                "value": kudos.get('artist')
-            }
+            artist = {"trait_type": "artist", "value": kudos.get("artist")}
             attributes.append(artist)
 
-            platform = {
-                "trait_type": "platform",
-                "value": kudos.get('platform')
-            }
+            platform = {"trait_type": "platform", "value": kudos.get("platform")}
             attributes.append(platform)
 
-            tags = kudos['tags']
+            tags = kudos["tags"]
             # append tags
-            if kudos['priceFinney'] < 2:
-                tags.append('budget')
-            if kudos['priceFinney'] < 5:
-                tags.append('affordable')
-            if kudos['priceFinney'] > 20:
-                tags.append('premium')
-            if kudos['priceFinney'] > 200:
-                tags.append('expensive')
+            if kudos["priceFinney"] < 2:
+                tags.append("budget")
+            if kudos["priceFinney"] < 5:
+                tags.append("affordable")
+            if kudos["priceFinney"] > 20:
+                tags.append("premium")
+            if kudos["priceFinney"] > 200:
+                tags.append("expensive")
 
             for tag in tags:
                 if tag:
-                    tag = {
-                        "trait_type": "tag",
-                        "value": tag
-                    }
+                    tag = {"trait_type": "tag", "value": tag}
                     attributes.append(tag)
 
             metadata = {
-                'name': humanize_name(kudos['name']),
-                'image': image_path,
-                'description': kudos['description'],
-                'external_url': f'http://kudosdemo.gitcoin.co/kudos',
-                'background_color': '#fbfbfb',
-                'attributes': attributes
+                "name": humanize_name(kudos["name"]),
+                "image": image_path,
+                "description": kudos["description"],
+                "external_url": f"http://kudosdemo.gitcoin.co/kudos",
+                "background_color": "#fbfbfb",
+                "attributes": attributes,
             }
 
             for __ in range(1, 4):

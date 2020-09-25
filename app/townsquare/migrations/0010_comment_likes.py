@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0009_auto_20200212_0150'),
+        ("townsquare", "0009_auto_20200212_0150"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='likes',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), blank=True, default=list, size=None),
+            model_name="comment",
+            name="likes",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.IntegerField(), blank=True, default=list, size=None
+            ),
         ),
     ]

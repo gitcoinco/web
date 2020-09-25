@@ -9,47 +9,126 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='DigitalGoodPurchase',
+            name="DigitalGoodPurchase",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('web3_type', models.CharField(default='v3', max_length=50)),
-                ('emails', django.contrib.postgres.fields.jsonb.JSONField(blank=True)),
-                ('url', models.CharField(blank=True, default='', max_length=255)),
-                ('primary_email', models.CharField(blank=True, default='', max_length=255)),
-                ('tokenName', models.CharField(default='ETH', max_length=255)),
-                ('tokenAddress', models.CharField(blank=True, max_length=255)),
-                ('amount', models.DecimalField(decimal_places=4, default=1, max_digits=50)),
-                ('comments_public', models.TextField(blank=True, default='')),
-                ('ip', models.CharField(max_length=50)),
-                ('github_url', models.URLField(blank=True, null=True)),
-                ('from_name', models.CharField(blank=True, default='', max_length=255)),
-                ('from_email', models.CharField(blank=True, default='', max_length=255)),
-                ('from_username', models.CharField(blank=True, default='', max_length=255)),
-                ('username', models.CharField(blank=True, default='', max_length=255)),
-                ('network', models.CharField(default='', max_length=255)),
-                ('txid', models.CharField(default='', max_length=255)),
-                ('receive_txid', models.CharField(blank=True, default='', max_length=255)),
-                ('received_on', models.DateTimeField(blank=True, null=True)),
-                ('from_address', models.CharField(blank=True, default='', max_length=255)),
-                ('receive_address', models.CharField(blank=True, default='', max_length=255)),
-                ('metadata', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
-                ('is_for_bounty_fulfiller', models.BooleanField(default=False, help_text='If this option is chosen, this tip will be automatically paid to the bounty fulfiller, not self.usernameusername.')),
-                ('tx_status', models.CharField(choices=[('na', 'na'), ('pending', 'pending'), ('success', 'success'), ('error', 'error'), ('unknown', 'unknown'), ('dropped', 'dropped')], db_index=True, default='na', max_length=9)),
-                ('receive_tx_status', models.CharField(choices=[('na', 'na'), ('pending', 'pending'), ('success', 'success'), ('error', 'error'), ('unknown', 'unknown'), ('dropped', 'dropped')], db_index=True, default='na', max_length=9)),
-                ('tx_time', models.DateTimeField(blank=True, null=True)),
-                ('receive_tx_time', models.DateTimeField(blank=True, null=True)),
-                ('purchase', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
-                ('purchase_expires', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("web3_type", models.CharField(default="v3", max_length=50)),
+                ("emails", django.contrib.postgres.fields.jsonb.JSONField(blank=True)),
+                ("url", models.CharField(blank=True, default="", max_length=255)),
+                (
+                    "primary_email",
+                    models.CharField(blank=True, default="", max_length=255),
+                ),
+                ("tokenName", models.CharField(default="ETH", max_length=255)),
+                ("tokenAddress", models.CharField(blank=True, max_length=255)),
+                (
+                    "amount",
+                    models.DecimalField(decimal_places=4, default=1, max_digits=50),
+                ),
+                ("comments_public", models.TextField(blank=True, default="")),
+                ("ip", models.CharField(max_length=50)),
+                ("github_url", models.URLField(blank=True, null=True)),
+                ("from_name", models.CharField(blank=True, default="", max_length=255)),
+                (
+                    "from_email",
+                    models.CharField(blank=True, default="", max_length=255),
+                ),
+                (
+                    "from_username",
+                    models.CharField(blank=True, default="", max_length=255),
+                ),
+                ("username", models.CharField(blank=True, default="", max_length=255)),
+                ("network", models.CharField(default="", max_length=255)),
+                ("txid", models.CharField(default="", max_length=255)),
+                (
+                    "receive_txid",
+                    models.CharField(blank=True, default="", max_length=255),
+                ),
+                ("received_on", models.DateTimeField(blank=True, null=True)),
+                (
+                    "from_address",
+                    models.CharField(blank=True, default="", max_length=255),
+                ),
+                (
+                    "receive_address",
+                    models.CharField(blank=True, default="", max_length=255),
+                ),
+                (
+                    "metadata",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict
+                    ),
+                ),
+                (
+                    "is_for_bounty_fulfiller",
+                    models.BooleanField(
+                        default=False,
+                        help_text="If this option is chosen, this tip will be automatically paid to the bounty fulfiller, not self.usernameusername.",
+                    ),
+                ),
+                (
+                    "tx_status",
+                    models.CharField(
+                        choices=[
+                            ("na", "na"),
+                            ("pending", "pending"),
+                            ("success", "success"),
+                            ("error", "error"),
+                            ("unknown", "unknown"),
+                            ("dropped", "dropped"),
+                        ],
+                        db_index=True,
+                        default="na",
+                        max_length=9,
+                    ),
+                ),
+                (
+                    "receive_tx_status",
+                    models.CharField(
+                        choices=[
+                            ("na", "na"),
+                            ("pending", "pending"),
+                            ("success", "success"),
+                            ("error", "error"),
+                            ("unknown", "unknown"),
+                            ("dropped", "dropped"),
+                        ],
+                        db_index=True,
+                        default="na",
+                        max_length=9,
+                    ),
+                ),
+                ("tx_time", models.DateTimeField(blank=True, null=True)),
+                ("receive_tx_time", models.DateTimeField(blank=True, null=True)),
+                (
+                    "purchase",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict
+                    ),
+                ),
+                ("purchase_expires", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

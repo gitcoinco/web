@@ -36,12 +36,16 @@ from rest_framework.reverse import reverse
 logger = logging.getLogger(__name__)
 
 _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
-BASE_URI = settings.BASE_URL.rstrip('/')
-HEADERS = {'Accept': 'application/vnd.github.squirrel-girl-preview'}
-V3HEADERS = {'Accept': 'application/vnd.github.v3.text-match+json'}
-JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
-TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
-TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
+BASE_URI = settings.BASE_URL.rstrip("/")
+HEADERS = {"Accept": "application/vnd.github.squirrel-girl-preview"}
+V3HEADERS = {"Accept": "application/vnd.github.v3.text-match+json"}
+JSON_HEADER = {
+    "Accept": "application/json",
+    "User-Agent": settings.GITHUB_APP_NAME,
+    "Origin": settings.BASE_URL,
+}
+TIMELINE_HEADERS = {"Accept": "application/vnd.github.mockingbird-preview"}
+TOKEN_URL = "{api_url}/applications/{client_id}/tokens/{oauth_token}"
 PER_PAGE_LIMIT = 100
 
 
@@ -69,7 +73,7 @@ def github_connect(token=None):
 
 
 def get_gh_issue_details(org, repo, issue_num, token=None):
-    details = {'keywords': []}
+    details = {"keywords": []}
     try:
         gh_client = github_connect(token)
         org_user = gh_client.get_user(login=org)
@@ -77,13 +81,13 @@ def get_gh_issue_details(org, repo, issue_num, token=None):
         issue_details = repo_obj.get_issue(issue_num)
         langs = repo_obj.get_languages()
         for k, _ in langs.items():
-            details['keywords'].append(k)
-        details['title'] = issue_details.title
-        details['description'] = issue_details.body.replace('\n', '').strip()
-        details['state'] = issue_details.state
-        if issue_details.state == 'closed':
-            details['closed_at'] = issue_details.closed_at.isoformat()
-            details['closed_by'] = issue_details.closed_by.name
+            details["keywords"].append(k)
+        details["title"] = issue_details.title
+        details["description"] = issue_details.body.replace("\n", "").strip()
+        details["state"] = issue_details.state
+        if issue_details.state == "closed":
+            details["closed_at"] = issue_details.closed_at.isoformat()
+            details["closed_by"] = issue_details.closed_by.name
     except UnknownObjectException:
         return {}
     return details
@@ -108,10 +112,10 @@ def build_auth_dict(oauth_token):
 
     """
     return {
-        'api_url': settings.GITHUB_API_BASE_URL,
-        'client_id': settings.GITHUB_CLIENT_ID,
-        'client_secret': settings.GITHUB_CLIENT_SECRET,
-        'oauth_token': oauth_token
+        "api_url": settings.GITHUB_API_BASE_URL,
+        "client_id": settings.GITHUB_CLIENT_ID,
+        "client_secret": settings.GITHUB_CLIENT_SECRET,
+        "oauth_token": oauth_token,
     }
 
 
@@ -125,18 +129,23 @@ def check_github(profile):
         dict: A dictionary containing status and user data.
 
     """
-    user = search_github(profile + ' in:login type:user')
-    response = {'status': 200, 'user': False}
-    user_items = user.get('items', [])
+    user = search_github(profile + " in:login type:user")
+    response = {"status": 200, "user": False}
+    user_items = user.get("items", [])
 
-    if user_items and user_items[0].get('login', '').lower() == profile.lower():
-        response['user'] = user_items[0]
+    if user_items and user_items[0].get("login", "").lower() == profile.lower():
+        response["user"] = user_items[0]
     return response
 
 
 def search_github(q):
-    params = (('q', q), ('sort', 'updated'),)
-    response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
+    params = (
+        ("q", q),
+        ("sort", "updated"),
+    )
+    response = requests.get(
+        "https://api.github.com/search/users", headers=HEADERS, params=params
+    )
     return response.json()
 
 
@@ -159,7 +168,7 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
         try:
             last_validated = dateutil.parser.parse(last_validated)
         except ValueError:
-            print('Validation of date failed.')
+            print("Validation of date failed.")
             last_validated = None
 
     # Check whether or not the user's access token has been validated recently.
@@ -168,15 +177,15 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
             return True
 
     _params = build_auth_dict(oauth_token)
-    _auth = (_params['client_id'], _params['client_secret'])
+    _auth = (_params["client_id"], _params["client_secret"])
     url = TOKEN_URL.format(**_params)
     try:
         response = requests.get(url, auth=_auth, headers=HEADERS)
     except ConnectionError as e:
-        if not settings.ENV == 'local':
+        if not settings.ENV == "local":
             logger.error(e)
         else:
-            print(e, '- No connection available. Unable to authenticate with Github.')
+            print(e, "- No connection available. Unable to authenticate with Github.")
         return False
 
     if response.status_code == 200:
@@ -187,7 +196,7 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
 def revoke_token(oauth_token):
     """Revoke the specified token."""
     _params = build_auth_dict(oauth_token)
-    _auth = (_params['client_id'], _params['client_secret'])
+    _auth = (_params["client_id"], _params["client_secret"])
     url = TOKEN_URL.format(**_params)
     response = requests.delete(url, auth=_auth, headers=HEADERS)
     if response.status_code == 204:
@@ -206,15 +215,15 @@ def reset_token(oauth_token):
 
     """
     _params = build_auth_dict(oauth_token)
-    _auth = (_params['client_id'], _params['client_secret'])
+    _auth = (_params["client_id"], _params["client_secret"])
     url = TOKEN_URL.format(**_params)
     response = requests.post(url, auth=_auth, headers=HEADERS)
     if response.status_code == 200:
-        return response.json().get('token')
-    return ''
+        return response.json().get("token")
+    return ""
 
 
-def get_auth_url(redirect_uri='/'):
+def get_auth_url(redirect_uri="/"):
     """Build the Github authorization URL.
 
     Args:
@@ -230,29 +239,35 @@ def get_auth_url(redirect_uri='/'):
         str: The Github authentication URL.
 
     """
-    github_callback = reverse('social:begin', args=('github',))
-    redirect_params = {'next': BASE_URI + redirect_uri}
+    github_callback = reverse("social:begin", args=("github",))
+    redirect_params = {"next": BASE_URI + redirect_uri}
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
     params = {
-        'client_id': settings.GITHUB_CLIENT_ID,
-        'scope': settings.GITHUB_SCOPE,
-        'next': f'{BASE_URI}{github_callback}?{redirect_uri}'
+        "client_id": settings.GITHUB_CLIENT_ID,
+        "scope": settings.GITHUB_SCOPE,
+        "next": f"{BASE_URI}{github_callback}?{redirect_uri}",
     }
     auth_url = urlencode(params, quote_via=quote_plus)
 
-    return settings.GITHUB_AUTH_BASE_URL + f'?{auth_url}'
+    return settings.GITHUB_AUTH_BASE_URL + f"?{auth_url}"
 
 
 def get_github_user_token(code, **kwargs):
     """Get the Github authorization token."""
-    _params = {'code': code, 'client_id': settings.GITHUB_CLIENT_ID, 'client_secret': settings.GITHUB_CLIENT_SECRET}
+    _params = {
+        "code": code,
+        "client_id": settings.GITHUB_CLIENT_ID,
+        "client_secret": settings.GITHUB_CLIENT_SECRET,
+    }
     # Add additional parameters to the request paramaters.
     _params.update(kwargs)
-    response = requests.get(settings.GITHUB_TOKEN_URL, headers=JSON_HEADER, params=_params)
+    response = requests.get(
+        settings.GITHUB_TOKEN_URL, headers=JSON_HEADER, params=_params
+    )
     response = response.json()
-    scope = response.get('scope', None)
+    scope = response.get("scope", None)
     if scope:
-        access_token = response.get('access_token', None)
+        access_token = response.get("access_token", None)
         return access_token
     return None
 
@@ -267,8 +282,8 @@ def get_github_user_data(oauth_token):
         requests.Response: The Github user response.
 
     """
-    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get('https://api.github.com/user', headers=headers)
+    headers = dict({"Authorization": f"token {oauth_token}"}, **JSON_HEADER)
+    response = requests.get("https://api.github.com/user", headers=headers)
     if response.status_code == 200:
         return response.json()
     return {}
@@ -284,16 +299,16 @@ def get_github_primary_email(oauth_token):
         str: The user's primary github email address.
 
     """
-    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get('https://api.github.com/user/emails', headers=headers)
+    headers = dict({"Authorization": f"token {oauth_token}"}, **JSON_HEADER)
+    response = requests.get("https://api.github.com/user/emails", headers=headers)
 
     if response.status_code == 200:
         emails = response.json()
         for email in emails:
-            if email.get('primary'):
-                return email.get('email', '')
+            if email.get("primary"):
+                return email.get("email", "")
 
-    return ''
+    return ""
 
 
 def get_github_event_emails(oauth_token, username):
@@ -309,23 +324,29 @@ def get_github_event_emails(oauth_token, username):
     emails = []
     headers = JSON_HEADER
     if oauth_token:
-        headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get(f'https://api.github.com/users/{username}/events/public', headers=headers)
+        headers = dict({"Authorization": f"token {oauth_token}"}, **JSON_HEADER)
+    response = requests.get(
+        f"https://api.github.com/users/{username}/events/public", headers=headers
+    )
 
     userinfo = get_user(username)
-    user_name = userinfo.get('name', '')
+    user_name = userinfo.get("name", "")
 
     if response.status_code == 200:
         events = response.json()
         for event in events:
-            payload = event.get('payload', {})
-            for commit in payload.get('commits', []):
-                author = commit.get('author', {})
-                email = author.get('email', {})
-                name = author.get('name', {})
+            payload = event.get("payload", {})
+            for commit in payload.get("commits", []):
+                author = commit.get("author", {})
+                email = author.get("email", {})
+                name = author.get("name", {})
                 if name and username and user_name:
-                    append_email = name.lower() == username.lower() or name.lower() == user_name.lower() \
-                                   and email and 'noreply.github.com' not in email
+                    append_email = (
+                        name.lower() == username.lower()
+                        or name.lower() == user_name.lower()
+                        and email
+                        and "noreply.github.com" not in email
+                    )
                     if append_email:
                         emails.append(email)
 
@@ -343,14 +364,14 @@ def get_github_emails(oauth_token):
 
     """
     emails = []
-    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get('https://api.github.com/user/emails', headers=headers)
+    headers = dict({"Authorization": f"token {oauth_token}"}, **JSON_HEADER)
+    response = requests.get("https://api.github.com/user/emails", headers=headers)
 
     if response.status_code == 200:
         email_data = response.json()
         for email in email_data:
-            email_address = email.get('email')
-            if email_address and 'noreply.github.com' not in email_address:
+            email_address = email.get("email")
+            if email_address and "noreply.github.com" not in email_address:
                 emails.append(email_address)
 
     return emails
@@ -358,17 +379,18 @@ def get_github_emails(oauth_token):
 
 def get_emails_by_category(username):
     from dashboard.models import Profile
+
     to_emails = {}
     to_profiles = Profile.objects.filter(handle=username.lower())
     if to_profiles.exists():
         to_profile = to_profiles.first()
         if to_profile.github_access_token:
-            to_emails['primary'] = get_github_emails(to_profile.github_access_token)
+            to_emails["primary"] = get_github_emails(to_profile.github_access_token)
         if to_profile.email:
-            to_emails['github_profile'] = to_profile.email
-    to_emails['events'] = []
+            to_emails["github_profile"] = to_profile.email
+    to_emails["events"] = []
     for email in get_github_event_emails(None, username):
-        to_emails['events'].append(email)
+        to_emails["events"].append(email)
     return to_emails
 
 
@@ -394,10 +416,18 @@ def search(query):
         request.Response: The github search response.
 
     """
-    params = (('q', query), ('sort', 'updated'),)
+    params = (
+        ("q", query),
+        ("sort", "updated"),
+    )
 
     try:
-        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
+        response = requests.get(
+            "https://api.github.com/search/users",
+            auth=_AUTH,
+            headers=V3HEADERS,
+            params=params,
+        )
         return response.json()
     except Exception as e:
         logger.error("could not search GH - Reason: %s - query: %s", e, query)
@@ -419,10 +449,10 @@ def search_user(query, token=None):
     try:
         user_obj = paginated_list[0]
         return {
-            'avatar_url': user_obj.avatar_url,
-            'login': user_obj.login,
-            'text': user_obj.login,
-            'email': user_obj.email,
+            "avatar_url": user_obj.avatar_url,
+            "login": user_obj.login,
+            "text": user_obj.login,
+            "email": user_obj.email,
         }
     except IndexError:
         pass
@@ -464,18 +494,18 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
         requests.Response: The GitHub comments response.
     """
     params = {
-        'sort': 'created',
-        'direction': 'desc',
-        'per_page': 100,
-    # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
+        "sort": "created",
+        "direction": "desc",
+        "per_page": 100,
+        # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     if issue:
         if comment_id:
-            url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+            url = f"https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}"
         else:
-            url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
+            url = f"https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments"
     else:
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
+        url = f"https://api.github.com/repos/{owner}/{repo}/issues/comments"
 
     try:
         response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
@@ -483,15 +513,26 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     except Exception as e:
         logger.error(
             "could not get issue comments - Reason: %s - owner: %s repo: %s issue: %s comment_id: %s status code: %s",
-            e, owner, repo, issue, comment_id, response.status_code
+            e,
+            owner,
+            repo,
+            issue,
+            comment_id,
+            response.status_code,
         )
     return {}
 
 
-def get_issues(owner, repo, page=1, state='open'):
+def get_issues(owner, repo, page=1, state="open"):
     """Get the open issues on a respository."""
-    params = {'state': state, 'sort': 'created', 'direction': 'desc', 'page': page, 'per_page': 100, }
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues'
+    params = {
+        "state": state,
+        "sort": "created",
+        "direction": "desc",
+        "page": page,
+        "per_page": 100,
+    }
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues"
 
     try:
         response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
@@ -499,7 +540,12 @@ def get_issues(owner, repo, page=1, state='open'):
     except Exception as e:
         logger.error(
             "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status code: %s",
-            e, owner, repo, page, state, response.status_code
+            e,
+            owner,
+            repo,
+            page,
+            state,
+            response.status_code,
         )
     return {}
 
@@ -519,21 +565,39 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
     Returns:
         requests.Response: The GitHub timeline response.
     """
-    params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, 'page': page, }
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+    params = {
+        "sort": "created",
+        "direction": "desc",
+        "per_page": 100,
+        "page": page,
+    }
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline"
     try:
         # Set special header to access timeline preview api
-        response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
+        response = requests.get(
+            url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params
+        )
         return response.json()
     except Exception as e:
         logger.error(
-            "could not get timeline events - Reason: %s - %s %s %s %s", e, owner, repo, issue, response.status_code
+            "could not get timeline events - Reason: %s - %s %s %s %s",
+            e,
+            owner,
+            repo,
+            issue,
+            response.status_code,
         )
     return {}
 
 
-def get_interested_actions(github_url, username, email=''):
-    activity_event_types = ['commented', 'cross-referenced', 'merged', 'referenced', 'review_requested', ]
+def get_interested_actions(github_url, username, email=""):
+    activity_event_types = [
+        "commented",
+        "cross-referenced",
+        "merged",
+        "referenced",
+        "review_requested",
+    ]
 
     owner = org_name(github_url)
     repo = repo_name(github_url)
@@ -552,55 +616,71 @@ def get_interested_actions(github_url, username, email=''):
         gh_user = None
         gh_email = None
         # GitHub might populate actor OR user OR neither for some events
-        if 'actor' in action:
-            gh_user = action['actor']['login']
-        elif 'user' in action:
-            gh_user = action['user']['login']
+        if "actor" in action:
+            gh_user = action["actor"]["login"]
+        elif "user" in action:
+            gh_user = action["user"]["login"]
 
-        if action['event'] == 'cross-referenced':
-            pr_num = action.get('source', {}).get('issue', {}).get('number', '')
-            pr_repo_owner, pr_repo = action.get('source', {}).get('issue', {}) \
-                .get('repository', {}).get('full_name', '/').split('/')
+        if action["event"] == "cross-referenced":
+            pr_num = action.get("source", {}).get("issue", {}).get("number", "")
+            pr_repo_owner, pr_repo = (
+                action.get("source", {})
+                .get("issue", {})
+                .get("repository", {})
+                .get("full_name", "/")
+                .split("/")
+            )
 
             should_continue_loop = True
             all_pr_actions = []
             page = 1
             while should_continue_loop:
-                pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, page)
+                pr_actions = get_issue_timeline_events(
+                    pr_repo_owner, pr_repo, pr_num, page
+                )
                 should_continue_loop = len(pr_actions) == 100
                 all_pr_actions = all_pr_actions + pr_actions
                 page += 1
 
             for pr_action in all_pr_actions:
-                pr_action['pr_url'] = pr_repo_owner + '/' + pr_repo + '/' + str(pr_num) + '/' + str(page)
-                if 'actor' in pr_action:
-                    if (pr_action['actor']):
-                        gh_user = pr_action['actor']['login']
-                    if gh_user.lower() == username.lower() and pr_action['event'] in activity_event_types:
+                pr_action["pr_url"] = (
+                    pr_repo_owner + "/" + pr_repo + "/" + str(pr_num) + "/" + str(page)
+                )
+                if "actor" in pr_action:
+                    if pr_action["actor"]:
+                        gh_user = pr_action["actor"]["login"]
+                    if (
+                        gh_user.lower() == username.lower()
+                        and pr_action["event"] in activity_event_types
+                    ):
                         actions_by_interested_party.append(pr_action)
-                    elif username == '*':
+                    elif username == "*":
                         actions_by_interested_party.append(pr_action)
-                elif 'committer' in pr_action:
-                    gh_email = pr_action['committer']['email']
+                elif "committer" in pr_action:
+                    gh_email = pr_action["committer"]["email"]
                     if gh_email and gh_email == email:
                         actions_by_interested_party.append(pr_action)
 
-        if gh_user and gh_user.lower() == username.lower() and action['event'] in activity_event_types:
+        if (
+            gh_user
+            and gh_user.lower() == username.lower()
+            and action["event"] in activity_event_types
+        ):
             actions_by_interested_party.append(action)
     return actions_by_interested_party
 
 
-def get_user(user, sub_path='', scope='', scoped=False, auth=None):
+def get_user(user, sub_path="", scope="", scoped=False, auth=None):
     if not auth:
         auth = _AUTH
     """Get the github user details."""
-    if scope is not '':
-        url = f'https://api.github.com/user/{scope}?per_page={PER_PAGE_LIMIT}'
+    if scope is not "":
+        url = f"https://api.github.com/user/{scope}?per_page={PER_PAGE_LIMIT}"
     elif scoped:
-        url = f'https://api.github.com/user'
+        url = f"https://api.github.com/user"
     else:
-        user = user.replace('@', '')
-        url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
+        user = user.replace("@", "")
+        url = f"https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}"
     response = requests.get(url, auth=auth, headers=HEADERS)
 
     try:
@@ -610,12 +690,12 @@ def get_user(user, sub_path='', scope='', scoped=False, auth=None):
     return response_dict
 
 
-def get_organization(org, sub_path='', auth=None):
+def get_organization(org, sub_path="", auth=None):
     """Get the github organization details."""
     if not auth:
         auth = _AUTH
-    org = org.replace('@', '')
-    url = f'https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}'
+    org = org.replace("@", "")
+    url = f"https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}"
     response = requests.get(url, auth=auth, headers=HEADERS)
     try:
         response_dict = response.json()
@@ -624,15 +704,15 @@ def get_organization(org, sub_path='', auth=None):
     return response_dict
 
 
-def get_repo(repo_full_name, sub_path='', auth=None, is_user=False):
+def get_repo(repo_full_name, sub_path="", auth=None, is_user=False):
     """Get the github repo details."""
     if not auth:
         auth = _AUTH
-    repo_full_name = repo_full_name.replace('@', '')
+    repo_full_name = repo_full_name.replace("@", "")
     if is_user:
-        url = f'https://api.github.com/user/repos?per_page={PER_PAGE_LIMIT}'
+        url = f"https://api.github.com/user/repos?per_page={PER_PAGE_LIMIT}"
     else:
-        url = f'https://api.github.com/repos/{repo_full_name}{sub_path}?per_page={PER_PAGE_LIMIT}'
+        url = f"https://api.github.com/repos/{repo_full_name}{sub_path}?per_page={PER_PAGE_LIMIT}"
 
     response = requests.get(url, auth=auth, headers=HEADERS)
 
@@ -645,7 +725,7 @@ def get_repo(repo_full_name, sub_path='', auth=None, is_user=False):
 
 def get_notifications():
     """Get the github notifications."""
-    url = f'https://api.github.com/notifications?all=1'
+    url = f"https://api.github.com/notifications?all=1"
     try:
         response = requests.get(url, auth=_AUTH, headers=HEADERS)
         return response.json()
@@ -667,60 +747,85 @@ def get_gh_notifications(login=None):
 
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments"
     try:
-        response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
+        response = requests.post(url, data=json.dumps({"body": comment}), auth=_AUTH)
         return response.json()
     except Exception as e:
         logger.error(
-            "could not post issue comment - Reason: %s - %s %s %s %s", e, comment, owner, repo, response.status_code
+            "could not post issue comment - Reason: %s - %s %s %s %s",
+            e,
+            comment,
+            owner,
+            repo,
+            response.status_code,
         )
     return {}
 
 
 def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}"
     try:
-        response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
+        response = requests.patch(url, data=json.dumps({"body": comment}), auth=_AUTH)
         if response.status_code == 200:
             return response.json()
     except Exception as e:
         logger.error(
-            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, response.status_code
+            "could not patch issue comment - Reason: %s - %s %s %s %s",
+            e,
+            comment_id,
+            owner,
+            repo,
+            response.status_code,
         )
     return {}
 
 
 def delete_issue_comment(comment_id, owner, repo):
     """Remove a comment on an issue via delete."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}"
     try:
         response = requests.delete(url, auth=_AUTH)
         return response.json()
     except ValueError:
         logger.error(
             "could not delete issue comment because JSON response could not be decoded: %s %s %s %s %s",
-            comment_id, owner, repo, response.status_code, response.text
+            comment_id,
+            owner,
+            repo,
+            response.status_code,
+            response.text,
         )
     except Exception as e:
         logger.error(
             "could not delete issue comment - Reason: %s: %s %s %s %s %s",
-            e, comment_id, owner, repo, response.status_code, response.text
+            e,
+            comment_id,
+            owner,
+            repo,
+            response.status_code,
+            response.text,
         )
     return {}
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):
     """React to an issue comment."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions"
     try:
-        response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
+        response = requests.post(
+            url, data=json.dumps({"content": content}), auth=_AUTH, headers=HEADERS
+        )
         return response.json()
     except Exception as e:
         logger.error(
             "could not post issue reaction - Reason: %s - %s %s %s %s",
-            e, comment_id, owner, repo, response.status_code
+            e,
+            comment_id,
+            owner,
+            repo,
+            response.status_code,
         )
     return {}
 
@@ -740,13 +845,17 @@ def get_url_dict(issue_url):
     """
     try:
         return {
-            'org': issue_url.split('/')[3],
-            'repo': issue_url.split('/')[4],
-            'issue_num': int(issue_url.split('/')[6]),
+            "org": issue_url.split("/")[3],
+            "repo": issue_url.split("/")[4],
+            "issue_num": int(issue_url.split("/")[6]),
         }
     except IndexError as e:
         logger.warning(e)
-        return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
+        return {
+            "org": org_name(issue_url),
+            "repo": repo_name(issue_url),
+            "issue_num": int(issue_number(issue_url)),
+        }
 
 
 def repo_url(issue_url):
@@ -760,9 +869,9 @@ def repo_url(issue_url):
 
     """
     try:
-        return '/'.join(issue_url.split('/')[:-2])
+        return "/".join(issue_url.split("/")[:-2])
     except IndexError:
-        return ''
+        return ""
 
 
 def org_name(issue_url):
@@ -776,9 +885,9 @@ def org_name(issue_url):
 
     """
     try:
-        return issue_url.split('/')[3]
+        return issue_url.split("/")[3]
     except IndexError:
-        return ''
+        return ""
 
 
 def repo_name(issue_url):
@@ -792,9 +901,9 @@ def repo_name(issue_url):
 
     """
     try:
-        return issue_url.split('/')[4]
+        return issue_url.split("/")[4]
     except IndexError:
-        return ''
+        return ""
 
 
 def issue_number(issue_url):
@@ -808,9 +917,9 @@ def issue_number(issue_url):
 
     """
     try:
-        return issue_url.split('/')[6]
+        return issue_url.split("/")[6]
     except IndexError:
-        return ''
+        return ""
 
 
 def get_current_ratelimit(token=None):

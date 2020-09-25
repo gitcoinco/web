@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0018_upcomingdate_context_tag'),
+        ("marketing", "0018_upcomingdate_context_tag"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='roundupemail',
-            name='kudos',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="roundupemail",
+            name="kudos",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
     ]

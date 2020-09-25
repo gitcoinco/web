@@ -10,16 +10,20 @@ from app.sitemaps import sitemaps
 
 
 @cache_page(60 * 60 * 24)
-def sitemap(request, section=None, template_name='sitemap.xml', mimetype='application/xml'): 
+def sitemap(
+    request, section=None, template_name="sitemap.xml", mimetype="application/xml"
+):
     from django.contrib.sitemaps.views import sitemap
+
     return sitemap(request, sitemaps, section, template_name, mimetype)
 
 
 @csrf_exempt
 def blocknative(request):
     from economy.models import TXUpdate
+
     body = json.loads(request.body)
-    if body['apiKey'] == settings.BLOCKNATIVE_API:
+    if body["apiKey"] == settings.BLOCKNATIVE_API:
         txu = TXUpdate.objects.create(body=body)
         txu.process_callbacks()
         txu.save()

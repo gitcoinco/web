@@ -9,37 +9,75 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BountyRequest',
+            name="BountyRequest",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('status', models.CharField(choices=[('o', 'open'), ('c', 'closed'), ('f', 'funded')], db_index=True, default='o', max_length=1)),
-                ('github_url', models.CharField(default='', max_length=255)),
-                ('eth_address', models.CharField(blank=True, max_length=50)),
-                ('comment', models.TextField(default='', max_length=500)),
-                ('comment_admin', models.TextField(blank=True, max_length=500)),
-                ('amount', models.FloatField(validators=[django.core.validators.MinValueValidator(1.0)])),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("o", "open"), ("c", "closed"), ("f", "funded")],
+                        db_index=True,
+                        default="o",
+                        max_length=1,
+                    ),
+                ),
+                ("github_url", models.CharField(default="", max_length=255)),
+                ("eth_address", models.CharField(blank=True, max_length=50)),
+                ("comment", models.TextField(default="", max_length=500)),
+                ("comment_admin", models.TextField(blank=True, max_length=500)),
+                (
+                    "amount",
+                    models.FloatField(
+                        validators=[django.core.validators.MinValueValidator(1.0)]
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='BountyRequestMeta',
+            name="BountyRequestMeta",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('last_feedback_sent', models.DateTimeField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("last_feedback_sent", models.DateTimeField()),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

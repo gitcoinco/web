@@ -1,4 +1,3 @@
-
 import json
 import logging
 import random
@@ -24,31 +23,35 @@ from ratelimit.decorators import ratelimit
 
 def details(request, quest):
     # return params
-    prize_url = ''
+    prize_url = ""
     active_attempt = get_active_attempt_if_any(request.user, quest)
-    if request.POST.get('start'):
+    if request.POST.get("start"):
         # game started
         if not request.user.is_authenticated:
-            return redirect('/login/github')
+            return redirect("/login/github")
 
-        messages.info(request, f'Quest started.  Journey Forth')
+        messages.info(request, f"Quest started.  Journey Forth")
         process_start(request, quest)
-    elif request.POST.get('win'):
+    elif request.POST.get("win"):
         # game won
-        messages.info(request, f'You win.. Congrats')
+        messages.info(request, f"You win.. Congrats")
         prize_url = process_win(request, active_attempt)
-    elif request.POST.get('lose'):
+    elif request.POST.get("lose"):
         # game lost
-        messages.info(request, f'You lose. Try again soon.')
-        return redirect('/quests')
+        messages.info(request, f"You lose. Try again soon.")
+        return redirect("/quests")
     else:
         if active_attempt:
-            messages.info(request, f'You lose. Try again after the cooltown period.')
-            return redirect('/quests')
+            messages.info(request, f"You lose. Try again after the cooltown period.")
+            return redirect("/quests")
 
-    attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
+    attempts = (
+        quest.attempts.filter(profile=request.user.profile)
+        if request.user.is_authenticated
+        else quest.attempts.none()
+    )
     params = get_base_quest_view_params(request.user, quest)
-    params['prize_url'] = prize_url
-    params['started'] = request.POST.get('start', '')
-    response = TemplateResponse(request, 'quests/types/example.html', params)
+    params["prize_url"] = prize_url
+    params["started"] = request.POST.get("start", "")
+    response = TemplateResponse(request, "quests/types/example.html", params)
     return response

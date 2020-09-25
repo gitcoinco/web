@@ -23,5 +23,5 @@ from django.apps import AppConfig
 class GrantsConfig(AppConfig):
     """Define the Grants application configuration."""
 
-    name = 'grants'
-    verbose_name = 'Grants'
+    name = "grants"
+    verbose_name = "Grants"

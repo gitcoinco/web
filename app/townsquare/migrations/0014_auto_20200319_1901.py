@@ -7,18 +7,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0013_suggestedaction'),
+        ("townsquare", "0013_suggestedaction"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='likes_handles',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(blank=True, max_length=200), blank=True, default=list, size=None),
+            model_name="comment",
+            name="likes_handles",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(blank=True, max_length=200),
+                blank=True,
+                default=list,
+                size=None,
+            ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='tip_count_eth',
+            model_name="comment",
+            name="tip_count_eth",
             field=models.DecimalField(decimal_places=5, default=0, max_digits=50),
         ),
     ]

@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0018_matchpledge_data'),
+        ("grants", "0018_matchpledge_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contribution',
-            name='success',
-            field=models.BooleanField(default=True, help_text='Whether or not success.'),
+            model_name="contribution",
+            name="success",
+            field=models.BooleanField(
+                default=True, help_text="Whether or not success."
+            ),
         ),
         migrations.AddField(
-            model_name='contribution',
-            name='tx_cleared',
-            field=models.BooleanField(default=False, help_text='Whether or not tx cleared.'),
+            model_name="contribution",
+            name="tx_cleared",
+            field=models.BooleanField(
+                default=False, help_text="Whether or not tx cleared."
+            ),
         ),
     ]

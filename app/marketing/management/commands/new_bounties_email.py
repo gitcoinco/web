@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import logging
 import time
 import warnings
@@ -37,14 +37,18 @@ THROTTLE_S = 0.4
 
 class Command(BaseCommand):
 
-    help = 'sends new_bounty_daily _emails'
+    help = "sends new_bounty_daily _emails"
 
     def handle(self, *args, **options):
         if settings.DEBUG and not override_in_dev:
             print("not active in non prod environments")
             return
         hours_back = 24
-        eses = EmailSubscriber.objects.filter(active=True).distinct('email').order_by('-email')
+        eses = (
+            EmailSubscriber.objects.filter(active=True)
+            .distinct("email")
+            .order_by("-email")
+        )
         counter_eval_total = 0
         counter_total = 0
         counter_sent = 0
@@ -54,7 +58,9 @@ class Command(BaseCommand):
         for es in eses:
             try:
                 counter_eval_total += 1
-                if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+                if should_suppress_notification_email(
+                    es.email, "new_bounty_notifications"
+                ):
                     continue
                 # prep
 
@@ -65,7 +71,8 @@ class Command(BaseCommand):
                 speed = counter_total / (time.time() - start_time)
                 ETA = round((total_count - counter_total) / speed / 3600, 1)
                 print(
-                    f"{counter_sent} sent/{counter_total} enabled/ {total_count} total, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} ")
+                    f"{counter_sent} sent/{counter_total} enabled/ {total_count} total, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} "
+                )
 
                 # send
                 did_send = new_bounty_daily.delay(es.pk)

@@ -7,13 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0032_auto_20191001_1214'),
+        ("grants", "0032_auto_20191001_1214"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='defer_clr_to',
-            field=models.ForeignKey(help_text='The Grant that this grant defers it CLR contributions to (if any).', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='defered_clr_from', to='grants.Grant'),
+            model_name="grant",
+            name="defer_clr_to",
+            field=models.ForeignKey(
+                help_text="The Grant that this grant defers it CLR contributions to (if any).",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="defered_clr_from",
+                to="grants.Grant",
+            ),
         ),
     ]

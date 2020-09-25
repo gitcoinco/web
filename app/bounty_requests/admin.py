@@ -26,16 +26,26 @@ from .models import BountyRequest, BountyRequestMeta
 
 class BountyRequestAdmin(admin.ModelAdmin):
     """Setup the BountyRequest admin results display."""
-    ordering = ['-created_on']
+
+    ordering = ["-created_on"]
     list_display = [
-        'created_on', 'status','github_url', 'tribe', 'amount', 'token_name',
-        'requested_by'
+        "created_on",
+        "status",
+        "github_url",
+        "tribe",
+        "amount",
+        "token_name",
+        "requested_by",
     ]
     search_fields = [
-        'created_on', 'status', 'github_url', 'amount', 'requested_by__handle',
-        'comment',
+        "created_on",
+        "status",
+        "github_url",
+        "amount",
+        "requested_by__handle",
+        "comment",
     ]
-    raw_id_fields = ['requested_by']
+    raw_id_fields = ["requested_by"]
 
 
 admin.site.register(BountyRequest, BountyRequestAdmin)

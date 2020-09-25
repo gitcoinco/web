@@ -7,18 +7,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0015_merge_20190305_1435'),
+        ("dashboard", "0015_merge_20190305_1435"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='job_location',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="profile",
+            name="job_location",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
         migrations.AlterField(
-            model_name='tool',
-            name='category',
-            field=models.CharField(choices=[('AD', 'advanced'), ('TO', 'gas'), ('AL', 'alpha'), ('BA', 'basic'), ('BU', 'tools to build'), ('CS', 'coming soon'), ('CO', 'community'), ('FF', 'just for fun'), ('CR', 'retired')], max_length=2),
+            model_name="tool",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("AD", "advanced"),
+                    ("TO", "gas"),
+                    ("AL", "alpha"),
+                    ("BA", "basic"),
+                    ("BU", "tools to build"),
+                    ("CS", "coming soon"),
+                    ("CO", "community"),
+                    ("FF", "just for fun"),
+                    ("CR", "retired"),
+                ],
+                max_length=2,
+            ),
         ),
     ]

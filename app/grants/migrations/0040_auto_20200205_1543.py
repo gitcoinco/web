@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0039_merge_20200204_0825'),
+        ("grants", "0039_merge_20200204_0825"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='grant',
-            name='cancel_tx_id',
-            field=models.CharField(blank=True, default='0x0', help_text='The transaction id for endContract.', max_length=255),
+            model_name="grant",
+            name="cancel_tx_id",
+            field=models.CharField(
+                blank=True,
+                default="0x0",
+                help_text="The transaction id for endContract.",
+                max_length=255,
+            ),
         ),
     ]

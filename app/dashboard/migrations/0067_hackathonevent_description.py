@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0066_hackathonevent_quest_link'),
+        ("dashboard", "0066_hackathonevent_quest_link"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonevent',
-            name='description',
-            field=models.TextField(blank=True, default='', help_text='HTML rich description.'),
+            model_name="hackathonevent",
+            name="description",
+            field=models.TextField(
+                blank=True, default="", help_text="HTML rich description."
+            ),
         ),
     ]

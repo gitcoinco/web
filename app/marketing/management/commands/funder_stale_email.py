@@ -29,11 +29,11 @@ from marketing.mails import funder_stale
 class Command(BaseCommand):
     """Define the stale funder management command class."""
 
-    help = 'solicits feedback from stale funders'
+    help = "solicits feedback from stale funders"
 
     def add_arguments(self, parser):
         """Define the added arguments to handle for the management command."""
-        parser.add_argument('days', default=30, type=int)
+        parser.add_argument("days", default=30, type=int)
 
     def handle(self, *args, **options):
         """Handle the stale funder management command logic."""
@@ -42,22 +42,22 @@ class Command(BaseCommand):
             return
 
         # config
-        days = options['days']
+        days = options["days"]
         if days < 7:
-            time_as_str = 'about a week'
+            time_as_str = "about a week"
         elif days < 27:
-            time_as_str = 'a few weeks'
+            time_as_str = "a few weeks"
         elif days < 27:
-            time_as_str = 'about a month'
+            time_as_str = "about a month"
         elif days < 90:
-            time_as_str = 'a few months'
+            time_as_str = "a few months"
         else:
-            time_as_str = 'quite a bit'
+            time_as_str = "quite a bit"
 
         start_time = timezone.now() - timezone.timedelta(days=(days + 1))
         end_time = timezone.now() - timezone.timedelta(days=(days))
         base_bounties = Bounty.objects.current().filter(
-            network='mainnet',
+            network="mainnet",
         )
 
         candidate_bounties = base_bounties.filter(
@@ -65,7 +65,7 @@ class Command(BaseCommand):
             web3_created__lt=end_time,
         )
 
-        for bounty in candidate_bounties.distinct('bounty_owner_github_username'):
+        for bounty in candidate_bounties.distinct("bounty_owner_github_username"):
             handle = bounty.bounty_owner_github_username
             email = bounty.bounty_owner_email
             if not email:
@@ -85,7 +85,6 @@ class Command(BaseCommand):
             if not email:
                 print("- could not find email")
                 continue
-
 
             has_posted_in_last_days_days = base_bounties.filter(
                 web3_created__gt=end_time,

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0031_auto_20190424_1611'),
+        ("dashboard", "0031_auto_20190424_1611"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='max_tip_amount_usdt_per_tx',
+            model_name="profile",
+            name="max_tip_amount_usdt_per_tx",
             field=models.DecimalField(decimal_places=2, default=2500, max_digits=50),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='max_tip_amount_usdt_per_week',
+            model_name="profile",
+            name="max_tip_amount_usdt_per_week",
             field=models.DecimalField(decimal_places=2, default=20000, max_digits=50),
         ),
     ]

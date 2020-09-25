@@ -23,5 +23,5 @@ from django.apps import AppConfig
 class GitConfig(AppConfig):
     """Define the Github application configuration."""
 
-    name = 'git'
-    verbose_name = 'Git'
+    name = "git"
+    verbose_name = "Git"

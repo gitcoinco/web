@@ -30,13 +30,19 @@ class GasProfile(SuperModel):
     class Meta:
         """Define the metadata associated with GasProfile."""
 
-        verbose_name_plural = 'Gas Profiles'
+        verbose_name_plural = "Gas Profiles"
 
     gas_price = models.DecimalField(decimal_places=2, max_digits=50, db_index=True)
     mean_time_to_confirm_blocks = models.DecimalField(decimal_places=2, max_digits=50)
-    mean_time_to_confirm_minutes = models.DecimalField(decimal_places=2, max_digits=50, db_index=True)
-    _99confident_confirm_time_blocks = models.DecimalField(decimal_places=2, max_digits=50)
-    _99confident_confirm_time_mins = models.DecimalField(decimal_places=2, max_digits=50)
+    mean_time_to_confirm_minutes = models.DecimalField(
+        decimal_places=2, max_digits=50, db_index=True
+    )
+    _99confident_confirm_time_blocks = models.DecimalField(
+        decimal_places=2, max_digits=50
+    )
+    _99confident_confirm_time_mins = models.DecimalField(
+        decimal_places=2, max_digits=50
+    )
 
     def __str__(self):
         """Define the string representation of GasProfile."""
@@ -51,12 +57,12 @@ class GasGuzzler(SuperModel):
     class Meta:
         """Define the metadata associated with GasGuzzlers."""
 
-        verbose_name_plural = 'Gas Guzzlers'
+        verbose_name_plural = "Gas Guzzlers"
 
     gas_used = models.DecimalField(decimal_places=2, max_digits=50, db_index=True)
     pct_total = models.DecimalField(decimal_places=2, max_digits=50)
-    address = models.CharField(max_length=50, default='', blank=True)
-    ID = models.CharField(max_length=50, default='', blank=True)
+    address = models.CharField(max_length=50, default="", blank=True)
+    ID = models.CharField(max_length=50, default="", blank=True)
 
     def __str__(self):
         """Define the string representation of GasProfile."""
@@ -69,14 +75,14 @@ class GasAdvisory(SuperModel):
     class Meta:
         """Define the metadata associated with GasAdvisory."""
 
-        verbose_name_plural = 'Gas Advisories'
+        verbose_name_plural = "Gas Advisories"
 
-    body = models.TextField(default='', blank=True)
+    body = models.TextField(default="", blank=True)
     active_until = models.DateTimeField()
     active = models.BooleanField(default=False)
 
     def __str__(self):
         """Define the string representation of GasAdvisory."""
         if not self:
-            return 'none'
+            return "none"
         return f"Gas Advisory - {'Active until ' if self.active else 'Inactive'}{self.active_until if self.active else ''}"

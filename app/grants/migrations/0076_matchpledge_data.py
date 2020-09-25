@@ -7,13 +7,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0075_remove_matchpledge_data'),
+        ("grants", "0075_remove_matchpledge_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='matchpledge',
-            name='data',
+            model_name="matchpledge",
+            name="data",
             field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
         ),
     ]

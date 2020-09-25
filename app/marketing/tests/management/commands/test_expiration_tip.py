@@ -32,19 +32,19 @@ class TestExpirationTip(TestCase):
 
     def setUp(self):
         self.tip = Tip.objects.create(
-            emails=['john@bar.com'],
-            primary_email='john@bar.com',
-            tokenName='USDT',
+            emails=["john@bar.com"],
+            primary_email="john@bar.com",
+            tokenName="USDT",
             amount=7,
-            username='john',
+            username="john",
             expires_date=timezone.now() + timedelta(days=1, hours=1),
-            tokenAddress='0x0000000000000000000000000000000000000000',
-            network='mainnet',
-            tx_status='success',
-            txid='0x0123456789',
+            tokenAddress="0x0000000000000000000000000000000000000000",
+            network="mainnet",
+            tx_status="success",
+            txid="0x0123456789",
         )
 
-    @patch('marketing.management.commands.expiration_tip.tip_email')
+    @patch("marketing.management.commands.expiration_tip.tip_email")
     def test_handle(self, mock_func):
         """Test command expiration tip."""
         Command().handle()

@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0054_auto_20190928_1936'),
+        ("dashboard", "0054_auto_20190928_1936"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='referrer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='referred', to='dashboard.Profile'),
+            model_name="profile",
+            name="referrer",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="referred",
+                to="dashboard.Profile",
+            ),
         ),
     ]

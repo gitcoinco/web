@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import logging
 import warnings
 
@@ -29,7 +29,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 class Command(BaseCommand):
 
-    help = 'pulls all stats'
+    help = "pulls all stats"
 
     def handle(self, *args, **options):
 
@@ -64,12 +64,12 @@ class Command(BaseCommand):
             stats.user_actions,
             stats.faucet,
             stats.email_events,
-            stats.bounties_hourly_rate
+            stats.bounties_hourly_rate,
         ]
 
         for f in fs:
             try:
-                print("*"+str(f.__name__)+"*")
+                print("*" + str(f.__name__) + "*")
                 f()
             except Exception as e:
                 print(e)

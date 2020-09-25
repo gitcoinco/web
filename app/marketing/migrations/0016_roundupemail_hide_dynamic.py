@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0015_auto_20200626_1424'),
+        ("marketing", "0015_auto_20200626_1424"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='roundupemail',
-            name='hide_dynamic',
+            model_name="roundupemail",
+            name="hide_dynamic",
             field=models.BooleanField(default=False),
         ),
     ]

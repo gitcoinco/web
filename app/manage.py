@@ -44,16 +44,17 @@ if __name__ == "__main__":
             )
         raise
 
-    is_debug = os.environ.get('DEBUG')
-    if is_debug and is_debug == 'off':
+    is_debug = os.environ.get("DEBUG")
+    if is_debug and is_debug == "off":
         is_debug = False
 
     # Handle remote debugging
-    if is_debug and os.environ.get('VSCODE_DEBUGGER_ENABLED', False):
-        if os.environ.get('RUN_MAIN') or os.environ.get('WERKZEUG_RUN_MAIN'):
+    if is_debug and os.environ.get("VSCODE_DEBUGGER_ENABLED", False):
+        if os.environ.get("RUN_MAIN") or os.environ.get("WERKZEUG_RUN_MAIN"):
             import ptvsd
-            debugger_port = int(os.environ.get('VSCODE_DEBUGGER_PORT', 3030))
-            debugger_interface = os.environ.get('VSCODE_DEBUGGER_INTERFACE', '0.0.0.0')
+
+            debugger_port = int(os.environ.get("VSCODE_DEBUGGER_PORT", 3030))
+            debugger_interface = os.environ.get("VSCODE_DEBUGGER_INTERFACE", "0.0.0.0")
             ptvsd.enable_attach(address=(debugger_interface, debugger_port))
 
     execute_from_command_line(sys.argv)

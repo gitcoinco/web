@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 
 from datetime import timedelta
@@ -28,33 +28,36 @@ from dashboard.utils import sync_payout
 
 class Command(BaseCommand):
 
-    help = 'checks if pending fulfillments are confirmed on the tokens explorer'
+    help = "checks if pending fulfillments are confirmed on the tokens explorer"
 
     def handle(self, *args, **options):
-        pending_fulfillments = BountyFulfillment.objects.filter(
-            payout_status='pending'
-        )
+        pending_fulfillments = BountyFulfillment.objects.filter(payout_status="pending")
 
         # web3 modal
-        web3_modal_pending_fulfillments = pending_fulfillments.filter(payout_type='web3_modal')
+        web3_modal_pending_fulfillments = pending_fulfillments.filter(
+            payout_type="web3_modal"
+        )
         if web3_modal_pending_fulfillments:
             for fulfillment in web3_modal_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
         # polkadot extension
-        polkadot_pending_fulfillments = pending_fulfillments.filter(payout_type='polkadot_ext')
+        polkadot_pending_fulfillments = pending_fulfillments.filter(
+            payout_type="polkadot_ext"
+        )
         if polkadot_pending_fulfillments:
             for fulfillment in polkadot_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
-
         # QR
-        qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')
+        qr_pending_fulfillments = pending_fulfillments.filter(payout_type="qr")
         if qr_pending_fulfillments:
             # Auto expire pending transactions
             timeout_period = timezone.now() - timedelta(minutes=20)
-            qr_pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+            qr_pending_fulfillments.filter(created_on__lt=timeout_period).update(
+                payout_status="expired"
+            )
 
-            fulfillments = qr_pending_fulfillments.filter(payout_status='pending')
+            fulfillments = qr_pending_fulfillments.filter(payout_status="pending")
             for fulfillment in fulfillments.all():
                 sync_payout(fulfillment)

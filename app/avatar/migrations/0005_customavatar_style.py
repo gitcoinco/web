@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('avatar', '0004_auto_20190308_0326'),
+        ("avatar", "0004_auto_20190308_0326"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customavatar',
-            name='style',
-            field=models.CharField(default='original', max_length=10),
+            model_name="customavatar",
+            name="style",
+            field=models.CharField(default="original", max_length=10),
         ),
     ]

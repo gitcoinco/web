@@ -6,18 +6,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('revenue', '0001_initial'),
+        ("revenue", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='digitalgoodpurchase',
-            name='receive_tx_status',
-            field=models.CharField(choices=[('na', 'na'), ('pending', 'pending'), ('success', 'success'), ('error', 'error'), ('unknown', 'unknown'), ('dropped', 'dropped'), ('not_subed', 'not_subed')], db_index=True, default='na', max_length=9),
+            model_name="digitalgoodpurchase",
+            name="receive_tx_status",
+            field=models.CharField(
+                choices=[
+                    ("na", "na"),
+                    ("pending", "pending"),
+                    ("success", "success"),
+                    ("error", "error"),
+                    ("unknown", "unknown"),
+                    ("dropped", "dropped"),
+                    ("not_subed", "not_subed"),
+                ],
+                db_index=True,
+                default="na",
+                max_length=9,
+            ),
         ),
         migrations.AlterField(
-            model_name='digitalgoodpurchase',
-            name='tx_status',
-            field=models.CharField(choices=[('na', 'na'), ('pending', 'pending'), ('success', 'success'), ('error', 'error'), ('unknown', 'unknown'), ('dropped', 'dropped'), ('not_subed', 'not_subed')], db_index=True, default='na', max_length=9),
+            model_name="digitalgoodpurchase",
+            name="tx_status",
+            field=models.CharField(
+                choices=[
+                    ("na", "na"),
+                    ("pending", "pending"),
+                    ("success", "success"),
+                    ("error", "error"),
+                    ("unknown", "unknown"),
+                    ("dropped", "dropped"),
+                    ("not_subed", "not_subed"),
+                ],
+                db_index=True,
+                default="na",
+                max_length=9,
+            ),
         ),
     ]

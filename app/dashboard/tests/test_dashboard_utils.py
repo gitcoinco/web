@@ -45,84 +45,108 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     def test_get_web3():
         """Test the dashboard utility get_web3."""
-        networks = ['mainnet', 'rinkeby', 'ropsten']
+        networks = ["mainnet", "rinkeby", "ropsten"]
         for network in networks:
             web3_provider = get_web3(network)
             assert isinstance(web3_provider, Web3)
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
             if settings.INFURA_USE_V3:
-                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}'
+                assert (
+                    web3_provider.providers[0].endpoint_uri
+                    == f"https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}"
+                )
             else:
-                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
+                assert (
+                    web3_provider.providers[0].endpoint_uri
+                    == f"https://{network}.infura.io"
+                )
 
     @staticmethod
     def test_get_bounty_contract():
-        assert getBountyContract('mainnet').address == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
+        assert (
+            getBountyContract("mainnet").address
+            == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
+        )
 
     @staticmethod
     def test_get_bounty():
-        assert get_bounty(100, 'rinkeby')['contract_deadline'] == 1515699751
+        assert get_bounty(100, "rinkeby")["contract_deadline"] == 1515699751
 
     @staticmethod
     def test_get_ordinal_repr():
         """Test the dashboard utility get_ordinal_repr."""
-        assert get_ordinal_repr(1) == '1st'
-        assert get_ordinal_repr(2) == '2nd'
-        assert get_ordinal_repr(3) == '3rd'
-        assert get_ordinal_repr(4) == '4th'
-        assert get_ordinal_repr(10) == '10th'
-        assert get_ordinal_repr(11) == '11th'
-        assert get_ordinal_repr(21) == '21st'
-        assert get_ordinal_repr(22) == '22nd'
-        assert get_ordinal_repr(23) == '23rd'
-        assert get_ordinal_repr(24) == '24th'
+        assert get_ordinal_repr(1) == "1st"
+        assert get_ordinal_repr(2) == "2nd"
+        assert get_ordinal_repr(3) == "3rd"
+        assert get_ordinal_repr(4) == "4th"
+        assert get_ordinal_repr(10) == "10th"
+        assert get_ordinal_repr(11) == "11th"
+        assert get_ordinal_repr(21) == "21st"
+        assert get_ordinal_repr(22) == "22nd"
+        assert get_ordinal_repr(23) == "23rd"
+        assert get_ordinal_repr(24) == "24th"
 
     @staticmethod
     def test_clean_bounty_url():
         """Test the cleaning of a bounty-esque URL of # sections."""
-        assert clean_bounty_url(
-            'https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999'
-        ) == 'https://github.com/gitcoinco/web/issues/9999'
+        assert (
+            clean_bounty_url(
+                "https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999"
+            )
+            == "https://github.com/gitcoinco/web/issues/9999"
+        )
 
     @staticmethod
     def test_humanize_event_name():
         """Test the humanized representation of an event name."""
-        assert humanize_event_name('start_work') == 'WORK STARTED'
-        assert humanize_event_name('remarket_funded_issue') == 'REMARKET_FUNDED_ISSUE'
-        assert humanize_event_name('issue_remarketed') == 'ISSUE RE-MARKETED'
+        assert humanize_event_name("start_work") == "WORK STARTED"
+        assert humanize_event_name("remarket_funded_issue") == "REMARKET_FUNDED_ISSUE"
+        assert humanize_event_name("issue_remarketed") == "ISSUE RE-MARKETED"
 
     @staticmethod
-    @patch('dashboard.utils.UserAction.objects')
+    @patch("dashboard.utils.UserAction.objects")
     def test_create_user_action_with_cookie(mockUserAction):
         """Test the giving utm* in cookie should store in DB."""
-        request = RequestFactory().get('/login')
-        request.COOKIES['utm_source'] = 'test source'
-        request.COOKIES['utm_medium'] = 'test medium'
-        request.COOKIES['utm_campaign'] = 'test campaign'
-        create_user_action(None, 'Login', request)
-        mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None,
-                                                      utm={'utm_source': 'test source',
-                                                           'utm_medium': 'test medium',
-                                                           'utm_campaign': 'test campaign'})
+        request = RequestFactory().get("/login")
+        request.COOKIES["utm_source"] = "test source"
+        request.COOKIES["utm_medium"] = "test medium"
+        request.COOKIES["utm_campaign"] = "test campaign"
+        create_user_action(None, "Login", request)
+        mockUserAction.create.assert_called_once_with(
+            action="Login",
+            metadata={},
+            user=None,
+            utm={
+                "utm_source": "test source",
+                "utm_medium": "test medium",
+                "utm_campaign": "test campaign",
+            },
+        )
 
     @staticmethod
-    @patch('dashboard.utils.UserAction.objects')
+    @patch("dashboard.utils.UserAction.objects")
     def test_create_user_action_without_cookie(mockUserAction):
         """Test the giving utm* in cookie should store in DB as empty dict."""
-        request = RequestFactory().get('/login')
-        create_user_action(None, 'Login', request)
-        mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None)
+        request = RequestFactory().get("/login")
+        create_user_action(None, "Login", request)
+        mockUserAction.create.assert_called_once_with(
+            action="Login", metadata={}, user=None
+        )
 
     @staticmethod
-    @patch('dashboard.utils.UserAction.objects')
+    @patch("dashboard.utils.UserAction.objects")
     def test_create_user_action_with_partial_cookie(mockUserAction):
         """Test the giving utm* in cookie should store partial utm in DB."""
-        request = RequestFactory().get('/login')
-        request.COOKIES['utm_campaign'] = 'test campaign'
-        create_user_action(None, 'Login', request)
-        mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None,
-                                                      utm={'utm_campaign': 'test campaign'})
+        request = RequestFactory().get("/login")
+        request.COOKIES["utm_campaign"] = "test campaign"
+        create_user_action(None, "Login", request)
+        mockUserAction.create.assert_called_once_with(
+            action="Login",
+            metadata={},
+            user=None,
+            utm={"utm_campaign": "test campaign"},
+        )
 
     @staticmethod
     def test_get_ipfs():
@@ -134,31 +158,38 @@ class DashboardUtilsTest(TestCase):
     def test_get_ipfs_with_bad_host():
         """Test that IPFS connectivity to gateway fails when bad host is passed."""
         with pytest.raises(IPFSCantConnectException):
-            assert get_ipfs('nohost.com')
+            assert get_ipfs("nohost.com")
 
     @staticmethod
     def test_ipfs_cat_ipfsapi():
         """Test that ipfs_cat_ipfsapi method returns IPFS object."""
-        assert "security-notes" in str(ipfs_cat_ipfsapi('/ipfs/QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv/readme'))
+        assert "security-notes" in str(
+            ipfs_cat_ipfsapi(
+                "/ipfs/QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv/readme"
+            )
+        )
 
     @staticmethod
     def test_can_successfully_re_market_a_bounty():
         bounty = Bounty.objects.create(
-            title='CanRemarketTrueTest',
+            title="CanRemarketTrueTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.remarketed_count == 0
 
         result = re_market_bounty(bounty, False)
 
-        assert result['success'] is True
-        assert result['msg'] == f"The issue will appear at the top of the issue explorer. You will be able to remarket this bounty {settings.RE_MARKET_LIMIT - 1} more time if a contributor does not pick this up."
+        assert result["success"] is True
+        assert (
+            result["msg"]
+            == f"The issue will appear at the top of the issue explorer. You will be able to remarket this bounty {settings.RE_MARKET_LIMIT - 1} more time if a contributor does not pick this up."
+        )
         assert bounty.remarketed_count == 1
         assert bounty.last_remarketed > (timezone.now() - timezone.timedelta(minutes=1))
 
@@ -166,103 +197,118 @@ class DashboardUtilsTest(TestCase):
     def test_can_successfully_re_market_a_bounty_twice():
         if settings.RE_MARKET_LIMIT == 2:
             bounty = Bounty.objects.create(
-                title='CanRemarketTrueTest',
+                title="CanRemarketTrueTest",
                 idx_status=0,
                 is_open=True,
                 web3_created=datetime(2008, 10, 31, tzinfo=UTC),
                 expires_date=datetime(2008, 11, 30, tzinfo=UTC),
                 last_remarketed=datetime(2008, 10, 31, tzinfo=UTC),
-                github_url='https://github.com/gitcoinco/web/issues/12345678',
-                raw_data={}
+                github_url="https://github.com/gitcoinco/web/issues/12345678",
+                raw_data={},
             )
 
             result = re_market_bounty(bounty, False)
-            assert result['success'] is True
-            assert result['msg'] == "The issue will appear at the top of the issue explorer. You will be able to remarket this bounty 1 more time if a contributor does not pick this up."
+            assert result["success"] is True
+            assert (
+                result["msg"]
+                == "The issue will appear at the top of the issue explorer. You will be able to remarket this bounty 1 more time if a contributor does not pick this up."
+            )
             assert bounty.remarketed_count == 1
 
             bounty.last_remarketed = timezone.now() - timezone.timedelta(hours=2)
 
             result = re_market_bounty(bounty, False)
-            assert result['success'] is True
-            assert result['msg'] == "The issue will appear at the top of the issue explorer. Please note this is the last time the issue is able to be remarketed."
+            assert result["success"] is True
+            assert (
+                result["msg"]
+                == "The issue will appear at the top of the issue explorer. Please note this is the last time the issue is able to be remarketed."
+            )
             assert bounty.remarketed_count == 2
 
     @staticmethod
     def test_re_market_fails_after_reaching_re_market_limit():
         if settings.RE_MARKET_LIMIT == 2:
             bounty = Bounty.objects.create(
-                title='CanRemarketFalseTest',
+                title="CanRemarketFalseTest",
                 idx_status=0,
                 is_open=True,
                 web3_created=datetime(2008, 10, 31, tzinfo=UTC),
                 expires_date=datetime(2008, 11, 30, tzinfo=UTC),
                 last_remarketed=datetime(2008, 10, 31, tzinfo=UTC),
-                github_url='https://github.com/gitcoinco/web/issues/12345678',
-                raw_data={}
+                github_url="https://github.com/gitcoinco/web/issues/12345678",
+                raw_data={},
             )
 
             assert bounty.remarketed_count == 0
             result = re_market_bounty(bounty, False)
-            assert result['success'] is True
+            assert result["success"] is True
             assert bounty.remarketed_count == 1
 
             bounty.last_remarketed = timezone.now() - timezone.timedelta(hours=2)
 
             result = re_market_bounty(bounty, False)
-            assert result['success'] is True
+            assert result["success"] is True
             assert bounty.remarketed_count == 2
 
             result = re_market_bounty(bounty, False)
-            assert result['success'] is False
-            assert result['msg'] == "The issue was not remarketed due to reaching the remarket limit (2)."
+            assert result["success"] is False
+            assert (
+                result["msg"]
+                == "The issue was not remarketed due to reaching the remarket limit (2)."
+            )
 
     @staticmethod
     def test_re_market_fails_after_re_marketing_in_quick_succession():
         bounty = Bounty.objects.create(
-            title='CanRemarketFalseTest',
+            title="CanRemarketFalseTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.remarketed_count == 0
         result = re_market_bounty(bounty, False)
-        assert result['success'] is True
+        assert result["success"] is True
         assert bounty.remarketed_count == 1
 
         result = re_market_bounty(bounty, False)
-        assert result['success'] is False
+        assert result["success"] is False
 
-        assert result['msg'] == f'As you recently remarketed this issue, you need to wait {settings.MINUTES_BETWEEN_RE_MARKETING} minutes before remarketing this issue again.'
+        assert (
+            result["msg"]
+            == f"As you recently remarketed this issue, you need to wait {settings.MINUTES_BETWEEN_RE_MARKETING} minutes before remarketing this issue again."
+        )
 
     @staticmethod
     def test_apply_new_bounty_deadline_is_successful_with_re_market():
         bounty = Bounty.objects.create(
-            title='CanRemarketFalseTest',
+            title="CanRemarketFalseTest",
             idx_status=0,
             is_open=True,
             web3_created=datetime(2008, 10, 31, tzinfo=UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=UTC),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.remarketed_count == 0
 
         import time
+
         deadline = time.time()
         re_market_result = apply_new_bounty_deadline(bounty, deadline, False)
         assert bounty.remarketed_count == 1
-        assert re_market_result['success'] is True
-        assert re_market_result['msg'] == "You've extended expiration of this issue. The issue will appear at the top of the issue explorer. You will be able to remarket this bounty 1 more time if a contributor does not pick this up."
+        assert re_market_result["success"] is True
+        assert (
+            re_market_result["msg"]
+            == "You've extended expiration of this issue. The issue will appear at the top of the issue explorer. You will be able to remarket this bounty 1 more time if a contributor does not pick this up."
+        )
 
         deadline_as_date_time = timezone.make_aware(
-            timezone.datetime.fromtimestamp(deadline),
-            timezone=UTC
+            timezone.datetime.fromtimestamp(deadline), timezone=UTC
         )
         assert bounty.expires_date == deadline_as_date_time
 
@@ -274,19 +320,19 @@ class DashboardUtilsTest(TestCase):
     def test_release_bounty_to_public_is_successful():
         now = timezone.now()
         profile = Profile(
-            handle='foo',
+            handle="foo",
         )
         bounty = Bounty(
-            title='ReleaseToPublicTrueTest',
-            idx_status='reserved',
+            title="ReleaseToPublicTrueTest",
+            idx_status="reserved",
             is_open=True,
             web3_created=now,
             expires_date=now + timezone.timedelta(minutes=2),
             bounty_reserved_for_user=profile,
             reserved_for_user_from=now,
             reserved_for_user_expiration=now + timezone.timedelta(minutes=2),
-            github_url='https://github.com/gitcoinco/web/issues/12345678',
-            raw_data={}
+            github_url="https://github.com/gitcoinco/web/issues/12345678",
+            raw_data={},
         )
 
         assert bounty.bounty_reserved_for_user is not None
@@ -302,9 +348,10 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     def test_get_token_recipient_senders():
         addresses = get_token_recipient_senders(
-            'rinkeby',
+            "rinkeby",
             token_address="0x8ad3aA5d5ff084307d28C8f514D7a193B2Bfe725",
-            recipient_address="0x03bCeC53fD1a2617a3B064eE8fE4f4c4aacc765B")
+            recipient_address="0x03bCeC53fD1a2617a3B064eE8fE4f4c4aacc765B",
+        )
 
         def validate(address):
             return is_address(address) or address == "0x0"
@@ -312,8 +359,9 @@ class DashboardUtilsTest(TestCase):
         assert all(validate(address) for address in addresses)
 
         empty_addresses = get_token_recipient_senders(
-            'rinkeby',
+            "rinkeby",
             token_address="0x8ad3aA5d5ff084307d28C8f514D7a193B2Bfe725",
-            recipient_address="0x57b4Af69127C69ec3248886bBa6deBAB7994695a")
+            recipient_address="0x57b4Af69127C69ec3248886bBa6deBAB7994695a",
+        )
 
         assert len(empty_addresses) == 0

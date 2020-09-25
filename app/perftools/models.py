@@ -9,8 +9,8 @@ from economy.models import SuperModel
 class JSONStore(SuperModel):
     """Define the JSONStore data model."""
 
-    view = models.CharField(max_length=255, default='', blank=True, db_index=True)
-    key = models.CharField(max_length=255, default='', blank=True, db_index=True)
+    view = models.CharField(max_length=255, default="", blank=True, db_index=True)
+    key = models.CharField(max_length=255, default="", blank=True, db_index=True)
     data = JSONField(blank=True, default=dict)
 
     def __str__(self):

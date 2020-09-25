@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core import management
 from django.core.management.base import BaseCommand
@@ -25,35 +25,25 @@ from townsquare.models import MatchRound
 
 class Command(BaseCommand):
 
-    help = 'creates mini match rounds'
+    help = "creates mini match rounds"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'rounds',
-            default=1,
-            type=int,
-            help="The number of rounds to schedule"
+            "rounds", default=1, type=int, help="The number of rounds to schedule"
         )
         parser.add_argument(
-            'days',
-            default=14,
-            type=int,
-            help="The number of days to schedule this for"
+            "days", default=14, type=int, help="The number of days to schedule this for"
         )
         parser.add_argument(
-            'amount',
-            default=200,
-            type=int,
-            help="Amount in USD for the round"
+            "amount", default=200, type=int, help="Amount in USD for the round"
         )
-
 
     def handle(self, *args, **options):
-        for i in range(0, options['amount']):
-            last_round = MatchRound.objects.order_by('-valid_from').first()
+        for i in range(0, options["amount"]):
+            last_round = MatchRound.objects.order_by("-valid_from").first()
             MatchRound.objects.create(
-                valid_from = last_round.valid_to,
-                valid_to = last_round.valid_to + timezone.timedelta(days=options['days']),
-                amount = options['amount'],
-                number = last_round.number + 1,
-                )
+                valid_from=last_round.valid_to,
+                valid_to=last_round.valid_to + timezone.timedelta(days=options["days"]),
+                amount=options["amount"],
+                number=last_round.number + 1,
+            )

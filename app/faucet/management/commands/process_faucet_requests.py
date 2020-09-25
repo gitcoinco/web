@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.core.management.base import BaseCommand
 
 from faucet.models import FaucetRequest
@@ -23,11 +23,13 @@ from marketing.mails import reject_faucet_request
 
 class Command(BaseCommand):
 
-    help = 'processes easy to process faucet requests so that admins dont have to.'
+    help = "processes easy to process faucet requests so that admins dont have to."
 
     def handle(self, *args, **options):
         reject_comments = "Please tell us what you're planning on using these funds for in the comments section!  Thanks."
-        requests = FaucetRequest.objects.filter(rejected=False, fulfilled=False, comment='')
+        requests = FaucetRequest.objects.filter(
+            rejected=False, fulfilled=False, comment=""
+        )
         for faucet_request in requests:
             faucet_request.comment_admin = reject_comments
             faucet_request.rejected = True

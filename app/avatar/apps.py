@@ -23,5 +23,5 @@ from django.apps import AppConfig
 class DashboardConfig(AppConfig):
     """Define the Dashboard application configuration."""
 
-    name = 'avatar'
-    verbose_name = 'Avatar'
+    name = "avatar"
+    verbose_name = "Avatar"

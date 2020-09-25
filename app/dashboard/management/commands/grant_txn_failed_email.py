@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -10,7 +10,7 @@
     GNU Affero General Public License for more details.
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -19,7 +19,7 @@ from marketing.mails import grant_txn_failed
 
 
 class Command(BaseCommand):
-    help = 'sends emails for grant contributors whose contribution txns have failed'
+    help = "sends emails for grant contributors whose contribution txns have failed"
 
     def handle(self, *args, **options):
         if settings.DEBUG:

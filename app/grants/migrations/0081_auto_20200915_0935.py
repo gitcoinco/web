@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0080_auto_20200914_2146'),
+        ("grants", "0080_auto_20200914_2146"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='grant',
-            name='funding_info',
-            field=models.CharField(blank=True, default='', help_text='Is this grant VC funded?', max_length=255, null=True),
+            model_name="grant",
+            name="funding_info",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Is this grant VC funded?",
+                max_length=255,
+                null=True,
+            ),
         ),
     ]

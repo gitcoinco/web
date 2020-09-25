@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import time
 
 from django.conf import settings
@@ -41,15 +41,16 @@ def does_need_refresh(handle):
 
 class Command(BaseCommand):
 
-    help = 'syncs orgs with github'
+    help = "syncs orgs with github"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-force', '--force',
-            action='store_true',
-            dest='force_refresh',
+            "-force",
+            "--force",
+            action="store_true",
+            dest="force_refresh",
             default=False,
-            help='Force the refresh'
+            help="Force the refresh",
         )
 
     def handle(self, *args, **options):
@@ -58,15 +59,15 @@ class Command(BaseCommand):
         for handle in handles:
             handle = handle.lower()
             print(handle)
-            if is_blocked(handle)or is_deleted_account(handle):
-                print('not syncing, handle is blocked')
+            if is_blocked(handle) or is_deleted_account(handle):
+                print("not syncing, handle is blocked")
                 continue
 
             # does this handle need a refresh
-            needs_refresh = does_need_refresh(handle) or options['force_refresh']
+            needs_refresh = does_need_refresh(handle) or options["force_refresh"]
 
             if not needs_refresh:
-                print('- no refresh needed')
+                print("- no refresh needed")
             else:
                 try:
                     sync_profile(handle)

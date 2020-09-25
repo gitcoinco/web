@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('economy', '0002_auto_20200625_1454'),
+        ("economy", "0002_auto_20200625_1454"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='token',
-            name='chain_id',
+            model_name="token",
+            name="chain_id",
             field=models.IntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='token',
-            name='network_id',
+            model_name="token",
+            name="network_id",
             field=models.IntegerField(default=1),
         ),
     ]

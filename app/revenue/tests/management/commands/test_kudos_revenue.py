@@ -33,7 +33,7 @@ from test_plus.test import TestCase
 
 def mocked_requests_get(*args, **kwargs):
     class MockResponse:
-        def __init__(self, json_data, ok, status_code, reason='Fail'):
+        def __init__(self, json_data, ok, status_code, reason="Fail"):
             self.ok = ok
             self.json_data = json_data
             self.status_code = status_code
@@ -43,23 +43,29 @@ def mocked_requests_get(*args, **kwargs):
             return self.json_data
 
     params = args[1]
-    if params['action'] == 'txlist':
-        with open(os.path.join(os.path.dirname(__file__), 'txlist_sample.json')) as json_file:
+    if params["action"] == "txlist":
+        with open(
+            os.path.join(os.path.dirname(__file__), "txlist_sample.json")
+        ) as json_file:
             return MockResponse(json.load(json_file), True, 200)
-    elif params['action'] == 'tokentx':
-        with open(os.path.join(os.path.dirname(__file__), 'tokentx_sample.json')) as json_file:
+    elif params["action"] == "tokentx":
+        with open(
+            os.path.join(os.path.dirname(__file__), "tokentx_sample.json")
+        ) as json_file:
             return MockResponse(json.load(json_file), True, 200)
     return MockResponse(None, False, 404)
 
 
 class TestKudosRevenue(TestCase):
-
     def setUp(self):
         default_account = settings.KUDOS_REVENUE_ACCOUNT_ADDRESS
-        self.account = default_account if len(default_account) > 0 else '0xdb282cee382244e05dd226c8809d2405b76fbdc9'
+        self.account = (
+            default_account
+            if len(default_account) > 0
+            else "0xdb282cee382244e05dd226c8809d2405b76fbdc9"
+        )
 
-
-    @patch('revenue.management.commands.kudos_revenue.requests.get')
+    @patch("revenue.management.commands.kudos_revenue.requests.get")
     def test_etherscan_account_txlist_api_call(self, mock_func):
         """Test etherscan txlist api call """
         mock_func.return_value = Mock(ok=True)
@@ -85,29 +91,28 @@ class TestKudosRevenue(TestCase):
                     "contractAddress": "",
                     "cumulativeGasUsed": "7992355",
                     "gasUsed": "21000",
-                    "confirmations": "2546337"
+                    "confirmations": "2546337",
                 }
-            ]
+            ],
         }
         params = {
-            'module': 'account',
-            'action': 'txlist',
-            'address': self.account,
-            'startblock': 0,
-            'endblock': 6570004,
-            'apikey': settings.ETHERSCAN_API_KEY,
-            'sort': 'asc',
-            }
-        records = call_etherscan_api('mainnet', params)
+            "module": "account",
+            "action": "txlist",
+            "address": self.account,
+            "startblock": 0,
+            "endblock": 6570004,
+            "apikey": settings.ETHERSCAN_API_KEY,
+            "sort": "asc",
+        }
+        records = call_etherscan_api("mainnet", params)
         self.assertTrue(len(records) == 1)
         for record in records:
-            self.assertTrue('hash' in record)
-            self.assertTrue('contractAddress' in record)
-            self.assertTrue('value' in record)
-            self.assertTrue('from' in record)
-            self.assertTrue('to' in record)
+            self.assertTrue("hash" in record)
+            self.assertTrue("contractAddress" in record)
+            self.assertTrue("value" in record)
+            self.assertTrue("from" in record)
+            self.assertTrue("to" in record)
             break
-
 
     '''@patch('revenue.management.commands.kudos_revenue.call_etherscan_api')
     def test_etherscan_account_tokentx_api_call(self, mock_func):
@@ -155,52 +160,62 @@ class TestKudosRevenue(TestCase):
             self.assertTrue('tokenSymbol' in record)
             break'''
 
-
-    @patch('revenue.management.commands.kudos_revenue.requests.get')
+    @patch("revenue.management.commands.kudos_revenue.requests.get")
     def test_etherscan_account_wrong_api_call(self, mock_func):
         """Test wrong call to etherscan api """
         mock_func.return_value = Mock(ok=False)
         params = {
-            'module': 'account',
-            'action': 'transactions', # non-existent action
-            'address': self.account,
-            'startblock': 0,
-            'endblock': 6570004,
-            'apikey': settings.ETHERSCAN_API_KEY,
-            'sort': 'asc',
-            }
-        records = call_etherscan_api('mainnet', params)
+            "module": "account",
+            "action": "transactions",  # non-existent action
+            "address": self.account,
+            "startblock": 0,
+            "endblock": 6570004,
+            "apikey": settings.ETHERSCAN_API_KEY,
+            "sort": "asc",
+        }
+        records = call_etherscan_api("mainnet", params)
         self.assertTrue(len(records) == 0)
 
-
-    @patch('revenue.management.commands.kudos_revenue.requests.get')
+    @patch("revenue.management.commands.kudos_revenue.requests.get")
     def test_etherscan_account_no_tx_found_api_call(self, mock_func):
         """Test no records found during etherscan api call """
         mock_func.return_value = Mock(ok=False)
         params = {
-            'module': 'account',
-            'action': 'txlist',
-            'address': self.account,
-            'startblock': 0,
-            'endblock': 6,
-            'apikey': settings.ETHERSCAN_API_KEY,
-            'sort': 'asc',
-            }
-        records = call_etherscan_api('mainnet', params)
+            "module": "account",
+            "action": "txlist",
+            "address": self.account,
+            "startblock": 0,
+            "endblock": 6,
+            "apikey": settings.ETHERSCAN_API_KEY,
+            "sort": "asc",
+        }
+        records = call_etherscan_api("mainnet", params)
         self.assertTrue(len(records) == 0)
 
-
-    @patch('revenue.management.commands.kudos_revenue.requests.get')
+    @patch("revenue.management.commands.kudos_revenue.requests.get")
     def test_command_handle(self, mock_func):
         """Test command kudos revenue."""
         mock_func.side_effect = mocked_requests_get
 
-        Command() \
-            .handle([], network='rinkeby', account_address=self.account, start_block=0, end_block=2965443)
+        Command().handle(
+            [],
+            network="rinkeby",
+            account_address=self.account,
+            start_block=0,
+            end_block=2965443,
+        )
 
-        assert DigitalGoodPurchase.objects.all() \
-            .filter(receive_address__iexact=self.account, tokenName__iexact='ETH').count() == 2
+        assert (
+            DigitalGoodPurchase.objects.all()
+            .filter(receive_address__iexact=self.account, tokenName__iexact="ETH")
+            .count()
+            == 2
+        )
 
-        assert DigitalGoodPurchase.objects.all() \
-            .filter(receive_address__iexact=self.account) \
-            .exclude(tokenName='ETH').count() == 0
+        assert (
+            DigitalGoodPurchase.objects.all()
+            .filter(receive_address__iexact=self.account)
+            .exclude(tokenName="ETH")
+            .count()
+            == 0
+        )

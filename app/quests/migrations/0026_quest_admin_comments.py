@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0025_questpointaward_metadata'),
+        ("quests", "0025_questpointaward_metadata"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quest',
-            name='admin_comments',
-            field=models.TextField(blank=True, default=''),
+            model_name="quest",
+            name="admin_comments",
+            field=models.TextField(blank=True, default=""),
         ),
     ]

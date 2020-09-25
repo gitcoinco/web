@@ -28,28 +28,28 @@ from test_plus.test import TestCase
 
 actions_expired = [
     {
-        'user': {
-            'login': 'fred'
-        },
-        'created_at': (timezone.now() - timedelta(days=13)).strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'event': 'commented',
+        "user": {"login": "fred"},
+        "created_at": (timezone.now() - timedelta(days=13)).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        ),
+        "event": "commented",
     },
     {
-        'user': {
-            'login': 'paul'
-        },
-        'created_at': (timezone.now() - timedelta(days=13)).strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'event': 'commented',
-    }
+        "user": {"login": "paul"},
+        "created_at": (timezone.now() - timedelta(days=13)).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        ),
+        "event": "commented",
+    },
 ]
 
 actions_warning = [
     {
-        'user': {
-            'login': 'fred'
-        },
-        'created_at': (timezone.now() - timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'event': 'commented',
+        "user": {"login": "fred"},
+        "created_at": (timezone.now() - timedelta(days=5)).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        ),
+        "event": "commented",
     }
 ]
 
@@ -57,53 +57,62 @@ actions_warning = [
 class TestExpirationStartWork(TestCase):
     """Define tests for expiration start work."""
 
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
-    def test_handle_no_interest(self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning):
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning"
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expired"
+    )
+    def test_handle_no_interest(
+        self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning
+    ):
         """Test command expiration start work with not interests."""
         Command().handle()
 
         assert mock_bounty_startwork_expired.call_count == 0
         assert mock_bounty_startwork_expire_warning.call_count == 0
 
-    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_expired)
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
-    def test_handle_expired(self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args):
+    @patch(
+        "marketing.management.commands.expiration_start_work.get_interested_actions",
+        return_value=actions_expired,
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning"
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expired"
+    )
+    def test_handle_expired(
+        self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args
+    ):
         """Test command expiration start work for expired."""
-        profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
-        )
-        interest = Interest.objects.create(
-            profile=profile
-        )
+        profile = Profile.objects.create(data={}, handle="fred", email="fred@bar.com")
+        interest = Interest.objects.create(profile=profile)
         interest.created = timezone.now() - timedelta(days=12)
         interest.save()
 
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web/issues/1/',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/1/",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            network='mainnet',
-            idx_status='open',
-            bounty_owner_email='john@bar.com',
+            network="mainnet",
+            idx_status="open",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            permission_type='approval'
+            permission_type="approval",
         )
 
         bounty.interested.add(interest)
@@ -114,46 +123,47 @@ class TestExpirationStartWork(TestCase):
         assert mock_bounty_startwork_expire_warning.call_count == 0
         assert mock_bounty_startwork_expired.call_count == 0
 
-    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
-    def test_handle_expire_warning_unaccepted(self, mock_bounty_startwork_expired,
-                                              mock_bounty_startwork_expire_warning,
-                                              *args):
+    @patch(
+        "marketing.management.commands.expiration_start_work.get_interested_actions",
+        return_value=actions_warning,
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning"
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expired"
+    )
+    def test_handle_expire_warning_unaccepted(
+        self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args
+    ):
         """Test command expiration start work for expire warning."""
-        profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
-        )
-        interest = Interest.objects.create(
-            profile=profile
-        )
+        profile = Profile.objects.create(data={}, handle="fred", email="fred@bar.com")
+        interest = Interest.objects.create(profile=profile)
         interest.created = timezone.now() - timedelta(days=9)
         interest.save()
 
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web/issues/1/',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/1/",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='open',
-            bounty_owner_email='john@bar.com',
+            idx_status="open",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            network='mainnet',
-            permission_type='approval'
+            network="mainnet",
+            permission_type="approval",
         )
 
         bounty.interested.add(interest)
@@ -164,46 +174,47 @@ class TestExpirationStartWork(TestCase):
         assert mock_bounty_startwork_expire_warning.call_count == 0
         assert mock_bounty_startwork_expired.call_count == 0
 
-    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
-    def test_handle_expire_warning_permissionless(self, mock_bounty_startwork_expired,
-                                                  mock_bounty_startwork_expire_warning,
-                                                  *args):
+    @patch(
+        "marketing.management.commands.expiration_start_work.get_interested_actions",
+        return_value=actions_warning,
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning"
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expired"
+    )
+    def test_handle_expire_warning_permissionless(
+        self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args
+    ):
         """Test command expiration start work for expire warning."""
-        profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
-        )
-        interest = Interest.objects.create(
-            profile=profile
-        )
+        profile = Profile.objects.create(data={}, handle="fred", email="fred@bar.com")
+        interest = Interest.objects.create(profile=profile)
         interest.created = timezone.now() - timedelta(days=9)
         interest.save()
 
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web/issues/1/',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/1/",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='open',
-            bounty_owner_email='john@bar.com',
+            idx_status="open",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            network='mainnet',
-            permission_type='permissionless'
+            network="mainnet",
+            permission_type="permissionless",
         )
 
         bounty.interested.add(interest)
@@ -214,47 +225,48 @@ class TestExpirationStartWork(TestCase):
         assert mock_bounty_startwork_expire_warning.call_count == 1
         assert mock_bounty_startwork_expired.call_count == 0
 
-    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
-    @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
-    def test_handle_expire_warning_accepted(self, mock_bounty_startwork_expired,
-                                            mock_bounty_startwork_expire_warning,
-                                            *args):
+    @patch(
+        "marketing.management.commands.expiration_start_work.get_interested_actions",
+        return_value=actions_warning,
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning"
+    )
+    @patch(
+        "marketing.management.commands.expiration_start_work.bounty_startwork_expired"
+    )
+    def test_handle_expire_warning_accepted(
+        self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args
+    ):
         """Test command expiration start work for expire warning."""
-        profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
-        )
-        interest = Interest.objects.create(
-            profile=profile
-        )
+        profile = Profile.objects.create(data={}, handle="fred", email="fred@bar.com")
+        interest = Interest.objects.create(profile=profile)
         interest.created = timezone.now() - timedelta(days=9)
         interest.acceptance_date = timezone.now() - timedelta(days=9)
         interest.save()
 
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web/issues/1/',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/1/",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='open',
-            bounty_owner_email='john@bar.com',
+            idx_status="open",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            network='mainnet',
-            permission_type='approval'
+            network="mainnet",
+            permission_type="approval",
         )
 
         bounty.interested.add(interest)

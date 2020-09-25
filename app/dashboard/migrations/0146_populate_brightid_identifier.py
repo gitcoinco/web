@@ -3,7 +3,7 @@ import uuid
 
 
 def gen_uuid_0(apps, schema_editor):
-    Profile = apps.get_model('dashboard', 'Profile')
+    Profile = apps.get_model("dashboard", "Profile")
 
     existing_uuid = []
 
@@ -15,7 +15,6 @@ def gen_uuid_0(apps, schema_editor):
             brightid_uuid = uuid.uuid4()
             existing_uuid.append(brightid_uuid)
             profile.save()
-
 
     while Profile.objects.filter(brightid_uuid__isnull=True).exists():
         with transaction.atomic():
@@ -35,7 +34,7 @@ class Migration(migrations.Migration):
     atomic = False
 
     dependencies = [
-        ('dashboard', '0145_brightid_identifier_column'),
+        ("dashboard", "0145_brightid_identifier_column"),
     ]
 
     operations = [

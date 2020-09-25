@@ -6,33 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0026_auto_20190328_1314'),
+        ("dashboard", "0026_auto_20190328_1314"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='feedbackentry',
-            name='code_quality_rating',
+            model_name="feedbackentry",
+            name="code_quality_rating",
             field=models.SmallIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='feedbackentry',
-            name='communication_rating',
+            model_name="feedbackentry",
+            name="communication_rating",
             field=models.SmallIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='feedbackentry',
-            name='recommendation_rating',
+            model_name="feedbackentry",
+            name="recommendation_rating",
             field=models.SmallIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='feedbackentry',
-            name='satisfaction_rating',
+            model_name="feedbackentry",
+            name="satisfaction_rating",
             field=models.SmallIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='feedbackentry',
-            name='speed_rating',
+            model_name="feedbackentry",
+            name="speed_rating",
             field=models.SmallIntegerField(blank=True, default=0),
         ),
     ]

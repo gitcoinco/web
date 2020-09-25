@@ -22,7 +22,11 @@ from django.urls import re_path
 
 from dashboard.views import bounty_details
 
-app_name = 'legacy'
+app_name = "legacy"
 urlpatterns = [
-    re_path(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', bounty_details, name='legacy_issue_details_new2'),
+    re_path(
+        r"^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)",
+        bounty_details,
+        name="legacy_issue_details_new2",
+    ),
 ]

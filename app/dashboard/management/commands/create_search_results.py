@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -35,7 +35,7 @@ from search.models import Page, ProgrammingLanguage, SearchResult
 
 class Command(BaseCommand):
 
-    help = 'creates earnings records for deploy of https://github.com/gitcoinco/web/pull/5093'
+    help = "creates earnings records for deploy of https://github.com/gitcoinco/web/pull/5093"
 
     def handle(self, *args, **options):
 
@@ -47,64 +47,70 @@ class Command(BaseCommand):
                 url = f"{settings.BASE_URL}{uri}".replace(f"/{uri}", f"{uri}")
 
                 html_response = requests.get(url)
-                soup = BeautifulSoup(html_response.text, 'html.parser')
+                soup = BeautifulSoup(html_response.text, "html.parser")
                 title = soup.findAll("title")[0].text
                 try:
-                    description = soup.findAll("meta", {"name": 'description'})[0].text
+                    description = soup.findAll("meta", {"name": "description"})[0].text
                 except:
-                    description = ''
+                    description = ""
                 try:
-                    img_url = soup.findAll("meta", {"name": 'twitter:image'})[0].get('content')
+                    img_url = soup.findAll("meta", {"name": "twitter:image"})[0].get(
+                        "content"
+                    )
                     print(img_url)
                 except:
-                    img_url = ''
-                valid_title ='Grow Open Source' not in title and 'GitHub' not in title
+                    img_url = ""
+                valid_title = "Grow Open Source" not in title and "GitHub" not in title
                 title = title if valid_title else item.capitalize() + " Page"
                 print(title, item, url, img_url)
                 obj, created = Page.objects.update_or_create(
                     key=item,
                     defaults={
-                        "title":title,
-                        "description":description,
-                    }
+                        "title": title,
+                        "description": description,
+                    },
                 )
                 if obj.pk:
                     SearchResult.objects.update_or_create(
-                        source_type=ContentType.objects.get(app_label='search', model='page'),
+                        source_type=ContentType.objects.get(
+                            app_label="search", model="page"
+                        ),
                         source_id=obj.pk,
                         defaults={
-                            "title":title,
-                            "description":description,
-                            "url":url,
-                            "visible_to":None,
-                            'img_url': img_url,
-                        }
-                        )
+                            "title": title,
+                            "description": description,
+                            "url": url,
+                            "visible_to": None,
+                            "img_url": img_url,
+                        },
+                    )
             except Exception as e:
                 print(item, e)
 
-
         # prog languages
         from retail.utils import programming_languages_full
+
         for pl in programming_languages_full:
             obj, created = ProgrammingLanguage.objects.update_or_create(val=pl)
             urls = [f"/explorer?q={pl}", f"/users?q={pl}"]
             for url in urls:
                 title = f"View {pl} Bounties"
-                if 'users' in url:
+                if "users" in url:
                     title = f"View {pl} Coders"
                 description = title
                 if obj.pk:
                     SearchResult.objects.update_or_create(
-                        source_type=ContentType.objects.get(app_label='search', model='programminglanguage'),
+                        source_type=ContentType.objects.get(
+                            app_label="search", model="programminglanguage"
+                        ),
                         source_id=obj.pk,
                         title=title,
                         defaults={
-                            "description":description,
-                            "url":url,
-                            "visible_to":None,
-                        }
-                        )
+                            "description": description,
+                            "url": url,
+                            "visible_to": None,
+                        },
+                    )
         # objects
         qses = [
             Grant.objects.all(),

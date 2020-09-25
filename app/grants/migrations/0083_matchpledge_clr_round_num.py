@@ -7,13 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0082_auto_20200916_0352'),
+        ("grants", "0082_auto_20200916_0352"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='matchpledge',
-            name='clr_round_num',
-            field=models.ForeignKey(blank=True, help_text='Pledge CLR Round.', null=True, on_delete=django.db.models.deletion.CASCADE, to='grants.GrantCLR'),
+            model_name="matchpledge",
+            name="clr_round_num",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Pledge CLR Round.",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="grants.GrantCLR",
+            ),
         ),
     ]

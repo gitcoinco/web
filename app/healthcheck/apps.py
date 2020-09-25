@@ -27,12 +27,17 @@ from health_check.plugins import plugin_dir
 class HealthcheckConfig(AppConfig):
     """Define the Healthcheck application configuration."""
 
-    name = 'healthcheck'
-    verbose_name = 'Healthcheck'
+    name = "healthcheck"
+    verbose_name = "Healthcheck"
 
     def ready(self):
         """Handle signals on ready."""
-        from healthcheck.healthchecks import DefaultIPFSBackend, GithubRateLimiting, InfuraIPFSBackend
+        from healthcheck.healthchecks import (
+            DefaultIPFSBackend,
+            GithubRateLimiting,
+            InfuraIPFSBackend,
+        )
+
         plugin_dir.register(InfuraIPFSBackend)
         plugin_dir.register(DefaultIPFSBackend)
         plugin_dir.register(GithubRateLimiting)

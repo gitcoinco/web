@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0100_delete_refundfeerequest'),
+        ("dashboard", "0100_delete_refundfeerequest"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='profile',
-            name='discord_repos',
+            model_name="profile",
+            name="discord_repos",
         ),
         migrations.RemoveField(
-            model_name='profile',
-            name='discord_webhook_url',
+            model_name="profile",
+            name="discord_webhook_url",
         ),
         migrations.RemoveField(
-            model_name='profile',
-            name='gitcoin_discord_username',
+            model_name="profile",
+            name="gitcoin_discord_username",
         ),
     ]

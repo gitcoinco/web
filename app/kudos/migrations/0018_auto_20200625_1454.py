@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0017_token_metadata'),
+        ("kudos", "0017_token_metadata"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='token',
-            name='artist',
-            field=models.CharField(blank=True, db_index=True, max_length=255, null=True),
+            model_name="token",
+            name="artist",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=255, null=True
+            ),
         ),
     ]

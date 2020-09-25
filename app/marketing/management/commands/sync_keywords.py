@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import re
 
 from django.core.management.base import BaseCommand
@@ -25,7 +25,7 @@ from marketing.models import Keyword
 
 class Command(BaseCommand):
 
-    help = 'syncs autocomplete keywords'
+    help = "syncs autocomplete keywords"
 
     def handle(self, *args, **options):
 
@@ -43,7 +43,7 @@ class Command(BaseCommand):
         Keyword.objects.all().delete()
         for keyword in set(keywords):
             if keyword:
-                keyword = re.sub(r'\W+', '', keyword).lower()
+                keyword = re.sub(r"\W+", "", keyword).lower()
                 if keyword:
                     Keyword.objects.get_or_create(keyword=keyword)
                     print(keyword)

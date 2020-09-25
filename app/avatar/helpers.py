@@ -3,7 +3,7 @@ def hex_to_rgb_array(_hex):
 
 
 def rgb_array_to_hex(rgba):
-    arr = [hex(ele).replace('0x', '').zfill(2) for ele in rgba]
+    arr = [hex(ele).replace("0x", "").zfill(2) for ele in rgba]
     ret = "".join(arr)
     return ret
 
@@ -18,4 +18,6 @@ def add_rgb_array(rgba1, rgba2, enforceminmax=False):
 
 
 def sub_rgb_array(rgba1, rgba2, enforceminmax=False):
-    return add_rgb_array(rgba1, [-1 * ele for ele in rgba2], enforceminmax=enforceminmax)
+    return add_rgb_array(
+        rgba1, [-1 * ele for ele in rgba2], enforceminmax=enforceminmax
+    )

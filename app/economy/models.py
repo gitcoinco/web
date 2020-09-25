@@ -50,16 +50,16 @@ class EncodeAnything(DjangoJSONEncoder):
         elif isinstance(obj, FieldFile):
             return bool(obj)
         elif isinstance(obj, SuperModel):
-            return (obj.to_standard_dict())
+            return obj.to_standard_dict()
         elif isinstance(obj, models.Model):
-            return (model_to_dict(obj))
+            return model_to_dict(obj)
         elif isinstance(obj, QuerySet):
             if obj.count() and type(obj.first()) == str:
                 return obj[::1]
             return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
         elif isinstance(obj, list):
             return [json.dumps(instance, cls=EncodeAnything) for instance in obj]
-        elif(callable(obj)):
+        elif callable(obj):
             return None
         return super(EncodeAnything, self).default(obj)
 
@@ -92,7 +92,12 @@ class SuperModel(models.Model):
         return super(SuperModel, self).save(*args, **kwargs)
 
     def to_json_dict(self, fields=None, exclude=None, properties=None):
-        return json.dumps(self.to_standard_dict(fields=fields, exclude=exclude, properties=properties), cls=EncodeAnything)
+        return json.dumps(
+            self.to_standard_dict(
+                fields=fields, exclude=exclude, properties=properties
+            ),
+            cls=EncodeAnything,
+        )
 
     def to_standard_dict(self, fields=None, exclude=None, properties=None):
         """Define the standard to dict representation of the object.
@@ -110,12 +115,12 @@ class SuperModel(models.Model):
         """
         kwargs = {}
         if fields:
-            kwargs['fields'] = fields
+            kwargs["fields"] = fields
         if exclude:
-            kwargs['exclude'] = exclude
+            kwargs["exclude"] = exclude
         return_me = model_to_dict(self, **kwargs)
         if properties:
-            keys = [k for k in dir(self) if not k.startswith('_')]
+            keys = [k for k in dir(self) if not k.startswith("_")]
             for key in keys:
                 if key in properties:
                     attr = getattr(self, key)
@@ -125,15 +130,18 @@ class SuperModel(models.Model):
                         return_me[key] = attr
         return return_me
 
-
     @property
     def admin_url(self):
-        url = reverse('admin:{0}_{1}_change'.format(self._meta.app_label, self._meta.model_name), args=[self.id])
-        return '{0}'.format(url, escape(str(self)))
+        url = reverse(
+            "admin:{0}_{1}_change".format(self._meta.app_label, self._meta.model_name),
+            args=[self.id],
+        )
+        return "{0}".format(url, escape(str(self)))
 
     @property
     def created_human_time(self):
         from django.contrib.humanize.templatetags.humanize import naturaltime
+
         return naturaltime(self.created_on)
 
     @property
@@ -160,18 +168,19 @@ class SuperModel(models.Model):
             result = redis.get(self.view_count_redis_key)
             if not result:
                 return 0
-            return int(result.decode('utf-8'))
+            return int(result.decode("utf-8"))
         except KeyError:
             return 0
 
 
 class ConversionRate(SuperModel):
     """Define the conversion rate model."""
+
     SOURCE_TYPES = [
-        ('cryptocompare', 'cryptocompare'),
-        ('poloniex', 'poloniex'),
-        ('uniswap', 'uniswap'),
-        ('manual', 'manual'),
+        ("cryptocompare", "cryptocompare"),
+        ("poloniex", "poloniex"),
+        ("uniswap", "uniswap"),
+        ("manual", "manual"),
     ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
@@ -183,8 +192,10 @@ class ConversionRate(SuperModel):
     def __str__(self):
         """Define the string representation of a conversion rate."""
         decimals = 3
-        return f"{round(self.from_amount, decimals)} {self.from_currency} => {round(self.to_amount, decimals)} " \
-               f"{self.to_currency} ({self.timestamp.strftime('%m/%d/%Y')} {naturaltime(self.timestamp)}, from {self.source})"
+        return (
+            f"{round(self.from_amount, decimals)} {self.from_currency} => {round(self.to_amount, decimals)} "
+            f"{self.to_currency} ({self.timestamp.strftime('%m/%d/%Y')} {naturaltime(self.timestamp)}, from {self.source})"
+        )
 
 
 # method for updating
@@ -192,7 +203,7 @@ class ConversionRate(SuperModel):
 def reverse_conversion_rate(sender, instance, **kwargs):
     """Handle the reverse conversion rate signal during post-save."""
     # If this is a fixture, don't create reverse CR.
-    if not kwargs.get('raw', False):
+    if not kwargs.get("raw", False):
         # 1 / # 0.000979
         from_amount = float(instance.to_amount) / float(instance.from_amount)
         to_amount = 1
@@ -204,7 +215,7 @@ def reverse_conversion_rate(sender, instance, **kwargs):
             timestamp=instance.timestamp,
             source=instance.source,
             from_currency=instance.to_currency,
-            to_currency=instance.from_currency
+            to_currency=instance.from_currency,
         )
 
 
@@ -219,9 +230,9 @@ class TXUpdate(SuperModel):
         return f"{self.body['hash']}"
 
     def process_callbacks(self):
-        tx_id = self.body['hash']
-        status = self.body.get('status')
-        replaceHash = self.body.get('replaceHash')
+        tx_id = self.body["hash"]
+        status = self.body.get("status")
+        replaceHash = self.body.get("replaceHash")
         if status:
             # https://docs.blocknative.com/webhook-api#transaction-events-state-changes
             # TODO: move processing of failed, dropped, txns from update_tx_status to here
@@ -233,6 +244,7 @@ class TXUpdate(SuperModel):
             pass
         self.processed = True
         return
+
 
 class Token(SuperModel):
     """Define the Token model."""
@@ -253,14 +265,20 @@ class Token(SuperModel):
 
     @property
     def to_dict(self):
-        return {'id': self.id, 'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+        return {
+            "id": self.id,
+            "addr": self.address,
+            "name": self.symbol,
+            "decimals": self.decimals,
+            "priority": self.priority,
+        }
 
     @property
     def to_json(self):
         import json
-        return json.dumps(self.to_dict)
 
+        return json.dumps(self.to_dict)
 
     @property
     def email(self):
-        return self.metadata.get('email', None)
+        return self.metadata.get("email", None)

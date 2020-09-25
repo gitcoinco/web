@@ -27,42 +27,58 @@ from .models import Token, Wallet
 class TokenSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Token
-        fields = ('id', 'created_on', 'modified_on', 'name', 'description', 'image', 'rarity',
-                  'price_finney', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
+        fields = (
+            "id",
+            "created_on",
+            "modified_on",
+            "name",
+            "description",
+            "image",
+            "rarity",
+            "price_finney",
+            "num_clones_allowed",
+            "num_clones_in_wild",
+            "owner_address",
+            "tags",
+        )
 
 
 class WalletSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Wallet
-        fields = ('address', 'profile_id')
+        fields = ("address", "profile_id")
 
 
 class WalletViewSet(viewsets.ModelViewSet):
-    queryset = Wallet.objects.all().order_by('-id')
+    queryset = Wallet.objects.all().order_by("-id")
     serializer_class = WalletSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
         param_keys = self.request.query_params.keys()
-        queryset = Wallet.objects.all().order_by('-id')
+        queryset = Wallet.objects.all().order_by("-id")
 
         # Filter by address
-        if 'address' in param_keys:
-            queryset = queryset.filter(address=self.request.query_params.get('address'))
+        if "address" in param_keys:
+            queryset = queryset.filter(address=self.request.query_params.get("address"))
 
         # Filter by profile_id
-        if 'profile_id' in param_keys:
-            queryset = queryset.filter(profile__id=self.request.query_params.get('profile_id'))
+        if "profile_id" in param_keys:
+            queryset = queryset.filter(
+                profile__id=self.request.query_params.get("profile_id")
+            )
 
         # Filter by profile_id
-        if 'profile_handle' in param_keys:
-            queryset = queryset.filter(profile__handle=self.request.query_params.get('profile_handle'))
+        if "profile_handle" in param_keys:
+            queryset = queryset.filter(
+                profile__handle=self.request.query_params.get("profile_handle")
+            )
 
         return queryset
 
 
 class TokenViewSet(viewsets.ModelViewSet):
-    queryset = Token.objects.all().order_by('-id')
+    queryset = Token.objects.all().order_by("-id")
     serializer_class = TokenSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     # filter_fields = ('name', 'description', 'image', 'rarity', 'price_finney', 'num_clones_allowed',
@@ -70,40 +86,56 @@ class TokenViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         param_keys = self.request.query_params.keys()
-        queryset = Token.objects.all().order_by('-id')
+        queryset = Token.objects.all().order_by("-id")
 
         # Filter by owner_address
-        if 'owner_address' in param_keys:
-            queryset = queryset.filter(owner_address__iexact=self.request.query_params.get('owner_address'))
+        if "owner_address" in param_keys:
+            queryset = queryset.filter(
+                owner_address__iexact=self.request.query_params.get("owner_address")
+            )
 
         # Filter by name
-        if 'name' in param_keys:
-            queryset = queryset.filter(name__iexact=self.request.query_params.get('name'))
+        if "name" in param_keys:
+            queryset = queryset.filter(
+                name__iexact=self.request.query_params.get("name")
+            )
 
         # Filter by rarity
-        if 'rarity' in param_keys:
-            queryset = queryset.filter(rarity__iexact=self.request.query_params.get('rarity'))
+        if "rarity" in param_keys:
+            queryset = queryset.filter(
+                rarity__iexact=self.request.query_params.get("rarity")
+            )
 
         # Filter by price
-        if 'price_finney' in param_keys:
-            queryset = queryset.filter(price_finney__iexact=self.request.query_params.get('price_finney'))
+        if "price_finney" in param_keys:
+            queryset = queryset.filter(
+                price_finney__iexact=self.request.query_params.get("price_finney")
+            )
 
         # Filter by num_clones_allowed
-        if 'num_clones_allowed' in param_keys:
-            queryset = queryset.filter(num_clones_allowed__iexact=self.request.query_params.get('num_clones_allowed'))
+        if "num_clones_allowed" in param_keys:
+            queryset = queryset.filter(
+                num_clones_allowed__iexact=self.request.query_params.get(
+                    "num_clones_allowed"
+                )
+            )
 
         # Filter by num_clones_in_wild
-        if 'num_clones_in_wild' in param_keys:
-            queryset = queryset.filter(num_clones_in_wild__iexact=self.request.query_params.get('num_clones_in_wild'))
+        if "num_clones_in_wild" in param_keys:
+            queryset = queryset.filter(
+                num_clones_in_wild__iexact=self.request.query_params.get(
+                    "num_clones_in_wild"
+                )
+            )
 
         # Filter by tags
-        if 'tags' in param_keys:
-            queryset = queryset.filter(tags__in=self.request.query_params.get('tags'))
+        if "tags" in param_keys:
+            queryset = queryset.filter(tags__in=self.request.query_params.get("tags"))
 
         return queryset
 
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'kudos', TokenViewSet)
-router.register(r'wallet', WalletViewSet)
+router.register(r"kudos", TokenViewSet)
+router.register(r"wallet", WalletViewSet)

@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0017_matchpledge_end_date'),
+        ("grants", "0017_matchpledge_end_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='hidden',
-            field=models.BooleanField(default=False, help_text='Hide the grant from the /grants page?'),
+            model_name="grant",
+            name="hidden",
+            field=models.BooleanField(
+                default=False, help_text="Hide the grant from the /grants page?"
+            ),
         ),
     ]

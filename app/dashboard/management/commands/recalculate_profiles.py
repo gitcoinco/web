@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.conf import settings
 from django.core import management
@@ -27,15 +27,21 @@ from dashboard.tasks import profile_dict
 
 class Command(BaseCommand):
 
-    help = 'Recalculates all stale profiles'
+    help = "Recalculates all stale profiles"
 
     def handle(self, *args, **options):
         minutes = 1 if not settings.DEBUG else 100000
         then = timezone.now() - timezone.timedelta(minutes=minutes)
 
-        profile_pks = list(Profile.objects.filter(created_on__gte=then).values_list('pk', flat=True))
-        profile_pks += list(ProfileView.objects.filter(created_on__gte=then).values_list('target__pk', flat=True))
+        profile_pks = list(
+            Profile.objects.filter(created_on__gte=then).values_list("pk", flat=True)
+        )
+        profile_pks += list(
+            ProfileView.objects.filter(created_on__gte=then).values_list(
+                "target__pk", flat=True
+            )
+        )
         print(profile_pks)
         for pk in profile_pks:
             profile_dict.delay(pk)
-            pass        
+            pass

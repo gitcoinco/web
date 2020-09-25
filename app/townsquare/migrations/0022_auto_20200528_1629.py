@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0021_comment_tip'),
+        ("townsquare", "0021_comment_tip"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='announcement',
-            name='key',
-            field=models.CharField(choices=[('townsquare', 'townsquare'), ('header', 'header'), ('footer', 'footer'), ('founders_note_daily_email', 'founders_note_daily_email')], db_index=True, max_length=50),
+            model_name="announcement",
+            name="key",
+            field=models.CharField(
+                choices=[
+                    ("townsquare", "townsquare"),
+                    ("header", "header"),
+                    ("footer", "footer"),
+                    ("founders_note_daily_email", "founders_note_daily_email"),
+                ],
+                db_index=True,
+                max_length=50,
+            ),
         ),
     ]

@@ -7,32 +7,43 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0111_auto_20200520_0457'),
+        ("dashboard", "0111_auto_20200520_0457"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='answer',
-            name='checked',
+            model_name="answer",
+            name="checked",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='answer',
-            name='hackathon',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='dashboard.HackathonEvent'),
+            model_name="answer",
+            name="hackathon",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="dashboard.HackathonEvent",
+            ),
         ),
         migrations.RemoveField(
-            model_name='poll',
-            name='hackathon',
+            model_name="poll",
+            name="hackathon",
         ),
         migrations.AddField(
-            model_name='poll',
-            name='hackathon',
-            field=models.ManyToManyField(to='dashboard.HackathonEvent'),
+            model_name="poll",
+            name="hackathon",
+            field=models.ManyToManyField(to="dashboard.HackathonEvent"),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='question_type',
-            field=models.CharField(choices=[('SINGLE_CHOICE', 'Single Choice'), ('MULTIPLE_CHOICE', 'Multiple Choices'), ('OPEN', 'Open')], max_length=50),
+            model_name="question",
+            name="question_type",
+            field=models.CharField(
+                choices=[
+                    ("SINGLE_CHOICE", "Single Choice"),
+                    ("MULTIPLE_CHOICE", "Multiple Choices"),
+                    ("OPEN", "Open"),
+                ],
+                max_length=50,
+            ),
         ),
     ]

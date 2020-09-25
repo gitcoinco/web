@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0008_leaderboardrank_product'),
+        ("marketing", "0008_leaderboardrank_product"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='marketingcallback',
-            name='msg',
-            field=models.TextField(default=''),
+            model_name="marketingcallback",
+            name="msg",
+            field=models.TextField(default=""),
             preserve_default=False,
         ),
     ]

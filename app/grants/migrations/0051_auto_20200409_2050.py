@@ -6,23 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0050_auto_20200329_2146'),
+        ("grants", "0050_auto_20200329_2146"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contribution',
-            name='originated_address',
-            field=models.CharField(default='0x0', help_text='The origination address of the funds used in this txn', max_length=255),
+            model_name="contribution",
+            name="originated_address",
+            field=models.CharField(
+                default="0x0",
+                help_text="The origination address of the funds used in this txn",
+                max_length=255,
+            ),
         ),
         migrations.AddField(
-            model_name='contribution',
-            name='validator_comment',
-            field=models.CharField(default='0x0', help_text='The why or why not validator passed', max_length=255),
+            model_name="contribution",
+            name="validator_comment",
+            field=models.CharField(
+                default="0x0",
+                help_text="The why or why not validator passed",
+                max_length=255,
+            ),
         ),
         migrations.AddField(
-            model_name='contribution',
-            name='validator_passed',
-            field=models.BooleanField(default=False, help_text='Whether or not the backend validator passed.'),
+            model_name="contribution",
+            name="validator_passed",
+            field=models.BooleanField(
+                default=False, help_text="Whether or not the backend validator passed."
+            ),
         ),
     ]

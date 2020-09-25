@@ -10,26 +10,28 @@ from grants.models import Contribution, Grant, Subscription
 
 class Command(BaseCommand):
 
-    help = 'ingest giving block txns from their partnership with gitcoin grants for round 5'
+    help = "ingest giving block txns from their partnership with gitcoin grants for round 5"
 
     def handle(self, *args, **kwargs):
         import csv
 
-        prices = {'BTC': 9700.0,
-                  'ETH': 240.0,
-                  'ZEC': 52.0,
-                  'LTC': 46.0,
-                  'BCH': 253.0}
+        prices = {"BTC": 9700.0, "ETH": 240.0, "ZEC": 52.0, "LTC": 46.0, "BCH": 253.0}
 
-        anonprofiles = Profile.objects.filter(handle__startswith="anonusergitcoin").all()
+        anonprofiles = Profile.objects.filter(
+            handle__startswith="anonusergitcoin"
+        ).all()
 
-        with open('/code/scripts/input/givingblock_txns_nybw.csv', newline='', encoding="utf-8") as csvfile:
-            reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        with open(
+            "/code/scripts/input/givingblock_txns_nybw.csv",
+            newline="",
+            encoding="utf-8",
+        ) as csvfile:
+            reader = csv.reader(csvfile, delimiter=",", quotechar='"')
             for row in reader:
 
-                #ingest data
+                # ingest data
                 date = row[0]
-                _ = row[1] # time not important
+                _ = row[1]  # time not important
                 grant_name = row[2]
                 currency = row[3]
                 amount = float(row[4])
@@ -39,8 +41,8 @@ class Command(BaseCommand):
 
                 # convert formats
                 try:
-                    date = timezone.datetime.strptime(date, '%m/%d/%Y')
-                    grant_name = grant_name.replace('®', '')
+                    date = timezone.datetime.strptime(date, "%m/%d/%Y")
+                    grant_name = grant_name.replace("®", "")
                     grant = Grant.objects.get(title__icontains=grant_name.strip())
 
                     # create objects
@@ -50,17 +52,17 @@ class Command(BaseCommand):
                     subscription.is_postive_vote = True
                     subscription.active = False
                     subscription.error = True
-                    subscription.contributor_address = '/NA'
+                    subscription.contributor_address = "/NA"
                     subscription.amount_per_period = amount
                     subscription.real_period_seconds = 2592000
                     subscription.frequency = 30
-                    subscription.frequency_unit = 'N/A'
-                    subscription.token_address = '0x0'
+                    subscription.frequency_unit = "N/A"
+                    subscription.token_address = "0x0"
                     subscription.token_symbol = currency
                     subscription.gas_price = 0
-                    subscription.new_approve_tx_id = '0x0'
+                    subscription.new_approve_tx_id = "0x0"
                     subscription.num_tx_approved = 1
-                    subscription.network = 'mainnet'
+                    subscription.network = "mainnet"
                     subscription.contributor_profile = profile
                     subscription.grant = grant
                     subscription.comments = validator_comment
@@ -75,25 +77,27 @@ class Command(BaseCommand):
                         subscription=subscription,
                         validator_passed=True,
                         validator_comment=validator_comment,
-                        )
+                    )
                     print(f"ingested {subscription.pk} / {contrib.pk}")
 
                     metadata = {
-                        'id': subscription.id,
-                        'value_in_token': str(subscription.amount_per_period),
-                        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
-                        'token_name': subscription.token_symbol,
-                        'title': subscription.grant.title,
-                        'grant_url': subscription.grant.url,
-                        'num_tx_approved': subscription.num_tx_approved,
-                        'category': 'grant',
+                        "id": subscription.id,
+                        "value_in_token": str(subscription.amount_per_period),
+                        "value_in_usdt_now": str(
+                            round(subscription.amount_per_period_usdt, 2)
+                        ),
+                        "token_name": subscription.token_symbol,
+                        "title": subscription.grant.title,
+                        "grant_url": subscription.grant.url,
+                        "num_tx_approved": subscription.num_tx_approved,
+                        "category": "grant",
                     }
                     kwargs = {
-                        'profile': profile,
-                        'subscription': subscription,
-                        'grant': subscription.grant,
-                        'activity_type': 'new_grant_contribution',
-                        'metadata': metadata,
+                        "profile": profile,
+                        "subscription": subscription,
+                        "grant": subscription.grant,
+                        "activity_type": "new_grant_contribution",
+                        "metadata": metadata,
                     }
 
                     Activity.objects.create(**kwargs)

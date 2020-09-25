@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import logging
 from datetime import timedelta
 
@@ -31,30 +31,36 @@ class Command(BaseCommand):
     help = "create users to Gitcoin chat, creates the user if it doesn't exist"
 
     def add_arguments(self, parser):
-        parser.add_argument('--days_ago', default=30, type=int)
+        parser.add_argument("--days_ago", default=30, type=int)
 
     def handle(self, *args, **options):
         try:
             from chat.tasks import associate_chat_to_profile
 
-            days_ago = options['days_ago']
+            days_ago = options["days_ago"]
 
             now = timezone.now()
             delta = timedelta(days=days_ago)
 
             profiles = Profile.objects.filter(
-                Q(gitcoin_chat_access_token__exact='') | Q(chat_id__exact=''),
+                Q(gitcoin_chat_access_token__exact="") | Q(chat_id__exact=""),
                 last_visit__gte=now - delta,
-                user__is_active=True
-            ).prefetch_related('user')
+                user__is_active=True,
+            ).prefetch_related("user")
 
             for profile in profiles:
                 try:
-                    logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Started')
+                    logger.info(
+                        f"Syncing Gitcoin Chat Data for: {profile.handle} Started"
+                    )
                     created, profile = associate_chat_to_profile(profile)
-                    logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Complete')
+                    logger.info(
+                        f"Syncing Gitcoin Chat Data for: {profile.handle} Complete"
+                    )
                 except Exception as e:
-                    logger.info(f'Failed to associate chat to profile for: {profile.handle}')
+                    logger.info(
+                        f"Failed to associate chat to profile for: {profile.handle}"
+                    )
                     logger.info(str(e))
 
         except ConnectionError as exec:

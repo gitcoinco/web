@@ -28,15 +28,15 @@ register = template.Library()
 def matches(text, pattern):
     """Determine whether or not the value matches regex pattern.
 
-        Args:
-            value: Any value.
-            pattern : Regex pattern against which the text is matched.
+    Args:
+        value: Any value.
+        pattern : Regex pattern against which the text is matched.
 
-        Usage:
-            {% if '<text>'|matches:'^/explorer$' %}
+    Usage:
+        {% if '<text>'|matches:'^/explorer$' %}
 
-        Returns:
-            bool: Whether or not the value matches the pattern.
+    Returns:
+        bool: Whether or not the value matches the pattern.
 
     """
 

@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import time
 
 from django.contrib.auth.models import User
@@ -32,11 +32,11 @@ class NoUsersException(Exception):
 
 def get_github_user_from_github(email):
     result = search(email)
-    if not result.get('total_count', 0):
+    if not result.get("total_count", 0):
         # print(result)
         raise NoUsersException("no users found")
 
-    return result['items'][0]
+    return result["items"][0]
 
 
 def get_github_user_from_DB(email):
@@ -52,12 +52,14 @@ def get_github_user_from_DB(email):
 
 class Command(BaseCommand):
 
-    help = 'pulls all github metadata info'
+    help = "pulls all github metadata info"
 
     def handle(self, *args, **options):
-        es_without_github = EmailSubscriber.objects.filter(github='')
+        es_without_github = EmailSubscriber.objects.filter(github="")
         es_without_keywords = EmailSubscriber.objects.filter(keywords=[])
-        emailsubscribers = (es_without_github | es_without_keywords).distinct('pk').order_by('-pk')
+        emailsubscribers = (
+            (es_without_github | es_without_keywords).distinct("pk").order_by("-pk")
+        )
         es_without_keywords_count = es_without_keywords.count()
         es_without_github_count = es_without_github.count()
         success = 0
@@ -69,7 +71,7 @@ class Command(BaseCommand):
                     es.github = get_github_user_from_DB(es.email)
                 if not es.github:
                     ghuser = get_github_user_from_github(es.email)
-                    es.github = ghuser['login']
+                    es.github = ghuser["login"]
                 if not es.keywords:
                     try:
                         es.profile = profile_helper(es.github, True)
@@ -92,5 +94,9 @@ class Command(BaseCommand):
         print("pct: {}".format(round(exceptions / emailsubscribers.count(), 2)))
 
         print("===========================")
-        print(f"es_without_keywords_count; before: {es_without_keywords_count}, after: {es_without_keywords.count()}")
-        print(f"es_without_github_count; before: {es_without_github_count}, after: {es_without_github.count()}")
+        print(
+            f"es_without_keywords_count; before: {es_without_keywords_count}, after: {es_without_keywords.count()}"
+        )
+        print(
+            f"es_without_github_count; before: {es_without_github_count}, after: {es_without_github.count()}"
+        )

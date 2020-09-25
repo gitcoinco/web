@@ -8,24 +8,51 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0105_auto_20200430_1352'),
-        ('townsquare', '0018_comment_is_edited'),
+        ("dashboard", "0105_auto_20200430_1352"),
+        ("townsquare", "0018_comment_is_edited"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PinnedPost',
+            name="PinnedPost",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('what', models.CharField(default='', max_length=100, unique=True)),
-                ('created', models.DateTimeField(auto_now=True)),
-                ('activity', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pins', to='dashboard.Activity')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pins', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("what", models.CharField(default="", max_length=100, unique=True)),
+                ("created", models.DateTimeField(auto_now=True)),
+                (
+                    "activity",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pins",
+                        to="dashboard.Activity",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pins",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

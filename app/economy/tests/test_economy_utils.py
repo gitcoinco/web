@@ -35,37 +35,40 @@ class EconomyUtilsTest(TestCase):
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=5,
-            source='etherdelta',
-            from_currency='ETH',
-            to_currency='USDT',
-            timestamp=datetime(2018, 1, 1)  # Arbitrary timestamp in the past
+            source="etherdelta",
+            from_currency="ETH",
+            to_currency="USDT",
+            timestamp=datetime(2018, 1, 1),  # Arbitrary timestamp in the past
         )
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=2,
-            source='etherdelta',
-            from_currency='ETH',
-            to_currency='USDT',
+            source="etherdelta",
+            from_currency="ETH",
+            to_currency="USDT",
         )
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=3,
-            source='etherdelta',
-            from_currency='ETH',
-            to_currency='USDT',
+            source="etherdelta",
+            from_currency="ETH",
+            to_currency="USDT",
         )
 
     def test_convert_amount(self):
         """Test the economy util convert_amount method."""
-        result = convert_amount(2, 'ETH', 'USDT')
+        result = convert_amount(2, "ETH", "USDT")
         assert round(result, 1) == 6
 
     def test_convert_amount_time_travel(self):
         """Test the economy util convert_amount method for historic ConversionRates."""
-        result = convert_amount(2, 'ETH', 'USDT', datetime(2018, 1, 1))
+        result = convert_amount(2, "ETH", "USDT", datetime(2018, 1, 1))
         assert round(result, 1) == 10
 
     def test_etherscan_link(self):
         """Test the economy util etherscan_link method."""
-        txid = '0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b'
-        assert etherscan_link(txid) == 'https://etherscan.io/tx/0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b'
+        txid = "0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b"
+        assert (
+            etherscan_link(txid)
+            == "https://etherscan.io/tx/0xcb39900d98fa00de2936d2770ef3bfef2cc289328b068e580dc68b7ac1e2055b"
+        )

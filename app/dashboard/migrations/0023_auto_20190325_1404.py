@@ -7,23 +7,37 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0022_merge_20190325_1402'),
+        ("dashboard", "0022_merge_20190325_1402"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bounty',
-            name='unsigned_nda',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='bounty', to='dashboard.BountyDocuments'),
+            model_name="bounty",
+            name="unsigned_nda",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="bounty",
+                to="dashboard.BountyDocuments",
+            ),
         ),
         migrations.AlterField(
-            model_name='bountyinvites',
-            name='bounty',
-            field=models.ManyToManyField(blank=True, related_name='bountyinvites', to='dashboard.Bounty'),
+            model_name="bountyinvites",
+            name="bounty",
+            field=models.ManyToManyField(
+                blank=True, related_name="bountyinvites", to="dashboard.Bounty"
+            ),
         ),
         migrations.AlterField(
-            model_name='interest',
-            name='signed_nda',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='interest', to='dashboard.BountyDocuments'),
+            model_name="interest",
+            name="signed_nda",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="interest",
+                to="dashboard.BountyDocuments",
+            ),
         ),
     ]

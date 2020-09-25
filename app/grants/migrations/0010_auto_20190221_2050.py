@@ -7,13 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0009_auto_20190220_2309'),
+        ("grants", "0009_auto_20190220_2309"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='activeSubscriptions',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), blank=True, default=list, size=None),
+            model_name="grant",
+            name="activeSubscriptions",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.CharField(max_length=200),
+                blank=True,
+                default=list,
+                size=None,
+            ),
         ),
     ]

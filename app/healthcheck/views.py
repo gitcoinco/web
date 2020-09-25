@@ -11,5 +11,9 @@ def lbcheck(request):
 @staff_member_required
 def spec(request):
     """Handle returning deployment specific specifications and stats."""
-    specs = {'release': settings.RELEASE, 'env': settings.ENV, 'hostname': settings.HOSTNAME}
+    specs = {
+        "release": settings.RELEASE,
+        "env": settings.ENV,
+        "hostname": settings.HOSTNAME,
+    }
     return JsonResponse(specs, status=200)

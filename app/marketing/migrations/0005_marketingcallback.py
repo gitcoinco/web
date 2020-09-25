@@ -7,21 +7,34 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('marketing', '0004_auto_20190801_1303'),
+        ("marketing", "0004_auto_20190801_1303"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MarketingCallback',
+            name="MarketingCallback",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('key', models.CharField(db_index=True, max_length=255)),
-                ('val', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("key", models.CharField(db_index=True, max_length=255)),
+                ("val", models.CharField(max_length=255)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

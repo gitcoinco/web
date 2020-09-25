@@ -6,24 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0094_auto_20200324_2138'),
+        ("dashboard", "0094_auto_20200324_2138"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='bounty',
-            name='unsigned_nda',
+            model_name="bounty",
+            name="unsigned_nda",
         ),
         migrations.RemoveField(
-            model_name='interest',
-            name='signed_nda',
+            model_name="interest",
+            name="signed_nda",
         ),
         migrations.AlterField(
-            model_name='bounty',
-            name='repo_type',
-            field=models.CharField(choices=[('public', 'public')], default='public', max_length=10),
+            model_name="bounty",
+            name="repo_type",
+            field=models.CharField(
+                choices=[("public", "public")], default="public", max_length=10
+            ),
         ),
         migrations.DeleteModel(
-            name='BountyDocuments',
+            name="BountyDocuments",
         ),
     ]

@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0065_auto_20200702_0518'),
+        ("grants", "0065_auto_20200702_0518"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='clrmatch',
-            name='has_passed_kyc',
-            field=models.BooleanField(default=False, help_text='Has this grant gone through KYC?'),
+            model_name="clrmatch",
+            name="has_passed_kyc",
+            field=models.BooleanField(
+                default=False, help_text="Has this grant gone through KYC?"
+            ),
         ),
     ]

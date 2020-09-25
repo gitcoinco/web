@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0039_auto_20190709_1907'),
+        ("dashboard", "0039_auto_20190709_1907"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='profile_wallpaper',
-            field=models.CharField(blank=True, default='', max_length=255, null=True),
+            model_name="profile",
+            name="profile_wallpaper",
+            field=models.CharField(blank=True, default="", max_length=255, null=True),
         ),
     ]

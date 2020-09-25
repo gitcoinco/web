@@ -24,25 +24,42 @@ def is_user_townsquare_enabled(user):
 def can_pin(request, what):
     permission = False
     # handle permissions for pinning/unpinning
-    if ':' in what:
-        split = what.split(':')
+    if ":" in what:
+        split = what.split(":")
         key = split[0]
         lookup = split[1]
     else:
         key = what
         lookup = what
 
-    if key == 'grant':  # check for grant owner
+    if key == "grant":  # check for grant owner
 
-        permission = request.user.is_authenticated and Grant.objects.filter(
-            team_members__handle__in=[request.user.profile.handle]).exists()
+        permission = (
+            request.user.is_authenticated
+            and Grant.objects.filter(
+                team_members__handle__in=[request.user.profile.handle]
+            ).exists()
+        )
 
-    elif key == 'tribe':  # check for org owner
+    elif key == "tribe":  # check for org owner
         permission = request.user.is_authenticated and any(
-            [lookup.lower() == org.lower() for org in request.user.profile.organizations])
-    elif key == 'my_threads':
+            [
+                lookup.lower() == org.lower()
+                for org in request.user.profile.organizations
+            ]
+        )
+    elif key == "my_threads":
         permission = False
-    elif key in ['search-announce', 'search-mentor', 'search-jobs', 'search-bounty', 'search-help', 'search-meme', 'search-music', 'search-other']:
+    elif key in [
+        "search-announce",
+        "search-mentor",
+        "search-jobs",
+        "search-bounty",
+        "search-help",
+        "search-meme",
+        "search-music",
+        "search-other",
+    ]:
         if request.user.is_staff:
             permission = True
 
@@ -55,6 +72,7 @@ def can_pin(request, what):
 
 def is_email_townsquare_enabled(email):
     from django.contrib.auth.models import User
+
     user = User.objects.filter(email=email).first()
     if not user:
         return False

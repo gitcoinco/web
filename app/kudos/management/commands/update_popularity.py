@@ -22,9 +22,10 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
-    help = 'updates popularity of all tokens'
+    help = "updates popularity of all tokens"
 
     def handle(self, *args, **options):
         from kudos.models import KudosTransfer
+
         for kt in KudosTransfer.objects.all():
             kt.save()

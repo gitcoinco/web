@@ -7,36 +7,42 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0089_merge_20200310_1649'),
+        ("dashboard", "0089_merge_20200310_1649"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='bounty',
-            name='payout_confirmed',
+            model_name="bounty",
+            name="payout_confirmed",
         ),
         migrations.RemoveField(
-            model_name='bounty',
-            name='payout_tx_id',
+            model_name="bounty",
+            name="payout_tx_id",
         ),
         migrations.AddField(
-            model_name='bountyfulfillment',
-            name='payout_amount',
-            field=models.DecimalField(blank=True, decimal_places=4, max_digits=50, null=True),
+            model_name="bountyfulfillment",
+            name="payout_amount",
+            field=models.DecimalField(
+                blank=True, decimal_places=4, max_digits=50, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='bountyfulfillment',
-            name='payout_status',
-            field=models.CharField(blank=True, choices=[('pending', 'pending'), ('done', 'done')], max_length=10),
+            model_name="bountyfulfillment",
+            name="payout_status",
+            field=models.CharField(
+                blank=True,
+                choices=[("pending", "pending"), ("done", "done")],
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='bountyfulfillment',
-            name='payout_tx_id',
-            field=models.CharField(blank=True, default='0x0', max_length=255),
+            model_name="bountyfulfillment",
+            name="payout_tx_id",
+            field=models.CharField(blank=True, default="0x0", max_length=255),
         ),
         migrations.AddField(
-            model_name='bountyfulfillment',
-            name='token_name',
+            model_name="bountyfulfillment",
+            name="token_name",
             field=models.CharField(blank=True, max_length=10),
         ),
     ]

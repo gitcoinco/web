@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0114_auto_20200522_0730'),
-        ('townsquare', '0020_auto_20200521_1020'),
+        ("dashboard", "0114_auto_20200522_0730"),
+        ("townsquare", "0020_auto_20200521_1020"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='tip',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='awards', to='dashboard.Tip'),
+            model_name="comment",
+            name="tip",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="awards",
+                to="dashboard.Tip",
+            ),
         ),
     ]

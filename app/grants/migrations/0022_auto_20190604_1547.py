@@ -6,19 +6,21 @@ from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
+
 def forwards(apps, schema_editor):
     pass
+
 
 def backwards(apps, schema_editor):
     pass
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0021_clrmatch'),
+        ("grants", "0021_clrmatch"),
     ]
 
     operations = [
-            migrations.RunPython(forwards, backwards),
+        migrations.RunPython(forwards, backwards),
     ]
-

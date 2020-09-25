@@ -54,18 +54,20 @@ def process(request):
     for event in response:
 
         try:
-            ip = event.get('ip')
+            ip = event.get("ip")
             validate_ipv46_address(ip)
             ip_address = ip
         except Exception:
             ip_address = None
 
         try:
-            created_on = datetime.utcfromtimestamp(event['timestamp']).replace(tzinfo=pytz.utc)
+            created_on = datetime.utcfromtimestamp(event["timestamp"]).replace(
+                tzinfo=pytz.utc
+            )
             email_event = EmailEvent(
-                email=event['email'],
-                event=event['event'],
-                category=event.get('category', ''),
+                email=event["email"],
+                event=event["event"],
+                category=event.get("category", ""),
                 created_on=created_on,
                 ip_address=ip_address,
             )
@@ -73,7 +75,6 @@ def process(request):
         except Exception:
             pass
 
-        
     EmailEvent.objects.bulk_create(events)
 
-    return HttpResponse('Thanks!')
+    return HttpResponse("Thanks!")

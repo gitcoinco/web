@@ -26,33 +26,38 @@ from .models import BountyRequest
 
 class BountyRequestForm(forms.ModelForm):
     """Define the BountyRequestForm handling."""
-    github_url = forms.URLField(label=_('The Github Issue Link'))
+
+    github_url = forms.URLField(label=_("The Github Issue Link"))
 
     class Meta:
         model = BountyRequest
-        fields = ['github_url', 'eth_address', 'amount', 'comment', 'github_org_name']
+        fields = ["github_url", "eth_address", "amount", "comment", "github_org_name"]
         labels = {
-            'eth_address': _('Your ETH Address (Optional)'),
-            'amount': _('Proposed Funding Amount (USD)'),
-            'comment': _('Comment'),
-            'github_org_name': ''
+            "eth_address": _("Your ETH Address (Optional)"),
+            "amount": _("Proposed Funding Amount (USD)"),
+            "comment": _("Comment"),
+            "github_org_name": "",
         }
-        widgets = {'github_org_name': forms.HiddenInput()}
+        widgets = {"github_org_name": forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
         super(BountyRequestForm, self).__init__(*args, **kwargs)
 
-        self.fields['eth_address'].widget.attrs['placeholder'] = '0x0'
-        self.fields['github_url'].widget.attrs['placeholder'] = 'https://github.com/gitcoinco/web/issues/2036'
-        self.fields['amount'].widget.attrs['placeholder'] = '1'
-        self.fields['amount'].widget.attrs['min'] = '1'
-        self.fields['comment'].widget.attrs['placeholder'] = _('Anything you want to tell us.')
-        self.fields['comment'].widget.attrs['rows'] = '4'
-        self.fields['comment'].widget.attrs['cols'] = '50'
+        self.fields["eth_address"].widget.attrs["placeholder"] = "0x0"
+        self.fields["github_url"].widget.attrs[
+            "placeholder"
+        ] = "https://github.com/gitcoinco/web/issues/2036"
+        self.fields["amount"].widget.attrs["placeholder"] = "1"
+        self.fields["amount"].widget.attrs["min"] = "1"
+        self.fields["comment"].widget.attrs["placeholder"] = _(
+            "Anything you want to tell us."
+        )
+        self.fields["comment"].widget.attrs["rows"] = "4"
+        self.fields["comment"].widget.attrs["cols"] = "50"
 
         for field in self.fields:
-            self.fields[field].widget.attrs['class'] = 'form__input'
+            self.fields[field].widget.attrs["class"] = "form__input"
 
     def clean_comment(self):
-        comment = self.cleaned_data['comment'] or ''
+        comment = self.cleaned_data["comment"] or ""
         return escape(strip_tags(comment))

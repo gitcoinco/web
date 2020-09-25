@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0010_quest_creator'),
+        ("quests", "0010_quest_creator"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quest',
-            name='value',
+            model_name="quest",
+            name="value",
             field=models.FloatField(default=1),
         ),
     ]

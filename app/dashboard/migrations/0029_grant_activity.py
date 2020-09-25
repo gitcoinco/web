@@ -7,19 +7,31 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0019_auto_20190412_0321'),
-        ('dashboard', '0028_profile_actions_count'),
+        ("grants", "0019_auto_20190412_0321"),
+        ("dashboard", "0028_profile_actions_count"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activity',
-            name='grant',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='activities', to='grants.Grant'),
+            model_name="activity",
+            name="grant",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="activities",
+                to="grants.Grant",
+            ),
         ),
         migrations.AddField(
-            model_name='activity',
-            name='subscription',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='activities', to='grants.Subscription'),
+            model_name="activity",
+            name="subscription",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="activities",
+                to="grants.Subscription",
+            ),
         ),
     ]

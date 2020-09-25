@@ -8,8 +8,8 @@ from linkshortener.models import Link
 
 class LinkShortenerAdmin(admin.ModelAdmin):
 
-    ordering = ['-id']
-    list_display = ['shortcode', 'comments', 'uses']
+    ordering = ["-id"]
+    list_display = ["shortcode", "comments", "uses"]
 
 
 admin.site.register(Link, LinkShortenerAdmin)

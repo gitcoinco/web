@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import time
 
 from django.conf import settings
@@ -27,35 +27,35 @@ from slackclient import SlackClient
 
 class Command(BaseCommand):
 
-    help = 'pulls slack presence'
+    help = "pulls slack presence"
 
     def handle(self, *args, **options):
         sc = SlackClient(settings.SLACK_TOKEN)
         ul = sc.api_call("users.list")
-        user = ul['members'][0]
+        user = ul["members"][0]
 
         num_active = 0
         num_away = 0
         total = 0
         start_time = time.time()
-        for user in ul['members']:
+        for user in ul["members"]:
             try:
                 # manage making request and still respecting rate limit
                 should_do_request = True
                 is_rate_limited = False
                 while should_do_request:
-                    response = sc.api_call("users.getPresence", user=user['id'])
-                    is_rate_limited = response.get('error', None) == 'ratelimited'
+                    response = sc.api_call("users.getPresence", user=user["id"])
+                    is_rate_limited = response.get("error", None) == "ratelimited"
                     should_do_request = is_rate_limited
                     if is_rate_limited:
                         time.sleep(2)
-                        print('-- rate limited.. waiting')
+                        print("-- rate limited.. waiting")
 
                 # figure out the slack users' presence
-                pres = response.get('presence', None)
-                if pres == 'active':
+                pres = response.get("presence", None)
+                if pres == "active":
                     num_active += 1
-                if pres == 'away':
+                if pres == "away":
                     num_away += 1
                 total += 1
                 if total % 30 == 0:
@@ -63,17 +63,17 @@ class Command(BaseCommand):
                     print(f"[{total}]processing {rate_per_sec} lookups /sec")
 
                 # save user by user 'lastseen' info
-                username = user['profile']['display_name']
-                email = user['profile']['email']
+                username = user["profile"]["display_name"]
+                email = user["profile"]["email"]
                 # print(username, email)
                 su, _ = SlackUser.objects.get_or_create(
                     username=username,
                     email=email,
                     defaults={
-                        'profile': user['profile'],
-                    }
-                    )
-                if pres == 'active':
+                        "profile": user["profile"],
+                    },
+                )
+                if pres == "active":
                     su.last_seen = timezone.now()
                     su.times_seen += 1
                     # 3/8/2017
@@ -82,7 +82,7 @@ class Command(BaseCommand):
                     SlackPresence.objects.create(
                         slackuser=su,
                         status=pres,
-                        )
+                    )
 
                 else:
                     su.last_unseen = timezone.now()

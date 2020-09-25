@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0010_comment_likes'),
+        ("townsquare", "0010_comment_likes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='matchranking',
-            name='contributors',
+            model_name="matchranking",
+            name="contributors",
             field=models.IntegerField(default=1),
         ),
     ]

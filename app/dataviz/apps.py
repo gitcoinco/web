@@ -22,5 +22,5 @@ from django.apps import AppConfig
 
 class DatavizConfig(AppConfig):
 
-    name = 'dataviz'
-    verbose_name = 'Data Visualization'
+    name = "dataviz"
+    verbose_name = "Data Visualization"

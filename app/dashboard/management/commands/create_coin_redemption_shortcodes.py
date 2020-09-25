@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -24,27 +24,28 @@ from dashboard.models import CoinRedemption
 
 
 class Command(BaseCommand):
-    help = 'generates some coin redemption shortcodes'
+    help = "generates some coin redemption shortcodes"
 
     def add_arguments(self, parser):
-        parser.add_argument('count', type=int)
-        parser.add_argument('network', type=str)
-        parser.add_argument('token_name', type=str)
-        parser.add_argument('contract_address', type=str)
-        parser.add_argument('amount', type=int)
-        parser.add_argument('expires_date', type=int)
+        parser.add_argument("count", type=int)
+        parser.add_argument("network", type=str)
+        parser.add_argument("token_name", type=str)
+        parser.add_argument("contract_address", type=str)
+        parser.add_argument("amount", type=int)
+        parser.add_argument("expires_date", type=int)
 
     def handle(self, *args, **options):
-        for i in range(0, options['count']):
+        for i in range(0, options["count"]):
             shortcode = get_random_string(8)
             cr = CoinRedemption.objects.create(
                 shortcode=shortcode,
-                url='https://gitcoin.co/coin/redeem/' + shortcode,
-                network=options['network'],
-                token_name=options['token_name'],
-                contract_address=options['contract_address'],
-                amount=options['amount'],
-                expires_date=timezone.now() + timezone.timedelta(seconds=options['expires_date'])
+                url="https://gitcoin.co/coin/redeem/" + shortcode,
+                network=options["network"],
+                token_name=options["token_name"],
+                contract_address=options["contract_address"],
+                amount=options["amount"],
+                expires_date=timezone.now()
+                + timezone.timedelta(seconds=options["expires_date"]),
             )
 
             print("https://gitcoin.co/coin/redeem/" + cr.shortcode)

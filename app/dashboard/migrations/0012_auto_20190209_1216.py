@@ -8,38 +8,46 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0011_auto_20190131_2149'),
+        ("dashboard", "0011_auto_20190131_2149"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='job_location',
+            model_name="profile",
+            name="job_location",
             field=django.contrib.postgres.fields.jsonb.JSONField(default=dict),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='job_salary',
+            model_name="profile",
+            name="job_salary",
             field=models.DecimalField(decimal_places=2, default=1, max_digits=50),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='job_type',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="profile",
+            name="job_type",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='linkedin_url',
-            field=models.CharField(blank=True, default='', max_length=255, null=True),
+            model_name="profile",
+            name="linkedin_url",
+            field=models.CharField(blank=True, default="", max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='remote',
-            field=models.BooleanField(default=False, help_text='If this option is chosen, profile is okay with remote job'),
+            model_name="profile",
+            name="remote",
+            field=models.BooleanField(
+                default=False,
+                help_text="If this option is chosen, profile is okay with remote job",
+            ),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='resume',
-            field=models.FileField(blank=True, help_text='The avatar SVG.', null=True, upload_to=avatar.utils.get_upload_filename),
+            model_name="profile",
+            name="resume",
+            field=models.FileField(
+                blank=True,
+                help_text="The avatar SVG.",
+                null=True,
+                upload_to=avatar.utils.get_upload_filename,
+            ),
         ),
     ]

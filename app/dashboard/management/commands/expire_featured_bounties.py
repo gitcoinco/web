@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand
@@ -25,16 +25,18 @@ from dashboard.models import Bounty
 
 class Command(BaseCommand):
 
-    help = 'expires featured bounties which have been featured for more than 14 days'
+    help = "expires featured bounties which have been featured for more than 14 days"
 
     def handle(self, *args, **options):
 
-        expire_date = timezone.now() - timedelta(days=14) # Featured bounties expire in 14 days
+        expire_date = timezone.now() - timedelta(
+            days=14
+        )  # Featured bounties expire in 14 days
         for bounty in Bounty.objects.filter(
-            is_featured=True,
-            web3_created__lte=expire_date
+            is_featured=True, web3_created__lte=expire_date
         ):
-            if not bounty.featuring_date or \
-                (bounty.featuring_date and bounty.featuring_date < expire_date):
+            if not bounty.featuring_date or (
+                bounty.featuring_date and bounty.featuring_date < expire_date
+            ):
                 bounty.is_featured = False
                 bounty.save()

@@ -11,25 +11,52 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('dashboard', '0014_merge_20190221_2246'),
+        ("dashboard", "0014_merge_20190221_2246"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserVerificationModel',
+            name="UserVerificationModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('verified', models.BooleanField(default=False, help_text="Select to display the Verified checkmark on the user's profile")),
-                ('speedy_and_responsive', models.BooleanField(default=False)),
-                ('great_communication', models.BooleanField(default=False)),
-                ('bug_free_code', models.BooleanField(default=False)),
-                ('completed_x_bounties', models.BooleanField(default=False)),
-                ('user', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "verified",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Select to display the Verified checkmark on the user's profile",
+                    ),
+                ),
+                ("speedy_and_responsive", models.BooleanField(default=False)),
+                ("great_communication", models.BooleanField(default=False)),
+                ("bug_free_code", models.BooleanField(default=False)),
+                ("completed_x_bounties", models.BooleanField(default=False)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

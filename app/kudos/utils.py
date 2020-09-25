@@ -42,7 +42,7 @@ def humanize_name(name):
         str: The humanized name.
 
     """
-    return ' '.join([x.capitalize() for x in name.split('_')])
+    return " ".join([x.capitalize() for x in name.split("_")])
 
 
 def computerize_name(name):
@@ -51,7 +51,7 @@ def computerize_name(name):
     Returns:
         str: computerized_name
     """
-    return name.lower().replace(' ', '_')
+    return name.lower().replace(" ", "_")
 
 
 def get_rarity_score(num_clones_allowed):
@@ -68,23 +68,23 @@ def get_rarity_score(num_clones_allowed):
 
     """
     if not isinstance(num_clones_allowed, int):
-        raise ValueError('num_clones_allowed must be an integer')
+        raise ValueError("num_clones_allowed must be an integer")
 
     if num_clones_allowed == 1:
-        return 'One of a Kind'
+        return "One of a Kind"
     if 2 <= num_clones_allowed <= 5:
-        return 'Legendary'
+        return "Legendary"
     if 6 <= num_clones_allowed <= 15:
-        return 'Ultra'
+        return "Ultra"
     if 16 <= num_clones_allowed <= 35:
-        return 'Very Rare'
+        return "Very Rare"
     if 36 <= num_clones_allowed <= 100:
-        return 'Rare'
+        return "Rare"
     if 101 <= num_clones_allowed <= 200:
-        return 'Special'
+        return "Special"
     if num_clones_allowed >= 201:
-        return 'Common'
-    raise ValueError('num_clones_allowed must be greater than or equal to 1')
+        return "Common"
+    raise ValueError("num_clones_allowed must be greater than or equal to 1")
 
 
 class KudosError(Exception):
@@ -147,7 +147,7 @@ class KudosContract:
 
     """
 
-    def __init__(self, network='localhost', sockets=False):
+    def __init__(self, network="localhost", sockets=False):
         """Initialize the KudosContract.
 
         Args:
@@ -155,12 +155,12 @@ class KudosContract:
             sockets (bool, optional): Use web socket provider if set to True, otherwise use Http provider.
 
         """
-        network = 'localhost' if network == 'custom network' else network
+        network = "localhost" if network == "custom network" else network
         self.network = network
 
         self._w3 = get_web3(self.network, sockets=sockets)
 
-        ipfsConnectionString = f'/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}'
+        ipfsConnectionString = f"/dns/{settings.IPFS_HOST}/tcp/{settings.IPFS_API_PORT}/{settings.IPFS_API_SCHEME}"
         self._ipfs = ipfshttpclient.connect(ipfsConnectionString)
         self._contract = self._get_contract()
 
@@ -188,65 +188,77 @@ class KudosContract:
             cloned_from_id=kudos[3],
         )
 
-        attributes = metadata.pop('attributes')
+        attributes = metadata.pop("attributes")
         tags = []
         for attrib in attributes:
-            if attrib['trait_type'] == 'rarity':
-                mapping['rarity'] = attrib['value']
-            elif attrib['trait_type'] == 'tag':
-                tags.append(attrib['value'])
-            elif attrib['trait_type'] == 'artist':
-                mapping['artist'] = attrib['value']
-            elif attrib['trait_type'] == 'platform':
-                mapping['platform'] = attrib['value']
+            if attrib["trait_type"] == "rarity":
+                mapping["rarity"] = attrib["value"]
+            elif attrib["trait_type"] == "tag":
+                tags.append(attrib["value"])
+            elif attrib["trait_type"] == "artist":
+                mapping["artist"] = attrib["value"]
+            elif attrib["trait_type"] == "platform":
+                mapping["platform"] = attrib["value"]
 
-        mapping['tags'] = ', '.join(tags)
-        mapping['metadata'] = metadata
+        mapping["tags"] = ", ".join(tags)
+        mapping["metadata"] = metadata
 
         # Add the rest of the fields
         kudos_map = {**mapping, **metadata}
 
-        kudos_map['name'] = computerize_name(kudos_map['name'])
-        kudos_map['image'] = re.sub(r'http.*?static\/', '', kudos_map['image'])
+        kudos_map["name"] = computerize_name(kudos_map["name"])
+        kudos_map["image"] = re.sub(r"http.*?static\/", "", kudos_map["image"])
 
         return kudos_map
 
     def may_require_key(f):
         """Decorator to check if the operation needs a private key."""
+
         @wraps(f)
         def wrapper(self, *args, **kwargs):
-            if self.network != 'localhost' and (kwargs['account'] is None or kwargs['private_key'] is None):
-                raise ValueError(f'Since you are on the {self.network} network, you must provide and account and private_key')
+            if self.network != "localhost" and (
+                kwargs["account"] is None or kwargs["private_key"] is None
+            ):
+                raise ValueError(
+                    f"Since you are on the {self.network} network, you must provide and account and private_key"
+                )
             else:
                 return f(self, *args, **kwargs)
+
         return wrapper
 
     def log_args(f):
         """Decorator to log out the contract args."""
+
         @wraps(f)
         def wrapper(self, *args, **kwargs):
-            logger.debug(f'args: {args}')
+            logger.debug(f"args: {args}")
             return f(self, *args, **kwargs)
+
         return wrapper
 
     def retry(f):
         """Decorator to retry a function if it failed."""
+
         @wraps(f)
         def wrapper(self, *args, **kwargs):
             for i in range(1, 4):
                 try:
                     f(self, *args, **kwargs)
                 except BadFunctionCallOutput:
-                    logger.warning(f'A network error occurred when trying to mint the Kudos.')
-                    logger.warning('Retrying...')
+                    logger.warning(
+                        f"A network error occurred when trying to mint the Kudos."
+                    )
+                    logger.warning("Retrying...")
                     time.sleep(1)
                     continue
                 except KudosTransfer.DoesNotExist:
-                    logger.warning('Retrying...')
+                    logger.warning("Retrying...")
                     time.sleep(1)
                     continue
                 break
             return f(self, *args, **kwargs)
+
         return wrapper
 
     @retry
@@ -262,7 +274,7 @@ class KudosContract:
         # Remove orphaned Kudos in the database
         orphans = Token.objects.filter(token_id__gt=latest_id)
         for orphan in orphans:
-            logger.info('Removing Kudos orphan with ID: {orphan.id}')
+            logger.info("Removing Kudos orphan with ID: {orphan.id}")
         orphans.delete()
 
     def sync_db_without_txid(self, kudos_id):
@@ -279,25 +291,29 @@ class KudosContract:
             kudos_id (int): Kudos id.
         """
         kudos = self.getKudosById(kudos_id, to_dict=True)
-        kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+        kudos["owner_address"] = self._contract.functions.ownerOf(kudos_id).call()
         contract, created = Contract.objects.get_or_create(
             address=self._contract.address,
             network=self.network,
-            defaults=dict(is_latest=True)
+            defaults=dict(is_latest=True),
         )
-        kudos['contract'] = contract
+        kudos["contract"] = contract
 
         try:
             kudos_token = Token.objects.get(token_id=kudos_id)
             if kudos_token.suppress_sync:
-                logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
+                logger.info(
+                    f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.'
+                )
                 return
-            kudos['txid'] = kudos_token.txid
+            kudos["txid"] = kudos_token.txid
             Token.objects.create(token_id=kudos_id, **kudos)
         except Token.DoesNotExist:
             kudos_token = Token(token_id=kudos_id, **kudos)
             kudos_token.save()
-            logger.info(f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.')
+            logger.info(
+                f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.'
+            )
 
     def sync_db(self, kudos_id, txid):
         """Sync up the Kudos contract on the blockchain with the database.
@@ -313,28 +329,34 @@ class KudosContract:
 
         # Grab the Kudos from the blockchain, augment with owner_address
         kudos = self.getKudosById(kudos_id, to_dict=True)
-        kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+        kudos["owner_address"] = self._contract.functions.ownerOf(kudos_id).call()
 
         contract, created = Contract.objects.get_or_create(
             address=self._contract.address,
             network=self.network,
-            defaults=dict(is_latest=True)
+            defaults=dict(is_latest=True),
         )
         if created:
-            old_contracts = Contract.objects.filter(network=self.network).exclude(id=contract.id)
+            old_contracts = Contract.objects.filter(network=self.network).exclude(
+                id=contract.id
+            )
             old_contracts.update(is_latest=False)
 
         # Update an existing Kudos in the database or create a new one
-        kudos['txid'] = txid
+        kudos["txid"] = txid
 
         existing_tokens = Token.objects.filter(token_id=kudos_id, contract=contract)
         if existing_tokens.exists():
             kudos_token = existing_tokens.first()
             if kudos_token.suppress_sync:
-                logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
+                logger.info(
+                    f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.'
+                )
                 return
 
-        kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, contract=contract, defaults=kudos)
+        kudos_token, created = Token.objects.update_or_create(
+            token_id=kudos_id, contract=contract, defaults=kudos
+        )
         # Update the cloned_from_id kudos.  Namely the num_clones_in_wild field should be updated.
         if created:
             self.sync_db(kudos_id=kudos_token.cloned_from_id, txid=txid)
@@ -344,7 +366,7 @@ class KudosContract:
         except KudosTransfer.DoesNotExist:
             # Only warn for a Kudos that is cloned/transfered, not a Gen0 Kudos.
             if kudos_token.num_clones_allowed == 0:
-                logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
+                logger.warning(f"No KudosTransfer object found for Kudos ID {kudos_id}")
                 # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
                 # raise
         except KudosTransfer.MultipleObjectsReturned:
@@ -355,7 +377,9 @@ class KudosContract:
             kudos_transfer.kudos_token = kudos_token
             kudos_transfer.save()
 
-        logger.info(f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.')
+        logger.info(
+            f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.'
+        )
 
     def _get_contract_address(self):
         """Get the Kudos contract address, depending on the network.
@@ -363,16 +387,16 @@ class KudosContract:
         Returns:
             str: Kudos contract address.
         """
-        if self.network == 'mainnet':
+        if self.network == "mainnet":
             return to_checksum_address(settings.KUDOS_CONTRACT_MAINNET)
-        if self.network == 'ropsten':
+        if self.network == "ropsten":
             return to_checksum_address(settings.KUDOS_CONTRACT_ROPSTEN)
-        if self.network == 'rinkeby':
+        if self.network == "rinkeby":
             return to_checksum_address(settings.KUDOS_CONTRACT_RINKEBY)
-        if self.network == 'localhost' or self.network == 'custom network':
+        if self.network == "localhost" or self.network == "custom network":
             # local testrpc
             return to_checksum_address(settings.KUDOS_CONTRACT_TESTRPC)
-        raise ValueError('Unsupported network')
+        raise ValueError("Unsupported network")
 
     def _get_contract(self):
         """Load up the Kudos ABI from a .json file.
@@ -382,10 +406,10 @@ class KudosContract:
 
         """
         try:
-            with open('kudos/Kudos.json') as f:
+            with open("kudos/Kudos.json") as f:
                 abi = json.load(f)
         except:
-            with open('app/kudos/Kudos.json') as f:
+            with open("app/kudos/Kudos.json") as f:
                 abi = json.load(f)
         address = self._get_contract_address()
         return self._w3.eth.contract(address=address, abi=abi)
@@ -414,11 +438,21 @@ class KudosContract:
         try:
             return self._w3.eth.accounts[0]
         except IndexError:
-            raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
+            raise RuntimeError(
+                "Please specify an account to use for transacting with the Kudos Contract."
+            )
 
     @log_args
     @may_require_key
-    def mint(self, *args, account=None, private_key=None, skip_sync=False, gas_price_gwei=None, dont_wait_for_kudos_id_return_tx_hash_instead=False):
+    def mint(
+        self,
+        *args,
+        account=None,
+        private_key=None,
+        skip_sync=False,
+        gas_price_gwei=None,
+        dont_wait_for_kudos_id_return_tx_hash_instead=False,
+    ):
         """Contract transaction method.
 
         Mint a new Gen0 Kudos on the blockchain.  Not to be confused with clone.
@@ -445,31 +479,45 @@ class KudosContract:
         account = self._resolve_account(account)
 
         if private_key:
-            logger.debug('Private key found, creating raw transaction for Kudos mint...')
+            logger.debug(
+                "Private key found, creating raw transaction for Kudos mint..."
+            )
             nonce = self._w3.eth.getTransactionCount(account)
-            gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': account})
-            logger.debug(f'Gas estimate for raw tx: {gas_estimate}')
+            gas_estimate = self._contract.functions.mint(*args).estimateGas(
+                {"nonce": nonce, "from": account}
+            )
+            logger.debug(f"Gas estimate for raw tx: {gas_estimate}")
             if not gas_price_gwei:
                 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-                gas_price_gwei = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 1.2)
-            gasPrice = self._w3.toWei(gas_price_gwei, 'gwei')
-            txn = self._contract.functions.mint(*args).buildTransaction(
-                {'gasPrice': gasPrice, 'gas': gas_estimate, 'nonce': nonce, 'from': account}
+
+                gas_price_gwei = int(
+                    float(recommend_min_gas_price_to_confirm_in_time(1)) * 1.2
                 )
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
+            gasPrice = self._w3.toWei(gas_price_gwei, "gwei")
+            txn = self._contract.functions.mint(*args).buildTransaction(
+                {
+                    "gasPrice": gasPrice,
+                    "gas": gas_estimate,
+                    "nonce": nonce,
+                    "from": account,
+                }
+            )
+            signed_txn = self._w3.eth.account.signTransaction(
+                txn, private_key=private_key
+            )
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            logger.debug('No private key provided, using local signing...')
+            logger.debug("No private key provided, using local signing...")
             tx_hash = self._contract.functions.mint(*args).transact({"from": account})
 
         if dont_wait_for_kudos_id_return_tx_hash_instead:
             return self._w3.toHex(tx_hash)
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
-        logger.debug(f'Tx hash: {tx_hash.hex()}')
+        logger.debug(f"Tx hash: {tx_hash.hex()}")
 
         kudos_id = self._contract.functions.getLatestId().call()
-        logger.info(f'Minted id #{kudos_id} on the blockchain.')
+        logger.info(f"Minted id #{kudos_id} on the blockchain.")
         logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
         if not skip_sync:
@@ -486,7 +534,6 @@ class KudosContract:
         self.sync_db_without_txid(kudos_id=kudos_id)
 
         return kudos_id
-
 
     @may_require_key
     def clone(self, *args, account=None, private_key=None, skip_sync=False):
@@ -508,25 +555,38 @@ class KudosContract:
 
         """
         account = self._resolve_account(account)
-        price_finney = self.getKudosById(args[1], to_dict=True)['price_finney']
-        price_wei = self._w3.toWei(price_finney, 'finney')
+        price_finney = self.getKudosById(args[1], to_dict=True)["price_finney"]
+        price_wei = self._w3.toWei(price_finney, "finney")
 
         if private_key:
-            logger.debug('Private key found, creating raw transaction...')
+            logger.debug("Private key found, creating raw transaction...")
             nonce = self._w3.eth.getTransactionCount(account)
-            gas_estimate = self._contract.functions.clone(*args).estimateGas({'nonce': nonce, 'from': account, 'value': price_wei})
-            txn = self._contract.functions.clone(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account, 'value': price_wei})
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
+            gas_estimate = self._contract.functions.clone(*args).estimateGas(
+                {"nonce": nonce, "from": account, "value": price_wei}
+            )
+            txn = self._contract.functions.clone(*args).buildTransaction(
+                {
+                    "gas": gas_estimate,
+                    "nonce": nonce,
+                    "from": account,
+                    "value": price_wei,
+                }
+            )
+            signed_txn = self._w3.eth.account.signTransaction(
+                txn, private_key=private_key
+            )
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            logger.debug('No private key provided, using local signing...')
-            tx_hash = self._contract.functions.clone(*args).transact({"from": account, "value": price_wei})
+            logger.debug("No private key provided, using local signing...")
+            tx_hash = self._contract.functions.clone(*args).transact(
+                {"from": account, "value": price_wei}
+            )
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
-        logger.debug(f'Tx hash: {tx_hash.hex()}')
+        logger.debug(f"Tx hash: {tx_hash.hex()}")
 
         kudos_id = self._contract.functions.getLatestId().call()
-        logger.info(f'Cloned a new Kudos. id #{kudos_id} on the blockchain.')
+        logger.info(f"Cloned a new Kudos. id #{kudos_id} on the blockchain.")
         logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
         if not skip_sync:
@@ -556,20 +616,26 @@ class KudosContract:
         kudos_id = args[1]
 
         if private_key:
-            logger.debug('Private key found, creating raw transaction...')
+            logger.debug("Private key found, creating raw transaction...")
             nonce = self._w3.eth.getTransactionCount(account)
-            gas_estimate = self._contract.functions.burn(*args).estimateGas({'nonce': nonce, 'from': account})
-            txn = self._contract.functions.burn(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
+            gas_estimate = self._contract.functions.burn(*args).estimateGas(
+                {"nonce": nonce, "from": account}
+            )
+            txn = self._contract.functions.burn(*args).buildTransaction(
+                {"gas": gas_estimate, "nonce": nonce, "from": account}
+            )
+            signed_txn = self._w3.eth.account.signTransaction(
+                txn, private_key=private_key
+            )
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            logger.debug('No private key provided, using local signing...')
+            logger.debug("No private key provided, using local signing...")
             tx_hash = self._contract.functions.burn(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
-        logger.debug(f'Tx hash: {tx_hash.hex()}')
+        logger.debug(f"Tx hash: {tx_hash.hex()}")
 
-        logger.info(f'Burned Kudos with id #{kudos_id} on the blockchain.')
+        logger.info(f"Burned Kudos with id #{kudos_id} on the blockchain.")
         logger.info(f'Gas usage to burn id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
         if not skip_sync:
@@ -591,7 +657,7 @@ class KudosContract:
         """
         kudos = self._contract.functions.getKudosById(args[0]).call()
         tokenURI = self._contract.functions.tokenURI(args[0]).call()
-        ipfs_hash = tokenURI.split('/')[-1]
+        ipfs_hash = tokenURI.split("/")[-1]
         metadata = self._ipfs.get_json(ipfs_hash)
 
         if to_dict:
@@ -641,7 +707,7 @@ class KudosContract:
 
         """
         ipfs_hash = self._ipfs.add_json(kwargs)
-        return f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
+        return f"{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}"
 
 
 def get_to_emails(params):
@@ -661,14 +727,413 @@ def get_to_emails(params):
     """
     to_emails = []
 
-    to_username = params['username'].lstrip('@')
+    to_username = params["username"].lstrip("@")
     to_emails = get_emails_master(to_username)
 
-    if params.get('email'):
-        to_emails.append(params['email'])
+    if params.get("email"):
+        to_emails.append(params["email"])
 
     return list(set(to_emails))
 
 
 def kudos_abi():
-    return [{'constant': True, 'inputs': [{'name': '_interfaceId', 'type': 'bytes4'}], 'name': 'supportsInterface', 'outputs': [{'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'name', 'outputs': [{'name': '', 'type': 'string'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}], 'name': 'getApproved', 'outputs': [{'name': '', 'type': 'address'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_to', 'type': 'address'}, {'name': '_tokenId', 'type': 'uint256'}], 'name': 'approve', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'cloneFeePercentage', 'outputs': [{'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'totalSupply', 'outputs': [{'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'InterfaceId_ERC165', 'outputs': [{'name': '', 'type': 'bytes4'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_from', 'type': 'address'}, {'name': '_to', 'type': 'address'}, {'name': '_tokenId', 'type': 'uint256'}], 'name': 'transferFrom', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}, {'name': '_index', 'type': 'uint256'}], 'name': 'tokenOfOwnerByIndex', 'outputs': [{'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_from', 'type': 'address'}, {'name': '_to', 'type': 'address'}, {'name': '_tokenId', 'type': 'uint256'}], 'name': 'safeTransferFrom', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'isMintable', 'outputs': [{'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}], 'name': 'exists', 'outputs': [{'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_index', 'type': 'uint256'}], 'name': 'tokenByIndex', 'outputs': [{'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}], 'name': 'ownerOf', 'outputs': [{'name': '', 'type': 'address'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': '', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '', 'type': 'uint256'}], 'name': 'kudos', 'outputs': [{'name': 'priceFinney', 'type': 'uint256'}, {'name': 'numClonesAllowed', 'type': 'uint256'}, {'name': 'numClonesInWild', 'type': 'uint256'}, {'name': 'clonedFromId', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'owner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'symbol', 'outputs': [{'name': '', 'type': 'string'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_to', 'type': 'address'}, {'name': '_approved', 'type': 'bool'}], 'name': 'setApprovalForAll', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_from', 'type': 'address'}, {'name': '_to', 'type': 'address'}, {'name': '_tokenId', 'type': 'uint256'}, {'name': '_data', 'type': 'bytes'}], 'name': 'safeTransferFrom', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}], 'name': 'tokenURI', 'outputs': [{'name': '', 'type': 'string'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_owner', 'type': 'address'}, {'name': '_operator', 'type': 'address'}], 'name': 'isApprovedForAll', 'outputs': [{'name': '', 'type': 'bool'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_newOwner', 'type': 'address'}], 'name': 'transferOwnership', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'anonymous': False, 'inputs': [{'indexed': True, 'name': 'previousOwner', 'type': 'address'}], 'name': 'OwnershipRenounced', 'type': 'event'}, {'anonymous': False, 'inputs': [{'indexed': True, 'name': 'previousOwner', 'type': 'address'}, {'indexed': True, 'name': 'newOwner', 'type': 'address'}], 'name': 'OwnershipTransferred', 'type': 'event'}, {'anonymous': False, 'inputs': [{'indexed': True, 'name': '_from', 'type': 'address'}, {'indexed': True, 'name': '_to', 'type': 'address'}, {'indexed': True, 'name': '_tokenId', 'type': 'uint256'}], 'name': 'Transfer', 'type': 'event'}, {'anonymous': False, 'inputs': [{'indexed': True, 'name': '_owner', 'type': 'address'}, {'indexed': True, 'name': '_approved', 'type': 'address'}, {'indexed': True, 'name': '_tokenId', 'type': 'uint256'}], 'name': 'Approval', 'type': 'event'}, {'anonymous': False, 'inputs': [{'indexed': True, 'name': '_owner', 'type': 'address'}, {'indexed': True, 'name': '_operator', 'type': 'address'}, {'indexed': False, 'name': '_approved', 'type': 'bool'}], 'name': 'ApprovalForAll', 'type': 'event'}, {'constant': False, 'inputs': [{'name': '_to', 'type': 'address'}, {'name': '_priceFinney', 'type': 'uint256'}, {'name': '_numClonesAllowed', 'type': 'uint256'}, {'name': '_tokenURI', 'type': 'string'}], 'name': 'mint', 'outputs': [{'name': 'tokenId', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_to', 'type': 'address'}, {'name': '_tokenId', 'type': 'uint256'}, {'name': '_numClonesRequested', 'type': 'uint256'}], 'name': 'clone', 'outputs': [], 'payable': True, 'stateMutability': 'payable', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_owner', 'type': 'address'}, {'name': '_tokenId', 'type': 'uint256'}], 'name': 'burn', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_cloneFeePercentage', 'type': 'uint256'}], 'name': 'setCloneFeePercentage', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_isMintable', 'type': 'bool'}], 'name': 'setMintable', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': False, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}, {'name': '_newPriceFinney', 'type': 'uint256'}], 'name': 'setPrice', 'outputs': [], 'payable': False, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}], 'name': 'getKudosById', 'outputs': [{'name': 'priceFinney', 'type': 'uint256'}, {'name': 'numClonesAllowed', 'type': 'uint256'}, {'name': 'numClonesInWild', 'type': 'uint256'}, {'name': 'clonedFromId', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [{'name': '_tokenId', 'type': 'uint256'}], 'name': 'getNumClonesInWild', 'outputs': [{'name': 'numClonesInWild', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}, {'constant': True, 'inputs': [], 'name': 'getLatestId', 'outputs': [{'name': 'tokenId', 'type': 'uint256'}], 'payable': False, 'stateMutability': 'view', 'type': 'function'}]
+    return [
+        {
+            "constant": True,
+            "inputs": [{"name": "_interfaceId", "type": "bytes4"}],
+            "name": "supportsInterface",
+            "outputs": [{"name": "", "type": "bool"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "name",
+            "outputs": [{"name": "", "type": "string"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_tokenId", "type": "uint256"}],
+            "name": "getApproved",
+            "outputs": [{"name": "", "type": "address"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_to", "type": "address"},
+                {"name": "_tokenId", "type": "uint256"},
+            ],
+            "name": "approve",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "cloneFeePercentage",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "totalSupply",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "InterfaceId_ERC165",
+            "outputs": [{"name": "", "type": "bytes4"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_from", "type": "address"},
+                {"name": "_to", "type": "address"},
+                {"name": "_tokenId", "type": "uint256"},
+            ],
+            "name": "transferFrom",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [
+                {"name": "_owner", "type": "address"},
+                {"name": "_index", "type": "uint256"},
+            ],
+            "name": "tokenOfOwnerByIndex",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_from", "type": "address"},
+                {"name": "_to", "type": "address"},
+                {"name": "_tokenId", "type": "uint256"},
+            ],
+            "name": "safeTransferFrom",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "isMintable",
+            "outputs": [{"name": "", "type": "bool"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_tokenId", "type": "uint256"}],
+            "name": "exists",
+            "outputs": [{"name": "", "type": "bool"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_index", "type": "uint256"}],
+            "name": "tokenByIndex",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_tokenId", "type": "uint256"}],
+            "name": "ownerOf",
+            "outputs": [{"name": "", "type": "address"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_owner", "type": "address"}],
+            "name": "balanceOf",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [],
+            "name": "renounceOwnership",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "", "type": "uint256"}],
+            "name": "kudos",
+            "outputs": [
+                {"name": "priceFinney", "type": "uint256"},
+                {"name": "numClonesAllowed", "type": "uint256"},
+                {"name": "numClonesInWild", "type": "uint256"},
+                {"name": "clonedFromId", "type": "uint256"},
+            ],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "owner",
+            "outputs": [{"name": "", "type": "address"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "symbol",
+            "outputs": [{"name": "", "type": "string"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_to", "type": "address"},
+                {"name": "_approved", "type": "bool"},
+            ],
+            "name": "setApprovalForAll",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_from", "type": "address"},
+                {"name": "_to", "type": "address"},
+                {"name": "_tokenId", "type": "uint256"},
+                {"name": "_data", "type": "bytes"},
+            ],
+            "name": "safeTransferFrom",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_tokenId", "type": "uint256"}],
+            "name": "tokenURI",
+            "outputs": [{"name": "", "type": "string"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [
+                {"name": "_owner", "type": "address"},
+                {"name": "_operator", "type": "address"},
+            ],
+            "name": "isApprovedForAll",
+            "outputs": [{"name": "", "type": "bool"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [{"name": "_newOwner", "type": "address"}],
+            "name": "transferOwnership",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "inputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "constructor",
+        },
+        {
+            "anonymous": False,
+            "inputs": [{"indexed": True, "name": "previousOwner", "type": "address"}],
+            "name": "OwnershipRenounced",
+            "type": "event",
+        },
+        {
+            "anonymous": False,
+            "inputs": [
+                {"indexed": True, "name": "previousOwner", "type": "address"},
+                {"indexed": True, "name": "newOwner", "type": "address"},
+            ],
+            "name": "OwnershipTransferred",
+            "type": "event",
+        },
+        {
+            "anonymous": False,
+            "inputs": [
+                {"indexed": True, "name": "_from", "type": "address"},
+                {"indexed": True, "name": "_to", "type": "address"},
+                {"indexed": True, "name": "_tokenId", "type": "uint256"},
+            ],
+            "name": "Transfer",
+            "type": "event",
+        },
+        {
+            "anonymous": False,
+            "inputs": [
+                {"indexed": True, "name": "_owner", "type": "address"},
+                {"indexed": True, "name": "_approved", "type": "address"},
+                {"indexed": True, "name": "_tokenId", "type": "uint256"},
+            ],
+            "name": "Approval",
+            "type": "event",
+        },
+        {
+            "anonymous": False,
+            "inputs": [
+                {"indexed": True, "name": "_owner", "type": "address"},
+                {"indexed": True, "name": "_operator", "type": "address"},
+                {"indexed": False, "name": "_approved", "type": "bool"},
+            ],
+            "name": "ApprovalForAll",
+            "type": "event",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_to", "type": "address"},
+                {"name": "_priceFinney", "type": "uint256"},
+                {"name": "_numClonesAllowed", "type": "uint256"},
+                {"name": "_tokenURI", "type": "string"},
+            ],
+            "name": "mint",
+            "outputs": [{"name": "tokenId", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_to", "type": "address"},
+                {"name": "_tokenId", "type": "uint256"},
+                {"name": "_numClonesRequested", "type": "uint256"},
+            ],
+            "name": "clone",
+            "outputs": [],
+            "payable": True,
+            "stateMutability": "payable",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_owner", "type": "address"},
+                {"name": "_tokenId", "type": "uint256"},
+            ],
+            "name": "burn",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [{"name": "_cloneFeePercentage", "type": "uint256"}],
+            "name": "setCloneFeePercentage",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [{"name": "_isMintable", "type": "bool"}],
+            "name": "setMintable",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": False,
+            "inputs": [
+                {"name": "_tokenId", "type": "uint256"},
+                {"name": "_newPriceFinney", "type": "uint256"},
+            ],
+            "name": "setPrice",
+            "outputs": [],
+            "payable": False,
+            "stateMutability": "nonpayable",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_tokenId", "type": "uint256"}],
+            "name": "getKudosById",
+            "outputs": [
+                {"name": "priceFinney", "type": "uint256"},
+                {"name": "numClonesAllowed", "type": "uint256"},
+                {"name": "numClonesInWild", "type": "uint256"},
+                {"name": "clonedFromId", "type": "uint256"},
+            ],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [{"name": "_tokenId", "type": "uint256"}],
+            "name": "getNumClonesInWild",
+            "outputs": [{"name": "numClonesInWild", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+        {
+            "constant": True,
+            "inputs": [],
+            "name": "getLatestId",
+            "outputs": [{"name": "tokenId", "type": "uint256"}],
+            "payable": False,
+            "stateMutability": "view",
+            "type": "function",
+        },
+    ]

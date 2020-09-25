@@ -32,46 +32,46 @@ class MarketingMailsTest(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
-        self.email = 'user1@gitcoin.co'
-        self.user = self.make_user('user1')
+        self.email = "user1@gitcoin.co"
+        self.user = self.make_user("user1")
         self.user.email = self.email
         self.user.profile = Profile.objects.create(
             user=self.user,
-            handle='user1',
+            handle="user1",
             last_sync_date=timezone.now(),
             data={},
         )
         self.user.save()
         self.days = [1, 2, 3]
 
-    @patch('django.utils.translation.activate')
+    @patch("django.utils.translation.activate")
     def test_setup_lang(self, mock_translation_activate):
         """Test the marketing mails setup_lang method."""
         setup_lang(self.email)
         assert mock_translation_activate.call_count == 1
-        mock_translation_activate.assert_called_once_with('en-us')
+        mock_translation_activate.assert_called_once_with("en-us")
 
-    @patch('django.utils.translation.activate')
+    @patch("django.utils.translation.activate")
     def test_setup_lang_no_user(self, mock_translation_activate):
         """Test the marketing mails setup_lang method."""
-        setup_lang('bademail@gitcoin.co')
+        setup_lang("bademail@gitcoin.co")
         assert mock_translation_activate.call_count == 0
 
-    @patch('marketing.mails.send_mail')
+    @patch("marketing.mails.send_mail")
     def test_day_1_campaign_email(self, mock_send_mail):
         """Test the campaign email for day 1 is sent."""
 
         nth_day_email_campaign(self.days[0], self.user)
         assert mock_send_mail.call_count == 1
 
-    @patch('marketing.mails.send_mail')
+    @patch("marketing.mails.send_mail")
     def test_day_2_campaign_email(self, mock_send_mail):
         """Test the campaign email for day 2 is sent."""
 
         nth_day_email_campaign(self.days[1], self.user)
         assert mock_send_mail.call_count == 1
 
-    @patch('marketing.mails.send_mail')
+    @patch("marketing.mails.send_mail")
     def test_day_3_campaign_email(self, mock_send_mail):
         """Test the campaign email for day 3 is sent."""
 

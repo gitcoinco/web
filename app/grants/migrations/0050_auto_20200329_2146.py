@@ -6,28 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0049_grant_amount_received_in_round'),
+        ("grants", "0049_grant_amount_received_in_round"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='twitter_handle_1',
-            field=models.CharField(blank=True, default='', help_text='Grants twitter handle', max_length=255),
+            model_name="grant",
+            name="twitter_handle_1",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Grants twitter handle",
+                max_length=255,
+            ),
         ),
         migrations.AddField(
-            model_name='grant',
-            name='twitter_handle_1_follower_count',
+            model_name="grant",
+            name="twitter_handle_1_follower_count",
             field=models.PositiveIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='grant',
-            name='twitter_handle_2',
-            field=models.CharField(blank=True, default='', help_text='Grants twitter handle', max_length=255),
+            model_name="grant",
+            name="twitter_handle_2",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Grants twitter handle",
+                max_length=255,
+            ),
         ),
         migrations.AddField(
-            model_name='grant',
-            name='twitter_handle_2_follower_count',
+            model_name="grant",
+            name="twitter_handle_2_follower_count",
             field=models.PositiveIntegerField(blank=True, default=0),
         ),
     ]

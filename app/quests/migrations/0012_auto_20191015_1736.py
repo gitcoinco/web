@@ -6,23 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0011_quest_value'),
+        ("quests", "0011_quest_value"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='quest',
-            name='difficulty',
-            field=models.CharField(choices=[('Beginner', 'Beginner'), ('Intermediate', 'Intermediate'), ('Advanced', 'Advanced')], db_index=True, default='Beginner', max_length=100),
+            model_name="quest",
+            name="difficulty",
+            field=models.CharField(
+                choices=[
+                    ("Beginner", "Beginner"),
+                    ("Intermediate", "Intermediate"),
+                    ("Advanced", "Advanced"),
+                ],
+                db_index=True,
+                default="Beginner",
+                max_length=100,
+            ),
         ),
         migrations.AlterField(
-            model_name='quest',
-            name='visible',
+            model_name="quest",
+            name="visible",
             field=models.BooleanField(db_index=True, default=True),
         ),
         migrations.AlterField(
-            model_name='questattempt',
-            name='success',
+            model_name="questattempt",
+            name="success",
             field=models.BooleanField(db_index=True, default=False),
         ),
     ]

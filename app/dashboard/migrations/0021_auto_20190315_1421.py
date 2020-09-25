@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0020_auto_20190312_1926'),
+        ("dashboard", "0020_auto_20190312_1926"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bounty',
-            name='fee_amount',
+            model_name="bounty",
+            name="fee_amount",
             field=models.DecimalField(decimal_places=18, default=0, max_digits=50),
         ),
         migrations.AddField(
-            model_name='bounty',
-            name='fee_tx_id',
-            field=models.CharField(blank=True, default='0x0', max_length=255),
+            model_name="bounty",
+            name="fee_tx_id",
+            field=models.CharField(blank=True, default="0x0", max_length=255),
         ),
     ]

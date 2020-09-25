@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0037_auto_20200111_1709'),
+        ("grants", "0037_auto_20200111_1709"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='subscription',
-            name='comments',
-            field=models.TextField(blank=True, default='', help_text='Comments left by subscriber.'),
+            model_name="subscription",
+            name="comments",
+            field=models.TextField(
+                blank=True, default="", help_text="Comments left by subscriber."
+            ),
         ),
     ]

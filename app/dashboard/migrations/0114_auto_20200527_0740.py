@@ -7,28 +7,58 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0113_merge_20200520_1648'),
+        ("dashboard", "0113_merge_20200520_1648"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bountyevent',
-            name='event_type',
-            field=models.CharField(choices=[('accept_worker', 'Accept Worker'), ('cancel_bounty', 'Cancel Bounty'), ('submit_work', 'Submit Work'), ('stop_work', 'Stop Work'), ('express_interest', 'Express Interest'), ('payout_bounty', 'Payout Bounty'), ('expire_bounty', 'Expire Bounty'), ('extend_expiration', 'Extend Expiration'), ('close_bounty', 'Close Bounty'), ('worker_paid', 'Worker Paid')], max_length=50),
+            model_name="bountyevent",
+            name="event_type",
+            field=models.CharField(
+                choices=[
+                    ("accept_worker", "Accept Worker"),
+                    ("cancel_bounty", "Cancel Bounty"),
+                    ("submit_work", "Submit Work"),
+                    ("stop_work", "Stop Work"),
+                    ("express_interest", "Express Interest"),
+                    ("payout_bounty", "Payout Bounty"),
+                    ("expire_bounty", "Expire Bounty"),
+                    ("extend_expiration", "Extend Expiration"),
+                    ("close_bounty", "Close Bounty"),
+                    ("worker_paid", "Worker Paid"),
+                ],
+                max_length=50,
+            ),
         ),
         migrations.AlterField(
-            model_name='bountyfulfillment',
-            name='fulfiller_address',
-            field=models.CharField(blank=True, help_text='address to which amount is credited', max_length=50, null=True),
+            model_name="bountyfulfillment",
+            name="fulfiller_address",
+            field=models.CharField(
+                blank=True,
+                help_text="address to which amount is credited",
+                max_length=50,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='bountyfulfillment',
-            name='funder_address',
-            field=models.CharField(blank=True, help_text='address from which amount is deducted', max_length=50, null=True),
+            model_name="bountyfulfillment",
+            name="funder_address",
+            field=models.CharField(
+                blank=True,
+                help_text="address from which amount is deducted",
+                max_length=50,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='bountyfulfillment',
-            name='funder_profile',
-            field=models.ForeignKey(blank=True, help_text="funder's profile", null=True, on_delete=django.db.models.deletion.CASCADE, to='dashboard.Profile'),
+            model_name="bountyfulfillment",
+            name="funder_profile",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="funder's profile",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="dashboard.Profile",
+            ),
         ),
     ]

@@ -25,7 +25,7 @@ from dashboard.tokens import addr_to_token, get_tokens
 class DashboardTokensTest(TestCase):
     """Define tests for Dashboard tokens module."""
 
-    fixtures = ['tokens.json']
+    fixtures = ["tokens.json"]
 
     def test_tokens(self):
         """Test the dashboard tokens variable to ensure it can be read properly."""
@@ -36,14 +36,14 @@ class DashboardTokensTest(TestCase):
 
     def test_addr_to_token_valid(self):
         """Test the dashboard token lookup utility with a valid token."""
-        token = addr_to_token('0x0000000000000000000000000000000000000000')
+        token = addr_to_token("0x0000000000000000000000000000000000000000")
         assert isinstance(token, dict)
-        assert token['addr'] == '0x0000000000000000000000000000000000000000'
-        assert token['name'] == 'ETH'
-        assert token['decimals'] == 18
+        assert token["addr"] == "0x0000000000000000000000000000000000000000"
+        assert token["name"] == "ETH"
+        assert token["decimals"] == 18
 
     def test_addr_to_token_invalid(self):
         """Test the dashboard token lookup utility with an invalid token."""
-        token = addr_to_token('0xGITCOIN')
+        token = addr_to_token("0xGITCOIN")
         assert isinstance(token, bool)
         assert token is False

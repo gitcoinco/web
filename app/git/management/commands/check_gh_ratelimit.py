@@ -24,9 +24,9 @@ from django.core.management.base import BaseCommand
 
 from git.utils import get_current_ratelimit
 
-warnings.filterwarnings('ignore', category=DeprecationWarning)
-logging.getLogger('requests').setLevel(logging.WARNING)
-logging.getLogger('urllib3').setLevel(logging.WARNING)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -38,13 +38,13 @@ SEARCH_LIMIT_THRESHOLD = 5  # Search GH limit is 30 requests per hour.
 
 class Command(BaseCommand):
 
-    help = 'check the current Github ratelimit'
+    help = "check the current Github ratelimit"
 
     def handle(self, *args, **options):
         ratelimit = get_current_ratelimit(GH_TOKEN)
 
         if not ratelimit:
-            logger.warning('Failed to fetch the Github ratelimit!')
+            logger.warning("Failed to fetch the Github ratelimit!")
             return
 
         core_remaining = ratelimit.core.remaining
@@ -52,13 +52,13 @@ class Command(BaseCommand):
         search_remaining = ratelimit.search.remaining
 
         if core_remaining <= CORE_LIMIT_THRESHOLD:
-            logger.warning('Core GH ratelimit breaching threshold!')
-        print('Core GH ratelimit is: ', core_remaining)
+            logger.warning("Core GH ratelimit breaching threshold!")
+        print("Core GH ratelimit is: ", core_remaining)
 
         if graphql_remaining <= GRAPHQL_LIMIT_THRESHOLD:
-            logger.warning('GraphQL GH ratelimit breaching threshold!')
-        print('GraphQL GH ratelimit is: ', graphql_remaining)
+            logger.warning("GraphQL GH ratelimit breaching threshold!")
+        print("GraphQL GH ratelimit is: ", graphql_remaining)
 
         if search_remaining <= SEARCH_LIMIT_THRESHOLD:
-            logger.warning('Search GH ratelimit breaching threshold!')
-        print('Search GH ratelimit is: ', search_remaining)
+            logger.warning("Search GH ratelimit breaching threshold!")
+        print("Search GH ratelimit is: ", search_remaining)

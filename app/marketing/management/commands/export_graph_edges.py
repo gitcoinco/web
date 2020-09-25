@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import re
 
 from django.conf import settings
@@ -32,16 +32,17 @@ def is_an_edge(handle, edges):
             return True
     return False
 
+
 def normalize_handle(handle):
-    return re.sub(r'\W+', '', handle)
+    return re.sub(r"\W+", "", handle)
 
 
 class Command(BaseCommand):
 
-    help = 'exports graph visualizations for http://experiments.owocki.com/Graph-Visualization/all/simple_graph.js:L157'
+    help = "exports graph visualizations for http://experiments.owocki.com/Graph-Visualization/all/simple_graph.js:L157"
 
     def add_arguments(self, parser):
-        parser.add_argument('what', default='economics', type=str)
+        parser.add_argument("what", default="economics", type=str)
 
     def handle(self, *args, **options):
         # output me as simple_graph.js
@@ -50,53 +51,63 @@ class Command(BaseCommand):
         start_date = timezone.now()
         start_date = timezone.datetime(2020, 1, 1, 1, tzinfo=pytz.UTC)
 
-        what = options['what']
+        what = options["what"]
 
-        if what in ['all', 'economics']:
+        if what in ["all", "economics"]:
             from dashboard.models import BountyFulfillment
-            for obj in BountyFulfillment.objects.filter(accepted=True, created_on__gt=start_date):
+
+            for obj in BountyFulfillment.objects.filter(
+                accepted=True, created_on__gt=start_date
+            ):
                 handle1 = obj.bounty.bounty_owner_github_username
                 handle2 = obj.fulfiller_github_username
                 handles.append(handle1)
                 handles.append(handle2)
                 edges.append([handle1, handle2])
 
-        if what in ['all', 'economics']:
+        if what in ["all", "economics"]:
             from dashboard.models import Tip
-            for obj in Tip.objects.filter(network='mainnet', created_on__gt=start_date):
+
+            for obj in Tip.objects.filter(network="mainnet", created_on__gt=start_date):
                 handle1 = obj.from_username
                 handle2 = obj.username
                 handles.append(handle1)
                 handles.append(handle2)
                 edges.append([handle1, handle2])
 
-        if what in ['all', 'economics']:
+        if what in ["all", "economics"]:
             from kudos.models import KudosTransfer
-            for obj in KudosTransfer.objects.filter(network='mainnet', created_on__gt=start_date):
+
+            for obj in KudosTransfer.objects.filter(
+                network="mainnet", created_on__gt=start_date
+            ):
                 handle1 = obj.from_username
                 handle2 = obj.username
                 handles.append(handle1)
                 handles.append(handle2)
                 edges.append([handle1, handle2])
 
-        if what in ['all', 'economics', 'grants']:
+        if what in ["all", "economics", "grants"]:
             from grants.models import Contribution
-            for obj in Contribution.objects.filter(subscription__network='mainnet', created_on__gt=start_date):
+
+            for obj in Contribution.objects.filter(
+                subscription__network="mainnet", created_on__gt=start_date
+            ):
                 handle1 = obj.subscription.grant.admin_profile.handle
                 handle2 = obj.subscription.contributor_profile.handle
                 handles.append(handle1)
                 handles.append(handle2)
                 edges.append([handle1, handle2])
 
-        if what in ['all', 'social']:
+        if what in ["all", "social"]:
             from quests.models import QuestAttempt
+
             for obj in QuestAttempt.objects.filter(created_on__gt=start_date):
                 handle1 = obj.quest.title
                 handle2 = obj.profile.handle
                 handles.append(handle1)
                 handles.append(handle2)
                 edges.append([handle1, handle2])
-
 
         # assemble and output
         handles = set(handles)
@@ -107,7 +118,9 @@ class Command(BaseCommand):
             if handle:
                 handle = normalize_handle(handle)
                 counter += 1
-                print(f'var user_{handle} = new GRAPHVIS.Node({counter}); user_{handle}.data.title = "user_{handle}";  graph.addNode(user_{handle}); drawNode(user_{handle});')
+                print(
+                    f'var user_{handle} = new GRAPHVIS.Node({counter}); user_{handle}.data.title = "user_{handle}";  graph.addNode(user_{handle}); drawNode(user_{handle});'
+                )
 
         for edge in edges:
             handle1 = edge[0]
@@ -115,9 +128,12 @@ class Command(BaseCommand):
             handle1 = normalize_handle(handle1)
             handle2 = normalize_handle(handle2)
             if handle1 and handle2:
-                print(f"graph.addEdge(user_{handle1}, user_{handle2}); drawEdge(user_{handle1}, user_{handle2}); ");
+                print(
+                    f"graph.addEdge(user_{handle1}, user_{handle2}); drawEdge(user_{handle1}, user_{handle2}); "
+                )
 
         print(footer)
+
 
 header = """
 

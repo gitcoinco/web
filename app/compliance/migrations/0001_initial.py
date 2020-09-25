@@ -8,40 +8,65 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Country',
+            name="Country",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('name', models.CharField(max_length=500)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("name", models.CharField(max_length=500)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Entity',
+            name="Entity",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('firstName', models.CharField(max_length=500)),
-                ('lastName', models.CharField(max_length=500)),
-                ('fullName', models.CharField(max_length=500)),
-                ('sdnType', models.CharField(max_length=500)),
-                ('city', models.CharField(max_length=500)),
-                ('country', models.CharField(max_length=500)),
-                ('program', models.CharField(max_length=500)),
-                ('stateOrProvince', models.CharField(max_length=500)),
-                ('uid', models.CharField(max_length=25)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("firstName", models.CharField(max_length=500)),
+                ("lastName", models.CharField(max_length=500)),
+                ("fullName", models.CharField(max_length=500)),
+                ("sdnType", models.CharField(max_length=500)),
+                ("city", models.CharField(max_length=500)),
+                ("country", models.CharField(max_length=500)),
+                ("program", models.CharField(max_length=500)),
+                ("stateOrProvince", models.CharField(max_length=500)),
+                ("uid", models.CharField(max_length=25)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

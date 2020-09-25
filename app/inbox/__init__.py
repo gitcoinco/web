@@ -1,1 +1,1 @@
-default_app_config = 'inbox.apps.NotificationConfig'
+default_app_config = "inbox.apps.NotificationConfig"

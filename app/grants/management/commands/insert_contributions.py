@@ -23,20 +23,27 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
-    help = 'inserts contributions into the DB'
+    help = "inserts contributions into the DB"
 
     def handle(self, *args, **options):
         # setup
-        handle = 'igorbarinov'
-        token_addr = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'
-        contributor_address = '0x34aa3f359a9d614239015126635ce7732c18fdf3'
-        token_symbol = 'DAI'
-        network = 'mainnet'
+        handle = "igorbarinov"
+        token_addr = "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"
+        contributor_address = "0x34aa3f359a9d614239015126635ce7732c18fdf3"
+        token_symbol = "DAI"
+        network = "mainnet"
 
         from dashboard.models import Profile
         from grants.models import Grant, Contribution, Subscription
         from grants.views import record_subscription_activity_helper
-        items = [[114, 10000, '0x51d9e5b1667b716ccd3c3247b14eec03b92beb91d57c1708e7700a01cebfb4ee']]
+
+        items = [
+            [
+                114,
+                10000,
+                "0x51d9e5b1667b716ccd3c3247b14eec03b92beb91d57c1708e7700a01cebfb4ee",
+            ]
+        ]
 
         for item in items:
             grant_id = item[0]
@@ -52,11 +59,11 @@ class Command(BaseCommand):
             subscription.amount_per_period = amount
             subscription.real_period_seconds = 0
             subscription.frequency = 1
-            subscription.frequency_unit = 'days'
+            subscription.frequency_unit = "days"
             subscription.token_address = token_addr
             subscription.token_symbol = token_symbol
             subscription.gas_price = 1
-            subscription.new_approve_tx_id = '0x0'
+            subscription.new_approve_tx_id = "0x0"
             subscription.num_tx_approved = 1
             subscription.network = network
             subscription.contributor_profile = profile
@@ -64,7 +71,9 @@ class Command(BaseCommand):
             subscription.save()
 
             subscription.successful_contribution(tx_id)
-            subscription.error = True #cancel subs so it doesnt try to bill again
+            subscription.error = True  # cancel subs so it doesnt try to bill again
             subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
             subscription.save()
-            record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+            record_subscription_activity_helper(
+                "new_grant_contribution", subscription, profile
+            )

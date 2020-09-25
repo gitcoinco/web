@@ -42,60 +42,65 @@ class DashboardEmbedTest(TestCase):
     @staticmethod
     def test_summarize_bounties():
         Bounty.objects.create(
-            title='First',
+            title="First",
             idx_status=0,
-            value_in_token=1 * 10**6,
-            token_name='USDT',
+            value_in_token=1 * 10 ** 6,
+            token_name="USDT",
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
         Bounty.objects.create(
-            title='Second',
+            title="Second",
             idx_status=1,
-            value_in_token=2 * 10**6,
-            token_name='USDT',
+            value_in_token=2 * 10 ** 6,
+            token_name="USDT",
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
-        assert summarize_bounties(Bounty.objects.filter()) == (True, 'Total: 2 issues, 3.00 USD, 0.0 USDT')
+        assert summarize_bounties(Bounty.objects.filter()) == (
+            True,
+            "Total: 2 issues, 3.00 USD, 0.0 USDT",
+        )
         Bounty.objects.create(
-            title='Third',
+            title="Third",
             idx_status=1,
-            value_in_token=3 * 10**6,
-            token_name='USDT',
+            value_in_token=3 * 10 ** 6,
+            token_name="USDT",
             is_open=False,
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
-            raw_data={}
+            raw_data={},
         )
-        val_usdt = sum(Bounty.objects.filter().values_list('_val_usd_db', flat=True))
+        val_usdt = sum(Bounty.objects.filter().values_list("_val_usd_db", flat=True))
         assert val_usdt == Decimal("6.00")
 
     def test_embed(self):
-        assert embed(self.factory.get('/explorer')).status_code == 200
+        assert embed(self.factory.get("/explorer")).status_code == 200
         Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='ETH',
+            token_name="ETH",
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/11',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web/issues/11",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=False,
-            network='mainnet',
+            network="mainnet",
             expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
         )
-        assert embed(self.factory.get(
-            'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
-        )).status_code in [200, 422]
+        assert embed(
+            self.factory.get(
+                "https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web"
+            )
+        ).status_code in [200, 422]

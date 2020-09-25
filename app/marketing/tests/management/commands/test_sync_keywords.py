@@ -33,47 +33,47 @@ class TestSyncKeywords(TestCase):
     def setUp(self):
         """Perform setup for the testcase."""
         Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='john',
+            github_url="https://github.com/gitcoinco/web",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="john",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='submitted',
-            bounty_owner_email='john@bar.com',
-            current_bounty=True
+            idx_status="submitted",
+            bounty_owner_email="john@bar.com",
+            current_bounty=True,
         )
 
         Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/ethereum/solidity',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='jack',
+            github_url="https://github.com/ethereum/solidity",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="jack",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='submitted',
-            bounty_owner_email='jack@bar.com',
-            current_bounty=True
+            idx_status="submitted",
+            bounty_owner_email="jack@bar.com",
+            current_bounty=True,
         )
 
     def test_handle_simple(self):
@@ -85,52 +85,46 @@ class TestSyncKeywords(TestCase):
     def test_handle_complex(self):
         """Test command sync keywords with bounties metadata and fulfillments."""
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/ethereum/solidity',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='john',
+            github_url="https://github.com/ethereum/solidity",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="john",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='submitted',
-            bounty_owner_email='john@bar.com',
+            idx_status="submitted",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            metadata={
-                'issueKeywords': 'ethereum, blockchain,'
-            }
+            metadata={"issueKeywords": "ethereum, blockchain,"},
         )
 
         fulfiller_profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
+            data={}, handle="fred", email="fred@bar.com"
         )
 
         BountyFulfillment.objects.create(
-            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_address="0x0000000000000000000000000000000000000000",
             bounty=bounty,
-            profile=fulfiller_profile
+            profile=fulfiller_profile,
         )
 
         fulfiller_profile = Profile.objects.create(
-            data={},
-            handle='',
-            email='david@bar.com'
+            data={}, handle="", email="david@bar.com"
         )
 
         BountyFulfillment.objects.create(
-            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_address="0x0000000000000000000000000000000000000000",
             bounty=bounty,
-            profile=fulfiller_profile
+            profile=fulfiller_profile,
         )
         Command().handle()
 

@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -25,18 +25,19 @@ from perftools.models import JSONStore
 
 def create_activity_cache():
 
-    print('activity')
-    view = 'activity'
+    print("activity")
+    view = "activity"
     from retail.views import get_specific_activities
     from townsquare.views import tags
+
     all_tags = tags + [
-        [None, None, 'everywhere'],
-        [None, None, 'kudos'],
-        [None, None, 'connects'],
+        [None, None, "everywhere"],
+        [None, None, "kudos"],
+        [None, None, "connects"],
     ]
     hackathons = HackathonEvent.objects.all()
     for hackathon in hackathons:
-        tab = f'hackathon:{hackathon.pk}'
+        tab = f"hackathon:{hackathon.pk}"
         all_tags.append([None, None, tab])
     for tag in all_tags:
         keyword = tag[2]
@@ -45,13 +46,13 @@ def create_activity_cache():
         JSONStore.objects.create(
             view=view,
             key=keyword,
-            data=list(data.order_by('-pk').values_list('pk', flat=True)[:10]),
-            )
+            data=list(data.order_by("-pk").values_list("pk", flat=True)[:10]),
+        )
 
 
 class Command(BaseCommand):
 
-    help = 'generates some activity cache data'
+    help = "generates some activity cache data"
 
     def handle(self, *args, **options):
         create_activity_cache()

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0070_auto_20200108_1527'),
+        ("dashboard", "0070_auto_20200108_1527"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bounty',
-            name='chat_channel_id',
+            model_name="bounty",
+            name="chat_channel_id",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

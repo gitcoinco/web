@@ -7,18 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0106_auto_20200505_1824'),
+        ("dashboard", "0106_auto_20200505_1824"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bounty',
-            name='raw_data',
+            model_name="bounty",
+            name="raw_data",
             field=django.contrib.postgres.fields.jsonb.JSONField(blank=True),
         ),
         migrations.AlterField(
-            model_name='earning',
-            name='source_id',
+            model_name="earning",
+            name="source_id",
             field=models.PositiveIntegerField(db_index=True),
         ),
     ]

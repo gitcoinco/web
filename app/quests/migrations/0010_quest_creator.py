@@ -7,13 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0009_quest_style'),
+        ("quests", "0009_quest_style"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quest',
-            name='creator',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='quests_created', to='dashboard.Profile'),
+            model_name="quest",
+            name="creator",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="quests_created",
+                to="dashboard.Profile",
+            ),
         ),
     ]

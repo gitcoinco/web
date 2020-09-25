@@ -45,16 +45,10 @@ def get_token(token_id, network, address):
 
     """
     try:
-        contract = Contract.objects.get(
-            address=address,
-            network=network
-        )
+        contract = Contract.objects.get(address=address, network=network)
     except Exception as e:
         logger.warning(e)
-        contract = Contract.objects.get(
-            is_latest=True,
-            network=network
-        )
+        contract = Contract.objects.get(is_latest=True, network=network)
 
     return get_object_or_404(Token, contract=contract, token_id=token_id)
 
@@ -73,9 +67,14 @@ def reconcile_kudos_preferred_wallet(profile):
     # If the preferred_kudos_wallet is not set, figure out how to set it.
     if not profile.preferred_kudos_wallet:
         # If the preferred_payout_address exists, use it for the preferred_kudos_Wallet
-        if profile.preferred_payout_address and profile.preferred_payout_address != '0x0':
+        if (
+            profile.preferred_payout_address
+            and profile.preferred_payout_address != "0x0"
+        ):
             # Check if the preferred_payout_addess exists as a kudos wallet address
-            kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address).first()
+            kudos_wallet = profile.wallets.filter(
+                address=profile.preferred_payout_address
+            ).first()
             if kudos_wallet:
                 # If yes, set that wallet to be the profile.preferred_kudos_wallet
                 profile.preferred_kudos_wallet = kudos_wallet
@@ -93,7 +92,9 @@ def reconcile_kudos_preferred_wallet(profile):
             else:
                 # Not enough information available to set the preferred_kudos_wallet
                 # Use kudos indrect send.
-                logger.warning('No kudos wallets or preferred_payout_address address found.  Use Kudos Indirect Send.')
+                logger.warning(
+                    "No kudos wallets or preferred_payout_address address found.  Use Kudos Indirect Send."
+                )
                 return None
 
         profile.save()

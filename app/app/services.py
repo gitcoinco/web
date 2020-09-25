@@ -11,7 +11,7 @@ class RedisService:
     __redis = None
 
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super().__new__(cls)
         return cls.instance
 
@@ -30,7 +30,7 @@ class TwilioService:
     _service = None
 
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super().__new__(cls)
         return cls.instance
 
@@ -39,7 +39,9 @@ class TwilioService:
 
         if not TwilioService._client:
             TwilioService._client = Client(account_sid, auth_token)
-            TwilioService._service = TwilioService._client.verify.services(verify_service)
+            TwilioService._service = TwilioService._client.verify.services(
+                verify_service
+            )
 
     def __init__(self):
         self.__create_connection()

@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0066_contribution_profile_for_clr'),
-        ('grants', '0066_clrmatch_has_passed_kyc'),
+        ("grants", "0066_contribution_profile_for_clr"),
+        ("grants", "0066_clrmatch_has_passed_kyc"),
     ]
 
-    operations = [
-    ]
+    operations = []

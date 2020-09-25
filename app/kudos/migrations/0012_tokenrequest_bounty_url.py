@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0011_auto_20191106_0237'),
+        ("kudos", "0011_auto_20191106_0237"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tokenrequest',
-            name='bounty_url',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="tokenrequest",
+            name="bounty_url",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
     ]

@@ -6,19 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0004_auto_20200130_2150'),
+        ("townsquare", "0004_auto_20200130_2150"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='offer',
-            name='amount',
-            field=models.CharField(default='', max_length=50),
+            model_name="offer",
+            name="amount",
+            field=models.CharField(default="", max_length=50),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='offer',
-            name='key',
-            field=models.CharField(choices=[('secret', 'secret'), ('random', 'random'), ('daily', 'daily'), ('weekly', 'weekly'), ('monthly', 'monthly'), ('other', 'other'), ('top', 'top')], db_index=True, max_length=50),
+            model_name="offer",
+            name="key",
+            field=models.CharField(
+                choices=[
+                    ("secret", "secret"),
+                    ("random", "random"),
+                    ("daily", "daily"),
+                    ("weekly", "weekly"),
+                    ("monthly", "monthly"),
+                    ("other", "other"),
+                    ("top", "top"),
+                ],
+                db_index=True,
+                max_length=50,
+            ),
         ),
     ]

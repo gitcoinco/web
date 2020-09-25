@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0018_grant_hidden'),
+        ("grants", "0018_grant_hidden"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='matchpledge',
-            name='data',
+            model_name="matchpledge",
+            name="data",
             field=models.TextField(blank=True),
         ),
     ]

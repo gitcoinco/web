@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0072_grant_in_active_clrs'),
+        ("grants", "0072_grant_in_active_clrs"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='grant',
-            name='clr_matching',
+            model_name="grant",
+            name="clr_matching",
         ),
     ]

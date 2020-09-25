@@ -24,5 +24,5 @@ from django.apps import AppConfig
 
 class GitcoinbotConfig(AppConfig):
 
-    name = 'gitcoinbot'
-    verbose_name = 'Gitcoin Bot'
+    name = "gitcoinbot"
+    verbose_name = "Gitcoin Bot"

@@ -33,16 +33,16 @@ class KudosViewsTestCase(TestCase):
         self.client = Client()
 
     def test_about(self):
-        r = self.client.get('/kudos/')
+        r = self.client.get("/kudos/")
         self.assertEqual(r.status_code, 200)
-        r = self.client.get('/kudos/about/')
+        r = self.client.get("/kudos/about/")
         self.assertEqual(r.status_code, 200)
 
     def test_marketplace(self):
-        r = self.client.get('/kudos/marketplace/')
+        r = self.client.get("/kudos/marketplace/")
         self.assertEqual(r.status_code, 200)
 
-        r = self.client.get('/kudos/marketplace/?q=python')
+        r = self.client.get("/kudos/marketplace/?q=python")
         self.assertEqual(r.status_code, 200)
 
     # @skip(reason='stub for future testing')
@@ -59,7 +59,7 @@ class KudosViewsTestCase(TestCase):
     #     self.client.get('/kudos/1')
 
     def test_mint(self):
-        r = self.client.get('/kudos/mint/')
+        r = self.client.get("/kudos/mint/")
         self.assertEqual(r.status_code, 200)
 
     # @skip(reason='stub for future testing')
@@ -75,7 +75,7 @@ class KudosViewsTestCase(TestCase):
     #     self.client.get('/kudos/1')
 
     def test_send_2(self):
-        r = self.client.get('/kudos/send/')
+        r = self.client.get("/kudos/send/")
         self.assertEqual(r.status_code, 302)
         # r = self.client.get('/kudos/send/?id=1')
         # self.assertEqual(r.status_code, 200)

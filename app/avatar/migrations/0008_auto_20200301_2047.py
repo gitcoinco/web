@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('avatar', '0007_auto_20200229_2343'),
+        ("avatar", "0007_auto_20200229_2343"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='avatartheme',
-            name='override_name_ui',
-            field=models.CharField(blank=True, default='', max_length=256),
+            model_name="avatartheme",
+            name="override_name_ui",
+            field=models.CharField(blank=True, default="", max_length=256),
         ),
         migrations.AddField(
-            model_name='avatartheme',
-            name='popularity_cheat_by',
-            field=models.IntegerField(db_index=True, default=0, help_text='Used by admin to rank avatar higher (or lower).'),
+            model_name="avatartheme",
+            name="popularity_cheat_by",
+            field=models.IntegerField(
+                db_index=True,
+                default=0,
+                help_text="Used by admin to rank avatar higher (or lower).",
+            ),
         ),
     ]

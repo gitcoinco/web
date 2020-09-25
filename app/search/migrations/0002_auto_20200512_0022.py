@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('search', '0001_initial'),
+        ("search", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='searchresult',
-            name='source_id',
+            model_name="searchresult",
+            name="source_id",
             field=models.PositiveIntegerField(db_index=True),
         ),
     ]

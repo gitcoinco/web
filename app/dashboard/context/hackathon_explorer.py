@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -15,107 +15,128 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 
 eth_hack = {
-    'hackathon_id'  : 'eth_hack',
-    'sponsors_gold' : [
+    "hackathon_id": "eth_hack",
+    "sponsors_gold": [
         {
-            'name'  : 'Quorum',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/quorum.svg')
+            "name": "Quorum",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/big/quorum.svg"),
         },
         {
-            'name'  : 'Consensys Labs',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg')
+            "name": "Consensys Labs",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg"
+            ),
         },
         {
-            'name'  : 'MythX',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/mythx-light.png')
+            "name": "MythX",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/big/mythx-light.png"),
         },
         {
-            'name'  : 'Pegasys',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+            "name": "Pegasys",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg"),
         },
         {
-            'name'  : 'Microsoft',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/microsoft.svg')
+            "name": "Microsoft",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/big/microsoft.svg"),
         },
         {
-            'name'  : 'Adex',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/adex-vector-logo.svg')
-        }
+            "name": "Adex",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/big/adex-vector-logo.svg"
+            ),
+        },
     ],
-    'sponsors_silver' : [
+    "sponsors_silver": [
         {
-            'name'  : 'Chainlink',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/chainlink-hexagon.svg')
+            "name": "Chainlink",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/small/chainlink-hexagon.svg"
+            ),
         },
         {
-            'name'  : 'Kauri',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/kauri_logo_vertical.svg')
+            "name": "Kauri",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/small/kauri_logo_vertical.svg"
+            ),
         },
         {
-            'name'  : 'LeapDAO',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/leapdao.svg')
+            "name": "LeapDAO",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/small/leapdao.svg"),
         },
         {
-            'name'  : 'Kleros',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/kleros-logo-vertical.svg')
+            "name": "Kleros",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/small/kleros-logo-vertical.svg"
+            ),
         },
         {
-            'name'  : 'Alethio',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg')
+            "name": "Alethio",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/small/alethio-no-bg.svg"
+            ),
         },
         {
-            'name'  : 'Coinmark',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/coinmark_blue_lg.svg')
+            "name": "Coinmark",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/small/coinmark_blue_lg.svg"
+            ),
         },
         {
-            'name'  : 'Autom(8)',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/autom8.svg')
+            "name": "Autom(8)",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/small/autom8.svg"),
         },
         {
-            'name'  : 'POA',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/logo_poa.svg')
-        }
-    ]
+            "name": "POA",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/small/logo_poa.svg"),
+        },
+    ],
 }
 
 beyondblockchain_2019 = {
-    'sponsor_bg'    : 'none',
-    'sponsors_gold' : [
+    "sponsor_bg": "none",
+    "sponsors_gold": [
         {
-            'name'  : 'Raiden',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/raiden-white.svg')
+            "name": "Raiden",
+            "logo": static(
+                "v2/images/hackathon/beyond_block/sponsors/raiden-white.svg"
+            ),
         },
         {
-            'name'  : 'Consensys Labs',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg')
+            "name": "Consensys Labs",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/big/labs-logo-blue.svg"
+            ),
         },
         {
-            'name'  : 'Pegasys',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg')
+            "name": "Pegasys",
+            "logo": static("v2/images/hackathon/ethhack/sponsors/big/pegasys-logo.svg"),
         },
-        {
-            'name'  : 'Portis',
-            'logo'  : static('v2/images/project_logos/portis_text.png')
-        },
+        {"name": "Portis", "logo": static("v2/images/project_logos/portis_text.png")},
     ],
-    'sponsors_silver' : [
+    "sponsors_silver": [
         {
-            'name'  : 'Alethio',
-            'logo'  : static('v2/images/hackathon/ethhack/sponsors/small/alethio-white.svg')
+            "name": "Alethio",
+            "logo": static(
+                "v2/images/hackathon/ethhack/sponsors/small/alethio-white.svg"
+            ),
         },
         {
-            'name'  : 'TheGraph',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/thegraph-white.svg')
+            "name": "TheGraph",
+            "logo": static(
+                "v2/images/hackathon/beyond_block/sponsors/thegraph-white.svg"
+            ),
         },
         {
-            'name'  : 'Arweave',
-            'logo'  : static('v2/images/hackathon/beyond_block/sponsors/arweave-white.svg')
+            "name": "Arweave",
+            "logo": static(
+                "v2/images/hackathon/beyond_block/sponsors/arweave-white.svg"
+            ),
         },
     ],
 }

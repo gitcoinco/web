@@ -34,20 +34,21 @@ def bounty_on_create(self, team_id, new_bounty, retry: bool = True) -> None:
     tasks = list()
 
     tasks.append(
-        create_channel.si({
-            'team_id': team_id,
-            'channel_name': f'bounty-{new_bounty.id}',
-            'channel_display_name': f'bounty-{new_bounty.id}'
-        }, new_bounty.id)
+        create_channel.si(
+            {
+                "team_id": team_id,
+                "channel_name": f"bounty-{new_bounty.id}",
+                "channel_display_name": f"bounty-{new_bounty.id}",
+            },
+            new_bounty.id,
+        )
     )
 
     # what has to happen that we can issue without a dependency from any subtasks?
 
     # look up users in your tribe invite them to the newly issued bounty
 
-    tasks.append(
-        bounty_emails.si([], "", "", "", False)
-    )
+    tasks.append(bounty_emails.si([], "", "", "", False))
 
     res = group(tasks)
 
@@ -55,7 +56,15 @@ def bounty_on_create(self, team_id, new_bounty, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=3)
-def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invite=False, retry: bool = True) -> None:
+def bounty_emails(
+    self,
+    emails,
+    msg,
+    profile_handle,
+    invite_url=None,
+    kudos_invite=False,
+    retry: bool = True,
+) -> None:
     """
     :param self:
     :param emails:
@@ -73,7 +82,9 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
                 to_email = email
                 from_email = settings.CONTACT_EMAIL
                 subject = "You have been invited to work on a bounty."
-                html, text = render_share_bounty(to_email, msg, profile, invite_url, kudos_invite)
+                html, text = render_share_bounty(
+                    to_email, msg, profile, invite_url, kudos_invite
+                )
                 send_mail(
                     from_email,
                     to_email,
@@ -81,7 +92,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
                     text,
                     html,
                     from_name=f"@{profile.handle}",
-                    categories=['transactional', func_name()],
+                    categories=["transactional", func_name()],
                 )
 
         except ConnectionError as exc:
@@ -91,94 +102,94 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
         except Exception as e:
             logger.error(str(e))
 
-@app.shared_task(bind=True, max_retries=3)
-def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
 
+@app.shared_task(bind=True, max_retries=3)
+def export_search_to_csv(self, body, user_handle, retry: bool = True) -> None:
 
     CSV_HEADER = [
-        'profile_id',
-        'join_date',
-        'github_created_at',
-        'first_name',
-        'last_name',
-        'email',
-        'handle',
-        'sms_verification',
-        'persona',
-        'rank_coder',
-        'rank_funder',
-        'num_hacks_joined',
-        'which_hacks_joined',
-        'hack_work_starts',
-        'hack_work_submits',
-        'hack_work_start_orgs',
-        'hack_work_submit_orgs',
-        'bounty_work_starts',
-        'bounty_work_submits',
-        'hack_started_feature',
-        'hack_started_code_review',
-        'hack_started_security',
-        'hack_started_design',
-        'hack_started_documentation',
-        'hack_started_bug',
-        'hack_started_other',
-        'hack_started_improvement',
-        'started_feature',
-        'started_code_review',
-        'started_security',
-        'started_design',
-        'started_documentation',
-        'started_bug',
-        'started_other',
-        'started_improvement',
-        'submitted_feature',
-        'submitted_code_review',
-        'submitted_security',
-        'submitted_design',
-        'submitted_documentation',
-        'submitted_bug',
-        'submitted_other',
-        'submitted_improvement',
-        'bounty_earnings',
-        'bounty_work_start_orgs',
-        'bounty_work_submit_orgs',
-        'kudos_sends',
-        'kudos_receives',
-        'hack_winner_kudos_received',
-        'grants_opened',
-        'grant_contributed',
-        'grant_contributions',
-        'grant_contribution_amount',
-        'num_actions',
-        'action_points',
-        'avg_points_per_action',
-        'last_action_on',
-        'keywords',
-        'activity_level',
-        'reliability',
-        'average_rating',
-        'longest_streak',
-        'earnings_count',
-        'follower_count',
-        'following_count',
-        'num_repeated_relationships',
-        'verification_status'
+        "profile_id",
+        "join_date",
+        "github_created_at",
+        "first_name",
+        "last_name",
+        "email",
+        "handle",
+        "sms_verification",
+        "persona",
+        "rank_coder",
+        "rank_funder",
+        "num_hacks_joined",
+        "which_hacks_joined",
+        "hack_work_starts",
+        "hack_work_submits",
+        "hack_work_start_orgs",
+        "hack_work_submit_orgs",
+        "bounty_work_starts",
+        "bounty_work_submits",
+        "hack_started_feature",
+        "hack_started_code_review",
+        "hack_started_security",
+        "hack_started_design",
+        "hack_started_documentation",
+        "hack_started_bug",
+        "hack_started_other",
+        "hack_started_improvement",
+        "started_feature",
+        "started_code_review",
+        "started_security",
+        "started_design",
+        "started_documentation",
+        "started_bug",
+        "started_other",
+        "started_improvement",
+        "submitted_feature",
+        "submitted_code_review",
+        "submitted_security",
+        "submitted_design",
+        "submitted_documentation",
+        "submitted_bug",
+        "submitted_other",
+        "submitted_improvement",
+        "bounty_earnings",
+        "bounty_work_start_orgs",
+        "bounty_work_submit_orgs",
+        "kudos_sends",
+        "kudos_receives",
+        "hack_winner_kudos_received",
+        "grants_opened",
+        "grant_contributed",
+        "grant_contributions",
+        "grant_contribution_amount",
+        "num_actions",
+        "action_points",
+        "avg_points_per_action",
+        "last_action_on",
+        "keywords",
+        "activity_level",
+        "reliability",
+        "average_rating",
+        "longest_streak",
+        "earnings_count",
+        "follower_count",
+        "following_count",
+        "num_repeated_relationships",
+        "verification_status",
     ]
 
     user_profile = Profile.objects.get(handle=user_handle)
 
     PAGE_SIZE = 1000
     proxy_req = HttpRequest()
-    proxy_req.method = 'GET'
-    remote_url = f'{settings.HAYSTACK_ELASTIC_SEARCH_URL}/haystack/modelresult/_search'
+    proxy_req.method = "GET"
+    remote_url = f"{settings.HAYSTACK_ELASTIC_SEARCH_URL}/haystack/modelresult/_search"
 
     query_data = json.loads(body)
-    proxy_request = proxy_view(proxy_req, remote_url, {'data': body})
-    proxy_json_str = proxy_request.content.decode('utf-8')
+    proxy_request = proxy_view(proxy_req, remote_url, {"data": body})
+    proxy_json_str = proxy_request.content.decode("utf-8")
     proxy_body = json.loads(proxy_json_str)
-    if not proxy_body['timed_out']:
-        total_hits = proxy_body['hits']['total']
-        hits = proxy_body['hits']['hits']
+    if not proxy_body["timed_out"]:
+        total_hits = proxy_body["hits"]["total"]
+        hits = proxy_body["hits"]["hits"]
         finished = False
         output = []
         results = []
@@ -186,34 +197,33 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
             finished = True
             results = hits
 
-
         if not finished:
 
             max_loops = math.ceil(total_hits / PAGE_SIZE)
             for x in range(0, max_loops):
                 new_body = query_data
-                new_body['from'] = 0 if x is 0 else (PAGE_SIZE * x) + 1
-                new_body['size'] = PAGE_SIZE
+                new_body["from"] = 0 if x is 0 else (PAGE_SIZE * x) + 1
+                new_body["size"] = PAGE_SIZE
                 new_body = json.dumps(new_body)
-                proxy_request = proxy_view(proxy_req, remote_url, {'data': new_body})
-                proxy_json_str = proxy_request.content.decode('utf-8')
+                proxy_request = proxy_view(proxy_req, remote_url, {"data": new_body})
+                proxy_json_str = proxy_request.content.decode("utf-8")
                 proxy_body = json.loads(proxy_json_str)
-                hits = proxy_body['hits']['hits']
+                hits = proxy_body["hits"]["hits"]
                 results = results + hits
 
         for result in results:
-            source = result['_source']
+            source = result["_source"]
             row_item = {}
             for k in source.copy():
-                k = k.replace('_exact', '')
+                k = k.replace("_exact", "")
                 if k in CSV_HEADER:
                     row_item[k] = source[k]
 
             output.append(row_item)
         now = datetime.now()
-        csv_file_path = f'/tmp/user-directory-export-{user_profile.handle}-{now}.csv'
+        csv_file_path = f"/tmp/user-directory-export-{user_profile.handle}-{now}.csv"
         try:
-            with open(csv_file_path, 'w') as csvfile:
+            with open(csv_file_path, "w") as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)
                 writer.writeheader()
                 writer.writerows(output)
@@ -225,7 +235,9 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
             from_email = settings.CONTACT_EMAIL
 
             subject = "Your exported user directory csv is attached"
-            html = text = f'Your exported {csv_file_path.replace("/tmp/", "")} is attached.'
+            html = (
+                text
+            ) = f'Your exported {csv_file_path.replace("/tmp/", "")} is attached.'
             send_mail(
                 from_email,
                 to_email,
@@ -233,9 +245,10 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
                 text,
                 html,
                 from_name=f"@{user_profile.handle}",
-                categories=['transactional'],
-                csv=csv_file_path
+                categories=["transactional"],
+                csv=csv_file_path,
             )
+
 
 @app.shared_task(bind=True, max_retries=3)
 def profile_dict(self, pk, retry: bool = True) -> None:
@@ -264,6 +277,7 @@ def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) 
     with redis.lock("maybe_market_to_user_slack:bounty", timeout=LOCK_TIMEOUT):
         bounty = Bounty.objects.get(pk=bounty_pk)
         from dashboard.notifications import maybe_market_to_user_slack_helper
+
         maybe_market_to_user_slack_helper(bounty, event_name)
 
 
@@ -278,6 +292,7 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     grant_update_email(activity)
 
     from django.utils import timezone
+
     grant = activity.grant
     grant.last_update = timezone.now()
     grant.save()
@@ -293,13 +308,16 @@ def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
     with redis.lock("m2m_changed_interested:bounty", timeout=LOCK_TIMEOUT):
         bounty = Bounty.objects.get(pk=bounty_pk)
         from dashboard.notifications import maybe_market_to_github
-        maybe_market_to_github(bounty, 'work_started',
-                               profile_pairs=bounty.profile_pairs)
 
+        maybe_market_to_github(
+            bounty, "work_started", profile_pairs=bounty.profile_pairs
+        )
 
 
 @app.shared_task(bind=True, max_retries=1)
-def increment_view_count(self, pks, content_type, user_id, view_type, retry: bool = True) -> None:
+def increment_view_count(
+    self, pks, content_type, user_id, view_type, retry: bool = True
+) -> None:
     """
     :param self:
     :param pk:
@@ -308,7 +326,7 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
     :param view_type:
     :return:
     """
-    individual_storage = False # TODO: Change back to true IFF we figure out how to manage storage of this table
+    individual_storage = False  # TODO: Change back to true IFF we figure out how to manage storage of this table
     user = None
     if user_id:
         user = User.objects.get(pk=user_id)
@@ -317,13 +335,13 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
         key = f"{content_type}_{pk}"
         print(key)
         result = redis.incr(key)
-        if pk and view_type == 'individual' and individual_storage:
+        if pk and view_type == "individual" and individual_storage:
             try:
                 ObjectView.objects.create(
                     viewer=user,
                     target_id=pk,
                     target_type=ContentType.objects.filter(model=content_type).first(),
                     view_type=view_type,
-                    )
+                )
             except:
-                pass # fix for https://sentry.io/organizations/gitcoin/issues/1715509732/
+                pass  # fix for https://sentry.io/organizations/gitcoin/issues/1715509732/

@@ -35,21 +35,25 @@ def make_secret_offer(profile, title, desc, bounty):
         created_by=profile,
         title=title,
         desc=desc,
-        key='secret',
+        key="secret",
         url=bounty.absolute_url,
         valid_from=timezone.now(),
         valid_to=timezone.now() + timezone.timedelta(hours=3),
         public=True,
-        style=f'back{random.randint(0, 32)}',
-        from_name=bounty.org_display_name
+        style=f"back{random.randint(0, 32)}",
+        from_name=bounty.org_display_name,
     )
 
 
 def notify_previous_workers(bounty):
     emails = set()
-    prev_bounties = Bounty.objects.filter(bounty_owner_profile=bounty.bounty_owner_profile).values_list('id', flat=True)
+    prev_bounties = Bounty.objects.filter(
+        bounty_owner_profile=bounty.bounty_owner_profile
+    ).values_list("id", flat=True)
     if bounty.bounty_owner_profile.is_org:
-        previous_works = BountyEvent.objects.filter(event_type='submit_work', bounty__in=prev_bounties)
+        previous_works = BountyEvent.objects.filter(
+            event_type="submit_work", bounty__in=prev_bounties
+        )
         for work in previous_works:
             emails.add(work.created_by.email)
 
@@ -57,35 +61,36 @@ def notify_previous_workers(bounty):
 
 
 class Command(BaseCommand):
-    help = 'post hyper bounties to twitter'
+    help = "post hyper bounties to twitter"
 
     def handle(self, *args, **options):
         now = timezone.now()
-        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        profile = Profile.objects.filter(handle="gitcoinbot").first()
 
-        bounties = Bounty.objects.current().filter(hypercharge_mode=True, hyper_next_publication__lt=now)
-        bounties = bounties.exclude(bounty_state__in=['done', 'cancelled'])
-        bounties = bounties.order_by('metadata__hyper_tweet_counter')
-
+        bounties = Bounty.objects.current().filter(
+            hypercharge_mode=True, hyper_next_publication__lt=now
+        )
+        bounties = bounties.exclude(bounty_state__in=["done", "cancelled"])
+        bounties = bounties.order_by("metadata__hyper_tweet_counter")
 
         if bounties:
             bounty = bounties.first()
 
             offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'
-            offer_desc = ''
+            offer_desc = ""
 
-            event_name = ''
-            counter = bounty.metadata['hyper_tweet_counter']
+            event_name = ""
+            counter = bounty.metadata["hyper_tweet_counter"]
             if counter == 0:
-                event_name = 'new_bounty'
+                event_name = "new_bounty"
                 notify_previous_workers(bounty)
                 make_secret_offer(profile, offer_title, offer_desc, bounty)
             elif counter == 1:
-                event_name = 'remarket_bounty'
+                event_name = "remarket_bounty"
             elif counter % 2 == 0:
                 make_secret_offer(profile, offer_title, offer_desc, bounty)
 
-            bounty.metadata['hyper_tweet_counter'] += 1
+            bounty.metadata["hyper_tweet_counter"] += 1
             bounty.hyper_next_publication = now + timedelta(hours=12)
             bounty.save()
 

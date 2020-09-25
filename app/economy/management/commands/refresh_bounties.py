@@ -27,16 +27,17 @@ from dashboard.models import Bounty
 class Command(BaseCommand):
     """Define the management command to refresh bounties."""
 
-    help = 'refreshes the triggers associated with current bounties'
+    help = "refreshes the triggers associated with current bounties"
 
     def add_arguments(self, parser):
         """Add argument handling to the refresh command."""
         parser.add_argument(
-            '-r', '--remote',
-            action='store_true',
-            dest='remote',
+            "-r",
+            "--remote",
+            action="store_true",
+            dest="remote",
             default=False,
-            help='Pulls remote info about bounty too'
+            help="Pulls remote info about bounty too",
         )
 
     def handle(self, *args, **options):
@@ -48,8 +49,8 @@ class Command(BaseCommand):
                 Defaults to: `False` unless user passes the remote option.
 
         """
-        all_bounties = Bounty.objects.filter(current_bounty=True).order_by('-pk')
-        fetch_remote = options['remote']
+        all_bounties = Bounty.objects.filter(current_bounty=True).order_by("-pk")
+        fetch_remote = options["remote"]
         print(f"refreshing {all_bounties.count()} bounties")
 
         for bounty in all_bounties:
@@ -62,11 +63,11 @@ class Command(BaseCommand):
             # are marked as current_bounty=False
             try:
                 if fetch_remote:
-                    bounty.fetch_issue_item('title')
+                    bounty.fetch_issue_item("title")
                     bounty.fetch_issue_item()
                     bounty.fetch_issue_comments()
                     time.sleep(10)
-                    print('1/ refreshed', bounty.pk)
+                    print("1/ refreshed", bounty.pk)
             except Exception as e:
                 print(e)
 

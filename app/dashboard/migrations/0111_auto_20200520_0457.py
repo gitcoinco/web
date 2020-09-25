@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0110_auto_20200519_1417'),
+        ("dashboard", "0110_auto_20200519_1417"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='bountyfulfillment',
-            name='fulfiller_email',
+            model_name="bountyfulfillment",
+            name="fulfiller_email",
         ),
         migrations.RemoveField(
-            model_name='bountyfulfillment',
-            name='fulfiller_github_username',
+            model_name="bountyfulfillment",
+            name="fulfiller_github_username",
         ),
         migrations.RemoveField(
-            model_name='bountyfulfillment',
-            name='fulfiller_name',
+            model_name="bountyfulfillment",
+            name="fulfiller_name",
         ),
     ]

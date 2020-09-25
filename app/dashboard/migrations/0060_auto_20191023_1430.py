@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0059_merge_20191022_1603'),
+        ("dashboard", "0059_merge_20191022_1603"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='hackathonregistration',
+            name="hackathonregistration",
             options={},
         ),
     ]

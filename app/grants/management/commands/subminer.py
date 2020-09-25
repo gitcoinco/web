@@ -37,8 +37,9 @@ logger = logging.getLogger(__name__)
 
 SLEEP_TIME = 20
 MAX_COUNTER = 30
-METATX_GAS_PRICE_THRESHOLD = settings.METATX_GAS_PRICE_THRESHOLD # in wei?
+METATX_GAS_PRICE_THRESHOLD = settings.METATX_GAS_PRICE_THRESHOLD  # in wei?
 METATX_FREE_INTERVAL_SECONDS = 2592000
+
 
 def process_subscription(subscription, live):
     is_ready_to_be_processed_db = subscription.get_is_ready_to_be_processed_from_db()
@@ -46,33 +47,49 @@ def process_subscription(subscription, live):
     logger.info("  - subscription %d", subscription.pk)
     if is_ready_to_be_processed_db:
         logger.info("   -- (ready via db) ")
-        are_we_past_next_valid_timestamp = subscription.get_are_we_past_next_valid_timestamp()
-        has_approve_tx_mined = has_tx_mined(subscription.new_approve_tx_id, subscription.grant.network)
+        are_we_past_next_valid_timestamp = (
+            subscription.get_are_we_past_next_valid_timestamp()
+        )
+        has_approve_tx_mined = has_tx_mined(
+            subscription.new_approve_tx_id, subscription.grant.network
+        )
 
         # FOR DEBUGGING
         if not live:
-            is_ready_to_be_processed_web3 = subscription.get_are_we_past_next_valid_timestamp()
+            is_ready_to_be_processed_web3 = (
+                subscription.get_are_we_past_next_valid_timestamp()
+            )
             is_active_web3 = subscription.get_is_active_from_web3()
             signer = subscription.get_subscription_signer_from_web3()
             logger.info("    ---  DEBUG INFO")
             logger.info(
-                "    --- %s, %s, %s, %s", are_we_past_next_valid_timestamp, is_ready_to_be_processed_web3,
-                is_active_web3, signer,
+                "    --- %s, %s, %s, %s",
+                are_we_past_next_valid_timestamp,
+                is_ready_to_be_processed_web3,
+                is_active_web3,
+                signer,
             )
 
         if not are_we_past_next_valid_timestamp:
-            logger.info(f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) ")
+            logger.info(
+                f"   -- ( NOT ready via web3, will be ready on {subscription.get_next_valid_timestamp()}) "
+            )
         elif not has_approve_tx_mined:
-            logger.info(f"   -- ( NOT ready via approve tx, will be ready when {subscription.new_approve_tx_id} mines) ")
+            logger.info(
+                f"   -- ( NOT ready via approve tx, will be ready when {subscription.new_approve_tx_id} mines) "
+            )
         else:
             if subscription.contributor_signature == "onetime":
                 subscription.error = True
                 subscription.subminer_comments = "One time subscription"
                 subscription.save()
-                logger.info('skipping one time subscription: %s' % subscription.id)
+                logger.info("skipping one time subscription: %s" % subscription.id)
                 return
             web3_hash_arguments = subscription.get_subscription_hash_arguments()
-            if web3_hash_arguments['periodSeconds'] < METATX_FREE_INTERVAL_SECONDS and web3_hash_arguments['gasPrice'] <= METATX_GAS_PRICE_THRESHOLD:
+            if (
+                web3_hash_arguments["periodSeconds"] < METATX_FREE_INTERVAL_SECONDS
+                and web3_hash_arguments["gasPrice"] <= METATX_GAS_PRICE_THRESHOLD
+            ):
                 subscription.error = True
                 subscription.subminer_comments = "Gas price was too low to process"
                 subscription.save()
@@ -80,7 +97,7 @@ def process_subscription(subscription, live):
                 return
 
             logger.info("   -- (ready via web3) ")
-            status = 'failure'
+            status = "failure"
             txid = None
             error = ""
             try:
@@ -92,9 +109,14 @@ def process_subscription(subscription, live):
 
                     override = False
                     counter = 0
-                    while not has_tx_mined(txid, subscription.grant.network) and not override:
+                    while (
+                        not has_tx_mined(txid, subscription.grant.network)
+                        and not override
+                    ):
                         time.sleep(SLEEP_TIME)
-                        logger.info(f"   -- *waiting {SLEEP_TIME} seconds for {txid} to mine*")
+                        logger.info(
+                            f"   -- *waiting {SLEEP_TIME} seconds for {txid} to mine*"
+                        )
                         counter += 1
                         if counter > MAX_COUNTER:
                             override = True
@@ -102,9 +124,13 @@ def process_subscription(subscription, live):
                             # an admin will have to look at this later and determine what went wrong
                             # KO 2019/02/06
 
-                    status, __ = get_tx_status(txid, subscription.grant.network, timezone.now())
-                    if status != 'success':
-                        error = f"tx status from RPC is {status} not success, txid: {txid}"
+                    status, __ = get_tx_status(
+                        txid, subscription.grant.network, timezone.now()
+                    )
+                    if status != "success":
+                        error = (
+                            f"tx status from RPC is {status} not success, txid: {txid}"
+                        )
                 else:
                     logger.info("   -- *not live, not executing* ")
             except Exception as e:
@@ -112,12 +138,14 @@ def process_subscription(subscription, live):
                 logger.info("   -- *not live, not executing* ")
 
             logger.info("   -- *mined* (status: %s / error: %s) ", status, error)
-            was_success = status == 'success'
+            was_success = status == "success"
             if live:
                 if not was_success:
-                    logger.warning('subscription processing failed')
+                    logger.warning("subscription processing failed")
                     subscription.error = True
-                    error_comments = f"{error}\n\ndebug info: {subscription.get_debug_info()}"
+                    error_comments = (
+                        f"{error}\n\ndebug info: {subscription.get_debug_info()}"
+                    )
                     subscription.subminer_comments = error_comments
                     subscription.save()
                     grant = subscription.grant
@@ -125,27 +153,32 @@ def process_subscription(subscription, live):
                     grant.save()
                     warn_subscription_failed(subscription)
                 else:
-                    logger.info('subscription processing successful')
+                    logger.info("subscription processing successful")
                     subscription.successful_contribution(txid)
                     subscription.save()
 
 
 class Command(BaseCommand):
 
-    help = 'processes the txs associated with this grant'
+    help = "processes the txs associated with this grant"
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument("network", default="rinkeby", type=str)
         parser.add_argument(
-            '-live', '--live', action='store_true', dest='live', default=False, help='Actually do the sync'
+            "-live",
+            "--live",
+            action="store_true",
+            dest="live",
+            default=False,
+            help="Actually do the sync",
         )
 
     def handle(self, *args, **options):
         # setup
-        network = options['network']
-        live = options['live']
+        network = options["network"]
+        live = options["live"]
 
-        logger.info('Subminer - Network: (%s) Live: (%s)', network, live)
+        logger.info("Subminer - Network: (%s) Live: (%s)", network, live)
         # iter through Grants
         grants = Grant.objects.filter(network=network).active()
         logger.info("got %d grants", grants.count())
@@ -155,12 +188,14 @@ class Command(BaseCommand):
                 active=True,
                 error=False,
                 next_contribution_date__lt=timezone.now(),
-                num_tx_processed__lt=F('num_tx_approved')
+                num_tx_processed__lt=F("num_tx_approved"),
             )
 
             is_clr_active = grant.in_active_clrs.count() > 0
             if not is_clr_active:
-                subs = subs.exclude(frequency_unit='roundup') #dont process grant subscriptions until next round
+                subs = subs.exclude(
+                    frequency_unit="roundup"
+                )  # dont process grant subscriptions until next round
 
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 

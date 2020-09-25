@@ -7,19 +7,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0076_matchpledge_data'),
-        ('townsquare', '0022_auto_20200528_1629'),
+        ("grants", "0076_matchpledge_data"),
+        ("townsquare", "0022_auto_20200528_1629"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='favorite',
-            name='grant',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='grant_favorites', to='grants.Grant'),
+            model_name="favorite",
+            name="grant",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="grant_favorites",
+                to="grants.Grant",
+            ),
         ),
         migrations.AlterField(
-            model_name='favorite',
-            name='activity',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='dashboard.Activity'),
+            model_name="favorite",
+            name="activity",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="dashboard.Activity",
+            ),
         ),
     ]

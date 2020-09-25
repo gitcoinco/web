@@ -6,19 +6,22 @@ from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
+
 def forwards(apps, schema_editor):
     for grant in Grant.objects.all():
         print(grant.pk)
         grant.updateActiveSubscriptions()
         grant.save()
 
+
 def backwards(apps, schema_editor):
     pass
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0010_auto_20190221_2050'),
+        ("grants", "0010_auto_20190221_2050"),
     ]
 
     # operations = [

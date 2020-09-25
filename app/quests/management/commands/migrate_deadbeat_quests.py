@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 
 from django.core.management.base import BaseCommand
@@ -24,25 +24,28 @@ from marketing.mails import notify_deadbeat_quest
 
 class Command(BaseCommand):
 
-    help = 'finds (and migrates) quests whose reward is out of redemptions'
+    help = "finds (and migrates) quests whose reward is out of redemptions"
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'kudos_id',
-            type=int,
-            help="what kudos to migrate to"
-        )
+        parser.add_argument("kudos_id", type=int, help="what kudos to migrate to")
 
     def handle(self, *args, **options):
         from quests.models import Quest
         from kudos.models import Token
-        kudos_id = options['kudos_id']
+
+        kudos_id = options["kudos_id"]
         kudos = Token.objects.get(pk=kudos_id)
 
         for quest in Quest.objects.filter(visible=True):
             if quest.kudos_reward:
-                is_dead = quest.kudos_reward.num_clones_available_counting_indirect_send <= 0
-                is_dead = is_dead or quest.kudos_reward.owner_address.lower() != "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+                is_dead = (
+                    quest.kudos_reward.num_clones_available_counting_indirect_send <= 0
+                )
+                is_dead = (
+                    is_dead
+                    or quest.kudos_reward.owner_address.lower()
+                    != "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+                )
                 if is_dead:
                     print(f"migrating {quest.pk}")
                     quest.kudos_reward = kudos

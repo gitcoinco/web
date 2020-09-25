@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0010_merge_20190127_1548'),
+        ("dashboard", "0010_merge_20190127_1548"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='job_search_status',
-            field=models.CharField(blank=True, choices=[('AL', 'Actively looking for work'), ('PL', 'Passively looking and open to hearing new opportunities'), ('N', 'Not open to hearing new opportunities')], max_length=2),
+            model_name="profile",
+            name="job_search_status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("AL", "Actively looking for work"),
+                    ("PL", "Passively looking and open to hearing new opportunities"),
+                    ("N", "Not open to hearing new opportunities"),
+                ],
+                max_length=2,
+            ),
         ),
     ]

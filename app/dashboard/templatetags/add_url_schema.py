@@ -38,5 +38,5 @@ def add_url_schema(url):
         str: The URL with the scheme attached.
 
     """
-    pattern = re.compile(r'https?://')
-    return url if pattern.match(url) else f'http://{url}'
+    pattern = re.compile(r"https?://")
+    return url if pattern.match(url) else f"http://{url}"

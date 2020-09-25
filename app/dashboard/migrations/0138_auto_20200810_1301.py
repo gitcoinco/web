@@ -7,13 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0137_auto_20200806_1402'),
+        ("dashboard", "0137_auto_20200806_1402"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tribessubscription',
-            name='expires_on',
-            field=models.DateTimeField(blank=True, default=dashboard.models.default_tribes_expiration, null=True),
+            model_name="tribessubscription",
+            name="expires_on",
+            field=models.DateTimeField(
+                blank=True,
+                default=dashboard.models.default_tribes_expiration,
+                null=True,
+            ),
         ),
     ]

@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0049_auto_20190828_0322'),
+        ("dashboard", "0049_auto_20190828_0322"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='searchhistory',
-            name='search_type',
-            field=models.CharField(db_index=True, default='bounty', max_length=50),
+            model_name="searchhistory",
+            name="search_type",
+            field=models.CharField(db_index=True, default="bounty", max_length=50),
             preserve_default=False,
         ),
     ]

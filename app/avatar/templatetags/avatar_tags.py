@@ -30,5 +30,5 @@ def avatar_url(profile):
     if isinstance(profile, Profile) and profile.active_avatar:
         return profile.active_avatar.get_avatar_url()
     if isinstance(profile, str):
-        return f'{settings.BASE_URL}dynamic/avatar/{profile}'
-    return f'{settings.BASE_URL}dynamic/avatar/Self'
+        return f"{settings.BASE_URL}dynamic/avatar/{profile}"
+    return f"{settings.BASE_URL}dynamic/avatar/Self"

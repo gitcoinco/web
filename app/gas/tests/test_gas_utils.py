@@ -57,9 +57,9 @@ class GasUtilsTest(TestCase):
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=3,
-            source='etherdelta',
-            from_currency='ETH',
-            to_currency='USDT',
+            source="etherdelta",
+            from_currency="ETH",
+            to_currency="USDT",
         )
 
     def test_recommend_min_gas_price_to_confirm_in_time(self):
@@ -76,4 +76,7 @@ class GasUtilsTest(TestCase):
 
     def test_conf_time_spread(self):
         """Test the gas util conf_time_spread method."""
-        assert conf_time_spread() == '[["1.00", "10.00"], ["2.00", "4.00"], ["3.00", "1.00"]]'
+        assert (
+            conf_time_spread()
+            == '[["1.00", "10.00"], ["2.00", "4.00"], ["3.00", "1.00"]]'
+        )

@@ -27,20 +27,21 @@ from economy.models import SuperModel
 
 class BountyQuerySet(models.QuerySet):
     """Define the Bounty Request QuerySet Manager."""
+
     pass
 
 
 class BountyRequest(SuperModel):
     """Define the Bounty Request model."""
 
-    STATUS_OPEN = 'o'
-    STATUS_CLOSED = 'c'
-    STATUS_FUNDED = 'f'
+    STATUS_OPEN = "o"
+    STATUS_CLOSED = "c"
+    STATUS_FUNDED = "f"
 
     STATUS_CHOICES = (
-        (STATUS_OPEN, 'open'),
-        (STATUS_CLOSED, 'closed'),
-        (STATUS_FUNDED, 'funded')
+        (STATUS_OPEN, "open"),
+        (STATUS_CLOSED, "closed"),
+        (STATUS_FUNDED, "funded"),
     )
 
     status = models.CharField(
@@ -48,35 +49,48 @@ class BountyRequest(SuperModel):
         choices=STATUS_CHOICES,
         default=STATUS_OPEN,
         db_index=True,
-        help_text='status of the bounty request'
+        help_text="status of the bounty request",
     )
 
     requested_by = models.ForeignKey(
-        'dashboard.Profile',
+        "dashboard.Profile",
         null=True,
         on_delete=models.SET_NULL,
-        related_name='bounty_requests',
-        help_text='profile submitting the bounty request'
+        related_name="bounty_requests",
+        help_text="profile submitting the bounty request",
     )
 
     tribe = models.ForeignKey(
-        'dashboard.Profile',
+        "dashboard.Profile",
         null=True,
         on_delete=models.SET_NULL,
         db_index=True,
-        help_text='tribe which is being requested to fund the issue'
+        help_text="tribe which is being requested to fund the issue",
     )
 
-    title = models.CharField(max_length=1000, default='')
-    github_url = models.CharField(max_length=255, help_text='github url of suggested bounty')
-    comment = models.TextField(max_length=500, help_text='description from the requestor to justify the bounty request')
-    amount = models.FloatField(blank=False, help_text='amount for which the requested bounty is to be funded', validators=[MinValueValidator(1.0)])
-    token_name = models.CharField(max_length=50, default='ETH', help_text='token in which the requested bounty is to be funded')
+    title = models.CharField(max_length=1000, default="")
+    github_url = models.CharField(
+        max_length=255, help_text="github url of suggested bounty"
+    )
+    comment = models.TextField(
+        max_length=500,
+        help_text="description from the requestor to justify the bounty request",
+    )
+    amount = models.FloatField(
+        blank=False,
+        help_text="amount for which the requested bounty is to be funded",
+        validators=[MinValueValidator(1.0)],
+    )
+    token_name = models.CharField(
+        max_length=50,
+        default="ETH",
+        help_text="token in which the requested bounty is to be funded",
+    )
 
-    github_org_email = models.CharField(max_length=255, blank=True) # TODO: REMOVE
-    github_org_name = models.CharField(max_length=50, blank=True) # TODO: REMOVE
-    eth_address = models.CharField(max_length=50, blank=True) # TODO: REMOVE
-    comment_admin = models.TextField(max_length=500, blank=True) # TODO: REMOVE
+    github_org_email = models.CharField(max_length=255, blank=True)  # TODO: REMOVE
+    github_org_name = models.CharField(max_length=50, blank=True)  # TODO: REMOVE
+    eth_address = models.CharField(max_length=50, blank=True)  # TODO: REMOVE
+    comment_admin = models.TextField(max_length=500, blank=True)  # TODO: REMOVE
 
     objects = BountyQuerySet.as_manager()
 
@@ -88,5 +102,5 @@ class BountyRequest(SuperModel):
 class BountyRequestMeta(SuperModel):
     """A helper storage class for BountyRequest to keep track of dispatched emails."""
 
-    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE)
+    profile = models.ForeignKey("dashboard.Profile", on_delete=models.CASCADE)
     last_feedback_sent = models.DateTimeField()

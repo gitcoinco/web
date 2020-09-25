@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0002_transferenabledfor'),
+        ("kudos", "0002_transferenabledfor"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bulktransfercoupon',
-            name='sender_address',
+            model_name="bulktransfercoupon",
+            name="sender_address",
             field=models.CharField(blank=True, max_length=255),
         ),
         migrations.AddField(
-            model_name='bulktransfercoupon',
-            name='sender_pk',
+            model_name="bulktransfercoupon",
+            name="sender_pk",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]

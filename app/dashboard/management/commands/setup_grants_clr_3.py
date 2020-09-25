@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.contrib.auth.models import Group, Permission, User
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -29,11 +29,14 @@ class Command(BaseCommand):
         add_clr_match = Permission.objects.get(codename="add_clrmatch")
         clr_group_r3.permissions.add(add_clr_match)
 
-        print('Fetching Valid Grant CLR Round 3 Users')
-        valid_users = User.objects.filter(~Q(groups__name__in=[clr_r3_group_name]),
-                                          profile__data__created_at__lte="2019-02-15") | User.objects.filter(
-            ~Q(groups__name__in=[clr_r3_group_name]), profile__trust_profile=True)
+        print("Fetching Valid Grant CLR Round 3 Users")
+        valid_users = User.objects.filter(
+            ~Q(groups__name__in=[clr_r3_group_name]),
+            profile__data__created_at__lte="2019-02-15",
+        ) | User.objects.filter(
+            ~Q(groups__name__in=[clr_r3_group_name]), profile__trust_profile=True
+        )
         for user in valid_users:
             user.groups.add(clr_group_r3)
 
-        print('Grant CLR Round 3 Setup Finished')
+        print("Grant CLR Round 3 Setup Finished")

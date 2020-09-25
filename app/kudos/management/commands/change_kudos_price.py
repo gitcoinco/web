@@ -33,7 +33,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
+formatter = "%(levelname)s:%(name)s.%(funcName)s:%(message)s"
 
 
 class Command(BaseCommand):
@@ -41,19 +41,25 @@ class Command(BaseCommand):
     help = 'changes a bunch of kudos prices by a multiplier of "multiplier"'
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='localhost', type=str)
-        parser.add_argument('multiplier', default='localhost', type=int)
-        parser.add_argument('--live', help='whether or not to deploy the proposed changes live', action='store_true')
-        parser.add_argument('--filter', default='', type=str, dest='kudos_filter')
+        parser.add_argument("network", default="localhost", type=str)
+        parser.add_argument("multiplier", default="localhost", type=int)
+        parser.add_argument(
+            "--live",
+            help="whether or not to deploy the proposed changes live",
+            action="store_true",
+        )
+        parser.add_argument("--filter", default="", type=str, dest="kudos_filter")
 
     def handle(self, *args, **options):
         # config
-        network = options['network']
-        _filter = options['kudos_filter']
-        live = options['live']
-        multiplier = options['multiplier']
+        network = options["network"]
+        _filter = options["kudos_filter"]
+        live = options["live"]
+        multiplier = options["multiplier"]
 
-        tokens = Token.objects.filter(owner_address=settings.KUDOS_OWNER_ACCOUNT, contract__network=network)
+        tokens = Token.objects.filter(
+            owner_address=settings.KUDOS_OWNER_ACCOUNT, contract__network=network
+        )
         if _filter:
             tokens = tokens.filter(name__contains=_filter)
         kudos_contract = KudosContract(network=network)._get_contract()
@@ -66,12 +72,18 @@ class Command(BaseCommand):
             if live:
                 _tokenId = token.token_id
                 _newPriceFinney = token.price_finney * multiplier
-                tx = kudos_contract.functions.setPrice(_tokenId, _newPriceFinney).buildTransaction({
-                    'nonce': get_nonce(network, settings.KUDOS_OWNER_ACCOUNT),
-                    'gas': 47000,
-                    'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(5) * 10**9),
-                    'value': 0,
-                })
+                tx = kudos_contract.functions.setPrice(
+                    _tokenId, _newPriceFinney
+                ).buildTransaction(
+                    {
+                        "nonce": get_nonce(network, settings.KUDOS_OWNER_ACCOUNT),
+                        "gas": 47000,
+                        "gasPrice": int(
+                            recommend_min_gas_price_to_confirm_in_time(5) * 10 ** 9
+                        ),
+                        "value": 0,
+                    }
+                )
                 signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
                 print(txid)

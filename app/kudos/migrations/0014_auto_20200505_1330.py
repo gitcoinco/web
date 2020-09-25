@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0013_bulktransfercoupon_make_paid_for_first_hours'),
+        ("kudos", "0013_bulktransfercoupon_make_paid_for_first_hours"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='token',
-            name='hidden_token_details_page',
-            field=models.BooleanField(default=False, help_text='Hide token details page'),
+            model_name="token",
+            name="hidden_token_details_page",
+            field=models.BooleanField(
+                default=False, help_text="Hide token details page"
+            ),
         ),
         migrations.AlterField(
-            model_name='token',
-            name='hidden',
-            field=models.BooleanField(default=False, help_text='Hide from marketplace?'),
+            model_name="token",
+            name="hidden",
+            field=models.BooleanField(
+                default=False, help_text="Hide from marketplace?"
+            ),
         ),
     ]

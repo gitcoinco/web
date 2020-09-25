@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import logging
 import time
@@ -35,17 +35,17 @@ def process_bounty(bounty_id, network):
 
 
 class Command(BaseCommand):
-    help = 'listens for bounty changes '
+    help = "listens for bounty changes "
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument("network", default="rinkeby", type=str)
 
     def handle(self, *args, **options):
         # config
-        block = 'latest'
+        block = "latest"
 
         # setup
-        network = options['network']
+        network = options["network"]
         web3 = get_web3(network)
         contract_address = getStandardBountiesContractAddresss(network)
         contract = getBountyContract(network)
@@ -53,33 +53,33 @@ class Command(BaseCommand):
 
         while True:
             # wait for a new block
-            block = web3.eth.getBlock('latest')
-            block_hash = block['hash']
+            block = web3.eth.getBlock("latest")
+            block_hash = block["hash"]
 
             if last_block_hash == block_hash:
                 time.sleep(1)
                 continue
 
-            print('got new block %s' % web3.toHex(block_hash))
+            print("got new block %s" % web3.toHex(block_hash))
 
             # get txs
-            transactions = block['transactions']
+            transactions = block["transactions"]
             for tx in transactions:
                 tx = web3.eth.getTransaction(tx)
-                if not tx or tx['to'] != contract_address:
+                if not tx or tx["to"] != contract_address:
                     continue
 
-                print('found a stdbounties tx')
-                data = tx['input']
+                print("found a stdbounties tx")
+                data = tx["input"]
                 method_id = data[:10]
-                if method_id == '0x7e9e511d':
+                if method_id == "0x7e9e511d":
                     # issueAndActivateBounty
                     bounty_id = contract.functions.getNumBounties().call() - 1
                 else:
                     # any other method
                     bounty_id = int(data[10:74], 16)
-                print('process_bounty %d' % bounty_id)
+                print("process_bounty %d" % bounty_id)
                 process_bounty(bounty_id, network)
-                print('done process_bounty %d' % bounty_id)
+                print("done process_bounty %d" % bounty_id)
 
             last_block_hash = block_hash

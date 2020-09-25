@@ -30,76 +30,71 @@ from test_plus.test import TestCase
 class TestExpiration(TestCase):
     """Define tests for expiration bounty."""
 
-    @patch('marketing.management.commands.expiration.bounty_expire_warning')
+    @patch("marketing.management.commands.expiration.bounty_expire_warning")
     def test_handle(self, mock_func):
         """Test command expiration bounty with expired bounties."""
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='submitted',
-            bounty_owner_email='john@bar.com',
+            idx_status="submitted",
+            bounty_owner_email="john@bar.com",
             current_bounty=True,
-            network='mainnet'
+            network="mainnet",
         )
         fulfiller_profile = Profile.objects.create(
-            data={},
-            handle='fred',
-            email='fred@bar.com'
+            data={}, handle="fred", email="fred@bar.com"
         )
         BountyFulfillment.objects.create(
-            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_address="0x0000000000000000000000000000000000000000",
             bounty=bounty,
             profile=fulfiller_profile,
         )
 
         Command().handle()
 
-        mock_func.assert_called_once_with(bounty, ['john@bar.com', 'fred@bar.com'])
+        mock_func.assert_called_once_with(bounty, ["john@bar.com", "fred@bar.com"])
 
-    @patch('marketing.management.commands.expiration.bounty_expire_warning')
+    @patch("marketing.management.commands.expiration.bounty_expire_warning")
     def test_handle_no_users(self, mock_func):
         """Test command expiration bounty without users for expired bounties."""
         bounty = Bounty.objects.create(
-            title='foo',
+            title="foo",
             value_in_token=3,
-            token_name='USDT',
+            token_name="USDT",
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web',
-            token_address='0x0',
-            issue_description='hello world',
-            bounty_owner_github_username='flintstone',
+            github_url="https://github.com/gitcoinco/web",
+            token_address="0x0",
+            issue_description="hello world",
+            bounty_owner_github_username="flintstone",
             is_open=True,
             accepted=True,
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             idx_project_length=5,
-            project_length='Months',
-            bounty_type='Feature',
-            experience_level='Intermediate',
+            project_length="Months",
+            bounty_type="Feature",
+            experience_level="Intermediate",
             raw_data={},
-            idx_status='submitted',
+            idx_status="submitted",
             current_bounty=True,
-            network='mainnet'
+            network="mainnet",
         )
-        fulfiller_profile = Profile.objects.create(
-            data={},
-            handle='fred'
-        )
+        fulfiller_profile = Profile.objects.create(data={}, handle="fred")
         BountyFulfillment.objects.create(
-            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_address="0x0000000000000000000000000000000000000000",
             bounty=bounty,
             profile=fulfiller_profile,
         )

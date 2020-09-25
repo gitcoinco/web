@@ -26,8 +26,8 @@ from .models import DataPayload
 
 class GeneralAdmin(admin.ModelAdmin):
 
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
 
 
 admin.site.register(DataPayload, GeneralAdmin)

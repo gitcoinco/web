@@ -8,23 +8,62 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0013_subscription_amount_per_period_usdt'),
+        ("grants", "0013_subscription_amount_per_period_usdt"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MatchPledge',
+            name="MatchPledge",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('active', models.BooleanField(default=False, help_text='Whether or not the MatchingPledge is active.')),
-                ('amount', models.DecimalField(decimal_places=4, default=1, help_text='The matching pledge amount in DAI.', max_digits=50)),
-                ('comments', models.TextField(blank=True, default='', help_text='The comments.')),
-                ('profile', models.ForeignKey(help_text='The MatchingPledgers profile.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='matchPledges', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "active",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether or not the MatchingPledge is active.",
+                    ),
+                ),
+                (
+                    "amount",
+                    models.DecimalField(
+                        decimal_places=4,
+                        default=1,
+                        help_text="The matching pledge amount in DAI.",
+                        max_digits=50,
+                    ),
+                ),
+                (
+                    "comments",
+                    models.TextField(blank=True, default="", help_text="The comments."),
+                ),
+                (
+                    "profile",
+                    models.ForeignKey(
+                        help_text="The MatchingPledgers profile.",
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="matchPledges",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

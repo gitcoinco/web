@@ -1,4 +1,3 @@
-
 import logging
 
 from dashboard.helpers import bounty_activity_event_adapter, get_bounty_data_for_activity
@@ -9,30 +8,31 @@ logger = logging.getLogger(__name__)
 
 def txn_already_used(txn, token_name):
     return BountyFulfillment.objects.filter(
-        payout_tx_id = txn,
-        token_name=token_name
+        payout_tx_id=txn, token_name=token_name
     ).exists()
 
 
 def record_payout_activity(fulfillment):
-    event_name = 'worker_paid'
+    event_name = "worker_paid"
     bounty = fulfillment.bounty
     kwargs = {
-        'activity_type': event_name,
-        'bounty': bounty,
-        'metadata': get_bounty_data_for_activity(bounty)
+        "activity_type": event_name,
+        "bounty": bounty,
+        "metadata": get_bounty_data_for_activity(bounty),
     }
-    kwargs['profile'] = fulfillment.funder_profile
-    kwargs['metadata']['from'] = fulfillment.funder_profile.handle
-    kwargs['metadata']['to'] = fulfillment.profile.handle
-    kwargs['metadata']['payout_amount'] = fulfillment.payout_amount
-    kwargs['metadata']['token_name'] = fulfillment.token_name
+    kwargs["profile"] = fulfillment.funder_profile
+    kwargs["metadata"]["from"] = fulfillment.funder_profile.handle
+    kwargs["metadata"]["to"] = fulfillment.profile.handle
+    kwargs["metadata"]["payout_amount"] = fulfillment.payout_amount
+    kwargs["metadata"]["token_name"] = fulfillment.token_name
 
     try:
         if event_name in bounty_activity_event_adapter:
-            event = BountyEvent.objects.create(bounty=bounty,
+            event = BountyEvent.objects.create(
+                bounty=bounty,
                 event_type=bounty_activity_event_adapter[event_name],
-                created_by=kwargs['profile'])
+                created_by=kwargs["profile"],
+            )
             bounty.handle_event(event)
         Activity.objects.create(**kwargs)
 

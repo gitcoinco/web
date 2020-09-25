@@ -9,22 +9,49 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='JSONStore',
+            name="JSONStore",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('view', models.CharField(blank=True, db_index=True, default='', max_length=255)),
-                ('key', models.CharField(blank=True, db_index=True, default='', max_length=255)),
-                ('data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                (
+                    "view",
+                    models.CharField(
+                        blank=True, db_index=True, default="", max_length=255
+                    ),
+                ),
+                (
+                    "key",
+                    models.CharField(
+                        blank=True, db_index=True, default="", max_length=255
+                    ),
+                ),
+                (
+                    "data",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

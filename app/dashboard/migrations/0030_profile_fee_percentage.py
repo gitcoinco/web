@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0029_grant_activity'),
+        ("dashboard", "0029_grant_activity"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='fee_percentage',
+            model_name="profile",
+            name="fee_percentage",
             field=models.IntegerField(default=10),
         ),
     ]

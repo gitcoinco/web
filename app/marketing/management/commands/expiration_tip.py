@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -24,17 +24,23 @@ from marketing.mails import tip_email
 
 class Command(BaseCommand):
 
-    help = 'the expiration notifications'
+    help = "the expiration notifications"
 
     def handle(self, *args, **options):
         days = [1, 2]
         for day in days:
-            tips = Tip.objects.send_success().filter(
-                expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
-                expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
-                receive_txid='',
-                network='mainnet',
-            ).all()
-            print('day {} got {} tips'.format(day, tips.count()))
+            tips = (
+                Tip.objects.send_success()
+                .filter(
+                    expires_date__lt=(
+                        timezone.now() + timezone.timedelta(days=(day + 1))
+                    ),
+                    expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
+                    receive_txid="",
+                    network="mainnet",
+                )
+                .all()
+            )
+            print("day {} got {} tips".format(day, tips.count()))
             for t in tips:
                 tip_email(t, [t.primary_email], False)

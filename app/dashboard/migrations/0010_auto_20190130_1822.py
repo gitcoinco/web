@@ -7,23 +7,31 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0009_merge_20190122_0857'),
+        ("dashboard", "0009_merge_20190122_0857"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activity',
-            name='created_on',
+            model_name="activity",
+            name="created_on",
             field=models.DateTimeField(db_index=True, default=economy.models.get_time),
         ),
         migrations.AddField(
-            model_name='activity',
-            name='modified_on',
+            model_name="activity",
+            name="modified_on",
             field=models.DateTimeField(default=economy.models.get_time),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='job_search_status',
-            field=models.CharField(blank=True, choices=[('AL', 'Actively looking for work'), ('PL', 'Passively looking and open to hearing new opportunities'), ('N', 'Not open to hearing new opportunities')], max_length=2),
+            model_name="profile",
+            name="job_search_status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("AL", "Actively looking for work"),
+                    ("PL", "Passively looking and open to hearing new opportunities"),
+                    ("N", "Not open to hearing new opportunities"),
+                ],
+                max_length=2,
+            ),
         ),
     ]

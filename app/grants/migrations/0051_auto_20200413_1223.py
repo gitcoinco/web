@@ -6,18 +6,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0050_auto_20200329_2146'),
+        ("grants", "0050_auto_20200329_2146"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='update',
-            name='grant',
+            model_name="update",
+            name="grant",
         ),
         migrations.DeleteModel(
-            name='Milestone',
+            name="Milestone",
         ),
         migrations.DeleteModel(
-            name='Update',
+            name="Update",
         ),
     ]

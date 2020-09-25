@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0019_bountyinvites'),
+        ("dashboard", "0019_bountyinvites"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bountyinvites',
-            name='status',
-            field=models.CharField(blank=True, choices=[('pending', 'pending'), ('accepted', 'accepted'), ('completed', 'completed')], max_length=20),
+            model_name="bountyinvites",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("pending", "pending"),
+                    ("accepted", "accepted"),
+                    ("completed", "completed"),
+                ],
+                max_length=20,
+            ),
         ),
     ]

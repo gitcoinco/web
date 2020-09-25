@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -27,7 +27,7 @@ from dashboard.models import Activity
 
 class Command(BaseCommand):
 
-    help = 'sends activity feed to twitter'
+    help = "sends activity feed to twitter"
 
     def handle(self, *args, **options):
 
@@ -38,9 +38,9 @@ class Command(BaseCommand):
             access_token_secret=settings.TWITTER_ACCESS_SECRET,
         )
 
-        created_before = (timezone.now() - timezone.timedelta(minutes=1))
+        created_before = timezone.now() - timezone.timedelta(minutes=1)
         if settings.DEBUG:
-            created_before = (timezone.now() - timezone.timedelta(days=20))
+            created_before = timezone.now() - timezone.timedelta(days=20)
         activities = Activity.objects.filter(created_on__gt=created_before)
         print(f" got {activities.count()} activities")
         for activity in activities:
@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
             txt = f". {txt} {activity.action_url}"
 
-            if 'made an update to' in txt:
+            if "made an update to" in txt:
                 continue
 
             try:

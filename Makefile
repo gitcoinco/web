@@ -58,7 +58,7 @@ fix-stylelint: ## Run stylelint --fix against the project directory. Requires no
 	@npm run stylelint:fix
 
 fix-black: ## Run black against any included or newly introduced Python code.
-	@docker-compose exec web black "app" --exclude "app/static/"
+	@docker-compose exec web black "app"
 
 fix: fix-eslint fix-stylelint fix-isort fix-black ## Attempt to run all fixes against the project directory.
 

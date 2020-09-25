@@ -30,17 +30,18 @@ from marketing.mails import warn_subscription_failed
 
 class Command(BaseCommand):
 
-    help = 'calculate CLR estimates for all grants'
+    help = "calculate CLR estimates for all grants"
 
     def add_arguments(self, parser):
-        parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
-        parser.add_argument('clr_pk', type=str, default="all")
-
+        parser.add_argument(
+            "network", type=str, default="mainnet", choices=["rinkeby", "mainnet"]
+        )
+        parser.add_argument("clr_pk", type=str, default="all")
 
     def handle(self, *args, **options):
 
-        network = options['network']
-        clr_pk = options['clr_pk']
+        network = options["network"]
+        clr_pk = options["clr_pk"]
 
         if clr_pk == "all":
             active_clr_rounds = GrantCLR.objects.filter(is_active=True)
@@ -54,7 +55,7 @@ class Command(BaseCommand):
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
-                    network=network
+                    network=network,
                 )
                 print(f"finished CLR estimates for {clr_round.round_num}")
 

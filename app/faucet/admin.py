@@ -28,51 +28,67 @@ from .models import FaucetRequest
 class GeneralAdmin(admin.ModelAdmin):
     """Define the Faucet specific admin handling."""
 
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
 
 
 class FaucetRequestAdmin(admin.ModelAdmin):
     """Setup the FaucetRequest admin results display."""
 
-    raw_id_fields = ['profile']
-    ordering = ['-created_on']
+    raw_id_fields = ["profile"]
+    ordering = ["-created_on"]
     list_display = [
-        'created_on', 'fulfilled', 'rejected', 'link', 'get_profile_handle',
-        'get_profile_email', 'email', 'address', 'comment',
+        "created_on",
+        "fulfilled",
+        "rejected",
+        "link",
+        "get_profile_handle",
+        "get_profile_email",
+        "email",
+        "address",
+        "comment",
     ]
     search_fields = [
-        'created_on', 'fulfilled', 'rejected', 'profile__handle',
-        'email', 'address', 'comment',
+        "created_on",
+        "fulfilled",
+        "rejected",
+        "profile__handle",
+        "email",
+        "address",
+        "comment",
     ]
 
     def get_queryset(self, request):
         """Override the get_queryset method to include FK lookups."""
-        return super(FaucetRequestAdmin, self).get_queryset(request).select_related('profile')
+        return (
+            super(FaucetRequestAdmin, self)
+            .get_queryset(request)
+            .select_related("profile")
+        )
 
     def get_profile_email(self, obj):
         """Get the profile email address."""
-        profile = getattr(obj, 'profile', None)
+        profile = getattr(obj, "profile", None)
         if profile:
             return profile.email
-        return 'N/A'
+        return "N/A"
 
-    get_profile_email.admin_order_field = 'email'
-    get_profile_email.short_description = 'Profile Email'
+    get_profile_email.admin_order_field = "email"
+    get_profile_email.short_description = "Profile Email"
 
     def get_profile_handle(self, obj):
         """Get the profile handle."""
-        profile = getattr(obj, 'profile', None)
+        profile = getattr(obj, "profile", None)
         if profile and profile.handle:
             return mark_safe(
-                f'<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>'
+                f"<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>"
             )
         if obj.github_username:
             return obj.github_username
-        return 'N/A'
+        return "N/A"
 
-    get_profile_handle.admin_order_field = 'handle'
-    get_profile_handle.short_description = 'Profile Handle'
+    get_profile_handle.admin_order_field = "handle"
+    get_profile_handle.short_description = "Profile Handle"
 
     def link(self, instance):
         """Handle faucet request specific links.
@@ -85,8 +101,11 @@ class FaucetRequestAdmin(admin.ModelAdmin):
 
         """
         if instance.fulfilled or instance.rejected:
-            return 'n/a'
-        return mark_safe(f"<a href=/_administration/process_faucet_request/{instance.pk}>process me</a>")
+            return "n/a"
+        return mark_safe(
+            f"<a href=/_administration/process_faucet_request/{instance.pk}>process me</a>"
+        )
+
     link.allow_tags = True
 
 

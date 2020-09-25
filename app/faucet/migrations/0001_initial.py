@@ -11,30 +11,56 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dashboard', '0001_initial'),
+        ("dashboard", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FaucetRequest',
+            name="FaucetRequest",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('fulfilled', models.BooleanField(default=False)),
-                ('rejected', models.BooleanField(default=False)),
-                ('github_username', models.CharField(db_index=True, max_length=255)),
-                ('github_meta', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
-                ('address', models.CharField(max_length=50)),
-                ('email', models.CharField(max_length=255)),
-                ('comment', models.TextField(blank=True, max_length=500)),
-                ('comment_admin', models.TextField(blank=True, max_length=500)),
-                ('fulfill_date', models.DateTimeField(blank=True, null=True)),
-                ('amount', models.FloatField(default=0.00025)),
-                ('profile', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='faucet_requests', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("fulfilled", models.BooleanField(default=False)),
+                ("rejected", models.BooleanField(default=False)),
+                ("github_username", models.CharField(db_index=True, max_length=255)),
+                (
+                    "github_meta",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict
+                    ),
+                ),
+                ("address", models.CharField(max_length=50)),
+                ("email", models.CharField(max_length=255)),
+                ("comment", models.TextField(blank=True, max_length=500)),
+                ("comment_admin", models.TextField(blank=True, max_length=500)),
+                ("fulfill_date", models.DateTimeField(blank=True, null=True)),
+                ("amount", models.FloatField(default=0.00025)),
+                (
+                    "profile",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="faucet_requests",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0046_auto_20200321_2043'),
+        ("grants", "0046_auto_20200321_2043"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='negative_round_contributor_count',
+            model_name="grant",
+            name="negative_round_contributor_count",
             field=models.PositiveIntegerField(blank=True, default=0),
         ),
         migrations.AddField(
-            model_name='grant',
-            name='positive_round_contributor_count',
+            model_name="grant",
+            name="positive_round_contributor_count",
             field=models.PositiveIntegerField(blank=True, default=0),
         ),
     ]

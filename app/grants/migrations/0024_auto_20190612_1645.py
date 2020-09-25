@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0023_auto_20190604_1552'),
+        ("grants", "0023_auto_20190604_1552"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='grant',
-            name='clr_matching',
-            field=models.DecimalField(decimal_places=2, default=0, help_text='The TOTAL CLR matching amount across all rounds', max_digits=20),
+            model_name="grant",
+            name="clr_matching",
+            field=models.DecimalField(
+                decimal_places=2,
+                default=0,
+                help_text="The TOTAL CLR matching amount across all rounds",
+                max_digits=20,
+            ),
         ),
     ]

@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0081_auto_20200915_0935'),
+        ("grants", "0081_auto_20200915_0935"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='subscription',
-            name='is_postive_vote',
-            field=models.BooleanField(db_index=True, default=True, help_text='Whether this is positive or negative vote'),
+            model_name="subscription",
+            name="is_postive_vote",
+            field=models.BooleanField(
+                db_index=True,
+                default=True,
+                help_text="Whether this is positive or negative vote",
+            ),
         ),
     ]

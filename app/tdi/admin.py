@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from __future__ import unicode_literals
 
 from django.contrib import admin
@@ -26,20 +26,31 @@ from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
 class GeneralAdmin(admin.ModelAdmin):
 
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
 
 
 class WhitepaperAccessRequestAdmin(admin.ModelAdmin):
 
-    ordering = ['-id']
-    list_display = ['pk', 'link', 'role', 'processed', 'comments', 'email', 'created_on']
-    readonly_fields = ['link']
+    ordering = ["-id"]
+    list_display = [
+        "pk",
+        "link",
+        "role",
+        "processed",
+        "comments",
+        "email",
+        "created_on",
+    ]
+    readonly_fields = ["link"]
 
     def link(self, instance):
         if instance.processed:
-            return 'n/a'
-        link = format_html('<a href="/_administration/process_accesscode_request/{}">process me</a>', instance.pk)
+            return "n/a"
+        link = format_html(
+            '<a href="/_administration/process_accesscode_request/{}">process me</a>',
+            instance.pk,
+        )
         return link
 
 

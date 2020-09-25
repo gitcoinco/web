@@ -28,7 +28,7 @@ from grants.models import Grant
 
 class Command(BaseCommand):
 
-    help = 'checks for follower counts on grants profiles, and also does some basic data integrity stuff'
+    help = "checks for follower counts on grants profiles, and also does some basic data integrity stuff"
 
     def handle(self, *args, **kwargs):
 
@@ -42,14 +42,18 @@ class Command(BaseCommand):
         for grant in Grant.objects.all():
             try:
                 if grant.twitter_handle_1:
-                    user = api.GetUser(screen_name=grant.twitter_handle_1.replace('@', ''))
+                    user = api.GetUser(
+                        screen_name=grant.twitter_handle_1.replace("@", "")
+                    )
                     grant.twitter_handle_1_follower_count = user.followers_count
                     grant.save()
             except Exception as e:
                 print(e)
             try:
                 if grant.twitter_handle_2:
-                    user = api.GetUser(screen_name=grant.twitter_handle_2.replace('@', ''))
+                    user = api.GetUser(
+                        screen_name=grant.twitter_handle_2.replace("@", "")
+                    )
                     grant.twitter_handle_2_follower_count = user.followers_count
                     grant.save()
             except Exception as e:
@@ -57,8 +61,10 @@ class Command(BaseCommand):
 
             try:
                 if not grant.contract_owner_address:
-                    w3 = get_web3('mainnet')
-                    grant.contract_owner_address = w3.eth.getTransaction(grant.deploy_tx_id)['from']
+                    w3 = get_web3("mainnet")
+                    grant.contract_owner_address = w3.eth.getTransaction(
+                        grant.deploy_tx_id
+                    )["from"]
                     grant.save()
 
             except Exception as e:

@@ -28,26 +28,21 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 
-@unittest.skip(reason='Not creating fresh database and blockchain instances')
+@unittest.skip(reason="Not creating fresh database and blockchain instances")
 class KudosContractTestCase(TestCase):
     def setUp(self):
-        self.contract = KudosContract(network='localhost')
+        self.contract = KudosContract(network="localhost")
         self.metadata = {
-            'name': 'pythonista',
-            'image': '',
-            'description': 'something',
-            'external_url': 'http://localhost:8000/kudos',
-            'background_color': 'fbfbfb',
-            'attributes': []
+            "name": "pythonista",
+            "image": "",
+            "description": "something",
+            "external_url": "http://localhost:8000/kudos",
+            "background_color": "fbfbfb",
+            "attributes": [],
         }
 
     def test_mint(self):
         token_uri_url = self.contract.create_token_uri_url(**self.metadata)
-        args = (
-            '0xD386793F1DB5F21609571C0164841E5eA2D33aD8',
-            5,
-            1,
-            token_uri_url
-        )
+        args = ("0xD386793F1DB5F21609571C0164841E5eA2D33aD8", 5, 1, token_uri_url)
 
         self.contract.mint(*args)

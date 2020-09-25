@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0118_auto_20200605_1302'),
+        ("dashboard", "0118_auto_20200605_1302"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='pref_do_not_track',
-            field=models.BooleanField(default=False, help_text='If this option is chosen, we will not put GA/FB tracking on pages that you browse'),
+            model_name="profile",
+            name="pref_do_not_track",
+            field=models.BooleanField(
+                default=False,
+                help_text="If this option is chosen, we will not put GA/FB tracking on pages that you browse",
+            ),
         ),
     ]

@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 def circular_processor(image, circle=False, **kwargs):
     """Force the image to a circle."""
     from .utils import get_circular_image
+
     if circle:
         image = get_circular_image(image)
     return image

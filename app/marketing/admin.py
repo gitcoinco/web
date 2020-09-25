@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from __future__ import unicode_literals
 
 from django.contrib import admin
@@ -29,109 +29,134 @@ from .models import (
 
 
 class RoundupEmailAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
 
     def response_change(self, request, obj):
         if "_send_roundup_email_myself" in request.POST:
             from marketing.tasks import weekly_roundup
+
             weekly_roundup.delay(request.user.profile.email)
             self.message_user(request, "Roundup Email Queued!")
         if "_send_roundup_email_everyone" in request.POST:
             from marketing.tasks import send_all_weekly_roundup
+
             send_all_weekly_roundup.delay()
             self.message_user(request, "Roundup Email Queued!")
         return super().response_change(request, obj)
 
+
 class GeneralAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
+
 
 class UpcomingDateAdmin(admin.ModelAdmin):
-    ordering = ['-date']
-    list_display = ['created_on', 'date', '__str__']
+    ordering = ["-date"]
+    list_display = ["created_on", "date", "__str__"]
 
 
 class LeaderboardRankAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['profile']
+    ordering = ["-id"]
+    list_display = ["created_on", "__str__"]
+    raw_id_fields = ["profile"]
 
 
 class EmailEventAdmin(admin.ModelAdmin):
-    search_fields = ['email', 'event' ]
-    ordering = ['-id']
+    search_fields = ["email", "event"]
+    ordering = ["-id"]
 
 
 class GithubEventAdmin(admin.ModelAdmin):
-    raw_id_fields = ['profile']
-    ordering = ['-id']
+    raw_id_fields = ["profile"]
+    ordering = ["-id"]
 
 
 class SlackPresenceAdmin(admin.ModelAdmin):
-    raw_id_fields = ['slackuser']
-    ordering = ['-id']
+    raw_id_fields = ["slackuser"]
+    ordering = ["-id"]
 
 
 class MatchAdmin(admin.ModelAdmin):
-    raw_id_fields = ['bounty']
-    ordering = ['-id']
+    raw_id_fields = ["bounty"]
+    ordering = ["-id"]
 
 
 class AlumniAdmin(GeneralAdmin):
     """Define the Alumni admin layout."""
 
-    raw_id_fields = ['profile']
-    search_fields = ['organization', ]
-    list_display = ['get_profile_username', 'get_profile_email', 'organization', 'created_on', ]
-    readonly_fields = ['created_on', 'modified_on', ]
+    raw_id_fields = ["profile"]
+    search_fields = [
+        "organization",
+    ]
+    list_display = [
+        "get_profile_username",
+        "get_profile_email",
+        "organization",
+        "created_on",
+    ]
+    readonly_fields = [
+        "created_on",
+        "modified_on",
+    ]
 
     def get_queryset(self, request):
         """Override the get_queryset method to include FK lookups."""
-        return super(AlumniAdmin, self).get_queryset(request).select_related('profile')
+        return super(AlumniAdmin, self).get_queryset(request).select_related("profile")
 
     def get_profile_email(self, obj):
         """Get the profile email address."""
         return obj.profile.email
 
-    get_profile_email.admin_order_field = 'email'
-    get_profile_email.short_description = 'Profile Email'
+    get_profile_email.admin_order_field = "email"
+    get_profile_email.short_description = "Profile Email"
 
     def get_profile_username(self, obj):
         """Get the profile username."""
-        if hasattr(obj, 'profile') and obj.profile.username:
+        if hasattr(obj, "profile") and obj.profile.username:
             return mark_safe(
-                f'<a href=/_administrationmarketing/alumni/{obj.pk}/change/>{obj.profile.username}</a>'
+                f"<a href=/_administrationmarketing/alumni/{obj.pk}/change/>{obj.profile.username}</a>"
             )
         elif obj.github_username:
             return obj.github_username
-        return 'N/A'
+        return "N/A"
 
-    get_profile_username.admin_order_field = 'username'
-    get_profile_username.short_description = 'Profile Username'
+    get_profile_username.admin_order_field = "username"
+    get_profile_username.short_description = "Profile Username"
 
 
 class EmailSubscriberAdmin(admin.ModelAdmin):
-    raw_id_fields = ['profile']
-    ordering = ['-id']
-    search_fields = ['email', 'source', 'keywords']
-    list_display = ['email', 'created_on', 'source']
+    raw_id_fields = ["profile"]
+    ordering = ["-id"]
+    search_fields = ["email", "source", "keywords"]
+    list_display = ["email", "created_on", "source"]
 
 
 class SlackUserAdmin(admin.ModelAdmin):
-    ordering = ['-times_seen']
-    search_fields = ['email', 'username']
-    list_display = ['email', 'username', 'times_seen', 'pct_seen', 'membership_length_in_days', 'last_seen']
+    ordering = ["-times_seen"]
+    search_fields = ["email", "username"]
+    list_display = [
+        "email",
+        "username",
+        "times_seen",
+        "pct_seen",
+        "membership_length_in_days",
+        "last_seen",
+    ]
 
     def pct_seen(self, instance):
-        return "{}%".format(round(100 * (instance.times_seen / (instance.times_seen + instance.times_unseen))))
+        return "{}%".format(
+            round(
+                100
+                * (instance.times_seen / (instance.times_seen + instance.times_unseen))
+            )
+        )
 
     def membership_length_in_days(self, instance):
         try:
             return (instance.last_seen - instance.created_on).days
         except Exception:
-            return 'Unknown'
-
+            return "Unknown"
 
 
 admin.site.register(MarketingCallback, GeneralAdmin)

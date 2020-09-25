@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0118_auto_20200605_1302'),
+        ("dashboard", "0118_auto_20200605_1302"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonevent',
-            name='short_code',
-            field=models.CharField(default='', help_text='used in the chat for better channel grouping', max_length=5),
+            model_name="hackathonevent",
+            name="short_code",
+            field=models.CharField(
+                default="",
+                help_text="used in the chat for better channel grouping",
+                max_length=5,
+            ),
         ),
         migrations.AddField(
-            model_name='hackathonproject',
-            name='winner',
+            model_name="hackathonproject",
+            name="winner",
             field=models.BooleanField(default=False),
         ),
     ]

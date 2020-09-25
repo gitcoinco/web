@@ -7,25 +7,43 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('townsquare', '0012_matchranking_match_curve'),
+        ("townsquare", "0012_matchranking_match_curve"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SuggestedAction',
+            name="SuggestedAction",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('title', models.CharField(blank=True, max_length=50)),
-                ('desc', models.TextField(blank=True, default='')),
-                ('suggested_donation', models.CharField(blank=True, max_length=50)),
-                ('matchpotential', models.CharField(blank=True, max_length=50)),
-                ('active', models.BooleanField(default=True, help_text='Is this suggestion active?')),
-                ('rank', models.IntegerField(db_index=True, default=0)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("title", models.CharField(blank=True, max_length=50)),
+                ("desc", models.TextField(blank=True, default="")),
+                ("suggested_donation", models.CharField(blank=True, max_length=50)),
+                ("matchpotential", models.CharField(blank=True, max_length=50)),
+                (
+                    "active",
+                    models.BooleanField(
+                        default=True, help_text="Is this suggestion active?"
+                    ),
+                ),
+                ("rank", models.IntegerField(db_index=True, default=0)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

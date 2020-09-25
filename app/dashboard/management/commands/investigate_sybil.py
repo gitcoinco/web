@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 import time
 
@@ -26,7 +26,7 @@ from dashboard.models import Investigation, Profile
 
 class Command(BaseCommand):
 
-    help = 'Investigates sybil attacks'
+    help = "Investigates sybil attacks"
 
     def handle(self, *args, **options):
         then = timezone.now() - timezone.timedelta(minutes=120)

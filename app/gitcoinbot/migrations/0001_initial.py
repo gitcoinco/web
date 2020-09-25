@@ -7,16 +7,26 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='GitcoinBotResponses',
+            name="GitcoinBotResponses",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('request', models.CharField(db_index=True, max_length=500, unique=True)),
-                ('response', models.CharField(max_length=500)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "request",
+                    models.CharField(db_index=True, max_length=500, unique=True),
+                ),
+                ("response", models.CharField(max_length=500)),
             ],
         ),
     ]

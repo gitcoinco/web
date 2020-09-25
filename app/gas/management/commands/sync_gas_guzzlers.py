@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -24,21 +24,21 @@ from gas.models import GasGuzzler
 
 class Command(BaseCommand):
 
-    help = 'pulls gas guzzlers from ether gas station'
+    help = "pulls gas guzzlers from ether gas station"
 
     def handle(self, *args, **options):
         with transaction.atomic():
-            url = 'https://ethgasstation.info/json/gasguzz.json'
+            url = "https://ethgasstation.info/json/gasguzz.json"
             response = requests.get(url)
             elements = response.json()
-            print(f'syncing {len(elements)} elements')
+            print(f"syncing {len(elements)} elements")
             try:
                 for element in elements:
                     GasGuzzler.objects.create(
-                        ID=element['ID'],
-                        pct_total=element['pcttot'],
-                        address=element['to_address'],
-                        gas_used=element['gasused'],
+                        ID=element["ID"],
+                        pct_total=element["pcttot"],
+                        address=element["to_address"],
+                        gas_used=element["gasused"],
                     )
             except KeyError:
                 pass

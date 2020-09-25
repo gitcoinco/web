@@ -42,16 +42,19 @@ class DashboardHelpersTest(TestCase):
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=2,
-            source='etherdelta',
-            from_currency='ETH',
-            to_currency='USDT',
+            source="etherdelta",
+            from_currency="ETH",
+            to_currency="USDT",
         )
 
     def test_amount(self):
         """Test the dashboard helper amount method."""
-        params = {'amount': '5', 'denomination': 'ETH'}
-        request = self.factory.get('/sync/get_amount', params)
-        assert amount(request).content == b'[{"token": "ETH", "amount": 5.0, "eth": 5.0, "usdt": 10.0}]'
+        params = {"amount": "5", "denomination": "ETH"}
+        request = self.factory.get("/sync/get_amount", params)
+        assert (
+            amount(request).content
+            == b'[{"token": "ETH", "amount": 5.0, "eth": 5.0, "usdt": 10.0}]'
+        )
 
     def test_lowball_bounty(self):
         assert is_lowball_bounty(settings.LOWBALL_BOUNTY_THRESHOLD - 1.0)
@@ -59,4 +62,4 @@ class DashboardHelpersTest(TestCase):
 
     def test_normalize_url(self):
         """Test the dashboard helper normalize_url method."""
-        assert normalize_url('https://gitcoin.co/') == 'https://gitcoin.co'
+        assert normalize_url("https://gitcoin.co/") == "https://gitcoin.co"

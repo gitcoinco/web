@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0083_auto_20200215_1517'),
+        ("dashboard", "0083_auto_20200215_1517"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bounty',
-            name='payout_confirmed',
+            model_name="bounty",
+            name="payout_confirmed",
             field=models.BooleanField(blank=True, default=False, null=True),
         ),
         migrations.AddField(
-            model_name='bounty',
-            name='payout_tx_id',
-            field=models.CharField(blank=True, default='0x0', max_length=255),
+            model_name="bounty",
+            name="payout_tx_id",
+            field=models.CharField(blank=True, default="0x0", max_length=255),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='etc_address',
-            field=models.CharField(blank=True, default='', max_length=255),
+            model_name="profile",
+            name="etc_address",
+            field=models.CharField(blank=True, default="", max_length=255),
         ),
     ]

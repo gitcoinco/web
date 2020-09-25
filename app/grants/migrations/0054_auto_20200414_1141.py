@@ -5,21 +5,24 @@ from django.db import migrations
 
 logger = logging.getLogger(__name__)
 
+
 def forwards(apps, schema_editor):
-    Grant = apps.get_model('grants', 'Grant')
+    Grant = apps.get_model("grants", "Grant")
     for grant in Grant.objects.all():
         grant.backup_clr_prediction_curve = grant.clr_prediction_curve
         grant.save()
 
+
 def backwards(apps, schema_editor):
     pass
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0053_grant_backup_clr_prediction_curve'),
+        ("grants", "0053_grant_backup_clr_prediction_curve"),
     ]
 
     operations = [
-            migrations.RunPython(forwards, backwards),
+        migrations.RunPython(forwards, backwards),
     ]

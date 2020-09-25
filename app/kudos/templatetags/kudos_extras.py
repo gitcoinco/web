@@ -56,9 +56,9 @@ def humanize_address(address):
         str: The new address.
 
     """
-    return address[:6] + '...' + address[-4:]
+    return address[:6] + "..." + address[-4:]
 
 
 @register.filter
 def replace_commas(string):
-    return ' '.join([x.capitalize() for x in string.split(',')])
+    return " ".join([x.capitalize() for x in string.split(",")])

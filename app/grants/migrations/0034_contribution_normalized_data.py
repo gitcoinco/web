@@ -7,13 +7,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0033_grant_defer_clr_to'),
+        ("grants", "0033_grant_defer_clr_to"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contribution',
-            name='normalized_data',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, help_text='the normalized grant data; for easy consumption on read'),
+            model_name="contribution",
+            name="normalized_data",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True,
+                default=dict,
+                help_text="the normalized grant data; for easy consumption on read",
+            ),
         ),
     ]

@@ -33,10 +33,8 @@ from economy.models import SuperModel
 class Alumni(SuperModel):
 
     profile = models.ForeignKey(
-        'dashboard.Profile',
-        on_delete=models.CASCADE,
-        related_name='alumni',
-        null=True)
+        "dashboard.Profile", on_delete=models.CASCADE, related_name="alumni", null=True
+    )
     organization = models.CharField(max_length=255, db_index=True, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
     public = models.BooleanField(default=True)
@@ -53,14 +51,16 @@ class EmailSubscriber(SuperModel):
     newsletter = models.BooleanField(default=True)
     preferences = JSONField(default=dict)
     metadata = JSONField(default=dict, blank=True)
-    priv = models.CharField(max_length=30, default='')
-    github = models.CharField(max_length=255, default='', blank=True)
+    priv = models.CharField(max_length=30, default="")
+    github = models.CharField(max_length=255, default="", blank=True)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile = models.ForeignKey(
-        'dashboard.Profile',
+        "dashboard.Profile",
         on_delete=models.CASCADE,
-        related_name='email_subscriptions',
-        null=True, blank=True)
+        related_name="email_subscriptions",
+        null=True,
+        blank=True,
+    )
     form_submission_records = JSONField(default=list, blank=True)
 
     def __str__(self):
@@ -70,36 +70,43 @@ class EmailSubscriber(SuperModel):
         self.priv = token_hex(16)[:29]
 
     def should_send_email_type_to(self, email_type):
-        is_on_global_suppression_list = EmailSupressionList.objects.filter(email__iexact=self.email).exists()
+        is_on_global_suppression_list = EmailSupressionList.objects.filter(
+            email__iexact=self.email
+        ).exists()
         if is_on_global_suppression_list:
             return False
 
-        should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
+        should_suppress = self.preferences.get("suppression_preferences", {}).get(
+            email_type, False
+        )
         return not should_suppress
 
     def set_should_send_email_type_to(self, key, should_send):
-        suppression_preferences = self.preferences.get('suppression_preferences', {})
-        suppression_preferences[key] = not should_send #db = suppressed? request format = send?
-        self.preferences['suppression_preferences'] = suppression_preferences
+        suppression_preferences = self.preferences.get("suppression_preferences", {})
+        suppression_preferences[
+            key
+        ] = not should_send  # db = suppressed? request format = send?
+        self.preferences["suppression_preferences"] = suppression_preferences
 
     def build_email_preferences(self, form=None):
         from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS
+
         if form is None:
             form = {}
 
-        suppression_preferences = self.preferences.get('suppression_preferences', {})
+        suppression_preferences = self.preferences.get("suppression_preferences", {})
 
         # update from legacy email preferences
-        level = self.preferences.pop('level', None)
+        level = self.preferences.pop("level", None)
         if level:
-            if level == 'lite1':
+            if level == "lite1":
                 for email_tuple in MARKETING_EMAILS:
                     key, __, __ = email_tuple
                     suppression_preferences[key] = True
                 for email_tuple in TRANSACTIONAL_EMAILS:
                     key, __, __ = email_tuple
                     suppression_preferences[key] = False
-            elif level == 'lite':
+            elif level == "lite":
                 for email_tuple in MARKETING_EMAILS:
                     key, __, __ = email_tuple
                     suppression_preferences[key] = False
@@ -118,18 +125,19 @@ class EmailSubscriber(SuperModel):
                 suppression_preferences[key] = bool(form[key])
 
         # save and return
-        self.preferences['suppression_preferences'] = suppression_preferences
+        self.preferences["suppression_preferences"] = suppression_preferences
         return suppression_preferences
 
     @property
     def is_eu(self):
         from app.utils import get_country_from_ip
+
         try:
-            ip_addresses = self.metadata.get('ip')
+            ip_addresses = self.metadata.get("ip")
             if ip_addresses:
                 for ip_address in ip_addresses:
                     country = get_country_from_ip(ip_address)
-                    if country.continent.code == 'EU':
+                    if country.continent.code == "EU":
                         return True
         except Exception:
             # Cowardly pass on everything for the moment.
@@ -144,16 +152,16 @@ def psave_es(sender, instance, **kwargs):
 
 
 class ManualStat(SuperModel):
-    """Define the manual stat model; which records stats that are not available on the platform
-    """
+    """Define the manual stat model; which records stats that are not available on the platform"""
 
     key = models.CharField(max_length=50, db_index=True)
     date = models.DateTimeField(db_index=True)
     val = models.FloatField()
-    comment = models.TextField(max_length=255, default='', blank=True)
+    comment = models.TextField(max_length=255, default="", blank=True)
 
     def __str__(self):
         return f"{self.key}: {self.date}: {self.val}"
+
 
 class Stat(SuperModel):
 
@@ -172,18 +180,30 @@ class Stat(SuperModel):
     @property
     def val_since_yesterday(self):
         try:
-            return self.val - Stat.objects.filter(
-                key=self.key, created_on__lt=self.created_on, created_on__hour=self.created_on.hour
-            ).order_by('-created_on').first().val
+            return (
+                self.val
+                - Stat.objects.filter(
+                    key=self.key,
+                    created_on__lt=self.created_on,
+                    created_on__hour=self.created_on.hour,
+                )
+                .order_by("-created_on")
+                .first()
+                .val
+            )
         except Exception:
             return 0
 
     @property
     def val_since_hour(self):
         try:
-            return self.val - Stat.objects.filter(
-                key=self.key, created_on__lt=self.created_on
-            ).order_by('-created_on').first().val
+            return (
+                self.val
+                - Stat.objects.filter(key=self.key, created_on__lt=self.created_on)
+                .order_by("-created_on")
+                .first()
+                .val
+            )
         except Exception:
             return 0
 
@@ -193,17 +213,17 @@ class LeaderboardRankQuerySet(models.QuerySet):
 
     def active(self):
         """Filter results to only active LeaderboardRank objects."""
-        return self.select_related('profile').filter(active=True)
+        return self.select_related("profile").filter(active=True)
 
 
 class LeaderboardRank(SuperModel):
     """Define the Leaderboard Rank model."""
 
     profile = models.ForeignKey(
-        'dashboard.Profile',
+        "dashboard.Profile",
         on_delete=models.SET_NULL,
         null=True,
-        related_name='leaderboard_ranks',
+        related_name="leaderboard_ranks",
     )
     github_username = models.CharField(max_length=255)
     leaderboard = models.CharField(max_length=255, db_index=True)
@@ -212,7 +232,9 @@ class LeaderboardRank(SuperModel):
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
     product = models.CharField(max_length=255, db_index=True)
-    tech_keywords = ArrayField(models.CharField(max_length=50), blank=True, default=list)
+    tech_keywords = ArrayField(
+        models.CharField(max_length=50), blank=True, default=list
+    )
 
     objects = LeaderboardRankQuerySet.as_manager()
 
@@ -221,7 +243,6 @@ class LeaderboardRank(SuperModel):
         index_together = [
             ["leaderboard", "active"],
         ]
-
 
     def __str__(self):
         return f"{self.leaderboard}, {self.github_username}: {self.amount}"
@@ -232,55 +253,64 @@ class LeaderboardRank(SuperModel):
 
     @property
     def is_not_user_based(self):
-        profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents', '_kudos']
+        profile_keys = [
+            "_tokens",
+            "_keywords",
+            "_cities",
+            "_countries",
+            "_continents",
+            "_kudos",
+        ]
         return any(sub in self.leaderboard for sub in profile_keys)
 
     @property
     def is_a_kudos(self):
-        return 'https://gitcoin.co/kudos/' == self.github_username[0:25]
+        return "https://gitcoin.co/kudos/" == self.github_username[0:25]
 
     @property
     def at_ify_username(self):
         if not self.is_not_user_based:
             return f"@{self.github_username}"
         if self.is_a_kudos:
-            pk = self.github_username.split('/')[4]
+            pk = self.github_username.split("/")[4]
             from kudos.models import Token
+
             return Token.objects.get(pk=pk).humanized_name
         return self.github_username
 
     @property
     def avatar_url(self):
         if self.is_a_kudos:
-            pk = self.github_username.split('/')[4]
+            pk = self.github_username.split("/")[4]
             from kudos.models import Token
+
             return Token.objects.get(pk=pk).img_url
         key = self.github_username
 
         # these two types won't have images
         if self.is_not_user_based:
-            key = 'None'
+            key = "None"
 
         return f"/dynamic/avatar/{key}"
 
     @property
     def url(self):
         if self.is_a_kudos:
-            pk = self.github_username.split('/')[4]
+            pk = self.github_username.split("/")[4]
             from kudos.models import Token
+
             return Token.objects.get(pk=pk).url
         ret_url = f"/profile/{self.github_username}"
         return ret_url
 
 
 class Match(SuperModel):
-
     class Meta:
 
-        verbose_name_plural = 'Matches'
+        verbose_name_plural = "Matches"
 
     email = models.EmailField(max_length=255)
-    bounty = models.ForeignKey('dashboard.Bounty', on_delete=models.CASCADE)
+    bounty = models.ForeignKey("dashboard.Bounty", on_delete=models.CASCADE)
     direction = models.CharField(max_length=50)
     github_username = models.CharField(max_length=255)
 
@@ -312,7 +342,9 @@ class SlackUser(SuperModel):
 
 class SlackPresence(SuperModel):
 
-    slackuser = models.ForeignKey('marketing.SlackUser', on_delete=models.CASCADE, related_name='presences')
+    slackuser = models.ForeignKey(
+        "marketing.SlackUser", on_delete=models.CASCADE, related_name="presences"
+    )
     status = models.CharField(max_length=50)
 
     def __str__(self):
@@ -321,9 +353,11 @@ class SlackPresence(SuperModel):
 
 class GithubEvent(SuperModel):
 
-    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='github_events')
-    what = models.CharField(max_length=500, default='', blank=True)
-    repo = models.CharField(max_length=500, default='', blank=True)
+    profile = models.ForeignKey(
+        "dashboard.Profile", on_delete=models.CASCADE, related_name="github_events"
+    )
+    what = models.CharField(max_length=500, default="", blank=True)
+    repo = models.CharField(max_length=500, default="", blank=True)
     payload = JSONField(default=dict)
 
     def __str__(self):
@@ -343,7 +377,7 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
-    category = models.CharField(max_length=255, db_index=True, blank=True, default='')
+    category = models.CharField(max_length=255, db_index=True, blank=True, default="")
     ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):
@@ -368,6 +402,7 @@ class EmailSupressionList(SuperModel):
     def __str__(self):
         return f"{self.email}"
 
+
 class MarketingCallback(SuperModel):
     """Define the Marketing Callback model; which is used to peform
 
@@ -380,6 +415,7 @@ class MarketingCallback(SuperModel):
 
     def __str__(self):
         return f"{self.key} - {self.val}"
+
 
 class Job(SuperModel):
 
@@ -411,10 +447,11 @@ class RoundupEmail(SuperModel):
     hide_dynamic = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return '/_administration/email/roundup'
+        return "/_administration/email/roundup"
 
     def __str__(self):
         return self.subject
+
 
 class UpcomingDate(SuperModel):
     """Define the upcoming date model"""
@@ -424,14 +461,14 @@ class UpcomingDate(SuperModel):
 
     img_url = models.URLField(db_index=True, blank=True)
     url = models.URLField(db_index=True)
-    comment = models.TextField(max_length=255, default='', blank=True)
-    context_tag = models.TextField(max_length=255, default='', blank=True)
+    comment = models.TextField(max_length=255, default="", blank=True)
+    context_tag = models.TextField(max_length=255, default="", blank=True)
 
     @property
     def naturaltime(self):
-         from django.contrib.humanize.templatetags.humanize import naturaltime
-         return naturaltime(self.date)
+        from django.contrib.humanize.templatetags.humanize import naturaltime
 
+        return naturaltime(self.date)
 
     def __str__(self):
         return f"{self.title}"

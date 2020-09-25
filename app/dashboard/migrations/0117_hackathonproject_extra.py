@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0116_auto_20200528_1629'),
+        ("dashboard", "0116_auto_20200528_1629"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonproject',
-            name='extra',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, null=True),
+            model_name="hackathonproject",
+            name="extra",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict, null=True
+            ),
         ),
     ]

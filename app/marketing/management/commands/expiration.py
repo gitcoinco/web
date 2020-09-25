@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -24,18 +24,24 @@ from marketing.mails import bounty_expire_warning
 
 class Command(BaseCommand):
 
-    help = 'the expiration notifications'
+    help = "the expiration notifications"
 
     def handle(self, *args, **options):
         days = [1, 2]
         for day in days:
-            bounties = Bounty.objects.current().filter(
-                is_open=True,
-                network='mainnet',
-                expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
-                expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
-            ).all()
-            print('day {} got {} bounties'.format(day, bounties.count()))
+            bounties = (
+                Bounty.objects.current()
+                .filter(
+                    is_open=True,
+                    network="mainnet",
+                    expires_date__lt=(
+                        timezone.now() + timezone.timedelta(days=(day + 1))
+                    ),
+                    expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
+                )
+                .all()
+            )
+            print("day {} got {} bounties".format(day, bounties.count()))
             for b in bounties:
                 email_list = []
                 if b.bounty_owner_email:

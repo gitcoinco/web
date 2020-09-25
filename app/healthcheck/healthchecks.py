@@ -30,13 +30,14 @@ class DefaultIPFSBackend(BaseHealthCheckBackend):
     def check_status(self):
         """Define the functionality of the health check."""
         from dashboard.utils import get_ipfs
+
         try:
             ipfs_connection = get_ipfs()
         except IPFSCantConnectException:
             ipfs_connection = None
 
         if not ipfs_connection:
-            raise HealthCheckException('Default IPFS Unreachable')
+            raise HealthCheckException("Default IPFS Unreachable")
 
     def identifier(self):
         """Define the displayed name of the healthcheck."""
@@ -51,13 +52,14 @@ class InfuraIPFSBackend(BaseHealthCheckBackend):
     def check_status(self):
         """Define the functionality of the health check."""
         from dashboard.utils import get_ipfs
+
         try:
-            ipfs_connection = get_ipfs(host='ipfs.infura.io', port=5001)
+            ipfs_connection = get_ipfs(host="ipfs.infura.io", port=5001)
         except IPFSCantConnectException:
             ipfs_connection = None
 
         if not ipfs_connection:
-            raise HealthCheckException('Infura IPFS Unreachable')
+            raise HealthCheckException("Infura IPFS Unreachable")
 
     def identifier(self):
         """Define the displayed name of the healthcheck."""
@@ -72,6 +74,7 @@ class GithubRateLimiting(BaseHealthCheckBackend):
     def check_status(self):
         """Define the functionality of the health check."""
         from git.utils import get_current_ratelimit
+
         gh_ratelimit = get_current_ratelimit()
 
         is_core_ok = gh_ratelimit.core.remaining >= 500  # Limit is 5000
@@ -79,7 +82,7 @@ class GithubRateLimiting(BaseHealthCheckBackend):
         is_search_ok = gh_ratelimit.search.remaining >= 5  # Limit is 30
 
         if not is_core_ok or not is_graphql_ok or not is_search_ok:
-            raise HealthCheckException('Github Ratelimiting Danger Zone')
+            raise HealthCheckException("Github Ratelimiting Danger Zone")
 
     def identifier(self):
         """Define the displayed name of the healthcheck."""

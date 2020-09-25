@@ -7,18 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0113_merge_20200520_1648'),
+        ("dashboard", "0113_merge_20200520_1648"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='address',
-            field=models.CharField(blank=True, default='', max_length=255, null=True),
+            model_name="profile",
+            name="address",
+            field=models.CharField(blank=True, default="", max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='location',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="profile",
+            name="location",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
     ]

@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0007_bulktransfercoupon_tag'),
+        ("kudos", "0007_bulktransfercoupon_tag"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bulktransfercoupon',
-            name='metadata',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="bulktransfercoupon",
+            name="metadata",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
     ]

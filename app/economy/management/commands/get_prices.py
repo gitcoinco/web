@@ -47,33 +47,34 @@ def get_config(view, key):
 
 def stablecoins():
     for to_currency in settings.STABLE_COINS:
-        if to_currency == 'to_currency':
+        if to_currency == "to_currency":
             continue
         from_amount = 1
         to_amount = 1
-        from_currency = 'USDT'
+        from_currency = "USDT"
         ConversionRate.objects.create(
             from_amount=from_amount,
             to_amount=to_amount,
-            source='stablecoin',
+            source="stablecoin",
             from_currency=from_currency,
-            to_currency=to_currency)
-        print(f'stablecoin: {from_currency}=>{to_currency}:{to_amount}')
+            to_currency=to_currency,
+        )
+        print(f"stablecoin: {from_currency}=>{to_currency}:{to_amount}")
 
 
 def etherdelta():
     """Handle pulling market data from Etherdelta."""
     count = 0
-    result = ''
+    result = ""
 
-    print('Attempting to connect to etherdelta API websocket...')
-    ws = create_connection('wss://socket.etherdelta.com/socket.io/?transport=websocket')
-    print('Sending getMarket message...')
+    print("Attempting to connect to etherdelta API websocket...")
+    ws = create_connection("wss://socket.etherdelta.com/socket.io/?transport=websocket")
+    print("Sending getMarket message...")
     ws.send('42["getMarket",{}]')
-    print('Sent getMarket message! Waiting on proper response...')
+    print("Sent getMarket message! Waiting on proper response...")
 
     # Wait for the getMarket response or timeout at 30.
-    while (result[:2] != "42" or count > 60):
+    while result[:2] != "42" or count > 60:
         result = ws.recv()
         count += 1
         print(count)
@@ -83,39 +84,40 @@ def etherdelta():
     try:
         # Attempt to format the response data.
         market_results = json.loads(result[2:])
-        tickers = market_results[1]['returnTicker']
+        tickers = market_results[1]["returnTicker"]
     except ValueError:
         tickers = {}
-        print('Failed to retrieve etherdelta ticker data!')
+        print("Failed to retrieve etherdelta ticker data!")
 
     # etherdelta
     for pair, result in tickers.items():
-        from_currency = pair.split('_')[1]
-        to_currency = pair.split('_')[0]
+        from_currency = pair.split("_")[1]
+        to_currency = pair.split("_")[0]
 
         from_amount = 1
-        to_amount = (result['bid'] + result['ask']) / 2
+        to_amount = (result["bid"] + result["ask"]) / 2
         try:
             ConversionRate.objects.create(
                 from_amount=from_amount,
                 to_amount=to_amount,
-                source='etherdelta',
+                source="etherdelta",
                 from_currency=from_currency,
-                to_currency=to_currency)
-            print(f'Etherdelta: {from_currency}=>{to_currency}:{to_amount}')
+                to_currency=to_currency,
+            )
+            print(f"Etherdelta: {from_currency}=>{to_currency}:{to_amount}")
         except Exception as e:
             logger.exception(e)
 
 
 def polo():
 
-    polo_blacklist = get_config('polo', 'blacklist')
+    polo_blacklist = get_config("polo", "blacklist")
 
     """Handle pulling market data from Poloneix."""
     tickers = ccxt.poloniex().load_markets()
     for pair, result in tickers.items():
-        from_currency = pair.split('/')[0]
-        to_currency = pair.split('/')[1]
+        from_currency = pair.split("/")[0]
+        to_currency = pair.split("/")[1]
 
         if from_currency in polo_blacklist:
             return
@@ -124,21 +126,24 @@ def polo():
 
         from_amount = 1
         try:
-            to_amount = (float(result['info']['highestBid']) + float(result['info']['lowestAsk'])) / 2
+            to_amount = (
+                float(result["info"]["highestBid"]) + float(result["info"]["lowestAsk"])
+            ) / 2
             ConversionRate.objects.create(
                 from_amount=from_amount,
                 to_amount=to_amount,
-                source='poloniex',
+                source="poloniex",
                 from_currency=from_currency,
-                to_currency=to_currency)
-            print(f'Poloniex: {from_currency}=>{to_currency}:{to_amount}')
+                to_currency=to_currency,
+            )
+            print(f"Poloniex: {from_currency}=>{to_currency}:{to_amount}")
         except Exception as e:
             print(e)
 
 
 def refresh_bounties():
     for bounty in Bounty.objects.all():
-        print(f'refreshed {bounty.pk}')
+        print(f"refreshed {bounty.pk}")
         try:
             bounty._val_usd_db = bounty.value_in_usdt
             bounty._val_usd_db_now = bounty.value_in_usdt_now
@@ -151,14 +156,14 @@ def refresh_bounties():
 
 
 def refresh_conv_rate(when, token_name):
-    to_currency = 'USDT'
+    to_currency = "USDT"
     conversion_rate = ConversionRate.objects.filter(
-        from_currency=token_name,
-        to_currency=to_currency,
-        timestamp=when
+        from_currency=token_name, to_currency=to_currency, timestamp=when
     )
 
-    if not conversion_rate:  # historical ConversionRate for the given bounty does not exist yet
+    if (
+        not conversion_rate
+    ):  # historical ConversionRate for the given bounty does not exist yet
         try:
             price = cc.get_historical_price(token_name, to_currency, when)
 
@@ -166,12 +171,12 @@ def refresh_conv_rate(when, token_name):
             ConversionRate.objects.create(
                 from_amount=1,
                 to_amount=to_amount,
-                source='cryptocompare',
+                source="cryptocompare",
                 from_currency=token_name,
                 to_currency=to_currency,
                 timestamp=when,
             )
-            print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
+            print(f"Cryptocompare: {token_name}=>{to_currency}:{to_amount}")
         except Exception as e:
             logger.exception(e)
 
@@ -183,39 +188,39 @@ def cryptocompare():
 
     """
 
-    cryptocompare_pulllist = get_config('cryptocompare', 'always_pull_list')
-    cryptocompare_blacklist = get_config('cryptocompare', 'blacklist')
+    cryptocompare_pulllist = get_config("cryptocompare", "always_pull_list")
+    cryptocompare_blacklist = get_config("cryptocompare", "blacklist")
 
     pull_cryptocompare_tokens_only = cryptocompare_pulllist
     for token_name in pull_cryptocompare_tokens_only:
         refresh_conv_rate(timezone.now(), token_name)
 
     for bounty in Bounty.objects.current():
-        print(f'CryptoCompare Bounty {bounty.pk}')
+        print(f"CryptoCompare Bounty {bounty.pk}")
         if bounty.token_name not in cryptocompare_blacklist:
             refresh_conv_rate(bounty.web3_created, bounty.token_name)
 
     for tip in Tip.objects.all():
-        print(f'CryptoCompare Tip {tip.pk}')
+        print(f"CryptoCompare Tip {tip.pk}")
         if tip.tokenName not in cryptocompare_blacklist:
             refresh_conv_rate(tip.created_on, tip.tokenName)
 
     for obj in KudosTransfer.objects.all():
-        print(f'CryptoCompare KT {obj.pk}')
+        print(f"CryptoCompare KT {obj.pk}")
         if obj.tokenName not in cryptocompare_blacklist:
             refresh_conv_rate(obj.created_on, obj.tokenName)
 
     for obj in Contribution.objects.all():
-        print(f'CryptoCompare GrantContrib {obj.pk}')
+        print(f"CryptoCompare GrantContrib {obj.pk}")
         if obj.subscription.token_symbol not in cryptocompare_blacklist:
             refresh_conv_rate(obj.created_on, obj.subscription.token_symbol)
 
 
 def uniswap():
     """Hangle pulling market data from Uniswap using its subgraph node on mainnet."""
-    uniswap_whitelist = get_config('uniswap', 'whitelist')
-    uniswap_blacklist = get_config('uniswap', 'blacklist')
-    endpoint = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
+    uniswap_whitelist = get_config("uniswap", "whitelist")
+    uniswap_blacklist = get_config("uniswap", "blacklist")
+    endpoint = "https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap"
     query_limit = 100
     skip = 0
     # GraphQL query based on the Uniswap API
@@ -236,46 +241,59 @@ def uniswap():
          }}
         """
         try:
-            rs = requests.post(url=endpoint, json={'query': query})
+            rs = requests.post(url=endpoint, json={"query": query})
             if rs.ok:
                 json_data = rs.json()
-                total_records = len(json_data['data']['exchanges'])
+                total_records = len(json_data["data"]["exchanges"])
                 print(f"Cursor ==> {skip} - Total records ==> {total_records}")
                 if total_records == 0:
                     break
-                for exchange in json_data['data']['exchanges']:
+                for exchange in json_data["data"]["exchanges"]:
                     try:
-                        token_name = exchange['tokenSymbol']
+                        token_name = exchange["tokenSymbol"]
                         if token_name not in uniswap_whitelist:
                             continue
                         if token_name in uniswap_blacklist:
                             continue
-                        if float(exchange['price']) == 0.: # Skip exchange pairs with zero value
+                        if (
+                            float(exchange["price"]) == 0.0
+                        ):  # Skip exchange pairs with zero value
                             continue
-                        if token_name == 'ETH':
-                            continue # dont pull ETH/ETH and ETH/USD pricing
-                        to_amount = (float(exchange['price']) + float(exchange['lastPrice'])) / 2.
+                        if token_name == "ETH":
+                            continue  # dont pull ETH/ETH and ETH/USD pricing
+                        to_amount = (
+                            float(exchange["price"]) + float(exchange["lastPrice"])
+                        ) / 2.0
                         ConversionRate.objects.create(
                             from_amount=1,
                             to_amount=to_amount,
-                            source='uniswap',
-                            from_currency='ETH',
-                            to_currency=token_name)
-                        print(f'Uniswap: ETH=>{token_name}:{to_amount}')
+                            source="uniswap",
+                            from_currency="ETH",
+                            to_currency=token_name,
+                        )
+                        print(f"Uniswap: ETH=>{token_name}:{to_amount}")
 
-                        to_amount_usd = (float(exchange['priceUSD']) + float(exchange['lastPriceUSD'])) / 2.
+                        to_amount_usd = (
+                            float(exchange["priceUSD"])
+                            + float(exchange["lastPriceUSD"])
+                        ) / 2.0
                         ConversionRate.objects.create(
                             from_amount=1,
                             to_amount=to_amount_usd,
-                            source='uniswap',
+                            source="uniswap",
                             from_currency=token_name,
-                            to_currency='USDT')
-                        print(f'Uniswap: {token_name}=>USDT:{to_amount_usd}')
+                            to_currency="USDT",
+                        )
+                        print(f"Uniswap: {token_name}=>USDT:{to_amount_usd}")
                     except Exception as e:
-                        print(f'Error when storing Uniswap exchange data for token ${token_name}: ${str(e)}')
+                        print(
+                            f"Error when storing Uniswap exchange data for token ${token_name}: ${str(e)}"
+                        )
                 skip += query_limit
             else:
-                raise Exception(f'Error when requesting Exchange data from Uniswap Graph node: {rs.reason}')
+                raise Exception(
+                    f"Error when requesting Exchange data from Uniswap Graph node: {rs.reason}"
+                )
         except Exception as e:
             print(e)
 
@@ -283,45 +301,44 @@ def uniswap():
 class Command(BaseCommand):
     """Define the management command to update currency conversion rates."""
 
-    help = 'gets prices for all (or... as many as possible) tokens'
+    help = "gets prices for all (or... as many as possible) tokens"
 
     def add_arguments(self, parser):
-        parser.add_argument('perform_obj_updates', default='localhost', type=int)
+        parser.add_argument("perform_obj_updates", default="localhost", type=int)
 
     def handle(self, *args, **options):
         """Get the latest currency rates."""
         stablecoins()
 
         try:
-            print('ED')
+            print("ED")
             etherdelta()
         except Exception as e:
             print(e)
 
         try:
-            print('polo')
+            print("polo")
             polo()
         except Exception as e:
             print(e)
 
-
         try:
-            print('uniswap')
+            print("uniswap")
             uniswap()
         except Exception as e:
             print(e)
 
-        if not options['perform_obj_updates']:
+        if not options["perform_obj_updates"]:
             return
 
         try:
-            print('cryptocompare')
+            print("cryptocompare")
             cryptocompare()
         except Exception as e:
             print(e)
 
         try:
-            print('refresh')
+            print("refresh")
             refresh_bounties()
         except Exception as e:
             print(e)

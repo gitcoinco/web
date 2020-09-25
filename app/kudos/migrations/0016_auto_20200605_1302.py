@@ -6,18 +6,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0015_tokenrequest_rejection_reason'),
+        ("kudos", "0015_tokenrequest_rejection_reason"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='kudostransfer',
-            name='receive_tx_status',
-            field=models.CharField(choices=[('na', 'na'), ('pending', 'pending'), ('success', 'success'), ('error', 'error'), ('unknown', 'unknown'), ('dropped', 'dropped'), ('not_subed', 'not_subed')], db_index=True, default='na', max_length=9),
+            model_name="kudostransfer",
+            name="receive_tx_status",
+            field=models.CharField(
+                choices=[
+                    ("na", "na"),
+                    ("pending", "pending"),
+                    ("success", "success"),
+                    ("error", "error"),
+                    ("unknown", "unknown"),
+                    ("dropped", "dropped"),
+                    ("not_subed", "not_subed"),
+                ],
+                db_index=True,
+                default="na",
+                max_length=9,
+            ),
         ),
         migrations.AlterField(
-            model_name='kudostransfer',
-            name='tx_status',
-            field=models.CharField(choices=[('na', 'na'), ('pending', 'pending'), ('success', 'success'), ('error', 'error'), ('unknown', 'unknown'), ('dropped', 'dropped'), ('not_subed', 'not_subed')], db_index=True, default='na', max_length=9),
+            model_name="kudostransfer",
+            name="tx_status",
+            field=models.CharField(
+                choices=[
+                    ("na", "na"),
+                    ("pending", "pending"),
+                    ("success", "success"),
+                    ("error", "error"),
+                    ("unknown", "unknown"),
+                    ("dropped", "dropped"),
+                    ("not_subed", "not_subed"),
+                ],
+                db_index=True,
+                default="na",
+                max_length=9,
+            ),
         ),
     ]

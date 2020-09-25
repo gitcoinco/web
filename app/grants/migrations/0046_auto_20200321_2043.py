@@ -6,17 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0045_flag'),
+        ("grants", "0045_flag"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='subscription',
-            name='match_direction',
+            model_name="subscription",
+            name="match_direction",
         ),
         migrations.AddField(
-            model_name='subscription',
-            name='is_postive_vote',
-            field=models.BooleanField(default=True, help_text='Whether this is positive or negative vote'),
+            model_name="subscription",
+            name="is_postive_vote",
+            field=models.BooleanField(
+                default=True, help_text="Whether this is positive or negative vote"
+            ),
         ),
     ]

@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0006_bounty_estimated_hours'),
-        ('grants', '0005_auto_20190109_2042'),
+        ("dashboard", "0006_bounty_estimated_hours"),
+        ("grants", "0005_auto_20190109_2042"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='grant',
-            name='request_ownership_change',
-            field=models.ForeignKey(help_text="The Grant's potential new administrator profile.", null=True, on_delete=django.db.models.deletion.CASCADE, related_name='request_ownership_change', to='dashboard.Profile'),
+            model_name="grant",
+            name="request_ownership_change",
+            field=models.ForeignKey(
+                help_text="The Grant's potential new administrator profile.",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="request_ownership_change",
+                to="dashboard.Profile",
+            ),
         ),
     ]

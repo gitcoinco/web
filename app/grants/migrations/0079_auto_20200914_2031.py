@@ -6,23 +6,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0078_auto_20200914_2013'),
+        ("grants", "0078_auto_20200914_2013"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='grant',
-            name='hidden',
-            field=models.BooleanField(db_index=True, default=False, help_text='Hide the grant from the /grants page?'),
+            model_name="grant",
+            name="hidden",
+            field=models.BooleanField(
+                db_index=True,
+                default=False,
+                help_text="Hide the grant from the /grants page?",
+            ),
         ),
         migrations.AlterField(
-            model_name='grant',
-            name='network',
-            field=models.CharField(db_index=True, default='mainnet', help_text='The network in which the Grant contract resides.', max_length=8),
+            model_name="grant",
+            name="network",
+            field=models.CharField(
+                db_index=True,
+                default="mainnet",
+                help_text="The network in which the Grant contract resides.",
+                max_length=8,
+            ),
         ),
         migrations.AlterField(
-            model_name='subscription',
-            name='active',
-            field=models.BooleanField(db_index=True, default=True, help_text='Whether or not the Subscription is active.'),
+            model_name="subscription",
+            name="active",
+            field=models.BooleanField(
+                db_index=True,
+                default=True,
+                help_text="Whether or not the Subscription is active.",
+            ),
         ),
     ]

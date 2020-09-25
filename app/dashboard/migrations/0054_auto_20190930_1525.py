@@ -7,45 +7,71 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0011_update_proxy_permissions'),
-        ('dashboard', '0053_auto_20190920_1816'),
+        ("auth", "0011_update_proxy_permissions"),
+        ("dashboard", "0053_auto_20190920_1816"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Repo',
+            name="Repo",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('name', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("name", models.CharField(max_length=255)),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Organization',
+            name="Organization",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('name', models.CharField(max_length=255)),
-                ('groups', models.ManyToManyField(blank=True, to='auth.Group')),
-                ('repos', models.ManyToManyField(blank=True, to='dashboard.Repo')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("name", models.CharField(max_length=255)),
+                ("groups", models.ManyToManyField(blank=True, to="auth.Group")),
+                ("repos", models.ManyToManyField(blank=True, to="dashboard.Repo")),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.AddField(
-            model_name='profile',
-            name='profile_organizations',
-            field=models.ManyToManyField(blank=True, to='dashboard.Organization'),
+            model_name="profile",
+            name="profile_organizations",
+            field=models.ManyToManyField(blank=True, to="dashboard.Organization"),
         ),
         migrations.AddField(
-            model_name='profile',
-            name='repos',
-            field=models.ManyToManyField(blank=True, to='dashboard.Repo'),
+            model_name="profile",
+            name="repos",
+            field=models.ManyToManyField(blank=True, to="dashboard.Repo"),
         ),
     ]

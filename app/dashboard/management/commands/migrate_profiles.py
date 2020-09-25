@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 
 from django.core import management
 from django.core.management.base import BaseCommand
@@ -27,29 +27,46 @@ from dashboard.tip_views import record_tip_activity
 
 class Command(BaseCommand):
 
-    help = 'runs all mgmt commands for https://github.com/gitcoinco/web/pull/5093'
+    help = "runs all mgmt commands for https://github.com/gitcoinco/web/pull/5093"
 
     def handle(self, *args, **options):
 
-
-        bounties = Bounty.objects.current().filter(web3_created__lt=timezone.datetime(2019,3,5)).filter(network='mainnet')
+        bounties = (
+            Bounty.objects.current()
+            .filter(web3_created__lt=timezone.datetime(2019, 3, 5))
+            .filter(network="mainnet")
+        )
         for bounty in bounties:
             try:
-                record_bounty_activity('new_bounty', None, bounty, _fulfillment=None, override_created=bounty.web3_created)
-                #print(bounty.url)
+                record_bounty_activity(
+                    "new_bounty",
+                    None,
+                    bounty,
+                    _fulfillment=None,
+                    override_created=bounty.web3_created,
+                )
+                # print(bounty.url)
                 for ful in bounty.fulfillments.all():
-                    record_bounty_activity('work_submitted', None, bounty, _fulfillment=ful, override_created=ful.created_on)
+                    record_bounty_activity(
+                        "work_submitted",
+                        None,
+                        bounty,
+                        _fulfillment=ful,
+                        override_created=ful.created_on,
+                    )
             except Exception as e:
                 print(e)
 
-
-        for tip in Tip.objects.filter(network='mainnet').filter(created_on__lt=timezone.datetime(2019,3,5)):
+        for tip in Tip.objects.filter(network="mainnet").filter(
+            created_on__lt=timezone.datetime(2019, 3, 5)
+        ):
             try:
-                record_tip_activity(tip, tip.username, 'new_tip', override_created=tip.created_on)
-                #print(tip.pk)
+                record_tip_activity(
+                    tip, tip.username, "new_tip", override_created=tip.created_on
+                )
+                # print(tip.pk)
             except Exception as e:
                 print(e)
-
 
         for instance in Profile.objects.filter(hide_profile=False):
             instance.calculate_all()

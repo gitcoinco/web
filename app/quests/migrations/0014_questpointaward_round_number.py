@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quests', '0013_questpointaward_action'),
+        ("quests", "0013_questpointaward_action"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='questpointaward',
-            name='round_number',
+            model_name="questpointaward",
+            name="round_number",
             field=models.IntegerField(default=1),
         ),
     ]

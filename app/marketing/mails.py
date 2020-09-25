@@ -55,19 +55,30 @@ from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_ava
 logger = logging.getLogger(__name__)
 
 
-def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False, zip_path=None, csv=None):
+def send_mail(
+    from_email,
+    _to_email,
+    subject,
+    body,
+    html=False,
+    from_name="Gitcoin.co",
+    cc_emails=None,
+    categories=None,
+    debug_mode=False,
+    zip_path=None,
+    csv=None,
+):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
-        logger.warning('No SendGrid API Key set. Not attempting to send email.')
+        logger.warning("No SendGrid API Key set. Not attempting to send email.")
         return
 
     if categories is None:
-        categories = ['default']
+        categories = ["default"]
 
     to_email = _to_email
-    get_or_save_email_subscriber(to_email, 'internal')
+    get_or_save_email_subscriber(to_email, "internal")
 
     # setup
     from_name = str(from_name)
@@ -83,7 +94,9 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # TODO:  A bit of a hidden state change here.  Really confusing when doing development.
     #        Maybe this should be a variable passed into the function the value is set upstream?
     if settings.IS_DEBUG_ENV or debug_mode:
-        to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
+        to_email = Email(
+            settings.CONTACT_EMAIL
+        )  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
 
     mail = Mail(from_email, subject, to_email, content)
@@ -107,27 +120,27 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     # Zip Attachment
     if zip_path is not None:
-        with open(zip_path, 'rb') as f:
+        with open(zip_path, "rb") as f:
             data = f.read()
             f.close()
         encoded = base64.b64encode(data).decode()
         attachment = Attachment()
         attachment.content = encoded
-        attachment.type = 'application/zip'
-        attachment.filename = 'tax_report.zip'
-        attachment.disposition = 'attachment'
+        attachment.type = "application/zip"
+        attachment.filename = "tax_report.zip"
+        attachment.disposition = "attachment"
         mail.add_attachment(attachment)
 
     if csv is not None:
-        with open(csv, 'rb') as f:
+        with open(csv, "rb") as f:
             data = f.read()
             f.close()
         encoded = base64.b64encode(data).decode()
         attachment = Attachment()
         attachment.content = encoded
-        attachment.type = 'text/csv'
-        attachment.filename = csv.replace('/tmp/', '')
-        attachment.disposition = 'attachment'
+        attachment.type = "text/csv"
+        attachment.filename = csv.replace("/tmp/", "")
+        attachment.disposition = "attachment"
         mail.add_attachment(attachment)
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
@@ -135,10 +148,11 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
         logger.debug(
-            f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
+            f"-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials"
+        )
         logger.debug(e)
     except HTTPError as e:
-        logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
+        logger.debug(f"-- Sendgrid Mail failure - {_to_email} / {categories} - {e}")
 
     return response
 
@@ -146,53 +160,81 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 def validate_email(email):
 
     import re
-    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    if(re.search(regex,email)):
+
+    regex = r"^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"
+    if re.search(regex, email):
         return True
     return False
 
+
 def get_bounties_for_keywords(keywords, hours_back):
     from dashboard.models import Bounty
+
     new_bounties_pks = []
     all_bounties_pks = []
 
-    new_bounty_cutoff = (timezone.now() - timezone.timedelta(hours=hours_back))
-    all_bounty_cutoff = (timezone.now() - timezone.timedelta(days=60))
+    new_bounty_cutoff = timezone.now() - timezone.timedelta(hours=hours_back)
+    all_bounty_cutoff = timezone.now() - timezone.timedelta(days=60)
 
     for keyword in keywords:
-        relevant_bounties = Bounty.objects.current().filter(
-            network='mainnet',
-            idx_status__in=['open'],
-        ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
+        relevant_bounties = (
+            Bounty.objects.current()
+            .filter(
+                network="mainnet",
+                idx_status__in=["open"],
+            )
+            .keyword(keyword)
+            .exclude(bounty_reserved_for_user__isnull=False)
+        )
         for bounty in relevant_bounties.filter(web3_created__gt=new_bounty_cutoff):
             new_bounties_pks.append(bounty.pk)
         for bounty in relevant_bounties.filter(web3_created__gt=all_bounty_cutoff):
             all_bounties_pks.append(bounty.pk)
-    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
-    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-_val_usd_db')
+    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by(
+        "-_val_usd_db"
+    )
+    all_bounties = (
+        Bounty.objects.filter(pk__in=all_bounties_pks)
+        .exclude(pk__in=new_bounties_pks)
+        .order_by("-_val_usd_db")
+    )
 
-    new_bounties = new_bounties.order_by('-admin_mark_as_remarket_ready')
-    all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')
+    new_bounties = new_bounties.order_by("-admin_mark_as_remarket_ready")
+    all_bounties = all_bounties.order_by("-admin_mark_as_remarket_ready")
 
     return new_bounties, all_bounties
 
-def nth_day_email_campaign(nth, subscriber):
-    firstname = subscriber.email.split('@')[0]
 
-    if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
+def nth_day_email_campaign(nth, subscriber):
+    firstname = subscriber.email.split("@")[0]
+
+    if (
+        subscriber.profile
+        and subscriber.profile.user
+        and subscriber.profile.user.first_name
+    ):
         firstname = subscriber.profile.user.first_name
 
-    if should_suppress_notification_email(subscriber.email, 'roundup'):
+    if should_suppress_notification_email(subscriber.email, "roundup"):
         return False
     cur_language = translation.get_language()
 
     try:
         setup_lang(subscriber.email)
         from_email = settings.CONTACT_EMAIL
-        if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
-            html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
+        if not should_suppress_notification_email(subscriber.email, "welcome_mail"):
+            html, text, subject = render_nth_day_email_campaign(
+                subscriber.email, nth, firstname
+            )
             to_email = subscriber.email
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -213,15 +255,22 @@ def featured_funded_bounty(from_email, bounty):
         setup_lang(to_email)
         html, text, subject = render_featured_funded_bounty(bounty)
 
-        if not should_suppress_notification_email(to_email, 'featured_funded_bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "featured_funded_bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
 
 def new_grant_flag_admin(flag):
     from_email = settings.CONTACT_EMAIL
-    to_email = 'kevin@gitcoin.co'
+    to_email = "kevin@gitcoin.co"
 
     cur_language = translation.get_language()
 
@@ -229,14 +278,14 @@ def new_grant_flag_admin(flag):
         setup_lang(to_email)
         subject = _("New Grant Flag")
         body = f"{flag.comments} : {settings.BASE_URL}{flag.admin_url}"
-        if not should_suppress_notification_email(to_email, 'new_grant_flag_admin'):
+        if not should_suppress_notification_email(to_email, "new_grant_flag_admin"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -257,14 +306,21 @@ def new_grant(grant, profile):
         setup_lang(to_email)
         html, text, subject = render_new_grant_email(grant)
 
-        if not should_suppress_notification_email(to_email, 'new_grant'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "new_grant"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
 
 def new_grant_match_pledge(matchpledge):
-    to_email = 'founders@gitcoin.co'
+    to_email = "founders@gitcoin.co"
     from_email = matchpledge.profile.email
     cur_language = translation.get_language()
 
@@ -276,7 +332,14 @@ def new_grant_match_pledge(matchpledge):
             body += f"{key}: {val}\n"
         body += f"\n\n\n{settings.BASE_URL}{matchpledge.admin_url}"
         html = f"<pre>{body}</pre>"
-        send_mail(from_email, to_email, subject, body, html, categories=['transactional', func_name()])
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            html,
+            categories=["transactional", func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
@@ -294,8 +357,15 @@ def new_supporter(grant, subscription):
         setup_lang(to_email)
         html, text, subject = render_new_supporter_email(grant, subscription)
 
-        if not should_suppress_notification_email(to_email, 'new_supporter'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "new_supporter"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -313,8 +383,15 @@ def thank_you_for_supporting(grant, subscription):
         setup_lang(to_email)
         html, text, subject = render_thank_you_for_supporting_email(grant, subscription)
 
-        if not should_suppress_notification_email(to_email, 'thank_you_for_supporting'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "thank_you_for_supporting"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -330,8 +407,15 @@ def support_cancellation(grant, subscription):
         setup_lang(to_email)
         html, text, subject = render_support_cancellation_email(grant, subscription)
 
-        if not should_suppress_notification_email(to_email, 'support_cancellation'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "support_cancellation"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -347,13 +431,25 @@ def grant_cancellation(grant, subscription):
         setup_lang(to_email)
         html, text, subject = render_grant_cancellation_email(grant, subscription)
 
-        if not should_suppress_notification_email(to_email, 'grant_cancellation'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "grant_cancellation"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
+
 def grant_txn_failed(failed_contrib):
-    profile, grant, tx_id = failed_contrib.subscription.contributor_profile, failed_contrib.subscription.grant, failed_contrib.tx_id
+    profile, grant, tx_id = (
+        failed_contrib.subscription.contributor_profile,
+        failed_contrib.subscription.grant,
+        failed_contrib.tx_id,
+    )
 
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
@@ -369,9 +465,17 @@ def grant_txn_failed(failed_contrib):
     try:
         setup_lang(to_email)
         html, text = render_grant_txn_failed(failed_contrib)
-        send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            categories=["transactional", func_name()],
+        )
     finally:
         translation.activate(cur_language)
+
 
 def subscription_terminated(grant, subscription):
     if subscription and subscription.negative:
@@ -384,8 +488,15 @@ def subscription_terminated(grant, subscription):
         setup_lang(to_email)
         html, text, subject = render_subscription_terminated_email(grant, subscription)
 
-        if not should_suppress_notification_email(to_email, 'subscription_terminated'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "subscription_terminated"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -399,10 +510,19 @@ def successful_contribution(grant, subscription, contribution):
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_successful_contribution_email(grant, subscription, contribution)
+        html, text, subject = render_successful_contribution_email(
+            grant, subscription, contribution
+        )
 
-        if not should_suppress_notification_email(to_email, 'successful_contribution'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "successful_contribution"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -425,7 +545,7 @@ def admin_contact_funder(bounty, text, from_user):
         subject = bounty.url
         __, text = render_admin_contact_funder(bounty, text, from_user)
         cc_emails = [from_email]
-        if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
+        if not should_suppress_notification_email(to_email, "admin_contact_funder"):
             send_mail(
                 from_email,
                 to_email,
@@ -433,22 +553,28 @@ def admin_contact_funder(bounty, text, from_user):
                 text,
                 cc_emails=cc_emails,
                 from_name=from_email,
-                categories=['transactional', func_name()],
+                categories=["transactional", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
-def funder_stale(to_email, github_username, days=30, time_as_str='about a month'):
-    from_email = 'product@gitcoin.co'
+def funder_stale(to_email, github_username, days=30, time_as_str="about a month"):
+    from_email = "product@gitcoin.co"
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
 
-        subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
+        subject = (
+            "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
+        )
         __, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net']
-        if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
+        cc_emails = [
+            from_email,
+            "vivek.singh@consensys.net",
+            "scott.moore@consensys.net",
+        ]
+        if not should_suppress_notification_email(to_email, "admin_contact_funder"):
             send_mail(
                 from_email,
                 to_email,
@@ -456,14 +582,14 @@ def funder_stale(to_email, github_username, days=30, time_as_str='about a month'
                 text,
                 cc_emails=cc_emails,
                 from_name=from_email,
-                categories=['transactional', func_name()],
+                categories=["transactional", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
-def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
-    from_email = 'product@gitcoin.co'
+def bounty_feedback(bounty, persona="fulfiller", previous_bounties=None):
+    from_email = "product@gitcoin.co"
     to_email = None
     cur_language = translation.get_language()
     if previous_bounties is None:
@@ -471,10 +597,14 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
 
     try:
         setup_lang(to_email)
-        if persona == 'fulfiller':
+        if persona == "fulfiller":
             accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-            to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
-        elif persona == 'funder':
+            to_email = (
+                accepted_fulfillments.first().fulfiller_email
+                if accepted_fulfillments.exists()
+                else ""
+            )
+        elif persona == "funder":
             to_email = bounty.bounty_owner_email
             if not to_email:
                 if bounty.bounty_owner_profile:
@@ -487,8 +617,8 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
 
         subject = bounty.github_url
         html, text = render_bounty_feedback(bounty, persona, previous_bounties)
-        cc_emails = [from_email, 'team@gitcoin.co']
-        if not should_suppress_notification_email(to_email, 'bounty_feedback'):
+        cc_emails = [from_email, "team@gitcoin.co"]
+        if not should_suppress_notification_email(to_email, "bounty_feedback"):
             send_mail(
                 from_email,
                 to_email,
@@ -497,7 +627,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 html,
                 cc_emails=cc_emails,
                 from_name="Alisa March (Gitcoin.co)",
-                categories=['transactional', func_name()],
+                categories=["transactional", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -508,11 +638,14 @@ def tip_email(tip, to_emails, is_new):
     if not tip or not tip.txid or not tip.amount or not tip.tokenName:
         return
 
-    warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = gettext("⚡️ New Tip Worth {} {} {}").format(round(tip.amount, round_decimals), warning, tip.tokenName)
+    warning = "" if tip.network == "mainnet" else "({})".format(tip.network)
+    subject = gettext("⚡️ New Tip Worth {} {} {}").format(
+        round(tip.amount, round_decimals), warning, tip.tokenName
+    )
     if not is_new:
-        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning,
-                                                                        tip.tokenName)
+        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(
+            round(tip.amount, round_decimals), warning, tip.tokenName
+        )
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -521,8 +654,15 @@ def tip_email(tip, to_emails, is_new):
             from_email = settings.CONTACT_EMAIL
             html, text = render_tip_email(to_email, tip, is_new)
 
-            if not should_suppress_notification_email(to_email, 'tip'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "tip"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -532,7 +672,7 @@ def comment_email(comment):
     subject = gettext("💬 New Comment")
 
     cur_language = translation.get_language()
-    to_emails = list(comment.activity.comments.values_list('profile__email', flat=True))
+    to_emails = list(comment.activity.comments.values_list("profile__email", flat=True))
     to_emails.append(comment.activity.profile.email)
     if comment.activity.other_profile:
         to_emails.append(comment.activity.other_profile.email)
@@ -543,14 +683,21 @@ def comment_email(comment):
             from_email = settings.CONTACT_EMAIL
             html, text = render_comment(to_email, comment)
 
-            if not should_suppress_notification_email(to_email, 'comment'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "comment"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             pass
     translation.activate(cur_language)
     print(f"sent comment email to {len(to_emails)}")
 
-    emails = get_profiles_from_text(comment.comment).values_list('email', flat=True)
+    emails = get_profiles_from_text(comment.comment).values_list("email", flat=True)
     mentioned_emails = set(emails)
     # Don't send emails again to users who already received a comment email
     deduped_emails = mentioned_emails.difference(to_emails)
@@ -568,10 +715,19 @@ def mention_email(post, to_emails):
             from_email = settings.CONTACT_EMAIL
             html, text = render_mention(to_email, post)
 
-            if not should_suppress_notification_email(to_email, 'mention'):
-                send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
+            if not should_suppress_notification_email(to_email, "mention"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["notification", func_name()],
+                )
         except Exception as e:
-            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, to_email)
+            logger.error(
+                "Status Update error - Error: (%s) - Handle: (%s)", e, to_email
+            )
 
     translation.activate(cur_language)
 
@@ -586,24 +742,33 @@ def tip_comment_awarded_email(post, to_emails):
             from_email = settings.CONTACT_EMAIL
             html, text = render_mention(to_email, post)
 
-            if not should_suppress_notification_email(to_email, 'mention'):
-                send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
+            if not should_suppress_notification_email(to_email, "mention"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["notification", func_name()],
+                )
         except Exception as e:
-            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, to_email)
+            logger.error(
+                "Status Update error - Error: (%s) - Handle: (%s)", e, to_email
+            )
     translation.activate(cur_language)
 
 
 def wall_post_email(activity):
 
     to_emails = []
-    what = ''
-    if activity.what == 'profile':
+    what = ""
+    if activity.what == "profile":
         to_emails.append(activity.other_profile.email)
         what = f"@{activity.other_profile.handle}"
-    if activity.what == 'kudos':
+    if activity.what == "kudos":
         what = activity.kudos.ui_name
         pass
-    if activity.what == 'grant':
+    if activity.what == "grant":
         what = activity.grant.title
         for tm in activity.grant.team_members.all():
             to_emails.append(tm.email)
@@ -616,13 +781,29 @@ def wall_post_email(activity):
             from_email = settings.CONTACT_EMAIL
             html, text = render_wallpost(to_email, activity)
 
-            if not should_suppress_notification_email(to_email, 'wall_post'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "wall_post"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             pass
     translation.activate(cur_language)
 
-def grant_recontribute(profile, prev_round_start, prev_round_end, next_round, next_round_start, next_round_end, match_pool):
+
+def grant_recontribute(
+    profile,
+    prev_round_start,
+    prev_round_end,
+    next_round,
+    next_round_start,
+    next_round_end,
+    match_pool,
+):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
     if not to_email:
@@ -637,16 +818,41 @@ def grant_recontribute(profile, prev_round_start, prev_round_end, next_round, ne
 
     try:
         setup_lang(to_email)
-        html, text = render_grant_recontribute(to_email, prev_round_start, prev_round_end, next_round, next_round_start, next_round_end, match_pool)
-        send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+        html, text = render_grant_recontribute(
+            to_email,
+            prev_round_start,
+            prev_round_end,
+            next_round,
+            next_round_start,
+            next_round_end,
+            match_pool,
+        )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            categories=["marketing", func_name()],
+        )
     finally:
         translation.activate(cur_language)
+
 
 def grant_update_email(activity):
 
     what = activity.grant.title
     subject = f"📣 Message from @{activity.profile.handle} of Gitcoin Grant: {what}"
-    to_emails = list(set([profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]))
+    to_emails = list(
+        set(
+            [
+                profile.email
+                for profile in activity.grant.contributors
+                if profile.pk
+                not in activity.grant.metadata.get("unsubscribed_profiles", [])
+            ]
+        )
+    )
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
@@ -654,8 +860,15 @@ def grant_update_email(activity):
             from_email = settings.CONTACT_EMAIL
             html, text = render_grant_update(to_email, activity)
 
-            if not should_suppress_notification_email(to_email, 'grant_updates'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "grant_updates"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             pass
     translation.activate(cur_language)
@@ -668,39 +881,43 @@ def new_faucet_request(fr):
     try:
         setup_lang(to_email)
         subject = _("New Faucet Request")
-        body_str = _("A new faucet request was completed. You may fund the request here")
+        body_str = _(
+            "A new faucet request was completed. You may fund the request here"
+        )
         body = f"{body_str}: https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, "faucet"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
 def new_grant_admin(grant):
-    to_emails = [settings.PERSONAL_CONTACT_EMAIL, 'scott.moore@consensys.net']
+    to_emails = [settings.PERSONAL_CONTACT_EMAIL, "scott.moore@consensys.net"]
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
             setup_lang(to_email)
             subject = _("New Grant Request")
-            body_str = _("A new grant request was completed. You may respond to the request here")
+            body_str = _(
+                "A new grant request was completed. You may respond to the request here"
+            )
             body = f"{body_str}: {settings.BASE_URL}{grant.admin_url}"
-            if not should_suppress_notification_email(to_email, 'grant'):
+            if not should_suppress_notification_email(to_email, "grant"):
                 send_mail(
                     from_email,
                     to_email,
                     subject,
                     body,
                     from_name=_("No Reply from Gitcoin.co"),
-                    categories=['admin', func_name()],
+                    categories=["admin", func_name()],
                 )
         finally:
             translation.activate(cur_language)
@@ -712,17 +929,17 @@ def send_user_feedback(quest, feedback, user):
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        subject = f"Your Gitcoin Quest \"{quest.title}\" has feedback from another user!"
-        body_str = f"Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n{feedback}\n\nto edit your quest, click <a href=\"{quest.edit_url}\">here</a>"
+        subject = f'Your Gitcoin Quest "{quest.title}" has feedback from another user!'
+        body_str = f'Your quest: {quest.title} has feedback from user {user.profile.handle}:\n\n{feedback}\n\nto edit your quest, click <a href="{quest.edit_url}">here</a>'
         body = f"{body_str}"
-        if not should_suppress_notification_email(to_email, 'quest'):
+        if not should_suppress_notification_email(to_email, "quest"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=f"@{user.profile.handle} on gitcoin.co",
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -735,17 +952,17 @@ def new_quest_request(quest, is_edit):
     try:
         setup_lang(to_email)
         subject = _("New Quest Request" if not is_edit else "Quest Edited")
-        action = 'created' if not is_edit else 'edited'
+        action = "created" if not is_edit else "edited"
         body_str = f"The quest '{quest.title}' has been {action}"
         body = f"{body_str}: {settings.BASE_URL}{quest.admin_url}"
-        if not should_suppress_notification_email(to_email, 'quest'):
+        if not should_suppress_notification_email(to_email, "quest"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -760,14 +977,14 @@ def new_action_request(action):
         subject = _("New Action Request")
         body_str = f"The action '{action.title}' has been created"
         body = f"{body_str}: {settings.BASE_URL}{action.admin_url}"
-        if not should_suppress_notification_email(to_email, 'action'):
+        if not should_suppress_notification_email(to_email, "action"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -782,27 +999,29 @@ def new_quest_approved(quest):
         subject = _("Your Quest is live on Gitcoin.co/quests")
         body_str = _("Your quest has been approved and is now live at")
         body = f"{body_str}: {settings.BASE_URL}{quest.url}"
-        if not should_suppress_notification_email(to_email, 'quest'):
+        if not should_suppress_notification_email(to_email, "quest"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
 def new_token_request(obj):
-    to_email = 'founders@gitcoin.co'
+    to_email = "founders@gitcoin.co"
     from_email = obj.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = _("New Token Request")
-        body_str = _("A new token request was completed. You may fund the token request here")
+        body_str = _(
+            "A new token request was completed. You may fund the token request here"
+        )
         body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
         send_mail(
             from_email,
@@ -810,15 +1029,15 @@ def new_token_request(obj):
             subject,
             body,
             from_name=_("No Reply from Gitcoin.co"),
-            categories=['admin', func_name()],
+            categories=["admin", func_name()],
         )
     finally:
         translation.activate(cur_language)
 
 
 def new_token_request_approved(obj):
-    to_email = obj.metadata.get('email')
-    from_email = 'founders@gitcoin.co'
+    to_email = obj.metadata.get("email")
+    from_email = "founders@gitcoin.co"
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -830,28 +1049,30 @@ def new_token_request_approved(obj):
             subject,
             body,
             from_name=_("No Reply from Gitcoin.co"),
-            categories=['admin', func_name()],
+            categories=["admin", func_name()],
         )
     finally:
         translation.activate(cur_language)
 
 
 def notify_deadbeat_quest(quest):
-    to_email = 'kevin@gitcoin.co'
+    to_email = "kevin@gitcoin.co"
     from_email = to_email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = _("Dead Quest Alert")
-        body = f"This quest is dead ({quest.title}): https://gitcoin.co/{quest.admin_url} "
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        body = (
+            f"This quest is dead ({quest.title}): https://gitcoin.co/{quest.admin_url} "
+        )
+        if not should_suppress_notification_email(to_email, "faucet"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -859,20 +1080,20 @@ def notify_deadbeat_quest(quest):
 
 def notify_kudos_minted(token_request):
     to_email = token_request.profile.email
-    from_email = 'kevin@gitcoin.co'
+    from_email = "kevin@gitcoin.co"
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = _("Kudos has been minted")
         body = f"Your kudos '{token_request.name}' has been minted and should be available on https://gitcoin.co/kudos/marketplace soon."
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, "faucet"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -880,63 +1101,72 @@ def notify_kudos_minted(token_request):
 
 def notify_kudos_rejected(token_request):
     to_email = token_request.profile.email
-    from_email = 'kevin@gitcoin.co'
+    from_email = "kevin@gitcoin.co"
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = _("Kudos has been rejected")
         body = f"Your kudos '{token_request.name}', with the file {token_request.artwork_url} has been rejected.  The reason stated was '{token_request.rejection_reason}.  \n\n You can resubmit the token request at https://gitcoin.co/kudos/new "
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, "faucet"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("Admin at Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
 def notify_deadbeat_grants(grants):
-    to_email = 'kevin@gitcoin.co'
+    to_email = "kevin@gitcoin.co"
     from_email = to_email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = f"Dead Grants Alert {grants.count()}"
-        body = "\n\n-".join([f"({grant.title}): https://gitcoin.co/{grant.admin_url} " for grant in grants])
-        if not should_suppress_notification_email(to_email, 'sdeadbeat'):
+        body = "\n\n-".join(
+            [
+                f"({grant.title}): https://gitcoin.co/{grant.admin_url} "
+                for grant in grants
+            ]
+        )
+        if not should_suppress_notification_email(to_email, "sdeadbeat"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
 def new_kudos_request(obj):
-    to_email = 'founders@gitcoin.co'
+    to_email = "founders@gitcoin.co"
     from_email = obj.profile.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
         subject = _("New Kudos Request")
-        body_str = _("A new kudos request was completed. You may approve the kudos request here")
-        body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.profile.email}"
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        body_str = _(
+            "A new kudos request was completed. You may approve the kudos request here"
+        )
+        body = (
+            f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.profile.email}"
+        )
+        if not should_suppress_notification_email(to_email, "faucet"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -957,7 +1187,7 @@ def warn_account_out_of_eth(account, balance, denomination):
             subject,
             body,
             from_name=_("No Reply from Gitcoin.co"),
-            categories=['admin', func_name()],
+            categories=["admin", func_name()],
         )
     finally:
         translation.activate(cur_language)
@@ -973,21 +1203,21 @@ def warn_subscription_failed(subscription):
         setup_lang(to_email)
         subject = str(subscription.pk) + str(_(" subscription failed"))
         body = f"{settings.BASE_URL}{subscription.admin_url}\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}<pre>\n\n{subscription.subminer_comments}</pre>"
-        if not should_suppress_notification_email(to_email, 'admin'):
+        if not should_suppress_notification_email(to_email, "admin"):
             send_mail(
                 from_email,
                 to_email,
                 subject,
                 body,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
+                categories=["admin", func_name()],
             )
     finally:
         translation.activate(cur_language)
 
 
 def new_feedback(email, feedback):
-    to_email = 'product@gitcoin.co'
+    to_email = "product@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     subject = "New Feedback"
     body = f"New feedback from {email}: {feedback}"
@@ -997,7 +1227,7 @@ def new_feedback(email, feedback):
         subject,
         body,
         from_name="No Reply from Gitcoin.co",
-        categories=['admin', func_name()],
+        categories=["admin", func_name()],
     )
 
 
@@ -1013,15 +1243,17 @@ def gdpr_reconsent(email):
         text,
         html,
         from_name="Kevin Owocki (Gitcoin.co)",
-        categories=['marketing', func_name()],
+        categories=["marketing", func_name()],
     )
 
 
 def funder_payout_reminder(to_email, bounty, github_username, live):
     from_email = settings.PERSONAL_CONTACT_EMAIL
     subject = "Payout reminder"
-    html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
-    if (live):
+    html, text = render_funder_payout_reminder(
+        to_email=to_email, bounty=bounty, github_username=github_username
+    )
+    if live:
         try:
             send_mail(
                 from_email,
@@ -1030,7 +1262,7 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
                 text,
                 html,
                 from_name="Kevin Owocki (Gitcoin.co)",
-                categories=['marketing', func_name()],
+                categories=["marketing", func_name()],
             )
         except Exception as e:
             logger.warning(e)
@@ -1043,7 +1275,7 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
 def grant_match_distribution_kyc(match):
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]
-    from_email = 'kyc@gitcoin.co'
+    from_email = "kyc@gitcoin.co"
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
     token_name = f"CLR{match.round_number}"
@@ -1073,11 +1305,11 @@ Gitcoin Grants KYC Team
             from_email,
             to_email,
             subject,
-            '',
+            "",
             body,
             from_name=_("Gitcoin Grants"),
             cc_emails=cc_emails,
-            categories=['admin', func_name()],
+            categories=["admin", func_name()],
         )
     finally:
         translation.activate(cur_language)
@@ -1086,7 +1318,7 @@ Gitcoin Grants KYC Team
 def grant_match_distribution_test_txn(match):
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]
-    from_email = 'kyc@gitcoin.co'
+    from_email = "kyc@gitcoin.co"
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
     token_name = f"CLR{match.round_number}"
@@ -1128,19 +1360,20 @@ Kevin, Scott, Vivek and the Gitcoin Community
             from_email,
             to_email,
             subject,
-            '',
+            "",
             body,
             from_name=_("Gitcoin Grants"),
             cc_emails=cc_emails,
-            categories=['admin', func_name()],
+            categories=["admin", func_name()],
         )
     finally:
         translation.activate(cur_language)
 
+
 def grant_match_distribution_final_txn(match):
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]
-    from_email = 'kyc@gitcoin.co'
+    from_email = "kyc@gitcoin.co"
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
     try:
@@ -1171,11 +1404,11 @@ Kevin, Scott, Vivek and the Gitcoin Community
             from_email,
             to_email,
             subject,
-            '',
+            "",
             body,
             from_name=_("Gitcoin Grants"),
             cc_emails=cc_emails,
-            categories=['admin', func_name()],
+            categories=["admin", func_name()],
         )
     finally:
         translation.activate(cur_language)
@@ -1194,7 +1427,7 @@ def match_distribution(mr):
             text,
             html,
             from_name="Gitcoin",
-            categories=['marketing', func_name()],
+            categories=["marketing", func_name()],
         )
     except Exception as e:
         logger.warning(e)
@@ -1214,7 +1447,7 @@ def no_applicant_reminder(to_email, bounty):
             text,
             html,
             from_name="No Reply from Gitcoin.co",
-            categories=['marketing', func_name()],
+            categories=["marketing", func_name()],
         )
     except Exception as e:
         logger.warning(e)
@@ -1224,6 +1457,7 @@ def no_applicant_reminder(to_email, bounty):
 
 def share_bounty(emails, msg, profile, invite_url=None, kudos_invite=False):
     from dashboard.tasks import bounty_emails
+
     # attempt to delay bounty_emails task to a worker
     # long on failure to queue
     try:
@@ -1239,8 +1473,15 @@ def new_reserved_issue(from_email, user, bounty):
         setup_lang(to_email)
         html, text, subject = render_reserved_issue(to_email, user, bounty)
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1254,8 +1495,15 @@ def processed_faucet_request(fr):
         setup_lang(to_email)
         html, text = render_faucet_request(fr)
 
-        if not should_suppress_notification_email(to_email, 'faucet'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "faucet"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1268,8 +1516,15 @@ def reject_faucet_request(fr):
     try:
         setup_lang(to_email)
         html, text = render_faucet_rejected(fr)
-        if not should_suppress_notification_email(to_email, 'faucet'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "faucet"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1283,9 +1538,18 @@ def new_bounty_daily(es):
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
     to_emails = [to_email]
-    
+
     from townsquare.utils import is_email_townsquare_enabled
-    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates, upcoming_dates, email_announcements
+    from marketing.views import (
+        quest_of_the_day,
+        upcoming_grant,
+        upcoming_hackathon,
+        latest_activities,
+        upcoming_dates,
+        upcoming_dates,
+        email_announcements,
+    )
+
     quest = quest_of_the_day()
     grant = upcoming_grant()
     dates = list(upcoming_hackathon()) + list(upcoming_dates())
@@ -1302,29 +1566,31 @@ def new_bounty_daily(es):
         profile = email_to_profile(to_emails[0])
         notifications = get_notification_count(profile, 7, timezone.now())
         if notifications:
-            plural = 's' if notifications > 1 else ''
+            plural = "s" if notifications > 1 else ""
             notifications = f"💬 {notifications} Notification{plural}"
         else:
-            notifications = ''
-        has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
+            notifications = ""
+        has_offer = (
+            is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
+        )
         if has_offer:
             offers = f"⚡️ 1 New Action"
 
         new_bounties = ""
         if bounties:
-            plural_bounties = "Bounties" if len(bounties)>1 else "Bounty"
+            plural_bounties = "Bounties" if len(bounties) > 1 else "Bounty"
             new_bounties = f"💰{len(bounties)} {plural_bounties}"
         elif old_bounties:
-            plural_old_bounties = "Bounties" if len(old_bounties)>1 else "Bounty"
+            plural_old_bounties = "Bounties" if len(old_bounties) > 1 else "Bounty"
             new_bounties = f"💰{len(old_bounties)} {plural_old_bounties}"
-            
+
         new_quests = ""
         if quest:
             new_quests = f"🎯1 Quest"
 
         new_dates = ""
         if dates:
-            plural_dates = "Events" if len(dates)>1 else "Event"
+            plural_dates = "Events" if len(dates) > 1 else "Event"
             new_dates = f"🛠📆{len(dates)} {plural_dates}"
 
         new_announcements = ""
@@ -1333,7 +1599,18 @@ def new_bounty_daily(es):
             new_announcements = f"📣 1 {plural}"
 
         def comma(a):
-            return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
+            return (
+                ", "
+                if a
+                and (
+                    new_bounties
+                    or new_quests
+                    or new_dates
+                    or new_announcements
+                    or notifications
+                )
+                else ""
+            )
 
         subject = f"{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
 
@@ -1344,13 +1621,31 @@ def new_bounty_daily(es):
             from_email = settings.CONTACT_EMAIL
 
             from django.contrib.auth.models import User
+
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities)
+            html, text = render_new_bounty(
+                to_email,
+                bounties,
+                old_bounties="",
+                quest_of_the_day=quest,
+                upcoming_grant=grant,
+                upcoming_hackathon=upcoming_hackathon(),
+                latest_activities=activities,
+            )
 
-            if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
-                send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+            if not should_suppress_notification_email(
+                to_email, "new_bounty_notifications"
+            ):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["marketing", func_name()],
+                )
         finally:
             translation.activate(cur_language)
     return True
@@ -1364,13 +1659,15 @@ def weekly_roundup(to_emails=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            html, text, subject, from_email, from_name = render_new_bounty_roundup(to_email)
+            html, text, subject, from_email, from_name = render_new_bounty_roundup(
+                to_email
+            )
 
             if not html:
                 print("no content")
                 return
 
-            if not should_suppress_notification_email(to_email, 'roundup'):
+            if not should_suppress_notification_email(to_email, "roundup"):
                 send_mail(
                     from_email,
                     to_email,
@@ -1378,10 +1675,10 @@ def weekly_roundup(to_emails=None):
                     text,
                     html,
                     from_name=from_name,
-                    categories=['marketing', func_name()],
+                    categories=["marketing", func_name()],
                 )
             else:
-                print('supressed')
+                print("supressed")
         finally:
             translation.activate(cur_language)
 
@@ -1397,7 +1694,7 @@ def weekly_recap(to_emails=None):
             html, text, subject = render_weekly_recap(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
-            if not should_suppress_notification_email(to_email, 'weeklyrecap'):
+            if not should_suppress_notification_email(to_email, "weeklyrecap"):
                 send_mail(
                     from_email,
                     to_email,
@@ -1405,10 +1702,10 @@ def weekly_recap(to_emails=None):
                     text,
                     html,
                     from_name="Kevin Owocki (Gitcoin.co)",
-                    categories=['marketing', func_name()],
+                    categories=["marketing", func_name()],
                 )
             else:
-                print('supressed')
+                print("supressed")
         finally:
             translation.activate(cur_language)
 
@@ -1421,10 +1718,12 @@ def unread_notification_email_weekly_roundup(to_emails=None):
     for to_email in to_emails:
         try:
             setup_lang(to_email)
-            html, text, subject = render_unread_notification_email_weekly_roundup(to_email)
+            html, text, subject = render_unread_notification_email_weekly_roundup(
+                to_email
+            )
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
-            if not should_suppress_notification_email(to_email, 'weeklyrecap'):
+            if not should_suppress_notification_email(to_email, "weeklyrecap"):
                 send_mail(
                     from_email,
                     to_email,
@@ -1432,10 +1731,10 @@ def unread_notification_email_weekly_roundup(to_emails=None):
                     text,
                     html,
                     from_name="Kevin Owocki (Gitcoin.co)",
-                    categories=['marketing', func_name()],
+                    categories=["marketing", func_name()],
                 )
             else:
-                print('supressed')
+                print("supressed")
         finally:
             translation.activate(cur_language)
 
@@ -1451,7 +1750,7 @@ def gdpr_update(to_emails=None):
             html, text, subject = render_gdpr_update(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
-            if not should_suppress_notification_email(to_email, 'roundup'):
+            if not should_suppress_notification_email(to_email, "roundup"):
                 send_mail(
                     from_email,
                     to_email,
@@ -1459,7 +1758,7 @@ def gdpr_update(to_emails=None):
                     text,
                     html,
                     from_name="Kevin Owocki (Gitcoin.co)",
-                    categories=['marketing', func_name()],
+                    categories=["marketing", func_name()],
                 )
         finally:
             translation.activate(cur_language)
@@ -1472,7 +1771,9 @@ def new_work_submission(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = gettext("✉️ New Work Submission Inside for {} ✉️").format(bounty.title_or_desc)
+    subject = gettext("✉️ New Work Submission Inside for {} ✉️").format(
+        bounty.title_or_desc
+    )
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -1481,8 +1782,15 @@ def new_work_submission(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_work_submission(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'bounty'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "bounty"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -1491,7 +1799,9 @@ def new_bounty_rejection(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt_now:
         return
 
-    subject = gettext("😕 Work Submission Rejected for {} 😕").format(bounty.title_or_desc)
+    subject = gettext("😕 Work Submission Rejected for {} 😕").format(
+        bounty.title_or_desc
+    )
 
     if to_emails is None:
         to_emails = []
@@ -1503,8 +1813,15 @@ def new_bounty_rejection(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_bounty_rejection(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'bounty'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "bounty"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -1512,6 +1829,7 @@ def new_bounty_rejection(bounty, to_emails=None):
 def new_bounty_acceptance(bounty, to_emails=None):
     from dashboard.models import Profile
     from dashboard.utils import get_unrated_bounties_count
+
     if not bounty or not bounty.value_in_usdt_now:
         return
 
@@ -1529,8 +1847,15 @@ def new_bounty_acceptance(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_bounty_acceptance(to_email, bounty, unrated_count)
 
-            if not should_suppress_notification_email(to_email, 'bounty'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "bounty"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -1551,8 +1876,15 @@ def bounty_changed(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_bounty_changed(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'bounty'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "bounty"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -1570,13 +1902,23 @@ def bounty_hypercharged(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_bounty_hypercharged(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'bounty'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "bounty"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
+
 def new_match(to_emails, bounty, github_username):
-    subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)
+    subject = gettext("⚡️ {} Meet {}: {}! ").format(
+        github_username.title(), bounty.org_name.title(), bounty.title
+    )
 
     to_email = to_emails[0]
     cur_language = translation.get_language()
@@ -1584,7 +1926,7 @@ def new_match(to_emails, bounty, github_username):
         setup_lang(to_email)
         from_email = settings.CONTACT_EMAIL
         html, text = render_match_email(bounty, github_username)
-        if not should_suppress_notification_email(to_email, 'bounty_match'):
+        if not should_suppress_notification_email(to_email, "bounty_match"):
             send_mail(
                 from_email,
                 to_email,
@@ -1592,7 +1934,7 @@ def new_match(to_emails, bounty, github_username):
                 text,
                 html,
                 cc_emails=to_emails,
-                categories=['transactional', func_name()],
+                categories=["transactional", func_name()],
             )
     finally:
         translation.activate(cur_language)
@@ -1609,7 +1951,7 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            then = (timezone.now() - timezone.timedelta(days=45))
+            then = timezone.now() - timezone.timedelta(days=45)
             quarter = int(then.month / 3) + 1
             year = then.year
             date = f"Q{quarter} {year}"
@@ -1617,7 +1959,7 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
             html, text = render_quarterly_stats(to_email, platform_wide_stats)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
-            if not should_suppress_notification_email(to_email, 'roundup'):
+            if not should_suppress_notification_email(to_email, "roundup"):
                 send_mail(
                     from_email,
                     to_email,
@@ -1625,7 +1967,7 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
                     text,
                     html,
                     from_name="Kevin Owocki (Gitcoin.co)",
-                    categories=['marketing', func_name()],
+                    categories=["marketing", func_name()],
                 )
         finally:
             translation.activate(cur_language)
@@ -1638,7 +1980,7 @@ def tax_report(to_emails=None, zip_paths=None, tax_year=None):
         zip_paths = []
     if tax_year is None:
         # retrieve last year
-        tax_year = datetime.date.today().year-1
+        tax_year = datetime.date.today().year - 1
     for idx, to_email in enumerate(to_emails):
         if to_email:
             cur_language = translation.get_language()
@@ -1654,8 +1996,8 @@ def tax_report(to_emails=None, zip_paths=None, tax_year=None):
                     text,
                     html,
                     from_name="Kevin Owocki (Gitcoin.co)",
-                    categories=['marketing', func_name()],
-                    zip_path=zip_paths[idx]
+                    categories=["marketing", func_name()],
+                    zip_path=zip_paths[idx],
                 )
             finally:
                 translation.activate(cur_language)
@@ -1672,20 +2014,30 @@ def bounty_expire_warning(bounty, to_emails=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            unit = _('day')
+            unit = _("day")
             num = int(round((bounty.expires_date - timezone.now()).days, 0))
             if num == 0:
-                unit = _('hour')
-                num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+                unit = _("hour")
+                num = int(
+                    round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0)
+                )
             unit = unit + ("s" if num != 1 else "")
-            subject = gettext("😕 Your Funded Issue ({}) Expires In {} {} ... 😕").format(bounty.title_or_desc, num,
-                                                                                          unit)
+            subject = gettext("😕 Your Funded Issue ({}) Expires In {} {} ... 😕").format(
+                bounty.title_or_desc, num, unit
+            )
 
             from_email = settings.CONTACT_EMAIL
             html, text = render_bounty_expire_warning(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'bounty_expiration'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "bounty_expiration"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -1697,11 +2049,22 @@ def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
     try:
         setup_lang(to_email)
         from_email = settings.CONTACT_EMAIL
-        html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
-        subject = gettext("Are you still working on '{}' ? ").format(bounty.title_or_desc)
+        html, text = render_bounty_startwork_expire_warning(
+            to_email, bounty, interest, time_delta_days
+        )
+        subject = gettext("Are you still working on '{}' ? ").format(
+            bounty.title_or_desc
+        )
 
-        if not should_suppress_notification_email(to_email, 'bounty_expiration'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty_expiration"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1713,11 +2076,22 @@ def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
     try:
         setup_lang(to_email)
         from_email = settings.CONTACT_EMAIL
-        html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
-        subject = gettext("We've removed you from the task: '{}' ? ").format(bounty.title_or_desc)
+        html, text = render_bounty_startwork_expire_warning(
+            to_email, bounty, interest, time_delta_days
+        )
+        subject = gettext("We've removed you from the task: '{}' ? ").format(
+            bounty.title_or_desc
+        )
 
-        if not should_suppress_notification_email(to_email, 'bounty_expiration'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty_expiration"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1728,10 +2102,19 @@ def bounty_uninterested(to_email, bounty, interest):
     try:
         setup_lang(to_email)
         html, text = render_bounty_unintersted(to_email, bounty, interest)
-        subject = "Funder has removed you from the task: '{}' ? ".format(bounty.title_or_desc)
+        subject = "Funder has removed you from the task: '{}' ? ".format(
+            bounty.title_or_desc
+        )
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1749,8 +2132,15 @@ def start_work_approved(interest, bounty):
         setup_lang(to_email)
         html, text, subject = render_start_work_approved(interest, bounty)
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1768,8 +2158,15 @@ def start_work_rejected(interest, bounty):
         setup_lang(to_email)
         html, text, subject = render_start_work_rejected(interest, bounty)
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1790,8 +2187,15 @@ def start_work_new_applicant(interest, bounty):
         setup_lang(to_email)
         html, text, subject = render_start_work_new_applicant(interest, bounty)
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1810,10 +2214,19 @@ def start_work_applicant_about_to_expire(interest, bounty):
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        html, text, subject = render_start_work_applicant_about_to_expire(interest, bounty)
+        html, text, subject = render_start_work_applicant_about_to_expire(
+            interest, bounty
+        )
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1834,8 +2247,15 @@ def start_work_applicant_expired(interest, bounty):
         setup_lang(to_email)
         html, text, subject = render_start_work_applicant_expired(interest, bounty)
 
-        if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        if not should_suppress_notification_email(to_email, "bounty"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["transactional", func_name()],
+            )
     finally:
         translation.activate(cur_language)
 
@@ -1848,22 +2268,23 @@ def setup_lang(to_email):
 
     """
     from django.contrib.auth.models import User
+
     user = None
 
     try:
-        user = User.objects.select_related('profile').get(email=to_email)
+        user = User.objects.select_related("profile").get(email=to_email)
     except User.MultipleObjectsReturned:
-        user = User.objects.select_related('profile').filter(email=to_email).first()
+        user = User.objects.select_related("profile").filter(email=to_email).first()
     except User.DoesNotExist:
         print("Could not determine recipient preferred email, using default.")
 
-    if user and hasattr(user, 'profile'):
+    if user and hasattr(user, "profile"):
         preferred_language = user.profile.get_profile_preferred_language()
         translation.activate(preferred_language)
 
 
 def new_bounty_request(model):
-    to_email = 'vivek.singh@consensys.net'
+    to_email = "vivek.singh@consensys.net"
     from_email = model.requested_by.email or settings.SERVER_EMAIL
     cur_language = translation.get_language()
 
@@ -1871,8 +2292,10 @@ def new_bounty_request(model):
         setup_lang(to_email)
         subject = _("New Bounty Request")
         body_str = _("New Bounty Request from")
-        body = f"{body_str} {model.requested_by}: " \
+        body = (
+            f"{body_str} {model.requested_by}: "
             f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
+        )
         html, text, subject = render_bounty_request(to_email, model, settings.BASE_URL)
 
         send_mail(
@@ -1882,10 +2305,10 @@ def new_bounty_request(model):
             text,
             html,
             from_name=_("No Reply from Gitcoin.co"),
-            categories=['admin', 'new_bounty_request'],
+            categories=["admin", "new_bounty_request"],
         )
 
-        if model.github_org_email != '':
+        if model.github_org_email != "":
             to_email = model.github_org_email
             setup_lang(to_email)
             send_mail(
@@ -1895,42 +2318,48 @@ def new_bounty_request(model):
                 text,
                 html,
                 from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', 'new_bounty_request'],
+                categories=["admin", "new_bounty_request"],
             )
     finally:
         translation.activate(cur_language)
 
 
 def new_funding_limit_increase_request(profile, cleaned_data):
-    to_email = 'founders@gitcoin.co'
+    to_email = "founders@gitcoin.co"
     from_email = profile.email or settings.SERVER_EMAIL
     cur_language = translation.get_language()
-    usdt_per_tx = cleaned_data.get('usdt_per_tx', 0)
-    usdt_per_week = cleaned_data.get('usdt_per_week', 0)
-    comment = cleaned_data.get('comment', '')
-    accept_link = f'{settings.BASE_URL}requestincrease?' \
-        f'profile_pk={profile.pk}&' \
-        f'usdt_per_tx={usdt_per_tx}&' \
-        f'usdt_per_week={usdt_per_week}'
+    usdt_per_tx = cleaned_data.get("usdt_per_tx", 0)
+    usdt_per_week = cleaned_data.get("usdt_per_week", 0)
+    comment = cleaned_data.get("comment", "")
+    accept_link = (
+        f"{settings.BASE_URL}requestincrease?"
+        f"profile_pk={profile.pk}&"
+        f"usdt_per_tx={usdt_per_tx}&"
+        f"usdt_per_week={usdt_per_week}"
+    )
 
     try:
         setup_lang(to_email)
-        subject = _('New Funding Limit Increase Request')
-        body = f'New Funding Limit Request from {profile} ({profile.absolute_url}).\n\n' \
-            f'New Limit in USD per Transaction: {usdt_per_tx}\n' \
-            f'New Limit in USD per Week: {usdt_per_week}\n\n' \
-            f'To accept the Funding Limit, visit: {accept_link}\n' \
-            f'Administration Link: ({settings.BASE_URL}_administrationdashboard/profile/' \
-            f'{profile.pk}/change/#id_max_tip_amount_usdt_per_tx)\n\n' \
-            f'Comment:\n{comment}'
+        subject = _("New Funding Limit Increase Request")
+        body = (
+            f"New Funding Limit Request from {profile} ({profile.absolute_url}).\n\n"
+            f"New Limit in USD per Transaction: {usdt_per_tx}\n"
+            f"New Limit in USD per Week: {usdt_per_week}\n\n"
+            f"To accept the Funding Limit, visit: {accept_link}\n"
+            f"Administration Link: ({settings.BASE_URL}_administrationdashboard/profile/"
+            f"{profile.pk}/change/#id_max_tip_amount_usdt_per_tx)\n\n"
+            f"Comment:\n{comment}"
+        )
 
-        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
+        send_mail(
+            from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co")
+        )
     finally:
         translation.activate(cur_language)
 
 
 def bounty_request_feedback(profile):
-    from_email = 'vivek.singh@consensys.net'
+    from_email = "vivek.singh@consensys.net"
     to_email = profile.email
     if not to_email:
         if profile and profile.user:
@@ -1941,35 +2370,37 @@ def bounty_request_feedback(profile):
 
     try:
         setup_lang(to_email)
-        subject = _(f'Bounty Request Feedback, @{profile.username} <> Gitcoin')
-        body = f'Howdy @{profile.username},\n\n' \
-            'This is Vivek from Gitcoin. ' \
-            'I noticed you made a funded Gitcoin Requests ' \
-            'a few months ago and just wanted to check in. ' \
-            'How\'d it go? Any feedback for us?\n\n' \
-            'Let us know if you have any bounties in your near future ' \
-            '-- we\'ll pay attention to ' \
-            'Gitcoin Requests (https://gitcoin.co/requests/) ' \
-            'from you as we know you\'ve suggested good things ' \
-            'in the past 🙂\n\n' \
-            'Best,\n\nV'
+        subject = _(f"Bounty Request Feedback, @{profile.username} <> Gitcoin")
+        body = (
+            f"Howdy @{profile.username},\n\n"
+            "This is Vivek from Gitcoin. "
+            "I noticed you made a funded Gitcoin Requests "
+            "a few months ago and just wanted to check in. "
+            "How'd it go? Any feedback for us?\n\n"
+            "Let us know if you have any bounties in your near future "
+            "-- we'll pay attention to "
+            "Gitcoin Requests (https://gitcoin.co/requests/) "
+            "from you as we know you've suggested good things "
+            "in the past 🙂\n\n"
+            "Best,\n\nV"
+        )
 
         send_mail(
             from_email,
             to_email,
             subject,
             body,
-            from_name=_('Vivek Singh (Gitcoin.co)'),
+            from_name=_("Vivek Singh (Gitcoin.co)"),
         )
     finally:
         translation.activate(cur_language)
 
 
 def fund_request_email(request, to_emails, is_new=False):
-    token_name = request.token_name if request.network == 'ETH' else request.network
-    subject = gettext("🕐 New Request funds from {} ({} {})").format(request.requester.handle,
-                                                                     request.amount,
-                                                                     token_name)
+    token_name = request.token_name if request.network == "ETH" else request.network
+    subject = gettext("🕐 New Request funds from {} ({} {})").format(
+        request.requester.handle, request.amount, token_name
+    )
     for to_email in to_emails:
         cur_language = translation.get_language()
         try:
@@ -1977,8 +2408,15 @@ def fund_request_email(request, to_emails, is_new=False):
             from_email = settings.CONTACT_EMAIL
             html, text = render_request_amount_email(to_email, request, is_new)
 
-            if not should_suppress_notification_email(to_email, 'tip'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+            if not should_suppress_notification_email(to_email, "tip"):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    categories=["transactional", func_name()],
+                )
         finally:
             translation.activate(cur_language)
 
@@ -1993,7 +2431,14 @@ def remember_your_cart(profile, cart_query, grants, hours):
         subject = f"⏱{hours} hours left 🛒 Your grant cart is waiting for you 🛒"
         html, text = render_remember_your_cart(cart_query, grants, hours)
 
-        if not should_suppress_notification_email(to_email, 'grant_updates'):
-            send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+        if not should_suppress_notification_email(to_email, "grant_updates"):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                categories=["marketing", func_name()],
+            )
     finally:
         translation.activate(cur_language)

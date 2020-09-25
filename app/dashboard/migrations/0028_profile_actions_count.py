@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0027_auto_20190401_1349'),
+        ("dashboard", "0027_auto_20190401_1349"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='actions_count',
+            model_name="profile",
+            name="actions_count",
             field=models.IntegerField(default=3),
         ),
     ]

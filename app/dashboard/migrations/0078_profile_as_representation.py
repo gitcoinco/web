@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0077_tippayout'),
+        ("dashboard", "0077_tippayout"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='as_representation',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="profile",
+            name="as_representation",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
     ]

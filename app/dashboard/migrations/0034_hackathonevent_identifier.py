@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0033_bounty_bounty_categories'),
+        ("dashboard", "0033_bounty_bounty_categories"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hackathonevent',
-            name='identifier',
-            field=models.CharField(default='', max_length=255),
+            model_name="hackathonevent",
+            name="identifier",
+            field=models.CharField(default="", max_length=255),
         ),
     ]

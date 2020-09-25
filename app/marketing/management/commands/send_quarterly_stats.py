@@ -1,4 +1,4 @@
-'''
+"""
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
+"""
 import time
 import warnings
 
@@ -30,25 +30,29 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Command(BaseCommand):
 
-    help = 'the weekly roundup emails'
+    help = "the weekly roundup emails"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-live', '--live',
-            action='store_true',
-            dest='live',
+            "-live",
+            "--live",
+            action="store_true",
+            dest="live",
             default=False,
-            help='Actually Send the emails'
+            help="Actually Send the emails",
         )
-
 
     def handle(self, *args, **options):
 
-        keys = ['quarterly_earners', 'quarterly_payers']
-        lrs = LeaderboardRank.objects.active().filter(leaderboard__in=keys).order_by('-amount')
+        keys = ["quarterly_earners", "quarterly_payers"]
+        lrs = (
+            LeaderboardRank.objects.active()
+            .filter(leaderboard__in=keys)
+            .order_by("-amount")
+        )
         handles = lrs.values_list("github_username", flat=True)
         profiles = Profile.objects.filter(handle__in=handles)
-        email_list = profiles.values_list('email', flat=True)
+        email_list = profiles.values_list("email", flat=True)
         email_list = list(set(email_list))
 
         print(len(email_list))
@@ -56,7 +60,7 @@ class Command(BaseCommand):
 
         for counter, to_email in enumerate(email_list):
             print(f"-sending {counter+1} / {to_email}")
-            if options['live'] and to_email:
+            if options["live"] and to_email:
                 try:
                     quarterly_stats([to_email], platform_wide_stats)
                     time.sleep(1)

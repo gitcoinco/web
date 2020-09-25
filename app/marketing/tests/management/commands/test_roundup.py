@@ -30,30 +30,23 @@ class TestRoundup(TestCase):
     def setUp(self):
         """Perform setup for the testcase."""
         EmailSubscriber.objects.create(
-            email='john@bar.com',
-            source='mysource',
-            newsletter=True
+            email="john@bar.com", source="mysource", newsletter=True
         )
         EmailSubscriber.objects.create(
-            email='jackson@bar.com',
-            source='mysource',
-            newsletter=True
+            email="jackson@bar.com", source="mysource", newsletter=True
         )
         EmailSubscriber.objects.create(
-            email='fred@bar.com',
-            source='mysource',
-            newsletter=True
+            email="fred@bar.com", source="mysource", newsletter=True
         )
-        EmailSubscriber.objects.create(
-            email='paul@bar.com',
-            source='mysource'
-        )
+        EmailSubscriber.objects.create(email="paul@bar.com", source="mysource")
 
-    @patch('time.sleep')
-    @patch('marketing.management.commands.roundup.weekly_roundup')
+    @patch("time.sleep")
+    @patch("marketing.management.commands.roundup.weekly_roundup")
     def test_handle_no_options(self, mock_weekly_roundup, *args):
         """Test command roundup when live option is False."""
-        Command().handle(exclude_startswith=None, filter_startswith=None, start_counter=0, live=False)
+        Command().handle(
+            exclude_startswith=None, filter_startswith=None, start_counter=0, live=False
+        )
 
         assert mock_weekly_roundup.call_count == 0
 

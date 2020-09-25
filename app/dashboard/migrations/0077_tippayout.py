@@ -8,22 +8,49 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0076_merge_20200117_1700'),
+        ("dashboard", "0076_merge_20200117_1700"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TipPayout',
+            name="TipPayout",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('txid', models.CharField(default='', max_length=255)),
-                ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tip_payouts', to='dashboard.Profile')),
-                ('tip', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='payouts', to='dashboard.Tip')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("txid", models.CharField(default="", max_length=255)),
+                (
+                    "profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tip_payouts",
+                        to="dashboard.Profile",
+                    ),
+                ),
+                (
+                    "tip",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="payouts",
+                        to="dashboard.Tip",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

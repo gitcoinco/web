@@ -10,7 +10,7 @@ class BaseAvatarSerializer(serializers.ModelSerializer):
         """Define the milestone serializer metadata."""
 
         model = BaseAvatar
-        fields = ('pk', 'avatar_url', 'active', 'hash')
+        fields = ("pk", "avatar_url", "active", "hash")
 
 
 class CustomAvatarSerializer(serializers.ModelSerializer):
@@ -20,4 +20,4 @@ class CustomAvatarSerializer(serializers.ModelSerializer):
         """Define the milestone serializer metadata."""
 
         model = CustomAvatar
-        fields = ('pk', 'avatar_url', 'active', 'hash')
+        fields = ("pk", "avatar_url", "active", "hash")

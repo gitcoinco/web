@@ -8,23 +8,46 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0099_auto_20200413_1426'),
-        ('townsquare', '0016_favorite'),
+        ("dashboard", "0099_auto_20200413_1426"),
+        ("townsquare", "0016_favorite"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SquelchProfile',
+            name="SquelchProfile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('comments', models.TextField(blank=True, default='')),
-                ('active', models.BooleanField(default=True, help_text='Is squelch applied?')),
-                ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='squelches', to='dashboard.Profile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_on",
+                    models.DateTimeField(
+                        db_index=True, default=economy.models.get_time
+                    ),
+                ),
+                ("modified_on", models.DateTimeField(default=economy.models.get_time)),
+                ("comments", models.TextField(blank=True, default="")),
+                (
+                    "active",
+                    models.BooleanField(default=True, help_text="Is squelch applied?"),
+                ),
+                (
+                    "profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="squelches",
+                        to="dashboard.Profile",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

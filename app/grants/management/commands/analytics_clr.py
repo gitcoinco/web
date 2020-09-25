@@ -28,10 +28,18 @@ from grants.models import Contribution, Grant, GrantCLR
 from marketing.mails import warn_subscription_failed
 
 
-def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
+def analytics_clr(from_date=None, clr_round=None, network="mainnet"):
     # setup
     # clr_calc_start_time = timezone.now()
-    debug_output = [['grant_id', 'grant_title', 'number_contributions', 'contribution_amount', 'clr_amount']]
+    debug_output = [
+        [
+            "grant_id",
+            "grant_title",
+            "number_contributions",
+            "contribution_amount",
+            "clr_amount",
+        ]
+    ]
 
     # one-time data call
     total_pot = float(clr_round.total_pot)
@@ -42,37 +50,36 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
 
     grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+    grant_contributions_curr = populate_data_for_clr(
+        grants, contributions, phantom_funding_profiles, clr_round
+    )
 
     # calculate clr analytics output
     for grant in grants:
         clr_amount, _, num_contribs, contrib_amount = calculate_clr_for_donation(
-            grant,
-            0,
-            grant_contributions_curr,
-            total_pot,
-            v_threshold,
-            uv_threshold
+            grant, 0, grant_contributions_curr, total_pot, v_threshold, uv_threshold
         )
-        debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
+        debug_output.append(
+            [grant.id, grant.title, num_contribs, contrib_amount, clr_amount]
+        )
 
     return debug_output
 
 
-
 class Command(BaseCommand):
 
-    help = 'calculate clr base analytic results for all clr rounds or for a specific clr round'
+    help = "calculate clr base analytic results for all clr rounds or for a specific clr round"
 
     def add_arguments(self, parser):
-        parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
-        parser.add_argument('clr_pk', type=str, default="all")
-
+        parser.add_argument(
+            "network", type=str, default="mainnet", choices=["rinkeby", "mainnet"]
+        )
+        parser.add_argument("clr_pk", type=str, default="all")
 
     def handle(self, *args, **options):
 
-        network = options['network']
-        clr_pk = options['clr_pk']
+        network = options["network"]
+        clr_pk = options["clr_pk"]
 
         if clr_pk == "all":
             active_clr_rounds = GrantCLR.objects.filter(is_active=True)
@@ -83,9 +90,7 @@ class Command(BaseCommand):
             for clr_round in active_clr_rounds:
                 print(f"calculating CLR results for round: {clr_round.round_num}")
                 analytics = analytics_clr(
-                    from_date=timezone.now(),
-                    clr_round=clr_round,
-                    network=network
+                    from_date=timezone.now(), clr_round=clr_round, network=network
                 )
                 print(analytics)
                 print(f"finished CLR results for round: {clr_round.round_num}")

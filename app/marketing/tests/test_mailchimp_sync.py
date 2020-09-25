@@ -34,42 +34,43 @@ class MailchimpSyncTest(TestCase):
 
     def setUp(self):
         for i in range(10):
-            user = self.make_user('user{}'.format(i))
-            user.email = 'user{}@gitcoin.co'.format(i)
+            user = self.make_user("user{}".format(i))
+            user.email = "user{}@gitcoin.co".format(i)
             user.profile = Profile.objects.create(
                 user=user,
-                handle='user{}'.format(i),
+                handle="user{}".format(i),
                 last_sync_date=timezone.now(),
                 data={},
                 persona_is_funder=(i % 2 == 0),
-                persona_is_hunter=(i % 3 == 0)
+                persona_is_hunter=(i % 3 == 0),
             )
             user.save()
-            EmailSubscriber.objects.create(profile=user.profile,
-                                           email=user.email)
-        settings.MAILCHIMP_LIST_ID_HUNTERS = 'hunters'
-        settings.MAILCHIMP_LIST_ID_FUNDERS = 'funders'
-        settings.MAILCHIMP_LIST_ID = 'all'
+            EmailSubscriber.objects.create(profile=user.profile, email=user.email)
+        settings.MAILCHIMP_LIST_ID_HUNTERS = "hunters"
+        settings.MAILCHIMP_LIST_ID_FUNDERS = "funders"
+        settings.MAILCHIMP_LIST_ID = "all"
 
-
-    @patch('marketing.management.commands.sync_mail.sync_mailchimp_list')
-    @patch('marketing.management.commands.sync_mail.MailChimp')
+    @patch("marketing.management.commands.sync_mail.sync_mailchimp_list")
+    @patch("marketing.management.commands.sync_mail.MailChimp")
     def test_mailchimp_sync(self, mock_mc, mock_sync):
         """Test the marketing mails setup_lang method."""
         push_to_mailchimp()
         assert mock_sync.call_count == 3
 
-        call_dict = {args[0][1]: [es.pk for es in args[0][0]]
-                     for args
-                     in mock_sync.call_args_list}
+        call_dict = {
+            args[0][1]: [es.pk for es in args[0][0]]
+            for args in mock_sync.call_args_list
+        }
 
         eses_funder = EmailSubscriber.objects.filter(
-            active=True, profile__persona_is_funder=True).order_by('-pk')
-        assert [es.pk for es in eses_funder] == call_dict['funders']
+            active=True, profile__persona_is_funder=True
+        ).order_by("-pk")
+        assert [es.pk for es in eses_funder] == call_dict["funders"]
 
         eses_hunter = EmailSubscriber.objects.filter(
-            active=True, profile__persona_is_hunter=True).order_by('-pk')
-        assert [es.pk for es in eses_hunter] == call_dict['hunters']
+            active=True, profile__persona_is_hunter=True
+        ).order_by("-pk")
+        assert [es.pk for es in eses_hunter] == call_dict["hunters"]
 
-        eses_all = EmailSubscriber.objects.filter(active=True).order_by('-pk')
-        assert [es.pk for es in eses_all] == call_dict['all']
+        eses_all = EmailSubscriber.objects.filter(active=True).order_by("-pk")
+        assert [es.pk for es in eses_all] == call_dict["all"]
