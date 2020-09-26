@@ -183,13 +183,15 @@ class GrantAdmin(GeneralAdmin):
 
     def stats_history(self, instance):
         html = "<table>"
-        html += "<tr><td>Date</td><td>Impressions</td><td>Contributions</td></tr>"
+        html += "<tr><td>Date</td><td>Impressions</td><td>Cart Additions</td><td>Contributions</td></tr>"
         for ele in instance.stats.filter(snapshot_type='increment').order_by('-created_on'):
             html += f'''<tr>
 <td>
 {ele.created_on.strftime("%m/%d/%Y")}
 </td><td>
 {ele.data.get('impressions')}
+</td><td>
+{ele.data.get('in_cart')}
 </td><td>
 {ele.data.get('contributions')}
 </td>
