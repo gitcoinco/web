@@ -151,6 +151,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'debug_toolbar',
     'haystack',
+    'governance',
 ]
 
 MIDDLEWARE = [

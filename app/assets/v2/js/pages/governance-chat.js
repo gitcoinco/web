@@ -1,21 +1,28 @@
 (function($) {
 
-    var roomName = document.game_config['room_name'];
+    var roomName = document.game_config['pk'];
 
-    var chatSocket = new WebSocket(
+    document.chatSocket = new WebSocket(
         'ws://' + window.location.host +
         '/ws/chat/' + roomName + '/');
 
-    chatSocket.onmessage = function(e) {
-        console.log(e);
+    document.chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var message = data['message'];
-        var user = data['user'];
-        var insert_me = user + ":" + message;
-        document.querySelector('#chat-log').value += (insert_me + '\n');
+        if(data['type'] == 'msg'){
+            var message = data['message'];
+            var insert_me = message;
+            document.querySelector('#chat-log').value += (insert_me + '\n');
+        }
+        if(data['type'] == 'play_move'){
+            var where = data['where'];
+            var i = where[0];
+            var j = where[1];
+            var new_vote = data['new_vote'];
+            $(`input[data-i=${i}][data-j=${j}]`).val(new_vote);
+        }
     };
 
-    chatSocket.onclose = function(e) {
+    document.chatSocket.onclose = function(e) {
         console.log(e)
         console.error('Chat socket closed unexpectedly');
     };
@@ -30,8 +37,11 @@
     document.querySelector('#chat-message-submit').onclick = function(e) {
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
-        chatSocket.send(JSON.stringify({
-            'message': message
+        document.chatSocket.send(JSON.stringify({
+            'message': message,
+            'type': 'message',
+            'pk': document.game_config['pk'],
+            'from': document.contxt['github_handle'],
         }));
 
         messageInputDom.value = '';

@@ -26,7 +26,7 @@ from governance.games.sybilhunt import index as sybilhunt
 app_name = 'governance'
 urlpatterns = [
     path('', governance.views.index, name='governance'),
-    re_path(r'^quadratic-diplomacy/?', diplomacy, name='governance_game_diplomacy'),
+    path('quadratic-diplomacy/<str:slug>', diplomacy, name='governance_game_diplomacy'),
     re_path(r'^sybil-hunt/?', sybilhunt, name='governance_game_sybilhunt'),
 
 

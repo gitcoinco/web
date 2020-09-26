@@ -100,7 +100,7 @@
           </td>`);
     }
     $target.append(`<td>Credits Used</td>`);
-    $target.append(`<td>Voting Power</td>`);
+    $target.append(`<td>Votes Given</td>`);
     $target.append('</tr>');
 
     // gameboard
@@ -111,7 +111,7 @@
         let entry = entries[key2];
         let editable = players_to_seats[key1] == this_player;
         let _class = editable ? '' : 'readonly';
-        subhtml += `<td><input type=number ${_class} min=0 max=${allocation} value=${entry}></td>`
+        subhtml += `<td><input type=number data-i=${key1} data-j=${key2} ${_class} min=0 max=${allocation} value=${entry}></td>`
       }
       let html = `
       <tr class=player_row>
@@ -185,6 +185,17 @@
     $("#usage").text(my_votes);
     gameboard = new_gameboard
     render_gameboard(gameboard);
+
+    // update_remote
+      document.chatSocket.send(JSON.stringify({
+          'type': 'play_move',
+          'new_vote': $(this).val(),
+          'i': parseInt($(this).data('i')),
+          'j': parseInt($(this).data('j')),
+          'pk': document.game_config['pk'],
+          'from': document.contxt['github_handle'],
+      }));
+
   });
 
 
