@@ -169,6 +169,7 @@ urlpatterns = [
     url(r'^api/v0.1/keywords_search/', dashboard.views.get_keywords, name='keywords_search'),
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
+    url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
 
     # chat
     url(r'^chat/login/', chat.views.chat_login, name='chat_login'),

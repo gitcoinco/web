@@ -28,11 +28,11 @@ if (document.getElementById('gc-onboard')) {
         data: {
           bio: '',
           skillsSelected: [],
-          orgSelected: [],
+          jobSelected: [],
           interestsSelected: [],
           userOptions: [],
+          orgSelected: [],
           orgOptions: [],
-          jobSelected: [],
           email: ''
         },
         skills: [],
@@ -93,7 +93,7 @@ if (document.getElementById('gc-onboard')) {
       },
       submitData() {
         let vm = this;
-        const apiUrlPersona = '/api/v1/choose_persona/';
+        const apiUrlPersona = '/api/v1/onboard_save/';
         const postPersonaData = fetchData(apiUrlPersona, 'POST', vm.data);
 
         $.when(postPersonaData).then((response) => {
@@ -125,8 +125,15 @@ if (document.getElementById('gc-onboard')) {
         if (search.length < 1) {
           return;
         }
-        loading(true);
-        vm.getKeyword(loading, search);
+
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+        }
+
+        this.timeout = setTimeout(() => {
+          loading(true);
+          vm.getKeyword(loading, search);
+        }, 1000);
 
       },
       getKeyword: async function(loading, search) {
