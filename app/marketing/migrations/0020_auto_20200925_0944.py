@@ -2,7 +2,8 @@
 
 import datetime
 from django.db import migrations, models
-
+from django.utils import timezone
+from django.utils.timezone import localtime
 
 class Migration(migrations.Migration):
 
@@ -14,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='upcomingdate',
             name='last_modified',
-            field=models.DateTimeField(db_index=True, default=datetime.datetime(2020, 9, 25, 9, 44, 19, 299543)),
+            field=models.DateTimeField(db_index=True, default=localtime(timezone.now())),
         ),
         migrations.AddField(
             model_name='upcomingdate',
