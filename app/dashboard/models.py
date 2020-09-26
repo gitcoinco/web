@@ -2877,7 +2877,7 @@ class Profile(SuperModel):
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
-    twitter_handle=models.CharField(blank=True, max_length=15)
+    twitter_handle=models.CharField(blank=True, null=True, max_length=15)
 
     @property
     def is_blocked(self):
