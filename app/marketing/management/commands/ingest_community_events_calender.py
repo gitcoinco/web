@@ -92,7 +92,6 @@ def save_upcoming_date(component):
     else:
         return 0, 0, 1
 
-
 class Command(BaseCommand):
 
     help = 'ingest community events calender'

@@ -25,7 +25,7 @@ from unittest.mock import patch
 from django.utils import timezone
 
 from icalendar import Calendar, Event
-from marketing.management.commands.ingest_community_events_calender import ICAL_URL, Command
+from marketing.management.commands.ingest_community_events_calender import Command
 from marketing.models import UpcomingDate
 from test_plus.test import TestCase
 
@@ -52,18 +52,15 @@ class TestIngestCommunityEvents(TestCase):
     """Define tests for ingest community events. """
 
     
-    @patch('marketing.management.commands.ingest_community_events_calender.save_upcoming_date')
-    def test_handle_create(self, mock_func):
+    def test_handle_create(self):
         """Test ingest_community_events_calender command for creating new events ."""
 
         calendar, event = load_icalendar("test_ics_files/single-event.ics")
         mock.patch('marketing.management.commands.ingest_community_events_calender.parse_ical_from_url',
                    lambda x: calendar).start()
         # Must create a new event
-        Command().handle(url=ICAL_URL)
+        Command().handle(url="")
         last_record = UpcomingDate.objects.last()
-        mock_func.assert_called_once_with(event)
-        assert mock_func.return_value == (1, 0, 0)
         assert last_record.title == event.get('summary')
         assert last_record.uid == event.get('uid')
         assert last_record.date == event.get('dtstart').dt
@@ -71,15 +68,13 @@ class TestIngestCommunityEvents(TestCase):
         assert last_record.url == event.get('location')
         # From test_ics_files/single-event.ics:88
         assert last_record.sequence == 0
-        assert last_record.last_modified == event.get('last-modified')
+        assert last_record.last_modified == event.get('last-modified').dt
 
         # Case when the event already exists
-        Command().handle()
-        mock_func.assert_called_once_with(event)
-        assert mock_func.return_value == (0, 0, 1)
+        Command().handle(url="")
+        assert UpcomingDate.objects.filter(title=event.get('summary')).count() == 1
 
-    @patch('marketing.management.commands.ingest_community_events_calender.save_upcoming_date')
-    def test_handle_update(self, mock_func):
+    def test_handle_update(self):
         """Test ingest_community_events_calender command for updating new events ."""
 
         calendar, event = load_icalendar("test_ics_files/update.ics")
@@ -87,10 +82,8 @@ class TestIngestCommunityEvents(TestCase):
                    lambda x: calendar).start()
 
         # Must update the event in the test_ics_files/single-event.ics file.
-        Command().handle(url=ICAL_URL)
+        Command().handle(url="")
         last_record = UpcomingDate.objects.last()
-        mock_func.assert_called_once_with(event)
-        assert mock_func.return_value == (0, 1, 0)
         assert last_record.title == event.get('summary')
         assert last_record.uid == event.get('uid')
         assert last_record.date == event.get('dtstart').dt
@@ -98,7 +91,7 @@ class TestIngestCommunityEvents(TestCase):
         assert last_record.url == event.get('location')
         # From test_ics_files/update.ics:88
         assert last_record.sequence == 1
-        assert last_record.last_modified == event.get('last-modified')
+        assert last_record.last_modified == event.get('last-modified').dt
 
     def tearDown(self):
         calendar, event = load_icalendar("test_ics_files/update.ics")
