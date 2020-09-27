@@ -1,0 +1,16 @@
+{
+    "symbol": "TIFS",
+    "address": "0xa0A72FE83c891A59C6db18AC0b9A3555b82dA9DF",
+    "overview":{
+          "en": "Multiple compatibility is a decentralized supervision platform and DAO general platform, which mainly provides a large number of off-chain data sources, various apis and traditional payment services for smart contracts.",
+          "zh": "Multiple compatibility是一个去中心化监管平台与DAO通用平台，主要为智能合约提供大量链下数据源、各种api和传统支付服务。"
+    },
+    "email": "starlink@multiplecompatibility.io",
+    "website": "https://multiplecompatibility.io/",
+    "whitepaper": "https://multiplecompatibility.io/wp/Multiple-compatibility-White-Paper-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-26",
+    "links": {
+        "twitter": "https://twitter.com/StarLink_it"
+      }
+}
