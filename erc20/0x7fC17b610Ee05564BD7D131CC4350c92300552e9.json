@@ -1,0 +1,17 @@
+{
+    "symbol": "HUR",
+    "address": "0x7fC17b610Ee05564BD7D131CC4350c92300552e9",
+    "overview":{
+          "en": "Hummer is a distributed financial system based on blockchain. It is committed to promoting the development and improvement of the distributed financial DeFi ecosystem, creating on-chain finance, and then building an efficient distributed financial DeFi ecological infrastructure.",
+          "zh": "Hummer是基于区块链的分布式金融系统，致力于推动分布式金融DeFi生态的发展和完善，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "hummerservice@gmail.com",
+    "website": "http://hummer.network/",
+    "whitepaper": "http://hummer.network/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-18",
+    "links": {
+        "telegram": "https://t.me/hummergroup",
+        "twitter": "https://twitter.com/hummerdefi"
+      }
+}
