@@ -952,10 +952,9 @@ def day_email_campaign(request, day):
     return HttpResponse(response_html)
 
 def trending_quests():
+    from quests.models import QuestAttempt
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
-    quests = Quest.objects.annotate(recent_attempts=Count('attempts', filter=Q(
-        created_on__gte=cutoff_date))
-        ).order_by('?').all()[0:10]
+    quests = [ele.quest for ele in QuestAttempt.objects.order_by('?').all()[0:10]]
     return quests
 
 def trending_avatar():

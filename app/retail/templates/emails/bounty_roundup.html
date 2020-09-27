@@ -140,7 +140,7 @@
   {% if updates %}
     {% if updates.hackathons %}
       <div width="100%" style="height: 60px">
-        <img src="{% static 'v2/images/top-bar/hackathons-pos.svg' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
+        <img src="{% static 'v2/images/top-bar/hackathons-pos.png' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
       </div>
       <br>
       <p style="text-align: left">{{ updates.hackathons.description|safe }}</p>
@@ -180,7 +180,7 @@
     {% if updates.grants %}
       <br>
       <div width="100%" style="height: 90px">
-        <img src="{% static 'v2/images/top-bar/grants-pos.svg' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
+        <img src="{% static 'v2/images/top-bar/grants-pos.png' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
       </div>
       <br>
       {% for grant in updates.grants %}

@@ -32,7 +32,8 @@ warnings.filterwarnings("ignore")
 
 override_in_dev = True
 
-THROTTLE_S = 0.005
+THROTTLE_S = 0.02
+
 
 class Command(BaseCommand):
 
@@ -63,15 +64,16 @@ class Command(BaseCommand):
                 # stats
                 speed = counter_total / (time.time() - start_time)
                 ETA = round((total_count - counter_total) / speed / 3600, 1)
-                print(f"{counter_sent} sent/{counter_total} enabled/ {total_count} total, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} ")
+                print(
+                    f"{counter_sent} sent/{counter_total} enabled/ {total_count} total, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} ")
 
                 # send
-                did_send = new_bounty_daily(es.pk)
+                did_send = new_bounty_daily.delay(es.pk)
                 if did_send:
                     counter_sent += 1
 
                 time.sleep(THROTTLE_S)
-                
+
             except Exception as e:
                 logging.exception(e)
                 print(e)
