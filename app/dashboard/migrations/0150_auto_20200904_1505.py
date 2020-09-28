@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('ptokens', '0001_initial'),
-        ('dashboard', '0144_auto_20200903_1904'),
+        ('dashboard', '0149_add_twitter_verify_status'),
     ]
 
     operations = [
