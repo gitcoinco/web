@@ -17,6 +17,7 @@ for contrib in contributions:
     results[key] += 1
     if is_automatic:
         contrib.profile_for_clr = gcb
+        contrib.is_clr_eligible = False
         contrib.save()
 print(results)
 

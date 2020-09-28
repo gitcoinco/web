@@ -1089,6 +1089,7 @@ next_valid_timestamp: {next_valid_timestamp}
             is_automatic = bool(contribution.subscription.amount_per_period == contribution.subscription.gas_price)
             from dashboard.models import Profile
             contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
+            contribution.is_clr_eligible = False
             contribution.save()
 
         return contribution
