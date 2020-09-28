@@ -4,6 +4,7 @@ import math
 import os
 from datetime import datetime
 
+from appdirs import unicode
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -186,7 +187,6 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
             finished = True
             results = hits
 
-
         if not finished:
 
             max_loops = math.ceil(total_hits / PAGE_SIZE)
@@ -205,10 +205,11 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
             source = result['_source']
             row_item = {}
             for k in source.copy():
-                k = k.replace('_exact', '')
-                if k in CSV_HEADER:
-                    row_item[k] = source[k]
 
+                new_column = k.replace('_exact', '')
+
+                if new_column in CSV_HEADER:
+                    row_item[new_column] = source[k].encode('utf-8') if type(source[k]) is unicode else source[k]
             output.append(row_item)
         now = datetime.now()
         csv_file_path = f'/tmp/user-directory-export-{user_profile.handle}-{now}.csv'
