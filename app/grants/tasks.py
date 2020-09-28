@@ -166,3 +166,19 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         thank_you_for_supporting(grant, subscription)
 
         update_grant_metadata.delay(grant_id)
+
+@app.shared_task(bind=True, max_retries=1)
+def recalc_clr(self, grant_id, retry: bool = True) -> None:
+    obj = Grant.objects.get(pk=grant_id)
+    from grants.clr import predict_clr
+    from django.utils import timezone
+    for clr_round in obj.in_active_clrs.all():
+        network = 'mainnet'
+        predict_clr(
+            save_to_db=True,
+            from_date=timezone.now(),
+            clr_round=clr_round,
+            network=network,
+            only_grant_pk=obj.pk
+        )
+

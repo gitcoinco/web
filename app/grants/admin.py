@@ -161,18 +161,9 @@ class GrantAdmin(GeneralAdmin):
 
     def response_change(self, request, obj):
         if "_calc_clr" in request.POST:
-            from grants.clr import predict_clr
-            for clr_round in obj.in_active_clrs.all():
-                network = 'mainnet'
-                predict_clr(
-                    save_to_db=True,
-                    from_date=timezone.now(),
-                    clr_round=clr_round,
-                    network=network,
-                    only_grant_pk=obj.pk
-                )
-
-            self.message_user(request, "recaclulated clr")
+            from grants.tasks import recalc_clr
+            recalc_clr.delay(obj.pk)
+            self.message_user(request, "recaclulation of clr queued")
         return redirect(obj.admin_url)
 
     def contributions_links(self, instance):
