@@ -19,7 +19,11 @@ END
 
 IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1" | grep -c python)
 if [ "$2" != "" ]; then
-    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1" | grep -e "$2" | grep -c python)
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2" | grep -c python)
+fi
+if [ "$3" != "" ]; then
+    #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3" | grep -c python)
 fi
 
 if [ "$IS_ALREADY_RUNNING" -eq "0" ]; then
