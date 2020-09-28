@@ -223,9 +223,17 @@ def grants_transaction_validator_v2(contribution, w3):
         token_symbol = contribution.normalized_data['token_symbol']
         expected_recipient = contribution.normalized_data['admin_address'].lower()
         expected_token = get_token(token_symbol, network)['addr'].lower() # we compare by token address
+
+        # If amount_per_period_minus_gas_price is basically zero, this is an automatic Gitcoin
+        # contribution so we use a different field to get the expected value
+        if contribution.subscription.amount_per_period_minus_gas_price < 0.000000001:
+            amount_to_use = contribution.subscription.amount_per_period 
+        else:
+            amount_to_use = contribution.subscription.amount_per_period_minus_gas_price
+
         expected_amount = parse_token_amount(
             token_symbol=token_symbol,
-            amount=contribution.subscription.amount_per_period_minus_gas_price,
+            amount=amount_to_use,
             network=network
         )
         transfer_tolerance = 0.05 # use a 5% tolerance when checking amounts to account for floating point error
