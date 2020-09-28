@@ -8,7 +8,7 @@
   "email": "service@mzkj.io",
   "website": "https://mzkj.io",
   "whitepaper": "https://www.mzkj.io/MinerZone_whitepaper_en.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2020-08-01",
   "initial_price":{
         "ETH":"0.0003968 ETH",
