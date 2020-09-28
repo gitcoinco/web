@@ -429,7 +429,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
 
 
 
-def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet'):
+def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
@@ -446,6 +446,9 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         return
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+
+    if only_grant_pk:
+        grants = grants.filter(pk=only_grant_pk)
 
     # calculate clr given additional donations
     for grant in grants:

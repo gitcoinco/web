@@ -168,7 +168,8 @@ class GrantAdmin(GeneralAdmin):
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
-                    network=network
+                    network=network,
+                    only_grant_pk=obj.pk
                 )
 
             self.message_user(request, "recaclulated clr")
