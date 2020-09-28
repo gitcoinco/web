@@ -1,6 +1,8 @@
+from dashboard.models import Profile
 from grants.models import *
 from django.utils import timezone
 
+gcb = Profile.objects.get(handle='gitcoinbot')
 then = timezone.datetime(2020, 9, 14)
 grant_pk = 86
 contributions = Contribution.objects.filter(subscription__grant__pk=grant_pk, created_on__gt=then)
@@ -13,5 +15,8 @@ for contrib in contributions:
     key = str(is_automatic)
     #key = (str(bool(round(contrib.subscription.gas_price,1))))
     results[key] += 1
+    if is_automatic:
+        contrib.profile_for_clr = gcb
+        contrib.save()
 print(results)
 
