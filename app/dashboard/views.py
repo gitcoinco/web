@@ -1196,7 +1196,7 @@ def users_fetch(request):
         if user.data.get('location', ''):
             profile_json['country'] = user.data.get('location', '')
 
-        profile_json['intro'] = 'Happy to be here!'
+
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
