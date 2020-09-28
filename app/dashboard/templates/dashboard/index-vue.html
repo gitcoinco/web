@@ -656,7 +656,7 @@
                                <p class="m-0" v-if="eventTag(event) == 'demo'" style="color: #8948FF">Demo Day</p>
                                <p class="m-0 font-weight-bold">[[formatDate(event)]]</p>
                                <h3 class="font-title"><b>[[event.title]]</b> [[ event.organizer ? `with ${event.organizer}` : '']]</h3>
-                               <p class="m-0"  class="font-body">[[event.description]]</p>
+                               <p class="m-0" v-html="event.description" class="font-body"></p>
                              </div>
                            </div>
                            <div>
