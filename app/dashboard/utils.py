@@ -37,8 +37,8 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
 )
-from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.btc import sync_btc_payout
+from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.polkadot import sync_polkadot_payout

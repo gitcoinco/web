@@ -68,7 +68,7 @@ from git.utils import (
     repo_name,
 )
 from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
-from marketing.models import LeaderboardRank, EmailSupressionList
+from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
 from web3 import Web3
@@ -1763,6 +1763,10 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
+        new_receive_txid = getReplacedTX(self.receive_txid)
+        if new_receive_txid:
+            self.receive_txid = new_receive_txid
         self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
         return bool(self.receive_tx_status)
 
@@ -2036,7 +2040,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
-                "txid":'',
+                "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
             }
@@ -2872,6 +2876,8 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
+    is_twitter_verified=models.BooleanField(default=False)
+    twitter_handle=models.CharField(blank=True, null=True, max_length=15)
 
     @property
     def is_blocked(self):
@@ -3408,6 +3414,10 @@ class Profile(SuperModel):
         if self.user.is_staff:
             return True
         return self.user.groups.filter(name='Alpha_Testers').cache().exists() if self.user else False
+
+    @property
+    def user_groups(self):
+        return self.user.groups.all().cache().values_list('name', flat=True) if self.user else False
 
     @property
     def is_staff(self):
@@ -5284,6 +5294,10 @@ def post_save_earning(sender, instance, created, **kwargs):
     if created:
         instance.create_auto_follow()
 
+        from economy.utils import watch_txn
+        if instance.txid:
+            watch_txn(instance.txid)
+
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
     from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
@@ -5508,15 +5522,15 @@ class Investigation(SuperModel):
             total_sybil_score += 1
             htmls.append('(DING)')
 
-        from dashboard.brightid_utils import get_brightid_status
-        bright_id_status = get_brightid_status(instance.brightid_uuid)
-        htmls.append(f'Bright ID Status: {bright_id_status}')
-        if bright_id_status == 'not_verified':
-            total_sybil_score -= 1
-            htmls.append('(REDEMPTIONx1)')
-        elif bright_id_status == 'verified':
+        htmls.append(f'Bright ID Verified: {instance.is_brightid_verified}')
+        if instance.is_brightid_verified:
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
+
+        htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
+        if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
 
         if instance.squelches.filter(active=True).exists():
             htmls.append('USER HAS ACTIVE SQUELCHES')
