@@ -65,6 +65,13 @@ const needWalletConnection = async() => {
   window.addEventListener('walletReady', async function(e) {
     if (!web3Modal || !web3Modal.cachedProvider) {
       return await onConnect().then(console.log);
+    } else if (web3Modal.cachedProvider === 'injected' && window.Web3Modal.getInjectedProviderName() === 'MetaMask') {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+      if (!accounts.length) {
+        return await onConnect().then(console.log);
+      }
+
     }
   }, false);
 };

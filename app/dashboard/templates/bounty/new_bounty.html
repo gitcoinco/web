@@ -24,7 +24,7 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-select@3.10.8/dist/vue-select.css">
     <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
     <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
@@ -92,10 +92,16 @@
                   </label>
 
                   {% if is_staff %}
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '0'}">
+                      <input type="radio" name="bounty_chain" id="0_chain" value="0" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/bitcoin.svg' %}" alt="" width="16"> BTC
+                    </label>
+
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
                       <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="16"> PayPal
                     </label>
+                  {% endif %}
 
+                  {% if 'polkadot_testers' in user_groups or is_staff %}
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 58}">
                       <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> Polkadot
                     </label>
@@ -270,7 +276,7 @@
                     </div>
                     <div class="col-12" v-if="!subscriptionActive">
                       <p class="text-highlight-gc-blue bg-lightpurple p-2 mt-2">
-                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:scott@gitcoin.co" target="_blank" class="font-weight-bold">scott@gitcoin.co</a>
+                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:support@gitcoin.co" target="_blank" class="font-weight-bold">support@gitcoin.co</a>
                       </p>
 
                     </div>
@@ -393,7 +399,7 @@
 
                   <div class="col-12 col-md-3" id="usd-amount-wrapper">
                     <label class="form__label" for="hours">Est. Hours of Work</label>
-                    <input name="hours" id="hours" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="calcValues('token')">
+                    <input name="hours" id="hours"  pattern="[0-9]" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="estHoursValidator">
                   </div>
                 </div>
                 <div>
@@ -711,7 +717,7 @@
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="https://unpkg.com/vue-select@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8/dist/vue-select.min.js"></script>
 
     <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
     <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>

@@ -19,6 +19,7 @@
 from __future__ import print_function, unicode_literals
 
 import hashlib
+import html
 import json
 import logging
 import os
@@ -55,8 +56,11 @@ from django.views.decorators.http import require_GET, require_POST
 import dateutil.parser
 import magic
 import pytz
+import requests
+import tweepy
 from app.services import RedisService, TwilioService
-from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
+from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_SECRET, \
+    TWITTER_ACCESS_TOKEN
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
@@ -67,6 +71,7 @@ from cacheops import invalidate_obj
 from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
+from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
@@ -88,8 +93,9 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
     wall_post_email,
 )
-from marketing.models import EmailSubscriber, Keyword
+from marketing.models import EmailSubscriber, Keyword, UpcomingDate
 from oauth2_provider.decorators import protected_resource
+from perftools.models import JSONStore
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
@@ -1014,18 +1020,16 @@ def users_autocomplete(request):
         'results': results
     })
 
-
-@require_GET
+@csrf_exempt
 def output_users_to_csv(request):
 
     if request.user.is_authenticated and not request.user.is_staff:
         return Http404()
+    from .tasks import export_search_to_csv
 
-    profile_ids = request.GET.getlist('profile_ids[]')
+    export_search_to_csv.delay(body=request.body.decode('utf-8'), user_handle=request.user.profile.handle)
 
-    user_query = UserDirectory.objects.filter(profile_id__in=profile_ids)
-    from djqscsv import render_to_csv_response
-    return render_to_csv_response(user_query)
+    return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'})
 
 @require_GET
 def users_fetch(request):
@@ -1147,7 +1151,7 @@ def users_fetch(request):
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-earnings_count', 'id').exclude(handle__iexact='gitcoinbot')
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-rank_coder', 'id').exclude(handle__iexact='gitcoinbot')
 
         this_page = profile_list
 
@@ -1192,6 +1196,7 @@ def users_fetch(request):
             profile_json['previously_worked'] = False # user.previous_worked_count > 0
             profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
             profile_json['position_funder'] = user.get_funder_leaderboard_index()
+            profile_json['rank_coder'] = user.rank_coder
             profile_json['work_done'] = count_work_completed
             profile_json['verification'] = user.get_my_verified_check
             profile_json['avg_rating'] = user.get_average_star_rating()
@@ -2255,6 +2260,9 @@ def user_card(request, handle):
         },
         'profile_dict': profile_dict
     }
+    if response.get('profile',{}).get('data',{}).get('email'):
+        del response['profile']['data']['email']
+
 
     return JsonResponse(response, safe=False)
 
@@ -2832,6 +2840,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'portfolio':
         title = request.POST.get('project_title')
+        pk = request.POST.get('project_pk')
         if title:
             if request.POST.get('URL')[0:4] != "http":
                 messages.error(request, 'Invalid link.')
@@ -2847,6 +2856,14 @@ def get_profile_tab(request, profile, tab, prev_context):
                     tags=request.POST.get('tags').split(','),
                     )
                 messages.info(request, 'Portfolio Item added.')
+        if pk:
+            # delete portfolio item
+            if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
+                messages.error(request, 'Not Authorized')
+            pi = PortfolioItem.objects.filter(pk=pk).first()
+            if pi:
+                pi.delete()
+                messages.info(request, 'Portfolio Item has been deleted.')
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':
@@ -2881,9 +2898,128 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__feedbackType='worker',
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
+    elif tab == 'trust':
+        today = datetime.today()
+        context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
+        if settings.DEBUG:
+            context['brightid_status'] = 'not_verified'
+
+        try:
+            context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+        except JSONStore.DoesNotExist:
+            context['upcoming_calls'] = []
+
+        context['is_sms_verified'] = profile.sms_verification
+        context['is_twitter_verified'] = profile.is_twitter_verified
+        context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
     else:
         raise Http404
     return context
+
+def verify_text_for_tweet(handle):
+    url = 'https://gitcoin.co/' + handle
+    msg = 'I am verifying my identity as ' + handle + ' on @gitcoin'
+    full_text = msg + ' ' + url
+
+    return full_text
+
+@login_required
+def verify_user_twitter(request, handle):
+    MIN_FOLLOWER_COUNT = 100
+    MIN_ACCOUNT_AGE_WEEKS = 26 # ~6 months
+
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_twitter_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    twitter_handle = request_data.get('twitter_handle', '')
+
+    if twitter_handle == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must include a Twitter handle'
+        })
+
+    auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+    auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
+
+    try:
+        api = tweepy.API(auth)
+
+        user = api.get_user(twitter_handle)
+
+        if user.followers_count < MIN_FOLLOWER_COUNT:
+            msg = 'Sorry, you must have at least ' + str(MIN_FOLLOWER_COUNT) + ' followers'
+            return JsonResponse({
+                'ok': False,
+                'msg': msg
+            })
+
+        age = datetime.now() - user.created_at
+        if age < timedelta(days=7 * MIN_ACCOUNT_AGE_WEEKS):
+            msg = 'Sorry, your account must be at least ' + str(MIN_ACCOUNT_AGE_WEEKS) + ' weeks old'
+            return JsonResponse({
+                'ok': False,
+                'msg': msg
+            })
+
+        last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
+                                       include_rts=False, exclude_replies=False)[0]
+    except tweepy.TweepError:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
+        })
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
+        })
+
+    if last_tweet.retweeted or 'RT @' in last_tweet.full_text:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'We get a retweet from your last status, at this moment we don\'t supported retweets.'
+        })
+
+    full_text = html.unescape(last_tweet.full_text)
+    expected_msg = verify_text_for_tweet(handle)
+
+    # Twitter replaces the URL with a shortened version, which is what it returns
+    # from the API call. So we'll split on the @-mention of gitcoin, and only compare
+    # the body of the text
+    tweet_split = full_text.split("@gitcoin")
+    expected_split = expected_msg.split("@gitcoin")
+
+    if tweet_split[0] != expected_split[0]:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Sorry, your last Tweet didn\'t match the verification text',
+            'found': tweet_split,
+            'expected': expected_split
+        })
+
+    profile.is_twitter_verified = True
+    profile.twitter_handle = twitter_handle
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': full_text,
+        'found': tweet_split,
+        'expected': expected_split
+    })
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
@@ -2929,7 +3065,7 @@ def profile(request, handle, tab=None):
     disable_cache = False
 
     # make sure tab param is correct
-    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'ptokens']
+    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'ptokens', 'trust']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2940,7 +3076,7 @@ def profile(request, handle, tab=None):
     if not handle and request.user.is_authenticated:
         handle = request.user.username
     is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    user_only_tabs = ['viewers', 'earnings', 'spent']
+    user_only_tabs = ['viewers', 'earnings', 'spent', 'trust']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}
@@ -4340,7 +4476,7 @@ def hackathon_save_project(request):
         project.save()
         profiles.append(str(profile.id))
         project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
-        invalidate_obj(project.first())
+        invalidate_obj(project)
 
     return JsonResponse({
             'success': True,
@@ -4567,7 +4703,7 @@ def get_hackathons(request):
 
     if settings.DEBUG:
         from perftools.management.commands import create_page_cache
-        
+
         create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [

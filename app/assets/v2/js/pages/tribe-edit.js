@@ -31,12 +31,12 @@ $('#edit-btn').on('click', function() {
   if (!document.getElementById('quill-js')) {
     const style = document.createElement('link');
 
-    style.href = '//cdn.quilljs.com/1.3.6/quill.snow.css';
+    style.href = '//cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css';
     style.type = 'text/css';
     style.rel = 'stylesheet';
     document.getElementsByTagName('head')[0].appendChild(style);
   }
-  loadDynamicScript(activateQuill, 'https://cdn.quilljs.com/1.3.6/quill.js', 'quill-js');
+  loadDynamicScript(activateQuill, 'https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js', 'quill-js');
 
 });
 
@@ -151,12 +151,12 @@ if ($('#edit-tribe_priority').length) {
 
   const style = document.createElement('link');
 
-  style.href = '//cdn.quilljs.com/1.3.6/quill.snow.css';
+  style.href = '//cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css';
   style.type = 'text/css';
   style.rel = 'stylesheet';
   document.getElementsByTagName('head')[0].appendChild(style);
 
-  loadDynamicScript(activateQuill, 'https://cdn.quilljs.com/1.3.6/quill.js', 'quill-js');
+  loadDynamicScript(activateQuill, 'https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js', 'quill-js');
 }
 
 tokens(document.web3network).forEach(function(ele) {

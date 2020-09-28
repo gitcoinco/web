@@ -153,6 +153,7 @@ textarea.editable {
 
 #form--input__description,
 #form--input__reference-url,
+#form--twitter__account,
 #form--input__title,
 #contract_owner_address {
   width: 100%;

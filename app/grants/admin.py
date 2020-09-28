@@ -27,8 +27,8 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
-    Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantStat, GrantType,
+    MatchPledge, PhantomFunding, Subscription,
 )
 
 
@@ -87,23 +87,24 @@ class GrantAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = [
         'migrated_to',
-        'title', 'description', 'description_rich', 'reference_url', 'admin_address', 'active',
+        'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
         'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs'
+        'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
+        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
+        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
-        'migrated_to', 'view_count', 'in_active_clrs'
+        'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
-    raw_id_fields = ['admin_profile']
+    raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
 
 
@@ -148,6 +149,9 @@ class GrantAdmin(GeneralAdmin):
     def subscriptions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
+        # todo: figure out how to set request
+        # if not self.request.GET('expand'):
+        #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for ele in instance.subscriptions.all().order_by('pk'):
             html = f"<a href='{ele.admin_url}'>{ele}</a>"
@@ -158,6 +162,10 @@ class GrantAdmin(GeneralAdmin):
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
+
+        # todo: figure out how to set request
+        #if not self.request.GET('expand'):
+        #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
@@ -172,6 +180,24 @@ class GrantAdmin(GeneralAdmin):
         if instance.link_to_new_grant:
             html = f"<a href='{instance.link_to_new_grant.pk}'>{instance.link_to_new_grant.pk}</a>"
             return mark_safe(html)
+
+    def stats_history(self, instance):
+        html = "<table>"
+        html += "<tr><td>Date</td><td>Impressions</td><td>Cart Additions</td><td>Contributions</td></tr>"
+        for ele in instance.stats.filter(snapshot_type='increment').order_by('-created_on'):
+            html += f'''<tr>
+<td>
+{ele.created_on.strftime("%m/%d/%Y")}
+</td><td>
+{ele.data.get('impressions')}
+</td><td>
+{ele.data.get('in_cart')}
+</td><td>
+{ele.data.get('contributions')}
+</td>
+            </tr>'''
+        html += "</table>"
+        return mark_safe(html)
 
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
@@ -347,9 +373,13 @@ class GrantCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ['pk']
 
 
-
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active']
+
+
+class GrantCollectionAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
+    raw_id_fields = ['profile', 'grants', 'curators']
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
@@ -363,3 +393,5 @@ admin.site.register(CartActivity, CartActivityAdmin)
 admin.site.register(GrantType, GrantTypeAdmin)
 admin.site.register(GrantCategory, GrantCategoryAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
+admin.site.register(GrantCollection, GrantCollectionAdmin)
+admin.site.register(GrantStat, GeneralAdmin)

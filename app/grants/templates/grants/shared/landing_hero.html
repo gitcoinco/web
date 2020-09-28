@@ -3,27 +3,36 @@
         <div class="grants-hero white my-5">
           <div class="row">
             <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-              <p class="p-3 font-header">
-                <strong>
-                  <span class="title-round"><span class="amount-round">Round 7</span> starts September 14th</span> (<span class="m-0" data-time="{{next_round_start|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) 
-                </strong>
-              </p>
-              <div class="float-right">
-              <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
-                <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
-                {% trans 'Create a Grant' %}
-              </a>
-              <span class="ml-2">
-              or
-              <a class="explore_grants" href="#content_navbar" style="text-decoration: underline; line-height: 60px;">
-                <i class="fas fa-map"></i> | Explore Grants
-              </a>
+                &nbsp;
               </div>
             </div>
             <div class="m-0 col-12 col-md-6 offset-lg-1 col-lg-5 d-none d-sm-block">
-              <h1 class="font-title-xl font-weight-semibold">Get Matching Funding for Your <a style="text-decoration: underline;" target="_blank" href="https://en.wikipedia.org/wiki/Public_good_(economics)">Public Goods</a> Projects.</h1>
+              &nbsp;
             </div>
           </div>
         </div>
+      </div>
+      <div id='container_bar' class='pl-3 pr-3 mb-0 pb-0'>
+        <div class="float-right font-white mr-2">
+        <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
+          <img class="mr-1 white-icon white" src="{% static "v2/images/grants/icons/white.svg" %}">
+          {% trans 'Create a Grant' %}
+        </a>
+        <span class="ml-2 white">
+        or
+        <a class="explore_grants white font-white" href="/grants/matching-partners/new" style="text-decoration: underline; line-height: 60px;">
+          <i class="fas fa-map"></i> | Become a Matching Partner
+        </a>
+        </span>
+      </div>
+      <br class="break">
+      <div class="pt-0 pb-1">
+          <p class="pr-3 pl-3 font-header white">
+            <strong>$150k</strong> Infra Tech, <strong>$150k</strong> App Tech, <strong>$150k</strong> Community, <strong>$50k</strong> Matic |
+          
+            <span class="title-round">Round 7 ends 10/2</span> (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) 
+
+        </p>
+      </div>
       </div>
     </div>

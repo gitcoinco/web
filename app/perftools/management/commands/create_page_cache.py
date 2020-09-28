@@ -29,11 +29,12 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
+from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything, SuperModel
-from grants.models import Contribution, Grant
+from grants.models import Contribution, Grant, GrantCategory
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
 from marketing.models import Stat
@@ -45,6 +46,76 @@ from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
 
+
+def create_grant_clr_cache():
+    print('create_grant_clr_cache')
+    pks = Grant.objects.values_list('pk', flat=True)
+    for pk in pks:
+        grant = Grant.objects.get(pk=pk)
+        clr_round = None
+
+        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
+            clr_round = grant.in_active_clrs.first()
+
+        if clr_round:
+            grant.is_clr_active = True
+            grant.clr_round_num = clr_round.round_num
+        else:
+            grant.is_clr_active = False
+            grant.clr_round_num = ''
+        grant.save()
+
+def create_grant_type_cache():
+    print('create_grant_type_cache')
+    from grants.views import get_grant_types
+    for network in ['rinkeby', 'mainnet']:
+        view = f'get_grant_types_{network}'
+        keyword = view
+        data = get_grant_types('mainnet', None)
+        with transaction.atomic():
+            JSONStore.objects.filter(view=view).all().delete()
+            JSONStore.objects.create(
+                view=view,
+                key=keyword,
+                data=data,
+                )
+
+
+def create_grant_active_clr_mapping():
+    print('create_grant_active_clr_mapping')
+    # Upate grants mppping to active CLR rounds
+    from grants.models import Grant, GrantCLR
+
+    grants = Grant.objects.all()
+    clr_rounds = GrantCLR.objects.all()
+
+    # remove all old mapping
+    for clr_round in clr_rounds:
+        _grants = clr_round.grants
+        for _grant in grants:
+            _grant.in_active_clrs.remove(clr_round)
+            _grant.save()
+
+    # update new mapping
+    active_clr_rounds = clr_rounds.filter(is_active=True)
+    for clr_round in active_clr_rounds:
+        grants_in_clr_round = grants.filter(**clr_round.grant_filters)
+
+        for grant in grants_in_clr_round:
+            grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
+
+            if not grant_has_mapping_to_round:
+                grant.in_active_clrs.add(clr_round)
+                grant.save()
+
+
+def create_grant_category_size_cache():
+    print('create_grant_category_size_cache')
+    redis = RedisService().redis
+    for category in GrantCategory.objects.all():
+        key = f"grant_category_{category.category}"
+        val = Grant.objects.filter(categories__category__contains=category.category).count()
+        redis.set(key, val)
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -307,8 +378,12 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_results_cache()
+        create_grant_type_cache()
+        create_grant_clr_cache()
+        create_grant_category_size_cache()
+        create_grant_active_clr_mapping()
         if not settings.DEBUG:
+            create_results_cache()
             create_hidden_profiles_cache()
             create_tribes_cache()
             create_activity_cache()

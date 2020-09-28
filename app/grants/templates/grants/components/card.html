@@ -1,0 +1,243 @@
+  {% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+<grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
+            :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
+            :has_collections="collections.length"
+            v-on:collection:remove='removeCollection'>
+  <template>
+    <div v-if="view == 'list'">
+      <div class="grant-item grant-item--list flex-md-row flex-column" >
+        <div class="grant-item__img col-md-1 d-md-block d-none my-auto">
+          <img :src="grant.logo_url" />
+        </div>
+        <div :class="`grant-item__content ${ collection && isCurator ? 'col-md-7' : 'col-md-8'} px-3`">
+          <h2 class="grant-item__title font-subheader">
+            <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+            <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="click" data-content='
+             <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+             <p>Grant owner has verified ownership of their twitter account.</p>
+             <a href="#">Learn more.</p>'
+            ><img width="13" style="position: relative; top:-1px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+            </button>
+          </h2>
+          <div>
+            <p class="text-muted font-smaller-5 mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+              <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+              Last Update: [[ grant.last_update ?  grant.last_update_natural : `Long Ago` ]]
+              <template v-if="cred.is_staff">
+                <span class="ml-3" >
+                  <i class="fa fa-lock" aria-hidden="true"></i> SybilScore ™️: [[ grant.sybil_score ]]
+                  <span class="mx-2">|</span> RiskScore ™️: [[ grant.weighted_risk_score ]]
+                </span>
+              </template>
+            </p>
+            <div class="grant-item__owner">
+              <div class="d-flex">
+                <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
+                  <div class="d-flex align-center">
+                    <div class="grant-item__owner-image ml-2 position-relative" style="top: -4px;">
+                      <img :src="grant.admin_profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+                    </div>
+                    <div class="grant-item__owner-handle font-smaller-3">
+                      <span class="ml-2">
+                        [[ grant.admin_profile.handle || 'anonymous' ]]
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="d-flex match ml-3">
+                <div class="match__round--inline mr-3">
+                  <template v-if="grant.clr_round_num">
+                    <span class="font-subheader font-weight-bold amount pt-1 mb-2">
+                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
+                    </span>
+                    <span class="amount mb-2 font-smaller-3">
+                      CLR Match
+                    </span>
+                  </template>
+                  <template v-else>
+                  </template>
+                </div>
+                <div v-if="grant.clr_round_num">
+                  <span class="font-subheader font-weight-bold amount pt-1 mb-2">
+                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
+                  </span>
+                  <span class="amount mb-2 font-smaller-3">
+                    raised from
+                  </span>
+                  <span class="amount mb-2 font-smaller-3 font-weight-semibold">
+                   [[ grant.positive_round_contributor_count ]] contributors
+                  </span>
+                </div>
+              </div>
+              <template v-if="cred.is_authenticated">
+                <button @click="toggleFollowingGrant(grant.id, $event)" :class="`ml-3 text-decoration-none btn btn-link star-action m-0 p-0 font-smaller-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+                  <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+                  <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
+                </button>
+                <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
+                  <template v-slot:button-content>
+                    <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+                  </template>
+                  <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+                </b-dropdown>
+              </template>
+            </div>
+          </div>
+        </div>
+        <div :class="`${ collection && isCurator ? 'col-md-4' : 'col-md-3' } col-sm-12 py-4 pr-md-5 pl-md-0 grant-action`">
+          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection && isCurator ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`">
+            + Add to Cart
+          </button>
+          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="isCurator">
+            - Remove from collection
+          </button>
+        </div>
+      </div>
+      <div style="background-color: #FAFAFA">
+        <div class="clr col-12 mb-3" v-if="show_contributions">
+          <div :class="`match__round pb-1 pt-2 ${ (index + 1) % 2 === 0  ? 'no-bg' : ''}`" v-for="(contribution, index) in getContributions(grant.id)">
+            <p class="col-12 amount mb-2 font-caption font-weight-semibold"> [[ index + 1 ]]. Contributed
+              <span class="font-weight-bold">[[ contribution.amount_per_period ]] [[ contribution.token_symbol ]]</span> at [[ contribution.created_on ]].
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grant-item" v-else>
+      <div class="grant-item__img">
+        <img :src="grant.logo_url">
+      </div>
+      <div class="grant-item__content px-3">
+        <h2 class="grant-item__title font-subheader">
+          <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+          <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+             <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+             <p>Grant owner has verified ownership of their twitter account.</p>
+             <a href="#">Learn more.</p>'
+            ><img width="13" clas="position-relative" style="top: -2px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+          </button>
+        </h2>
+        <p class="grant-item__pitch font-caption mb-2">[[ grant.description.slice(0, 145) ]][[ grant.description.length > 145 ? '...' : '']]</p>
+        <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+          <span class="font-smaller-5">
+            <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+            Last Update: [[ grant.last_update ?  grant.last_update_natural : `Long Ago` ]]
+          </span>
+        </p>
+        <template v-if="cred.is_staff">
+          <hr class="my-2">
+          <p class="font-caption font-weight-semibold">
+            <i class="fa fa-lock mr-2" aria-hidden="true"></i>
+            SybilScore ™️: [[ grant.sybil_score ]]
+            <span class="mx-2">|</span>
+            RiskScore ™️: [[ grant.weighted_risk_score ]]
+          </p>
+        </template>
+
+        <div class="grant-item__owner my-3 justify-content-between">
+          <div>
+            <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
+              <div class="grant-item__owner">
+                <span class="grant-item__owner-handle font-body">By</span>
+                <div v-if="grant.admin_profile.avatar_url" class="grant-item__owner-image mx-2">
+                  <img :src="grant.admin_profile.avatar_url">
+                </div>
+                <div class="grant-item__owner-handle font-smaller-2">
+                  [[ grant.admin_profile.handle]]
+                </div>
+              </div>
+            </a>
+          </div>
+          <template v-if="cred.is_authenticated">
+            <button @click="toggleFollowingGrant(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+              <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
+            </button>
+          </template>
+        </div>
+      </div>
+      <div class="grant-item__footer">
+          <div class="clr mb-3">
+            <div class="match__round pb-1 pt-2 mb-2">
+              <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num && grant.is_clr_eligible">
+                [[grant.clr_round_num]] CLR MATCH ROUND
+              </h2>
+              <h2 class="title col-12 font-caption g-bold" v-else>
+                NOT IN AN ACTIVE CLR ROUND
+              </h2>
+            </div>
+            <div class="col-6 float-right px-0" v-if="grant.clr_round_num">
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">
+                raised from [[ grant.positive_round_contributor_count ]] contributors
+              </p>
+            </div>
+            <div class="col-6" v-if="grant.clr_round_num">
+
+              <template v-if="grant.is_clr_eligible">
+                <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                  [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
+                </h2>
+                <p class="amount mb-2 font-caption font-weight-semibold">
+                  Estimated CLR Match
+                </p>
+              </template>
+              <template v-else>
+                <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                  [[ grant.amount_received || 0 | round | formatNumber ]] DAI
+                </h2>
+                <p class="amount mb-2 font-caption font-weight-semibold">All Time Funding</p>
+              </template>
+            </div>
+          </div>
+
+          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
+            {% include 'grants/components/clr_estimate.html' %}
+          </div>
+          <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
+            <template v-slot:button-content>
+              <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+            </template>
+            <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+          </b-dropdown>
+
+          <div class="col-12 pb-4">
+            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+              + Add to Cart
+            </button>
+            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
+            - Remove from collection
+            </button>
+          </div>
+
+          <div class="clr mb-3" v-if="show_contributions">
+            <div :class="`match__round pb-1 pt-2 ${ (index + 1) % 2 === 0  ? 'no-bg' : ''}`" v-for="(contribution, index) in getContributions(grant.id)">
+              <p class="col-12 amount mb-2 font-caption font-weight-semibold"> [[ index + 1 ]]. Contributed
+                <span class="font-weight-bold">[[ contribution.amount_per_period ]] [[ contribution.token_symbol ]]</span> at [[ contribution.created_on ]].
+              </p>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </template>
+</grant-card>

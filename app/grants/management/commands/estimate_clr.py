@@ -70,19 +70,3 @@ class Command(BaseCommand):
 
         else:
             print("No active CLRs found")
-
-        # Upate grants mppping to active CLR rounds
-        grants = Grant.objects.all()
-        clr_rounds = GrantCLR.objects.all()
-        for clr_round in clr_rounds:
-            grants_in_clr_round = grants.filter(**clr_round.grant_filters)
-
-            for grant in grants_in_clr_round:
-                grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
-
-                if clr_round.is_active and not grant_has_mapping_to_round:
-                    grant.in_active_clrs.add(clr_round)
-                    grant.save()
-                elif not clr_round.is_active and grant_has_mapping_to_round:
-                    grant.in_active_clrs.remove(clr_round)
-                    grant.save()

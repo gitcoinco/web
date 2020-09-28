@@ -41,7 +41,6 @@ cytoolz==0.9.0
 boto==2.49.0
 google-api-python-client
 django-environ==0.4.5
-ipfshttpclient==0.6.0
 eth-utils==1.4.1
 jsondiff==1.1.1
 social-auth-app-django==3.1.0
@@ -100,3 +99,6 @@ django-admin-sortable2==0.7.6
 twilio
 django-queryset-csv
 django-proxy==1.2.1
+ed25519
+tweepy
+oogway==0.7.0

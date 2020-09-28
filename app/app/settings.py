@@ -61,9 +61,11 @@ FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-F
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
+FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
 RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
+BLOCKNATIVE_API = env('BLOCKNATIVE_API', default='')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
@@ -515,6 +517,17 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
+# https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
+CELERY_ROUTES = [
+    ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
+    ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
+    ('marketing.tasks.*', {'queue': 'marketing'}),
+    ('grants.tasks.*', {'queue': 'default'}),
+    ('chat.tasks.*', {'queue': 'default'}),
+    ('dashboard.tasks.*', {'queue': 'default'}),
+    ('townsquare.tasks.*', {'queue': 'default'}),
+    ('kudos.tasks.*', {'queue': 'default'}),
+    ]
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -861,3 +874,5 @@ EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
 PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
 
 HYPERCHARGE_BOUNTIES_PROFILE_HANDLE = env('HYPERCHARGE_BOUNTIES_PROFILE', default='gitcoinbot')
+
+BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')

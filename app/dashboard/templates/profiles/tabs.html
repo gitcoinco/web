@@ -102,6 +102,11 @@
             {% if spent_total %}<span  class="nav-badge">(${{spent_total}})</span>{%endif%}
           </button>
         {% endif %}
+        {% if not profile.is_org and is_my_profile %}
+          <button type="button" id="nav-description" href="{{profile.url}}/trust" class="text-center section-tab {% if tab == "trust" %} active {% endif %}">
+            {% trans "TRUST BONUS" %}
+          </button>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -147,6 +152,8 @@
             {% include 'profiles/tab_hackathons.html' %}
           {% elif tab == 'ptokens' %}
             {% include 'profiles/tab_ptokens.html' %}
+          {% elif tab == 'trust' %}
+            {% include 'profiles/tab_trust.html' %}
           {% endif %}
         </div>
       </div>
