@@ -25,8 +25,9 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
 from grants.models import Contribution, Grant, GrantCLR
-from marketing.mails import warn_subscription_failed
 from grants.tasks import recalc_clr
+from marketing.mails import warn_subscription_failed
+
 
 class Command(BaseCommand):
 

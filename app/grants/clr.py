@@ -407,7 +407,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id in contributing_profile_ids:
-                profile_contributions = contribs.filter(profile_for_clr_id=profile_id)
+                profile_contributions = contribs.filter(profile_for_clr__id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt * clr_round.contribution_multiplier for c in profile_contributions if c.subscription.amount_per_period_usdt]))
                 phantom_funding = grant_phantom_funding_contributions.filter(profile_id=profile_id)
                 if phantom_funding.exists():

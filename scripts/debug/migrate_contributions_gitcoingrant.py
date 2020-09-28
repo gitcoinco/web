@@ -1,6 +1,7 @@
+from django.utils import timezone
+
 from dashboard.models import Profile
 from grants.models import *
-from django.utils import timezone
 
 gcb = Profile.objects.get(handle='gitcoinbot')
 then = timezone.datetime(2020, 9, 14)
@@ -20,4 +21,3 @@ for contrib in contributions:
         contrib.match = False
         contrib.save()
 print(results)
-

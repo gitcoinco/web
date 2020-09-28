@@ -181,4 +181,3 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
             network=network,
             only_grant_pk=obj.pk
         )
-
