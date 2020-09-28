@@ -44,64 +44,31 @@ CLR_PERCENTAGE_DISTRIBUTED = 0
                 'id': (string) ,
                 'contibutions' : [
                     {
-                        contributor_profile (str) : contribution_amount (int)
+                        contributor_profile (str) : summed_contributions
                     }
                 ]
             }
 
     returns:
         list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), contribution_amount (float)]]
+        dictionary of profile_ids and trust scores
+            {user_id (str): trust_score (float)}
 '''
 def translate_data(grants_data):
+    trust_dict = {}
     grants_list = []
     for g in grants_data:
         grant_id = g.get('id')
         for c in g.get('contributions'):
             profile_id = c.get('id')
-            verification_status = None
-            if c.get('is_sms_verified'):
-                verification_status = 'sms'
-            elif c.get('is_brightid_verified'):
-                verification_status = 'brightid'
-            elif c.get('is_twitter_verified'):
-                verification_status = 'twitter'
+            trust_bonus = c.get('trust_bonus')
             if profile_id:
-                val = [grant_id] + [c.get('id')] + [verification_status] + [c.get('sum_of_each_profiles_contributions')]
+                val = [grant_id] + [c.get('id')] + [c.get('sum_of_each_profiles_contributions')]
                 grants_list.append(val)
+                profile_trust[c.get('id')] = trust_bonus
 
-    return grants_list
-
-
-
-'''
-    gets list of verified profile ids
-
-    args:
-        list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
-
-    returns:
-        set list of sms verified user_ids
-            [user_id (str)]
-        set list of bright verified user_ids
-            [user_id (str)]
-
-
-'''
-def get_verified_list(grant_contributions):
-    sms_verified_list = []
-    bright_verified_list = []
-    twitter_verified_list = []
-    for _, user, ver_stat, _ in grant_contributions:
-        if ver_stat == 'sms' and user not in sms_verified_list:
-            sms_verified_list.append(user)
-        elif ver_stat == 'brightid' and user not in bright_verified_list:
-            bright_verified_list.append(user)
-        elif ver_stat == 'twitter' and user not in twitter_verified_list:
-            twitter_verified_list.append(user)
-
-    return sms_verified_list, bright_verified_list, twitter_verified_list
+    return grants_list, trust_dict
 
 
 
@@ -110,7 +77,7 @@ def get_verified_list(grant_contributions):
 
     args:
         list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), verification_status (str), trust_bonus (float), contribution_amount (float)]]
 
     returns:
         aggregated contributions by pair nested dict
@@ -122,7 +89,7 @@ def get_verified_list(grant_contributions):
 '''
 def aggregate_contributions(grant_contributions):
     contrib_dict = {}
-    for proj, user, _, amount in grant_contributions:
+    for proj, user, amount in grant_contributions:
         if proj not in contrib_dict:
             contrib_dict[proj] = {}
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
@@ -177,10 +144,8 @@ def get_totals_by_pair(contrib_dict):
             }
         pair_totals
             {user_id (str): {user_id (str): pair_total (float)}}
-        sms_verified_list
-            [user_id (str)] 
-        bright_verified_list
-            [user_id (str)]
+        trust_dict
+            {user_id (str): trust_score (float)}
         v_threshold 
             float
         uv_threshold
@@ -194,7 +159,8 @@ def get_totals_by_pair(contrib_dict):
         saturation point
             boolean
 '''
-def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, bright_verified_list, twitter_verified_list, v_threshold, uv_threshold, total_pot):
+def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold, uv_threshold, total_pot):
+
     bigtot = 0
     totals = []
     
@@ -210,21 +176,8 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                # one twitter
-                if k2 > k1 and any(i in twitter_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.25) + 1)
-                # one bright
-                elif k2 > k1 and any(i in bright_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.2) + 1)
-                # one sms
-                elif k2 > k1 and any(i in sms_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
-                # both none
-                elif k2 > k1 and not any(i in sms_verified_list + bright_verified_list + twitter_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
-                # everything else
-                elif k2 > k1:
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / v_threshold + 1)
+                if k2 > k1:
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * max(trust_dict[k2], trust_dict[k1])) + 1)
 
         if type(tot) == complex:
             tot = float(tot.real)
@@ -273,9 +226,7 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
 
     # get data
-    curr_round = translate_data(grant_contribs_curr)
-
-    sms_list, bright_list, twitter_list = get_verified_list(curr_round)
+    curr_round, trust_dict = translate_data(grant_contribs_curr)
 
     # aggregate data
     curr_agg = aggregate_contributions(curr_round)
@@ -284,7 +235,7 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     ptots = get_totals_by_pair(curr_agg)
 
     # clr calcluation
-    totals = calculate_clr(curr_agg, ptots, sms_list, bright_list, twitter_list, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(curr_agg, ptots, trust_dict, v_threshold, uv_threshold, total_pot)
 
     return totals
 
@@ -302,9 +253,7 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
                 grant_contribution['contributions'].append({
                     'id': '999999999999',
                     'sum_of_each_profiles_contributions': amount,
-                    'is_sms_verified': True,
-                    'is_brightid_verified': True,
-                    'is_twitter_verified': True
+                    'profile_trust_bonus': 1
                 })
 
     grants_clr = run_clr_calcs(_grant_contributions_curr, v_threshold, uv_threshold, total_pot)
@@ -395,21 +344,6 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         # phantom funding
         grant_phantom_funding_contributions = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # SMS verified contributions
-        sms_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
-        sms_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.sms_verification]
-        sms_verified_profile = list(set(sms_verified_contribution_ids + sms_verified_phantom_funding_contribution_ids))
-
-        # BrightID verified contributions
-        brightid_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_brightid_verified]
-        brightid_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.is_brightid_verified]
-        brightid_verified_profile = list(set(brightid_verified_contribution_ids + brightid_verified_phantom_funding_contribution_ids))
-
-        # Twitter verified contributions
-        twitter_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_twitter_verified]
-        twitter_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.is_twitter_verified]
-        twitter_verified_profile = list(set(twitter_verified_contribution_ids + twitter_verified_phantom_funding_contribution_ids))
-
         # combine
         contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_contributions]))
 
@@ -421,15 +355,18 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
                 profile_contributions = contribs.filter(profile_for_clr_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt * clr_round.contribution_multiplier for c in profile_contributions if c.subscription.amount_per_period_usdt]))
                 phantom_funding = grant_phantom_funding_contributions.filter(profile_id=profile_id)
+
+                # get trust bonus
+                # # # MIGHT HAVE TO TURN THIS INTO A DISTINCT SET
+                profile_trust_bonus = profile_contributions.profile_for_clr.trust_bonus
+
                 if phantom_funding.exists():
                     sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
                 summed_contributions.append({
                     'id': str(profile_id),
                     'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
-                    'is_sms_verified': True if profile_id in sms_verified_profile else False,
-                    'is_brightid_verified': True if profile_id in brightid_verified_profile else False,
-                    'is_twitter_verified': True if profile_id in twitter_verified_profile else False
+                    'profile_trust_bonus': profile_trust_bonus
                 })
 
             contrib_data_list.append({
