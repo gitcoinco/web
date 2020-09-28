@@ -2349,14 +2349,14 @@ def contribute_to_grant_v1(request, grant_id):
 
     # step 1: validate input
 
-    # user = request.user if request.user.is_authenticated else None
-    # if not user:
-    #     response['message'] = 'error: user needs to be authenticated to contribute to grant'
-    #     return JsonResponse(response)
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to contribute to grant'
+        return JsonResponse(response)
 
-    # profile = request.user.profile if hasattr(request.user, 'profile') else None
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
 
-    profile = Profile.objects.get(pk=64423)
+    # profile = Profile.objects.get(pk=64423)
 
     if not profile:
         response['message'] = 'error: no matching profile found'
