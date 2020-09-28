@@ -41,11 +41,6 @@
           }
 
           return '';
-        },
-        toggleLike: async function() {
-          const context = await fetchData(`/api/v0.1/projects/${this.project.id}/like`);
-
-          this.project.likes = context.count;
         }
       },
       data: function() {

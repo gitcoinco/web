@@ -556,10 +556,9 @@ Vue.component('project-card', {
             <a :style="index > 0 ? 'margin-left: -15px' : ''" v-for="(profile, index) in project.profiles.slice(0, 3)" :href="'/profile/' + profile.handle">
               <b-img-lazy :src="profile.avatar_url" :alt="profile.handle" :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
             </a>
-            <span class="font-body text-muted">[[ project.profiles.length > 0 ? '+' + project.profiles.length : '' ]]</span>
+            <span class="font-body text-muted">[[ project.profiles.length >= 3 ? '+' + project.profiles.length : '' ]]</span>
           </div>
           <div class="pt-2">
-            <span class="font-body text-muted mr-3"><i class="mr-1 fas fa-heart"></i> [[ project.likes || 0 ]]</span>
             <span class="font-body text-muted mr-3"><i class="mr-1 fas fa-comment"></i> [[ project.comments || 0 ]]</span>
           </div>
         </div>
