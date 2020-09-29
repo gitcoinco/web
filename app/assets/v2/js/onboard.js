@@ -201,7 +201,7 @@ if (document.getElementById('gc-onboard')) {
             </div>
 
             <ul class="list-unstyled">
-              ${vm.tasks.map((task, index) => `
+              ${vm.tasks.length ? vm.tasks.map((task, index) => `
                 <li class="d-flex align-items-center justify-content-between">
                   <a class="" id="task-${index}" href="${task.link}">
                     ${task.title}
@@ -209,7 +209,7 @@ if (document.getElementById('gc-onboard')) {
                   <i class="fa fa-check-circle" onclick=""></i>
                   <i class="far fa-circle d-none" onclick=""></i>
                 </li>
-              `).join(' ')}
+              `).join(' ') : ''}
             </ul>
             <button class="" onClick="popOnboard(${step})">Complete Profile</button>
           </div>`;
