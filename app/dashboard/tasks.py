@@ -4,7 +4,6 @@ import math
 import os
 from datetime import datetime
 
-from appdirs import unicode
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -209,12 +208,12 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
                 new_column = k.replace('_exact', '')
 
                 if new_column in CSV_HEADER:
-                    row_item[new_column] = source[k].encode('utf-8') if type(source[k]) is unicode else source[k]
+                    row_item[new_column] = source[k]
             output.append(row_item)
         now = datetime.now()
         csv_file_path = f'/tmp/user-directory-export-{user_profile.handle}-{now}.csv'
         try:
-            with open(csv_file_path, 'w') as csvfile:
+            with open(csv_file_path, 'w', encoding='utf-8') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)
                 writer.writeheader()
                 writer.writerows(output)
