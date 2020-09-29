@@ -14,9 +14,6 @@ services:
   - postgresql
   - redis-server
 
-before_install:
-  - docker pull ipfs/go-ipfs:v0.6.0
-
 cache:
   directories:
     - $HOME/.cache/pip
