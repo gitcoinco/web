@@ -1,0 +1,20 @@
+{
+  "symbol": "KEEP",
+  "address": "0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC",
+  "overview":{
+        "en": "Keep’s native token, KEEP, powers the network and supports all the apps that are and will be built on it.",
+        "zh": "KEEP是Keep的原生代币，用于赋能整个网络并且支持搭建在其之上的所有应用。"
+  },
+  "email": "work@keep.network",
+  "website": "https://keep.network/",
+  "whitepaper": "https://backend.keep.network/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2020-04-28",
+  "links": {
+    "blog": "https://blog.keep.network/",
+    "twitter": "https://twitter.com/keep_project",
+    "telegram": "https://t.me/KeepNetworkOfficial/",
+    "github": "https://github.com/keep-network/",
+    "reddit": "https://www.reddit.com/r/KeepNetwork/"
+  }
+}
