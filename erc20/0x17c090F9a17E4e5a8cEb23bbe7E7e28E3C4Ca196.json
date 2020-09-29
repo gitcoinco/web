@@ -8,12 +8,12 @@
     "email": "tech@bitdns.vip",
     "website": "https://www.bitdns.vip/",
     "whitepaper": "https://www.bitdns.vip/picture/whitepaper_zh.pdf",
-    "state": "LOCKED | NORMAL",
+    "state": "NORMAL",
     "published_on": "2020-09-04",
     "initial_price":{
-          "ETH":"0.00057803 ETH",
-          "USD":"0.2 USD",
-          "BTC":"0.000019621 BTC"
+          "ETH":"0.00084041 ETH",
+          "USD":"0.3 USD",
+          "BTC":"0.000027918 BTC"
     },
     "links": {
       "blog": "https://www.bitdns.vip/blog",
