@@ -7,6 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('dashboard', '0142_auto_20200818_0807'),
     ]
 
     operations = [
@@ -80,6 +81,11 @@ class Migration(migrations.Migration):
                 ('following_count', models.IntegerField()),
                 ('num_repeated_relationships', models.IntegerField()),
                 ('verification_status', models.CharField(max_length=255, null=True)),
+            ],
+            options={
+                'managed': False,
+            },
             ]
         ),
     ]
+
