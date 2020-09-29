@@ -1266,7 +1266,7 @@ def grant_new_whitelabel(request):
 
 
 @login_required
-def grant_new(request, project_id=None):
+def grant_new(request):
     """Handle new grant."""
 
     from grants.utils import add_grant_to_active_clrs
@@ -1341,6 +1341,7 @@ def grant_new(request, project_id=None):
 
     check_profile = None
     project_data = None
+    project_id = request.GET.get('project_id', None)
     if project_id is not None:
         check_profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
         project_data = project(project_id)
