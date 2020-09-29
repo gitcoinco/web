@@ -1,7 +1,8 @@
-from django.db import connection
-from django.core.management.base import BaseCommand
-
 import logging
+
+from django.core.management.base import BaseCommand
+from django.db import connection
+
 from haystack.management.commands.update_index import Command as UpdateIndex
 
 logger = logging.getLogger(__name__)

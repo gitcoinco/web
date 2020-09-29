@@ -1,10 +1,10 @@
 import os
 
 from django.apps import AppConfig, apps
+from django.conf import settings
 
 from celery import Celery
 from celery.signals import setup_logging
-from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 
@@ -27,4 +27,3 @@ class CeleryConfig(AppConfig):
         app.autodiscover_tasks(lambda: installed_apps, force=True)
         app.conf.task_routes = {ele[0]: ele[1] for ele in settings.CELERY_ROUTES}
         app.conf.task_default_queue = 'default'
-
