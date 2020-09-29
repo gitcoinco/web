@@ -16,12 +16,13 @@
 from django.conf import settings
 from django.utils import translation
 
-from marketing.mails import setup_lang, send_mail
-from marketing.utils import should_suppress_notification_email, func_name
-from ptokens.emails import (render_ptoken_created, render_ptoken_redemption_complete_for_owner,
-                            render_ptoken_redemption_complete_for_requester, render_ptoken_redemption_request,
-                            render_ptoken_redemption_accepted, render_ptoken_redemption_rejected,
-                            render_ptoken_redemption_cancelled)
+from marketing.mails import send_mail, setup_lang
+from marketing.utils import func_name, should_suppress_notification_email
+from ptokens.emails import (
+    render_ptoken_created, render_ptoken_redemption_accepted, render_ptoken_redemption_cancelled,
+    render_ptoken_redemption_complete_for_owner, render_ptoken_redemption_complete_for_requester,
+    render_ptoken_redemption_rejected, render_ptoken_redemption_request,
+)
 
 
 def send_personal_token_created(profile, ptoken):

@@ -21,7 +21,7 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
-from ptokens.models import PurchasePToken, RedemptionToken, PTokenEvent
+from ptokens.models import PTokenEvent, PurchasePToken, RedemptionToken
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("web3").setLevel(logging.WARNING)

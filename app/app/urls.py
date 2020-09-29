@@ -45,10 +45,10 @@ import linkshortener.views
 import marketing.views
 import marketing.webhookviews
 import perftools.views
+import ptokens.views
 import quests.views
 import retail.emails
 import retail.views
-import ptokens.views
 import revenue.views
 import search.views
 import tdi.views

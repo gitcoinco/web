@@ -28,15 +28,15 @@ from django.urls import reverse
 
 from app.settings import PTOKEN_ABI
 from dashboard.abi import ptoken_factory_abi
-from dashboard.utils import get_web3, get_tx_status
+from dashboard.utils import get_tx_status, get_web3
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
-
-from web3 import Web3
-
 from ptokens.helpers import record_ptoken_activity
-from ptokens.mails import send_personal_token_created, send_ptoken_redemption_complete_for_requester, \
-    send_ptoken_redemption_complete_for_owner
+from ptokens.mails import (
+    send_personal_token_created, send_ptoken_redemption_complete_for_owner,
+    send_ptoken_redemption_complete_for_requester,
+)
+from web3 import Web3
 
 logger = logging.getLogger(__name__)
 
