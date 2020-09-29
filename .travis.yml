@@ -25,7 +25,6 @@ jobs:
     - stage: lint-test
       before_script:
         - psql -c 'create database testdb;' -U postgres
-        - ipfs init
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
@@ -43,6 +42,7 @@ jobs:
         # Install libvips dependencies.
         - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
+        - ipfs init
         - npm install
         - pip install -r requirements/test.txt
         - npm run eslint
