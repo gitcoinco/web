@@ -1,0 +1,16 @@
+{
+    "symbol": "RKC",
+    "account_name": "rswap11boost",
+    "overview": {
+        "en": "Rkswap is an on chain system of smart contracts on the EOS blockchain. Through Bancor protocol, an automatic decentralized exchange is built (first, spot trading is launched, and then lending, leverage, futures, options and other functions are gradually added). Through RKC and RKT double-layer token, with the help of various modes, a virtuous cycle is formed, and finally the defi market pattern is changed and occupied.",
+        "zh": "RkSwap是在EOS區塊鏈上的智能合約的鏈上系統，通過bancor協議，構建一個自動化的去中心化交易所（首先上線現貨交易，陸續增加借貸、槓桿、期貨、期權等功能），通過RKC ，RKT 雙層代幣，在各種模式的助推下，形成良性循環，最終改變並佔領DEFI 市場格局."
+    },
+    "Official announcement": "http://www.rkswap.com/#/placard",
+    "website": "https://www.rkswap.com",
+    "whitepaper": "https://www.rkswap.com/RKSWAP.pdf",
+    "links": {
+        "github": "https://github.com/rkswapd",
+        "telegram": "https://t.me/RocketSwap",
+        "twitter": "https://twitter.com/RkSwap"
+    }
+}
