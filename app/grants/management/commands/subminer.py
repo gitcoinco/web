@@ -26,7 +26,7 @@ from django.db.models import F
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
-from grants.models import Grant, GrantCLR
+from grants.models import Grant
 from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -150,8 +150,6 @@ class Command(BaseCommand):
         grants = Grant.objects.filter(network=network).active()
         logger.info("got %d grants", grants.count())
 
-        active_clr_rounds =  GrantCLR.objects.filter(is_active=True)
-
         for grant in grants:
             subs = grant.subscriptions.filter(
                 active=True,
@@ -160,7 +158,7 @@ class Command(BaseCommand):
                 num_tx_processed__lt=F('num_tx_approved')
             )
 
-            is_clr_active = active_clr_rounds.filter(grant_type=grant.grant_type)
+            is_clr_active = grant.in_active_clrs.count() > 0
             if not is_clr_active:
                 subs = subs.exclude(frequency_unit='roundup') #dont process grant subscriptions until next round
 

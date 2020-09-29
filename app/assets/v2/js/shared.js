@@ -205,7 +205,7 @@ var add_interest = function(bounty_pk, data) {
   if (typeof fbq !== 'undefined') {
     fbq('trackCustom', 'Start Work');
   }
-  
+
   if (typeof ga !== 'undefined') {
     ga('send', 'event', 'Start Work', 'click', 'Bounty Hunter');
   }

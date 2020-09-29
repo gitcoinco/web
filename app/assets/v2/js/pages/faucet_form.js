@@ -46,7 +46,7 @@ $('document').ready(function() {
 
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
-    if (!web3Modal.cachedProvider) {
+    if (web3Modal && !web3Modal.cachedProvider) {
       onConnect().then(() => {
         trigger_faucet_form_web3_hooks(provider);
       });

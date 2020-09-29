@@ -13,7 +13,7 @@
 <input type="hidden" id="grant_logo" name="grant_logo" value="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
 <input type="hidden" id="grant_clr_prediction_curve" name="grant_clr_prediction_curve" value="{{ grant.clr_prediction_curve }}">
 <input type="hidden" id="grant_image_css" name="grant_image_css" value="{{ grant.image_css }}">
-<input type="hidden" id="is_clr_eligible" name="is_clr_eligible" {% if grant.is_clr_eligible %} value="{{ grant.is_clr_eligible }}" {% endif %}>
+<input type="hidden" id="is_clr_eligible" name="is_clr_eligible" {% if grant.is_clr_eligible %} value="true" {% endif %}>
 {% if amount %}
 <input type="hidden" id="grant_donation_amount" name="grant_donation_amount" value="{{ amount }}">
 {% endif %}

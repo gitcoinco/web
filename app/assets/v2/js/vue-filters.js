@@ -134,3 +134,30 @@ Vue.filter('decimals', (number, decimals) => {
   result = parseFloat(Number(number).toFixed(decimals));
   return result;
 });
+
+Vue.filter('round', number => {
+  if (!number)
+    return number;
+
+  return Math.round(parseFloat(number));
+});
+
+Vue.filter('formatNumber', number => {
+  if (!number)
+    return number;
+  const numberFormat = new Intl.NumberFormat('en-US');
+
+  return numberFormat.format(number);
+});
+
+Vue.filter('slugify', (string) => {
+  let slug;
+
+  if (!string) {
+    return '';
+  }
+
+  slug = (string || '').replace(/ /g, '-');
+
+  return slug;
+});

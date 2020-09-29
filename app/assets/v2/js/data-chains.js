@@ -3,6 +3,26 @@
 var dataChains =
 [
   {
+    "name": "Bitcoin Mainnet",
+    "chainId": 0,
+    "shortName": "btc",
+    "chain": "BTC",
+    "network": "mainnet",
+    "networkId": 1,
+    "nativeCurrency": {
+      "name": "bitcoin",
+      "symbol": "BTC",
+      "decimals": 8
+    },
+    "rpc": [
+      
+    ],
+    "faucets": [
+
+    ],
+    "infoURL": "https://bitcoin.org"
+  },
+  {
     "name": "Ethereum Mainnet",
     "chainId": 1,
     "shortName": "eth",
@@ -891,6 +911,26 @@ var dataChains =
 
     ],
     "infoURL": "https://ethereumclassic.org"
+  },
+  {
+    "name": "Bitcoin Mainnet",
+    "chainId": 0,
+    "shortName": "btc",
+    "chain": "BTC",
+    "network": "mainnet",
+    "networkId": 1,
+    "nativeCurrency": {
+      "name": "bitcoin",
+      "symbol": "BTC",
+      "decimals": 8
+    },
+    "rpc": [
+
+    ],
+    "faucets": [
+
+    ],
+    "infoURL": "https://bitcoin.org"
   },
   {
     "name": "Aquachain",

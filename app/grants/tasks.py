@@ -19,7 +19,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0) # TODO:SELF-SERVICE
+CLR_START_DATE = dt.datetime(2020, 9, 14, 15, 0) # TODO:SELF-SERVICE
 
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
@@ -30,6 +30,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+    instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
+    instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
+
     instance.amount_received_in_round = 0
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
@@ -63,20 +66,23 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             }
             )
     instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
-    instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else "-1"
+    instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else -1
     max_sybil_score = 5
     if instance.sybil_score > max_sybil_score:
         instance.sybil_score = max_sybil_score
     try:
         ss = float(instance.sybil_score)
         instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
+        if ss < 0:
+            instance.weighted_risk_score = 0
     except Exception as e:
         print(e)
 
     # save all subscription comments
     wall_of_love = {}
+    forbidden_text = 'created by ingest'
     for subscription in instance.subscriptions.all():
-        if subscription.comments:
+        if subscription.comments and forbidden_text not in subscription.comments:
             key = subscription.comments
             if key not in wall_of_love.keys():
                 wall_of_love[key] = 0
@@ -129,17 +135,14 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.grant = grant
         subscription.comments = package.get('comment', '')
         subscription.save()
+        subscription.successful_contribution(subscription.new_approve_tx_id);
 
         # one time payments
         activity = None
-        if int(subscription.num_tx_approved) == 1:
-            subscription.successful_contribution(subscription.new_approve_tx_id);
-            subscription.error = True #cancel subs so it doesnt try to bill again
-            subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
-            subscription.save()
-            activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
-        else:
-            activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+        subscription.error = True #cancel subs so it doesnt try to bill again
+        subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
+        subscription.save()
+        activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
 
         if 'comment' in package:
             _profile = profile
@@ -157,7 +160,9 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
             profile.save()
 
+        # emails to grant owner
         new_supporter(grant, subscription)
+        # emails to contributor
         thank_you_for_supporting(grant, subscription)
 
         update_grant_metadata.delay(grant_id)

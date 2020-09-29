@@ -20,7 +20,7 @@ redis = RedisService().redis
 
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
-delay_if_gas_prices_gt_redeem = 25
+delay_if_gas_prices_gt_redeem = 50
 delay_if_gas_prices_gt_mint = 150
 
 @app.shared_task(bind=True, max_retries=10)
@@ -41,6 +41,8 @@ def mint_token_request(self, token_req_id, retry=False):
             if gas_price > delay_if_gas_prices_gt_mint and self.request.retries < self.max_retries:
                 self.retry(countdown=120)
                 return
+            if obj.gas_price_overide:
+                gas_price = obj.gas_price_overide
             tx_id = obj.mint(gas_price)
             if tx_id:
                 while not has_tx_mined(tx_id, obj.network):
@@ -54,7 +56,7 @@ def mint_token_request(self, token_req_id, retry=False):
                 self.retry(countdown=(30 * (self.request.retries + 1)))
 
 
-@app.shared_task(bind=True, max_retries=10)
+@app.shared_task(bind=True, max_retries=10, rate_limit="60/h")
 def redeem_bulk_kudos(self, kt_id, retry=False):
     """
     :param self:
@@ -64,10 +66,12 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
     try:
         with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
             multiplier = 1
-            gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
-            if gas_price > delay_if_gas_prices_gt_redeem and self.request.retries < self.max_retries:
-
-                self.retry(countdown=120)
+            # high gas prices, 5 hour gas limit - DL
+            gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
+            if gas_price > delay_if_gas_prices_gt_redeem:
+                # do not retry is gas prices are too high
+                # TODO: revisit this when gas prices go down
+                # self.retry(countdown=60*10)
                 return
 
             obj = KudosTransfer.objects.get(pk=kt_id)

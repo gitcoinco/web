@@ -29,7 +29,6 @@
     padding: 0px;
     font-family: 'Roboto', Arial, sans-serif;
   }
-
   body {
     {% if override_back_color %}
       background-color: {{ override_back_color }};
@@ -101,7 +100,7 @@
         background-color: #2bffbc;
       {% elif email_style == 0 %}
         background-color: #15003e;
-      {% elif email_style == 7 or email_style == 8 or email_style == 9 or email_style == 11 or email_style == 15 or email_style == 16 or email_style == 18 or email_style == 19 %}
+      {% elif email_style == 7 or email_style == 8 or email_style == 9 or email_style == 11 or email_style == 15 or email_style == 16 or email_style == 18 or email_style == 19 or email_style == 28 %}
         background-color: #150065;
       {% elif email_style == 12 or  email_style == 25 %}
         background-color: #ffffff;
@@ -119,6 +118,8 @@
         background-color: #0D0764;
       {% elif email_style == 27 %}
         background-color: #15053F;
+      {% elif email_style == 28 %}
+        background-color: #167D56;
       {% else %}
         background-color: #15003e;
       {% endif %}
@@ -794,6 +795,7 @@
       {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 26 %} <img id="logo" src="{% static "v2/images/emails/email_header26.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 27 %} <img id="logo" src="{% static "v2/images/emails/email_header27.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 28 %} <img id="logo" src="{% static "v2/images/emails/email_header28.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% else %}
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}

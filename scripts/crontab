@@ -24,6 +24,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 0 */1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash kudos_revenue mainnet --account-address 0xdb282cee382244e05dd226c8809d2405b76fbdc9  >> /var/log/gitcoin/kudos_revenue.log  2>&1
 1,31 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash submit_pending_kudos  >> /var/log/gitcoin/submit_pending_kudos.log  2>&1
 
+## PTOKEN
+*/10 4,11,18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_ptoken_tx_status >> /var/log/gitcoin/update_ptoken_tx_status.log 2>&1
 ## TOWN SQUARE
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_rankings >> /var/log/gitcoin/create_rankings.log 2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 && bash scripts/run_management_command_if_not_already_running.bash get_user_presence >> /var/log/gitcoin/get_user_presence.log 2>&1
@@ -81,6 +83,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data results  >> /var/log/gitcoin/post_data.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data earners  >> /var/log/gitcoin/post_data.log  2>&1
 15 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data welcome  >> /var/log/gitcoin/post_data.log  2>&1
+15 */4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash hypercharge_mode  >> /var/log/gitcoin/post_data.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash campaign_email >> /var/log/gitcoin/campaign_email.log 2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash send_unread_notification_emails_roundup >> /var/log/gitcoin/send_unread_notification_emails_roundup.log 2>&1
 15 12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash bounty_requests_email >> /var/log/gitcoin/bounty_requests_email.log  2>&1
@@ -89,6 +92,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 00 10 * * 5 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_leaderboard_to_slack  >> /var/log/gitcoin/post_leaderboard_to_slack.log  2>&1
 0 9 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash no_applicants_email  >> /var/log/gitcoin/no_applicants_email.log 2>&1
 0 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_grant_twitter_info  >> /var/log/gitcoin/pull_grant_twitter_info.log 2>&1
+0 5 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_stats_snapshot  >> /var/log/gitcoin/create_stats_snapshot.log 2>&1
 
 
 ## PERFTOOLS
@@ -102,6 +106,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## INFRASTRUCTURE
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash warm_cache  >> /var/log/gitcoin/warm_cache.log  2>&1
+*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash update_index >> /var/log/gitcoin/elastic_search.log  2>&1
 
 * * * * * date >> /var/log/gitcoin/running_procs.log; ps -aux | grep python3 >> /var/log/gitcoin/running_procs.log  2>&1
 1 1 * * * rm -f /var/log/gitcoin/running_procs.log
@@ -123,9 +128,10 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## USERS
 0 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash set_user_personas  >> /var/log/gitcoin/set_user_personas.log  2>&1
+50 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_brightid_status  >> /var/log/gitcoin/update_brightid_status.log  2>&1
 
 ## FEE ADDRESS CONVERSION
-0 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash feeSwapper
+## 0 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash feeSwapper
 
 30 0 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash setup_grants_clr_3 >>  /var/log/gitcoin/setup_clr_round_3.log  2>&1
 

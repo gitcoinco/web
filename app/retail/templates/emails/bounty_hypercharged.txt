@@ -1,0 +1,3 @@
+We know you so we prepared this bounty for you
+
+{% include 'emails/bounty.txt' with bounty=bounty %}

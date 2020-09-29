@@ -242,6 +242,11 @@ class Announcement(SuperModel):
     def __str__(self):
         return f"{self.created_on} => {self.title}"
 
+    @property
+    def salt(self):
+        if self.pk < 49:
+            return self.rank
+        return self.pk
 
 class MatchRoundQuerySet(models.QuerySet):
     """Handle the manager queryset for MatchRanking."""
@@ -394,8 +399,13 @@ class SuggestedAction(SuperModel):
 class Favorite(SuperModel):
     """Model for each favorite."""
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
-    activity = models.ForeignKey('dashboard.Activity', on_delete=models.CASCADE)
+    grant = models.ForeignKey('grants.Grant', on_delete=models.CASCADE, related_name='grant_favorites', null=True)
+    activity = models.ForeignKey('dashboard.Activity', on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def grants():
+        return Favorite.objects.filter(activity=None)
 
     def __str__(self):
         return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
@@ -406,7 +416,7 @@ class PinnedPost(SuperModel):
 
     user = models.ForeignKey('dashboard.Profile',
         on_delete=models.CASCADE, related_name='pins')
-    activity = models.ForeignKey('dashboard.Activity', 
+    activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='pin')
     what = models.CharField(max_length=100, default='', unique=True)
     created = models.DateTimeField(auto_now=True)

@@ -63,7 +63,7 @@ class Command(BaseCommand):
             subscription.grant = grant
             subscription.save()
 
-            subscription.successful_contribution(tx_id);
+            subscription.successful_contribution(tx_id)
             subscription.error = True #cancel subs so it doesnt try to bill again
             subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
             subscription.save()

@@ -54,6 +54,7 @@ jobs:
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
         - DJANGO_SETTINGS_MODULE="app.settings"
+        - SUPRESS_DEBUG_TOOLBAR=1
       deploy:
         provider: pages
         skip-cleanup: true

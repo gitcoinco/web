@@ -531,7 +531,9 @@ var refreshBounties = function(event, offset, append) {
   explorer.bounties_request = $.get(bountiesURI, function(results, x) {
 
     // Filter results by open bounties created more than 3 days ago
-    if ($('input[name="bounty_filter"]:checked').val().toString() === 'stale') {
+    const filter_checked = $('input[name="bounty_filter"]:checked').val();
+
+    if (filter_checked && filter_checked.toString() === 'stale') {
       results = results.filter(bounty => {
         const now = new Date();
         const created = new Date(bounty.web3_created);

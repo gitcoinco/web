@@ -112,3 +112,27 @@ def etherscan_link(txid):
 
     """
     return f'https://etherscan.io/tx/{txid}'
+
+
+def watch_txn(tx_id):
+    """Watches the Ethereum txn for updates (mainly being dropped/replaced)
+
+    Args:
+        txid (str): The transaction ID.
+
+    Returns:
+        str: The Etherscan TX URL.
+
+    """
+    import json
+    import requests
+    from django.conf import settings
+    args = {
+      "apiKey": settings.BLOCKNATIVE_API,
+      "hash": tx_id,
+      "blockchain": "ethereum",
+      "network": "main"
+    }
+    url = "https://api.blocknative.com/transaction"
+    response = requests.post(url, json=args)
+    print(response.text)
