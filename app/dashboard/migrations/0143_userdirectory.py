@@ -85,7 +85,6 @@ class Migration(migrations.Migration):
             options={
                 'managed': False,
             },
-            ]
         ),
     ]
 
