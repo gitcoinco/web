@@ -136,6 +136,7 @@ urlpatterns = [
         dashboard.views.profile_tax_settings,
         name='profile_set_tax_settings'
     ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter', dashboard.views.verify_user_twitter, name='verify_user_twitter'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -249,11 +250,16 @@ urlpatterns = [
         dashboard.views.hackathon_get_project,
         name='hackathon_edit_project'
     ),
-    path('hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>',
-         dashboard.views.hackathon_project_page, name='hackathon_project_page'),
-    path('hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>/<str:tab>/',
-         dashboard.views.hackathon_project_page, name='hackathon_project_page'),
-
+    path(
+        'hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>',
+        dashboard.views.hackathon_project_page,
+        name='hackathon_project_page'
+    ),
+    path(
+        'hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>/<str:tab>/',
+        dashboard.views.hackathon_project_page,
+        name='hackathon_project_page'
+    ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
     # TODO: revisit if we need to keep these urls for legacy links
     # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
@@ -370,6 +376,8 @@ urlpatterns = [
 
     # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
+    re_path(r'^user_directory/?', dashboard.views.users_directory_elastic, name='users_directory_elastic'),
+    re_path(r'^user_lookup/?', dashboard.views.user_lookup, name='user_directory_lookup'),
     re_path(r'^tribes/explore', dashboard.views.users_directory, name='tribes_directory'),
 
     # Alpha functionality
@@ -407,6 +415,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
+    re_path(r'^homeold/?$', retail.views.index_old, name='homeold'),
     re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),
     re_path(r'^about/?', retail.views.about, name='about'),
@@ -464,6 +473,7 @@ urlpatterns = [
     re_path(r'^reddit/?', retail.views.reddit, name='reddit'),
     re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
+    re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
     re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
     re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
@@ -501,7 +511,6 @@ urlpatterns = [
         bounty_requests.views.update_bounty_request_v1,
         name='update_bounty_request_v1'
     ),
-
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
     path(
@@ -638,6 +647,7 @@ urlpatterns = [
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
+    re_path(r'^static_proxy/(.*)', marketing.views.static_proxy, name='static_proxy'),
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
@@ -671,6 +681,7 @@ urlpatterns = [
     re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
     re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
+    url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
@@ -708,6 +719,7 @@ urlpatterns = [
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
+    url(r'^api/v0.1/users_csv/', dashboard.views.output_users_to_csv, name='users_csv'),
     url(r'^api/v0.1/bounty_mentor/', dashboard.views.bounty_mentor, name='bounty_mentor'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 

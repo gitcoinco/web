@@ -50,7 +50,7 @@ class CartData {
     return bulk_add_cart;
   }
 
-  static addToCart(grantData) {
+  static addToCart(grantData, no_report) {
     if (this.cartContainsGrantWithId(grantData.grant_id)) {
       return;
     }
@@ -61,7 +61,8 @@ class CartData {
     if (!network) {
       network = 'mainnet';
     }
-    const acceptsAllTokens = (grantData.grant_token_address === '0x0000000000000000000000000000000000000000');
+    const acceptsAllTokens = (grantData.grant_token_address === '0x0000000000000000000000000000000000000000' ||
+      grantData.grant_token_address === '0x0');
 
     let accptedTokenName;
 
@@ -104,10 +105,12 @@ class CartData {
     cartList.push(grantData);
     this.setCart(cartList);
 
-    fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
-      action: 'ADD_ITEM',
-      metadata: JSON.stringify(cartList)
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    if (!no_report) {
+      fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
+        action: 'ADD_ITEM',
+        metadata: JSON.stringify(cartList)
+      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }
   }
 
   static removeIdFromCart(grantId) {

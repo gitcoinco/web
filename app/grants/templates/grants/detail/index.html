@@ -29,9 +29,9 @@
     <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/cart.css" %}">
-    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.bubble.css" rel="stylesheet">
   </head>
   <body class="interior {{ active }} grant grant-detail g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -69,6 +69,56 @@
         {% include 'grants/detail/side-cart.html' %}
       </div>
     </div>
+        <div class="modal fade" id="startVerification" tabindex="-1" role="dialog" aria-labelledby="startVerification" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content text-center">
+          <div class="modal-header" style="border-bottom: none">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body px-5">
+            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+            <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
+            <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
+            <button id="triggerTwitter" class="btn btn-lg btn-gc-blue" data-toggle="modal" data-target="#startTwitterVerification">Verify with twitter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="startTwitterVerification" tabindex="-1" role="dialog" aria-labelledby="startTwitterVerification" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content text-center">
+          <div class="modal-header" style="border-bottom: none">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body px-5">
+            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+            <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
+            <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
+              {% if grant.twitter_handle_1 %}<i class="fas fa-check text-highlight-green"></i>{% else %}
+                <i class="fas fa-exclamation-triangle" style="color: #b88b16"></i>
+              {% endif %}</p>
+            <p class="mb-4 text-left"><b>Step 2:</b> Click to send the verification tweet from the grant account (<b>{{ grant.twitter_handle_1 }}</b>)
+            </p>
+            {% with verification_tweet|add:" "|add:user_code as tweet %}
+              {% if grant.twitter_handle_1 %}
+              <a class="font-caption btn btn-outline-gc-blue btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank"><i class="fab fa-twitter"></i> Send Verification Tweet</a>
+              {% else %}
+                <span class="font-caption btn btn-outline-gc-blue btn-sm disabled"><i class="fab fa-twitter"></i> Send Verification Tweet</span>
+              {% endif %}
+            {% endwith %}
+            <p class="mb-4 mt-3 text-left mt-2"><b>Step 3:</b> Click the "Verify" button below</p>
+            <button class="btn btn-lg btn-gc-blue mt-2 mb-4" id="twitterVerification" {% if not grant.twitter_handle_1 %}disabled{% endif %}>Verify</button>
+            <br>
+            <span class="error" id="validation-errors"></span>
+
+          </div>
+        </div>
+      </div>
+    </div>
     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
     {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
@@ -99,8 +149,10 @@
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script>
-    $('#wallet-address').attr(
+    $('img').unveil(200);
+    $('#wallet-etherscan-link').attr(
       'href',
       get_etherscan_url(
         $('#wallet-address').text().trim(),
@@ -108,11 +160,53 @@
         'address'
       )
     );
+    $('#wallet-zkscan-link').attr(
+      'href',
+      get_zkscan_url(
+        $('#wallet-address').text().trim(),
+        '{{ grant.network }}',
+        'accounts'
+      )
+    );
   </script>
   <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script type="text/javascript">
   $(document).ready(function() {
-    $("img").unveil();
+
+    $('#twitterVerification').on('click', async () => {
+
+      if('{{ grant.twitter_handle_1 }}' == ''){
+        _alert('Please add a twitter account to your grant!', 'error', 5000);
+        return;
+      }
+
+      const response = await fetchData('/grants/v1/api/{{grant.id}}/verify');
+
+      if (!response.ok) {
+        _alert(response.msg, 'error');
+        return;
+      }
+      if (response.verified) {
+        _alert('Congratulations, your grant is now verified!', 'success', 5000)
+        $('.verification__warning').remove();
+        $('#startTwitterVerification .close').click()
+      }
+
+      if (!response.has_text) {
+        _alert('Unable to verify tweet from {{ grant.twitter_handle_1 }}.  Is the twitter post live?  Was it sent from {{ grant.twitter_handle_1 }}?', 'error', 5000)
+        return;
+      }
+
+      if (!response.has_code) {
+        _alert(`Missing emoji code "{{ user_code }}", please don't remove this unique code before validate your grant.`, 'error', 5000)
+        return;
+      }
+    });
+
+
+    $('#triggerTwitter').on('click', async () => {
+      $("#startVerification .close").click();
+    });
   });
 
   </script>

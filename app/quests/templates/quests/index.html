@@ -101,7 +101,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <td> {{quest.kudos_reward.humanized_name}}</td>
                   <td> {{difficulty_level}}</td>
                   <td> {{quest.ui_data.attempts_count}}</td>
-                  <td> 
+                  <td>
                     <span>
                       <a id="info_button" class="btn btn-outline-info" title="{{quest.description}}"> <span><i class="fa fa-info-circle"></i></span> Info</a>
                     </span>
@@ -122,6 +122,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% if beaten %}
                     <td>
                       <a class="btn btn-outline-success disabled" title="Quest Beaten"><span>✅</span> Beaten</a>
+                      <a class="btn btn-outline-primary" title="Dive into the web3" role="button" href="{{quest.url}}">
+                        <span><i class="fa fa-gamepad"></i></span> Play Again
+                      </a>
+
                     </td>
                   {% elif cooldown %}
                     <td>
@@ -155,12 +159,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
     <div id="announce">
       <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-      <h4><strong>Round 4 Challenge ended on 4/30!</strong></h4>
+      <h4><strong>Round 5 Challenge ended on 7/30!</strong></h4>
       <p class="mb-0">
-        Congrats to the winners, <a href="https://github.com/gitcoinco/web/issues/6574" target="new">announced here</a>
+        Congrats to the winners!
         </p>
-        <h5 class="mt-1 pt-0"><strong>Round 5 Challenge is now Live!</strong></h5>
-        <p class="mb-3">Starting with round 5, we will have more advanced anti-cheating congrats + will no longer be rewarding referrals as much.  Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on 7/30/2020 will <strong>win a special 60 DAI prize</strong> and a <i>very special Kudos</i>.
     </div>
 
   </div>
@@ -575,7 +577,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% block 'scripts' %}
   <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
-  <script src="{% static "v2/js/user_card.js" %}"></script>
   <script>
     $(document).ready(function() {
       setInterval(function(){

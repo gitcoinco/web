@@ -27,9 +27,11 @@
       <span class="nav-badge">({{ activity_count }})</span>
     </button>
 
+    {% if is_team_member %}
     <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
-      {% trans "STATS" %}
+      {% trans "TRENDS" %}
     </button>
+    {% endif %}
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
@@ -232,7 +234,7 @@
       </div>
     {% endif %}
 
-    {% if tab == "stats" %}
+    {% if tab == "stats" and is_team_member %}
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script src="{% static "v2/js/grants/stats.js" %}"></script>
       <div id=grant_stats_graph class="content-block content-block--white">
@@ -240,15 +242,49 @@
 
           <div class="value-container">
             <div class="chart_container chart_container--big">
-              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">CONTRIBUTION HISTORY OVER TIME</p>
+              {% if stats_history|length %}
+              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+              <table id=stats_history>
+                <tr class="table_header">
+                  <td>
+                    When
+                  </td>
+                  <td>
+                    Impressions
+                  </td>
+                  <td>
+                    Added to Cart
+                  </td>
+                  <td>
+                    Contributions
+                  </td>
+                </tr>
+              {% for ele in stats_history %}
+                <tr>
+                  <td>
+                    {{ele.created_on|date:"Y/m/d"}}
+                  </td>
+                  <td>
+                    {{ele.data.impressions}}
+                  </td>
+                  <td>
+                    {{ele.data.in_cart}}
+                  </td>
+                  <td>
+                    {{ele.data.contributions}}
+                  </td>
+                </tr>
+              {% endfor %}
+              </table>
+              {% endif %}
+
+              <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
               <div class="chart_container__content">
                 <div id="grant_chart"></div>
               </div>
               <div class="grant-status-list">
-                <p><span class="box box_1"></span>{% trans "Subscription Billing" %}</p>
-                <p><span class="box box_2"></span>{% trans "New Subscriptions" %}</p>
-                <p><span class="box box_3"></span>{% trans "One-Time Contributions" %}</p>
-                <p><span class="box box_5"></span>{% trans "CLR Matching Funds" %}</p>
+                <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
               </div>
             </div>
           </div>

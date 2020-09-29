@@ -37,9 +37,11 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
 )
+from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
@@ -498,10 +500,15 @@ def sync_payout(fulfillment):
     elif fulfillment.payout_type == 'qr':
         if token_name == 'ETC':
             sync_etc_payout(fulfillment)
+        elif token_name == 'BTC':
+            sync_btc_payout(fulfillment)
         elif token_name == 'CELO' or token_name == 'cUSD':
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'polkadot_ext':
+         sync_polkadot_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -600,6 +607,8 @@ def build_profile_pairs(bounty):
                 addr = f"https://explorer.celo.org/address/{fulfillment.fulfiller_address}"
             elif bounty.tenant == 'ETC':
                 addr = f"https://blockscout.com/etc/mainnet/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'BTC':
+                addr = f"https://blockstream.info/api/address/{fulfillment.fulfiller_address}"
             else:
                 addr = None
             profile_handles.append((fulfillment.fulfiller_address, addr))

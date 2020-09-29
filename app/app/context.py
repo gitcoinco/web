@@ -60,7 +60,7 @@ def get_sitewide_announcements():
     announcement = announcements.filter(key='header').first()
     if announcement:
         header_msg = announcement.title + announcement.desc
-        nav_salt = announcement.rank
+        nav_salt = announcement.salt
     return header_msg, footer_msg, nav_salt
 
 
@@ -68,13 +68,14 @@ def preprocess(request):
     """Handle inserting pertinent data into the current context."""
 
     # make lbcheck super lightweight
+
     if request.path == '/lbcheck':
         return {}
 
     chat_url = get_chat_url(front_end=True)
     chat_access_token = ''
     chat_id = ''
-
+    search_url = ''
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     if user_is_authenticated and profile and profile.pk:
@@ -134,6 +135,7 @@ def preprocess(request):
         'MEDIA_URL': settings.MEDIA_URL,
         'max_length': max_length,
         'max_length_offset': max_length_offset,
+        'search_url': f'{settings.BASE_URL}user_lookup',
         'chat_url': chat_url,
         'base_url': settings.BASE_URL,
         'chat_id': chat_id,
@@ -170,6 +172,7 @@ def preprocess(request):
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
         'is_alpha_tester': profile.is_alpha_tester if profile else False,
+        'user_groups': list(profile.user_groups) if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'pref_do_not_track': profile.pref_do_not_track if profile else False,

@@ -41,6 +41,8 @@ def mint_token_request(self, token_req_id, retry=False):
             if gas_price > delay_if_gas_prices_gt_mint and self.request.retries < self.max_retries:
                 self.retry(countdown=120)
                 return
+            if obj.gas_price_overide:
+                gas_price = obj.gas_price_overide
             tx_id = obj.mint(gas_price)
             if tx_id:
                 while not has_tx_mined(tx_id, obj.network):
@@ -66,9 +68,10 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             multiplier = 1
             # high gas prices, 5 hour gas limit - DL
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
-            if gas_price > delay_if_gas_prices_gt_redeem and self.request.retries < self.max_retries:
-
-                self.retry(countdown=60*10)
+            if gas_price > delay_if_gas_prices_gt_redeem:
+                # do not retry is gas prices are too high
+                # TODO: revisit this when gas prices go down
+                # self.retry(countdown=60*10)
                 return
 
             obj = KudosTransfer.objects.get(pk=kt_id)
