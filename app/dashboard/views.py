@@ -2133,6 +2133,7 @@ def load_banners(request):
     return JsonResponse(response, safe=False)
 
 
+@login_required
 def profile_details(request, handle):
     """Display profile keywords.
 
@@ -2150,57 +2151,16 @@ def profile_details(request, handle):
     else:
         network = 'rinkeby'
 
-    keywords = request.GET.get('keywords', '')
-
-    bounties = Bounty.objects.current().prefetch_related(
-        'fulfillments',
-        'interested',
-        'interested__profile',
-        'feedbacks'
-        ).filter(
-            interested__profile=profile,
-            network=network,
-        ).filter(
-            interested__status='okay'
-        ).filter(
-            interested__pending=False
-        ).filter(
-            idx_status='done'
-        ).filter(
-            feedbacks__receiver_profile=profile
-        ).filter(
-            Q(metadata__issueKeywords__icontains=keywords) |
-            Q(title__icontains=keywords) |
-            Q(issue_description__icontains=keywords)
-        ).distinct('pk')[:3]
-
-    _bounties = []
-    _orgs = []
-    if bounties :
-        for bounty in bounties:
-
-            _bounty = {
-                'title': bounty.title,
-                'id': bounty.id,
-                'org': bounty.org_name,
-                'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],
-            }
-            _org = bounty.org_name
-            _orgs.append(_org)
-            _bounties.append(_bounty)
 
     response = {
         'avatar': profile.avatar_url,
         'handle': profile.handle,
-        'contributed_to': _orgs,
-        'keywords': keywords,
-        'related_bounties' : _bounties,
-        'stats': {
-            'position': profile.get_contributor_leaderboard_index(),
-            'completed_bounties': profile.completed_bounties,
-            'success_rate': profile.success_rate,
-            'earnings': profile.get_eth_sum()
-        }
+        'keywords': profile.keywords,
+        'bio': profile.bio,
+        'userOptions': profile.products_choose,
+        'jobSelected': profile.job_search_status,
+        'interestsSelected': profile.interests,
+        'contact_email': profile.contact_email,
     }
 
     return JsonResponse(response, safe=False)

@@ -123,6 +123,11 @@ def preprocess(request):
 
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
 
+    try:
+        onboard_tasks = JSONStore.objects.get(key='onboard_tasks').data
+    except JSONStore.DoesNotExist:
+        onboard_tasks = []
+
     # town square wall post max length
     max_length_offset = abs(((
         request.user.profile.created_on
@@ -178,6 +183,7 @@ def preprocess(request):
         'pref_do_not_track': profile.pref_do_not_track if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
+        'onboard_tasks': onboard_tasks,
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

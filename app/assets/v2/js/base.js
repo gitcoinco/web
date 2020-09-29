@@ -358,7 +358,10 @@ if (
 ) {
   // show_persona_modal();
 }
-function popOnboard() {
+function popOnboard(step) {
+  if (step) {
+    appOnboard.step = step;
+  }
   appOnboard.$refs['onboard-modal'].openModal();
 }
 

@@ -145,6 +145,8 @@ $(document).ready(function() {
       $('#right_sidebar').html($(response).find('#right_sidebar').html());
       $('#left_sidebar').html($(response).find('#left_sidebar').html());
       $('#top_bar').html($(response).find('#top_bar').html());
+      appOnboard.profileWidget();
+
       // bind more actions
       joinTribe();
       const hide_promo = localStorage.getItem('hide_promo');

@@ -179,7 +179,7 @@
 
         <div class="form-group">
           <label for="">Find your organization:</label>
-          <v-select placeholder="eg. gitcoinco"  :options="orgs" label="handle" v-model="data.orgSelected">
+          <v-select placeholder="eg. gitcoinco"  :options="orgs" label="handle" v-model="data.orgSelected" @input="fetchOrgOnboardData(data.orgSelected)">
             <template v-slot:option="option">
               <div class="d-flex align-items-baseline">
                 <div class="mr-2">
