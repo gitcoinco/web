@@ -22,6 +22,7 @@ import base64
 import collections
 import json
 import logging
+import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
@@ -67,7 +68,7 @@ from git.utils import (
     repo_name,
 )
 from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
-from marketing.models import LeaderboardRank
+from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
 from web3 import Web3
@@ -288,6 +289,8 @@ class Bounty(SuperModel):
         ('bounties_network', 'Bounties Network'),
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
+        ('polkadot_ext', 'Polkadot Ext'),
+        ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
 
@@ -518,6 +521,8 @@ class Bounty(SuperModel):
         return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
 
     def get_natural_value(self):
+        if not self.value_in_token:
+            return 0
         token = addr_to_token(self.token_address)
         if not token:
             return 0
@@ -857,7 +862,7 @@ class Bounty(SuperModel):
 
     def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
-        if self.token_name == 'USDT':
+        if self.token_name in ['USDT', 'USDC']:
             return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
@@ -1087,14 +1092,21 @@ class Bounty(SuperModel):
             bool: Whether or not the Bounty is eligible for outbound notifications.
 
         """
-        if not var_to_check or self.get_natural_value() < 0.0001 or (
-           self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
-            return False
-        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
-            return False
-        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
+        print(f'### GITCOIN BOT A2 network {self.network}')
+        print(f'### GITCOIN BOT A2 settings.DEBUG {settings.DEBUG}')
+        print(f'### GITCOIN BOT A2 settings.ENV {settings.ENV}')
+
+        if self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
             return False
 
+        print(f'### GITCOIN BOT A3')
+
+        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+
+        print(f'### GITCOIN BOT A4')
+
+        print(f'### GITCOIN BOT A5 - Is Eligible')
         return True
 
     @property
@@ -1392,15 +1404,18 @@ class BountyFulfillment(SuperModel):
         ('qr', 'qr'),
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
+        ('polkadot_ext', 'polkadot_ext'),
         ('manual', 'manual')
     ]
 
     TENANT = [
+        ('BTC', 'BTC'),
         ('ETH', 'ETH'),
         ('ETC', 'ETC'),
         ('ZIL', 'ZIL'),
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
+        ('POLKADOT', 'POLKADOT'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1748,6 +1763,10 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
+        new_receive_txid = getReplacedTX(self.receive_txid)
+        if new_receive_txid:
+            self.receive_txid = new_receive_txid
         self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
         return bool(self.receive_tx_status)
 
@@ -1966,6 +1985,15 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
 
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1600019142065700
+    if not instance.value_true:
+        instance.value_true = 0
+    if not instance.value_in_token:
+        instance.value_in_token = 0
+    if not instance.balance:
+        instance.balance = 0
+
+
     if not instance.bounty_owner_profile:
         if instance.bounty_owner_github_username:
             profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
@@ -2012,7 +2040,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
-                "txid":'',
+                "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
             }
@@ -2233,6 +2261,15 @@ class Activity(SuperModel):
         ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
+        # ptokens
+        ('create_ptoken', 'Create personal token'),
+        ('mint_ptoken', 'Mint personal token'),
+        ('edit_price_ptoken', 'Edit personal token price'),
+        ('buy_ptoken', 'Edit personal token price'),
+        ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
+        ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
+        ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
+        ('incoming_redemption_ptoken', 'Has an incoming redemption finalized by the Buyer')
     ]
 
     profile = models.ForeignKey(
@@ -2290,6 +2327,18 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    ptoken = models.ForeignKey(
+        'ptokens.PersonalToken',
+        related_name='ptoken_activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    redemption = models.ForeignKey(
+        'ptokens.RedemptionToken',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+
 
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
@@ -2319,7 +2368,7 @@ class Activity(SuperModel):
 
     @property
     def show_token_info(self):
-        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund'.split(',')
+        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund,buy_ptoken'.split(',')
 
     @property
     def video_participants_count(self):
@@ -2426,10 +2475,13 @@ class Activity(SuperModel):
         if self.likes.exists():
             vp.metadata['liked'] = self.likes.filter(profile=user.profile).exists()
             vp.metadata['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
-        vp.metadata['favorite'] = self.favorite_set.filter(user=user).exists()
+        vp.metadata['favorite'] = self.favorites(user)
         vp.metadata['poll_answered'] = self.has_voted(user)
 
         return vp
+
+    def favorites(self, user):
+        self.favorite_set.filter(user=user, grant=None)
 
     @property
     def tip_count_usd(self):
@@ -2519,8 +2571,6 @@ def post_add_activity(sender, instance, created, **kwargs):
             dupe.delete()
 
 
-
-
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
@@ -2607,6 +2657,7 @@ class ProfileQuerySet(models.QuerySet):
 class ProfileManager(models.Manager):
     def get_queryset(self):
         return ProfileQuerySet(self.model, using=self._db).slim()
+
 
 
 class Repo(SuperModel):
@@ -2753,6 +2804,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
     )
 
+    tokens = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations_fk = models.ManyToManyField('dashboard.Profile', blank=True)
@@ -2842,6 +2894,10 @@ class Profile(SuperModel):
     ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+    brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
+    is_brightid_verified=models.BooleanField(default=False)
+    is_twitter_verified=models.BooleanField(default=False)
+    twitter_handle=models.CharField(blank=True, null=True, max_length=15)
 
     @property
     def is_blocked(self):
@@ -3378,6 +3434,10 @@ class Profile(SuperModel):
         if self.user.is_staff:
             return True
         return self.user.groups.filter(name='Alpha_Testers').cache().exists() if self.user else False
+
+    @property
+    def user_groups(self):
+        return self.user.groups.all().cache().values_list('name', flat=True) if self.user else False
 
     @property
     def is_staff(self):
@@ -4174,6 +4234,9 @@ class Profile(SuperModel):
         }
 
 
+    def to_es(self):
+        return json.dumps(self.to_dict())
+
     def to_dict(self):
         """Get the dictionary representation with additional data.
 
@@ -4226,6 +4289,7 @@ class Profile(SuperModel):
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.desc
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+
         org_works_with = []
         if self.is_org:
             org_bounties = self.get_orgs_bounties(network='mainnet')
@@ -4334,6 +4398,7 @@ class Profile(SuperModel):
         return context
 
 
+
     @property
     def reassemble_profile_dict(self):
         params = self.as_dict
@@ -4438,6 +4503,94 @@ def post_logout(sender, request, user, **kwargs):
     from dashboard.utils import create_user_action
     create_user_action(user, 'Logout', request)
 
+class UserDirectoryQuerySet(models.QuerySet):
+    """Define the Profile QuerySet to be used as the objects manager."""
+
+class UserDirectoryManager(models.Manager):
+    def get_queryset(self):
+        return UserDirectoryQuerySet(self.model, using=self._db)
+
+class UserDirectory(models.Model):
+    profile_id = models.CharField(max_length=255, primary_key=True)
+    join_date = models.CharField(null=True, max_length=255)
+    github_created_at = models.CharField(null=True, max_length=255)
+    first_name = models.CharField(null=True, max_length=255)
+    last_name = models.CharField(null=True, max_length=255)
+    email = models.EmailField()
+    handle = models.CharField(null=True, max_length=255)
+    sms_verification = models.BooleanField()
+    persona = models.CharField(null=True, max_length=255)
+    rank_coder = models.IntegerField()
+    rank_funder = models.IntegerField()
+    num_hacks_joined = models.IntegerField()
+    which_hacks_joined = ArrayField(base_field=models.IntegerField(), null=True)
+    hack_work_starts = models.IntegerField()
+    hack_work_submits = models.IntegerField()
+    hack_work_start_orgs = ArrayField(base_field=models.CharField(max_length=255), null=True)
+    hack_work_submit_orgs = ArrayField(base_field=models.CharField(max_length=255), null=True)
+    bounty_work_starts = models.IntegerField()
+    bounty_work_submits = models.IntegerField()
+    hack_started_feature = models.IntegerField()
+    hack_started_code_review = models.IntegerField()
+    hack_started_security = models.IntegerField()
+    hack_started_design = models.IntegerField()
+    hack_started_documentation = models.IntegerField()
+    hack_started_bug = models.IntegerField()
+    hack_started_other = models.IntegerField()
+    hack_started_improvement = models.IntegerField()
+    started_feature = models.IntegerField()
+    started_code_review = models.IntegerField()
+    started_security = models.IntegerField()
+    started_design = models.IntegerField()
+    started_documentation = models.IntegerField()
+    started_bug = models.IntegerField()
+    started_other = models.IntegerField()
+    started_improvement = models.IntegerField()
+    submitted_feature = models.IntegerField()
+    submitted_code_review = models.IntegerField()
+    submitted_security = models.IntegerField()
+    submitted_design = models.IntegerField()
+    submitted_documentation = models.IntegerField()
+    submitted_bug = models.IntegerField()
+    submitted_other = models.IntegerField()
+    submitted_improvement = models.IntegerField()
+    bounty_earnings  = models.FloatField()
+    bounty_work_start_orgs = ArrayField(base_field=models.CharField(max_length=255), null=True)
+    bounty_work_submit_orgs = ArrayField(base_field=models.CharField(max_length=255), null=True)
+    kudos_sends = models.IntegerField()
+    kudos_receives = models.IntegerField()
+    hack_winner_kudos_received = models.IntegerField()
+    grants_opened = models.IntegerField()
+    grant_contributed = models.IntegerField()
+    grant_contributions = models.IntegerField()
+    grant_contribution_amount = models.FloatField()
+    num_actions = models.IntegerField()
+    action_points = models.FloatField()
+    avg_points_per_action = models.FloatField()
+    last_action_on = models.CharField(null=True, max_length=255)
+    keywords = ArrayField(base_field=models.CharField(max_length=255), null=True)
+    activity_level = models.CharField(null=True, max_length=255)
+    reliability = models.CharField(null=True, max_length=255)
+    average_rating = models.FloatField()
+    longest_streak = models.IntegerField()
+    earnings_count = models.FloatField()
+    follower_count = models.IntegerField()
+    following_count = models.IntegerField()
+    num_repeated_relationships  = models.IntegerField()
+    verification_status = models.CharField(null=True, max_length=255)
+
+
+    def email_if_not_supressed(self):
+        is_on_global_suppression_list = EmailSupressionList.objects.filter(email__iexact=self.email).exists()
+        if is_on_global_suppression_list:
+            return ''
+        return self.email
+
+
+    objects = UserDirectoryManager()
+
+    class Meta:
+        managed = False
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
@@ -5161,6 +5314,10 @@ def post_save_earning(sender, instance, created, **kwargs):
     if created:
         instance.create_auto_follow()
 
+        from economy.utils import watch_txn
+        if instance.txid:
+            watch_txn(instance.txid)
+
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
     from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
@@ -5385,6 +5542,15 @@ class Investigation(SuperModel):
             total_sybil_score += 1
             htmls.append('(DING)')
 
+        htmls.append(f'Bright ID Verified: {instance.is_brightid_verified}')
+        if instance.is_brightid_verified:
+            total_sybil_score -= 2
+            htmls.append('(REDEMPTIONx2)')
+
+        htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
+        if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
 
         if instance.squelches.filter(active=True).exists():
             htmls.append('USER HAS ACTIVE SQUELCHES')

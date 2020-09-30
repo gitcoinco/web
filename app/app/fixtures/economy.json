@@ -24320,8 +24320,53 @@
     "fields": {
       "created_on": "2019-09-09T00:52:18Z",
       "modified_on": "2019-09-11T01:38:48.009Z",
-      "address": "0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D",
+      "address": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
       "symbol": "DAI",
+      "network": "rinkeby",
+      "decimals": 18,
+      "priority": 1,
+      "metadata": {},
+      "approved": true
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 363,
+    "fields": {
+      "created_on": "2020-08-28T00:52:18Z",
+      "modified_on": "2020-08-28T01:38:48.009Z",
+      "address": "0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad",
+      "symbol": "USDT",
+      "network": "rinkeby",
+      "decimals": 6,
+      "priority": 1,
+      "metadata": {},
+      "approved": true
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 364,
+    "fields": {
+      "created_on": "2020-08-28T00:52:18Z",
+      "modified_on": "2020-08-28T01:38:48.009Z",
+      "address": "0xeb8f08a975ab53e34d8a0330e0d34de942c95926",
+      "symbol": "USDC",
+      "network": "rinkeby",
+      "decimals": 6,
+      "priority": 1,
+      "metadata": {},
+      "approved": true
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 364,
+    "fields": {
+      "created_on": "2020-08-28T00:52:18Z",
+      "modified_on": "2020-08-28T01:38:48.009Z",
+      "address": "0x4da8d0795830f75be471f072a034d42c369b5d0a",
+      "symbol": "LINK",
       "network": "rinkeby",
       "decimals": 18,
       "priority": 1,

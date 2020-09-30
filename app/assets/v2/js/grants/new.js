@@ -41,6 +41,30 @@ const init = () => {
     ignore: ":hidden, [contenteditable='true']:not([name])"
   });
 
+  $('#input-admin_address').on('input', function() {
+    $('.alert').remove();
+    const address = $(this).val();
+    const isNumber = !isNaN(parseInt(address));
+
+    if (isNumber) {
+      return;
+    }
+
+    const isENSName = address.trim().endsWith('.eth');
+
+    if (!isENSName) {
+      return;
+    }
+
+    web3.eth.ens.getAddress(address).then(function(result) {
+      $('#input-admin_address').val(result);
+      return result;
+    }).catch(function(_error) {
+      _alert({ message: gettext('Please check your address and try again.') }, 'error');
+      return false;
+    });
+  });
+
   $('#input-admin_address').on('change', function() {
     $('.alert').remove();
     const validator = $('#create-grant').validate();
@@ -50,7 +74,7 @@ const init = () => {
       web3.eth.ens.getAddress(address).then(function(result) {
         $('#input-admin_address').val(result);
         return result;
-      }).catch(function() {
+      }).catch(function(_error) {
         validator.showErrors({
           'admin_address': 'Please check your address!'
         });
@@ -67,6 +91,11 @@ const init = () => {
       let data = {};
 
       var recipient_addr = $('#input-admin_address').val();
+
+      if (isNaN(parseInt(recipient_addr))) {
+        alert(`The address ${recipient_addr} is not valid`);
+        return false;
+      }
       var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
 
       if (!confirm(msg)) {
@@ -120,6 +149,7 @@ const init = () => {
       formData.append('description', description.getText());
       formData.append('description_rich', JSON.stringify(description.getContents()));
       formData.append('reference_url', $('#input-url').val());
+      formData.append('github_project_url', $('#github_project_url').val());
       formData.append('admin_address', $('#input-admin_address').val());
       formData.append('contract_owner_address', $('#contract_owner_address').val());
       if ($('#token_address').length) {

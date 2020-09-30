@@ -1,6 +1,13 @@
+import csv
+import json
+import math
+import os
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpRequest
 
 from app.services import RedisService
 from celery import app, group
@@ -8,6 +15,7 @@ from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
 from dashboard.models import Activity, Bounty, ObjectView, Profile
 from marketing.mails import func_name, grant_update_email, send_mail
+from proxy.views import proxy_view
 from retail.emails import render_share_bounty
 
 logger = get_task_logger(__name__)
@@ -83,6 +91,151 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
         except Exception as e:
             logger.error(str(e))
 
+@app.shared_task(bind=True, max_retries=3)
+def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
+
+
+    CSV_HEADER = [
+        'profile_id',
+        'join_date',
+        'github_created_at',
+        'first_name',
+        'last_name',
+        'email',
+        'handle',
+        'sms_verification',
+        'persona',
+        'rank_coder',
+        'rank_funder',
+        'num_hacks_joined',
+        'which_hacks_joined',
+        'hack_work_starts',
+        'hack_work_submits',
+        'hack_work_start_orgs',
+        'hack_work_submit_orgs',
+        'bounty_work_starts',
+        'bounty_work_submits',
+        'hack_started_feature',
+        'hack_started_code_review',
+        'hack_started_security',
+        'hack_started_design',
+        'hack_started_documentation',
+        'hack_started_bug',
+        'hack_started_other',
+        'hack_started_improvement',
+        'started_feature',
+        'started_code_review',
+        'started_security',
+        'started_design',
+        'started_documentation',
+        'started_bug',
+        'started_other',
+        'started_improvement',
+        'submitted_feature',
+        'submitted_code_review',
+        'submitted_security',
+        'submitted_design',
+        'submitted_documentation',
+        'submitted_bug',
+        'submitted_other',
+        'submitted_improvement',
+        'bounty_earnings',
+        'bounty_work_start_orgs',
+        'bounty_work_submit_orgs',
+        'kudos_sends',
+        'kudos_receives',
+        'hack_winner_kudos_received',
+        'grants_opened',
+        'grant_contributed',
+        'grant_contributions',
+        'grant_contribution_amount',
+        'num_actions',
+        'action_points',
+        'avg_points_per_action',
+        'last_action_on',
+        'keywords',
+        'activity_level',
+        'reliability',
+        'average_rating',
+        'longest_streak',
+        'earnings_count',
+        'follower_count',
+        'following_count',
+        'num_repeated_relationships',
+        'verification_status'
+    ]
+
+    user_profile = Profile.objects.get(handle=user_handle)
+
+    PAGE_SIZE = 1000
+    proxy_req = HttpRequest()
+    proxy_req.method = 'GET'
+    remote_url = f'{settings.HAYSTACK_ELASTIC_SEARCH_URL}/haystack/modelresult/_search'
+
+    query_data = json.loads(body)
+    proxy_request = proxy_view(proxy_req, remote_url, {'data': body})
+    proxy_json_str = proxy_request.content.decode('utf-8')
+    proxy_body = json.loads(proxy_json_str)
+    if not proxy_body['timed_out']:
+        total_hits = proxy_body['hits']['total']
+        hits = proxy_body['hits']['hits']
+        finished = False
+        output = []
+        results = []
+        if total_hits < PAGE_SIZE:
+            finished = True
+            results = hits
+
+
+        if not finished:
+
+            max_loops = math.ceil(total_hits / PAGE_SIZE)
+            for x in range(0, max_loops):
+                new_body = query_data
+                new_body['from'] = 0 if x is 0 else (PAGE_SIZE * x) + 1
+                new_body['size'] = PAGE_SIZE
+                new_body = json.dumps(new_body)
+                proxy_request = proxy_view(proxy_req, remote_url, {'data': new_body})
+                proxy_json_str = proxy_request.content.decode('utf-8')
+                proxy_body = json.loads(proxy_json_str)
+                hits = proxy_body['hits']['hits']
+                results = results + hits
+
+        for result in results:
+            source = result['_source']
+            row_item = {}
+            for k in source.copy():
+                k = k.replace('_exact', '')
+                if k in CSV_HEADER:
+                    row_item[k] = source[k]
+
+            output.append(row_item)
+        now = datetime.now()
+        csv_file_path = f'/tmp/user-directory-export-{user_profile.handle}-{now}.csv'
+        try:
+            with open(csv_file_path, 'w') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)
+                writer.writeheader()
+                writer.writerows(output)
+        except IOError:
+            print("I/O error")
+        if os.path.isfile(csv_file_path):
+
+            to_email = user_profile.user.email
+            from_email = settings.CONTACT_EMAIL
+
+            subject = "Your exported user directory csv is attached"
+            html = text = f'Your exported {csv_file_path.replace("/tmp/", "")} is attached.'
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                text,
+                html,
+                from_name=f"@{user_profile.handle}",
+                categories=['transactional'],
+                csv=csv_file_path
+            )
 
 @app.shared_task(bind=True, max_retries=3)
 def profile_dict(self, pk, retry: bool = True) -> None:

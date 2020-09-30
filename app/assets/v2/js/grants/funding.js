@@ -239,31 +239,9 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
-  $('#grants-details').toggleClass('col-12');
-  $('#grants-details').toggleClass('col-md-8');
-  $('#grants-details').toggleClass('col-lg-9');
-  $('#grants-details').toggleClass('d-none');
-  $('#grants-details').toggleClass('d-md-block');
+  $('#grants-details > div').toggleClass('col-12 col-md-8 col-lg-9 d-none d-md-block');
 
   $('#side-cart').toggle();
-  $('#side-cart').toggleClass('col-12');
-  $('#side-cart').toggleClass('col-md-4');
-  $('#side-cart').toggleClass('col-lg-3');
-
-  $('#funding-card').toggleClass('mr-md-5');
-  $('#funding-card').toggleClass('mr-md-3');
-  $('#funding-card').toggleClass('d-none');
-  $('#funding-card').toggleClass('d-lg-block');
-}
-
-function objectifySerialized(data) {
-  let objectData = {};
-
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-
-    objectData[item.name] = item.value;
-  }
-
-  return objectData;
+  $('#side-cart').toggleClass('col-12 col-md-4 col-lg-3');
+  $('#funding-card').toggleClass('mr-md-5 mr-md-3 d-none d-lg-block');
 }
