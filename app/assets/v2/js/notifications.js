@@ -95,6 +95,7 @@ Vue.mixin({
           vm.checkUnread();
           // eslint-disable-next-line block-scoped-var
           if (app) {
+            // eslint-disable-next-line block-scoped-var
             app.fetchNotifications();
           }
         });
