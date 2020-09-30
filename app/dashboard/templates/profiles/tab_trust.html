@@ -2,6 +2,9 @@
 
 {% if not profile.is_org and is_my_profile %}
   <div id="gc-trust-bonus-tab">
+    <div id="gc-sms-modal">
+      <sms-verify-modal></sms-verify-modald>
+    </div>
     <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
     The higher the Trust
     Bonus of a user is, the more we can be confident that the user is real. Higher
@@ -40,7 +43,7 @@
           {% if is_sms_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="/grants/cart?verify=true" role="button" class="button button--primary text-nowrap" target="_blank">Verify</a>
+            <a href="/grants/cart?verify=true" role="button" id="verify-sms-link" class="button button--primary text-nowrap" target="_blank">Verify</a>
           {% endif %}
         </div>
       </div>
@@ -156,6 +159,4 @@
   <script>
     const calendarData = JSON.parse(document.getElementById('calendarData').textContent);
   </script>
-  <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
-  <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
 {% endif %}

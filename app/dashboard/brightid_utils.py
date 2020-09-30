@@ -38,7 +38,7 @@ def get_brightid_status(brightid_uuid):
         return 'unknown'
 
 def assign_brightid_sponsorship(brightid_uuid):
-    brightIDv5OpUrl = 'https://app.brightid.org/brightid/v5/operations'
+    brightIDv5OpUrl = 'https://app.brightid.org/node/v5/operations'
 
     op = {
         'name': 'Sponsor',

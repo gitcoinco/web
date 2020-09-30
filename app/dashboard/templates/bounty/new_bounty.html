@@ -24,7 +24,7 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-select@3.10.8/dist/vue-select.css">
     <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
     <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
@@ -86,6 +86,10 @@
                   <p class="font-body">Pick the chain you will fund the bounty</p>
 
                 <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
+
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '0'}">
+                    <input type="radio" name="bounty_chain" id="0_chain" value="0" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/bitcoin.svg' %}" alt="" width="16"> BTC
+                  </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
                     <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="16"> ETH
@@ -711,7 +715,7 @@
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="https://unpkg.com/vue-select@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8/dist/vue-select.min.js"></script>
 
     <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
     <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>

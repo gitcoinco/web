@@ -154,3 +154,14 @@ def get_user_code(user_id, grant, coding_set=block_codes, length=6):
     coding_id = [coding_set[randint(0, 9)] for _ in range(length)]
 
     return ''.join(coding_id)
+
+
+def add_grant_to_active_clrs(grant):
+    from grants.models import Grant, GrantCLR
+
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+    for clr_round in active_clr_rounds:
+        grants_in_clr = Grant.objects.filter(**clr_round.grant_filters)
+        if grants_in_clr.filter(pk=grant.pk).count():
+            grant.in_active_clrs.add(clr_round)
+            grant.save()
