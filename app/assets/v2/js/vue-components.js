@@ -71,17 +71,23 @@ Vue.component('modal', {
   },
   computed: {
     showClose() {
-      if (!this.hideClose) return true;
+      if (!this.hideClose) {
+        return true;
+      }
 
       return false;
     },
     propKeyboard() {
-      if (!this.keyboard) return true;
+      if (!this.keyboard) {
+        return true;
+      }
 
       return this.keyboard;
     },
     propBackdrop() {
-      if (!this.backdrop) return true;
+      if (!this.backdrop) {
+        return true;
+      }
 
       return this.backdrop;
 

@@ -44,7 +44,7 @@
           Tell us a little about you:
         </p>
         <div class="form-group">
-          <label for="">Skills</label>
+          <label for="">Skills <span class="badge badge-greylight">Required</span></label>
           <v-select class="vs-blue" @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
             <template slot="no-options">
               Type to search skills..
@@ -55,13 +55,13 @@
           </v-select>
         </div>
         <div class="form-group">
-          <label for="">Bio</label>
+          <label for="">Bio <span class="badge badge-greylight">Required</span></label>
           <textarea placeholder="Short description about yourself" class="form-control" maxlength="240" name="" id="" cols="10" rows="5"  v-model="data.bio"></textarea>
           <span class="d-block text-right font-smaller-1 mt-1">[[totalcharacter]] / 240</span>
         </div>
 
         <div class="form-group">
-          <label for="">What are you interested in?</label>
+          <label for="">What are you interested in? <span class="badge badge-greylight">Required</span></label>
           <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap mt-3">
             <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 px-3 py-1" :class="{'active': data.interestsSelected.includes(interest)}"  v-for="interest in interests">
               <input type="checkbox" name="interests" id="" :value="interest" v-model="data.interestsSelected"> [[interest]]
@@ -78,7 +78,7 @@
           </v-select>
         </div>
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-gc-blue" @click="goStep(2)" :disabled="!data.skillsSelected.length">Next</button>
+          <button class="btn btn-gc-blue" @click="goStep(2)" :disabled="!data.skillsSelected.length || !data.interestsSelected.length || !data.bio">Next</button>
         </div>
       </div>
     </template>
@@ -267,7 +267,7 @@
 
         <div class="d-flex justify-content-center mt-4">
           <button class="btn btn-outline-gc-blue mr-4" @click="goStep(2)">Back</button>
-          <button class="btn btn-gc-blue" @click="submitData()" :disabled="!data.orgOptions.length">Save</button>
+          <button class="btn btn-gc-blue" @click="submitData()" :disabled="!data.orgOptions.length || !data.orgSelected">Save</button>
         </div>
 
       </div>

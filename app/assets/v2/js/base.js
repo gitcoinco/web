@@ -351,13 +351,6 @@ var show_persona_modal = function(e) {
   $('#persona_modal').bootstrapModal('show');
 };
 
-if (
-  document.contxt.github_handle &&
-  !document.contxt.persona_is_funder &&
-  !document.contxt.persona_is_hunter
-) {
-  // show_persona_modal();
-}
 function popOnboard(step) {
   if (step) {
     appOnboard.step = step;

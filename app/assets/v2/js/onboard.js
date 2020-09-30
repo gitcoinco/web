@@ -1,3 +1,5 @@
+/* eslint quotes: ["error", "single", { "allowTemplateLiterals": true }] */
+
 let step = 1;
 let orgs = document.contxt.orgs;
 let tasks = document.contxt.onboard_tasks;
@@ -32,7 +34,7 @@ if (document.getElementById('gc-onboard')) {
           jobSelected: [],
           interestsSelected: [],
           userOptions: [],
-          orgSelected: [],
+          orgSelected: '',
           orgOptions: [],
           email: ''
         },
@@ -67,7 +69,7 @@ if (document.getElementById('gc-onboard')) {
             string: 'I am not open to hearing new opportunities'
           }
         ],
-        tasks : tasks
+        tasks: tasks
       };
     },
     computed: {
@@ -91,7 +93,7 @@ if (document.getElementById('gc-onboard')) {
       scrollToTop() {
         let vm = this;
 
-        vm.$refs["onboard-modal"].$el.scrollTo(0,0);
+        vm.$refs['onboard-modal'].$el.scrollTo(0, 0);
       },
       submitData() {
         let vm = this;
@@ -101,7 +103,7 @@ if (document.getElementById('gc-onboard')) {
         $.when(postPersonaData).then((response) => {
 
           if (vm.step === 3 && vm.orgSelected) {
-            document.location.href = `/${vm.orgSelected}`
+            document.location.href = `/${vm.orgSelected}`;
           }
           this.profileWidget();
           this.$refs['onboard-modal'].closeModal();
@@ -113,7 +115,7 @@ if (document.getElementById('gc-onboard')) {
       },
       fetchOnboardData(profileHandle) {
         let vm = this;
-        let handle = profileHandle || document.contxt.github_handle ;
+        let handle = profileHandle || document.contxt.github_handle;
         const apiUrlSkills = `/api/v0.1/profile/${handle}`;
         const getSkillsData = fetchData(apiUrlSkills, 'GET');
 
@@ -181,13 +183,13 @@ if (document.getElementById('gc-onboard')) {
           });
         });
       },
-      profileWidget: function(){
+      profileWidget: function() {
         let vm = this;
         let target = document.getElementById('profile-completion');
         let step = 1;
+        let isComplete = vm.data.interestsSelected && vm.data.bio && vm.data.userOptions.length;
 
-        console.log(target)
-        if (vm.data.interestsSelected && vm.data.bio) {
+        if (vm.data.interestsSelected.length && vm.data.bio) {
           step = 2;
         }
 
@@ -195,23 +197,34 @@ if (document.getElementById('gc-onboard')) {
           target.innerHTML = `
           <div class="p-3">
             <div>
-            Signup
-            Profile
-            Interests
+              <div class="profile-widget">
+                <div class="bar-view ${vm.data.userOptions.length ? 'complete' : ''} " data-step="3">
+                  <span class="bar-dot"></span>
+                  <span class="step-label">Interests</span>
+                </div>
+                <div class="bar-view ${vm.data.interestsSelected.length ? 'complete' : ''}" data-step="2">
+                  <span class="bar-dot"></span>
+                  <span class="step-label">Profile</span>
+                </div>
+                <div class="bar-view complete" data-step="1">
+                  <span class="bar-dot"></span>
+                  <span class="step-label">Signup</span>
+                </div>
+              </div>
             </div>
 
-            <ul class="list-unstyled">
+            <ul class="list-unstyled my-3 font-body">
               ${vm.tasks.length ? vm.tasks.map((task, index) => `
                 <li class="d-flex align-items-center justify-content-between">
                   <a class="" id="task-${index}" href="${task.link}">
-                    ${task.title}
+                  <i class="fa fa-check-circle"></i> ${task.title}
                   </a>
-                  <i class="fa fa-check-circle" onclick=""></i>
-                  <i class="far fa-circle d-none" onclick=""></i>
                 </li>
               `).join(' ') : ''}
             </ul>
-            <button class="" onClick="popOnboard(${step})">Complete Profile</button>
+            <div class="text-center">
+              <button class="btn btn-sm btn-gc-blue" onClick="popOnboard(${step})">${isComplete ? 'Edit' : 'Complete'} Profile</button>
+            </div>
           </div>`;
         }
       }
@@ -227,9 +240,6 @@ if (document.getElementById('gc-onboard')) {
         this.$refs['onboard-modal'].openModal();
       }
       this.fetchOnboardData();
-    },
-    created() {
-
     }
   });
 }
