@@ -45,17 +45,13 @@
         </div>
 
         <div class="float-md-right mt-md-5 pl-3 px-md-5 mr-md-5 mb-3 py-md-3">
-          {% if project_obj.grant_link %}
-            {% if is_member %}
-              <b-link href="{{ project_obj.grant_url }}" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Triangles"> EDIT GRANT</b-link>
-            {% else %}
-              <b-link href="{{ project_obj.grant_url }}" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Triangles"> DONATE TO GRANT</b-link>
-            {% endif %}
+          {% if project_obj.grant_url %}
+            <b-link href="{{ project_obj.grant_url }}" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Triangles">{% if is_member %} EDIT GRANT {% else %} DONATE TO GRANT {% endif %}</b-link>
           {% endif %}
 
           {% if is_member %}
-            {% if project_obj.grant_link is None %}
-            <b-link href="{% url 'grants:new' project_obj.id %}" class="project__action--admin btn btn-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Create"> CONVERT TO GRANT</b-link>
+            {% if not project_obj.grant_url %}
+            <b-link href="{% url 'grants:new' %}?project_id={{project_obj.id}}" class="project__action--admin btn btn-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Create"> CREATE GRANT</b-link>
             {% endif %}
             <button @click="$emit('project:edit')" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
           {% endif %}

@@ -4485,7 +4485,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
             } for member_profile in project.profiles.all()],
-            'grant_url': project.grant_link.url if project.grant_link else ''
+            'grant_url': project.grant_link.url if project.grant_link else False
         },
         'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
