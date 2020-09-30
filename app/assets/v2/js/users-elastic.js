@@ -285,10 +285,21 @@ Vue.component('autocomplete', {
   mounted() {
     let count = 0;
     let vm = this;
-
+    let mappedFilters = {};
     let data = $.map(this.options, function(obj, key) {
+
+      if (key.indexOf('_exact') === -1)
+        return;
+      let newKey = key.replace('_exact', '');
+
+      if (mappedFilters[newKey])
+        return;
       obj.id = count++;
-      obj.text = key;
+      obj.text = newKey;
+      obj.key = key;
+
+      mappedFilters[newKey] = true;
+      mappedFilters[key] = true;
       return obj;
     });
 
@@ -299,7 +310,6 @@ Vue.component('autocomplete', {
       allowClear: true,
       placeholder: 'Search for another filter to add',
       minimumInputLength: 1,
-      templateSelection: this.formatSelection,
       escapeMarkup: function(markup) {
         return markup;
       }

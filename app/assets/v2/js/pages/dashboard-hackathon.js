@@ -911,6 +911,9 @@
             case 3:
               newPathName = 'participants';
               break;
+            case 4:
+              newPathName = 'events';
+              break;
             case 5:
               newPathName = 'showcase';
               break;
@@ -921,28 +924,6 @@
 
           history.pushState({}, `${vm.hackathonObj['slug']} - ${newPathName}`, newUrl);
 
-        }
-      },
-      computed: {
-        isSponsor: () => {
-          let vm = this;
-
-          if (document.contxt.is_staff) {
-            return true;
-          }
-
-          for (let i = 0; i < vm.hackathonSponsors.length; i++) {
-            if (vm.hackathonSponsors[i].org_name === document.contxt.github_handle) {
-              return true;
-            }
-          }
-
-          for (let i = 0; i < vm.prizeFounders.length; i++) {
-            if (vm.prizeFounders[i] === document.contxt.github_handle) {
-              return true;
-            }
-          }
-          return false;
         }
       },
       data: () => ({

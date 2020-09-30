@@ -4,6 +4,10 @@ class CartData {
     return this.loadCart().length > 0;
   }
 
+  static length() {
+    return this.loadCart().length;
+  }
+
   static cartContainsGrantWithId(grantId) {
     const cart = this.loadCart();
     const idList = cart.map(grant => {

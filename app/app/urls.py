@@ -45,6 +45,7 @@ import linkshortener.views
 import marketing.views
 import marketing.webhookviews
 import perftools.views
+import ptokens.views
 import quests.views
 import retail.emails
 import retail.views
@@ -78,6 +79,20 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+
+    # personal_tokens
+    re_path(r'^ptoken/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
+    re_path(r'^ptoken/faq/?', ptokens.views.faq, name='ptokens_faq'),
+    path('ptokens/redemptions/<int:redemption_id>/', ptokens.views.ptoken_redemption, name='token_redemption'),
+    path('ptokens/<int:token_id>/purchase/', ptokens.views.ptoken_purchases, name='token_purchase'),
+    path('ptokens/<int:token_id>/redemptions/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('ptokens/redemptions/<str:redemption_state>/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('ptokens/me/', ptokens.views.ptoken, name='personal_token'),
+    path('ptokens/<int:token_id>/', ptokens.views.ptoken, name='token'),
+    path('ptokens/<str:token_state>/', ptokens.views.tokens, name='tokens'),
+    path('ptokens/', ptokens.views.tokens, name='tokens'),
+    path('ptokens/update', ptokens.views.process_ptokens, name='process_ptokens'),
+    path('ptokens/verify', ptokens.views.verification, name='ptoken_verification'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
@@ -136,7 +151,11 @@ urlpatterns = [
         dashboard.views.profile_tax_settings,
         name='profile_set_tax_settings'
     ),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter', dashboard.views.verify_user_twitter, name='verify_user_twitter'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
+        dashboard.views.verify_user_twitter,
+        name='verify_user_twitter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -274,6 +293,7 @@ urlpatterns = [
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
+    path('api/v0.1/hackathon/<str:hackathon>/events/', dashboard.views.events, name='hackathon_events'),
     path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
@@ -597,6 +617,7 @@ urlpatterns = [
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    path('_administration/email/tribe_hackathon_prizes', retail.emails.tribe_hackathon_prizes, name='tribe_hackathon_prizes'),
     path(
         '_administration/email/day_email_campaign/<int:day>',
         marketing.views.day_email_campaign,
