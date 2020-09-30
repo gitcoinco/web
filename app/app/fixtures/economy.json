@@ -24320,7 +24320,7 @@
     "fields": {
       "created_on": "2019-09-09T00:52:18Z",
       "modified_on": "2019-09-11T01:38:48.009Z",
-      "address": "0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D",
+      "address": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
       "symbol": "DAI",
       "network": "rinkeby",
       "decimals": 18,
