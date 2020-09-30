@@ -1,0 +1,59 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+<link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+
+    <h3 id='faq' class="text-center my-5">FAQ</h3>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">{% trans "What are personal tokens?" %}</h5>
+      <div class="panel">
+        <p>Personal tokens are ERC20 tokens tied to different Gitcoin users. They represent a claim over listed uses like time, work and feedback. Each personal token is unique, and different tokens may be redeemed for specific uses.</p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">Where do I see a user’s personal token?</h5>
+      <div class="panel">
+        <p>The best place to see a user’s token is directly on their Gitcoin Profile, under the Personal Token tab at the top of the page. This shows you how much their tokens cost, and exactly what they can be used for.</p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">How do I use a personal token?</h5>
+      <div class="panel">
+        <p>Once you’ve acquired a personal token, you’ll need to submit a redemption request. 
+        This request can be used on any of the Creators listed uses, and only for those uses. 
+        Please note that it’s up to the creator to determine whether or not your request is appropriate, so please give them 24-48 hours to respond to your request.</p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">What happens to my personal tokens when they are used?</h5>
+      <div class="panel">
+        <p>When a Creator accepts your request, you are responsible for marking it as complete. Upon marking a request as complete, you will be prompted to complete a transaction that sends the amount of personal tokens used back to the Creator's sale contract.</p>
+      </div>
+    </div>
+
+    <div class="mb-3 faq-item">
+      <h5 class="accordion">A Creator accepted my request and did not meet my expectations - What should I do?</h5>
+      <div class="panel">
+        <p>Seeing as you have the power to Complete a request (thus transferring the personal tokens) you can always Cancel the redemption to avoid having your tokens revoked without work being performed. We strongly recommend trying to resolve this issue directly with the Creator via Chat as they are unlikely to accept future requests from you if you do not complete your existing requests first.</p>
+      </div>
+    </div>
+
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>

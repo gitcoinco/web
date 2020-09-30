@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
-
-from grants.models import Grant, GrantStat, CartActivity
 from django.utils import timezone
+
+from grants.models import CartActivity, Grant, GrantStat
 
 
 class Command(BaseCommand):
