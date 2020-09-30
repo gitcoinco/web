@@ -54,14 +54,17 @@ from ptokens.models import PersonalToken, PTokenEvent, PurchasePToken, Redemptio
 from web3 import Web3
 
 
+@staff_member_required
 def quickstart(request):
     context = {}
     return TemplateResponse(request, 'personal_tokens.html', context)
 
 
+@staff_member_required
 def faq(request):
     context = {}
     return TemplateResponse(request, 'buy_a_token.html', context)
+
 
 @csrf_exempt
 def tokens(request, token_state=None):
@@ -181,6 +184,7 @@ def verification(request):
         results['symbol'] = ptokens.filter(token_symbol__iexact=symbol).exists()
 
     return JsonResponse(results)
+
 
 @csrf_exempt
 def ptoken(request, token_id='me'):
