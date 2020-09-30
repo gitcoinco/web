@@ -47,6 +47,20 @@ from retail.emails import (
     render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
     render_thank_you_for_supporting_email, render_tip_email, render_unread_notification_email_weekly_roundup,
     render_wallpost, render_weekly_recap,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_request, render_bounty_startwork_expire_warning,
+    render_bounty_unintersted, render_comment, render_faucet_rejected, render_faucet_request,
+    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
+    render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute, render_grant_txn_failed,
+    render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
+    render_nth_day_email_campaign, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
+    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
+    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
+    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap, render_bounty_hypercharged,
+    render_tribe_hackathon_prizes, render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -1997,3 +2011,47 @@ def remember_your_cart(profile, cart_query, grants, hours):
             send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
     finally:
         translation.activate(cur_language)
+
+def tribe_hackathon_prizes(hackathon):
+    from dashboard.models import TribeMember, Sponsor
+    from marketing.utils import generate_hackathon_email_intro
+
+    sponsors = hackathon.sponsors.all()
+    tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor.tribe for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')
+
+    for tribe_member in tribe_members_in_sponsors.distinct('profile'):
+        tribe_member_records = tribe_members_in_sponsors.filter(profile=tribe_member.profile)
+
+        sponsors_prizes = []
+        for sponsor in sponsors.filter(tribe__in=[tribe_member_record.org for tribe_member_record in tribe_member_records]):
+            prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
+            sponsor_prize = {
+                "sponsor": sponsor,
+                "prizes": prizes
+            }
+            sponsors_prizes.append(sponsor_prize)
+
+        subject_begin = generate_hackathon_email_intro(sponsors_prizes)
+        subject = f"{subject_begin} participating in {hackathon.name} on Gitcoin 🚀"
+
+        try:
+            html, text = render_tribe_hackathon_prizes(hackathon, sponsors_prizes, subject_begin)
+        except:
+            return
+
+        profile = tribe_member.profile
+        to_email = profile.email
+        from_email = settings.CONTACT_EMAIL
+        if not to_email:
+            if profile and profile.user:
+                to_email = profile.user.email
+        if not to_email:
+            continue
+
+        cur_language = translation.get_language()
+
+        try:
+            setup_lang(to_email)
+            send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+        finally:
+            translation.activate(cur_language)
