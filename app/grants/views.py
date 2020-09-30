@@ -604,7 +604,7 @@ def get_bg(grant_type):
     if grant_type in ['about', 'activity']:
         bg = '3.jpg'
     if grant_type != 'matic':
-        bg = '../grants/grants_header_donors_round_7-5.png'
+        bg = '../grants/grants_header_donors_round_7-6.png'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'
