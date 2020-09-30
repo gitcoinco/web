@@ -93,6 +93,10 @@ Vue.mixin({
         $.when(putRead).then(function(response) {
           sessionStorage.removeItem('notificationRead');
           vm.checkUnread();
+          // eslint-disable-next-line block-scoped-var
+          if (app) {
+            app.fetchNotifications();
+          }
         });
       }
       vm.checkUnread();
@@ -131,6 +135,7 @@ if (document.getElementById('gc-notifications')) {
     },
     mounted() {
       this.fetchNotifications();
+      setTimeout(this.fetchNotifications.bind(this), 30000);
     },
     created() {
       this.sendState();
