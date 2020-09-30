@@ -6094,25 +6094,16 @@ def onboard_save(request):
         profile.interests = interests
         profile.bio = bio
         profile.save()
-        # persona = request.POST.get('persona')
-        # if persona == 'persona_is_funder':
-        #     profile.persona_is_funder = True
-        #     profile.selected_persona = 'funder'
-        # elif persona == 'persona_is_hunter':
-        #     profile.persona_is_hunter = True
-        #     profile.selected_persona = 'hunter'
-        # profile.save()
+
     else:
         return JsonResponse(
             { 'error': _('You must be authenticated') },
             status=401
         )
 
-
     return JsonResponse(
         {
             'success': True,
-
         },
         status=200
     )
