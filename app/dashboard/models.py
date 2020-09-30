@@ -68,7 +68,7 @@ from git.utils import (
     repo_name,
 )
 from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
-from marketing.models import LeaderboardRank, EmailSupressionList
+from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
 from web3 import Web3
@@ -1765,6 +1765,10 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
+        new_receive_txid = getReplacedTX(self.receive_txid)
+        if new_receive_txid:
+            self.receive_txid = new_receive_txid
         self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
         return bool(self.receive_tx_status)
 
@@ -2038,7 +2042,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
-                "txid":'',
+                "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
             }
@@ -2259,6 +2263,15 @@ class Activity(SuperModel):
         ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
+        # ptokens
+        ('create_ptoken', 'Create personal token'),
+        ('mint_ptoken', 'Mint personal token'),
+        ('edit_price_ptoken', 'Edit personal token price'),
+        ('buy_ptoken', 'Edit personal token price'),
+        ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
+        ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
+        ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
+        ('incoming_redemption_ptoken', 'Has an incoming redemption finalized by the Buyer')
     ]
 
     profile = models.ForeignKey(
@@ -2316,6 +2329,18 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    ptoken = models.ForeignKey(
+        'ptokens.PersonalToken',
+        related_name='ptoken_activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    redemption = models.ForeignKey(
+        'ptokens.RedemptionToken',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+
 
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
@@ -2345,7 +2370,7 @@ class Activity(SuperModel):
 
     @property
     def show_token_info(self):
-        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund'.split(',')
+        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund,buy_ptoken'.split(',')
 
     @property
     def video_participants_count(self):
@@ -2546,8 +2571,6 @@ def post_add_activity(sender, instance, created, **kwargs):
         dupes = dupes.filter(needs_review=instance.needs_review)
         for dupe in dupes:
             dupe.delete()
-
-
 
 
 class LabsResearch(SuperModel):
@@ -2783,6 +2806,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
     )
 
+    tokens = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations_fk = models.ManyToManyField('dashboard.Profile', blank=True)
@@ -2874,6 +2898,8 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
+    is_twitter_verified=models.BooleanField(default=False)
+    twitter_handle=models.CharField(blank=True, null=True, max_length=15)
 
     @property
     def is_blocked(self):
@@ -3410,6 +3436,10 @@ class Profile(SuperModel):
         if self.user.is_staff:
             return True
         return self.user.groups.filter(name='Alpha_Testers').cache().exists() if self.user else False
+
+    @property
+    def user_groups(self):
+        return self.user.groups.all().cache().values_list('name', flat=True) if self.user else False
 
     @property
     def is_staff(self):
@@ -4261,6 +4291,7 @@ class Profile(SuperModel):
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.desc
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+
         org_works_with = []
         if self.is_org:
             org_bounties = self.get_orgs_bounties(network='mainnet')
@@ -5285,6 +5316,10 @@ def post_save_earning(sender, instance, created, **kwargs):
     if created:
         instance.create_auto_follow()
 
+        from economy.utils import watch_txn
+        if instance.txid:
+            watch_txn(instance.txid)
+
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
     from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
@@ -5509,15 +5544,15 @@ class Investigation(SuperModel):
             total_sybil_score += 1
             htmls.append('(DING)')
 
-        from dashboard.brightid_utils import get_brightid_status
-        bright_id_status = get_brightid_status(instance.brightid_uuid)
-        htmls.append(f'Bright ID Status: {bright_id_status}')
-        if bright_id_status == 'not_verified':
-            total_sybil_score -= 1
-            htmls.append('(REDEMPTIONx1)')
-        elif bright_id_status == 'verified':
+        htmls.append(f'Bright ID Verified: {instance.is_brightid_verified}')
+        if instance.is_brightid_verified:
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
+
+        htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
+        if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
 
         if instance.squelches.filter(active=True).exists():
             htmls.append('USER HAS ACTIVE SQUELCHES')

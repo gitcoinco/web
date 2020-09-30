@@ -23,7 +23,7 @@ can use this account to send transfers without prompting you for each transfer! 
 only held by this account temporarily to improve UX. Because it does not permanently hold funds
 there is no additional security risk.
 
-### Checkout Fow
+### Checkout Flow
 
 Based on the items in your cart, we check your zkSync balances to see if you already have enough
 funds on zkSync to complete checkout. 
@@ -67,6 +67,18 @@ zkSync transfer costs can be found in their [documentation](https://zksync.io/fa
 Right now it costs about 2k gas per transfer, compared to ~60k gas to transfer DAI on L1, and
 ~180k gas to deposit funds into zkSync. Once zkSync 1.1 is released, these transfer fees will be
 reduced to about 400 gas per transfer.
+
+These transfers support what zkSync calls [gasless meta-transactions](https://zksync.io/faq/tokens.html#how-fees-are-payed),
+where all transaction fees are paid in the token being transferred. For example, if you want to
+transfer 5 DAI, there may be a fee of, say, 0.10 DAI, resulting in a total cost of 5.10 DAI.
+
+When checking out with Gitcoin grants, fees are additive. If you have 20 DAI in your cart, the
+total cost will be 20 DAI plus transaction fees. Transfers to new recipients in zkSync cost
+more than transfers to users who have previously used zkSync. Gitcoin takes a conservative approach
+and assumes all transfers are to new users to ensure you don't run out of fees when transferring
+funds. As a result, the "Estimated fees" shown are checkout may be much higher than
+the actual fees you will pay. Any leftover fees are transferred from your Gitcoin zkSync account
+back to your regular zkSync account.
 
 ## Round 6
 

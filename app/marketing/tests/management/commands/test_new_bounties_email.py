@@ -5,7 +5,7 @@ from django.utils import timezone
 
 import pytest
 from dashboard.models import Bounty, Profile
-from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
+from marketing.mails import get_bounties_for_keywords
 from marketing.models import Keyword
 from test_plus.test import TestCase
 
@@ -13,10 +13,10 @@ from test_plus.test import TestCase
 @pytest.mark.django_db
 class TestNewBountiesEmail(TestCase):
     """Define tests for testing new bounties email."""
-    
+
     def setUp(self):
         """Perform setup for the testcase."""
-        
+
         Profile.objects.create(
             data={},
             handle='fred',
@@ -69,8 +69,7 @@ class TestNewBountiesEmail(TestCase):
             network='mainnet',
         )
 
-
     def test_get_bounties_for_keywords(self):
         """Test get_bounties_for_keywords function to confirm a bounty reserved for a specific user is excluded."""
-        new_bounties, _all_bounties = get_bounties_for_keywords('Python',24)
+        new_bounties, _all_bounties = get_bounties_for_keywords('Python', 24)
         assert new_bounties.count() == 1
