@@ -28,7 +28,6 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required

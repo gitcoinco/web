@@ -2,9 +2,10 @@
 # broken teeth  https://bits.owocki.com/eDuPzdez
 
 
+from django.utils import timezone
+
 from grants.models import Grant
 from marketing.models import Stat
-from django.utils import timezone
 
 lt_pk = 47067421 * 999
 
@@ -35,4 +36,3 @@ for stat in stats:
     stat.created_on -= timezone.timedelta(minutes=int(stat.created_on.strftime('%M')))
     stat.save()
     print(stat.pk)
-
