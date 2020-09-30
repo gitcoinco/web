@@ -151,7 +151,11 @@ urlpatterns = [
         dashboard.views.profile_tax_settings,
         name='profile_set_tax_settings'
     ),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter', dashboard.views.verify_user_twitter, name='verify_user_twitter'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
+        dashboard.views.verify_user_twitter,
+        name='verify_user_twitter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -291,6 +295,7 @@ urlpatterns = [
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
+    path('api/v0.1/hackathon/<str:hackathon>/events/', dashboard.views.events, name='hackathon_events'),
     path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
@@ -614,6 +619,7 @@ urlpatterns = [
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    path('_administration/email/tribe_hackathon_prizes', retail.emails.tribe_hackathon_prizes, name='tribe_hackathon_prizes'),
     path(
         '_administration/email/day_email_campaign/<int:day>',
         marketing.views.day_email_campaign,

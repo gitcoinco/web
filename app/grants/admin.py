@@ -159,6 +159,13 @@ class GrantAdmin(GeneralAdmin):
 
         return mark_safe("<BR>".join(eles))
 
+    def response_change(self, request, obj):
+        if "_calc_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            recalc_clr.delay(obj.pk)
+            self.message_user(request, "recaclulation of clr queued")
+        return redirect(obj.admin_url)
+
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
