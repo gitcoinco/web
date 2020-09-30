@@ -227,7 +227,7 @@ def get_offers(request):
 
     if request.user.is_authenticated:
         available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
-    for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
+    for key in ['top', 'secret', 'random', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
         offers = available_offers.filter(key=key).order_by('-pk')
         offer = offers.first()
