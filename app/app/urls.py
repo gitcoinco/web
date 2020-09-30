@@ -151,7 +151,11 @@ urlpatterns = [
         dashboard.views.profile_tax_settings,
         name='profile_set_tax_settings'
     ),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter', dashboard.views.verify_user_twitter, name='verify_user_twitter'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
+        dashboard.views.verify_user_twitter,
+        name='verify_user_twitter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
