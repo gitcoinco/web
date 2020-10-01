@@ -96,7 +96,7 @@
                   <label class="font-body" for="input-team_members">{% trans "Project Team members" %}</label>
                   <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg team_members" name="team_members[]" multiple="multiple">
-                      {% for profile in data.project.team_members_profile %}
+                    {% for profile in data.project.team_members_profile %}
                       <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
                     {% endfor %}
                     </select>
