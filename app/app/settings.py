@@ -528,6 +528,11 @@ CELERY_ROUTES = [
     ('townsquare.tasks.*', {'queue': 'default'}),
     ('kudos.tasks.*', {'queue': 'default'}),
     ]
+if DEBUG:
+    CELERY_ROUTES = [
+        ('*', {'queue': 'default'}),
+        ]
+
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -874,5 +879,7 @@ EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
 PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
 
 HYPERCHARGE_BOUNTIES_PROFILE_HANDLE = env('HYPERCHARGE_BOUNTIES_PROFILE', default='gitcoinbot')
+ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
+ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
