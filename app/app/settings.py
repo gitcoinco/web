@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import os
 import socket
 
@@ -106,6 +107,7 @@ INSTALLED_APPS = [
     'app',
     'avatar',
     'retail',
+    'ptokens',
     'rest_framework',
     'marketing',
     'economy',
@@ -181,7 +183,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -836,6 +838,19 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
+PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
+PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x75589C2e56095c80f63EC773509f033aC595c34e')
+PTOKEN_ABI = ''
+PTOKEN_FACTORY_ABI = ''
+
+if PTOKEN_ABI_PATH:
+    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
+        PTOKEN_ABI = json.load(f)
+
+if PTOKEN_FACTORY_ABI_PATH:
+    with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
+        PTOKEN_FACTORY_ABI = json.load(f)
 
 HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
 

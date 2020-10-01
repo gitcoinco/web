@@ -1,10 +1,10 @@
 import os
 
 from django.apps import AppConfig, apps
+from django.conf import settings
 
 from celery import Celery
 from celery.signals import setup_logging
-from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 
