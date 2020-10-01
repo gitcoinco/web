@@ -6117,6 +6117,12 @@ def events(request, hackathon):
             'msg': f'No exists Hackathon Event with id {hackathon}'
         }, status=404)
 
+    if not hackathon_event.calendar_id:
+        return JsonResponse({
+            'error': True,
+            'msg': f'No exists calendar associated to Hackathon {hackathon}'
+        }, status=404)
+
     calendar_unique = hackathon_event.calendar_id
     token = settings.ADDEVENT_API_TOKEN
     endpoint = f'https://www.addevent.com/api/v1/oe/events/list/'
@@ -6126,7 +6132,7 @@ def events(request, hackathon):
         'token': token,
     })
 
-    calendars = calendar_response.json()["calendars"]
+    calendars = calendar_response.json().get("calendars", [])
     calendar_id = None
 
     for calendar in calendars:
