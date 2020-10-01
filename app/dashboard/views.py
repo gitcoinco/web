@@ -1188,10 +1188,11 @@ def users_fetch(request):
                 if activity.exists():
                     profile_json['intro'] = activity.metadata['intro_text']
 
-        project = HackathonProject.objects.filter(hackathon_id=hackathon_id, profiles=user).first()
-        if project:
-            profile_json['project_name'] = project.name
-            profile_json['project_logo'] = project.logo.url if project.logo else ''
+        if hackathon_id and user:
+            project = HackathonProject.objects.filter(hackathon_id=hackathon_id, profiles=user).first()
+            if project:
+                profile_json['project_name'] = project.name
+                profile_json['project_logo'] = project.logo.url if project.logo else ''
 
         if user.data.get('location', ''):
             profile_json['country'] = user.data.get('location', '')
