@@ -26,6 +26,8 @@
 {% if not ignore_inject_web3 %}
   {% include 'grants/shared/shared_scripts.html' %}
 {% endif %}
+{% include 'shared/onboard.html' %}
+
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if env == 'prod' %}
   <script src="{% static 'v2/js/lib/vue.js' %}"></script>
@@ -37,6 +39,8 @@
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
 <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
+<script src="https://unpkg.com/vue-select@latest"></script>
+
 
 <script>
   const bootstrapTooltip = $.fn.tooltip.noConflict()
@@ -88,6 +92,7 @@
 {% if user.is_authenticated %}
   <script src='{% static "v2/js/chatWindow.js" %}'></script>
   <script src="{% static "v2/js/notifications.js" %}"></script>
+  <script src="{% static "v2/js/onboard.js" %}"></script>
 {% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
 

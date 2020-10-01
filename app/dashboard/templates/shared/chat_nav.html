@@ -2,7 +2,7 @@
 <div id="sidebar-chat-app" class="nav-item dropdown notifications">
   <a href="" class="notification__icon nav-link" v-b-toggle.sidebar-chat role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-comments fa-fw">
-      <span id="chat-notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadCount > 0}"></span>
+      <span id="chat-notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadCount > 0}">[[unreadCount ? unreadCount : '']]</span>
     </i>
   </a>
   <b-sidebar id="sidebar-chat" @shown="showHandler($event)" @change="changeHandler($event)" @hidden="hideHandler($event)" class="chat-sidebar justify-content-center" backdrop lazy v-cloak title="close to go back" :no-header-close="!isMobile" :no-header="!isMobile" :width="`${isMobile ? '100vw' : '50vw'}`">

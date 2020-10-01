@@ -1082,6 +1082,16 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
+
+        if grant.pk == 86:
+            # KO 9/28/2020 - per community feedback, contributions that are auto-matched should not count towards
+            # CLR matching, as it gives gitcoin an unfair advantage
+            is_automatic = bool(contribution.subscription.amount_per_period == contribution.subscription.gas_price)
+            from dashboard.models import Profile
+            contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
+            contribution.match = False
+            contribution.save()
+
         return contribution
 
 

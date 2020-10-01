@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$("span, div").click(function(e){
+	$("span.href, div.href").click(function(e){
 		let href = $(this).attr('href');
 		if(href){
 			document.location.href= href;

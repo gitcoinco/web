@@ -131,7 +131,7 @@ def get_stats(round_type):
             continue
         keys = []
         if ele[3] == 'grants':
-            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).exclude(pk=86).order_by(order_by)[0:50]
+            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
@@ -604,7 +604,7 @@ def get_bg(grant_type):
     if grant_type in ['about', 'activity']:
         bg = '3.jpg'
     if grant_type != 'matic':
-        bg = '../grants/grants_header_donors_round_7-5.png'
+        bg = '../grants/grants_header_donors_round_7-6.png'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'

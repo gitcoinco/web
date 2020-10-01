@@ -26,6 +26,14 @@ const save_job_status = function() {
     }
   }
 
+  function goBackWithRefresh() {
+    if ('referrer' in document) {
+      window.location = document.referrer;
+    } else {
+      window.history.back();
+    }
+  }
+
   const dataSend = {
     'job_cv': job_cv[0],
     'job_search_status': job_search_status,
@@ -55,6 +63,7 @@ const save_job_status = function() {
   $.ajax(profile).done(function(response) {
     if (response.status == 200) {
       _alert(response.message, 'info');
+      setTimeout(goBackWithRefresh(), 2000);
     } else {
       _alert(response.message, 'error');
     }
