@@ -2898,6 +2898,10 @@ class Profile(SuperModel):
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
+    bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
+    interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    contact_email = models.EmailField(max_length=255, blank=True)
 
     @property
     def is_blocked(self):

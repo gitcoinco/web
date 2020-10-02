@@ -90,6 +90,21 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     wall_of_love = sorted(wall_of_love.items(), key=lambda x: x[1], reverse=True)
     instance.metadata['wall_of_love'] = wall_of_love
 
+    # save related addresses
+    # related = same contirbutor, same cart
+    related = {}
+    from django.utils import timezone
+    for subscription in instance.subscriptions.all():
+        _from = subscription.created_on - timezone.timedelta(hours=1)
+        _to = subscription.created_on + timezone.timedelta(hours=1)
+        profile = subscription.contributor_profile
+        for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=grant_id):
+            key = _subs.grant.pk
+            if key not in related.keys():
+                related[key] = 0
+            related[key] += 1
+    instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
+
     instance.save()
 
 
