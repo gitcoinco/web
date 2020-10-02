@@ -127,7 +127,11 @@ var stopConfetti = function(){
 
 
 var startConfetti = function(){
-  doconfetti();
+  try{
+    doconfetti();
+  }catch(err){
+    console.error(err);
+  };
   setTimeout(function(){
     stopConfetti();
   }, 20000);
