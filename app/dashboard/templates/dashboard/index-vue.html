@@ -622,7 +622,7 @@
                     </div>
                   </user-directory>
                 </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation" v-if="hackathonObj.calendar_id">
                 <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Events" %}
@@ -634,7 +634,7 @@
                       <div>
                         <h1 class="font-bigger-4 font-weight-bold">Events Schedule</h1>
                         {% if is_staff %}
-                          <button class="btn btn-lg gc-border-blue">Add event</button>
+                          <a href="https://www.addevent.com/calendars/{{ hackathon.calendar_id }}/event/new" class="btn btn-lg gc-border-blue">Add event</a>
                         {% endif %}
                         <hr style="color: black; height: 3px">
                          <div class="d-flex justify-content-between my-5" v-for="event in events">

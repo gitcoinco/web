@@ -1203,7 +1203,7 @@ def portal(request):
 
 
 def community(request):
-    return redirect('https://github.com/gitcoinco/community')
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 
 def onboard(request):

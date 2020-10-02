@@ -102,7 +102,7 @@ last_round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
 next_round_start = timezone.datetime(2020, 9, 14, 15, 0) #tz=utc, not mst
 after_that_next_round_begin = timezone.datetime(2020, 12, 2, 12, 0)
-round_end = timezone.datetime(2020, 10, 2, 23, 0) #tz=utc, not mst
+round_end = timezone.datetime(2020, 10, 2, 18, 0) #tz=utc, not mst
 
 round_types = ['media', 'tech', 'change']
 # TODO-SELF-SERVICE: END

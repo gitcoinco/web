@@ -2561,7 +2561,19 @@ Vue.component('grants-cart', {
     });
 
     // Read array of grants in cart from localStorage
-    this.grantData = CartData.loadCart();
+    const grantData = CartData.loadCart();
+
+    // Make sure none have empty currencies, and if they do default to 0.001 ETH. This is done
+    // to prevent the cart from getting stuck loading if a currency is empty
+    grantData.forEach((grant, index) => {
+      if (!grant.grant_donation_currency) {
+        grantData[index].grant_donation_currency = 'ETH';
+        grantData[index].grant_donation_amount = '0.001';
+      }
+    });
+    CartData.setCart(grantData);
+    this.grantData = grantData;
+
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
 

@@ -422,6 +422,18 @@ class Grant(SuperModel):
         return self.contract_version < 2
 
     @property
+    def related_grants(self):
+        pkg = self.metadata.get('related', [])
+        pks = [ele[0] for ele in pkg]
+        rg = Grant.objects.filter(pk__in=pks)
+        return_me = []
+        for ele in pkg:
+            grant = rg.get(pk=ele[0])
+            return_me.append([grant, ele[1]])
+        return return_me
+
+
+    @property
     def configured_to_receieve_funding(self):
         if self.contract_version == 2:
             return True
