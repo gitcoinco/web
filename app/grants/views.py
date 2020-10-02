@@ -810,7 +810,7 @@ def grants_by_grant_type(request, grant_type):
             params['meta_title'] = collection.title
             params['meta_description'] = collection.description
             params['card_desc'] = collection.description
-            params['avatar_url'] = request.build_absolute_uri(collection.cover.url) if collection.cover else '',
+            params['avatar_url'] = request.build_absolute_uri(collection.cover.url) if collection.cover else ''
 
 
     response = TemplateResponse(request, 'grants/index.html', params)
