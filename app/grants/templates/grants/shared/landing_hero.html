@@ -28,9 +28,11 @@
       <br class="break">
       <div class="pt-0 pb-1">
           <p class="pr-3 pl-3 font-header white">
-            <strong>$150k</strong> Infra Tech, <strong>$150k</strong> App Tech, <strong>$150k</strong> Community, <strong>$50k</strong> Matic |
-          
-            <span class="title-round">Round 7 ends 10/2 at 12pm MST / 6pm UTC</span> (<span class="m-0" data-time="{{round_end|date:'Y-m-d H:i O'}}" data-time-future="{{now|date:'Y-m-d H:i O'}}"></span>) 
+            {% if announcement %}
+              {{announcement.desc | safe}}
+            {% else %}
+              &nbsp;
+            {% endif %}
 
         </p>
       </div>
