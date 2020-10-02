@@ -107,9 +107,11 @@ if (document.getElementById('gc-onboard')) {
           }
           this.profileWidget();
           this.$refs['onboard-modal'].closeModal();
-          if (typeof ga !== 'undefined') {
-            ga('send', 'event', 'Saved profile onboard', 'click', 'Person');
-          }
+          dataLayer.push({
+            'event': 'send',
+            'category': 'onboard',
+            'action': 'saved-profile-onboard'
+          });
 
         }).catch((err) => {
           console.log(err);
