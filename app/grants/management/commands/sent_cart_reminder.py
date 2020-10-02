@@ -51,7 +51,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--hours',
             type=int,
-            help="how many hours back to look"
+            help="how many hours forward to full to look"
         )
 
 
