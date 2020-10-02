@@ -19,10 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 import os
+import re
+import urllib.request
 from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
+from PIL import Image, ImageDraw, ImageOps
+
+from app import settings
+from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
 from perftools.models import JSONStore
@@ -165,3 +171,71 @@ def add_grant_to_active_clrs(grant):
         if grants_in_clr.filter(pk=grant.pk).count():
             grant.in_active_clrs.add(clr_round)
             grant.save()
+
+
+def generate_collection_thumbnail(collection, width, heigth):
+    MARGIN = int(width / 20)
+    MID_MARGIN = int(width / 70)
+    BG = (13, 2, 59)
+    DISPLAY_GRANTS_LIMIT = 4
+    PROFILE_WIDTH = PROFILE_HEIGHT = int(width / 6)
+    GRANT_WIDTH = int(width / 2) - MARGIN - MID_MARGIN
+    GRANT_HEIGHT = int(heigth / 2) - MARGIN - MID_MARGIN
+    IMAGE_BOX = (width, heigth)
+    PROFILE_BOX = (PROFILE_WIDTH, PROFILE_HEIGHT)
+    GRANT_BOX = (GRANT_WIDTH, GRANT_HEIGHT)
+
+    grants = collection.grants.all()
+
+    logos = []
+    for grant in grants:
+        if grant.logo:
+            if len(logos) > DISPLAY_GRANTS_LIMIT:
+                break
+
+            logos.append(grant.logo)
+
+    thumbail = Image.new('RGBA', IMAGE_BOX, color=BG)
+    avatar_url = f'{settings.BASE_URL[:-1]}{collection.profile.avatar_url}'
+    fd = urllib.request.urlopen(avatar_url)
+
+    # Make rounder profile avatar img
+    mask = Image.new('L', PROFILE_BOX, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + PROFILE_BOX, fill=255)
+    profile_thumbnail = Image.open(fd)
+    profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
+    profile_circle = ImageOps.fit(profile_thumbnail, mask.size, centering=(0.5, 0.5))
+
+    CORNERS = [
+        [MARGIN, MARGIN],  # Top left grant
+        [width - GRANT_WIDTH - MARGIN, MARGIN],  # Top right grant
+        [MARGIN, heigth - GRANT_HEIGHT - MARGIN],  # bottom left grant
+        [width - GRANT_WIDTH - MARGIN, heigth - GRANT_HEIGHT - MARGIN]  # bottom right grant
+    ]
+
+    for index in range(len(logos)):
+        if re.match(r'.*\.svg', logos[index].name):
+            grant_img = convert_img(logos[index].open())
+            grant_thumbail = Image.open(grant_img)
+        else:
+            grant_thumbail = Image.open(logos[index].open())
+
+        grant_thumbail.thumbnail(GRANT_BOX, Image.ANTIALIAS)
+
+        grant_bg = Image.new('RGBA', GRANT_BOX, color='white')
+        if grant_thumbail.mode in ('RGBA'):
+            grant_bg.paste(grant_thumbail, (int(GRANT_WIDTH / 2 - grant_thumbail.size[0] / 2),
+                                            int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)), grant_thumbail)
+        else:
+            grant_bg.paste(grant_thumbail, (int(GRANT_WIDTH / 2 - grant_thumbail.size[0] / 2),
+                                            int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)))
+        thumbail.paste(grant_bg, CORNERS[index], grant_bg)
+
+    if profile_circle.mode in ('P', 'RGBA'):
+        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)),
+                       profile_circle)
+    else:
+        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)))
+
+    return thumbail

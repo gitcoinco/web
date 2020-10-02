@@ -25,7 +25,7 @@ from grants.views import (
     grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
     remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
-    zksync_get_interrupt_status, zksync_set_interrupt_status,
+    zksync_get_interrupt_status, zksync_set_interrupt_status, collection_thumbnail,
 )
 
 app_name = 'grants'
@@ -43,6 +43,7 @@ urlpatterns = [
     path('activity', grant_activity, name='log_activity'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
+    path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
     re_path(r'^matic/new', grant_new_whitelabel, name='new_whitelabel'),
     re_path(r'^new', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),

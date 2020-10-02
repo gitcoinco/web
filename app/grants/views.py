@@ -22,7 +22,6 @@ import hashlib
 import html
 import json
 import logging
-import random
 import re
 import time
 from decimal import Decimal
@@ -35,7 +34,7 @@ from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q, Subquery
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -58,6 +57,8 @@ from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
+
+from avatar.utils import convert_img
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
@@ -68,7 +69,8 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
-from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member
+from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, \
+    generate_collection_thumbnail
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
@@ -808,6 +810,8 @@ def grants_by_grant_type(request, grant_type):
             params['meta_title'] = collection.title
             params['meta_description'] = collection.description
             params['card_desc'] = collection.description
+            params['avatar_url'] = request.build_absolute_uri(collection.cover.url) if collection.cover else '',
+
 
     response = TemplateResponse(request, 'grants/index.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -2199,6 +2203,7 @@ def get_collection(request, collection_id):
     return JsonResponse({
         'id': collection.id,
         'title': collection.title,
+        'cover': collection.cover.url if collection.cover else '',
         'grants': grants,
         'owner': owner,
         'curators': curators + [owner]
@@ -2247,3 +2252,18 @@ def add_grant_from_collection(request, collection_id):
     return JsonResponse({
         'grants': grants,
     })
+
+
+@login_required
+@staff_member_required
+def collection_thumbnail(request, collection_id):
+    width = int(request.GET.get('w', 600))
+    height = int(request.GET.get('h', 400))
+    collection = GrantCollection.objects.get(pk=collection_id)
+    thumbnail = generate_collection_thumbnail(collection, width, height)
+
+    response = HttpResponse(content_type="image/png")
+    thumbnail.save(response, "PNG")
+
+    return response
+

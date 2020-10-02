@@ -18,8 +18,8 @@
   <a @click="$emit('collection:show', collection.id)" v-if="collection">
     <template>
       <div class="collection-item">
-        <div class="collection-item__img position-relative">
-          <div class="collection-item__img--grid">
+        <div class="collection-item__img position-relative" :style="collection.cover ? 'padding: 0' : ''">
+          <div class="collection-item__img--grid" v-if="!collection.cover">
             <div class="collection-item__img__cover">
               <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
             </div>
@@ -33,9 +33,10 @@
               <img :src="getGrantLogo(3)" alt="" v-if="collection.grants.length >= 4">
             </div>
           </div>
-          <div class="collection-item__owner-image--cover">
+          <div class="collection-item__owner-image--cover" v-if="!collection.cover">
             <img :src="collection.owner.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
           </div>
+          <img  :src="collection.cover" alt=""  v-if="collection.cover">
         </div>
         <div class="collection-item__content px-3">
           <h2 class="collection-item__title font-subheader">
