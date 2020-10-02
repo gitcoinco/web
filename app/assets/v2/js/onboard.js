@@ -107,10 +107,13 @@ if (document.getElementById('gc-onboard')) {
           }
           this.profileWidget();
           this.$refs['onboard-modal'].closeModal();
+          if (typeof ga !== 'undefined') {
+            ga('send', 'event', 'Saved profile onboard', 'click', 'Person');
+          }
 
         }).catch((err) => {
           console.log(err);
-          _alert('Unable to create a bounty. Please try again later', 'error');
+          _alert('Unable to save your profile. Please login again', 'error');
         });
       },
       fetchOnboardData(profileHandle) {
