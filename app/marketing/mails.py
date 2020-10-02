@@ -47,6 +47,7 @@ from retail.emails import (
     render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
     render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
     render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_pending_contribution_email,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -402,6 +403,21 @@ def successful_contribution(grant, subscription, contribution):
         html, text, subject = render_successful_contribution_email(grant, subscription, contribution)
 
         if not should_suppress_notification_email(to_email, 'successful_contribution'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def pending_contribution(contribution):
+    from_email = settings.CONTACT_EMAIL
+    to_email = contribution.subscription.contributor_profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_pending_contribution_email(contribution)
+
+        if not should_suppress_notification_email(to_email, 'pending_contribution'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
@@ -1283,7 +1299,7 @@ def new_bounty_daily(es):
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
     to_emails = [to_email]
-    
+
     from townsquare.utils import is_email_townsquare_enabled
     from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates, upcoming_dates, email_announcements
     quest = quest_of_the_day()
@@ -1317,7 +1333,7 @@ def new_bounty_daily(es):
         elif old_bounties:
             plural_old_bounties = "Bounties" if len(old_bounties)>1 else "Bounty"
             new_bounties = f"💰{len(old_bounties)} {plural_old_bounties}"
-            
+
         new_quests = ""
         if quest:
             new_quests = f"🎯1 Quest"
