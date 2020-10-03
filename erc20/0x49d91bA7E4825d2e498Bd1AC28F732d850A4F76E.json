@@ -1,0 +1,16 @@
+{
+    "symbol": "DYM",
+	"address": "0x49d91bA7E4825d2e498Bd1AC28F732d850A4F76E",
+    "account_name": "tonyyonghu",
+    "overview": {
+        "en": "DYM-BlockChain-Leader of the Global Block Chain 5G Internet of Things.",
+        "zh": "DYM-BlockChain 全球区块链5G物联网专家。"
+    },
+    "email": "admin@dymtoken.org",
+    "website": "http://dymtoken.org/",
+    "whitepaper": "http://dymtoken.org/pdf/DYMToken.pdf",
+    "published_on": "2020-10-01",
+    "initial_price": {
+        "USD": "5.00 USD"
+    }
+}
