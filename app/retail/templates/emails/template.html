@@ -919,6 +919,7 @@
   </div>
   <div id="footer" class="text-center">
     <div>
+      {% block footer_links %}
       <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
 
       <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
@@ -928,6 +929,7 @@
       <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
 
       <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+      {% endblock %}
     </div>
     <div>
       <div id="copyright">
