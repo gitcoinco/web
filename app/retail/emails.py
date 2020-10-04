@@ -1712,8 +1712,8 @@ def tribe_hackathon_prizes(request):
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 
     sponsors_prizes = []
-    for sponsor in hackathon.sponsors.all()[:3]:
-        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
+    for sponsor in hackathon.sponsor_profiles.all()[:3]:
+        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
         sponsor_prize = {
             "sponsor": sponsor,
             "prizes": prizes

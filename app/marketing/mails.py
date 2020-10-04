@@ -2018,20 +2018,22 @@ def tribe_hackathon_prizes(hackathon):
     from dashboard.models import TribeMember, Sponsor
     from marketing.utils import generate_hackathon_email_intro
 
-    sponsors = hackathon.sponsors.all()
-    tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor.tribe for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')
+    sponsors = hackathon.sponsor_profiles.all()
+    tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')
 
     for tribe_member in tribe_members_in_sponsors.distinct('profile'):
+        # Get all records of this tribe_member for each sponsor he is a member of
         tribe_member_records = tribe_members_in_sponsors.filter(profile=tribe_member.profile)
 
         sponsors_prizes = []
-        for sponsor in sponsors.filter(tribe__in=[tribe_member_record.org for tribe_member_record in tribe_member_records]):
-            prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
-            sponsor_prize = {
-                "sponsor": sponsor,
-                "prizes": prizes
-            }
-            sponsors_prizes.append(sponsor_prize)
+        for sponsor in sponsors:
+            if sponsor in [tribe_member_record.org for tribe_member_record in tribe_member_records]:
+                prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
+                sponsor_prize = {
+                    "sponsor": sponsor,
+                    "prizes": prizes
+                }
+                sponsors_prizes.append(sponsor_prize)
 
         subject_begin = generate_hackathon_email_intro(sponsors_prizes)
         subject = f"{subject_begin} participating in {hackathon.name} on Gitcoin 🚀"
