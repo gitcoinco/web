@@ -105,6 +105,10 @@ class GrantType(SuperModel):
         return f"{self.name}"
 
     @property
+    def clrs(self):
+        return GrantCLR.objects.filter(grant_filters__grant_type=str(self.pk))
+
+    @property
     def active_clrs(self):
         return GrantCLR.objects.filter(is_active=True, grant_filters__grant_type=str(self.pk))
 
@@ -1109,7 +1113,7 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=5)):
+    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
         from grants.tasks import update_grant_metadata
         update_grant_metadata.delay(instance.pk)
 

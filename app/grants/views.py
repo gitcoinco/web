@@ -79,7 +79,7 @@ from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Comment, Favorite, PinnedPost
+from townsquare.models import Announcement, Comment, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
@@ -248,7 +248,6 @@ def grants_stats_view(request):
         logger.exception(e)
         raise Http404
     round_types = GrantType.objects.all()
-    round_types = [ele.name for ele in round_types if ele.active_clrs.exists()]
     params = {
         'cht': cht,
         'chart_list': chart_list,
@@ -704,7 +703,7 @@ def grants_by_grant_type(request, grant_type):
         ]
 
 
-    active_rounds = GrantCLR.objects.filter(is_active=True)
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now())
 
     # populate active round info
     total_clr_pot = None
@@ -770,6 +769,7 @@ def grants_by_grant_type(request, grant_type):
             'bg_color': bg_color
         },
         'bg': bg,
+        'announcement': Announcement.objects.filter(key='grants', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('-rank').first(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,

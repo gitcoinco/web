@@ -58,11 +58,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 1 1 * * cd gitcoin/coin; bash scripts/run_management_command.bash activity_report $(date --date='-1 month' +%Y/%m/%d) $(date +%Y/%m/%d)  >> /var/log/gitcoin/activity_report.log  2>&1
 
 ## CLR
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 1 >> /var/log/gitcoin/estimate_clr_matic.log  2>&1
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 2 >> /var/log/gitcoin/estimate_clr_dapp_tech.log  2>&1
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 3 >> /var/log/gitcoin/estimate_clr_infra_tech.log  2>&1
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 4 >> /var/log/gitcoin/estimate_clr_community.log  2>&1
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 6 >> /var/log/gitcoin/estimate_clr_filecoin.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 1 >> /var/log/gitcoin/estimate_clr_matic.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 2 >> /var/log/gitcoin/estimate_clr_dapp_tech.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 3 >> /var/log/gitcoin/estimate_clr_infra_tech.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 4 >> /var/log/gitcoin/estimate_clr_community.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 6 >> /var/log/gitcoin/estimate_clr_filecoin.log  2>&1
 5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash validate_grants_contributions last_hour >> /var/log/gitcoin/validate_grants_contributions.log  2>&1
 
 ## GITCOIN MARKETING
