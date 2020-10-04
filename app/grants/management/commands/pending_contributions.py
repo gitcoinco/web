@@ -31,4 +31,3 @@ class Command(BaseCommand):
             validator_comment__contains="User may not be aware so send them email reminders")
         for contribution in contributions:
             pending_contribution(contribution)
-
