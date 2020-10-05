@@ -1721,6 +1721,18 @@ def grants_cart_view(request):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
+def grants_zksync_recovery_view(request):
+    context = {
+        'title': 'Recover Funds',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    response = TemplateResponse(request, 'grants/zksync-recovery.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
 def get_category_size(category):
     key = f"grant_category_{category}"
     redis = RedisService().redis
