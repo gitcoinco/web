@@ -32,6 +32,7 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       // Checkout, shared
+      tabSelected: 'ETH',
       currentTokens: [], // list of all available tokens
       adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
       tokenList: undefined, // array of all tokens for selected network
@@ -98,6 +99,15 @@ Vue.component('grants-cart', {
   },
 
   computed: {
+    grantsByTenant() {
+      let vm = this;
+      console.log(vm.tabSelected)
+      return vm.grantData.filter((item)=>{
+        console.log(item)
+        return item.tenants.includes(vm.tabSelected)
+      });
+
+    },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
@@ -468,6 +478,18 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    tabChange: function(input) {
+      let vm = this;
+      switch (input) {
+        default:
+        case 0:
+          vm.tabSelected = 'ETH'
+          break;
+        case 1:
+          vm.tabSelected = 'ZCASH'
+          break;
+      }
+    },
     // TODO: SMS related methos and state should be removed and refactored into the component that
     // should be shared between the cart and the Trust Bonus tab
     dismissVerification() {
@@ -2664,7 +2686,7 @@ Vue.component('grants-cart', {
 
     }, false);
 
-    const collections_response = await fetchData('/grants/v1/api/collections');
+    const collections_response = await fetchData('/grants/v1/api/collections/');
 
     this.collections = collections_response.collections;
     // Cart is now ready

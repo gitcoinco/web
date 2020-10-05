@@ -596,7 +596,7 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
-    def cart_payload(self):
+    def cart_payload(self, build_absolute_uri):
         return {
             'grant_id': str(self.id),
             'grant_slug': self.slug,
@@ -607,10 +607,12 @@ class Grant(SuperModel):
             'grant_token_symbol': self.token_symbol,
             'grant_admin_address': self.admin_address,
             'grant_token_address': self.token_address,
-            'grant_logo': self.logo.url if self.logo and self.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+            'grant_logo': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
             'grant_clr_prediction_curve': self.clr_prediction_curve,
             'grant_image_css': self.image_css,
-            'is_clr_eligible': self.is_clr_eligible
+            'is_clr_eligible': self.is_clr_eligible,
+            'tenants': self.tenants,
+            'zcash_payout_address': self.zcash_payout_address,
         }
 
     def repr(self, user, build_absolute_uri):

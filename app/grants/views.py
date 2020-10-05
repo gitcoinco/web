@@ -328,7 +328,7 @@ def bulk_grants_for_cart(request):
     grants = []
 
     for grant in _grants:
-        grants.append(grant.cart_payload())
+        grants.append(grant.cart_payload(request.build_absolute_uri))
 
     return JsonResponse({'grants': grants})
 
@@ -2271,7 +2271,7 @@ def save_collection(request):
 def get_collection(request, collection_id):
     collection = GrantCollection.objects.get(pk=collection_id)
 
-    grants = [grant.cart_payload() for grant in collection.grants.order_by('-clr_prediction_curve__0__1')]
+    grants = [grant.cart_payload(request.build_absolute_uri) for grant in collection.grants.order_by('-clr_prediction_curve__0__1')]
     curators = [{
         'url': curator.url,
         'handle': curator.handle,
@@ -2297,7 +2297,7 @@ def get_grant_payload(request, grant_id):
     grant = Grant.objects.get(pk=grant_id)
 
     return JsonResponse({
-        'grant': grant.cart_payload(),
+        'grant': grant.cart_payload(request.build_absolute_uri),
     })
 
 
