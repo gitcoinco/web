@@ -1256,7 +1256,7 @@ def grant_new(request):
     if request.method == 'POST':
 
         from grants.utils import add_grant_to_active_clrs
-        
+
         response = {
             'status': 400,
             'message': 'error: Bad Request. Unable to create grant'
@@ -2340,7 +2340,7 @@ def add_grant_from_collection(request, collection_id):
 @csrf_exempt
 @require_POST
 # @login_required
-def contribute_to_grant_v1(request, grant_id):
+def contribute_to_grants_v1(request):
 
     response = {
         'status': 400,
@@ -2366,102 +2366,159 @@ def contribute_to_grant_v1(request, grant_id):
         response['message'] = 'error: contribution to a grant is a POST operation'
         return JsonResponse(response)
 
-    if not grant_id:
-        response['message'] = 'error: grant_id is mandatory param'
-        return JsonResponse(response)
+    request_body = json.loads(request.body.decode("utf-8"))
 
-    try:
-        grant = Grant.objects.get(pk=grant_id)
-    except Grant.DoesNotExist:
-        response['message'] = 'error: invalid grant'
-        return JsonResponse(response)
-
-    if grant.link_to_new_grant or not grant.active:
-        response['message'] = 'error: grant is no longer active'
-        return JsonResponse(response)
-
-    if is_grant_team_member(grant, profile):
-        response['message'] = 'error: team members cannot contribute to own grant'
-        return JsonResponse(response)
-
-    contributor_address = request.POST.get('contributor_address', None)
-    if not contributor_address:
-        response['message'] = 'error: contributor_address is mandatory param'
-        return JsonResponse(response)
-
-    token_symbol = request.POST.get('token_symbol', None)
-    if not token_symbol:
-        response['message'] = 'error: token_symbol is mandatory param'
-        return JsonResponse(response)
-
-    amount_per_period = request.POST.get('amount_per_period', None)
-    if not amount_per_period:
-        response['message'] = 'error: amount_per_period is mandatory param'
-        return JsonResponse(response)
-
-    tenant = request.POST.get('tenant', None)
-    if not tenant:
-        response['message'] = 'error: tenant is mandatory param'
-        return JsonResponse(response)
-
-    if not tenant in ['ETH', 'ZCASH']:
-        response['message'] = 'error: tenant chain is not supported.'
+    contributions = request_body.get('contributions', None)
+    if not contributions:
+        response['message'] = 'error: contributions in a mandatory parameter'
         return JsonResponse(response)
 
 
-    tx_id = request.POST.get('tx_id', None)
-    comment = request.POST.get('comment', None)
-    network = grant.network
-    hide_wallet_address = request.POST.get('hide_wallet_address', None)
+    failed_contributions = []
+    invalid_contributions = []
+    success_contributions = []
 
-    try:
+    for contribution in contributions:
 
-        # step 2 : create 1 time subscription
-        subscription = Subscription()
-        subscription.contributor_address = contributor_address
-        subscription.amount_per_period = amount_per_period
-        subscription.token_symbol = token_symbol
-        subscription.contributor_profile = profile
-        subscription.grant = grant
-        subscription.comments = comment
-        subscription.network = network
-        subscription.tenant = tenant
-        # recurring payments set to none
-        subscription.active = False
-        subscription.real_period_seconds = 0
-        subscription.frequency = 1
-        subscription.frequency_unit ='days'
-        subscription.token_address = ''
-        subscription.gas_price = 0
-        subscription.new_approve_tx_id = ''
-        subscription.split_tx_id = ''
+        grant_id = contribution.get('grant_id', None)
+        if not grant_id:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: grant_id is mandatory param',
+            })
+            continue
 
-        subscription.error = True # cancel subs so it doesnt try to bill again
-        subscription.subminer_comments = "skipping subminer bc this is subscriptions aren't supported for this flow"
+        try:
+            grant = Grant.objects.get(pk=grant_id)
+        except Grant.DoesNotExist:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: invalid grant'
+            })
+            continue
 
-        subscription.save()
+        if grant.link_to_new_grant or not grant.active:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: grant is no longer active'
+            })
+            continue
+
+        if is_grant_team_member(grant, profile):
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: team members cannot contribute to own grant'
+            })
+            continue
+
+        contributor_address = contribution.get('contributor_address', None)
+        if not contributor_address:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: contributor_address is mandatory param'
+            })
+            continue
+
+        token_symbol = contribution.get('token_symbol', None)
+        if not token_symbol:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: token_symbol is mandatory param'
+            })
+            continue
+
+        amount_per_period = contribution.get('amount_per_period', None)
+        if not amount_per_period:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: amount_per_period is mandatory param'
+            })
+            continue
+
+        tenant = contribution.get('tenant', None)
+        if not tenant:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: tenant is mandatory param'
+            })
+            continue
+
+        if not tenant in ['ETH', 'ZCASH']:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: tenant chain is not supported for grant'
+            })
+            continue
+
+        tx_id = contribution.get('tx_id', None)
+        comment = contribution.get('comment', None)
+        network = grant.network
+        hide_wallet_address = contribution.get('hide_wallet_address', None)
+
+        try:
+
+            # step 2 : create 1 time subscription
+            subscription = Subscription()
+            subscription.contributor_address = contributor_address
+            subscription.amount_per_period = amount_per_period
+            subscription.token_symbol = token_symbol
+            subscription.contributor_profile = profile
+            subscription.grant = grant
+            subscription.comments = comment
+            subscription.network = network
+            subscription.tenant = tenant
+            # recurring payments set to none
+            subscription.active = False
+            subscription.real_period_seconds = 0
+            subscription.frequency = 1
+            subscription.frequency_unit ='days'
+            subscription.token_address = ''
+            subscription.gas_price = 0
+            subscription.new_approve_tx_id = ''
+            subscription.split_tx_id = ''
+
+            subscription.error = True # cancel subs so it doesnt try to bill again
+            subscription.subminer_comments = "skipping subminer as subscriptions aren't supported for this flow"
+
+            subscription.save()
+
+            # step 3: create contribution + fire celery
+            contribution = subscription.create_contribution(tx_id)
+            sync_payout(contribution)
 
 
-        # step 3: create contribution + fire celery
-        contribution = subscription.create_contribution(tx_id)
-        sync_payout(contribution)
+            # step 4 : other tasks
+            if hide_wallet_address and not profile.hide_wallet_address:
+                profile.hide_wallet_address = hide_wallet_address
+                profile.save()
 
+            success_contributions.append(grant_id)
 
-        # step 4 : other tasks
-        if hide_wallet_address and not profile.hide_wallet_address:
-            profile.hide_wallet_address = hide_wallet_address
-            profile.save()
+        except Exception as error:
+            failed_contributions.append({
+                'grant_id': grant_id,
+                'message': f'grant contribution not recorded',
+                'error': error
+            })
 
-    except Exception as error:
+    if len(failed_contributions):
         response = {
             'status': 500,
-            'message': 'grant contribution not recorded',
-            'error': error
+            'success_contributions': success_contributions,
+            'invalid_contributions': invalid_contributions,
+            'failed_contributions': failed_contributions
         }
-
-    response = {
-        'status': 204,
-        'message': 'grant contribution recorded'
-    }
-
+    elif len(invalid_contributions):
+        response = {
+            'status': 400,
+            'success_contributions': success_contributions,
+            'invalid_contributions': invalid_contributions,
+            'failed_contributions': failed_contributions
+        }
+    else:
+        response = {
+            'status': 204,
+            'success_contributions': success_contributions,
+            'message': 'grant contributions recorded'
+        }
     return JsonResponse(response)
