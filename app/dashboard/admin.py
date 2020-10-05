@@ -378,6 +378,7 @@ class SponsorAdmin(admin.ModelAdmin):
     """The admin object for the Sponsor model."""
 
     list_display = ['pk', 'name', 'img']
+    raw_id_fields = ['tribe']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.

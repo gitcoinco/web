@@ -56,6 +56,8 @@ class Command(BaseCommand):
     help = "Inserts missing subscriptions and contributions into the database"
 
     def get_token(self, w3, network, address):
+        if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
+            address = '0x0000000000000000000000000000000000000000'
         try:
             # First try checksum
             address_checksum = w3.toChecksumAddress(address)
