@@ -365,6 +365,7 @@ class HackathonSponsorAdmin(admin.ModelAdmin):
     """The admin object for the HackathonSponsor model."""
 
     list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
+    raw_id_fields = ['hackathon', 'sponsor']
 
 
 class HackathonWorkshopAdmin(admin.ModelAdmin):
