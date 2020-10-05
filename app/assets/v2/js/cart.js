@@ -2426,7 +2426,15 @@ Vue.component('grants-cart', {
       await this.finalizeCheckout();
     },
 
+    /**
+     * @notice Transfer funds from Gitcoin zkSync wallet to the user's regular zkSync wallet
+     */
+    async returnZkSyncFunds() {
+      this.zkSyncCheckoutStep3Status = 'pending';
+      await this.finishZkSyncTransfersAllFlows();
+    },
 
+    
     // =============================================================================================
     // ==================================== END ZKSYNC METHODS =====================================
     // =============================================================================================
@@ -2538,6 +2546,22 @@ Vue.component('grants-cart', {
   },
 
   async mounted() {
+    // Skip everything here if we are on the zksync-recovery page
+    if (window.location.pathname.includes('zksync-recovery')) {
+      window.addEventListener('dataWalletReady', async(e) => {
+        try {
+          await needWalletConnection();
+          this.selectedNetwork = document.web3network;
+          this.userAddress = (await web3.eth.getAccounts())[0];
+          await this.setupZkSync();
+        } catch (e) {
+          console.error(e);
+        }
+      }, false);
+      return;
+    }
+
+
     this.fetchBrightIDStatus();
     const urlParams = new URLSearchParams(window.location.search);
 
