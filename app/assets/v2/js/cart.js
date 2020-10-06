@@ -124,11 +124,6 @@ Vue.component('grants-cart', {
       return false;
     },
 
-    // Returns true of screen size is smaller than 576 pixels (Bootstrap's small size)
-    isMobileDevice() {
-      return this.windowWidth < 576;
-    },
-
     // Array of arrays, item i lists supported tokens for donating to grant given by grantData[i]
     currencies() {
       if (!this.grantData || !this.tokenList)
@@ -635,11 +630,11 @@ Vue.component('grants-cart', {
 
     addComment(id, text) {
       // Set comment at this index to an empty string to show textarea
-      this.grantData[id].grant_comments = text ? text : '';
+      // this.grantData[id].grant_comments = text ? text : '';
       CartData.setCart(this.grantData);
       this.$forceUpdate();
 
-      $('input[type=textarea]').focus();
+      // $('input[type=textarea]').focus();
     },
 
     /**
