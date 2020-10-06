@@ -87,7 +87,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
                 <div class="col-4">
                   <button v-if="zkSyncCheckoutStep1Status === 'not-started'"
-                    class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlow"
+                    class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlowRecovery"
                   >
                     Sign in
                   </button>
@@ -112,16 +112,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     Step 2
                   </div>
                   <div>
-                    Claim your funds
+                    That's it! Hang tight while we do the rest
                   </div>
                 </div>
                 <div class="col-4">
-                  <button v-if="zkSyncCheckoutStep3Status === 'not-started'"
-                    class="btn btn-gc-blue button--full shadow-none" @click="returnZkSyncFunds"
-                  >
-                    Claim
-                  </button>
-                  <div v-else-if="zkSyncCheckoutStep3Status === 'pending'">
+                  <div v-if="zkSyncCheckoutStep3Status === 'pending'">
                     <span class="text-medium-dark-grey">
                       <i class="fas fa-spinner fa-spin"></i>
                       Processing
@@ -146,9 +141,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     Due to bugs during the checkout process, occasionally zkSync contributions
                     did not make it to the grant receipients and instead were left in your 
                     <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Gitcoin zkSync wallet</a>.
-                    We've covered the lost funds (maybe???????????) to make sure that
-                    grant receipients received those contributions, so you can use this tool
-                    to claim the remaining funds. Afterwards they will be accessible to you at
+                    Use this tool to send the stuck funds to the grant recipients, and any
+                    leftover funds will be accessible to you
                     <a href="https://wallet.zksync.io" target="_blank">https://wallet.zksync.io</a>.
                   </p>
               </div>
