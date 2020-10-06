@@ -343,6 +343,24 @@ def clr_grants(request, round_num):
 
     return grants_by_grant_clr(request, clr_round)
 
+@login_required
+def get_interrupted_contributions(request):
+    all_contributions = Contribution.objects.filter(profile_for_clr=request.user.profile)
+    user_contributions = []
+
+    for contribution in all_contributions:
+        validator_comment = contribution.validator_comment
+        is_zksync = "zkSync" in validator_comment
+        tx_not_found = "Transaction not found, unknown reason" in validator_comment
+        deposit_no_transfer = "Found deposit but no transfer" in validator_comment
+        if is_zksync and (tx_not_found or deposit_no_transfer):
+            user_contributions.append(contribution.normalized_data)
+
+    return JsonResponse({
+        'success': True,
+        'contributions': user_contributions
+    })
+
 
 def get_grants(request):
     grants = []
@@ -1718,6 +1736,18 @@ def grants_cart_view(request):
         return redirect('/login/github?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+def grants_zksync_recovery_view(request):
+    context = {
+        'title': 'Recover Funds',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    response = TemplateResponse(request, 'grants/zksync-recovery.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
