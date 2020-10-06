@@ -34,7 +34,6 @@ class Command(BaseCommand):
 
     help = 'gets the tx status of all SendCryptoAssets'
 
-    # processes grant contributions
     def process_grants_contribs(self):
         from grants.models import Contribution
         contributions = Contribution.objects.filter(tx_cleared=False).order_by('-pk')
@@ -52,7 +51,7 @@ class Command(BaseCommand):
             contrib.update_tx_status()
             contrib.save()
 
-    # processes all crypto assets
+
     def process_acm(self):
         non_terminal_states = ['pending', 'na', 'unknown']
         for obj_type in all_sendcryptoasset_models():
