@@ -138,6 +138,38 @@
         </div>
       </div>
 
+      <!-- GOOGLE ROW -->
+      <div class="row mt-2 mb-4">
+        <div class="col-12 col-md-1 mx-auto text-center pt-1">
+          <span>
+            <i class="fab fa-google fa-3x" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="col-12 col-md-7 mb-3 mb-md-0">
+          <div class="font-weight-bold">
+            Verify With Google
+          </div>
+          <div>
+            Verify your Google account.
+          </div>
+        </div>
+        <div class="col-6 col-md-2 text-center">
+          <div class="font-weight-bold">
+            +5%
+          </div>
+          <div style="color:grey">
+            <small>Grants CLR Match</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-2">
+          {% if is_google_verified %}
+            <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
+          {% else %}
+            <a href="" role="button" id="verify-google-link" class="button button--primary text-nowrap">Verify</a>
+          {% endif %}
+        </div>
+      </div>
+
       <h5>Coming Soon ™️</h5>
       <a href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
@@ -147,7 +179,7 @@
       {% include "profiles/trust_soon_row.html" with service="Upala" %}
       {% include "profiles/trust_soon_row.html" with service="Duniter" %}
       {% include "profiles/trust_soon_row.html" with service="Equality Protocol" %}
-      {% include "profiles/trust_soon_row.html" with service="Google and/or Facebook" %}
+      {% include "profiles/trust_soon_row.html" with service="Facebook" %}
       {% include "profiles/trust_soon_row.html" with service="KYC" %}
       {% include "profiles/trust_soon_row.html" with service="PASS" %}
       {% include "profiles/trust_soon_row.html" with service="ENS Reverse Lookup" %}
