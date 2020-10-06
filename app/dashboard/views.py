@@ -54,6 +54,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 import dateutil.parser
+from requests.api import request
 import magic
 import pytz
 import requests
@@ -101,6 +102,7 @@ from perftools.models import JSONStore
 from ptokens.models import PersonalToken, PurchasePToken, RedemptionToken
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from requests_oauthlib import OAuth2Session
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
@@ -2995,6 +2997,38 @@ def verify_user_twitter(request, handle):
         'found': tweet_split,
         'expected': expected_split
     })
+    
+@login_required
+def request_verify_google(request):
+    
+    google = OAuth2Session(
+        settings.GOOGLE_CLIENT_ID, 
+        scope=settings.GOOGLE_SCOPE, 
+        redirect_uri=settings.GOOGLE_REDIRECT_URL,
+    )
+    authorization_url, state = google.authorization_url(
+        settings.GOOGLE_AUTH_BASE_URL,
+        access_type='offline',
+        prompt="select_account"
+    )
+    return JsonResponse({
+        'ok': True,
+        'redirect_url': authorization_url,
+    })
+
+def verify_user_google(request):
+    google = OAuth2Session(
+        settings.GOOGLE_CLIENT_ID, 
+        scope=settings.GOOGLE_SCOPE, 
+        redirect_uri=settings.GOOGLE_REDIRECT_URL,
+    )
+    google.fetch_token(
+        settings.GOOGLE_TOKEN_URL, 
+        client_secret=settings.GOOGLE_CLIENT_SECRET, 
+        code=request.GET['code'],
+    )
+    r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
+    return redirect('profile_by_tab', 'trust')
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
