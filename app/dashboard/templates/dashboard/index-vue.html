@@ -530,11 +530,10 @@
                                       <span class="font-body">Looking for a project</span>
                                   </div>
                                   <div class="text-center mt-2">
-                                    <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="chatWindow(user.handle, $event);">
-                                      <i class="fas fa-comment-dots mr-2"></i> Chat
-                                    </b-button>
+                                    <button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" data-openchat="{{user}}">
+                                      <i class="fas fa-comment-dots mr-2" data-placement="bottom" data-toggle="tooltip" data-html="true"></i> Chat
+                                    </button>
                                   </div>
-
                                 </div>
                               </div>
                             </div>
