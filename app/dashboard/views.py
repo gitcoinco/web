@@ -2889,6 +2889,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_sms_verified'] = profile.sms_verification
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
+        context['is_google_verified'] = profile.is_google_verified
     else:
         raise Http404
     return context
@@ -2997,37 +2998,58 @@ def verify_user_twitter(request, handle):
         'found': tweet_split,
         'expected': expected_split
     })
-    
-@login_required
-def request_verify_google(request):
-    
-    google = OAuth2Session(
+
+def connect_google():
+    return OAuth2Session(
         settings.GOOGLE_CLIENT_ID, 
         scope=settings.GOOGLE_SCOPE, 
         redirect_uri=settings.GOOGLE_REDIRECT_URL,
     )
+
+@login_required
+def request_verify_google(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_google_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously',
+        })
+
+    google = connect_google()
     authorization_url, state = google.authorization_url(
         settings.GOOGLE_AUTH_BASE_URL,
         access_type='offline',
         prompt="select_account"
     )
+
     return JsonResponse({
         'ok': True,
         'redirect_url': authorization_url,
     })
 
+@login_required
 def verify_user_google(request):
-    google = OAuth2Session(
-        settings.GOOGLE_CLIENT_ID, 
-        scope=settings.GOOGLE_SCOPE, 
-        redirect_uri=settings.GOOGLE_REDIRECT_URL,
-    )
+    google = connect_google()
     google.fetch_token(
         settings.GOOGLE_TOKEN_URL, 
         client_secret=settings.GOOGLE_CLIENT_SECRET, 
         code=request.GET['code'],
     )
     r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
+
+    profile = profile_helper(request.user.username, True)
+
+    profile.is_google_verified = True
+    profile.identity_data_google = r.json()
+    profile.save()
+
     return redirect('profile_by_tab', 'trust')
 
 def profile_filter_activities(activities, activity_name, activity_tabs):

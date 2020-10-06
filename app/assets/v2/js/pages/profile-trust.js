@@ -293,7 +293,6 @@ Vue.component('google-verify-modal', {
   data: function() {
     return {
       showValidation: false,
-      validationStep: 'send-tweet',
       validationError: ''
     };
   },
@@ -303,107 +302,17 @@ Vue.component('google-verify-modal', {
       this.requestGoogleVerify();
     }.bind(this));
   },
-  // template: `<b-modal id="twitter-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
-  //               <template v-slot:default="{ hide }">
-  //                 <div class="mx-5 mt-5 mb-4 text-center">
-  //                   <div class="mb-3">
-  //                     <h1 class="font-bigger-4 font-weight-bold">Verify your Twitter account</h1>
-  //                   </div>
-  //                   <div v-if="validationStep === 'send-tweet'">
-  //                     <p class="mb-4 font-subheader text-left">
-  //                       We want to verify your Twitter account. To do so, you must first send a standardized
-  //                       Tweet from your account, then we'll validate it's there.
-  //                     </p>
-  //                     <p class="mb-4 font-subheader text-left">
-  //                       The Tweet should say:
-  //                     </p>
-  //                     <p class="mb-4 font-subheader text-left">
-  //                       <em>[[tweetText]]</em>
-  //                     </p>
-  //                     <div class="mt-2 mb-2">
-  //                       <a :href="tweetIntentURL" @click="clickedSendTweet" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
-  //                         Send Tweet
-  //                       </a>
-  //                     </div>
-  //                     <a href="" @click="clickedAlreadySent">
-  //                       I have already Tweeted this
-  //                     </a>
-  //                   </div>
-  //                   <div v-if="validationStep === 'validate-tweet' || validationStep == 'perform-validation'">
-  //                     <p class="mb-4">
-  //                       Now we'll validate that you've sent the tweet. Enter your Twitter handle and press validate.
-  //                     </p>
-  //                     <div class="input-group">
-  //                       <div class="input-group-prepend">
-  //                         <span class="input-group-text form-control" id="basic-addon1">@</span>
-  //                       </div>
-  //                       <input type="text" class="form-control" placeholder="handle" aria-label="handle" aria-describedby="basic-addon1" required maxlength="15" v-model="twitterHandle">
-  //                     </div>
-  //                     <div v-if="validationError !== ''" style="color: red">
-  //                       <small>[[validationError]]</small>
-  //                     </div>
-  //                     <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
-  //                       <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
-  //                       Validate
-  //                     </b-button>
-  //                     <br />
-  //                     <a href="" v-if="validationError !== ''" @click="clickedGoBack">
-  //                       Go Back
-  //                     </a>
-  //                   </div>
-  //                   <div v-if="validationStep === 'validation-complete'">
-  //                     Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-  //                     <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
-  //                   </div>
-  //                 </div>
-  //               </template>
-  //           </b-modal>`,
   methods: {
-    // dismissVerification() {
-    //   this.showValidation = false;
-    // },
-    // clickedSendTweet(event) {
-    //   this.validationStep = 'validate-tweet';
-    // },
-    // clickedAlreadySent(event) {
-    //   event.preventDefault();
-    //   this.validationStep = 'validate-tweet';
-    // },
-    // clickedGoBack(event) {
-    //   event.preventDefault();
-    //   this.validationStep = 'send-tweet';
-    //   this.validationError = '';
-    // },
-    // clickedValidate(event) {
-    //   event.preventDefault();
-
-    //   this.twitterHandle = this.twitterHandle.trim();
-
-    //   // Strip leading @ if user includes it
-    //   if (this.twitterHandle.startsWith('@')) {
-    //     this.twitterHandle = this.twitterHandle.split('@')[1];
-    //   }
-
-    //   // Validate handle is 15 word characters
-    //   const isValidHandle = null !== this.twitterHandle.match(/^(\w){1,15}$/);
-
-    //   if (!isValidHandle) {
-    //     this.validationError = 'Please enter a valid Twitter handle';
-    //     return;
-    //   }
-
-    //   // Reset after a prior error
-    //   this.validationError = '';
-
-    //   this.validationStep = 'perform-validation';
-
-    //   this.verifyTwitter();
-    // },
     requestGoogleVerify() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const headers = {'X-CSRFToken': csrfmiddlewaretoken};
 
-      const verificationRequest = fetchData('/api/v0.1/profile/request_verify_google', 'POST', {}, headers);
+      const verificationRequest = fetchData(
+        `/api/v0.1/profile/${trustHandle}/request_verify_google`,
+        'POST',
+        {},
+        headers
+      );
 
       $.when(verificationRequest).then(response => {
         if (response.ok) {

@@ -2920,6 +2920,8 @@ class Profile(SuperModel):
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
+    is_google_verified=models.BooleanField(default=False)
+    identity_data_google = JSONField(default=dict)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -5577,6 +5579,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
         if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'Google Verified: {instance.is_google_verified}')
+        if instance.is_google_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 

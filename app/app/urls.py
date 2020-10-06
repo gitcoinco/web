@@ -157,7 +157,7 @@ urlpatterns = [
         name='verify_user_twitter'
     ),
     url(
-        r'^api/v0.1/profile/request_verify_google',
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
