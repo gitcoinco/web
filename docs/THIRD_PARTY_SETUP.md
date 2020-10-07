@@ -65,6 +65,8 @@ GOOGLE_CLIENT_SECRET=xxx
 
 Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local Google environment.
 
+Note: Update the `OAUTHLIB_INSECURE_TRANSPORT` in `web/app/app/.env` to `0` for production.
+
 ## Setup SendGrid to Send Emails (Recommended)
 
 1. Create a new SendGrid Account at https://sendgrid.com
