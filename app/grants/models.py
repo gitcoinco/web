@@ -167,7 +167,7 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        return Grant.objects.filter(**self.grant_filters)
+        return Grant.objects.filter(**self.grant_filters).filter(is_clr_eligible=True)
 
 
 class Grant(SuperModel):
