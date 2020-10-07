@@ -336,14 +336,14 @@
                     </div>
                   </project-directory>
                 </b-tab>
-              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
+              <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Participants" %}
                       <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
                     </div>
                   </template>
-                  <user-directory :disabled="!is_registered"  inline-template>
+                  <user-directory inline-template>
                     <div class="ml-4">
                       <div class="sidebar-container flex-column flex-lg-row">
                         <transition name="fade">
