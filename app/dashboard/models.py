@@ -2224,7 +2224,7 @@ class ActivityManager(models.Manager):
 
     def get_queryset(self):
         if settings.ENV == 'prod':
-            return super().get_queryset().filter(Q(bounty=None) | Q(bounty='') | Q(bounty__network='mainnet'))
+            return super().get_queryset().filter(Q(bounty=None) | Q(bounty__network='mainnet'))
         else:
             return super().get_queryset()
 
