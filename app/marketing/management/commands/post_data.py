@@ -133,8 +133,10 @@ def welcome():
 
     from townsquare.models import Announcement
     announcement = Announcement.objects.filter(key='founders_note_daily_email', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).first()
-    if announcement:
-        prompt2 = f"{announcement.title} - {announcement.desc}"
+    # TODO: workaround for transposing hte HTML from the announcement object into plaintext
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1601979424112000
+    # if announcement:
+    #    prompt2 = f"{announcement.title} - {announcement.desc}"
 
     welcome_to = ", ".join(welcome_to)
     pprint(f"Welcome to {welcome_to} - {prompt1}")

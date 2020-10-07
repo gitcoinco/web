@@ -21,11 +21,11 @@ from django.urls import path, re_path
 
 from grants.views import (
     add_grant_from_collection, bulk_fund, bulk_grants_for_cart, clr_grants, flag, get_collection, get_collections_list,
-    get_grant_payload, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_fund,
-    grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
-    grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
-    remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
-    zksync_get_interrupt_status, zksync_set_interrupt_status,
+    get_grant_payload, get_grants, get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories,
+    grant_details, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add,
+    grants_by_grant_type, grants_cart_view, grants_clr, grants_stats_view, grants_zksync_recovery_view, invoice,
+    leaderboard, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
+    subscription_cancel, toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
 
 app_name = 'grants'
@@ -67,6 +67,8 @@ urlpatterns = [
     ),
     path('cart/bulk-add/<str:grant_str>', grants_bulk_add, name='grants_bulk_add'),
     path('cart', grants_cart_view, name='cart'),
+    path('zksync-recovery', grants_zksync_recovery_view, name='zksync_recovery'),
+    path('get-interrupted-contributions', get_interrupted_contributions, name='get_interrupted_contributions'),
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/clr', grants_clr, name='grants_clr'),
