@@ -187,6 +187,16 @@ class BountyQuerySet(models.QuerySet):
         return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
 
 
+class BountyManager(models.Manager):
+    """Enables changing the default queryset function for bounties."""
+
+    def get_queryset(self):
+        if settings.ENV == 'prod':
+            return super().get_queryset().filter(network='mainnet')
+        else:
+            return super().get_queryset()
+
+
 """Fields that bonties table should index together."""
 def get_bounty_index_together():
     import copy
@@ -393,8 +403,8 @@ class Bounty(SuperModel):
         default=False, help_text=_('This bounty will be part of the hypercharged bounties')
     )
     hyper_next_publication = models.DateTimeField(null=True, blank=True)
-    # Bounty QuerySet Manager
-    objects = BountyQuerySet.as_manager()
+    # Bounty Manager from QuerySet
+    objects = BountyManager.from_queryset(BountyQuerySet)()
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -1333,11 +1343,13 @@ def post_save_bounty(sender, instance, created, **kwargs):
 
         # Publish and pin on townsquare
         profile = Profile.objects.filter(handle=HYPERCHARGE_BOUNTIES_PROFILE_HANDLE).first()
+
+        utm = f'utm_source=hypercharge-auto-pinned-post&utm_medium=twitter&utm_campaign={instance.title}'
         if profile:
             metadata = {
                     'title': title,
                     'description': truncatechars(instance.issue_description_text, 500),
-                    'url': instance.get_absolute_url(),
+                    'url': f'{instance.get_absolute_url()}?{utm}',
                     'ask': '#announce'
             }
             activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
@@ -2207,6 +2219,16 @@ class ActivityQuerySet(models.QuerySet):
         return posts
 
 
+class ActivityManager(models.Manager):
+    """Enables changing the default queryset function for Activities."""
+
+    def get_queryset(self):
+        if settings.ENV == 'prod':
+            return super().get_queryset().filter(Q(bounty=None) | Q(bounty='') | Q(bounty__network='mainnet'))
+        else:
+            return super().get_queryset()
+
+
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
 
@@ -2356,7 +2378,7 @@ class Activity(SuperModel):
     cached_view_props = JSONField(default=dict, blank=True)
 
     # Activity QuerySet Manager
-    objects = ActivityQuerySet.as_manager()
+    objects = ActivityManager.from_queryset(ActivityQuerySet)()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
@@ -4919,6 +4941,7 @@ class HackathonEvent(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    use_circle = models.BooleanField(help_text=_('Use circle for the Hackathon'), default=False)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
 
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)

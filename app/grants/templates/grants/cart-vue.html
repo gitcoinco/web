@@ -155,7 +155,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
                           <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
                             style="margin-right:0.5rem" placeholder="Select token">
-                            <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                            <option v-for="(option, index) in currencies[index]" v-bind:value="option" :disabled="!option" :key="`currency-${index}`">
                               <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
                               <span v-else>[[ option ]]</span>
                             </option>
@@ -212,7 +212,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </div>
               {% comment %} Cart Contents: NOT MOBILE {% endcomment %}
-              <div v-if="!isMobileDevice" v-for="(grant, index) in grantData" class="grant-row">
+              <div v-if="!isMobileDevice" v-for="(grant, index) in grantData" class="grant-row" :key="grant.grant_id">
                 <div class="grant-row-style">
                   <div class="row align-items-center justify-content-between" style="margin-left:0.5rem">
                     {% comment %} Title and logo {% endcomment %}

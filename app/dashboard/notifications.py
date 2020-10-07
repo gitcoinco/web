@@ -156,8 +156,11 @@ def maybe_market_to_twitter(bounty, event_name):
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
+    utm = ''
+    if bounty.metadata.get('hyper_tweet_counter', False):
+        utm = f'utm_source=hypercharge-auto&utm_medium=twitter&utm_campaign={bounty.title}'
 
-    url = bounty.get_absolute_url()
+    url = f'{bounty.get_absolute_url()}?{utm}'
     is_short = False
     for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
         try:

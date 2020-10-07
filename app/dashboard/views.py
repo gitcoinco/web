@@ -1450,18 +1450,32 @@ def invoice(request):
         active='invoice_view',
         title=_('Invoice'),
     )
+
     params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
-    params['tips'] = [
-        tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
-    ]
-    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
-    for tip in params['tips']:
-        if tip.value_in_usdt:
-            params['total'] += Decimal(tip.value_in_usdt)
+    params['web3_type'] = bounty.web3_type
+
+    if bounty.web3_type == 'bounties_network':
+        # Legacy Flow
+        params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+        params['tips'] = [
+            tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
+        ]
+
+        for tip in params['tips']:
+            if tip.value_in_usdt:
+                params['total'] += Decimal(tip.value_in_usdt)
+    else:
+        params['total'] = 0
+        if params['accepted_fulfillments']:
+            for fulfillment in params['accepted_fulfillments']:
+                if fulfillment.payout_amount:
+                    fulfillment.payout_amount_usd = convert_amount(fulfillment.payout_amount, fulfillment.token_name, 'USDT')
+                    params['total'] += fulfillment.payout_amount_usd
 
     if bounty.fee_amount > 0:
         params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
         params['total'] = params['total'] + params['fee_value_in_usdt']
+
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
 
@@ -6140,6 +6154,12 @@ def events(request, hackathon):
             'msg': f'No exists Hackathon Event with id {hackathon}'
         }, status=404)
 
+    if not hackathon_event.calendar_id:
+        return JsonResponse({
+            'error': True,
+            'msg': f'No exists calendar associated to Hackathon {hackathon}'
+        }, status=404)
+
     calendar_unique = hackathon_event.calendar_id
     token = settings.ADDEVENT_API_TOKEN
     endpoint = f'https://www.addevent.com/api/v1/oe/events/list/'
@@ -6149,7 +6169,7 @@ def events(request, hackathon):
         'token': token,
     })
 
-    calendars = calendar_response.json()["calendars"]
+    calendars = calendar_response.json().get("calendars", [])
     calendar_id = None
 
     for calendar in calendars:

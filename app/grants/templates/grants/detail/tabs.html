@@ -27,6 +27,13 @@
       <span class="nav-badge">({{ activity_count }})</span>
     </button>
 
+    {% if is_staff and grant.metadata.related %}
+    <button type="button" id="nav-related" href="{{grant.url}}?tab=related" class="section-tab {% if tab == "related" %} active {% endif %}">
+      {% trans "RELATED GRANTS" %}
+      <span class="nav-badge">({{ grant.metadata.related | length }})</span>
+    </button>
+    {% endif %}
+
     {% if is_team_member %}
     <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
       {% trans "TRENDS" %}
@@ -60,6 +67,19 @@
      
     </div>
     {% endif %}
+
+    {% if tab == "related" %}
+    <div id="section-nav-related" class="tab-section active">
+      {% for ele in grant.related_grants %}
+        <div id="" class="">
+          {{ele.1}} contributors of this grant also funded <a href="{{ele.0.url}}">{{ele.0.title}}</a>
+        </div>
+      {% endfor %}
+     
+    </div>
+    {% endif %}
+
+
 
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
