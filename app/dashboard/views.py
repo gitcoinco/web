@@ -3017,10 +3017,7 @@ def request_verify_google(request, handle):
 
     profile = profile_helper(handle, True)
     if profile.is_google_verified:
-        return JsonResponse({
-            'ok': True,
-            'msg': f'User was verified previously',
-        })
+        return redirect('profile_by_tab', 'trust')
 
     google = connect_google()
     authorization_url, state = google.authorization_url(

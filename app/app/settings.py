@@ -22,7 +22,6 @@ import os
 import socket
 
 from django.utils.translation import gettext_noop
-from requests.models import default_hooks
 
 import environ
 import raven
@@ -605,8 +604,6 @@ GOOGLE_TOKEN_URL = env('GOOGLE_TOKEN_URL', default='https://oauth2.googleapis.co
 GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
 GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET', default='')
 GOOGLE_SCOPE = env('GOOGLE_SCOPE', default='https://www.googleapis.com/auth/userinfo.profile')
-GOOGLE_APP_NAME = env('GOOGLE_APP_NAME', default='gitcoin-local')
-GOOGLE_REDIRECT_URL = env('GOOGLE_REDIRECT_URL', default='http://localhost:8000/api/v0.1/profile/verify_user_google')
 
 # OATHLIB
 OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
