@@ -212,7 +212,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_link', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_obj', 'admin_url')
         depth = 1
 
 
@@ -252,7 +252,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 hackathon_event = HackathonEvent.objects.last()
 
             queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_link', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             if sponsor:
                 queryset = queryset.filter(
@@ -261,7 +261,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         elif sponsor:
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_link', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             projects = []
             for project in queryset:
@@ -294,7 +294,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             )
         if 'grants' in filters:
             queryset = queryset.filter(
-                Q(grant_link__isnull=False)
+                Q(grant_obj__isnull=False)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(

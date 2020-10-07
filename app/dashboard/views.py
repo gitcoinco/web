@@ -4321,7 +4321,7 @@ def hackathon_projects(request, hackathon='', specify_project=''):
 
     if filters == 'grants':
         projects = projects.filter(
-            Q(grant_link__isnull=False)
+            Q(grant_obj__isnull=False)
         )
            
     if specify_project:
@@ -4589,7 +4589,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
             } for member_profile in project.profiles.all()],
-            'grant_url': project.grant_link.url if project.grant_link else False
+            'grant_url': project.grant_obj.url if project.grant_obj else False
         },
         'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
