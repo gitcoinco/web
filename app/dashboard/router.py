@@ -263,6 +263,15 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 bounty__bounty_owner_github_username=sponsor)).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
 
+            projects = []
+            for project in queryset:
+                bounty = project.bounty
+                org_name = bounty.org_name
+                if org_name != sponsor:
+                    projects.append(project.pk)
+
+            queryset = queryset.exclude(pk__in=projects)
+
         if q:
             queryset = queryset.filter(
                 Q(name__icontains=q) |
