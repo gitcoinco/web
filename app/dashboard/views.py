@@ -4390,6 +4390,10 @@ def hackathon_save_project(request):
     message = request.POST.get('looking-members-message', '')[:150]
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
+    video_provider = request.POST.get('videodemo-provider', '')
+    video_url = request.POST.get('videodemo-url', '')
+    categories = request.POST.getlist('categories[]')
+    tech_stack = request.POST.getlist('tech-stack[]')
 
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
@@ -4417,6 +4421,16 @@ def hackathon_save_project(request):
             'other_contact_method': '',
         }
     }
+
+    if video_url and video_provider:
+        kwargs['extra']['video_provider'] = video_provider
+        kwargs['extra']['video_url'] = video_url
+
+    if categories:
+        kwargs['categories'] = categories
+
+    if tech_stack:
+        kwargs['tech_stack'] = tech_stack
 
     if looking_members:
         has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
@@ -4485,12 +4499,21 @@ def hackathon_save_project(request):
 @login_required
 def get_project(request, project_id):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
-    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    if not project:
+    params = project(project_id)
+    if not params:
         raise Http404("The project doesnt exists.")
 
+    return JsonResponse(params)
+
+
+def project(project_id):
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        raise None
+
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
+
     params = {
         'project': {
             'name': project.name,
@@ -4511,16 +4534,19 @@ def get_project(request, project_id):
                 'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
+            'categories': project.categories,
+            'stack': project.tech_stack,
             'team_members': [{
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
             } for member_profile in project.profiles.all()]
         },
+        'comments': comments,
         'hackathon': hackathon_obj[0],
     }
 
-    return JsonResponse(params)
+    return params
 
 
 def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
@@ -4541,6 +4567,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     desc = project.summary
     avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
     what = f'project:{project_id}'
     params = {
         'title': title,
@@ -4561,6 +4588,10 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'logo_url': project.logo.url if project.logo else '',
+            'demo': {
+                'url': project.extra.get('video_url', None),
+                'provider': project.extra.get('video_provider', None),
+            },
             'prize': {
                 'id': project.bounty.id,
                 'title': project.bounty.title,
@@ -4569,6 +4600,9 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
+            'comments': comments,
+            'categories': project.categories,
+            'stack': project.tech_stack,
             'team_members': [{
                 'url': member_profile.url,
                 'handle': member_profile.handle,
@@ -5538,6 +5572,11 @@ def fulfill_bounty_v1(request):
     if bounty.event:
         try:
             project = HackathonProject.objects.get(pk=request.POST.get('projectId'))
+            demo_provider = request.POST.get('videoDemoProvider')
+            demo_link = request.POST.get('videoDemoLink')
+            if demo_link:
+                project.extra['video_url'] = demo_link
+                project.extra['video_provider'] = demo_provider if demo_provider in ('loom', 'youtube', 'vimeo') else 'generic'
         except HackathonProject.DoesNotExist:
             response['message'] = 'error: Project not found'
             return JsonResponse(response)
@@ -5616,6 +5655,9 @@ def fulfill_bounty_v1(request):
     fulfillment.fulfiller_metadata = json.loads(fulfiller_metadata)
 
     fulfillment.save()
+
+    if project:
+        project.save()
 
     response = {
         'status': 204,

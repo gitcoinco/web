@@ -209,12 +209,15 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url', 'comments',)
         depth = 1
 
+    def get_comments(self, obj):
+        return Activity.objects.filter(activity_type='wall_post', project=obj).count()
 
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10

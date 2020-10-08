@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/plyr.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
@@ -34,18 +35,115 @@
         background: none !important;
       }
 
-      .project-title:hover {
-        color: var(--gc-black);
+      #hackathon-project-app {
+        margin-top: -14px !important;
+      }
+
+      .bg-gc-blue {
+        background-color: var(--gc-black);
+        color: white;
+      }
+
+      .project-title:hover, .link-white:hover {
+        color: #FAFAFA;
+      }
+
+      .project-title, .link-white {
+        color: white;
+      }
+
+      .button-white {
+        color: white !important;
+        border-color: white !important;
+      }
+
+      .button-white {
+        color: white !important;
+        border-color: white !important;
+      }
+
+      .button-white:hover {
+        background-color: var(--gc-blue) !important;
+        border-color: white !important;
+      }
+
+      .project-title {
+        font-size: var(--fs-title-xl);
+
+      }
+
+      .project__logo {
+        background-color: #ffffff;
+        height: 110px;
+        width: 110px;
+      }
+
+      .btn-sm {
+        font-size: .675rem;
+      }
+
+      .project__actions--mobile {
+        display: none;
+      }
+
+      .tag-list .tag-list__item {
+        background: #E8F0FA;
+        padding: 4px;
+        border-radius: 2px;
+        font-size: 11px;
+        color: #6487AE;
+        display: inline-block;
+        margin-bottom: 2px;
+        margin-left: 15px;
+        margin-top: 2px;
       }
 
       @media (max-width: 420px) {
+        #project-details {
+          overflow: hidden;
+        }
+
+        .project__logo {
+          height: 50px;
+          width: 50px;
+        }
+
+        .project-title {
+          font-size: var(--fs-header);
+          margin-bottom: 10px !important;
+        }
+
+        .project__url {
+          font-size: 12px;
+        }
+
+        .btn-sm {
+         font-size: .775rem;
+        }
+
+        .project__actions {
+          display: none;
+        }
+
+        .project__actions--mobile {
+          display: block;
+          margin-left: 15px;
+        }
+
         .activity_detail {
           margin-top: 0 !important;
           margin-left: 25px !important;
         }
+
         .avatar {
           margin-left: 0 !important;
           margin-right: 0 !important;
+        }
+
+        .project__action--admin {
+          margin-left: 15px !important;
+          max-width: 55%;
+          font-size: .775rem;
         }
       }
 
@@ -64,17 +162,11 @@
         <a style="color:white;" href="{{project.admin_url}}">{% trans "View Admin" %}</a>
       </div>
     {% endif %}
-    <div id="hackathon-project-app" class="px-md-5" style="background-color: #FBFBFB" v-cloak>
-      <div class="row">
-        <div id="project-details" class="col-12 pr-0 ">
-          {% if is_member %}
-            <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-lg float-right mt-5 mr-5 px-5 py-3 font-subheader"><i class="fa fa-pencil mr-2"></i> Edit project</button>
-          {% endif %}
-          <div class="row">
-            <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
-              {% include 'project/detail/info.html' %}
-            </div>
-          </div>
+
+    <div id="hackathon-project-app" style="background-color: #FBFBFB" v-cloak>
+      <div id="project-details" class="pr-0 ">
+        <div class="px-md-0">
+          {% include 'project/detail/info.html' %}
         </div>
       </div>
     </div>
@@ -88,6 +180,8 @@
     {{project_obj|json_script:"project-object"}}
     {{currentProfile|json_script:"current-profile"}}
 
+    <script src="{% static "v2/js/lib/plyr.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/vue-plyr.js" %}"></script>
     <script src="{% static "v2/js/pages/project-page.js" %}"></script>
     {% include 'shared/activity_scripts.html' %}
     <script src="{% static "v2/js/status.js" %}"></script>
