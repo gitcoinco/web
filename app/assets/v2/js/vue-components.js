@@ -697,6 +697,77 @@ Vue.component('project-card', {
   </div>`
 });
 
+Vue.component('tribes-project-card', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || ''
+    };
+  },
+  props: [ 'project', 'edit', 'is_staff' ],
+  computed: {
+    project_url: function() {
+      let project = this.$props.project;
+      let project_name = (project.name || '').replace(/ /g, '-');
+
+      return `/hackathon/${project.hackathon.slug}/projects/${project.pk}/${project_name}`;
+    }
+  },
+  methods: {
+    markWinner: function($event, project) {
+      let vm = this;
+
+      const url = '/api/v0.1/hackathon_project/set_winner/';
+      const markWinner = fetchData(url, 'POST', {
+        project_id: project.pk,
+        winner: $event ? 1 : 0
+      }, {'X-CSRFToken': vm.csrf});
+
+      $.when(markWinner).then(response => {
+        if (response.message) {
+          alert(response.message);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    select: function(url) {
+      window.open(url, '_blank');
+    },
+    projectModal() {
+      let project = this.$props.project;
+
+      projectModal(project.bounty.pk, project.pk);
+    }
+  },
+  template: `
+  <div v-on:click="select(project_url)" target="_blank" class="card shadow-sm card-project border-0">
+      <b-form-checkbox v-if="is_staff" switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
+      <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+      <div class="card card-logo border-0">
+        <img v-if="project.grant_obj" class="position-absolute card-grant" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
+        <img v-if="project.winner" class="position-absolute card-winner" src="${static_url}v2/images/tribes/winner-tag.svg" alt="winner_tag"/>
+        <img v-if="project.logo" class="card-project-logo m-auto rounded" :src="project.logo" alt="Hackathon logo" />
+        <img v-else class="card-project-logo m-auto rounded" :src="project.bounty.avatar_url" alt="Bounty Logo" />
+      </div>
+      <div class="card-body">
+        <h5 class="card-title font-weight-bold text-left">[[ project.name | truncate(20, '...')]]</h5>
+        <div class="my-2">
+          <p class="text-left text-muted font-smaller-3">
+            [[ project.summary | truncate(65, '...') ]]
+          </p>
+        </div>
+
+        <div class="card-team">
+              <a v-for="profile in project.profiles" :href="'/profile/' + profile.handle">
+                <b-img-lazy :src="profile.avatar_url" :alt="profile.handle" :title="profile.handle" width="20" height="20" class="rounded-circle"></b-img-lazy>
+              </a>
+        </div>
+      </div>
+  </div>
+  `
+});
+
 Vue.component('suggested-profiles', {
   props: ['id'],
   data: function() {
