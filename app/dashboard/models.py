@@ -187,16 +187,6 @@ class BountyQuerySet(models.QuerySet):
         return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
 
 
-class BountyManager(models.Manager):
-    """Enables changing the default queryset function for bounties."""
-
-    def get_queryset(self):
-        if settings.ENV == 'prod':
-            return super().get_queryset().filter(network='mainnet')
-        else:
-            return super().get_queryset()
-
-
 """Fields that bonties table should index together."""
 def get_bounty_index_together():
     import copy
@@ -403,8 +393,8 @@ class Bounty(SuperModel):
         default=False, help_text=_('This bounty will be part of the hypercharged bounties')
     )
     hyper_next_publication = models.DateTimeField(null=True, blank=True)
-    # Bounty Manager from QuerySet
-    objects = BountyManager.from_queryset(BountyQuerySet)()
+    # Bounty QuerySet Manager
+    objects = BountyQuerySet.as_manager()
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -2219,16 +2209,6 @@ class ActivityQuerySet(models.QuerySet):
         return posts
 
 
-class ActivityManager(models.Manager):
-    """Enables changing the default queryset function for Activities."""
-
-    def get_queryset(self):
-        if settings.ENV == 'prod':
-            return super().get_queryset().filter(Q(bounty=None) | Q(bounty='') | Q(bounty__network='mainnet'))
-        else:
-            return super().get_queryset()
-
-
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
 
@@ -2378,7 +2358,7 @@ class Activity(SuperModel):
     cached_view_props = JSONField(default=dict, blank=True)
 
     # Activity QuerySet Manager
-    objects = ActivityManager.from_queryset(ActivityQuerySet)()
+    objects = ActivityQuerySet.as_manager()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
