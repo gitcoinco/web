@@ -278,7 +278,6 @@ const closeButton = function(msg) {
 };
 
 const alertMessage = function(msg) {
-  return ''
   var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
 
   return html;
