@@ -96,7 +96,7 @@
                   </div>
                 </div>
               </div>
-              <div class="mt-4 mb-5 col-sm-12 col-md-9 p-0" v-if="project.demo.url">
+              <div class="mt-4 mb-5 col-sm-12 col-md-9 p-0" v-if="project.demo && project.demo.url">
                 <vue-plyr v-if="project.demo.provider != 'loom'">
                   <div :data-plyr-provider="project.demo.provider" :data-plyr-embed-id="getVideoId(project.demo.url)" v-if="project.demo.provider == 'youtube' || project.demo.provider == 'vimeo'"></div>
                   <video :src="project.demo.url" v-else-if="project.demo.provider == 'generic'"></video>

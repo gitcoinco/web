@@ -4524,6 +4524,10 @@ def project(project_id):
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'demo': {
+                'url': project.extra.get('video_url', None),
+                'provider': project.extra.get('video_provider', None),
+            },
             'logo_url': project.logo.url if project.logo else staticfiles_storage.url(
                 f'v2/images/projects/logos/${project.id}.png'),
             'prize': {
