@@ -27,6 +27,36 @@
   }
 }
 
+.grid-5 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 5rem 2rem;
+}
+
+@media (min-width: 568px) {
+  .grid-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .grid-5 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 .users .card-user .dropdown-menu {
   min-width: 4rem;
 }

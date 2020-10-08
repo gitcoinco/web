@@ -866,11 +866,11 @@ Vue.component('suggested-profile', {
   <div class="col">
     <span class="row font-caption">
         <a :href="profile_url" class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize text-black">{{profile.name}}</a>
-        <p class="mb-0">
+        <p class="mb-0 ml-3">
           <span class="font-weight-semibold">{{profile.handle}}</span>
         </p>
     </span>
-    <p class="row font-caption mb-0 mt-1">
+    <p class="row font-caption mb-0 ml-0 mt-1">
       <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-green font-smaller-5">following</b-button>
       <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-gc-blue font-smaller-5">follow</b-button>
     </p>
