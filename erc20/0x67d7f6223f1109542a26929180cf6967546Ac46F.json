@@ -1,0 +1,25 @@
+{
+  "symbol": "MZT",
+  "address": "0x67d7f6223f1109542a26929180cf6967546Ac46F",
+  "overview":{
+        "en": "Miner Zone is a new generation of decentralized Internet form, which is based on the data value sharing network based on block chain, artificial intelligence AI and VR technology to build a decentralized financial virtual reality industry ecosystem, enabling the real economy.",
+        "zh": "Miner Zone—去中心化的新一代互联网形态，是以区块链、人工智能AI、VR技术为基础的数据价值共用网络，构建去中心化的金融性虚拟现实产业圈生态，赋能实体经济。"
+  },
+  "email": "service@mzkj.io",
+  "website": "https://mzkj.io",
+  "whitepaper": "https://www.mzkj.io/MinerZone_whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-08-01",
+  "initial_price":{
+        "ETH":"0.0003968 ETH",
+        "USD":"0.145 USD"
+  },
+  "links": {
+    "blog": "https://www.mzkj.io/en/minerzone/",
+    "twitter": "https://twitter.com/MinerZone1",
+    "telegram": "https://t.me/MinerZone_zh",
+    "facebook": "https://www.facebook.com/cheery.miner",
+    "reddit": "https://www.reddit.com/user/MinerZone/",
+    "medium": "https://medium.com/@minertzone"
+  }
+}
