@@ -3023,13 +3023,16 @@ def verify_user_twitter(request, handle):
     })
 
 def connect_google():
+    import urllib.parse
+
     return OAuth2Session(
         settings.GOOGLE_CLIENT_ID, 
         scope=settings.GOOGLE_SCOPE, 
-        redirect_uri=settings.GOOGLE_REDIRECT_URL,
+        redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_google)),
     )
 
 @login_required
+@require_POST
 def request_verify_google(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
@@ -3055,6 +3058,7 @@ def request_verify_google(request, handle):
     })
 
 @login_required
+@require_GET
 def verify_user_google(request):
     google = connect_google()
 
@@ -3065,18 +3069,23 @@ def verify_user_google(request):
             code=request.GET['code'],
         )
         r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
+        if r.status_code != 200:
+            return JsonResponse({
+                'ok': False,
+                'message': 'Invalid code',
+            })
 
-        profile = profile_helper(request.user.username, True)
-
-        profile.is_google_verified = True
-        profile.identity_data_google = r.json()
-        profile.save()
-    except: 
+    except ConnectionError: 
         return JsonResponse({
             'ok': False,
-            'message': 'invalid code',
+            'message': 'Invalid code',
         })
-    
+        
+    profile = profile_helper(request.user.username, True)
+    profile.is_google_verified = True
+    profile.identity_data_google = r.json()
+    profile.save()
+
     return redirect('profile_by_tab', 'trust')
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
