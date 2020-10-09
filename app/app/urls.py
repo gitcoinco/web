@@ -162,6 +162,11 @@ urlpatterns = [
         name='authenticate_idena'
     ),
     url(
+        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
+        dashboard.views.logout_idena,
+        name='logout_idena'
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'

@@ -49,6 +49,7 @@ from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
 from django.utils.text import slugify
+from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
@@ -76,7 +77,7 @@ from chat.tasks import (
 )
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
-from dashboard.idena_utils import get_idena_url, gen_idena_nonce
+from dashboard.idena_utils import get_idena_url, gen_idena_nonce, signature_address, next_validation_time
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
@@ -84,7 +85,7 @@ from dashboard.utils import (
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from eth_utils import to_checksum_address, to_normalized_address
+from eth_utils import to_checksum_address, to_normalized_address, is_address, is_same_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
@@ -2909,9 +2910,16 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'trust':
         context['is_idena_connected'] = profile.is_idena_connected
         if profile.is_idena_connected:
-            pass
+            context['idena_address'] = profile.idena_address
+            context['logout_idena_url'] = reverse(logout_idena, args=(profile.handle,))
+            context['is_idena_verified'] = profile.is_idena_verified()
+            context['idena_status'] = profile.idena_status()
+            if not context['is_idena_verified']:
+                # FIXME: timezone
+                context['idena_next_validation'] = localtime(next_validation_time())
+
         else:
-            context['idena_url'] = get_idena_url(request, profile)
+            context['login_idena_url'] = get_idena_url(request, profile)
 
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
@@ -2937,7 +2945,25 @@ def get_profile_by_idena_token(token):
         return Profile.objects.get(idena_token=token)
     except ObjectDoesNotExist:
         return None
-        
+
+@require_POST
+def logout_idena(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+    
+    profile = profile_helper(handle, True)
+    if profile.is_idena_connected:
+        profile.idena_address = ''
+        profile.idena_nonce = ''
+        profile.is_idena_connected = False
+        profile.save()
+
+    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+
 
 @csrf_exempt # Call from external service
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -2948,19 +2974,34 @@ def start_session_idena(request, handle):
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({
-            'ok': False,
-            'msg': 'Invalid json data'
+            'success': False,
+            'error': 'Invalid json data'
         })
 
-    profile = get_profile_by_idena_token(data.get('token'))
+    profile = get_profile_by_idena_token(data.get('token', 'invalid-token'))
 
     if not profile or profile.handle != handle:
         return JsonResponse({
-            'ok': False,
-            'msg': f'Invalid Idena Token'
+            'success': False,
+            'error': f'Invalid Idena Token'
+        })
+
+    idena_address = data.get('address', None)
+
+    if idena_address is None:
+        return JsonResponse({
+            'success': False,
+            'error': f'Address is reqired'
+        })
+
+    if not is_address(idena_address):
+        return JsonResponse({
+            'success': False,
+            'error': f'Address is invalid'
         })
 
     profile.idena_nonce = gen_idena_nonce()
+    profile.idena_address = idena_address
     profile.save()
 
     return JsonResponse({
@@ -2974,6 +3015,36 @@ def start_session_idena(request, handle):
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 @require_POST
 def authenticate_idena(request, handle):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid json data'
+        })
+
+    profile = get_profile_by_idena_token(data.get('token', 'invalid-token'))
+
+    if not profile or profile.handle != handle:
+        return JsonResponse({
+            'success': False,
+            'error': f'Invalid Idena Token'
+        })
+
+    sig = data.get('signature', '0x0')
+    sig_addr = signature_address(profile.idena_nonce, sig)
+
+    if not is_same_address(sig_addr, profile.idena_address):
+        return JsonResponse({
+            'success': True,
+            'data': {
+                'authenticated': False
+            }
+        })
+
+    profile.is_idena_connected = True
+    profile.save()
+
     return JsonResponse({
         "success": True,
         "data": {

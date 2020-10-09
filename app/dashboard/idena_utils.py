@@ -1,13 +1,16 @@
-import base64
-from datetime import timedelta
-import json
-import time
+from datetime import datetime
+from pytz import UTC
 from uuid import uuid4
+from logging import error
 
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 
 import requests
+
+from eth_account import Account
+from eth_utils import keccak, decode_hex
 
 from app.services import RedisService
 
@@ -27,62 +30,54 @@ def get_idena_url(request, profile):
 def gen_idena_nonce():
     return f'signin-{uuid4().hex}'
 
-# def get_brightid_status(brightid_uuid):
-#     brightIDUrl = 'https://app.brightid.org/node/v5/verifications/Gitcoin/' + str(brightid_uuid)
+def signature_hash(value):
+    error(value)
+    return keccak(keccak(text=value))
 
-#     try:
-#         response = requests.get(brightIDUrl)
-#         responseData = response.json()
-#         isVerified = responseData.get('data', {}).get('unique', False) and responseData.get('data', {}).get('context', '') == 'Gitcoin'
+def signature_address(nonce, signature):
+    nonce_hash = signature_hash(nonce)
+    address = Account.recoverHash(nonce_hash, signature=decode_hex(signature))
+    return address
 
-#         if isVerified:
-#             return 'verified'
-#         # NOT CONNECTED
-#         elif responseData['errorNum'] == 2:
-#             return 'not_connected'
-#         # CONNECTED NOT SPONSORED
-#         elif responseData['errorNum'] == 4:
-#             sponsor_success = assign_brightid_sponsorship(brightid_uuid)
+def parse_datetime_from_iso(iso):
+    return timezone.make_aware(
+        timezone.datetime.strptime(
+            iso, 
+            '%Y-%m-%dT%H:%M:%SZ',
+        ),
+        UTC
+    )
 
-#             if sponsor_success:
-#                 return 'not_verified'
-#             else:
-#                 return 'unknown'
-#         # CONNECTED AND SPONSORED, NOT VERIFIED
-#         elif responseData['errorNum'] == 3:
-#             return 'not_verified'
-#         else:
-#             return 'unknown'
-#     except:
-#         return 'unknown'
+def next_validation_time():
+    key = 'idena_validation_time'
+    value = (redis.get(key) or b'' ).decode('utf-8')
 
-# def assign_brightid_sponsorship(brightid_uuid):
-#     brightIDv5OpUrl = 'https://app.brightid.org/node/v5/operations'
+    if not value:
+        url = 'https://api.idena.io/api/Epoch/Last'
+        r = requests.get(url).json()
+        value = r['result']['validationTime']
+        idena_validation_time = parse_datetime_from_iso(value)
 
-#     op = {
-#         'name': 'Sponsor',
-#         'app': 'Gitcoin',
-#         'contextId': str(brightid_uuid),
-#         'timestamp': int(time.time()*1000),
-#         'v': 5
-#     }
+        expiry = int(idena_validation_time.timestamp() - datetime.utcnow().timestamp()) # cache until next epoch
+        redis.set(key, value, expiry)
+    else:
+        idena_validation_time = parse_datetime_from_iso(value)
 
-#     signing_key = ed25519.SigningKey(base64.b64decode(settings.BRIGHTID_PRIVATE_KEY))
-#     message = json.dumps(op, sort_keys=True, separators=(',', ':')).encode('ascii')
-#     sig = signing_key.sign(message)
-#     op['sig'] = base64.b64encode(sig).decode('ascii')
+    return idena_validation_time
 
-#     response = requests.post(brightIDv5OpUrl, json.dumps(op))
-#     return 200 == response.status_code
+def get_idena_status(address):
+    key = f'idena_status_{address}'
+    status = (redis.get(key) or b'' ).decode('utf-8')
 
-# def get_verified_uuids():
-#     endpointURL = 'https://app.brightid.org/node/v5/verifications/Gitcoin'
+    if not status:
+        url = f'https://api.idena.io/api/Identity/{address}'
+        r = requests.get(url).json()
+        if 'error' in r:
+            status = 'Not validated'
+        else:
+            status = r['result']['state']
+        
+        expiry = int(next_validation_time().timestamp() - datetime.utcnow().timestamp()) # cache until next epoch
+        redis.set(key, status, expiry)
 
-#     try:
-#         response = requests.get(endpointURL)
-#         responseData = response.json()
-#         approved_uuids = responseData.get('data', {}).get('contextIds', [])
-
-#         return approved_uuids
-#     except:
-#         return []
+    return status

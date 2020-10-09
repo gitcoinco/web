@@ -20,15 +20,40 @@
       <!-- Adena ROW -->
       <div class="row mb-4">
         <div class="col-12 col-md-1 mx-auto text-center">
-          <img src="/static/v2/images/project_logos/idena.svg" alt="Idena Logo" class="img-fluid">
+          {% if is_idena_connected %}
+            <img src="https://robohash.org/{{ idena_address }}" alt="Idena Logo" class="img-fluid">
+          {% else %}
+            <img src="/static/v2/images/project_logos/idena.svg" alt="Idena Logo" class="img-fluid">
+          {% endif %}
         </div>
         <div class="col-12 col-md-7 mb-3 mb-md-0">
           <div class="font-weight-bold">
-            Connect with Idena
+            {% if is_idena_connected %}
+              Idena {{ idena_address }}
+            {% else %}
+              Connect with Idena
+            {% endif %}
           </div>
-          <div>
-            Install <a href="https://idena.io/?view=download">Idena app</a> to verify your account.
-          </div>
+          {% if is_idena_connected %}
+            {% if not is_idena_verified %}
+              <div>
+                Take part in the Idena validation ceramony {{ idena_next_validation }}
+              </div>
+            {% endif %}
+            <div>
+              {% if is_idena_verified %}
+                <span style="color:limegreen"><i class="fas fa-circle"></i>
+              {% else %}
+                <span style="color:gray"><i class="fas fa-circle"></i>
+              {% endif %}
+              &nbsp; Status: {{ idena_status }}
+            </div>
+          {% else %}
+            <div>
+              Install <a href="https://idena.io/?view=download">Idena app</a> to verify your account.
+            </div>
+          {% endif %}
+          
         </div>
         <div class="col-6 col-md-2 text-center">
           <div class="font-weight-bold">
@@ -41,9 +66,13 @@
         <div class="col-6 col-md-2">
           {% if is_idena_connected %}
           <!-- TODO -->
-            <a href="" role="button" id="disconnect-idena-link" class="button button--primary text-nowrap">Disconnect</a>
+          <form name="disconnect-idena-link" method="post" action="{{ logout_idena_url }}">
+            {% csrf_token %}
+            <input type="submit" value="Disconnect" class="button button--primary text-nowrap"/>
+        </form>
+            <!-- <a href={{ logout_idena_url }} role="button" id="disconnect-idena-link" class="button button--primary text-nowrap">Disconnect</a> -->
           {% else %}
-            <a href={{ idena_url }} role="button" id="connect-idena-link" class="button button--primary text-nowrap">Connect</a>
+            <a href={{ login_idena_url }} role="button" id="connect-idena-link" class="button button--primary text-nowrap">Connect</a>
           {% endif %}
         </div>
       </div>
@@ -61,7 +90,6 @@
           <div>
             Verify your phone number through SMS. To protect your privacy, Gitcoin doesn't store your phone number.
             <a href="https://twitter.com/owocki/status/1272149204287160320">Learn more.</a>
-
           </div>
         </div>
         <div class="col-6 col-md-2 text-center">
@@ -258,6 +286,5 @@
     const calendarData = JSON.parse(document.getElementById('calendarData').textContent);
     const trustHandle = '{{profile.handle}}'.toLowerCase();
     const verifyTweetText = '{{verify_tweet_text}}';
-    const idenaConnectUrl = '{{idena_connect_url}}';
   </script>
 {% endif %}

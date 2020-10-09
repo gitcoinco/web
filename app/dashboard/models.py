@@ -22,6 +22,7 @@ import base64
 import collections
 import json
 import logging
+from logging import error
 import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -59,6 +60,7 @@ from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
+from dashboard.idena_utils import get_idena_status, next_validation_time
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -2924,10 +2926,6 @@ class Profile(SuperModel):
     ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
-    idena_token = models.UUIDField(default=uuid.uuid4, unique=True)
-    is_idena_connected=models.BooleanField(default=False)
-    idena_address = models.CharField(max_length=128, blank=True)
-    idena_nonce = models.CharField(max_length=128, blank=True)
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
@@ -2939,6 +2937,26 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+
+    # Idena fields
+    idena_token = models.UUIDField(default=uuid.uuid4, unique=True)
+    is_idena_connected=models.BooleanField(default=False)
+    idena_address = models.CharField(max_length=128, blank=True)
+    idena_nonce = models.CharField(max_length=128, blank=True)
+
+    def idena_status(self):
+        return get_idena_status(self.idena_address)
+
+    def is_idena_verified(self):
+        if not self.is_idena_connected:
+            return False
+
+        status = self.idena_status()
+        
+        if status in ['Newbie', 'Verified', 'Human']:
+            return True
+        
+        return False
 
     @property
     def trust_bonus(self):
@@ -5638,6 +5656,11 @@ class Investigation(SuperModel):
         if instance.is_brightid_verified:
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
+            
+        htmls.append(f'Idena Verified: {instance.is_idena_verified}')
+        if instance.is_idena_verified:
+            total_sybil_score -= 4
+            htmls.append('(REDEMPTIONx4)')
 
         htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
         if instance.is_twitter_verified:
