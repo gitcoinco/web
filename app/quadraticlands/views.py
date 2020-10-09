@@ -55,5 +55,5 @@ def about(request):
 def governance(request):
     return TemplateResponse(request, 'quadraticlands/governance.html')
 
-def mission(request):
-    return TemplateResponse(request, 'quadraticlands/mission.html')
+def missions(request):
+    return TemplateResponse(request, 'quadraticlands/missions.html')

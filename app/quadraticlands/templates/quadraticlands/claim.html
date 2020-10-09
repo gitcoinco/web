@@ -18,8 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
 <center>  
-<h1>Hello Quadratic World!!</h1>
-
+<h2>You will need to connect a wallet to claim you tokens my friend!</h2>
 <style>
   #select_all{
     font-size: 12px;
@@ -52,10 +51,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% endfor %}
   </div>
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="CLAIM">
+  <input class='button button-primary' type='submit' name='submit' value="CLAIM">
 </form>
-{% endblock %}
 </center>
+
+{% endblock %}
 {% comment "ZW 10/9/2020" %}
 {% block scripts %}
 <script>

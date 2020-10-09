@@ -24,10 +24,11 @@
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
 
   <nav class="navbar-nav mx-auto gc-megamenu">
-    <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="./claim">{% trans "Claim Tokens" %}</a>
-    <a class="nav-link {% if is_govenance %} selected {% endif %} interior" href="./governance">{% trans "Governance" %}</a>
+    <a class="nav-link {% if is_index %} selected {% endif %} interior" href="./">{% trans "Home" %}</a>
+    <a class="nav-link {% if is_claim %} selected {% endif %} interior" href="./claim">{% trans "Claim Tokens" %}</a>
+    <a class="nav-link {% if is_governance %} selected {% endif %} interior" href="./governance">{% trans "Governance" %}</a>
     <a class="nav-link {% if is_about %} selected {% endif %} interior" href="./about">{% trans "About" %}</a>
-    <a class="nav-link {% if is_mission %} selected {% endif %} interior" href="./mission">{% trans "Learn" %}</a>
+    <a class="nav-link {% if is_missions %} selected {% endif %} interior" href="./missions">{% trans "Missions" %}</a>
   </nav>
 
   {% comment "ZW 10/92020" %}
