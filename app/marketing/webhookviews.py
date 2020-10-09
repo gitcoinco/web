@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from django.core.validators import validate_ipv46_address
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -51,6 +52,14 @@ def process(request):
     response = json.loads(request.body)
 
     for event in response:
+
+        try:
+            ip = event.get('ip')
+            validate_ipv46_address(ip)
+            ip_address = ip
+        except Exception:
+            ip_address = None
+
         try:
             created_on = datetime.utcfromtimestamp(event['timestamp']).replace(tzinfo=pytz.utc)
             email_event = EmailEvent(
@@ -58,8 +67,8 @@ def process(request):
                 event=event['event'],
                 category=event.get('category', ''),
                 created_on=created_on,
-                ip_address=event.get('ip').split(':')[0],
-                )
+                ip_address=ip_address,
+            )
             events.append(email_event)
         except Exception:
             pass

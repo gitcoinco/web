@@ -50,6 +50,8 @@ class Command(BaseCommand):
                 to_currency='ETH'
             ).exclude(
                 source='manual',
+            ).exclude(
+                source='cryptocompare',
             ).delete()
         print(f'ConversionRate: {result}')
 

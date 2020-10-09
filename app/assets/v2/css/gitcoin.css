@@ -71,7 +71,6 @@ h4,
   background-position: 0px 0px;
   background-repeat: no-repeat;
   position: relative;
-  z-index: 3;
 }
 
 .index .header {
@@ -944,6 +943,7 @@ textarea.status-textarea {
 
 .image-provider {
   width: 24px;
+  max-height: 24px;
   vertical-align: top;
 }
 

@@ -6,7 +6,7 @@ var removeFilter = function() {
 
 $(document).ready(function() {
   var document_url_object = new URL(document.location.href);
-  var keyword_search = document_url_object.searchParams.get('keyword');
+  var keyword_search = document_url_object.searchParam && document_url_object.searchParams.get('keyword');
 
   technologies.forEach(function(tech) {
     if (keyword_search === tech) {

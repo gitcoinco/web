@@ -405,7 +405,8 @@
                       <div class="tag token">[[ bountyFeat.rounded_amount ]] <span>[[ bountyFeat.token_name ]]</span></div>
                       <div class="tag usd">[[ bountyFeat.value_in_usdt ]] <span>USD</span></div>
                     </div>
-                    <a :href="bountyFeat.url" class="bounty-card__link">View Bounty</a>
+                    <a :href="`${bountyFeat.url}?utm_source=hypercharge-auto-prize-explorer&utm_medium=gitcoin&utm_campaign=${bountyFeat.title}`" class="bounty-card__link" v-if="bountyFeat.metadata.hypercharge_mode">View Bounty</a>
+                    <a :href="bountyFeat.url" class="bounty-card__link" v-else>View Bounty</a>
                   </div>
                 </div>
               </div>
@@ -554,7 +555,6 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-    <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/explorer.js" %}"></script>
     <script>
       $('[data-toggle="tooltip"]').bootstrapTooltip();

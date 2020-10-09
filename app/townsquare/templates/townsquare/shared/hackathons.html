@@ -1,8 +1,8 @@
 <div>
-  <div class="townsquare_block-header accordion active my-1" data-target="hackathons">
+  <div class="townsquare_block-header accordion active my-1" data-target="hackathons-cta">
     Gitcoin Hackathons
   </div>
-  <div id="hackathons" class="mb-4 box-hackathons panel-active bg-shade-0">
+  <div id="hackathons-cta" class="mb-4 box-hackathons panel-active bg-shade-0">
     {% for hackathon in hackathon_tabs|slice:":5" %}
       <div class="box-hackathons-townsquare bg-shade-0">
         <div class="card bg-shade-0 flex-row" id="{{hackathon.slug}}">

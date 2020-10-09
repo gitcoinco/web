@@ -24,7 +24,6 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
     <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
     <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
@@ -88,26 +87,36 @@
                 <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
-                    <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="24"> Ethereum
+                    <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="16"> ETH
                   </label>
 
                   {% if is_staff %}
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
-                    <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="24"> PayPal
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '0'}">
+                      <input type="radio" name="bounty_chain" id="0_chain" value="0" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/bitcoin.svg' %}" alt="" width="16"> BTC
+                    </label>
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
+                      <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="16"> PayPal
+                    </label>
+                  {% endif %}
+
+                  {% if 'polkadot_testers' in user_groups or is_staff %}
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 58}">
+                      <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> Polkadot
+                    </label>
                   {% endif %}
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
-                    <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="24"> Ethereum Classic
+                    <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="16"> ETC
                   </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
-                    <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="24"> Zilliqa
+                    <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="16"> Zilliqa
                   </label>
 
                   {% if is_staff %}
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
-                    <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="24"> Celo
+                    <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="16"> Celo
                   </label>
                   {% endif %}
 
@@ -266,7 +275,7 @@
                     </div>
                     <div class="col-12" v-if="!subscriptionActive">
                       <p class="text-highlight-gc-blue bg-lightpurple p-2 mt-2">
-                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:scott@gitcoin.co" target="_blank" class="font-weight-bold">scott@gitcoin.co</a>
+                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:support@gitcoin.co" target="_blank" class="font-weight-bold">support@gitcoin.co</a>
                       </p>
 
                     </div>
@@ -303,7 +312,7 @@
                   </div>
                   <div class="mt-2" id="auto_approve_workers_container">
                     <div class="form__checkbox">
-                      <input name="admin_override_suspend_auto_approval" id="admin_override_suspend_auto_approval" v-model="form.auto_approve_workers" type="checkbox" true-value="True" false-value="False" :disabled="form.permission_type.includes('permissionless')">
+                      <input name="admin_override_suspend_auto_approval" id="admin_override_suspend_auto_approval" v-model="form.auto_approve_workers" type="checkbox" :disabled="form.permission_type.includes('permissionless')">
                       <label class="form__label" for="admin_override_suspend_auto_approval" style="display: flex;">
                         Worker will be auto-approved after 72 hours.
                       </label>
@@ -371,10 +380,9 @@
                   <div class="col-12 col-md-3">
                     <label class="form__label" for="token">Denomination</label>
 
-                    <v-select id="token" :options="filterByChainId" label="symbol" v-model="form.token" @input="getAmount(form.token ? form.token.symbol : null)">
+                    <v-select id="token" :options="filterByChainId" label="symbol" v-model="form.token" @input="getAmount(form.token ? form.token.symbol : null); injectProvider(form.token ? form.token.symbol : null);">
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.symbol ]]</span>
-                        <small class="d-block text-black-50 font-smaller-3 text-truncate">[[option.address]]</small>
                       </template>
                     </v-select>
 
@@ -390,11 +398,11 @@
 
                   <div class="col-12 col-md-3" id="usd-amount-wrapper">
                     <label class="form__label" for="hours">Est. Hours of Work</label>
-                    <input name="hours" id="hours" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="calcValues('token')">
+                    <input name="hours" id="hours"  pattern="[0-9]" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="estHoursValidator">
                   </div>
                 </div>
                 <div>
-                  <small v-show="form.amountusd" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text">[[form.hours]] hrs at $[[form.amountusd]]/hr leads to <b> [[ successRate]]% success rate</b>. Read our <a href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.</small>
+                  <small v-show="form.amountusd" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text">[[form.hours]] hrs at  $[[form.amountusd / form.hours | decimals(2)]]/hr leads to <b> [[ successRate]]% success rate</b>. Read our <a href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.</small>
                   <small  v-show="chainId === '666'" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="fiat_text">
                     USD payment is powered by <span class="font-weight-bold">PayPal</span>. Please note that there might be a small fee for payment to contributors in outside of the US.
                   </small>
@@ -610,11 +618,11 @@
 
                   <p class="font-caption text-black-50 mb-1">
                     Bounty <span id="summary-bounty-amount" class="font-weight-bold">[[form.amount ]]</span>
-                    <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span> ($[[form.amountusd]])
+                    <span id="" class="font-weight-bold">[[form.token.symbol]]</span> ($[[form.amountusd]])
                     <template>
                       <span> +
-                        <span id="summary-bounty-token" class="font-weight-bold">[[totalAmount.totalFee | decimals(4)]]</span>
-                        <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span>
+                        <span id="" class="font-weight-bold">[[totalAmount.totalFee | decimals(4)]]</span>
+                        <span id="" class="font-weight-bold">[[form.token.symbol]]</span>
                         Gitcoin Platform Fee
                       </span>
                       <span v-if="form.featuredBounty"> +
@@ -708,7 +716,10 @@
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="https://unpkg.com/vue-select@latest"></script>
+
+    <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
 
     <script>
       $('body').bootstrapTooltip({
@@ -717,7 +728,6 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
     </script>
-    <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
   </body>
 </html>

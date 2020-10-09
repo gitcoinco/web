@@ -211,7 +211,6 @@ def sync_profile(handle, user=None, hide_profile=True):
 
                     except Exception as e:
                         logger.error(str(e))
-                        raise ValueError(e)
 
         except UserSocialAuth.DoesNotExist:
             pass

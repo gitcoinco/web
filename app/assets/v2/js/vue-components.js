@@ -8,32 +8,44 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(channel, dm) {
-      let vm = this;
-      
-      dm = dm || channel ? channel.indexOf('@') >= 0 : false;
-      channel = channel || 'town-square';
-
-      const hackathonTeamSlug = 'hackathons';
-      const gitcoinTeamSlug = 'gitcoin';
-      const isHackathon = (document.hackathon_id !== null);
-
-
-      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
-
-      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+    chatWindow: function(channel) {
+      window.chatSidebar.chatWindow(channel);
     }
   }
 });
 
+Vue.component('hackathon-sponsor-dashboard', {
+  props: [],
+  data: function() {
+    return {
+      isFunder: false,
+      funderBounties: []
+    };
+  },
+  methods: {
+    fetchBounties: function() {
+      let vm = this;
+      // fetch bounties
+      let apiUrlBounties = '/api/v0.1/user_bounties/';
+
+      let getBounties = fetchData(apiUrlBounties, 'GET');
+
+      $.when(getBounties).then((response) => {
+        vm.isFunder = response.is_funder;
+        vm.funderBounties = response.data;
+      });
+    }
+  }
+});
 
 Vue.component('modal', {
-  props: [ 'user', 'size', 'id', 'issueDetails' ],
-  template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  props: [ 'user', 'size', 'id', 'issueDetails', 'hideClose', 'backdrop', 'keyboard' ],
+  template: `<div class="vue-modal modal fade" :id="id" :data-backdrop="propBackdrop" :data-keyboard="propKeyboard" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
           <div class="modal-content">
             <div class="modal-header border-0">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <slot name="top"></slot>
+              <button type="button" class="close" data-dismiss="modal" v-show="showClose" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
             </div>
@@ -57,9 +69,36 @@ Vue.component('modal', {
 
     vm.jqEl = $(this.$el);
   },
+  computed: {
+    showClose() {
+      if (!this.hideClose) {
+        return true;
+      }
+
+      return false;
+    },
+    propKeyboard() {
+      if (!this.keyboard) {
+        return true;
+      }
+
+      return this.keyboard;
+    },
+    propBackdrop() {
+      if (!this.backdrop) {
+        return true;
+      }
+
+      return this.backdrop;
+
+    }
+  },
   methods: {
     closeModal() {
       this.jqEl.bootstrapModal('hide');
+    },
+    openModal() {
+      this.jqEl.bootstrapModal('show');
     }
   }
 
@@ -67,13 +106,16 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({data: this.options})
-      .val(this.value)
+    $(vm.$el).select2({
+      data: vm.options,
+      placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      .val(vm.value)
       .trigger('change')
       .on('change', function() {
         vm.$emit('input', $(this).val());
@@ -192,6 +234,49 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
+Vue.component('manage-mentors', {
+  props: [ 'hackathon_id', 'org_name' ],
+  methods: {
+    onMentorChange: function(event) {
+
+      this.bountyMentors = $('.mentor-users').select2('data').map(element => {
+        return element.id;
+      });
+    },
+    updateBountyMentors: function() {
+      let vm = this;
+      const url = '/api/v0.1/bounty_mentor/';
+
+      const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
+        bounty_org: vm.org_name,
+        hackathon_id: vm.hackathon_id,
+        set_default_mentors: true,
+        new_default_mentors: vm.bountyMentors
+      }), {'X-CSRFToken': vm.csrf, 'Content-Type': 'application/json; charset=utf-8'});
+
+      $.when(updateBountyMentor).then((response) => {
+        _alert({message: gettext(response.message)}, 'success');
+      }).catch((error) => {
+        _alert({message: gettext(error.message)}, 'error');
+      });
+    }
+  },
+  mounted() {
+    userSearch('.mentor-users', false, undefined, false, false, true, {'select': this.onMentorChange, 'unselect': this.onMentorChange});
+    this.bountyMentors = $('.mentor-users').select2('data').map(element => {
+      return element.id;
+    });
+
+  },
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      isFunder: false,
+      funderBounties: [],
+      bountyMentors: []
+    };
+  }
+});
 
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
@@ -326,9 +411,86 @@ Vue.component('project-directory', {
     window.removeEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     });
+  },
+  bottomVisible: function() { // TODO: abstract this to the mixin, and have it take a callback which modifies the component state.
+    let vm = this;
+
+    const scrollY = window.scrollY;
+    const visible = document.documentElement.clientHeight;
+    const pageHeight = document.documentElement.scrollHeight - 500;
+    const bottomOfPage = visible + scrollY >= pageHeight;
+
+    if (bottomOfPage || pageHeight < visible) {
+      if (vm.projectsHasNext) {
+        vm.projectsHasNext = false;
+        vm.fetchProjects();
+      }
+    }
   }
 });
 
+
+Vue.component('events', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      events: []
+    };
+  },
+  methods: {
+    nth: function(d) {
+      if (d > 3 && d < 21)
+        return 'th';
+      switch (d % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    },
+    fetchEvents: async function() {
+      const response = await fetchData(`/api/v0.1/hackathon/${document.hackathonObj.id}/events/`, 'GET');
+
+      this.$set(this, 'events', response.events.events);
+    },
+    formatDate: function(event) {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      const date = event.date_start.split('/');
+      const time = event.date_start_time;
+      const newDate = new Date(`${date[2]}-${date[0]}-${date[1]}T${time}`);
+      const month = monthNames[newDate.getMonth()];
+      const day = newDate.getDay();
+      const hours = newDate.getHours();
+      const ampm = event.date_start_ampm.toLowerCase();
+
+      return `${month} ${day}${this.nth(newDate.getDay())}, ${hours} ${ampm}  ET`;
+    },
+    eventTag: function(event) {
+      const text = event.eventname;
+
+      if (text.includes('formation')) {
+        return 'formation';
+      } else if (text.includes('pitch')) {
+        return 'pitch';
+      } else if (text.includes('check')) {
+        return 'check';
+      } else if (text.includes('office')) {
+        return 'office';
+      } else if (text.includes('demo')) {
+        return 'demo';
+      }
+
+      return 'workshop';
+    }
+  },
+  mounted() {
+    this.fetchEvents();
+  }
+});
 
 Vue.component('showcase', {
   delimiters: [ '[[', ']]' ],
@@ -446,6 +608,14 @@ Vue.component('project-card', {
     };
   },
   props: [ 'project', 'edit', 'is_staff' ],
+  computed: {
+    project_url: function() {
+      let project = this.$props.project;
+      let project_name = (project.name || '').replace(/ /g, '-');
+
+      return `/hackathon/${project.hackathon.slug}/projects/${project.pk}/${project_name}`;
+    }
+  },
   methods: {
     markWinner: function($event, project) {
       let vm = this;
@@ -487,16 +657,13 @@ Vue.component('project-card', {
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
             <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
             <template v-slot:button-content>
               <i class='fas fa-comment-dots'></i>
             </template>
-            <b-dropdown-item-button v-if="project.chat_channel_id" @click.prevent="chatWindow(project.chat_channel_id);" aria-describedby="dropdown-header-label" :key="project.chat_channel_id || project.id">
-              Chat With Team
-            </b-dropdown-item-button>
-            <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
+            <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
               @ [[ profile.handle ]]
             </b-dropdown-item-button>
             </b-dropdown>
@@ -530,11 +697,51 @@ Vue.component('project-card', {
 });
 
 Vue.component('suggested-profiles', {
-  props: ['profiles'],
+  props: ['id'],
+  data: function() {
+    return {
+      users: []
+    };
+  },
+  mounted() {
+    this.fetchUsers();
+  },
+  methods: {
+    fetchUsers: function() {
+      let vm = this;
+
+      vm.isLoading = true;
+      vm.noResults = false;
+
+      let apiUrlUsers = `/api/v0.1/users_fetch/?user_filter=all&page=1&tribe=${vm.id}`;
+
+      var getUsers = fetchData(apiUrlUsers, 'GET');
+
+      $.when(getUsers).then(function(response) {
+        for (let item = 0; response.data.length > item; item++) {
+          if (!response.data[item].is_following) {
+            if (response.data[item].handle != document.contxt.github_handle) {
+              vm.users.push(response.data[item]);
+            }
+          }
+          if (vm.users.length === 10) {
+            break;
+          }
+        }
+
+        if (vm.users.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
+      });
+    }
+  },
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in users" :key="profile.id" :profile="profile" />
         </ul>
       </div>
     </div>`
@@ -545,8 +752,7 @@ Vue.component('suggested-profile', {
   props: ['profile'],
   data: function() {
     return {
-      follow: this.profile.user_is_following || false,
-      follower_count: this.profile.followers_count || 0
+      follow: this.profile.user_is_following || false
     };
   },
   computed: {
@@ -579,28 +785,23 @@ Vue.component('suggested-profile', {
     }
   },
   template: `
-<b-media tag="li" class="row mx-auto mx-md-n1">
+<b-media tag="li" class="row mx-auto mx-md-n1 mb-1">
   <template v-slot:aside>
     <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
       <b-img :src="avatar_url" class="nav_avatar"></b-img>
     </a>
   </template>
-  <div class="row">
-    <span class="col-6 col-md-12 col-xl-7 font-caption">
+  <div class="col">
+    <span class="row font-caption">
         <a :href="profile_url" class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize text-black">{{profile.name}}</a>
         <p class="mb-0">
-          <i class="fas fa-user font-smaller-4 mr-1"></i>
-          <span class="font-weight-semibold">{{follower_count}}</span> followers
+          <span class="font-weight-semibold">{{profile.handle}}</span>
         </p>
     </span>
-    <span class="col-6 col-md-12 col-xl-5 p-0 my-auto text-center">
-      <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
-        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
-      </a>
-      <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
-        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
-      </a>
-    </span>
+    <p class="row font-caption mb-0 mt-1">
+      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-green font-smaller-5">following</b-button>
+      <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-gc-blue font-smaller-5">follow</b-button>
+    </p>
   </div>
 </b-media>
 `

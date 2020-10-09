@@ -1,0 +1,101 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n grants_extra %}
+<div class="mt-3 mx-0 ml-md-5 px-0 pl-md-3 pr-md-2 pr-lg-3">
+  <a id="backprojects" class="font-caption" href="{% url 'hackathon_projects'  hackathon=hackathon %}">
+    <i class="fas fa-chevron-left mr-1"></i>
+    Back to Projects
+  </a>
+  <hackathon-project :hackathon="hackathon" :project="project" inline-template>
+  <div class="row hackathon-project mt-3 mb-5">
+    <div class="col-12 px-0">
+      <div class="col-12 col-lg-10 pb-2 d-flex" style="padding-top: 20px !important;">
+        <img v-if="project.logo_url" width="111" height="111" :src="project.logo_url">
+        <img v-else width="111" height="111" :src="project.prize.avatar">
+        <div class="ml-3">
+          <a class="text-decoration-none text-black project-title" :href="project.url"><h1 class="font-title-xl mt-md-4 mb-2 font-weight-bold">[[ project.name ]]</h1></a>
+          <div class="d-flex align-items-baseline">
+            <i class="fab fa-github mr-2"></i> <a class="font-body" :href="project.work_url">[[project.work_url]]</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-7">
+        <div class="mt-4">
+          <h2 class="font-body text-muted">TEAM MEMBERS</h2>
+          <div class="d-flex flex-wrap">
+            <div class="mb-3" v-for="team_member in project.team_members">
+              <a class="mr-5 text-black" :href="team_member.url">
+                <div class="mr-2 d-inline-block">
+                  <img class="rounded-circle" width=38 height=38 :src="`https://gitcoin.co/dynamic/avatar/${team_member.handle}`">
+                </div>
+                <div class="mt-1 d-inline-block">
+                  <span class="font-weight-semibold">[[team_member.handle]]</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 px-2" nav-wrapper-class="col-12" align="left" content-class="col-12 mt-4 light-blue" class="row">
+        <b-tab class="col-12" title-item-class="navigation">
+          <template v-slot:title>
+            <div class="mt-4">
+              {% trans "Summary" %}
+            </div>
+          </template>
+          <div class="mb-5">
+            <div class="mt-3 py-3 px-4" style="background: #FFFBE4; border-radius: 8px;" v-if="project.winner">
+              <p>🏆 <strong>Winner</strong></p>
+              <p class="font-body">This project is selected as the winner of the <strong>[[ project.prize.title ]]</strong> prize.</p>
+            </div>
+            <div class="mt-5">
+              <h3 class="font-title font-weight-semibold">Prize bounty</h3>
+              <div class="d-flex mt-4">
+                <img width="50" height="50" :src="project.prize.avatar" alt="" class="mr-3">
+                <div>
+                  <a :href="project.prize.url"><strong>[[ project.prize.title ]]</strong></a> by <a :href="project.prize.org_url || '#'">[[project.prize.org]]</a><br>
+                  <a :href="`/hackathon/${hackathon.slug}`">[[hackathon.name]]</a>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 mb-5">
+              <h3 class="font-title font-weight-semibold">Description</h3>
+              <p class="font-body mt-3">[[project.summary]]</p>
+            </div>
+          </div>
+        </b-tab>
+        <b-tab class="col-12" title-item-class="navigation">
+          <template v-slot:title>
+            <div class="mt-4">
+              {% trans "Activity" %}
+            </div>
+          </template>
+          <div>
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+              {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on Project wall" what="project" whatid=project_obj.id  %}
+            {% endif %}
+            <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+              {% include 'shared/activity_container.html' %}
+            </div>
+          </div>
+        </b-tab>
+      </b-tabs>
+    </div>
+  </div>
+  </hackathon-project>
+</div>

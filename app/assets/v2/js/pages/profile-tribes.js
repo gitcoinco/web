@@ -275,6 +275,7 @@ const loadDynamicScript = (callback, url, id) => {
           headerFilePreview: null,
           is_my_org: document.is_my_org || false,
           is_on_tribe: document.is_on_tribe || false,
+          is_staff: document.contxt.is_staff || false,
           editorOptionPrio: {
             modules: {
               toolbar: [

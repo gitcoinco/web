@@ -80,19 +80,22 @@
       Suggested Tribes
     </div>
     <div id="suggested-tribes" class="panel-active">
-      <ul class="nav d-inline-block font-body col-sm-9 col-lg-8 pr-2" style="padding-right: 0">
+      <ul class="nav d-inline-block font-body col-sm-9 col-lg-9 pr-2" style="padding-right: 0">
         {% for tribe in suggested_tribes %}
           <li class="nav-item d-flex justify-content-between align-items-center my-1">
-            <a href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line pr-0 mr-0">
+            <a style="max-width: 70%;" href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line pr-0 mr-0">
               <img src="{{tribe.avatar_url}}" class="rounded-circle avatar mr-2" />
               <span class="font-caption">
                 <span class="nav-title pt-0 mb-0">{{tribe.title}}</span>
                 <span class="font-smaller-7">({{ tribe.follower_count }} followers)</span>
               </span>
             </a>
-            <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="{{ tribe.title }}">
-              Follow
-            </a>
+            <div>
+              <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="{{ tribe.title }}">
+                Follow
+              </a>
+              <button data-ignore-tribe="{{ tribe.title }}" class="font-smaller-6 px-0 remove-tribe btn btn-link"><i class="fa fa-times"></i></button>
+            </div>
           </li>
         {% endfor %}
       </ul>

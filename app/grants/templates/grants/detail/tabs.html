@@ -27,9 +27,18 @@
       <span class="nav-badge">({{ activity_count }})</span>
     </button>
 
-    <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
-      {% trans "STATS" %}
+    {% if is_staff and grant.metadata.related %}
+    <button type="button" id="nav-related" href="{{grant.url}}?tab=related" class="section-tab {% if tab == "related" %} active {% endif %}">
+      {% trans "RELATED GRANTS" %}
+      <span class="nav-badge">({{ grant.metadata.related | length }})</span>
     </button>
+    {% endif %}
+
+    {% if is_team_member %}
+    <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
+      {% trans "TRENDS" %}
+    </button>
+    {% endif %}
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
       {% trans "CONTRIBUTORS" %}
@@ -59,6 +68,19 @@
     </div>
     {% endif %}
 
+    {% if tab == "related" %}
+    <div id="section-nav-related" class="tab-section active">
+      {% for ele in grant.related_grants %}
+        <div id="" class="">
+          {{ele.1}} contributors of this grant also funded <a href="{{ele.0.url}}">{{ele.0.title}}</a>
+        </div>
+      {% endfor %}
+     
+    </div>
+    {% endif %}
+
+
+
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
       <h4 class="m-0 p-0">Description</h4>
@@ -70,6 +92,20 @@
         {% endif %}
       </div>
     </div>
+      {% if grant.metadata.wall_of_love %}
+      <div id=wall_of_love class="mb-2">
+      <h4 class="m-0 p-0">Wall of Love</h4>
+        {% for ele in grant.metadata.wall_of_love %}
+          <li class="ml-3 {% if forloop.counter > 5 %} hidden {% endif %} ">
+            {{ele.1}} x <strong>{{ele.0}}</strong>
+          </li>
+        {% endfor %}
+        {% if grant.metadata.wall_of_love|length >= 5 %}
+          <a href="#" class="ml-4 show_more_wall_of_love">Show More</a>
+        {% endif %}
+      {% endif %}
+      </div>
+
       <h4 class="m-0 p-0">Activity Feed</h4>
       {% if is_team_member %}
         {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
@@ -218,7 +254,7 @@
       </div>
     {% endif %}
 
-    {% if tab == "stats" %}
+    {% if tab == "stats" and is_team_member %}
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script src="{% static "v2/js/grants/stats.js" %}"></script>
       <div id=grant_stats_graph class="content-block content-block--white">
@@ -226,15 +262,49 @@
 
           <div class="value-container">
             <div class="chart_container chart_container--big">
-              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">CONTRIBUTION HISTORY OVER TIME</p>
+              {% if stats_history|length %}
+              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+              <table id=stats_history>
+                <tr class="table_header">
+                  <td>
+                    When
+                  </td>
+                  <td>
+                    Impressions
+                  </td>
+                  <td>
+                    Added to Cart
+                  </td>
+                  <td>
+                    Contributions
+                  </td>
+                </tr>
+              {% for ele in stats_history %}
+                <tr>
+                  <td>
+                    {{ele.created_on|date:"Y/m/d"}}
+                  </td>
+                  <td>
+                    {{ele.data.impressions}}
+                  </td>
+                  <td>
+                    {{ele.data.in_cart}}
+                  </td>
+                  <td>
+                    {{ele.data.contributions}}
+                  </td>
+                </tr>
+              {% endfor %}
+              </table>
+              {% endif %}
+
+              <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
               <div class="chart_container__content">
                 <div id="grant_chart"></div>
               </div>
               <div class="grant-status-list">
-                <p><span class="box box_1"></span>{% trans "Subscription Billing" %}</p>
-                <p><span class="box box_2"></span>{% trans "New Subscriptions" %}</p>
-                <p><span class="box box_3"></span>{% trans "One-Time Contributions" %}</p>
-                <p><span class="box box_5"></span>{% trans "CLR Matching Funds" %}</p>
+                <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
               </div>
             </div>
           </div>
@@ -287,7 +357,7 @@
             readOnly: true,
           });
 
-        {% if is_team_member and not grant_is_inactive %}
+        {% if is_team_member and grant.active  %}
           grant_description = new Quill('#editor', {
             theme: 'snow',
           });

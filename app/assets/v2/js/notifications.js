@@ -93,6 +93,11 @@ Vue.mixin({
         $.when(putRead).then(function(response) {
           sessionStorage.removeItem('notificationRead');
           vm.checkUnread();
+          // eslint-disable-next-line block-scoped-var
+          if (app) {
+            // eslint-disable-next-line block-scoped-var
+            app.fetchNotifications();
+          }
         });
       }
       vm.checkUnread();
@@ -111,7 +116,10 @@ Vue.mixin({
   },
   computed: {
     sortedItems: function() {
-      return this.notifications.sort((a, b) => new Date(b.created_on) - new Date(a.created_on));
+      if (!this.notifications) {
+        return;
+      }
+      return this.notifications.slice().sort((a, b) => new Date(b.created_on) - new Date(a.created_on));
     }
   }
 
@@ -131,6 +139,7 @@ if (document.getElementById('gc-notifications')) {
     },
     mounted() {
       this.fetchNotifications();
+      setTimeout(this.fetchNotifications.bind(this), 30000);
     },
     created() {
       this.sendState();

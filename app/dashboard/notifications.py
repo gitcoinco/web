@@ -156,8 +156,11 @@ def maybe_market_to_twitter(bounty, event_name):
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
+    utm = ''
+    if bounty.metadata.get('hyper_tweet_counter', False):
+        utm = f'utm_source=hypercharge-auto&utm_medium=twitter&utm_campaign={bounty.title}'
 
-    url = bounty.get_absolute_url()
+    url = f'{bounty.get_absolute_url()}?{utm}'
     is_short = False
     for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
         try:
@@ -539,7 +542,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             issue_message = interest.issue_message.strip()
             if issue_message:
                 msg += f"\n\n{issue_message}"
-        
+
         msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
@@ -600,9 +603,12 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
+    print('### GITCOIN BOT A1')
     if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
+        print(f'### GITCOIN BOT A6 NOT POSTING')
         return False
 
+    print(f'### GITCOIN BOT A6')
     # Define posting specific variables.
     comment_id = None
     url = bounty.github_url
@@ -611,6 +617,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
 
     # Prepare the comment message string.
     msg = build_github_notification(bounty, event_name, profile_pairs)
+    print(f'### GITCOIN BOT A7 {msg}')
     if not msg:
         return False
 

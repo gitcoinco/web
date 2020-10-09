@@ -54,6 +54,7 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
+        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
@@ -77,6 +78,38 @@ Vue.mixin({
       }).catch((err) => {
         console.log(err);
       });
+    },
+    injectProvider: function(token) {
+      let vm = this;
+      const chainId = vm.chainId;
+
+      if (!token || !chainId) {
+        return;
+      }
+
+      switch (chainId) {
+        case '58': {
+          let polkadot_endpoint;
+
+          if (token == 'KSM') {
+            polkadot_endpoint = KUSAMA_ENDPOINT;
+          } else if (token == 'DOT') {
+            polkadot_endpoint = POLKADOT_ENDPOINT;
+          }
+
+          polkadot_utils.connect(polkadot_endpoint).then(res =>{
+            console.log(res);
+            polkadot_extension_dapp.web3Enable('gitcoin');
+          }).catch(err => {
+            console.log(err);
+          });
+          break;
+        }
+
+        default:
+          break;
+
+      }
     },
     calcValues: function(direction) {
       let vm = this;
@@ -141,10 +174,15 @@ Vue.mixin({
           // ethereum
           type = 'web3_modal';
           break;
+        case '58':
+          // polkadot
+          type = 'polkadot_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
           break;
+        case '0': // bitcoin
         case '61': // ethereum classic
         case '102': // zilliqa
         case '42220': // celo mainnet
@@ -237,7 +275,7 @@ Vue.mixin({
         }),
         'attached_job_description': '',
         'eventTag': metadata.eventTag,
-        'auto_approve_workers': 'True',
+        'auto_approve_workers': false,
         'web3_type': vm.web3Type(),
         'activity': metadata.activity,
         'bounty_owner_address': vm.form.funderAddress

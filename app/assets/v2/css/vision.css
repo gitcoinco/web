@@ -62,7 +62,7 @@
 }
 
 .tl-event:before {
-  content: attr(data-time);
+  content: attr(data);
   width: 4rem;
   height: 4rem;
   background: var(--tl-bg);

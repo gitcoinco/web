@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import clr_round, next_round_start, round_end
+from grants.views import clr_round, next_round_start, round_end  # TODO-SELF-SERVICE: REMOVE THIS
 from townsquare.models import Comment
 
 text = ''
@@ -131,6 +131,13 @@ def welcome():
     if len(welcome_to) < 2:
         return
 
+    from townsquare.models import Announcement
+    announcement = Announcement.objects.filter(key='founders_note_daily_email', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).first()
+    # TODO: workaround for transposing hte HTML from the announcement object into plaintext
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1601979424112000
+    # if announcement:
+    #    prompt2 = f"{announcement.title} - {announcement.desc}"
+
     welcome_to = ", ".join(welcome_to)
     pprint(f"Welcome to {welcome_to} - {prompt1}")
     pprint("")
@@ -180,6 +187,11 @@ def results():
     do_post(text)
 
 
+def pluralize(num):
+    if num == 1:
+        return ''
+    return "s"
+
 
 def earners():
     hours = 24 if not settings.DEBUG else 1000
@@ -189,15 +201,25 @@ def earners():
     earnings = earnings.filter(network='mainnet')
 
     amounts = {}
+    descs = {}
 
     for earning in earnings:
         if not earning.to_profile:
             continue
         handle = earning.to_profile.handle
+        #####################################
         if handle not in amounts.keys():
             amounts[handle] = 0
         if earning.value_usd:
             amounts[handle] += earning.value_usd
+        #####################################
+        if handle not in descs.keys():
+            descs[handle] = {}
+        source_type = earning.source_type_human
+        if source_type not in descs[handle].keys():
+            descs[handle][source_type] = 0
+        descs[handle][source_type] += 1
+            
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
@@ -209,7 +231,10 @@ def earners():
         return
     for amount in amounts[:limit]:
         counter += 1
-        pprint(f"{counter}) @{amount[0]} - ${round(amount[1], 0)}")
+        handle = amount[0]
+        desc = descs[handle]
+        desc = ", ".join([f"{ele[1]} {ele[0]}{pluralize(ele[1])}" for ele in desc.items()])
+        pprint(f"{counter}) @{handle} - ${round(amount[1], 0)} ({desc})")
 
     pprint("")
     pprint("=======================")
@@ -221,21 +246,22 @@ def earners():
     do_post(text)
 
 def grants():
-    from grants.views import clr_active, clr_round
-    if not clr_active:
+
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+    if not active_clr_rounds.exists():
         return
 
     ############################################################################3
     # total stats
     ############################################################################3
 
-    start = next_round_start
-    end = round_end
-    day = (datetime.now() - start).days
+    start = active_clr_rounds.first().start_date
+    end = active_clr_rounds.first().end_date
+    day = (timezone.now() - start).days
     pprint("")
     pprint("================================")
     pprint(f"== BEEP BOOP BOP ⚡️          ")
-    pprint(f"== Grants Round {clr_round} ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
+    pprint(f"== Grants Round ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
     pprint(f"== Day {day} Stats 💰🌲👇 ")
     pprint("================================")
     pprint("")
@@ -264,8 +290,11 @@ def grants():
                 except Exception as e:
                     pass
                 if usdt_amount < discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling:
-                    amount_in_carts[currency][0] += float(amount)
-                    amount_in_carts[currency][1] += float(usdt_amount)
+                    try:
+                        amount_in_carts[currency][0] += float(amount)
+                        amount_in_carts[currency][1] += float(usdt_amount)
+                    except:
+                        pass
 
     contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
     amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
@@ -278,7 +307,8 @@ def grants():
         total_usdt_in_carts += val[1]
     pprint(f"{round(total_usdt_in_carts/1000, 1)}k DAI-equivilent in carts, but not yet checked out yet:")
     for key, val in amount_in_carts.items():
-        pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
+        if val[1] > 10 and key:
+            pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
 
     ############################################################################3
     # top contributors
@@ -313,8 +343,8 @@ def grants():
     pprint("=======================")
     pprint("")
 
-    limit = 25
-    pprint(f"Top Contributors by Num Contributions (Round {clr_round})")
+    limit = 10
+    pprint(f"Top Contributors by Num Contributions")
     counter = 0
     for obj in all_contributors_by_num[0:limit]:
         counter += 1
@@ -325,7 +355,7 @@ def grants():
     pprint("")
 
     counter = 0
-    pprint(f"Top Contributors by Amount of Contributions (Round {clr_round})")
+    pprint(f"Top Contributors by Amount of Contributions")
     for obj in all_contributors_by_amount[0:limit]:
         counter += 1
         pprint(f"{counter} - ${str(round(obj[1], 2))} by @{obj[0]}")
@@ -335,7 +365,7 @@ def grants():
     pprint("")
 
     counter = 0
-    pprint(f"Saturation by Token (Round {clr_round})")
+    pprint(f"Saturation by Token")
     for obj in all_contributions_by_token[0:limit]:
         counter += 1
         pprint(f"{counter} - ${str(round(obj[1], 2))} in {obj[0]}")
@@ -344,21 +374,23 @@ def grants():
     pprint("=======================")
     pprint("")
 
-    active_rounds = ['tech', 'media', 'change']
-    from grants.clr import TOTAL_POT_TECH, TOTAL_POT_MEDIA, TOTAL_POT_CHANGE
-    active_round_threshold = {
-        'tech': TOTAL_POT_TECH,
-        'media': TOTAL_POT_MEDIA,
-        'change': TOTAL_POT_CHANGE,
-    }
-    active_rounds_allocation = {key: 0 for key in active_rounds}
-    for ar in active_rounds:
-        grants = Grant.objects.filter(active=True, grant_type=ar, is_clr_eligible=True, hidden=False)
+    active_rounds = []
+    active_round_threshold = {}
+    active_rounds_allocation = {}
+
+    for active_clr_round in active_clr_rounds:
+        key = active_clr_round.round_num
+
+        active_round_threshold[key] = float(active_clr_round.total_pot)
+        active_rounds_allocation[key] = 0
+        active_rounds.append(key)
+
+        grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, hidden=False)
         for grant in grants:
             try:
-                active_rounds_allocation[ar] += grant.clr_prediction_curve[0][1]
-            except:
-                pass
+                active_rounds_allocation[key] += float(grant.clr_prediction_curve[0][1])
+            except Exception as e:
+                print(e)
 
     counter = 0
     pprint(f"Total Saturation of Matching Funds By Round Type (Round {clr_round})")
@@ -371,10 +403,27 @@ def grants():
         pprint(f"{counter} {key} - ${round(val, 2)} ({allocation_pct}% allocated)")
 
 
+    pprint("")
+    pprint("=======================")
+    pprint("")
+    pprint("Misc Stats:")
+    brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
+    sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
+    contributor_count = contributions.distinct('subscription__contributor_profile').count()
+    sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
+    brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
 
+    zksync_contribution_count = contributions.filter(validator_comment__icontains='zkSync').count()
+    contribution_count = contributions.count()
+    zksync_contribution_pct = round(100 * zksync_contribution_count / contribution_count)
+    sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
+
+    pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
+    pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
+    pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
 
     ############################################################################3
-    # new feature stats for round {clr_round} 
+    # new feature stats for round {clr_round}
     ############################################################################3
 
     subs_stats = False
@@ -390,17 +439,15 @@ def grants():
     # all contributions export
     ############################################################################3
 
-    start = next_round_start
-    end = round_end
     export = False
     if export:
         contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
         pprint("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
         for contribution in contributions:
-            pprint(contribution.tx_id, 
+            print(contribution.tx_id,
                 contribution.split_tx_id,
                 contribution.subscription.contributor_address,
-                contribution.subscription.amount_per_period, 
+                contribution.subscription.amount_per_period,
                 contribution.subscription.amount_per_period_minus_gas_price,
                 contribution.subscription.token_address)
 
@@ -418,7 +465,7 @@ class Command(BaseCommand):
     help = 'puts grants stats on town suqare'
 
     def add_arguments(self, parser):
-        parser.add_argument('what', 
+        parser.add_argument('what',
             default='',
             type=str,
             help="what to post"

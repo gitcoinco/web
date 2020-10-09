@@ -2,38 +2,44 @@
 
     <div class="container-fluid grants-container">
       <div class="container">
-        {% if grants %}
-          <div class="infinite-container row">
-            {% for grant in grants %}
-              <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item">
-                {% include 'grants/card/index.html' %}
-              </div>
-            {% endfor %}
+        <div :class="`infinite-container mt-4 row ${ current_type !== 'collections' ? 'vertica-scroll' : ''}`" @scroll.passive="onScroll($event)" v-if="(current_type == 'all' || current_type == 'collections') && collections && !activeCollection">
+          <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in collections">
+            {% include 'grants/components/collection.html' %}
           </div>
-          {% if grants.has_next %}
-            <p class="mb-0 text-center py-4">
-              <a class="infinite-more-link text-center text-black-70 cursor-pointer"
-                href="?network={{network}}&type={{type}}&keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}"
-              >
-                <i class="fas fa-spinner fa-spin mr-2"></i>
-                Collecting more exciting grants
-              </a>
-            </p>
-          {% endif %}
-        {% else %}
-          <div class="col-12 mb-3 mx-auto col-md-6 text-center">
-            <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-            <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
-            <p class="font-subheader text">
-              {% trans "We couldn't match with any grants on Gitcoin." %}</br>
-              {% trans "Please try another search term or browse for a grant." %}
-            </p>
+        </div>
+        <div class="infinite-container mt-4 row" @scroll.passive="onScroll($event)" v-if="activeCollection">
+          <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in [activeCollection]">
+            {% include 'grants/components/collection.html' %}
           </div>
+        </div>
+        <div v-if="current_type === 'collections' && !collections.length && !activeCollection">
+          <div class="text-center my-4">
+            <p class="font-bigger-2 my-5 ">To create a collection, add some <a href="/grants">grants</a> to cart + click <b class="text-highlight-gc-blue"><i class="fas fa-heart"></i> save to collection</b> at checkout</p>
+            <img src="{% static 'v2/images/quickstart-box.svg' %}" alt="">
+          </div>
+        </div>
+        <div v-if="activeCollection">
+          <h3 class="font-subheader my-3">Grants in this collection: </h3>
+        </div>
+        <div class="infinite-container row" @scroll.passive="onScroll($event)" v-if="grants">
+          <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+            <a class="text-decoration-none" :href="grant.details_url">
+              {% include 'grants/components/card.html' %}
+            </a>
+          </div>
+        </div>
+        <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
+          <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+          <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+          <p class="font-subheader text">
+            {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+            {% trans "Please try another search term or browse for a grant." %}
+          </p>
           <div class="col-12 pt-4 pb-2 mx-auto text-center">
             <a class="button-lg btn-gc btn-gc-blue py-3 px-5 font-weight-semibold" href="{% url 'grants:grants' %}">
               {% trans "Browse Grants" %}
             </a>
           </div>
-        {% endif %}
+        </div>
       </div>
     </div>

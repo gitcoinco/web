@@ -8,11 +8,8 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 
 Vue.mixin({
   methods: {
-    messageUser: function(handle) {
-      let vm = this;
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
-
-      chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+    chatWindow: function(channel) {
+      window.chatSidebar.chatWindow(channel);
     },
     fetchUsers: function(newPage) {
       let vm = this;
@@ -381,6 +378,12 @@ if (document.getElementById('gc-users-directory')) {
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
     mounted() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has('ptokens')) {
+        this.$set(this.params, 'only_with_token', true);
+      }
+
       this.fetchUsers();
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();

@@ -28,10 +28,10 @@ from adminsortable2.admin import SortableInlineAdminMixin
 from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification, ProfileView, Question,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription, UserAction,
-    UserVerificationModel,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
+    Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription,
+    UserAction, UserVerificationModel,
 )
 
 
@@ -41,7 +41,7 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
-    raw_id_fields = ['bounty', 'profile']
+    raw_id_fields = ['bounty', 'profile', 'funder_profile', 'project']
     readonly_fields = ['fulfiller_github_username']
     list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url', 'payout_status']
     search_fields = [
@@ -175,7 +175,7 @@ recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
-    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk', 'ignore_tribes']
     ordering = ['-id']
     search_fields = ['email', 'data']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
@@ -365,12 +365,21 @@ class HackathonSponsorAdmin(admin.ModelAdmin):
     """The admin object for the HackathonSponsor model."""
 
     list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
+    raw_id_fields = ['hackathon', 'sponsor']
+
+
+class HackathonWorkshopAdmin(admin.ModelAdmin):
+    """The admin object for the HackathonWorkshop model."""
+
+    raw_id_fields = ['speaker']
+    list_display = ['pk', 'start_date', 'hackathon', 'speaker', 'url']
 
 
 class SponsorAdmin(admin.ModelAdmin):
     """The admin object for the Sponsor model."""
 
     list_display = ['pk', 'name', 'img']
+    raw_id_fields = ['tribe']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
@@ -440,6 +449,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 class HackathonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'referer', 'registrant']
+    search_fields = ['name', 'registrant__handle']
     raw_id_fields = ['registrant']
 
 
@@ -589,6 +599,7 @@ admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
+admin.site.register(HackathonWorkshop, HackathonWorkshopAdmin)
 admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
 admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)

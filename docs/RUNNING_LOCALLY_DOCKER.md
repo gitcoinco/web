@@ -337,7 +337,7 @@ Add `import ipdb;ipdb.set_trace()` to the method you want to inspect, you then r
 
 `Q: How can I access the Django shell, similar to: python manage.py shell ?`
 
-Simply run: `make get_django_shell` or `docker-compose exec web python app/manage.py shell`
+Simply run: `make get_django_shell` or `docker-compose exec web python3 app/manage.py shell`
 
 #### Access BASH
 

@@ -28,4 +28,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         mr = MatchRound.objects.current().first()
-        mr.process()
+        if mr:
+            mr.process()

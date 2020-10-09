@@ -33,7 +33,7 @@ from retail.helpers import get_ip
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
-    ProfileSerializer, SearchHistory, TribeMember,
+    ProfileSerializer, SearchHistory, TribeMember, UserDirectory,
 )
 from .tasks import increment_view_count
 
@@ -219,6 +219,16 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10
 
+class UserDirectorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserDirectory
+        fields = '__all__'
+        depth = 1
+
+class UserDirectoryPagination(PageNumberPagination):
+    page_size = 20
+
 
 class HackathonProjectsViewSet(viewsets.ModelViewSet):
     queryset = HackathonProject.objects.prefetch_related('bounty', 'profiles').all().order_by('id')
@@ -252,6 +262,15 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+
+            projects = []
+            for project in queryset:
+                bounty = project.bounty
+                org_name = bounty.org_name
+                if org_name != sponsor:
+                    projects.append(project.pk)
+
+            queryset = queryset.exclude(pk__in=projects)
 
         if q:
             queryset = queryset.filter(
@@ -297,7 +316,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'metadata'
         )
 
 
@@ -473,6 +492,11 @@ class BountiesViewSet(viewsets.ModelViewSet):
             if self.request.query_params.get('misc') == 'hiring':
                 queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
 
+        if 'event' in param_keys:
+            queryset = queryset.filter(
+                repo_type=self.request.query_params.get('event'),
+            )
+
         # Keyword search to search all comma separated keywords
         queryset_original = queryset
         if 'keywords' in param_keys:
@@ -492,7 +516,6 @@ class BountiesViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 repo_type=self.request.query_params.get('repo_type'),
             )
-
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':

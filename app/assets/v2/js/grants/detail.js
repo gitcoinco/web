@@ -1,5 +1,6 @@
 const editableFields = [
   '#form--input__title',
+  '#form--twitter__account',
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
@@ -111,6 +112,7 @@ $(document).ready(function() {
   $('.select2-selection__rendered').removeAttr('title');
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));
   $('#form--input__reference-url').height($('#form--input__reference-url').prop('scrollHeight'));
+  $('#form--twitter__account').height($('#form--twitter__account').prop('scrollHeight'));
 
   $('#edit-details').on('click', (event) => {
     event.preventDefault();
@@ -146,12 +148,14 @@ $(document).ready(function() {
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
+    let twitter_account = $('#form--twitter__account').val().replace('@', '');
     let edit_grant_members = $('#grant-members').val();
     let edit_categories = $('#grant-categories').val();
 
     let data = {
       'edit-title': edit_title,
       'edit-reference_url': edit_reference_url,
+      'edit-twitter_account': twitter_account,
       'edit-grant_members[]': edit_grant_members,
       'edit-categories[]': edit_categories
     };
@@ -200,40 +204,18 @@ $(document).ready(function() {
 
   $('#cancel_grant').on('click', function(e) {
     $('.modal-cancel-grants').on('click', function(e) {
-      let contract_address = $('#contract_address').val();
-      let grant_cancel_tx_id;
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
-
-      web3.eth.getAccounts(function(err, accounts) {
-        deployedSubscription.methods.endContract()
-          .send({
-            from: accounts[0],
-            gas: 3000000
-          }).on('transactionHash', function(transactionHash) {
-            grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
-            const linkURL = get_etherscan_url(transactionHash);
-
-            document.issueURL = linkURL;
-            $('#transaction_url').attr('href', linkURL);
-            $('.modal .close').trigger('click');
-            enableWaitState('#grants-details');
-          })
-          .on('confirmation', function(confirmationNumber, receipt) {
-            $.ajax({
-              type: 'post',
-              url: '',
-              data: {
-                'contract_address': contract_address,
-                'grant_cancel_tx_id': grant_cancel_tx_id
-              },
-              success: function(json) {
-                window.location.reload(false);
-              },
-              error: function() {
-                _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
-              }
-            });
-          });
+      $.ajax({
+        type: 'post',
+        url: '',
+        data: {
+          'grant_cancel_tx_id': '0x0'
+        },
+        success: function(json) {
+          window.location.reload(false);
+        },
+        error: function() {
+          _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
+        }
       });
     });
   });

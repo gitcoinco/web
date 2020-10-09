@@ -24,17 +24,17 @@
 {% endif %}
 <meta name="twitter:site" content="@gitcoin" />
 {% if card_title %}
-    <meta name="twitter:title" content="{{card_title}}" />
+    <meta property="twitter:title" content="{{card_title}}" />
 {% elif title %}
-    <meta name="twitter:title" content="{{title}}" />
+    <meta property="twitter:title" content="{{title}}" />
     <meta name="title" content="{{title}} | Gitcoin" />
 {% else %}
-    <meta name="twitter:title" content="Gitcoin: Grow Open Source" />
+    <meta property="twitter:title" content="Gitcoin: Grow Open Source" />
 {% endif %}
 {% if card_desc %}
-    <meta name="twitter:description" content="{{card_desc}}" />
+    <meta property="twitter:description" content="{{card_desc}}">
 {% else %}
-    <meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
+    <meta property="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
 {% endif %}
 {% if avatar_url %}
     <meta name="twitter:image" content="{{avatar_url}}" />
@@ -42,7 +42,7 @@
     <meta name="twitter:image:width" content="{% if avatar_width %}{{avatar_width}}{%else%}215{%endif%}" />
     <meta name="twitter:image:height" content="{% if avatar_height %}{{avatar_height}}{%else%}215{%endif%}" />
 {% else %}
-    <meta name="twitter:image" content="{% static "v2/images/helmet.png" %}" />
+    <meta property="twitter:image" content="{% static "v2/images/helmet.png" %}" />
     <meta name="twitter:image:width" content="238" />
     <meta name="twitter:image:height" content="238" />
 {% endif %}

@@ -183,7 +183,7 @@
             <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
             <h3 class="single-stat__title">{{ num_matching_rounds|floatformat:0 }}</h3>
             <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
-            <p class="single-stat__fineprint">(<a href="https://twitter.com/owocki/status/1252807334570516484" target="new">see the growth of these matching rounds</a>)</p>
+            <p class="single-stat__fineprint">(<a href="https://twitter.com/owocki/status/1279092094720598017" target="new">see the growth of these matching rounds</a>)</p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
@@ -414,7 +414,7 @@
     {% endif %}
 
     <div class="content-block content-block--blue-grey">
-      <div class="container" id="testimonials">
+      <div class="container" id="testimonials" style="max-height: 700px; overflow-y: scroll;">
         <h2 class="content-block__title content-block__title--small-margin">{% trans "Testimonials" %}</h2>
         <p class="content-block__subtitle">from real Gitcoin community members</p>
         <div class="row py-1">
@@ -422,6 +422,19 @@
             <iframe style="width:100%; max-width: 600px; height: 400px; " src="https://www.youtube.com/embed/hpqHJCiqXzA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
           </div>
         </div>
+
+        <div id=tweets>
+        </div>
+
+
+        {% comment %}
+        <div class="row py-1">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+          </div>
+        </div>
+        {% endcomment %}
+
+
       </div>
     </div>
 

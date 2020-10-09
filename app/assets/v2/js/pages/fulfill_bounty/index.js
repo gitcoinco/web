@@ -38,6 +38,10 @@ window.onload = function() {
       loading_button($('.js-submit'));
       let data = {};
 
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter')
+      }
+
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });

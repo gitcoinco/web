@@ -33,18 +33,19 @@ from marketing.utils import func_name, get_or_save_email_subscriber, should_supp
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
-    render_bounty_expire_warning, render_bounty_feedback, render_bounty_request, render_bounty_startwork_expire_warning,
-    render_bounty_unintersted, render_comment, render_faucet_rejected, render_faucet_request,
-    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
-    render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute, render_grant_txn_failed,
-    render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
-    render_nth_day_email_campaign, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
-    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
-    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged, render_bounty_request,
+    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_faucet_rejected,
+    render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale,
+    render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute,
+    render_grant_txn_failed, render_grant_update, render_kudos_email, render_match_distribution, render_match_email,
+    render_mention, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
+    render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
+    render_no_applicant_reminder, render_nth_day_email_campaign, render_pending_contribution_email,
+    render_quarterly_stats, render_remember_your_cart, render_request_amount_email, render_reserved_issue,
+    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
+    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
+    render_tax_report, render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
     render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
@@ -55,7 +56,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False, zip_path=None):
+              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False, zip_path=None, csv=None):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
@@ -117,6 +118,17 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
 
+    if csv is not None:
+        with open(csv, 'rb') as f:
+            data = f.read()
+            f.close()
+        encoded = base64.b64encode(data).decode()
+        attachment = Attachment()
+        attachment.content = encoded
+        attachment.type = 'text/csv'
+        attachment.filename = csv.replace('/tmp/', '')
+        attachment.disposition = 'attachment'
+        mail.add_attachment(attachment)
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
@@ -130,6 +142,39 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     return response
 
+
+def validate_email(email):
+
+    import re
+    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if(re.search(regex,email)):
+        return True
+    return False
+
+def get_bounties_for_keywords(keywords, hours_back):
+    from dashboard.models import Bounty
+    new_bounties_pks = []
+    all_bounties_pks = []
+
+    new_bounty_cutoff = (timezone.now() - timezone.timedelta(hours=hours_back))
+    all_bounty_cutoff = (timezone.now() - timezone.timedelta(days=60))
+
+    for keyword in keywords:
+        relevant_bounties = Bounty.objects.current().filter(
+            network='mainnet',
+            idx_status__in=['open'],
+        ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
+        for bounty in relevant_bounties.filter(web3_created__gt=new_bounty_cutoff):
+            new_bounties_pks.append(bounty.pk)
+        for bounty in relevant_bounties.filter(web3_created__gt=all_bounty_cutoff):
+            all_bounties_pks.append(bounty.pk)
+    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
+    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-_val_usd_db')
+
+    new_bounties = new_bounties.order_by('-admin_mark_as_remarket_ready')
+    all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')
+
+    return new_bounties, all_bounties
 
 def nth_day_email_campaign(nth, subscriber):
     firstname = subscriber.email.split('@')[0]
@@ -214,6 +259,24 @@ def new_grant(grant, profile):
 
         if not should_suppress_notification_email(to_email, 'new_grant'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def new_grant_match_pledge(matchpledge):
+    to_email = 'founders@gitcoin.co'
+    from_email = matchpledge.profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = f"New Grants Match Pledge Inquiry from {matchpledge.profile.handle}"
+        body = f""
+        for key, val in matchpledge.data_json.items():
+            body += f"{key}: {val}\n"
+        body += f"\n\n\n{settings.BASE_URL}{matchpledge.admin_url}"
+        html = f"<pre>{body}</pre>"
+        send_mail(from_email, to_email, subject, body, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
 
@@ -339,6 +402,21 @@ def successful_contribution(grant, subscription, contribution):
         html, text, subject = render_successful_contribution_email(grant, subscription, contribution)
 
         if not should_suppress_notification_email(to_email, 'successful_contribution'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def pending_contribution(contribution):
+    from_email = settings.CONTACT_EMAIL
+    to_email = contribution.subscription.contributor_profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_pending_contribution_email(contribution)
+
+        if not should_suppress_notification_email(to_email, 'pending_contribution'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
@@ -1028,9 +1106,9 @@ def grant_match_distribution_test_txn(match):
     rounded_amount = round(match.amount, 2)
     token_name = f"CLR{match.round_number}"
     coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 25% off with coupon code {settings.GRANTS_COUPON_25_OFF}"
-    if match.amount > 100:
+    if match.amount > 500:
         coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
-    if match.amount > 1000:
+    if match.amount > 3000:
         coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
     # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE,
     # THEN GOOD FOR YOU!  HERE IS A 100% OFF COUPON CODE U CAN USE (LIMIT OF 1 FOR THE FIRST PERSON
@@ -1050,14 +1128,11 @@ The txid of this test transaction is {match.test_payout_tx}.
 
 We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
 
-If you're looking to kill time before your payout is administered:
-1. {coupon} (The Gitcoin Spring 2020 Edition is available at https://store.gitcoin.co/collections/ethereal-2020 )
-2. Mind helping us make Grants Round 6 even better? Fill out this donor survey:  https://gitcoin.typeform.com/to/tAxEwe
-3. Attend the Gitcoin livestream this week to let us know what you think should change for Grants Round 6: https://twitter.com/owocki/status/1250760421637644288
+If you're looking to kill time before your payout is administered.... {coupon}
 
 Thanks,
-Kevin, Scott, Vivek and the Gitcoin Community
-"Our mission is to Grow Open Source & provide economic opportunities to our community" https://gitcoin.co/mission
+Kevin, Scott, Vivek & the Gitcoin Community
+"Our mission is to Grow Open Source & provide economic opportunities to software developers" https://gitcoin.co/mission
 </pre>
 
         """
@@ -1094,13 +1169,13 @@ We have sent your {rounded_amount} DAI to the address on file at {match.grant.ad
 Congratulations on a successful Gitcoin Grants Round {match.round_number}.
 
 What now?
-1. Send a tweet letting us know how these grant funds are being used to support your project (our twitter username is @gitcoin).
+1. Send a thank you tweet to the public goods justice league (who funded this round) on twitter: @balancerlabs @synthetix_io @iearnfinance @optimismpbc @chainlink @defiancecapital . Here is a handy one click link: https://twitter.com/intent/tweet?text=@balancerlabs+@synthetix_io+@iearnfinance+@optimismpbc+@chainlink+@defiancecapital+thank+you+for+funding+gitcoin+grants!
 2. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
 3. Celebrate 🎉 and then get back to BUIDLing something great. 🛠
 
 Thanks,
-Kevin, Scott, Vivek and the Gitcoin Community
-"Our mission is to Grow Open Source & provide economic opportunities to our community" https://gitcoin.co/mission
+Kevin, Scott, Vivek & the Gitcoin Community
+"Our mission is to Grow Open Source & provide economic opportunities to software developers" https://gitcoin.co/mission
 </pre>
 
         """
@@ -1211,46 +1286,41 @@ def reject_faucet_request(fr):
         translation.activate(cur_language)
 
 
-def new_bounty_daily(bounties, old_bounties, to_emails=None):
+def new_bounty_daily(es):
+
+    to_email = es.email
+    keywords = es.keywords
+    bounties, old_bounties = get_bounties_for_keywords(keywords, 24)
     max_bounties = 5
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
-    if to_emails is None:
-        to_emails = []
+    to_emails = [to_email]
 
+    from townsquare.utils import is_email_townsquare_enabled
     from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates, upcoming_dates, email_announcements
     quest = quest_of_the_day()
     grant = upcoming_grant()
     dates = list(upcoming_hackathon()) + list(upcoming_dates())
     announcements = email_announcements()
-    chats_count = 0
+    town_square_enabled = is_email_townsquare_enabled(to_email)
+    should_send = bounties.count() or town_square_enabled
+    if not should_send:
+        return False
 
     offers = f""
     if to_emails:
         offers = ""
 
         profile = email_to_profile(to_emails[0])
-        chat = ""
-        if profile:
-            try:
-                chats_count = profile.chat_num_unread_msgs
-            except:
-                chats_count = 0
-            if chats_count:
-                plural = 's' if chats_count > 1 else ''
-                chat = f"💬 {chats_count} Chat{plural}"
-
         notifications = get_notification_count(profile, 7, timezone.now())
         if notifications:
             plural = 's' if notifications > 1 else ''
-            notifications = f"🔵 {notifications} Notification{plural}"
+            notifications = f"💬 {notifications} Notification{plural}"
         else:
             notifications = ''
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
             offers = f"⚡️ 1 New Action"
-        else:
-            offers = ""
 
         new_bounties = ""
         if bounties:
@@ -1277,7 +1347,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         def comma(a):
             return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
 
-        subject = f"{chat}{comma(chat)}{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}{comma(True)}👤1 Trending Avatar"
+        subject = f"{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -1289,12 +1359,13 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
         finally:
             translation.activate(cur_language)
+    return True
 
 
 def weekly_roundup(to_emails=None):
@@ -1497,6 +1568,24 @@ def bounty_changed(bounty, to_emails=None):
         finally:
             translation.activate(cur_language)
 
+
+def bounty_hypercharged(bounty, to_emails=None):
+    subject = gettext("We selected a bounty for you")
+
+    if to_emails is None:
+        to_emails = []
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_bounty_hypercharged(to_email, bounty)
+
+            if not should_suppress_notification_email(to_email, 'bounty'):
+                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        finally:
+            translation.activate(cur_language)
 
 def new_match(to_emails, bounty, github_username):
     subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)
@@ -1920,3 +2009,49 @@ def remember_your_cart(profile, cart_query, grants, hours):
             send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
     finally:
         translation.activate(cur_language)
+
+def tribe_hackathon_prizes(hackathon):
+    from dashboard.models import TribeMember, Sponsor
+    from marketing.utils import generate_hackathon_email_intro
+
+    sponsors = hackathon.sponsor_profiles.all()
+    tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')
+
+    for tribe_member in tribe_members_in_sponsors.distinct('profile'):
+        # Get all records of this tribe_member for each sponsor he is a member of
+        tribe_member_records = tribe_members_in_sponsors.filter(profile=tribe_member.profile)
+
+        sponsors_prizes = []
+        for sponsor in sponsors:
+            if sponsor in [tribe_member_record.org for tribe_member_record in tribe_member_records]:
+                prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
+                sponsor_prize = {
+                    "sponsor": sponsor,
+                    "prizes": prizes
+                }
+                sponsors_prizes.append(sponsor_prize)
+
+        subject_begin = generate_hackathon_email_intro(sponsors_prizes)
+        subject = f"{subject_begin} participating in {hackathon.name} on Gitcoin 🚀"
+
+        try:
+            html, text = render_tribe_hackathon_prizes(hackathon, sponsors_prizes, subject_begin)
+        except:
+            return
+
+        profile = tribe_member.profile
+        to_email = profile.email
+        from_email = settings.CONTACT_EMAIL
+        if not to_email:
+            if profile and profile.user:
+                to_email = profile.user.email
+        if not to_email:
+            continue
+
+        cur_language = translation.get_language()
+
+        try:
+            setup_lang(to_email)
+            send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+        finally:
+            translation.activate(cur_language)

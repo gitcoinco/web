@@ -206,6 +206,10 @@ var add_interest = function(bounty_pk, data) {
     fbq('trackCustom', 'Start Work');
   }
 
+  if (typeof ga !== 'undefined') {
+    ga('send', 'event', 'Start Work', 'click', 'Bounty Hunter');
+  }
+
   return mutate_interest(bounty_pk, 'new', data);
 };
 
@@ -854,6 +858,10 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
+    if (result.metadata.hypercharge_mode) {
+      result['url'] = `${result['url']}?utm_source=hypercharge-auto-hack-explorer&utm_medium=gitcoin&utm_campaign=${result['title']}`;
+    }
+
     result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);

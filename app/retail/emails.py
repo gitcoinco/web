@@ -172,6 +172,15 @@ def render_successful_contribution_email(grant, subscription, contribution):
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
+
+def render_pending_contribution_email(contribution):
+    params = {"contribution": contribution, "hide_bottom_logo": True, 'email_style': 'grants'}
+    response_html = premailer_transform(render_to_string("emails/grants/reminder_pending_contribution.html", params))
+    response_txt = render_to_string("emails/grants/reminder_pending_contribution.html", params)
+    subject = _('Complete Grant Contribution Checkout')
+    return response_html, response_txt, subject
+
+
 def featured_funded_bounty(request):
     from dashboard.models import Bounty
     bounty = Bounty.objects.first()
@@ -185,6 +194,13 @@ def successful_contribution(request):
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
     response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def pending_contribution(request):
+    contribution = Contribution.objects.filter(validator_comment__contains="User may not be aware so send them email reminders").first()
+    response_html, __, __ = render_pending_contribution_email(contribution)
     return HttpResponse(response_html)
 
 
@@ -264,6 +280,34 @@ def render_tip_email(to_email, tip, is_new):
 
     return response_html, response_txt
 
+def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
+    email_style = 'hackathon'
+
+    hackathon = {
+        'hackathon': hackathon,
+        'name': hackathon.name,
+        'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+        'url': hackathon.url,
+    }
+
+    for sponsor_prize in sponsors_prizes:
+        sponsor_prize['name'] = sponsor_prize['sponsor'].name
+        sponsor_prize['image_url'] = sponsor_prize['sponsor'].logo.url if sponsor_prize['sponsor'].logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png'
+
+    intro = f"{intro_begin} participating on a new hackathon on Gitcoin: "
+
+    params = {
+        'hackathon': hackathon,
+        'sponsors_prizes': sponsors_prizes,
+        'intro': intro,
+        'email_style': email_style,
+        'hide_bottom_logo': True,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/tribe_hackathon_prizes.html", params))
+    response_txt = render_to_string("emails/tribe_hackathon_prizes.txt", params)
+
+    return response_html, response_txt
 
 def render_request_amount_email(to_email, request, is_new):
 
@@ -542,9 +586,9 @@ def get_notification_count(profile, days_ago, from_date):
     try:
         notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
     except Notification.DoesNotExist:
-        pass        
+        pass
     except AttributeError:
-        pass        
+        pass
     return notifications_count
 
 def email_to_profile(to_email):
@@ -555,11 +599,11 @@ def email_to_profile(to_email):
         pass
     return profile
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from marketing.views import upcoming_dates, email_announcements, trending_avatar
     sub = get_or_save_email_subscriber(to_email, 'internal')
-    
+
     email_style = 26
 
     # Get notifications count from the Profile.User of to_email
@@ -593,10 +637,12 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'date': ele.date.strftime("%Y-%m-%d")
         }]
     upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
+    upcoming_events = upcoming_events[0:7]
 
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
+        'featured_bounties': featured_bounties,
         'trending_avatar': trending_avatar(),
         'email_announcements': email_announcements(),
         'subscriber': sub,
@@ -850,10 +896,10 @@ def render_grant_update(to_email, activity):
 
 def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_round_end=(2020, 4, 7), next_round=6, next_round_start=(2020, 6, 15), next_round_end=(2020, 6, 29), match_pool='175k'): # Round 5: 3/23/2020 — 4/7/2020; Round 6: 6/15/2020 — 6/29/2020 175k
     email_style = 27
-    
+
     next_round_start = datetime.datetime(*next_round_start).strftime("%B %dth")
     next_round_end = datetime.datetime(*next_round_end).strftime("%B %dth %Y")
-    
+
     prev_grants = []
     profile = email_to_profile(to_email)
     subscriptions = profile.grant_contributor.all()
@@ -926,6 +972,32 @@ def render_wallpost(to_email, activity):
 
     response_html = premailer_transform(render_to_string("emails/wall_post.html", params))
     response_txt = render_to_string("emails/wall_post.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+		'email_type': 'bounty',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_hypercharged(to_email, bounty):
+    params = {
+        'bounty': bounty,
+		'email_type': 'bounty',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_hypercharged.html", params))
+    response_txt = render_to_string("emails/bounty_hypercharged.txt", params)
 
     return response_html, response_txt
 
@@ -1174,9 +1246,10 @@ def render_new_bounty_roundup(to_email):
     from django.conf import settings
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
+    hide_dynamic = args.hide_dynamic
+    new_kudos_size_px = '300'
+
     subject = args.subject
-    new_kudos_pks = args.kudos_ids.split(',')
-    new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
         email_style = 2
@@ -1184,17 +1257,7 @@ def render_new_bounty_roundup(to_email):
         offset = 2
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
-    kudos_friday = f'''
-<div style="text-align: center">
-<h3>New Kudos This Month</h3>
-</p>
-<p>
-''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
-</p>
-</div>
-    '''
-
-    intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+    intro = args.body
     highlights = args.highlights
     sponsor = args.sponsor
     bounties_spec = args.bounties_spec
@@ -1220,11 +1283,22 @@ def render_new_bounty_roundup(to_email):
     }
 
 
-    from kudos.models import KudosTransfer
+    from kudos.models import KudosTransfer, Token
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
         kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
+
+    new_kudos = []
+    if args.kudos:
+        for requested_kudos in args.kudos:
+            try:
+                kudos = Token.objects.get(id=requested_kudos['id'])
+                kudos.airdrop = requested_kudos.get('airdrop', f'https://gitcoin.co/kudos/{kudos.pk}/')
+                new_kudos.append(kudos)
+            except Token.DoesNotExist:
+                pass
+
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
@@ -1252,14 +1326,22 @@ def render_new_bounty_roundup(to_email):
         'bounties': bounties,
         'leaderboard': leaderboard,
         'invert_footer': False,
-        'hide_header': False,
+        'hide_header': True,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_dynamic': hide_dynamic,
         'hide_bottom_logo': True,
+        'new_kudos': new_kudos,
+        'new_kudos_size_px': new_kudos_size_px,
+        'videos': args.videos,
+        'news': args.news,
+        'updates': args.updates,
+        'issue': args.issue,
+        'release_date': args.release_date
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -1404,7 +1486,7 @@ def grant_update(request):
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
-    
+
 def grant_txn_failed(request):
     failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
     response_html, _ = render_grant_txn_failed(failed_contrib)
@@ -1622,7 +1704,26 @@ def start_work_applicant_expired(request):
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
 
+@staff_member_required
+def tribe_hackathon_prizes(request):
+    from dashboard.models import HackathonEvent
+    from marketing.utils import generate_hackathon_email_intro
 
+    hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
+
+    sponsors_prizes = []
+    for sponsor in hackathon.sponsor_profiles.all()[:3]:
+        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
+        sponsor_prize = {
+            "sponsor": sponsor,
+            "prizes": prizes
+        }
+        sponsors_prizes.append(sponsor_prize)
+
+    intro_begin = generate_hackathon_email_intro(sponsors_prizes)
+
+    response_html, _ = render_tribe_hackathon_prizes(hackathon,sponsors_prizes, intro_begin)
+    return HttpResponse(response_html)
 
 def render_remember_your_cart(grants_query, grants, hours):
     params = {
@@ -1635,4 +1736,4 @@ def render_remember_your_cart(grants_query, grants, hours):
     response_html = premailer_transform(render_to_string("emails/cart.html", params))
     response_txt = render_to_string("emails/cart.txt", params)
 
-    return response_html, response_txt    
+    return response_html, response_txt
