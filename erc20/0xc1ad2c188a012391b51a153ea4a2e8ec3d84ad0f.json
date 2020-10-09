@@ -1,0 +1,23 @@
+{
+    "symbol": "NFC",
+    "address": "0xc1ad2c188a012391b51a153ea4a2e8ec3d84ad0f",
+    "overview":{
+        "en": "NFCoin is an irreplaceable coin issued based on the (NFT) concept, used to create verifiable digital scarcity on the Ethereum network. The goal of NFCoin is to create a decentralized digital commodity financial ecosystem. NFC will be used for digital goods and game transactions. We integrate the irreplaceable attributes of NFT into each digital product and make it unique.",
+        "zh": "NFCoin是基于（NFT）概念发行的不可替代的硬币，用于在以太坊网络上创建可验证的数字稀缺性。 NFCoin的目标是创建一个去中心化的数字商品金融生态系统。NFC将用于数字商品和游戏交易。将NFT不可替代的属性整合到每个数字商品和游戏中，并使其具有独特性。NFcoin将被集成到DeFi，游戏，奢侈品，数字商品和金融资产中。"
+    },
+    "email": "info@nfcoin.io",
+    "website": "https://nfcoin.io/",
+    "whitepaper": "https://storage.googleapis.com/download/storage/v1/b/export-gitbook/o/spaces%2F-MHpj5gxQKW8bPw3os0A%2Fpdf%2F2962344080.pdf?generation=1601459755066241&alt=media",
+    "state": "LOCKED",
+    "published_on": "2020-10-1",
+    "initial_price":{
+        "ETH":"0.00015 ETH",
+        "USD":"0.05 USD",
+        "BTC":"0.000005 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/nfcoinnews",
+        "medium": "https://medium.com/@nfcoin",
+        "discord": "https://discord.gg/QryxT4"
+    }
+}
