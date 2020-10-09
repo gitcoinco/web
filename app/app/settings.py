@@ -151,6 +151,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'debug_toolbar',
     'haystack',
+    'quadraticlands'
 ]
 
 MIDDLEWARE = [
@@ -183,7 +184,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates', 'quadraticlands/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [

@@ -1,0 +1,40 @@
+{% extends 'quadraticlands/base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+Copyright (C) 2020 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block 'content' %}
+  <p>Hello Quadratic Worlds</p>
+{% endblock %}
+
+{% block 'scripts' %}
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setInterval(function(){
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > 500 && !document.offset_loaded){
+          $("img").unveil(200);
+          document.offset_loaded = true;
+        }
+      }, 3000);
+      setTimeout(function(){
+        $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+      }, 1000);
+    });
+  </script>
+{% endblock %}

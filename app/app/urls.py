@@ -53,6 +53,7 @@ import revenue.views
 import search.views
 import tdi.views
 import townsquare.views
+import quadraticlands.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
@@ -753,6 +754,14 @@ urlpatterns = [
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),
+
+    # quadratic lands 
+    re_path(r'^quadraticlands/?$', quadraticlands.views.index, name='quadraticlands_index'),
+    re_path(r'^quadraticlands/claim/?', quadraticlands.views.claim_tokens, name='claim_tokens'),
+    re_path(r'^quadraticlands/about/?', quadraticlands.views.about, name='about'),
+    re_path(r'^quadraticlands/governance/?', quadraticlands.views.governance, name='governance'),
+    re_path(r'^quadraticlands/feedback/?', quadraticlands.views.feedback, name='feedback'),
+
 ]
 
 if settings.ENABLE_SILK:
