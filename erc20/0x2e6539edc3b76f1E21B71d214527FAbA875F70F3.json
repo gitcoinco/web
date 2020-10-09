@@ -1,0 +1,21 @@
+{
+    "symbol": "YFDOT",
+    "address": "0x2e6539edc3b76f1E21B71d214527FAbA875F70F3",
+    "overview": {
+        "en": "Yearn Finance Dot platform is powerful enough from a scalability, interoperability, developability and governance perspective to help make the vision of Web3 a reality that aims to get more value for an investment.",
+        "zh": "从可伸缩性，互操作性，可开发性和治理的角度来看，Yearn Finance Dot平台具有足够强大的功能，可以帮助实现Web3的愿景，旨在为投资带来更多价值。"
+    },
+    "email": "support@yfdot.finance",
+    "website": "https://yfdot.finance/",
+    "state": "NORMAL",
+    "published_on": "2020-09-22",
+    "initial_price": {
+        "USD": "$50.00 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/Yfdotfinance",
+        "github": "https://github.com/YFDOT",
+        "medium": "https://medium.com/@YFdotFinance",
+	    "telegram": "https://t.me/YFDOT_Finance"
+    }
+}
