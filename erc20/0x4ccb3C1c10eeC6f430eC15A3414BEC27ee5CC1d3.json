@@ -1,0 +1,16 @@
+{
+  "symbol": "DT",
+  "address": "0x4ccb3C1c10eeC6f430eC15A3414BEC27ee5CC1d3",
+  "overview":{
+        "en": "DT is a decentralized ecological environment. Fairness and rarity are its greatest characteristics.",
+        "zh": "DT谨守流通性，稀有性，公平性。不增发，不抛售，不删除"
+  },
+  "email": "dtoken@protonmail.com",
+  "website": "https://www.dtblock.io/",
+  "whitepaper": "https://www.dtblock.io/DT_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-10",
+  "links": {
+    "facebook": "https://www.facebook.com/Decentralized-Token-110288737499972"
+  }
+}
