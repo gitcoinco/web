@@ -43,29 +43,6 @@ logger = logging.getLogger(__name__)
 
 # settings.DATABASE_URL
 
-def get_settings_navs(request):
-    tabs = [{
-        'body': _('Claim'),
-        'href': reverse('claim_tokens')
-    }, {
-        'body': _('About'),
-        'href': reverse('about')
-    }, {
-        'body': _('Governance'),
-        'href': reverse('governance')
-    }, {
-        'body': _('Feedback'),
-        'href': reverse('feedback_settings')
-    }]
-
-    if request.user.is_staff:
-        tabs.append({
-            'body': _('Stats'),
-            'href': reverse('stats'),
-        })
-
-    return tabs
-
 def index(request):
     return TemplateResponse(request, 'quadraticlands/index.html')
 
@@ -78,5 +55,5 @@ def about(request):
 def governance(request):
     return TemplateResponse(request, 'quadraticlands/governance.html')
 
-def feedback(request):
-    return TemplateResponse(request, 'quadraticlands/feedback.html')
+def mission(request):
+    return TemplateResponse(request, 'quadraticlands/mission.html')

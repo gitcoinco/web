@@ -1,6 +1,25 @@
-{% extends 'quadraticlands/quadraticlands.html' %}
-{% load i18n static %}
-{% block quadraticlands_content %}
+{% extends 'quadraticlands/base.html' %}
+{% load humanize static i18n %}
+{% comment %}
+Copyright (C) 2020 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% block 'content' %}
+<center>  
+<h1>Hello Quadratic World!!</h1>
+
 <style>
   #select_all{
     font-size: 12px;
@@ -17,14 +36,13 @@
 </style>
 <form id="email-settings" method="POST" class="col-md-8 m-auto">
   <div class="form-group">
-    <h5>{% trans "Email Preferences" %}</h5>
-    <label class="form__label" for="email">{% trans "Email address" %}</label>
-    <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{{ es.email }}" required>
-    <small id="emailHelp" class="form__input-help">{% trans "We will never share your email with anyone else" %}</small>
+    <h5>{% trans "Ethereum Address" %}</h5>
+    <label class="form__label" for="email">{% trans "Ethereum address" %}</label>
+    <input type="email" name="email" class="form__input" placeholder='0x4242424242...' value="{{ es.email }}" required>
+    <small id="emailHelp" class="form__input-help">{% trans "You will receive untold fortunes..." %}</small>
   </div>
   <div class="form-group">
-    <a href="#" id="select_all" data-direction="+" >[{% trans "Select All" %}]</a>
-    {% for email_type in email_types %}
+      {% for email_type in email_types %}
     <div class="email_pref_container">
       <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ email_type.0 }}" value="1">
       <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
@@ -34,42 +52,14 @@
     {% endfor %}
   </div>
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="Save">
+  <input class='button button--primary' type='submit' name='submit' value="CLAIM">
 </form>
 {% endblock %}
-
+</center>
+{% comment "ZW 10/9/2020" %}
 {% block scripts %}
 <script>
-  $(document).ready(function(){
-    // select / deselect all
-    $('#select_all').on('click', function(e) {
-      e.preventDefault();
-      if($(this).data('direction') == '+'){
-        $('.priv_checkbox').prop('checked', true);
-        $(this).text('[Deselect All]');
-        $(this).data('direction','-');
-      } else {
-        $('.priv_checkbox').prop('checked', false);
-        $(this).text('[Select All]');
-        $(this).data('direction','+');
-      }
-    });
-
-    // suppression preferences form
-    var suppression_preferences = {{ suppression_preferences|safe }};
-
-    for (var key in suppression_preferences) {
-      var pref = suppression_preferences[key];
-      $('#'+key).prop('checked', pref);
-    }
-  });
-  // bust the cache every time the language changes
-  $("#preferred_language").change(function(e) {
-    var timestamp = Date.now() / 1000 | 0;
-
-    Cookies.set('last_language_change', timestamp);
-  });
-
 </script>
 {{ block.super }}
 {% endblock %}
+{% endcomment %}

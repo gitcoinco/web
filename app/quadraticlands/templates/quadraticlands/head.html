@@ -1,0 +1,101 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static is_in_list matches %}
+{% include 'shared/tag_manager_1.html' %}
+<meta charset="utf-8">
+<link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
+<link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/fontawesome-all.min.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/lib/typography.css" %}" as="style">
+<link rel="preload" href="{% static "v2/css/jquery.select2.min.css" %}" as="style">
+<link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-200.woff2" %}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-regular.woff2" %}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-600.woff2" %}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-700.woff2" %}" as="font" type="font/woff2" crossorigin>
+
+<link rel="preload" href="{% static "v2/js/lib/bootstrap.min.js" %}" as="script" crossorigin="anonymous">
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+<link rel="stylesheet" href="{% static "v2/css/search.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+<link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
+<link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
+{% if not slim %}
+  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+{% endif %}
+<link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/colors.css" %}" />
+
+<!-- Forms -->
+<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/drop.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/notifications.css" %}">
+
+{% if 'grants' in request.path %}
+<!-- Grants -->
+<link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/grants/cancel.css" %}">
+{% endif %}
+
+<!-- Cookie Consent -->
+<link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
+
+<title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
+{% include 'shared/favicon.html' %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+{% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
+{% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
+
+{% comment "ZW 10/9/2020 %}
+{% if env == 'prod' %}
+<script>document.domain = 'gitcoin.co';</script>
+<!-- Hotjar Tracking Code for gitcoin.co -->
+<script>
+  (function(h,o,t,j,a,r){
+    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+    h._hjSettings={
+      {% for key, value in hotjar.items %}
+      {{ key }}:{{ value }},
+      {% endfor %}
+    };
+    a=o.getElementsByTagName('head')[0];
+    r=o.createElement('script');r.async=1;
+    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+    a.appendChild(r);
+  })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+{% endif %}
+{% endcomment %}

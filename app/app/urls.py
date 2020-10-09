@@ -760,7 +760,7 @@ urlpatterns = [
     re_path(r'^quadraticlands/claim/?', quadraticlands.views.claim_tokens, name='claim_tokens'),
     re_path(r'^quadraticlands/about/?', quadraticlands.views.about, name='about'),
     re_path(r'^quadraticlands/governance/?', quadraticlands.views.governance, name='governance'),
-    re_path(r'^quadraticlands/feedback/?', quadraticlands.views.feedback, name='feedback'),
+    re_path(r'^quadraticlands/mission/?', quadraticlands.views.mission, name='mission'),
 
 ]
 

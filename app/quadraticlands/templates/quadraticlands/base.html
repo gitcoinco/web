@@ -19,22 +19,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    {% include 'shared/head.html' %}
+    {% include 'quadraticlands/head.html' %}
     {% block 'extrahead' %}
     <link rel="stylesheet" href="{% static "v2/css/quests.css" %}" />
     {% endblock %}
     {% include 'shared/cards_pic.html' %}
   </head>
   <body class="g-font-muli {{body_class}} {{quest.background}} {{quest.style}}">
+
+    {% comment "ZW 10/9/2020" %}
     {% if quest and quest.video %}
       <video class="video-background" no-controls autoplay loop="true" src="/static/v2/images/quests/backs/{{quest.video}}" poster="/static/v2/images/quests/backs/{{quest.background}}.jpeg"></video>
-    {% endif %}
-
+    {% endif %} 
+    {% endcomment %}
+  
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    
     <div class="header dash">
     {% if nav == 'home' %}
-      {% include 'home/nav.html' %}
+      {% include 'quadraticlands/nav.html' %}
     {% else %}
       {% include 'quadraticlands/nav.html' %}
     {% endif %}

@@ -17,21 +17,21 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
+  
+  {% comment "ZW 10/9/2020" %}
   <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
     {% include 'shared/helmet-white-animated.html' %}
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand ml-2 py-0" href="{% url 'quests_index' %}">
-
+  <a class="navbar-brand ml-2 py-0" href="{% url 'quadraticlands_index' %}">
     {% include 'shared/svg-embed/h35px_quests.svg' %}
   </a>
-  {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
-    <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
-      <i class="fas fa-circle pr-1"></i>
-      <span id="current-network"></span>
-    </div>
-  {% endif %}
-  {% include 'shared/menu.html' %}
+  {% endcomment %}
+
+
+  {% include 'quadraticlands/menu.html' %}
+
+
 </nav>
 {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
