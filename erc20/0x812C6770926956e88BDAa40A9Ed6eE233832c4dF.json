@@ -1,0 +1,24 @@
+{
+  "symbol": "TAO",
+  "address": "0x812C6770926956e88BDAa40A9Ed6eE233832c4dF",
+  "overview":{
+    "en": "Ethererum Dex base on Uniswap Protocal",
+    "zh": "基于Uniswap协议的去中心化交易所"
+  },
+  "email": "admin@peachswap.exchange",
+  "website": "https://peachswap.exchange",
+  "whitepaper": "https://github.com/peachswap/whitepaper/blob/master/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-22",
+  "initial_price":{
+    "ETH":"0.0003 ETH",
+    "USD":"0.108 USD",
+    "BTC":"0.00001 BTC"
+  },
+  "links": {
+    "blog": "https://peachswap.exchange",
+    "twitter": "https://twitter.com/peachswapex",
+    "telegram": "https://t.me/peachswap",
+    "github": "https://github.com/peachswap",
+  }
+}
