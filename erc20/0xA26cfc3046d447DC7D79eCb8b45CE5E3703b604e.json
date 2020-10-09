@@ -1,0 +1,16 @@
+{
+    "symbol": "BID",
+    "address": "0xA26cfc3046d447DC7D79eCb8b45CE5E3703b604e",
+    "overview": {
+        "en": "The BID medical chain, developed by Germany Kangtu Group, combines the blockchain technology with the health care industry to create an innovative business model that enables the life science and the health care industry to achieve win-win results in product development, production, sales and consumption, creating a new health care value chain model with life science as the core.",
+        "zh": "BID医疗链由德国康图集团研发,将区块链技术与健康医疗产业相结合、打造一个让生命科学与健康医疗产业产品研发，生产，销售和消费所有环节共赢的创新型商业模式,开创了以生命科学为核心的健康医疗价值链新模式。"
+    },
+    "website": "http://www.bidworld.online",
+    "whitepaper": "http://www.bidworld.online/bid/bid.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-03",
+    "links": {
+        "telegram": "",
+        "github": ""
+    }
+}
