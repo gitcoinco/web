@@ -152,6 +152,16 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
     url(
+        r'^api/v0.1/profile/(?P<handle>.*)/start_session_idena',
+        dashboard.views.start_session_idena,
+        name='start_session_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/authenticate_idena',
+        dashboard.views.authenticate_idena,
+        name='authenticate_idena'
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'

@@ -22,6 +22,7 @@ import hashlib
 import html
 import json
 import logging
+from logging import debug, error
 import os
 import time
 from copy import deepcopy
@@ -34,7 +35,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError, ObjectDoesNotExist
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q, Sum
@@ -75,6 +76,7 @@ from chat.tasks import (
 )
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
+from dashboard.idena_utils import get_idena_url, gen_idena_nonce
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
@@ -2905,6 +2907,12 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
+        context['is_idena_connected'] = profile.is_idena_connected
+        if profile.is_idena_connected:
+            pass
+        else:
+            context['idena_url'] = get_idena_url(request, profile)
+
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
         if settings.DEBUG:
@@ -2923,6 +2931,55 @@ def get_profile_tab(request, profile, tab, prev_context):
     else:
         raise Http404
     return context
+
+def get_profile_by_idena_token(token):
+    try:
+        return Profile.objects.get(idena_token=token)
+    except ObjectDoesNotExist:
+        return None
+        
+
+@csrf_exempt # Call from external service
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@require_POST
+def start_session_idena(request, handle):
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid json data'
+        })
+
+    profile = get_profile_by_idena_token(data.get('token'))
+
+    if not profile or profile.handle != handle:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Invalid Idena Token'
+        })
+
+    profile.idena_nonce = gen_idena_nonce()
+    profile.save()
+
+    return JsonResponse({
+        'success': True,
+        'data': {
+            'nonce': profile.idena_nonce,
+        }
+    })
+
+@csrf_exempt # Call from external service
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@require_POST
+def authenticate_idena(request, handle):
+    return JsonResponse({
+        "success": True,
+        "data": {
+            "authenticated": True
+        }
+    })
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
