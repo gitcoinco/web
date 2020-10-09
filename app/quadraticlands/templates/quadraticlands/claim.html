@@ -17,42 +17,37 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
-<center>  
-<h2>You will need to connect a wallet to claim you tokens my friend!</h2>
-<style>
-  #select_all{
-    font-size: 12px;
-  }
-  label.form__label{
-    margin-bottom: 0px;
-  }
-  small{
-    display: block;
-  }
-  .email_pref_container{
-    height: 50px;
-  }
-</style>
-<form id="email-settings" method="POST" class="col-md-8 m-auto">
-  <div class="form-group">
-    <h5>{% trans "Ethereum Address" %}</h5>
-    <label class="form__label" for="email">{% trans "Ethereum address" %}</label>
-    <input type="email" name="email" class="form__input" placeholder='0x4242424242...' value="{{ es.email }}" required>
-    <small id="emailHelp" class="form__input-help">{% trans "You will receive untold fortunes..." %}</small>
-  </div>
-  <div class="form-group">
-      {% for email_type in email_types %}
-    <div class="email_pref_container">
-      <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ email_type.0 }}" value="1">
-      <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
-      <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
-      <br>
-    </div>
-    {% endfor %}
-  </div>
-  {% csrf_token %}
-  <input class='button button-primary' type='submit' name='submit' value="CLAIM">
+<center> 
+<br>   
+<h2>Let's get you setup to claim your tokens!</h2>
+<div class="row">
+  <div class="container py-5 ">
+    <div class="quests-hero white my-3">
+<div class="row">
+  <div class="col-12">
+<div class="form-group">
+  <h5>{% trans "We'll need a mainnet Ethereum Address connected to your account if you don't already have one" %}</h5>
+</div>
+<div class="form-group">
+  <input type="text" name="preferred_payout_address" class="form__input" placeholder='0x0'  value="{{ profile.preferred_payout_address }}">
+  <label class="form__label" for="preferred_payout_address">{% trans ""%}</label> <a href="#" id="pull_from_wallet">{% trans "[Pull From Connected Wallet]" %}</a>
+ </div>
+{% csrf_token %}
+<input class='button button-primary' type='submit' name='submit' value="{% trans "Save" %}">
 </form>
+{% comment "ZW 10/9 - some examples of pulling profile info from a user" %}
+{% endcomment %}
+<br>
+<p>{{ profile.email }}</p>
+<p>{{ profile.created_on }}</p>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+
+
 </center>
 
 {% endblock %}
