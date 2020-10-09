@@ -4,8 +4,13 @@
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
 const BN = Web3.utils.BN;
+let appCart;
 
-needWalletConnection();
+window.addEventListener('dataWalletReady', function(e) {
+  appCart.$refs['cart'].network = networkName;
+}, false);
+
+// needWalletConnection();
 
 // Constants
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -32,7 +37,10 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       // Checkout, shared
+      chainId: '',
+      network: 'mainnet',
       tabSelected: 'ETH',
+      tabIndex: null,
       currentTokens: [], // list of all available tokens
       adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
       tokenList: undefined, // array of all tokens for selected network
@@ -101,12 +109,60 @@ Vue.component('grants-cart', {
   computed: {
     grantsByTenant() {
       let vm = this;
-      console.log(vm.tabSelected)
-      return vm.grantData.filter((item)=>{
-        console.log(item)
+      let result;
+
+      result =  vm.grantData.filter((item)=>{
         return item.tenants.includes(vm.tabSelected)
       });
 
+      return result;
+
+    },
+    grantsCountByTenant() {
+      let vm = this;
+      let tenants = ['ETH', 'ZCASH']
+
+      var grantsTentantsCount = vm.grantData.reduce(function (result, grant) {
+        var currentCount = result[grant.tenants] || 0;
+        result[grant.tenants] = currentCount + 1;
+        return result;
+      }, {});
+
+      return grantsTentantsCount;
+
+
+
+
+    },
+    sortByPriority: function() {
+      console.log(this.currentTokens)
+      return this.currentTokens.sort(function(a, b) {
+        return b.priority - a.priority;
+      });
+    },
+    filterByNetwork: function() {
+      const vm = this;
+
+      if (vm.network == '') {
+        return vm.sortByPriority;
+      }
+      return vm.sortByPriority.filter((item)=>{
+        return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
+      });
+    },
+    filterByChainId: function() {
+      const vm = this;
+      let result;
+
+      if (vm.chainId == '') {
+        result = vm.filterByNetwork;
+      } else {
+        result = vm.filterByNetwork.filter((item) => {
+          console.log(item.chainId, vm.chainId)
+          return String(item.chainId) === vm.chainId;
+        });
+      }
+      return result;
     },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
@@ -473,16 +529,38 @@ Vue.component('grants-cart', {
   },
 
   methods: {
-    tabChange: function(input) {
+    tabChange: async function(input) {
       let vm = this;
+      console.log(input)
       switch (input) {
         default:
         case 0:
-          vm.tabSelected = 'ETH'
+          vm.tabSelected = 'ETH';
+          vm.chainId = '1';
+          if (!vm.grantsCountByTenant.ETH) {
+            return vm.tabIndex = 1
+          }
+          if (!provider) {
+            await onConnect();
+          }
           break;
         case 1:
-          vm.tabSelected = 'ZCASH'
+          vm.tabSelected = 'ZCASH';
+          vm.chainId = '123123';
           break;
+      }
+    },
+    confirmZcashPayment: function(grant) {
+
+      let data = {
+
+        "grant_id": grant.grant_id,
+        "contributor_address": grant.contributor_address,
+        "token_symbol": grant.grant_donation_currency,
+        "tenant": tabSelected,
+        "comment": grant.grant_comments,
+        "amount_per_period": grant.grant_donation_num_rounds
+
       }
     },
     // TODO: SMS related methos and state should be removed and refactored into the component that
@@ -1186,6 +1264,7 @@ Vue.component('grants-cart', {
     },
 
     valueToDai(amount, tokenSymbol, tokenPrices) {
+      console.log(amount, tokenSymbol, tokenPrices)
       const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
       const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
 
@@ -2488,6 +2567,13 @@ Vue.component('grants-cart', {
   },
 
   watch: {
+    chainId: async function(val) {
+      // if (!provider && val === '1') {
+      //   await onConnect();
+      // }
+
+
+    },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
       async handler() {
@@ -2721,7 +2807,7 @@ $(document).ready(function() {
 
 if (document.getElementById('gc-grants-cart')) {
 
-  const app = new Vue({
+  appCart = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-grants-cart',
     data: {
@@ -2731,6 +2817,6 @@ if (document.getElementById('gc-grants-cart')) {
   });
 
   if (document.contxt.github_handle && !document.verified && localStorage.getItem('dismiss-sms-validation') !== 'true') {
-    app.$refs.cart.showSMSValidationModal();
+    appCart.$refs.cart.showSMSValidationModal();
   }
 }
