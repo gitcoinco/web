@@ -1,0 +1,28 @@
+{
+    "symbol": "DNS",
+    "address": "0x17c090F9a17E4e5a8cEb23bbe7E7e28E3C4Ca196",
+    "overview":{
+          "en": "BitDNS is a domain name resolution system based on blockchain, and is the super-hub connecting information and value between internet and blockchain",
+          "zh": "BitDNS是基于区块链的域名解析系统，连接信息互联网与价值区块链的超级枢纽"
+    },
+    "email": "tech@bitdns.vip",
+    "website": "https://www.bitdns.vip/",
+    "whitepaper": "https://www.bitdns.vip/picture/whitepaper_zh.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-04",
+    "initial_price":{
+          "ETH":"0.00084041 ETH",
+          "USD":"0.3 USD",
+          "BTC":"0.000027918 BTC"
+    },
+    "links": {
+      "blog": "https://www.bitdns.vip/blog",
+      "twitter": "https://tinyurl.com/bitdns-twitter",
+      "telegram": "https://t.me/bitdnsenglish ",
+      "github": "https://github.com/bitDNSFoundation",
+      "facebook": "hhttps://m.facebook.com/BitDNSofficial/",
+      "reddit": "https://tinyurl.com/bitdns-reddit",
+      "slack": "https://app.slack.com/client/T01AR2URJ80/C01A7D4E9J8",
+      "medium": "https://tinyurl.com/bitdns-medium"
+    }
+  }
