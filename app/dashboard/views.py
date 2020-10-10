@@ -22,8 +22,6 @@ import hashlib
 import html
 import json
 import logging
-from logging import debug, error
-import os
 import time
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -55,7 +53,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-import dateutil.parser
 import magic
 import pytz
 import requests
