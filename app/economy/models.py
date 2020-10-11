@@ -38,10 +38,11 @@ from django.utils.encoding import force_text
 from django.utils.functional import Promise
 from django.utils.html import escape
 from django.utils.timezone import localtime
-from hexbytes import HexBytes
-from web3.utils.datastructures import AttributeDict
+
 import pytz
 from app.services import RedisService
+from hexbytes import HexBytes
+from web3.utils.datastructures import AttributeDict
 
 
 class EncodeAnything(DjangoJSONEncoder):

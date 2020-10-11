@@ -5726,4 +5726,3 @@ class TransactionHistory(SuperModel):
 
     def __str__(self):
         return f"{self.status} <> {self.earning.pk} at {self.captured_at}"
-

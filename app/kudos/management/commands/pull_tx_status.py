@@ -17,11 +17,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import json
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from dashboard.models import Earning, TransactionHistory
 from dashboard.utils import get_tx_status_and_details
-import json
 from economy.models import EncodeAnything
 
 
@@ -49,4 +51,3 @@ class Command(BaseCommand):
                     txid=txid,
                     captured_at=timezone.now(),
                     )
-

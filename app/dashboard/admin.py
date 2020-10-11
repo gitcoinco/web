@@ -30,8 +30,8 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription,
-    UserAction, UserVerificationModel, TransactionHistory
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
+    TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
