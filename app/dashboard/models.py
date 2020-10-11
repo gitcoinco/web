@@ -5713,3 +5713,17 @@ class HackathonWorkshop(SuperModel):
     )
     url = models.URLField(help_text='Blog link, calendar link, or other.')
     visible = models.BooleanField(help_text=_('Can this HackathonWorkshop be seen on /hackathons ?'), default=True)
+
+
+class TransactionHistory(SuperModel):
+
+    earning = models.ForeignKey('dashboard.Earning', related_name='history', on_delete=models.CASCADE, db_index=True, null=True)
+    txid = models.CharField(max_length=255, default='')
+    status = models.CharField(max_length=50, default='', db_index=True)
+    payload = JSONField(default=dict, blank=True, null=True)
+    network = models.CharField(max_length=255, blank=True, db_index=True)
+    captured_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.status} <> {self.earning.pk} at {self.captured_at}"
+

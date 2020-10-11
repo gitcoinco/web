@@ -38,17 +38,22 @@ from django.utils.encoding import force_text
 from django.utils.functional import Promise
 from django.utils.html import escape
 from django.utils.timezone import localtime
-
+from hexbytes import HexBytes
+from web3.utils.datastructures import AttributeDict
 import pytz
 from app.services import RedisService
 
 
 class EncodeAnything(DjangoJSONEncoder):
     def default(self, obj):
+        if isinstance(obj, AttributeDict):
+            return dict(obj)
         if isinstance(obj, Promise):
             return force_text(obj)
         elif isinstance(obj, FieldFile):
             return bool(obj)
+        elif isinstance(obj, HexBytes):
+            return str(obj)
         elif isinstance(obj, SuperModel):
             return (obj.to_standard_dict())
         elif isinstance(obj, models.Model):
