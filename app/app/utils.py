@@ -189,6 +189,7 @@ def sync_profile(handle, user=None, hide_profile=True, delay_okay=False):
     from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
     profile = Profile.objects.filter(handle=handle).exists()
+    # cant sync_profile if profile not existing, especially if profile is needed for login
     delay = delay_okay and profile
     if delay:
         from dashboard.tasks import sync_profile as sync_profile_task
