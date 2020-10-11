@@ -1,0 +1,19 @@
+{
+    "symbol": "IXBTC",
+    "address": "0x1F76c10aB80c7F0E2735e4A606a2c596D123443E",
+    "overview": {
+        "en": "IXBTC is an off-chain operation network with a coherent technical and economic structure. Through this network, shared office studios and public welfare undertakings can be realized, and Internet-level scalability can be brought to the blockchain. The main application scenarios: public welfare payment + international patent products Docking and cooperation with companies in the health industry, plus shared office business as the main business.",
+        "zh": "IXBTC是具有连贯技术和经济架构的脱链运营网络，通过该网络可以实现共享办公工作室和公益事业，可将互联网级可扩展性带入区块链，主要应用场景：公益支付+国际专利产品与大健康产业等企业的对接与合作，加共享办公事业为主营业务。"
+    },
+    "email": "zhipengchen174@gmail.com",
+    "website": "http://www.ixbtc.net/",
+    "whitepaper": "http://www.ixbtc.net/IXBTC WHITE PAPER.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-10",
+    "initial_price": {
+        "USD": "0.0003 USD"
+    },
+	"links": {
+        "twitter": "https://twitter.com/IXBTC"
+    }
+}
