@@ -308,7 +308,7 @@ class Bounty(SuperModel):
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
-    bounty_owner_address = models.CharField(max_length=50, blank=True, null=True)
+    bounty_owner_address = models.CharField(max_length=100, blank=True, null=True)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
@@ -1410,6 +1410,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1421,8 +1422,8 @@ class BountyFulfillment(SuperModel):
     # TODO: RETIRE
     fulfiller_metadata = JSONField(default=dict, blank=True)
 
-    fulfiller_address = models.CharField(max_length=50, null=True, blank=True, help_text="address to which amount is credited")
-    funder_address = models.CharField(max_length=50, null=True, blank=True, help_text="address from which amount is deducted")
+    fulfiller_address = models.CharField(max_length=100, null=True, blank=True, help_text="address to which amount is credited")
+    funder_address = models.CharField(max_length=100, null=True, blank=True, help_text="address from which amount is deducted")
 
     # TODO: rename to fulfiller_profile
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")

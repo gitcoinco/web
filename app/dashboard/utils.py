@@ -41,6 +41,7 @@ from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
@@ -506,6 +507,8 @@ def sync_payout(fulfillment):
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
+        elif token_name == 'FIL':
+            sync_filecoin_payout(fulfillment)
 
     elif fulfillment.payout_type == 'polkadot_ext':
          sync_polkadot_payout(fulfillment)
