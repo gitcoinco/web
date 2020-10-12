@@ -232,6 +232,82 @@ def lazy_round_number(n):
         return f"{round(n/1000, 1)}k"
     return n
 
+@login_required
+def contribution_addr_from_grant_as_json(request, grant_id):
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile):
+        return JsonResponse({}, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id
+    )
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    earnings = Earning.objects.filter(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id__in=_contributions,
+        )
+
+    response = {
+        'meta': {
+            'generated_at': timezone.now().strftime("%Y-%m-%d"),
+            'grant': grant_id,
+        },
+        'addresses': list(set(earnings.values_list('history__payload__from')))
+    }
+    return JsonResponse(response, safe=False)
+
+
+def contribution_addr_from_round_as_json(request, round_id):
+    # return all contirbutor addresses to the round
+
+    start = timezone.now()
+    end = timezone.now()
+    if round_id == 1:
+        start = timezone.datetime(2019, 2, 1)
+        end = timezone.datetime(2019, 2, 15)
+    if round_id == 2:
+        start = timezone.datetime(2019, 3, 26)
+        end = timezone.datetime(2019, 4, 19)
+    if round_id == 3:
+        start = timezone.datetime(2019, 9, 15)
+        end = timezone.datetime(2019, 9, 30)
+    if round_id == 4:
+        start = timezone.datetime(2020, 1, 6)
+        end = timezone.datetime(2020, 9, 21)
+    if round_id == 5:
+        start = timezone.datetime(2020, 3, 23)
+        end = timezone.datetime(2020, 4, 5)
+    if round_id == 6:
+        start = timezone.datetime(2020, 6, 16)
+        end = timezone.datetime(2020, 7, 3)
+    if round_id == 7:
+        start = timezone.datetime(2020, 9, 15)
+        end = timezone.datetime(2020, 10, 3)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', created_on__gt=start, created_on__lt=end
+    )
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    earnings = Earning.objects.filter(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id__in=_contributions,
+        )
+
+    response = {
+        'meta': {
+            'generated_at': timezone.now().strftime("%Y-%m-%d"),
+            'start': start.strftime("%Y-%m-%d"),
+            'end': end.strftime("%Y-%m-%d"),
+            'round': round_id,
+        },
+        'addresses': list(set(earnings.values_list('history__payload__from')))
+    }
+    return JsonResponse(response, safe=False)
+
 def grants_addr_as_json(request):
     _grants = Grant.objects.filter(
         network='mainnet', hidden=False
@@ -1192,6 +1268,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_active': is_clr_active,
         'round_num': clr_round_num,
         'is_team_member': is_team_member,
+        'is_owner': grant.admin_profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,

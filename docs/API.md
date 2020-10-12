@@ -2,6 +2,16 @@
 
 Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1
 
+### Grants
+
+Get a full list of grants at https://gitcoin.co/grants/grants.json
+
+Get a list of contributors to each Gitcoin Grants Round at https://gitcoin.co/grants/contributions/roundX.json where X is the round number, (1-7 supported as of Oct 2020)
+
+Get a list of contributors to a Gitcoin Grant at https://gitcoin.co/grants/contributions/grantX.json where X is the ID of the grant.  You must be authenticated as a team member of the grant to access the data.
+
+These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases..
+
 ### Datatypes
 
 Beyond simple datatypes like `string` or `integer` the API returns datatypes like dates that are serialized in a very specific fashion.
