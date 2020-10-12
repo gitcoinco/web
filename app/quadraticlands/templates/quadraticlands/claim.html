@@ -14,39 +14,47 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
 {% block 'content' %}
-<center> 
-<br>   
-<h2>Let's get you setup to claim your tokens!</h2>
-<div class="row">
-  <div class="container py-5 ">
-    <div class="quests-hero white my-3">
-<div class="row">
-  <div class="col-12">
-<div class="form-group">
-  <h5>{% trans "We'll need a mainnet Ethereum Address connected to your account if you don't already have one" %}</h5>
-</div>
-<div class="form-group">
-  <input type="text" name="preferred_payout_address" class="form__input" placeholder='0x0'  value="{{ profile.preferred_payout_address }}">
-  <label class="form__label" for="preferred_payout_address">{% trans ""%}</label> <a href="#" id="pull_from_wallet">{% trans "[Pull From Connected Wallet]" %}</a>
- </div>
-{% csrf_token %}
-<input class='button button-primary' type='submit' name='submit' value="{% trans "Save" %}">
-</form>
-{% comment "ZW 10/9 - some examples of pulling profile info from a user" %}
-{% endcomment %}
-<br>
-<p>{{ profile.email }}</p>
-<p>{{ profile.created_on }}</p>
+<center>
+  <br>
+  <h2>Let's get you setup to claim your tokens!</h2>
+  <div class="row">
+    <div class="container py-5 ">
+      <div class="quests-hero white my-3">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <h5>
+                {% trans "We'll need a mainnet Ethereum Address connected to your account if you don't already have one" %}
+              </h5>
+            </div>
+            <div class="form-group">
+              <input type="text" name="preferred_payout_address" class="form__input" placeholder='0x0'
+                value="{{ profile.preferred_payout_address }}">
+              <label class="form__label" for="preferred_payout_address">{% trans ""%}</label> <a href="#"
+                id="pull_from_wallet">{% trans "[Pull From Connected Wallet]" %}</a>
+            </div>
+            {% csrf_token %}
+            </form>
+            {% comment "ZW 10/9 - some examples of pulling profile info from a user" %}
+            {% endcomment %}
+            <br>
+            <p>{{ profile.email }}</p>
+            <p>{{ profile.created_on }}</p>
+            <form action="./claim" method="post">
+              {% csrf_token %}
+              {{ form }}
+              <input type="submit" value="Submit">
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-</div>
-</div>
-
-
 
 </center>
 

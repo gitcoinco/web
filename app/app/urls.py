@@ -46,6 +46,7 @@ import marketing.views
 import marketing.webhookviews
 import perftools.views
 import ptokens.views
+import quadraticlands.views
 import quests.views
 import retail.emails
 import retail.views
@@ -53,7 +54,6 @@ import revenue.views
 import search.views
 import tdi.views
 import townsquare.views
-import quadraticlands.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
@@ -761,6 +761,7 @@ urlpatterns = [
     re_path(r'^quadraticlands/about/?', quadraticlands.views.about, name='about'),
     re_path(r'^quadraticlands/governance/?', quadraticlands.views.governance, name='governance'),
     re_path(r'^quadraticlands/missions/?', quadraticlands.views.missions, name='missions'),
+    re_path(r'^quadraticlands/welcome-to-the-quadratic-lands/?', quadraticlands.views.welcome, name='welcome'), 
 
 ]
 
