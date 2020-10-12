@@ -2857,6 +2857,7 @@ class Profile(SuperModel):
     success_rate = models.IntegerField(default=0)
     reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
     as_dict = JSONField(default=dict, blank=True)
+    override_dict = JSONField(default=dict, blank=True, help_text="Used to admin override anything in the dic representation of this profile")
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
@@ -4401,6 +4402,10 @@ class Profile(SuperModel):
             context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
         if context['spent_total'] > 1000:
             context['spent_total'] = f"{round(context['spent_total']/1000)}k"
+
+        for key, val in self.override_dict.items():
+            context[key] = val
+
         return context
 
 
