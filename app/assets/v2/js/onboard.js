@@ -107,10 +107,16 @@ if (document.getElementById('gc-onboard')) {
           }
           this.profileWidget();
           this.$refs['onboard-modal'].closeModal();
+
+          dataLayer.push({
+            'event': 'send',
+            'category': 'onboard',
+            'action': 'saved-profile-onboard'
+          });
+
           if (typeof ga !== 'undefined') {
             ga('send', 'event', 'Saved profile onboard', 'click', 'Person');
           }
-
         }).catch((err) => {
           console.log(err);
           _alert('Unable to save your profile. Please login again', 'error');

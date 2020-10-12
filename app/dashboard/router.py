@@ -263,6 +263,15 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 bounty__bounty_owner_github_username=sponsor)).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
 
+            projects = []
+            for project in queryset:
+                bounty = project.bounty
+                org_name = bounty.org_name
+                if org_name != sponsor:
+                    projects.append(project.pk)
+
+            queryset = queryset.exclude(pk__in=projects)
+
         if q:
             queryset = queryset.filter(
                 Q(name__icontains=q) |
@@ -307,7 +316,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'metadata'
         )
 
 

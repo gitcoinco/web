@@ -172,6 +172,15 @@ def render_successful_contribution_email(grant, subscription, contribution):
     subject = _('Your Gitcoin Grants contribution was successful!')
     return response_html, response_txt, subject
 
+
+def render_pending_contribution_email(contribution):
+    params = {"contribution": contribution, "hide_bottom_logo": True, 'email_style': 'grants'}
+    response_html = premailer_transform(render_to_string("emails/grants/reminder_pending_contribution.html", params))
+    response_txt = render_to_string("emails/grants/reminder_pending_contribution.html", params)
+    subject = _('Complete Grant Contribution Checkout')
+    return response_html, response_txt, subject
+
+
 def featured_funded_bounty(request):
     from dashboard.models import Bounty
     bounty = Bounty.objects.first()
@@ -185,6 +194,13 @@ def successful_contribution(request):
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
     contribution = Contribution.objects.filter(subscription__pk=subscription.pk).first()
     response_html, __, __ = render_successful_contribution_email(grant, subscription, contribution)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def pending_contribution(request):
+    contribution = Contribution.objects.filter(validator_comment__contains="User may not be aware so send them email reminders").first()
+    response_html, __, __ = render_pending_contribution_email(contribution)
     return HttpResponse(response_html)
 
 
@@ -266,7 +282,7 @@ def render_tip_email(to_email, tip, is_new):
 
 def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
     email_style = 'hackathon'
-    
+
     hackathon = {
         'hackathon': hackathon,
         'name': hackathon.name,
@@ -1696,8 +1712,8 @@ def tribe_hackathon_prizes(request):
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 
     sponsors_prizes = []
-    for sponsor in hackathon.sponsors.all()[:3]:
-        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
+    for sponsor in hackathon.sponsor_profiles.all()[:3]:
+        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
         sponsor_prize = {
             "sponsor": sponsor,
             "prizes": prizes
