@@ -1092,21 +1092,13 @@ class Bounty(SuperModel):
             bool: Whether or not the Bounty is eligible for outbound notifications.
 
         """
-        print(f'### GITCOIN BOT A2 network {self.network}')
-        print(f'### GITCOIN BOT A2 settings.DEBUG {settings.DEBUG}')
-        print(f'### GITCOIN BOT A2 settings.ENV {settings.ENV}')
 
         if self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
             return False
 
-        print(f'### GITCOIN BOT A3')
-
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
 
-        print(f'### GITCOIN BOT A4')
-
-        print(f'### GITCOIN BOT A5 - Is Eligible')
         return True
 
     @property
