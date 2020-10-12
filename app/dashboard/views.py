@@ -54,7 +54,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 import dateutil.parser
-from requests.api import request
 import magic
 import pytz
 import requests
@@ -3060,9 +3059,10 @@ def request_verify_google(request, handle):
 @login_required
 @require_GET
 def verify_user_google(request):
-    google = connect_google()
+    from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 
     try:
+        google = connect_google()
         google.fetch_token(
             settings.GOOGLE_TOKEN_URL, 
             client_secret=settings.GOOGLE_CLIENT_SECRET, 
@@ -3074,8 +3074,7 @@ def verify_user_google(request):
                 'ok': False,
                 'message': 'Invalid code',
             })
-
-    except ConnectionError: 
+    except (ConnectionError, InvalidGrantError):
         return JsonResponse({
             'ok': False,
             'message': 'Invalid code',
