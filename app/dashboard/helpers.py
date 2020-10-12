@@ -69,7 +69,7 @@ def get_bounty_view_kwargs(request):
     pk = request.GET.get('id') or request.GET.get('pk')
     standard_bounties_id = request.GET.get('sb_id') or request.GET.get('standard_bounties_id')
     network = request.GET.get('network', 'mainnet')
-    issue_url = request.GET.get('url')
+    issue_url = request.GET.get('url') or request.POST.get('issueURL')
     bounty_kwargs = {}
 
     # Check for relevant params.

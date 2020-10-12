@@ -5529,8 +5529,8 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     try:
-       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
-    except Bounty.DoesNotExist:
+        bounty = handle_bounty_views(request)
+    except Http404:
         response['message'] = 'error: bounty not found'
         return JsonResponse(response)
 
