@@ -61,7 +61,6 @@ from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
-from dashboard.views import project
 from economy.models import Token as FTokens
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -1339,12 +1338,12 @@ def grant_new(request):
                 'url': grant.url,
             })
 
-    check_profile = None
-    project_data = None
+    project = None
     project_id = request.GET.get('project_id', None)
     if project_id is not None:
-        check_profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-        project_data = project(project_id)
+        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+        if request.user.profile in hackathon_project.profiles.all():
+            project = hackathon_project
 
     params = {
         'active': 'new_grant',
@@ -1362,7 +1361,7 @@ def grant_new(request):
         'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': GrantType.objects.all(),
-        'data': project_data
+        'project_data': project
     }
 
     return TemplateResponse(request, 'grants/new.html', params)
