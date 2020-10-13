@@ -1242,7 +1242,17 @@
                   </div>
                 </bounty-explorer>
               </b-tab>
-              <b-tab v-if="is_my_org || is_staff" class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation" lazy>
+                <template v-slot:title>
+                  <div class="mt-3">
+                    {% trans "Kudos" %}
+                  </div>
+                </template>
+                <div id="kudos-section">
+                  {% include "shared/org_kudos.html" %}
+                </div>
+              </b-tab>
+              <b-tab v-if="is_my_org || is_staff" class="col-12" title-item-class="navigation" lazy>
                 <template v-slot:title>
                   <div class="mt-3">
                     {% trans "Manage" %}
