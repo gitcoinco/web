@@ -47,6 +47,22 @@ from retail.views import get_contributor_landing_page_context, get_specific_acti
 from townsquare.views import tags
 
 
+def create_email_inventory_cache():
+    print('create_email_inventory_cache')
+    from marketing.models import EmailEvent, EmailInventory
+    for ei in EmailInventory.objects.all().exclude(email_tag=''):
+        stats = {}
+        for i in [1, 7, 30]:
+            key = f'{i}d'
+            stats[key] = {}
+            after = timezone.now() - timezone.timedelta(days=i)
+            for what in ['delivered', 'open', 'click']:
+                num = EmailEvent.objects.filter(created_on__gt=after, event=what, category__contains=ei.email_tag).count()
+                stats[key][what] = num
+        ei.stats = stats
+        ei.save()
+
+
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
     pks = Grant.objects.values_list('pk', flat=True)
@@ -378,6 +394,7 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
+        create_email_inventory_cache()
         create_grant_type_cache()
         create_grant_clr_cache()
         create_grant_category_size_cache()

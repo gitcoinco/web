@@ -49,7 +49,7 @@ from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
-from marketing.models import Alumni, Job, LeaderboardRank
+from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
@@ -1467,9 +1467,10 @@ def tribes_home(request):
 
     return TemplateResponse(request, 'tribes/landing.html', context)
 
+
 def admin_index(request):
     from dashboard.utils import get_all_urls # avoid circular import
-    urls = get_all_urls()
+    urls = get_all_urls() # source of truth is the app; email_info data just augments it
     search_str = '_administration/email'
     def clean_url(url):
         url = "".join(url)
@@ -1478,8 +1479,17 @@ def admin_index(request):
         return url
     urls = [clean_url(url) for url in urls]
     urls = [url for url in urls if search_str in url]
+    urls_dict = {}
+    for url in urls:
+        key = url.replace('_administration/email','')
+        urls_dict[key] = ()
+    email_info = EmailInventory.objects.all()
+    for val in email_info:
+        key = val.path
+        urls_dict[key] = val
+    del urls_dict['/']
     context = {
-        'urls': urls,
+        'urls': urls_dict,
     }
 
     return TemplateResponse(request, 'admin_index.html', context)

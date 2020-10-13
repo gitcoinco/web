@@ -439,3 +439,19 @@ class UpcomingDate(SuperModel):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class EmailInventory(SuperModel):
+
+    path = models.CharField(max_length=255)
+    email_tag = models.CharField(max_length=255, blank=True)
+    type = models.CharField(max_length=255, blank=True)
+    reason = models.CharField(max_length=255, blank=True)
+    product = models.CharField(max_length=255, blank=True)
+    era = models.CharField(max_length=255, blank=True)
+    comment = models.TextField(max_length=255, default='', blank=True)
+    url = models.URLField(db_index=True)
+    stats = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.path}"

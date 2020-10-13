@@ -645,6 +645,7 @@ urlpatterns = [
         name='process_faucet_request'
     ),
     re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
+    re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),
