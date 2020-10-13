@@ -123,6 +123,9 @@ $(document).ready(function() {
     }
 
     $('#edit-details').addClass('hidden');
+    $('.grant-read-widget').addClass('hidden');
+    $('.grant-write-widget').removeClass('hidden');
+    $('.grant-write-widget').css('height', 'auto');
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
     $('.grant__progress').addClass('hidden');
@@ -138,6 +141,9 @@ $(document).ready(function() {
   });
 
   $('#save-details').on('click', event => {
+    $('.grant-read-widget').removeClass('hidden');
+    $('.grant-write-widget').addClass('hidden');
+
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
