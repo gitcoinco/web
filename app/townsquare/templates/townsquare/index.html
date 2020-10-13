@@ -49,7 +49,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       }
 
       .box-hackathons {
-        background: #ffff;
         border-radius: 0 0 5px 5px;
       }
 
@@ -77,6 +76,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
       .box-hackathons-townsquare .card-body .font-weight-semibold {
         margin: 0;
+      }
+
+      .card-ribbon {
+        position: absolute;
+        top: 0;
+        right: 16px;
       }
     </style>
     <script src='{% static "v2/js/theme_switcher.js" %}'></script>
@@ -190,7 +195,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 {% if SHOW_DRESSING %}
 
                   {% include 'townsquare/shared/tribe.html' %}
-
+                  {% include 'townsquare/shared/profilecompletion.html' %}
                   {% if hackathon_tabs|length %}
                     {% include 'townsquare/shared/hackathons.html' %}
                   {% endif %}
@@ -288,9 +293,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <script src='{% static "v2/js/status.js" %}'></script>
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
-    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
 
-    <script src="{% static "v2/js/user_card.js" %}"></script>
     <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
   </body>
 </html>

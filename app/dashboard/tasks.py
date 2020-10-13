@@ -186,7 +186,6 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
             finished = True
             results = hits
 
-
         if not finished:
 
             max_loops = math.ceil(total_hits / PAGE_SIZE)
@@ -205,15 +204,16 @@ def export_search_to_csv(self, body, user_handle, retry:bool = True) -> None:
             source = result['_source']
             row_item = {}
             for k in source.copy():
-                k = k.replace('_exact', '')
-                if k in CSV_HEADER:
-                    row_item[k] = source[k]
 
+                new_column = k.replace('_exact', '')
+
+                if new_column in CSV_HEADER:
+                    row_item[new_column] = source[k]
             output.append(row_item)
         now = datetime.now()
         csv_file_path = f'/tmp/user-directory-export-{user_profile.handle}-{now}.csv'
         try:
-            with open(csv_file_path, 'w') as csvfile:
+            with open(csv_file_path, 'w', encoding='utf-8') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=CSV_HEADER)
                 writer.writeheader()
                 writer.writerows(output)
@@ -327,3 +327,11 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
                     )
             except:
                 pass # fix for https://sentry.io/organizations/gitcoin/issues/1715509732/
+
+
+@app.shared_task(bind=True, max_retries=1)
+def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> None:
+    from app.utils import actually_sync_profile
+    from django.contrib.auth.models import User
+    user = User.objects.filter(pk=user_pk).first() if user_pk else None
+    actually_sync_profile(handle, user=user, hide_profile=hide_profile)

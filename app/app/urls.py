@@ -151,7 +151,11 @@ urlpatterns = [
         dashboard.views.profile_tax_settings,
         name='profile_set_tax_settings'
     ),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter', dashboard.views.verify_user_twitter, name='verify_user_twitter'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
+        dashboard.views.verify_user_twitter,
+        name='verify_user_twitter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -181,8 +185,10 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/keywords_search/', dashboard.views.get_keywords, name='keywords_search'),
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
+    url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
 
     # chat
     url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
@@ -289,6 +295,7 @@ urlpatterns = [
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
+    path('api/v0.1/hackathon/<str:hackathon>/events/', dashboard.views.events, name='hackathon_events'),
     path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
@@ -486,7 +493,8 @@ urlpatterns = [
     re_path(r'^schwag/?', retail.views.schwag, name='schwag'),
     re_path(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     re_path(r'^reddit/?', retail.views.reddit, name='reddit'),
-    re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
+    re_path(r'^calendar/?', retail.views.calendar, name='calendar'),
+    re_path(r'^livestream/?', retail.views.calendar, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
@@ -567,6 +575,11 @@ urlpatterns = [
         retail.emails.successful_contribution,
         name='admin_successful_contribution'
     ),
+    path(
+        '_administration/email/pending_contributions',
+        retail.emails.pending_contribution,
+        name='admin_pending_contribution'
+    ),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
@@ -612,6 +625,11 @@ urlpatterns = [
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    path(
+        '_administration/email/tribe_hackathon_prizes',
+        retail.emails.tribe_hackathon_prizes,
+        name='tribe_hackathon_prizes'
+    ),
     path(
         '_administration/email/day_email_campaign/<int:day>',
         marketing.views.day_email_campaign,

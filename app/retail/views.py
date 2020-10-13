@@ -1203,7 +1203,7 @@ def portal(request):
 
 
 def community(request):
-    return redirect('https://github.com/gitcoinco/community')
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 
 def onboard(request):
@@ -1328,9 +1328,8 @@ def reddit(request):
 def blog(request):
     return redirect('https://gitcoin.co/blog')
 
-def livestream(request):
-    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
-
+def calendar(request):
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 def twitter(request):
     return redirect('http://twitter.com/gitcoin')

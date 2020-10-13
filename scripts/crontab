@@ -12,7 +12,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 1 */4 * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_all_bounties mainnet  >> /var/log/gitcoin/sync_geth_weekly.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash subminer mainnet --live  >> /var/log/gitcoin/subminer_mainnet.log  2>&1
 */3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_fulfillments >> /var/log/gitcoin/sync_pending_fulfillments.log  2>&1
 
 ## HACKATHON
@@ -59,7 +58,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 1 1 * * cd gitcoin/coin; bash scripts/run_management_command.bash activity_report $(date --date='-1 month' +%Y/%m/%d) $(date +%Y/%m/%d)  >> /var/log/gitcoin/activity_report.log  2>&1
 
 ## CLR
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet all >> /var/log/gitcoin/estimate_clr_all.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 1 >> /var/log/gitcoin/estimate_clr_matic.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 2 >> /var/log/gitcoin/estimate_clr_dapp_tech.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 3 >> /var/log/gitcoin/estimate_clr_infra_tech.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 4 >> /var/log/gitcoin/estimate_clr_community.log  2>&1
+*/5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 6 >> /var/log/gitcoin/estimate_clr_filecoin.log  2>&1
 5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash validate_grants_contributions last_hour >> /var/log/gitcoin/validate_grants_contributions.log  2>&1
 
 ## GITCOIN MARKETING
@@ -78,6 +81,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash bounty_feedback_email  >> /var/log/gitcoin/bounty_feedback_email.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash funder_stale_email 60  >> /var/log/gitcoin/funder_stale_email.log  2>&1
 15 5 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash new_bounties_email  >> /var/log/gitcoin/new_bounties_email.log  2>&1
+# 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash tribe_hackathon_prizes_email  >> /var/log/gitcoin/tribe_hackathon_prizes_email.log  2>&1
 30 6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data grants  >> /var/log/gitcoin/post_data.log  2>&1
 15 15 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data quote  >> /var/log/gitcoin/post_data.log  2>&1
 15 18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data results  >> /var/log/gitcoin/post_data.log  2>&1
@@ -93,6 +97,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 0 9 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash no_applicants_email  >> /var/log/gitcoin/no_applicants_email.log 2>&1
 0 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_grant_twitter_info  >> /var/log/gitcoin/pull_grant_twitter_info.log 2>&1
 0 5 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_stats_snapshot  >> /var/log/gitcoin/create_stats_snapshot.log 2>&1
+0 6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash ingest_community_events_calender  >> /var/log/gitcoin/ingest_community_events_calender.log 2>&1
 
 
 ## PERFTOOLS
@@ -106,7 +111,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## INFRASTRUCTURE
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash warm_cache  >> /var/log/gitcoin/warm_cache.log  2>&1
-*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash update_index >> /var/log/gitcoin/elastic_search.log  2>&1
+*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash etl >> /var/log/gitcoin/etl.log  2>&1
 
 * * * * * date >> /var/log/gitcoin/running_procs.log; ps -aux | grep python3 >> /var/log/gitcoin/running_procs.log  2>&1
 1 1 * * * rm -f /var/log/gitcoin/running_procs.log

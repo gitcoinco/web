@@ -37,7 +37,7 @@ class Command(BaseCommand):
     # processes grant contributions
     def process_grants_contribs(self):
         from grants.models import Contribution
-        contributions = Contribution.objects.filter(tx_cleared=False)
+        contributions = Contribution.objects.filter(tx_cleared=False).order_by('-pk')
         for contrib in contributions:
             contrib.tx_id
             contrib.update_tx_status()

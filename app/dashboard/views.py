@@ -1143,10 +1143,13 @@ def users_fetch(request):
         this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page]).order_by('-follower_count', 'id')
 
     else:
-        try:
-            profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
-        except profile_list.FieldError:
-            profile_list = profile_list.order_by('-earnings_count', 'id')
+        if hackathon_id:
+            profile_list = profile_list.order_by('-hackathon_registration__created_on', 'id')
+        else:
+            try:
+                profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
+            except profile_list.FieldError:
+                profile_list = profile_list.order_by('-earnings_count', 'id')
 
         profile_list = profile_list.values_list('pk', flat=True)
         all_pages = Paginator(profile_list, limit)
@@ -1176,12 +1179,32 @@ def users_fetch(request):
 
         follower_count = followers.count()
         profile_json['follower_count'] = follower_count
+        profile_json['desc'] = user.desc
 
         if hackathon_id:
             registration = HackathonRegistration.objects.filter(hackathon_id=hackathon_id, registrant=user).last()
             if registration:
                 profile_json['looking_team_members'] = registration.looking_team_members
                 profile_json['looking_project'] = registration.looking_project
+
+                activity = Activity.objects.filter(
+                    profile=user,
+                    hackathonevent_id=hackathon_id,
+                    activity_type='hackathon_new_hacker',
+                )
+
+                if activity.exists():
+                    profile_json['intro'] = activity.metadata['intro_text']
+
+        if hackathon_id and user:
+            project = HackathonProject.objects.filter(hackathon_id=hackathon_id, profiles=user).first()
+            if project:
+                profile_json['project_name'] = project.name
+                profile_json['project_logo'] = project.logo.url if project.logo else ''
+
+        if user.data.get('location', ''):
+            profile_json['country'] = user.data.get('location', '')
+
 
         if user.is_org:
             profile_dict = user.__dict__
@@ -1427,18 +1450,32 @@ def invoice(request):
         active='invoice_view',
         title=_('Invoice'),
     )
+
     params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
-    params['tips'] = [
-        tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
-    ]
-    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
-    for tip in params['tips']:
-        if tip.value_in_usdt:
-            params['total'] += Decimal(tip.value_in_usdt)
+    params['web3_type'] = bounty.web3_type
+
+    if bounty.web3_type == 'bounties_network':
+        # Legacy Flow
+        params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+        params['tips'] = [
+            tip for tip in bounty.tips.send_happy_path() if ((tip.username == request.user.username and tip.username) or (tip.from_username == request.user.username and tip.from_username) or request.user.is_staff)
+        ]
+
+        for tip in params['tips']:
+            if tip.value_in_usdt:
+                params['total'] += Decimal(tip.value_in_usdt)
+    else:
+        params['total'] = 0
+        if params['accepted_fulfillments']:
+            for fulfillment in params['accepted_fulfillments']:
+                if fulfillment.payout_amount:
+                    fulfillment.payout_amount_usd = convert_amount(fulfillment.payout_amount, fulfillment.token_name, 'USDT')
+                    params['total'] += fulfillment.payout_amount_usd
 
     if bounty.fee_amount > 0:
         params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
         params['total'] = params['total'] + params['fee_value_in_usdt']
+
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
 
@@ -2141,6 +2178,7 @@ def load_banners(request):
     return JsonResponse(response, safe=False)
 
 
+@login_required
 def profile_details(request, handle):
     """Display profile keywords.
 
@@ -2158,57 +2196,16 @@ def profile_details(request, handle):
     else:
         network = 'rinkeby'
 
-    keywords = request.GET.get('keywords', '')
-
-    bounties = Bounty.objects.current().prefetch_related(
-        'fulfillments',
-        'interested',
-        'interested__profile',
-        'feedbacks'
-        ).filter(
-            interested__profile=profile,
-            network=network,
-        ).filter(
-            interested__status='okay'
-        ).filter(
-            interested__pending=False
-        ).filter(
-            idx_status='done'
-        ).filter(
-            feedbacks__receiver_profile=profile
-        ).filter(
-            Q(metadata__issueKeywords__icontains=keywords) |
-            Q(title__icontains=keywords) |
-            Q(issue_description__icontains=keywords)
-        ).distinct('pk')[:3]
-
-    _bounties = []
-    _orgs = []
-    if bounties :
-        for bounty in bounties:
-
-            _bounty = {
-                'title': bounty.title,
-                'id': bounty.id,
-                'org': bounty.org_name,
-                'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],
-            }
-            _org = bounty.org_name
-            _orgs.append(_org)
-            _bounties.append(_bounty)
 
     response = {
         'avatar': profile.avatar_url,
         'handle': profile.handle,
-        'contributed_to': _orgs,
-        'keywords': keywords,
-        'related_bounties' : _bounties,
-        'stats': {
-            'position': profile.get_contributor_leaderboard_index(),
-            'completed_bounties': profile.completed_bounties,
-            'success_rate': profile.success_rate,
-            'earnings': profile.get_eth_sum()
-        }
+        'keywords': profile.keywords,
+        'bio': profile.bio,
+        'userOptions': profile.products_choose,
+        'jobSelected': profile.job_search_status,
+        'interestsSelected': profile.interests,
+        'contact_email': profile.contact_email,
     }
 
     return JsonResponse(response, safe=False)
@@ -4102,9 +4099,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 1
     elif panel == "projects":
         active_tab = 2
-    elif panel == "chat":
-        active_tab = 3
     elif panel == "participants":
+        active_tab = 3
+    elif panel == "events":
         active_tab = 4
     elif panel == "showcase":
         active_tab = 5
@@ -6074,4 +6071,121 @@ def showcase(request, hackathon):
 
     return JsonResponse({
         'success': True,
+    })
+
+
+def get_keywords(request):
+
+    if request.is_ajax():
+        q = request.GET.get('term', '').lower()
+        results = [str(key) for key in Keyword.objects.filter(keyword__istartswith=q).cache().values_list('keyword', flat=True)]
+
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+@csrf_exempt
+@require_POST
+def onboard_save(request):
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            return JsonResponse(
+                { 'error': _('You must be authenticated') },
+                status=401
+            )
+        print(request.POST)
+        keywords = request.POST.getlist('skillsSelected[]')
+        bio = request.POST.get('bio')
+        interests = request.POST.getlist('interestsSelected[]')
+        userOptions = request.POST.getlist('userOptions[]')
+        jobSelected = request.POST.get('jobSelected', None)
+
+        orgSelected = request.POST.get('orgSelected')
+        if orgSelected:
+            profile.selected_persona = 'funder'
+            profile.persona_is_funder = True
+
+            orgOptions = request.POST.getlist('orgOptions[]')
+            email = request.POST.get('email')
+            try:
+                orgProfile = profile_helper(orgSelected.lower(), disable_cache=True)
+                orgProfile.products_choose = orgOptions
+                orgProfile.contact_email = email
+                orgProfile.save()
+            except (ProfileNotFoundException, ProfileHiddenException):
+                pass
+        else:
+            profile.persona_is_hunter = True
+            profile.selected_persona = 'hunter'
+
+
+        profile.products_choose = userOptions
+        profile.job_search_status = jobSelected
+        profile.keywords = keywords
+        profile.interests = interests
+        profile.bio = bio
+        profile.save()
+
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+    return JsonResponse(
+        {
+            'success': True,
+        },
+        status=200
+    )
+
+
+def events(request, hackathon):
+    hackathon_event = HackathonEvent.objects.filter(pk=hackathon).first()
+
+    if not hackathon_event:
+        return JsonResponse({
+            'error': True,
+            'msg': f'No exists Hackathon Event with id {hackathon}'
+        }, status=404)
+
+    if not hackathon_event.calendar_id:
+        return JsonResponse({
+            'error': True,
+            'msg': f'No exists calendar associated to Hackathon {hackathon}'
+        }, status=404)
+
+    calendar_unique = hackathon_event.calendar_id
+    token = settings.ADDEVENT_API_TOKEN
+    endpoint = f'https://www.addevent.com/api/v1/oe/events/list/'
+    calendar_endpoint = 'https://www.addevent.com/api/v1/me/calendars/list/'
+
+    calendar_response = requests.get(calendar_endpoint, {
+        'token': token,
+    })
+
+    calendars = calendar_response.json().get("calendars", [])
+    calendar_id = None
+
+    for calendar in calendars:
+        if calendar['uniquekey'] == calendar_unique:
+            calendar_id = calendar['id']
+            break
+
+    upcoming = hackathon_event.start_date.strftime('%Y-%m-%d %H:%M:%S')
+    response = requests.get(endpoint, {
+        'token': token,
+        'calendar_id': calendar_id,
+        'upcoming': upcoming
+    })
+
+    events = response.json()
+
+    return JsonResponse({
+        'events': events,
     })

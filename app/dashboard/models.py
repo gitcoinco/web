@@ -1333,11 +1333,13 @@ def post_save_bounty(sender, instance, created, **kwargs):
 
         # Publish and pin on townsquare
         profile = Profile.objects.filter(handle=HYPERCHARGE_BOUNTIES_PROFILE_HANDLE).first()
+
+        utm = f'utm_source=hypercharge-auto-pinned-post&utm_medium=twitter&utm_campaign={instance.title}'
         if profile:
             metadata = {
                     'title': title,
                     'description': truncatechars(instance.issue_description_text, 500),
-                    'url': instance.get_absolute_url(),
+                    'url': f'{instance.get_absolute_url()}?{utm}',
                     'ask': '#announce'
             }
             activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
@@ -2855,6 +2857,7 @@ class Profile(SuperModel):
     success_rate = models.IntegerField(default=0)
     reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
     as_dict = JSONField(default=dict, blank=True)
+    override_dict = JSONField(default=dict, blank=True, help_text="Used to admin override anything in the dic representation of this profile")
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
@@ -2898,6 +2901,10 @@ class Profile(SuperModel):
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
+    bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
+    interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    contact_email = models.EmailField(max_length=255, blank=True)
 
     @property
     def is_blocked(self):
@@ -4395,6 +4402,10 @@ class Profile(SuperModel):
             context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
         if context['spent_total'] > 1000:
             context['spent_total'] = f"{round(context['spent_total']/1000)}k"
+
+        for key, val in self.override_dict.items():
+            context[key] = val
+
         return context
 
 
@@ -4915,12 +4926,14 @@ class HackathonEvent(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    use_circle = models.BooleanField(help_text=_('Use circle for the Hackathon'), default=False)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
 
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
     display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
+    calendar_id = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.

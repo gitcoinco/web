@@ -292,6 +292,9 @@ async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMs
 }
 
 const updatePTokenInfoOnPage = async() => {
+  if (!document.current_ptoken_id) {
+    return;
+  }
   const userTokenBalance = await getPToken(document.current_ptoken_id);
 
   console.log(userTokenBalance);
@@ -317,10 +320,6 @@ const updatePTokenInfoOnPage = async() => {
   document.current_hodling = parseInt(userTokenBalance.available_to_redeem);
 };
 
-$(document).ready(() => {
-  const tokenId = document.current_ptoken_id;
-
-  setInterval(async() => {
-    await updatePTokenInfoOnPage(tokenId);
-  }, 10000);
+$(document).ready(async() => {
+  await updatePTokenInfoOnPage();
 });
