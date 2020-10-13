@@ -276,7 +276,7 @@ def contribution_addr_from_round_as_json(request, round_id):
         end = timezone.datetime(2019, 9, 30)
     if round_id == 4:
         start = timezone.datetime(2020, 1, 6)
-        end = timezone.datetime(2020, 9, 21)
+        end = timezone.datetime(2020, 1, 21)
     if round_id == 5:
         start = timezone.datetime(2020, 3, 23)
         end = timezone.datetime(2020, 4, 5)
