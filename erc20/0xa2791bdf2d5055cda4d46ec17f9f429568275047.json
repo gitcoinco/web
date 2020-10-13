@@ -1,0 +1,27 @@
+{
+  "symbol": "NULS",
+  "address": "Contract Address",
+  "overview":{
+        "en": "NULS is an open-source, enterprise-grade, adaptive blockchain platform",
+        "zh": ""
+  },
+  "email": "support@nuls.io",
+  "website": "https://www.nuls.io/",
+  "whitepaper": "https://www.nuls.io/wp-content/uploads/2019/06/NULS_Whitepaper_2.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-09-27",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "https://bbs.nuls.io/",
+    "twitter": "https://twitter.com/Nuls",
+    "telegram": "https://t.me/Nulsio",
+    "github": "https://github.com/nuls-io",
+    "facebook": "https://www.facebook.com/nulscommunity/",
+    "reddit": "https://www.reddit.com/r/nulsservice/",
+    "medium": "https://medium.com/@nuls"
+  }
+}
