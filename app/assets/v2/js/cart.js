@@ -550,18 +550,28 @@ Vue.component('grants-cart', {
           break;
       }
     },
-    confirmZcashPayment: function(grant) {
+    confirmZcashPayment: function(e, grant) {
+      e.preventDefault();
+      console.log(e)
+
+      // this.$refs.form.reportValidity()
+      if(!e.target.reportValidity()) {
+        return;
+      }
+
+
 
       let data = {
 
         "grant_id": grant.grant_id,
         "contributor_address": grant.contributor_address,
         "token_symbol": grant.grant_donation_currency,
-        "tenant": tabSelected,
+        "tenant": this.tabSelected,
         "comment": grant.grant_comments,
         "amount_per_period": grant.grant_donation_num_rounds
 
       }
+      console.log(data)
     },
     // TODO: SMS related methos and state should be removed and refactored into the component that
     // should be shared between the cart and the Trust Bonus tab

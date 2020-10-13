@@ -132,7 +132,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                     <div v-for="(grant, index) in grantsByTenant" class="grant-row" :key="grant.grant_id">
                       <div class="grant-row-style">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap" style="margin-left:0.5rem">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
                           {% comment %} Title and logo {% endcomment %}
                           <div class="d-flex flex-fill">
                               <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
@@ -185,7 +185,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                           </div>
                         </div>
-                        <div class="row font-smaller-3 mt-3"  style="margin-left:0.5rem">
+                        <div class="form-row font-smaller-3 mt-3" >
                           <div class="comment-option col-auto" >
                             <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
                                    :checked="grant.grant_comments === ''"
@@ -217,7 +217,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <label :for="`comment-${grant.grant_id}-love`" class="radio-label">😍 love the mission of your project</label>
                           </div>
                         </div>
-                        <input v-if="grant.grant_comments !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
+                        <input v-if="grant.grant_comments !== undefined"
                           class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
                       </div>
                     </div>
@@ -238,7 +238,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                     <div v-for="(grant, index) in grantsByTenant" class="grant-row" :key="grant.grant_id">
                       <div class="grant-row-style">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap" style="margin-left:0.5rem">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
                           {% comment %} Title and logo {% endcomment %}
                           <div class="d-flex flex-fill">
                               <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
@@ -296,62 +296,86 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                         <div>
                           <b-collapse :id="`collapse-${grant.grant_id}`">
-                            <div class="d-flex">
-                              <div>
+                            <form action="" ref="form" @submit="confirmZcashPayment($event, grant)">
+                              <div class="d-flex flex-column my-4">
+
                                 <p>Scan the QR code with your [[ tabSelected ]] wallet to payout.</p>
-                                <div class="d-flex">
+                                <div class="d-flex flex-fill">
                                   <qrcode :string="`zcash:${grant.zcash_payout_address}?amount=${grant.grant_donation_amount}&&message=Thank%20you%20for%20your%20contribution`" :size="100"></qrcode>
-                                  <div>
-                                    <div class="">to: [[grant.zcash_payout_address]]
-                                    <copy-clipboard class="btn btn-sm btn-gc-blue" :string="grant.zcash_payout_address">Copy address</copy-clipboard>
+                                  <div class="flex-fill ml-4">
+                                    <div class="form-group form-row">
+                                      <label :for="`zcash_payout_address_${grant.grant_id}`" class="col-2 col-form-label col-form-label-sm">to:</label>
+                                      <div class="input-group input-group-sm col p-0">
+                                        <input type="text" readonly class="form-control" v-model="grant.zcash_payout_address" :name="`zcash_payout_address_${grant.grant_id}`" :id="`zcash_payout_address_${grant.grant_id}`">
+                                        <div class="input-group-append">
+                                          <copy-clipboard class="btn btn-sm btn-gc-blue" :string="grant.zcash_payout_address"><i class="fas fa-copy"></i></copy-clipboard>
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div class="">from: [[grant.contributor_address]]</div>
-                                    <div class="">amount: [[grant.grant_donation_amount]]</div>
-                                    <div class="">transaction id: [[grant.payoutTxId]]</div>
+                                    <!-- <div class="">to: <span class="form-control form-control-sm bg-lightblue">[[grant.zcash_payout_address]]</span>
+                                    <copy-clipboard class="btn btn-sm btn-gc-blue" :string="grant.zcash_payout_address">Copy address</copy-clipboard>
+                                    </div> -->
+                                    <div class="form-group form-row">
+                                      <label :for="`contributor_address_${grant.grant_id}`" class="col-2 col-form-label col-form-label-sm">from:</label>
+                                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t-00000..." class="col form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$">
+                                    </div>
+
+                                    <div class="form-group form-row">
+                                      <label :for="`grant_donation_amount_${grant.grant_id}`" class="col-2 col-form-label col-form-label-sm">amount:</label>
+                                      <div class="input-group input-group-sm col p-0">
+                                        <input type="text" readonly class="form-control" v-model="grant.grant_donation_amount" :name="`grant_donation_amount_${grant.grant_id}`" :id="`grant_donation_amount_${grant.grant_id}`">
+                                        <div class="input-group-append">
+                                          <copy-clipboard class="btn btn-sm btn-gc-blue" :string="grant.grant_donation_amount"><i class="fas fa-copy"></i></copy-clipboard>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <!-- <div class="">transaction id: [[grant.payoutTxId]]</div> -->
                                   </div>
                                 </div>
+
+                                <div>
+                                  <!-- <label :for="`contributor_address_${grant.grant_id}`">Contributor address:</label> -->
+                                  <!-- <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t-00000..." class="w-100 p-2 font-smaller-5 border-0"> -->
+                                </div>
                               </div>
-                              <div>
-                                <label :for="`contributor_address_${grant.grant_id}`">Contributor address:</label>
-                                <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t-00000..." class="w-100 p-2 font-smaller-5 border-0">
+                              <!-- <input v-model="grant.payoutTxId" name="payout_tx_id" id="payout_tx_id" placeholder="Wallet Address" class="w-100 p-2 font-smaller-5 border-0"> -->
+                              <div class="form-row font-smaller-3 mt-3" >
+                                <div class="comment-option col-auto" >
+                                  <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === ''"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-blank`" class="radio-label">+ Add comment to owner</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="🙌 Great Job"  :id="`comment-${grant.grant_id}-job`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '🙌 Great Job'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-job`" class="radio-label">🙌 Great Job</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="👍 i appreciate you" :id="`comment-${grant.grant_id}-appreciate`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '👍 i appreciate you'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-appreciate`" class="radio-label">👍 i appreciate you</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="💪 keep up the great work" :id="`comment-${grant.grant_id}-work`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '💪 keep up the great work'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-work`" class="radio-label">💪 keep up the great work</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="😍 love the mission of your project" :id="`comment-${grant.grant_id}-love`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '😍 love the mission of your project'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-love`" class="radio-label">😍 love the mission of your project</label>
+                                </div>
                               </div>
-                            </div>
-                            <!-- <input v-model="grant.payoutTxId" name="payout_tx_id" id="payout_tx_id" placeholder="Wallet Address" class="w-100 p-2 font-smaller-5 border-0"> -->
-                            <div class="row font-smaller-3 mt-3"  style="margin-left:0.5rem">
-                              <div class="comment-option col-auto" >
-                                <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
-                                       :checked="grant.grant_comments === ''"
-                                >
-                                <label :for="`comment-${grant.grant_id}-blank`" class="radio-label">+ Add comment to owner</label>
-                              </div>
-                              <div class="comment-option col-auto">
-                                <input v-model="grant.grant_comments" value="🙌 Great Job"  :id="`comment-${grant.grant_id}-job`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
-                                       :checked="grant.grant_comments === '🙌 Great Job'"
-                                >
-                                <label :for="`comment-${grant.grant_id}-job`" class="radio-label">🙌 Great Job</label>
-                              </div>
-                              <div class="comment-option col-auto">
-                                <input v-model="grant.grant_comments" value="👍 i appreciate you" :id="`comment-${grant.grant_id}-appreciate`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
-                                       :checked="grant.grant_comments === '👍 i appreciate you'"
-                                >
-                                <label :for="`comment-${grant.grant_id}-appreciate`" class="radio-label">👍 i appreciate you</label>
-                              </div>
-                              <div class="comment-option col-auto">
-                                <input v-model="grant.grant_comments" value="💪 keep up the great work" :id="`comment-${grant.grant_id}-work`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
-                                       :checked="grant.grant_comments === '💪 keep up the great work'"
-                                >
-                                <label :for="`comment-${grant.grant_id}-work`" class="radio-label">💪 keep up the great work</label>
-                              </div>
-                              <div class="comment-option col-auto">
-                                <input v-model="grant.grant_comments" value="😍 love the mission of your project" :id="`comment-${grant.grant_id}-love`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
-                                       :checked="grant.grant_comments === '😍 love the mission of your project'"
-                                >
-                                <label :for="`comment-${grant.grant_id}-love`" class="radio-label">😍 love the mission of your project</label>
-                              </div>
-                            </div>
-                            <input v-if="grant.grant_comments !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
-                              class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
-                            <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3">I have paid</button>
+                              <input v-if="grant.grant_comments !== undefined"
+                                class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
+                              <button type="submit" class="btn btn-gc-blue button--full py-3 font-subheader mt-3" :disabled="!grant.contributor_address">I have paid</button>
+                            </form>
                           </b-collapse>
                         </div>
                       </div>
@@ -379,7 +403,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       {% comment %} Grant amount and curency {% endcomment %}
                       <div class="col-12" style="margin-top:1rem;">
                         <div class="row flex-nowrap justify-content-between">
-                          <input class="col-5 form-control" style="margin-left:0.5rem" min="0" step="any"
+                          <input class="col-5 form-control" min="0" step="any"
                             v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
                           <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
                             style="margin-right:0.5rem" placeholder="Select token">
@@ -430,7 +454,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </div>
                       <div v-if="grant.grant_comments !== undefined" class="col-12" style="margin-top:1rem;">
                         <div class="row flex-nowrap justify-content-between">
-                          <input class="form-control" style="margin-left:0.5rem" v-model="grant.grant_comments"
+                          <input class="form-control" v-model="grant.grant_comments"
                             type="textarea" placeholder="Enter message">
                         </div>
                       </div>
@@ -880,7 +904,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <div class="row justify-content-start align-items-center">
                               {% comment %} User must input amount before {% endcomment %}
                               <input v-model.number="additionalDeposit.amount" class="col-5 form-control"
-                                style="margin-left:0.5rem" min="0" step="any" type="number"
+                               min="0" step="any" type="number"
                                 :disabled="zkSyncCheckoutStep2Status !== 'not-started'"
                               >
                               <div class="col-5">[[ additionalDeposit.tokenSymbol ]]</div>

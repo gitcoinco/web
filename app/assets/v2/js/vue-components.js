@@ -875,7 +875,7 @@ Vue.component('copy-clipboard', {
         _alert('Could not copy text to clipboard', 'error', 5000);
       } else {
         navigator.clipboard.writeText(this.string).then(function() {
-          _alert('Text copied to clipboard', 'success', 5000);
+          _alert('Text copied to clipboard', 'success', 4000);
         }, function(err) {
           _alert('Could not copy text to clipboard', 'error', 5000);
         });
