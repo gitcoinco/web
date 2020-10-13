@@ -64,7 +64,8 @@
     <div class="col-12 col-lg-7">
       <h1 class="font-title-xl my-4 font-weight-bold">
         {% if is_team_member %}
-          <textarea id="form--input__title" class="p-2 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.title }}</textarea>
+          <p class="grant-read-widget">{{grant.title}}</p>
+          <textarea id="form--input__title" class="p-2 m-0 inline-edit font-body grant-write-widget hidden" maxlength="150" disabled>{{ grant.title }}</textarea>
         {% else %}
           {{ grant.title }}
         {% endif %}
@@ -87,7 +88,8 @@
           {% if is_team_member %}
             <div class="d-flex my-3">
               <i style="width: 14px;" class="fa fa-link mr-2 text-center my-auto"></i>
-              <textarea id="form--input__reference-url" class="p-2 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+              <p class="my-auto grant-read-widget">{{ grant.reference_url }}</p>
+              <textarea id="form--input__reference-url" class="p-2 m-0 inline-edit grant-write-widget hidden" disabled>{{ grant.reference_url }}</textarea>
             </div>
           {% else %}
             <i style="width: 14px;" class="fa fa-link mr-2 text-center"></i>
@@ -99,7 +101,8 @@
         {% if is_team_member %}
           <div class="d-flex my-3">
             <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center my-auto"></i>
-            <input id="form--twitter__account" placeholder="Twitter account" class="p-2 m-0 inline-edit font-body" maxlength="150" disabled value="{{ grant.twitter_handle_1 }}"></input>
+            <p class="my-auto grant-read-widget">{{ grant.twitter_handle_1 }}</p>
+            <input id="form--twitter__account" placeholder="Twitter account" class="p-2 m-0 inline-edit font-body grant-write-widget hidden" maxlength="150" disabled value="{{ grant.twitter_handle_1 }}"></input>
           </div>
         {% else %}
           <div class="font-body mb-2">
