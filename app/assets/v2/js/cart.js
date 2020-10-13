@@ -1524,20 +1524,26 @@ Vue.component('grants-cart', {
           throw new Error('Unknown account');
         }
 
+        // Get the first token listed and use that to pay for signing key transaction
+        const syncWalletState = await syncWallet.getAccountState();
+        const tokensInWallet = Object.keys(syncWalletState.committed.balances);
+        const feeToken = tokensInWallet[0];
+
         // Determine how to set key based on wallet type
         let changePubkey;
 
         if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
           console.log('  Using ECDSA to set signing key');
-          changePubkey = await syncWallet.setSigningKey();
+          changePubkey = await syncWallet.setSigningKey({ feeToken });
         } else {
           console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
           const signingKeyTx = await syncWallet.onchainAuthSigningKey();
 
-          changePubkey = await syncWallet.setSigningKey('committed', true);
+          changePubkey = await syncWallet.setSigningKey({ feeToken, onchainAuth: true });
         }
 
         // Wait until the tx is committed
+        console.log('Signing key set, waiting for transaction receipt');
         await changePubkey.awaitReceipt();
         console.log('✅ specified sync wallet is ready to use on zkSync');
       } else {
