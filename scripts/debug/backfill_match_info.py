@@ -71,4 +71,13 @@ for i in range(3, 5):
     #print(_contribs.values_list('subscription__contributor_profile__handle').annotate(Count("id")).order_by('-id__count'))
     #print(i, _contribs.count(), contribs.count(), __sum, _sum)
 
+#delete dupes
+for i in range(3, 5):
+    clrmatches=CLRMatch.objects.filter(round_number=i)
+    for grant in Grant.objects.all():
+        _clrmatches = clrmatches.filter(grant=grant).order_by('-amount')
+        if _clrmatches.count() > 1:
+            for clrm in _clrmatches[1:]:
+                print(clrm.pk)
+                clrm.delete()
 
