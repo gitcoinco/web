@@ -450,7 +450,7 @@ class EmailInventory(SuperModel):
     product = models.CharField(max_length=255, blank=True)
     era = models.CharField(max_length=255, blank=True)
     comment = models.TextField(max_length=255, default='', blank=True)
-    url = models.URLField(db_index=True)
+    url = models.URLField(db_index=True, blank=True)
     stats = JSONField(default=dict, blank=True)
 
     def __str__(self):
