@@ -301,7 +301,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                                 <p>Scan the QR code with your [[ tabSelected ]] wallet to payout.</p>
                                 <div class="d-flex flex-fill">
-                                  <qrcode :string="`zcash:${grant.zcash_payout_address}?amount=${grant.grant_donation_amount}&&message=Thank%20you%20for%20your%20contribution`" :size="100"></qrcode>
+                                  <qrcode :string="`zcash:${grant.zcash_payout_address}?amount=${grant.grant_donation_amount}&&message=Thank%20you%20for%20your%20contribution`" :size="140"></qrcode>
                                   <div class="flex-fill ml-4">
                                     <div class="form-group form-row">
                                       <label :for="`zcash_payout_address_${grant.grant_id}`" class="col-2 col-form-label col-form-label-sm">to:</label>
