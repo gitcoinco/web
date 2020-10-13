@@ -394,7 +394,6 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_email_inventory_cache()
         create_grant_type_cache()
         create_grant_clr_cache()
         create_grant_category_size_cache()
@@ -412,3 +411,8 @@ class Command(BaseCommand):
             create_contributor_landing_page_context()
             create_hackathon_cache()
             create_hackathon_list_page_cache()
+            hour = int(timezone.now().strftime('%H'))
+            if hour < 4:
+                # do dailyi updates
+                create_email_inventory_cache()
+
