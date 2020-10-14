@@ -288,46 +288,6 @@ Vue.component('twitter-verify-modal', {
   }
 });
 
-Vue.component('google-verify-modal', {
-  delimiters: [ '[[', ']]' ],
-  data: function() {
-    return {
-      showValidation: false,
-      validationError: ''
-    };
-  },
-  mounted: function() {
-    $(document).on('click', '#verify-google-link', function(event) {
-      event.preventDefault();
-      this.requestGoogleVerify();
-    }.bind(this));
-  },
-  methods: {
-    requestGoogleVerify() {
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
-
-      const verificationRequest = fetchData(
-        `/api/v0.1/profile/${trustHandle}/request_verify_google`,
-        'POST',
-        {},
-        headers
-      );
-
-      $.when(verificationRequest).then(response => {
-        if (response.ok) {
-          window.location.href = response.redirect_url;
-        } else {
-          this.validationError = response.msg;
-        }
-
-      }).catch((_error) => {
-        this.validationError = 'There was an error; please try again later';
-      });
-    }
-  }
-});
-
 // TODO: This component consists primarily of code taken from the SMS verification flow in the cart.
 // This approach is not DRY, and after Grants Round 7 completes, the cart should be refactored to include
 // this as a shared component, rather than duplicating the code.

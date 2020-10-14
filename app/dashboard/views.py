@@ -3050,11 +3050,7 @@ def request_verify_google(request, handle):
         access_type='offline',
         prompt="select_account"
     )
-
-    return JsonResponse({
-        'ok': True,
-        'redirect_url': authorization_url,
-    })
+    return redirect(authorization_url)
 
 @login_required
 @require_GET

@@ -5,7 +5,6 @@
     <div id="gc-trust-verify-modal">
       <sms-verify-modal></sms-verify-modal>
       <twitter-verify-modal></twitter-verify-modal>
-      <google-verify-modal></google-verify-modal>
     </div>
     <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
     The higher the Trust
@@ -166,7 +165,10 @@
           {% if is_google_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="" role="button" id="verify-google-link" class="button button--primary text-nowrap">Verify</a>
+            <form method="post" action={% url 'request_verify_google' profile.handle.lower %}>
+              {% csrf_token %}
+              <input type="submit" value="Verify" class="button button--primary text-nowrap"/>
+            </form>
           {% endif %}
         </div>
       </div>
