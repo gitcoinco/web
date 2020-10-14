@@ -58,7 +58,7 @@ from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
@@ -344,6 +344,24 @@ def clr_grants(request, round_num):
 
     return grants_by_grant_clr(request, clr_round)
 
+@login_required
+def get_interrupted_contributions(request):
+    all_contributions = Contribution.objects.filter(profile_for_clr=request.user.profile)
+    user_contributions = []
+
+    for contribution in all_contributions:
+        validator_comment = contribution.validator_comment
+        is_zksync = "zkSync" in validator_comment
+        tx_not_found = "Transaction not found, unknown reason" in validator_comment
+        deposit_no_transfer = "Found deposit but no transfer" in validator_comment
+        if is_zksync and (tx_not_found or deposit_no_transfer):
+            user_contributions.append(contribution.normalized_data)
+
+    return JsonResponse({
+        'success': True,
+        'contributions': user_contributions
+    })
+
 
 def get_grants(request):
     grants = []
@@ -465,7 +483,10 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
     if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-        _grants = _grants.filter(is_clr_active=True)
+        grant_type_obj = GrantType.objects.filter(name=grant_type).first()
+        is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
+        if is_there_a_clr_round_active_for_this_grant_type_now:
+            _grants = _grants.filter(is_clr_active=True)
 
     if omit_my_grants and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
@@ -1284,7 +1305,6 @@ def grant_new(request):
             response['message'] = 'error: title is a mandatory parameter'
             return JsonResponse(response)
 
-
         description = request.POST.get('description', None)
         if not description:
             response['message'] = 'error: description is a mandatory parameter'
@@ -1304,6 +1324,9 @@ def grant_new(request):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
+        project_pk = request.POST.get('project_pk', '')
+        if project_pk:
+            HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
@@ -1400,6 +1423,13 @@ def grant_new(request):
             'categories': grant_categories
         })
 
+    project = None
+    project_id = request.GET.get('project_id', None)
+    if project_id is not None:
+        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+        if request.user.profile in hackathon_project.profiles.all():
+            project = hackathon_project
+
     params = {
         'active': 'new_grant',
         'title': _('New Grant'),
@@ -1415,7 +1445,8 @@ def grant_new(request):
         # 'conf_time_spread': conf_time_spread(),
         # 'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': grant_types
+        'grant_types': grant_types,
+        'project_data': project
     }
     return TemplateResponse(request, 'grants/_new.html', params)
 
@@ -1800,6 +1831,18 @@ def grants_cart_view(request):
         return redirect('/login/github?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+def grants_zksync_recovery_view(request):
+    context = {
+        'title': 'Recover Funds',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    response = TemplateResponse(request, 'grants/zksync-recovery.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 

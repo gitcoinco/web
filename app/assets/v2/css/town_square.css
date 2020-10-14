@@ -905,6 +905,20 @@ body.green.offer_view .announce {
   color: var(--townsquare-block-header-color);
 }
 
+.dark-mode .modal-content .btn-radio,
+.dark-mode .modal-content .close,
+.dark-mode .vs__search,
+.dark-mode .vs__selected,
+.dark-mode .vs__dropdown-option,
+.dark-mode .vs__search:focus {
+  color: var(--default-text-color);
+}
+
+.dark-mode .modal-content .btn-radio:hover {
+  color: var(--default-text-color);
+}
+
+
 #status .btn-group-toggle .btn-radio {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
@@ -1352,14 +1366,6 @@ body.green.offer_view .announce {
   color: var(--default-text-color);
 }
 
-.dark-mode .modal-content .btn-radio,
-.dark-mode .modal-content .close,
-.dark-mode .vs__search,
-.dark-mode .vs__selected,
-.dark-mode .vs__dropdown-option,
-.dark-mode .vs__search:focus {
-  color: var(--default-text-color);
-}
 .dark-mode .vs__dropdown-toggle {
   border-color: var(--default-text-color);
 }
@@ -1367,10 +1373,6 @@ body.green.offer_view .announce {
 .dark-mode .vs__clear,
 .dark-mode .vs__open-indicator {
   fill: var(--default-text-color);
-}
-
-.dark-mode .modal-content .btn-radio:hover {
-  color: var(--default-text-color);
 }
 
 .dark-mode .display-light {

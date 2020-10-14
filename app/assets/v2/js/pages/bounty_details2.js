@@ -74,6 +74,10 @@ Vue.mixin({
           url = `https://kusama.subscan.io/extrinsic/${txn}`;
           break;
 
+        case 'FIL':
+          url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -107,6 +111,10 @@ Vue.mixin({
 
         case 'KSM':
           url = `https://kusama.subscan.io/account/${address}`;
+          break;
+
+        case 'FIL':
+          url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
           break;
 
         default:
@@ -143,6 +151,12 @@ Vue.mixin({
           qr_string = value ?
             `zilliqa://${address}?amount=${value}` :
             `zilliqa://${address}`;
+          break;
+
+        case 'FIL':
+          qr_string = value ?
+            `filecoin://${address}?amount=${value}` :
+            `filecoin://${address}`;
           break;
       }
 
@@ -303,6 +317,10 @@ Vue.mixin({
         case 'DOT':
         case 'KSM':
           tenant = 'POLKADOT';
+          break;
+
+        case 'FIL':
+          tenant = 'FILECOIN';
           break;
 
         default:

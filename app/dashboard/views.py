@@ -86,6 +86,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
+from grants.models import Grant
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
@@ -1143,10 +1144,13 @@ def users_fetch(request):
         this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page]).order_by('-follower_count', 'id')
 
     else:
-        try:
-            profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
-        except profile_list.FieldError:
-            profile_list = profile_list.order_by('-earnings_count', 'id')
+        if hackathon_id:
+            profile_list = profile_list.order_by('-hackathon_registration__created_on', 'id')
+        else:
+            try:
+                profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
+            except profile_list.FieldError:
+                profile_list = profile_list.order_by('-earnings_count', 'id')
 
         profile_list = profile_list.values_list('pk', flat=True)
         all_pages = Paginator(profile_list, limit)
@@ -1176,12 +1180,32 @@ def users_fetch(request):
 
         follower_count = followers.count()
         profile_json['follower_count'] = follower_count
+        profile_json['desc'] = user.desc
 
         if hackathon_id:
             registration = HackathonRegistration.objects.filter(hackathon_id=hackathon_id, registrant=user).last()
             if registration:
                 profile_json['looking_team_members'] = registration.looking_team_members
                 profile_json['looking_project'] = registration.looking_project
+
+                activity = Activity.objects.filter(
+                    profile=user,
+                    hackathonevent_id=hackathon_id,
+                    activity_type='hackathon_new_hacker',
+                )
+
+                if activity.exists():
+                    profile_json['intro'] = activity.metadata['intro_text']
+
+        if hackathon_id and user:
+            project = HackathonProject.objects.filter(hackathon_id=hackathon_id, profiles=user).first()
+            if project:
+                profile_json['project_name'] = project.name
+                profile_json['project_logo'] = project.logo.url if project.logo else ''
+
+        if user.data.get('location', ''):
+            profile_json['country'] = user.data.get('location', '')
+
 
         if user.is_org:
             profile_dict = user.__dict__
@@ -4294,6 +4318,12 @@ def hackathon_projects(request, hackathon='', specify_project=''):
         projects = projects.filter(
             Q(badge__isnull=False)
         )
+
+    if filters == 'grants':
+        projects = projects.filter(
+            Q(grant_obj__isnull=False)
+        )
+           
     if specify_project:
         projects = projects.filter(name__iexact=specify_project.replace('-', ' '))
         if projects.exists():
@@ -4463,10 +4493,17 @@ def hackathon_save_project(request):
 def get_project(request, project_id):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    if not project:
+    params = project_data(project_id)
+    if not params:
         raise Http404("The project doesnt exists.")
 
+    return JsonResponse(params)
+
+def project_data(project_id):
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        return None
+    
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     params = {
         'project': {
@@ -4492,18 +4529,19 @@ def get_project(request, project_id):
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'team_members_profile': project.profiles.all()
         },
         'hackathon': hackathon_obj[0],
     }
+    return params
 
-    return JsonResponse(params)
-
-
+    
 def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+
     if not project:
         raise Http404("No Hackathon Project matches the given query.")
 
@@ -4550,7 +4588,8 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'grant_url': project.grant_obj.url if project.grant_obj else False
         },
         'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
@@ -5394,7 +5433,6 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-    print('### GITCOIN BOT A0')
     maybe_market_to_github(bounty, event_name)
 
     response = {
@@ -5506,7 +5544,7 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     try:
-       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
+        bounty = Bounty.objects.get(pk=request.POST.get('bountyPk'))
     except Bounty.DoesNotExist:
         response['message'] = 'error: bounty not found'
         return JsonResponse(response)
@@ -5814,6 +5852,37 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+
+@staff_member_required
+def bulkemail(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+    subject = request.POST.get('subject', '')
+    from_name = request.POST.get('from_name', '')
+    from_email = request.POST.get('from_email', '')
+
+    if handles and message and subject: 
+        from marketing.mails import send_mail
+        _handles = list(set(handles.split(',')))
+        for handle in _handles:
+            handle = handle.strip()
+            profile = Profile.objects.filter(handle=handle).first()
+            if profile:
+                to_email = profile.email
+                body = message
+                send_mail(from_email, to_email, subject, body, False, from_name)
+
+            messages.success(request, 'sent')
+
+    context = {
+        'message': message,
+        'subject': subject,
+        'handles': handles,
+    }
+
+    return TemplateResponse(request, 'bulk_email.html', context)
 
 
 @staff_member_required

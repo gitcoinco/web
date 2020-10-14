@@ -1630,20 +1630,26 @@ Vue.component('grants-cart', {
           throw new Error('Unknown account');
         }
 
+        // Get the first token listed and use that to pay for signing key transaction
+        const syncWalletState = await syncWallet.getAccountState();
+        const tokensInWallet = Object.keys(syncWalletState.committed.balances);
+        const feeToken = tokensInWallet[0];
+
         // Determine how to set key based on wallet type
         let changePubkey;
 
         if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
           console.log('  Using ECDSA to set signing key');
-          changePubkey = await syncWallet.setSigningKey();
+          changePubkey = await syncWallet.setSigningKey({ feeToken });
         } else {
           console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
           const signingKeyTx = await syncWallet.onchainAuthSigningKey();
 
-          changePubkey = await syncWallet.setSigningKey('committed', true);
+          changePubkey = await syncWallet.setSigningKey({ feeToken, onchainAuth: true });
         }
 
         // Wait until the tx is committed
+        console.log('Signing key set, waiting for transaction receipt');
         await changePubkey.awaitReceipt();
         console.log('✅ specified sync wallet is ready to use on zkSync');
       } else {
@@ -1713,14 +1719,20 @@ Vue.component('grants-cart', {
 
       // Dispatch donations ------------------------------------------------------------------------
       for (let i = 0; i < donationSignatures.length; i += 1) {
-        this.currentTxNumber += 1;
-        console.log(`  Sending transfer ${i + 1} of ${donationSignatures.length}...`);
-        const transfer = await zksync.wallet.submitSignedTransaction(donationSignatures[i], this.syncProvider);
+        try {
+          this.currentTxNumber += 1;
+          console.log(`  Sending transfer ${i + 1} of ${donationSignatures.length}...`);
+          const transfer = await zksync.wallet.submitSignedTransaction(donationSignatures[i], this.syncProvider);
 
-        console.log(`  Transfer ${i + 1} sent`, transfer);
-        const receipt = await transfer.awaitReceipt();
+          console.log(`  Transfer ${i + 1} sent`, transfer);
+          const receipt = await transfer.awaitReceipt();
 
-        console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
+          console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
+        } catch (e) {
+          // Prevent failed transfer from blocking the rest
+          console.error(e);
+          continue;
+        }
       }
 
       // Transfer any remaining tokens to user's main wallet ---------------------------------------
@@ -1783,6 +1795,7 @@ Vue.component('grants-cart', {
           // Everything worked successfully, so let's not throw an error here because the user's
           // donations did succeed. Instead, there is just small excess funds left in the account
           console.error(e);
+          continue;
         }
       }
 
@@ -2083,6 +2096,48 @@ Vue.component('grants-cart', {
       } catch (e) {
         this.zkSyncCheckoutStep1Status = 'not-started';
         this.handleError(e);
+      }
+    },
+
+    /**
+     * @notice Step 1: Initialize app state and login to zkSync via Gitcoin, then send cart txs.
+     * This is a special flow to handle incomplete checkouts.
+     */
+    async zkSyncLoginGitcoinFlowRecovery() {
+      try {
+        this.zkSyncCheckoutStep1Status = 'pending';
+
+        // Set contract to deposit through based on number of tokens used. We do this to save
+        // gas costs by avoiding the overhead of the batch deposit contract if the user is only
+        // donating one token
+        const numberOfCurrencies = Object.keys(this.donationsToGrants).length;
+
+        this.depositContractToUse = numberOfCurrencies === 1
+          ? this.depositContractToUse = this.zkSyncContractAddress
+          : this.depositContractToUse = batchZkSyncDepositContractAddress;
+
+        // Prompt for user's signature to login to zkSync
+        this.gitcoinSyncWallet = await this.zkSyncLoginGitcoin();
+
+        // Manually set status steps
+        this.zkSyncCheckoutStep1Status = 'complete';
+        this.zkSyncCheckoutStep2Status = 'complete';
+        this.zkSyncCheckoutStep3Status = 'pending';
+        this.zkSyncCheckoutFlowStep = 2; // Steps 0 and 1 are skipped here
+        
+        // Do the transfers
+        await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
+        let nonce = await this.getGitcoinSyncWalletNonce();
+        const donationSignatures = await this.generateTransferSignatures(nonce);
+
+        await this.dispatchSignedTransfers(donationSignatures);
+        console.log('✅✅✅ Checkout complete!');
+
+        // Final processing
+        await this.setInterruptStatus(null, this.userAddress);
+        await this.finalizeCheckout();
+      } catch (e) {
+        this.zkSyncCheckoutStep1Status = 'not-started';
       }
     },
 
@@ -2512,27 +2567,38 @@ Vue.component('grants-cart', {
      * @notice Final shared steps between Flow A and Flow B
      */
     async finishZkSyncTransfersAllFlows() {
-      // Unlock deterministic wallet's zkSync account
-      await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
+      try {
+        // Unlock deterministic wallet's zkSync account
+        await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
 
-      // Fetch the expected nonce from the network. We cannot assume it's zero because this may
-      // not be the user's first checkout
-      let nonce = await this.getGitcoinSyncWalletNonce();
+        // Fetch the expected nonce from the network. We cannot assume it's zero because this may
+        // not be the user's first checkout
+        let nonce = await this.getGitcoinSyncWalletNonce();
 
+        // Generate signatures
+        const donationSignatures = await this.generateTransferSignatures(nonce);
 
-      // Generate signatures
-      const donationSignatures = await this.generateTransferSignatures(nonce);
+        // Dispatch the transfers
+        await this.dispatchSignedTransfers(donationSignatures);
+        console.log('✅✅✅ Checkout complete!');
 
-      // Dispatch the transfers
-      await this.dispatchSignedTransfers(donationSignatures);
-      console.log('✅✅✅ Checkout complete!');
-
-      // Final processing
-      await this.setInterruptStatus(null, this.userAddress);
-      await this.finalizeCheckout();
+        // Final processing
+        await this.setInterruptStatus(null, this.userAddress);
+        await this.finalizeCheckout();
+      } catch (e) {
+        this.handleError(e);
+      }
     },
 
+    /**
+     * @notice Transfer funds from Gitcoin zkSync wallet to the user's regular zkSync wallet
+     */
+    async returnZkSyncFunds() {
+      this.zkSyncCheckoutStep3Status = 'pending';
+      await this.finishZkSyncTransfersAllFlows();
+    },
 
+    
     // =============================================================================================
     // ==================================== END ZKSYNC METHODS =====================================
     // =============================================================================================
@@ -2686,6 +2752,37 @@ Vue.component('grants-cart', {
     });
     CartData.setCart(grantData);
     this.grantData = grantData;
+
+    // Overwrite grantData if zksync-recovery page
+    if (window.location.pathname.includes('zksync-recovery')) {
+      window.addEventListener('dataWalletReady', async(e) => {
+        try {
+          // Connect wallet and setup zkSync
+          await needWalletConnection();
+          this.selectedNetwork = document.web3network;
+          this.userAddress = (await web3.eth.getAccounts())[0];
+          await this.setupZkSync();
+
+          // Get list of grants with the expected validator comment
+          const response = await fetch('get-interrupted-contributions');
+          const incompleteContributions = await response.json();
+    
+          // Convert into localStorage format
+          this.grantData = incompleteContributions.contributions.map((grant) => {
+            this.gitcoinFactorRaw = 100 * grant.amount_per_period_to_gitcoin / grant.amount_per_period;
+            return {
+              grant_admin_address: grant.admin_address,
+              grant_clr_prediction_curve: [],
+              grant_donation_amount: grant.amount_per_period,
+              grant_donation_currency: grant.token_symbol
+            };
+          });
+      
+        } catch (e) {
+          this.handleError(e);
+        }
+      }, false);
+    }
 
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);

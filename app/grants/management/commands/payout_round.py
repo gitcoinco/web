@@ -29,8 +29,7 @@ from dashboard.abi import erc20_abi as abi
 from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from grants.models import CLRMatch, Contribution, Grant, Subscription
-from grants.views import clr_round  # TODO-SELF-SERVICE: REMOVE THIS
+from grants.models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
 from marketing.mails import (
     grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
 )
@@ -47,7 +46,19 @@ class Command(BaseCommand):
         parser.add_argument('what',
             default='finalize',
             type=str,
-            help="what do we do? (finalize, payout_test, payout_dai, prepare_final_payout)"
+            help="what do we do? (finalize, payout_test, prepare_final_payout, payout_dai)"
+            )
+
+        parser.add_argument('clr_pks',
+            default='',
+            type=str,
+            help="what CLR PKs should we payout? (eg 1,2,3,4)"
+            )
+
+        parser.add_argument('clr_round',
+            default='',
+            type=int,
+            help="what CLR round number is this? eg 7"
             )
 
 
@@ -61,12 +72,19 @@ class Command(BaseCommand):
         from_pk = settings.GRANTS_PAYOUT_PRIVATE_KEY
         DECIMALS = 18
         what = options['what']
+        clr_round = options['clr_round']
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
-        CLR_TOKEN_ADDRESS = '0xed8306f10a5aa548d09c1d9c622f3f58dd9f2144' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
+        CLR_TOKEN_ADDRESS = '0xe4101d014443af2b7f6f9f603e904adc9faf0de5' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
 
         # get data
+        clr_pks = options['clr_pks'].split(',')
+        gclrs = GrantCLR.objects.filter(pk__in=clr_pks)
+        pks = []
+        for gclr in gclrs:
+            pks += gclr.grants.values_list('pk', flat=True)
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
-        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=True)
+        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=True, pk__in=pks)
+        print(f"got {grants.count()} grants")
 
         # finalize rankings
         if what == 'finalize':
