@@ -1,0 +1,17 @@
+{
+    "symbol": "SRC",
+    "address": "0xeC1275C342A58A7bB02f17d946f9B05b5Bf867db",
+    "overview":{
+          "en": "The Sparkcoin system is committed to providing a safe, convenient, efficient, and self-learning digital asset management platform for global users.",
+          "zh": "Sparkcoin系统致力于为全球用户提供一个安全、便捷、高效、自我学习型的数字资产管理平台。"
+    },
+    "email": "spark8meteor@gmail.com",
+    "website": "http://sparkcoin.top/",
+    "whitepaper": "http://sparkcoin.top/SRC%E5%85%B1%E8%AF%86%E6%98%9F%E4%BA%91.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-08",
+    "links": {
+        "telegram": "https://t.me/spark8meteor",
+        "facebook": "https://www.facebook.com/Sparkcoin-103876078162173"
+      }
+}
