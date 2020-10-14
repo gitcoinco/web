@@ -5529,7 +5529,7 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     try:
-       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
+        bounty = Bounty.objects.get(pk=request.POST.get('bountyPk'))
     except Bounty.DoesNotExist:
         response['message'] = 'error: bounty not found'
         return JsonResponse(response)
@@ -5837,6 +5837,37 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+
+@staff_member_required
+def bulkemail(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+    subject = request.POST.get('subject', '')
+    from_name = request.POST.get('from_name', '')
+    from_email = request.POST.get('from_email', '')
+
+    if handles and message and subject: 
+        from marketing.mails import send_mail
+        _handles = list(set(handles.split(',')))
+        for handle in _handles:
+            handle = handle.strip()
+            profile = Profile.objects.filter(handle=handle).first()
+            if profile:
+                to_email = profile.email
+                body = message
+                send_mail(from_email, to_email, subject, body, False, from_name)
+
+            messages.success(request, 'sent')
+
+    context = {
+        'message': message,
+        'subject': subject,
+        'handles': handles,
+    }
+
+    return TemplateResponse(request, 'bulk_email.html', context)
 
 
 @staff_member_required
