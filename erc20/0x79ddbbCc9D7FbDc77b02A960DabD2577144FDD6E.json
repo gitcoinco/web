@@ -1,0 +1,27 @@
+{
+    "symbol": "CPX",
+    "address": "0x79ddbbCc9D7FbDc77b02A960DabD2577144FDD6E",
+    "overview": {
+        "en": "CPX is a utility token to be used for payment of trading commissions, IEO partisipation, cloud mining power, competition rewards, etc. on crypxie.com.",
+        "zh": "CPX是一种实用程序令牌，可用于在crypxie.com上支付交易佣金，IEO参与，云挖掘能力，竞争奖励等。"
+   },
+  "email": "admin@crypxie.com",
+  "website": "https://crypxie.com",
+  "whitepaper": "https://crypxie.com/cpxcoin",
+  "state": "NORMAL",
+  "published_on": "2020-09-10",
+  "initial_price":{
+    "ETH":"0.00139000 ETH",
+    "USDT":"0.50000000 USDT",
+    "BTC":"0.00004650 BTC",
+    "DOGE":"190.53 DOGE"
+  },
+  "links": {
+    "telegram": "https://t.me/crypxie",
+    "twitter": "https://twitter.com/crypxie",
+    "facebook": "https://www.facebook.com/crypxie",
+    "linkedin": "https://www.linkedin.com/company/crypxie-exchange",
+    "instagram": "https://www.instagram.com/crypxie",
+    "github": "https://github.com/crypxie"
+  }
+}
