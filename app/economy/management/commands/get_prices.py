@@ -28,7 +28,7 @@ import ccxt
 import cryptocompare as cc
 import requests
 from dashboard.models import Bounty, Tip
-from economy.models import ConversionRate
+from economy.models import ConversionRate, Token
 from grants.models import Contribution
 from kudos.models import KudosTransfer
 from perftools.models import JSONStore
@@ -135,6 +135,52 @@ def polo():
         except Exception as e:
             print(e)
 
+
+def coingecko(source, tokens):
+
+    """Handle pulling market data from Coingecko."""
+
+    now = timezone.now()
+
+    token_str = ''
+    for token in tokens:
+        token_str += (token.conversion_rate_id + ',')
+
+    url =  f'https://api.coingecko.com/api/v3/simple/price?ids={token_str}&vs_currencies=usd,eth'
+
+    response = requests.get(url).json()
+
+    for token in tokens:
+        from_currency = token.symbol
+        conversion_rate_id = token.conversion_rate_id
+        conversion_rates = response.get(conversion_rate_id)
+
+        token.conversion_rate_id
+
+        # token -> ETH
+        to_amount = conversion_rates.get('eth')
+        ConversionRate.objects.create(
+            from_amount=1,
+            to_amount=to_amount,
+            source=source,
+            from_currency=from_currency,
+            to_currency='ETH'
+        )
+        print(f'Coingecko: {from_currency} => ETH : {to_amount}')
+
+        # token -> USDT
+        to_amount = conversion_rates.get('usd')
+        ConversionRate.objects.create(
+            from_amount=1,
+            to_amount=to_amount,
+            source=source,
+            from_currency=from_currency,
+            to_currency='USDT'
+        )
+        print(f'Coingecko: {from_currency} => USD : {to_amount}')
+
+    ConversionRate.objects.filter(source=source, created_on__lt=now).delete()
+    print(f'Deleted old coingecko conversion rates')
 
 def refresh_bounties():
     for bounty in Bounty.objects.all():
@@ -292,6 +338,8 @@ class Command(BaseCommand):
         """Get the latest currency rates."""
         stablecoins()
 
+        approved_tokens = Token.objects.filter(approved=True)
+
         try:
             print('ED')
             etherdelta()
@@ -303,7 +351,6 @@ class Command(BaseCommand):
             polo()
         except Exception as e:
             print(e)
-
 
         try:
             print('uniswap')
@@ -317,6 +364,15 @@ class Command(BaseCommand):
         try:
             print('cryptocompare')
             cryptocompare()
+        except Exception as e:
+            print(e)
+
+        try:
+            source = 'coingecko'
+            coingecko_tokens = approved_tokens.filter(conversion_rate_source=source)
+            if coingecko_tokens.count() > 0:
+                print(source)
+                coingecko(source, coingecko_tokens)
         except Exception as e:
             print(e)
 
