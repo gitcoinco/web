@@ -884,3 +884,7 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+
+# GTC Token Distribution 
+GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
+GTC_DIST_KEY = env('GTC_DIST_SIG_KEY', default='E49756B4C8FAB4E48222A3E7F3B97CC3')

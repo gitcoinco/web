@@ -17,10 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
+import binascii
+import hashlib
+import hmac
+import json
 import logging
+import os
 
-from django.conf import settings  # Global Envars
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
@@ -34,15 +38,10 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+import requests
 from ratelimit.decorators import ratelimit
 
 from .forms import ClaimForm
-
-# from django.utils import timezone
-# from django.utils.crypto import get_random_string
-# from django.views.decorators.cache import cache_page
-# from django.views.decorators.csrf import csrf_exempt
-# from django.views.decorators.http import require_GET
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +55,7 @@ def index(request):
 
 # ratelimit.UNSAFE is a shortcut for ('POST', 'PUT', 'PATCH', 'DELETE').
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+# @require_http_methods(["GET", "POST"])
 def claim_tokens(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
@@ -65,16 +65,54 @@ def claim_tokens(request):
         # create a form instance and populate it with data from the request (from forms.py)
         form = ClaimForm(request.POST)
 
-        # iterate through post keys and log them for debugging/learning   
-        for key in request.POST.keys():
-             logger.info(f'claim_tokens post key logger: {request.POST.get(key)}')
+        # iterate through post keys and log them for debugging
+        # for key in request.POST.keys():
+        #     logger.info(f'claim_tokens post key logger: {request.POST.get(key)}')
     
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
+                   
+            # lets log our cleaned data for debug (for now)
+            logger.info(f'cleaned datas: {form.cleaned_data}')
+            logger.info(f'USER ID: {user.id}')
+            logger.info(f'GTC DIST KEY {settings.GTC_DIST_KEY}')  
+            
+            post_data = {}
+            post_data['user_id'] = user.id
+            post_data['user_sig'] = form.cleaned_data['user_sig']
+            post_data['user_address'] = profile.preferred_payout_address
+            post_data['user_amount'] = 50000000000000000000 # placeholder for amount, need to use big number 
+
+            # create a hash of post data                
+            sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data))
+            logger.info(f'POST data: {json.dumps(post_data)}')
+            logger.info(f'Server side hash: { sig }')
+            
+            header = { 
+                "X-GITCOIN-SIG" : sig,
+                "content-type": "application/json",
+            }
+          
+            # POST relevant user data to micro service that returns signed transation data for the user broadcast  
+            try: 
+                micro_response = requests.post(settings.GTC_DIST_API_URL, data=json.dumps(post_data), headers=header)
+                micro_content = micro_response.content
+                logger.info(f'micro_service_API: {micro_content}')
+            except requests.exceptions.ConnectionError:
+                logger.info('ConnectionError while connecting to micro_service_API!')
+            except requests.exceptions.Timeout:
+                # Maybe set up for a retry
+                logger.info('Timeout while connecting to micro_service_API!')
+            except requests.exceptions.TooManyRedirects:
+                logger.info('Too many redirects while connecting to micro_service_API!')
+            except requests.exceptions.RequestException as e:
+                # catastrophic error. bail.
+                logger.error(f'GTC Distributor - Error posting to signature service - {e}')
+                there_is_a_problem = True 
+
             # redirect to a new URL:
             return TemplateResponse(request, 'quadraticlands/welcome-to-the-quadratic-lands.html')
+    
     # if GET 
     else:
         # from forms.py 
@@ -101,3 +139,16 @@ def governance(request):
 
 def missions(request):
     return TemplateResponse(request, 'quadraticlands/missions.html')
+
+# HMAC sig function 
+def create_sha256_signature(key, message):
+    '''
+    Given key & message, returns HMAC digest of the message 
+    '''
+    try:
+        byte_key = binascii.unhexlify(key)
+        message = message.encode()
+        return hmac.new(byte_key, message, hashlib.sha256).hexdigest().upper()
+    except Exception as e:
+        logger.error(f'GTC Distributor - Error Hashing Message: {e}')
+        return False 
