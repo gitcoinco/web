@@ -1,0 +1,26 @@
+{% load i18n static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'quadraticlands/components/head.html' %}
+  </head>
+
+  <body>
+
+    {% include 'quadraticlands/components/particles.html' %}
+    {% include 'quadraticlands/components/nav.html' %}
+    {% include 'quadraticlands/components/wallet-provider.html' %}
+
+    {% block 'content' %}
+    {% endblock %}
+
+    {% include 'quadraticlands/components/footer.html' %}
+ 
+  </body>
+
+
+  {% block 'scripts' %}
+  {% endblock %}
+
+</html>

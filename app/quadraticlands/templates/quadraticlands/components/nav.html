@@ -1,0 +1,55 @@
+{% load i18n static %}
+
+
+<header>
+
+  <div class="logo">
+    <a href="/">
+      
+      {% include "quadraticlands/_inlinesvg/ql.svg" %}
+
+    </a>
+  </div>
+
+  <nav>
+
+    <div id="nav-links" >
+      <div id="burger">
+        {% include "quadraticlands/_inlinesvg/burger.svg" %}
+      </div>
+      <ul>
+        <a class="particleAttract" href="about" aria-current="page"><li>About</li></a>
+        <a class="particleAttract" href="mission-proofofknowledge"><li>Mission</li></a>
+      </ul>
+    </div>
+
+    <div id="nav-user" class="particleAttract" >
+      <a href="dashboard">
+        <div>
+          <img src="/static/quadraticlands/images/user_dummy.jpg" >
+          <span>schumanncombo</span>
+        </div>
+      </a>
+    </div>
+
+    <div id="nav-wallet" class="">
+      <div id="noproviderIcon">
+        {% include "quadraticlands/_inlinesvg/wallet.svg" %}
+      </div>
+
+      <div id="providerIcon">
+        <img class="hide" src="">
+      </div>
+    </div>
+
+    <div id="nav-signin" class="hide particleAttract">
+      <a href="#" class="btn sm">Sign In</a>
+    </div>
+
+  </nav>
+
+
+
+</header>
+
+
