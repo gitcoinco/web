@@ -179,8 +179,8 @@ def coingecko(source, tokens):
         )
         print(f'Coingecko: {from_currency} => USD : {to_amount}')
 
-    ConversionRate.objects.filter(source=source, created_on__lt=now).delete()
-    print(f'Deleted old coingecko conversion rates')
+    # ConversionRate.objects.filter(source=source, created_on__lt=now).delete()
+    # print(f'Deleted old coingecko conversion rates')
 
 def refresh_bounties():
     for bounty in Bounty.objects.all():
