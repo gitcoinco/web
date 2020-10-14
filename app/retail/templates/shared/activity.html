@@ -18,10 +18,10 @@
 
 {% load humanize i18n static grants_extra %}
 <div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
-  <div class="activity_main row bg_{{ row.activity_type }}">
+  <div class="activity_main pl-2 row bg_{{ row.activity_type }}">
     <div class="col-2 p-0">
       <div class="activity-avatar">
-        <a id="profile-avatar-link" style="display:flex; width: 6.1rem; height: 6.1rem; margin-left: auto; margin-right: auto;" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
+        <a id="profile-avatar-link" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
           <img class="avatar rounded-circle" src="https://gitcoin.co/dynamic/avatar/{{row.profile.handle}}"/>
         </a>
         <div class="position-relative">
@@ -56,7 +56,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
+    <div class="col-10 col-sm-8 pl-3 activity_detail">
       <div>
         {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
@@ -105,6 +105,28 @@
           <a data-usercard="{{ row.metadata.to_username }}" href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
+        {% elif row.activity_type == 'create_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "created the" %} {{ row.ptoken.token_symbol }} token.
+        {% elif row.activity_type == 'complete_redemption_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "marked his "%} {{ row.ptoken.token_symbol }}  {% trans "token request from" %}  {{ row.metadata.redemption_requester_name }} {% trans "as complete" %}
+        {% elif row.activity_type == 'mint_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "minted "%} {{ row.ptoken.token_symbol }} tokens.
+        {% elif row.activity_type == 'burn_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "burned "%} {{ row.ptoken.token_symbol }} tokens.
+        {% elif row.activity_type == 'buy_ptoken' %}
+           {% trans "Purchased" %} {{ row.ptoken.token_symbol }} {% trans "personal token from" %}  <a href="/{{ row.ptoken.token_owner_profile.handle }}">@{{ row.ptoken.token_owner_profile.handle }}</a>.
+        {% elif row.activity_type == 'edit_price_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "edited the"%} {{ row.ptoken.token_symbol }}  {% trans "token price." %}
+        {% elif row.activity_type == 'accept_redemption_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "accepted a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.redemption.redemption_requester.handle }}
+        {% elif row.activity_type == 'denies_redemption_ptoken' and row.profile.id == row.ptoken.token_owner_profile.id and row.metadata.redemption_state == 'cancelled'%}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "cancelled a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.redemption.redemption_requester.handle }}
+        {% elif row.activity_type == 'denies_redemption_ptoken' and row.profile.id == row.ptoken.token_owner_profile.id %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "denied a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.ptoken.token_owner_profile.handle }}
+        {% elif row.activity_type == 'denies_redemption_ptoken' %}
+          @{{ row.redemption.redemption_requester.handle }} {% trans "denied a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request to"%} @{{ row.ptoken.token_owner_profile.handle }}
+        {% elif row.activity_type == 'incoming_redemption_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans " has an incoming redemption finalized by the Buyer "%}
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
@@ -432,7 +454,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="d-none d-sm-inline col-sm-2 pl-0 position-relative">
+    <div class="d-none pt-4 d-sm-inline col-sm-2 pl-0 position-relative">
       {% if row.activity_type == 'new_bounty' %}
         <div class="bg-gc-blue card-ribbon px-2 text-center">
           <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
@@ -504,7 +526,7 @@
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
         {% endif %}
       </div>
-      <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
             {{ row.metadata.description }}
@@ -533,7 +555,7 @@
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
         {% endif %}
       </div>
-      <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
             {{ row.bounty.title }}

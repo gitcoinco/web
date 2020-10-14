@@ -239,7 +239,7 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
-  $('#grants-details > div').toggleClass('col-12 col-md-8 col-lg-9 d-none d-md-block');
+  $('#grants-details > div').toggleClass('col-12 col-md-8 col-lg-9 d-none d-md-inline-flex');
 
   $('#side-cart').toggle();
   $('#side-cart').toggleClass('col-12 col-md-4 col-lg-3');

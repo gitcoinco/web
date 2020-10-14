@@ -45,6 +45,7 @@ import linkshortener.views
 import marketing.views
 import marketing.webhookviews
 import perftools.views
+import ptokens.views
 import quests.views
 import retail.emails
 import retail.views
@@ -78,6 +79,20 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+
+    # personal_tokens
+    re_path(r'^ptoken/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
+    re_path(r'^ptoken/faq/?', ptokens.views.faq, name='ptokens_faq'),
+    path('ptokens/redemptions/<int:redemption_id>/', ptokens.views.ptoken_redemption, name='token_redemption'),
+    path('ptokens/<int:token_id>/purchase/', ptokens.views.ptoken_purchases, name='token_purchase'),
+    path('ptokens/<int:token_id>/redemptions/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('ptokens/redemptions/<str:redemption_state>/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('ptokens/me/', ptokens.views.ptoken, name='personal_token'),
+    path('ptokens/<int:token_id>/', ptokens.views.ptoken, name='token'),
+    path('ptokens/<str:token_state>/', ptokens.views.tokens, name='tokens'),
+    path('ptokens/', ptokens.views.tokens, name='tokens'),
+    path('ptokens/update', ptokens.views.process_ptokens, name='process_ptokens'),
+    path('ptokens/verify', ptokens.views.verification, name='ptoken_verification'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
@@ -136,6 +151,11 @@ urlpatterns = [
         dashboard.views.profile_tax_settings,
         name='profile_set_tax_settings'
     ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
+        dashboard.views.verify_user_twitter,
+        name='verify_user_twitter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -165,8 +185,10 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/keywords_search/', dashboard.views.get_keywords, name='keywords_search'),
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
+    url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
 
     # chat
     url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
@@ -273,6 +295,7 @@ urlpatterns = [
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
+    path('api/v0.1/hackathon/<str:hackathon>/events/', dashboard.views.events, name='hackathon_events'),
     path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
@@ -470,7 +493,8 @@ urlpatterns = [
     re_path(r'^schwag/?', retail.views.schwag, name='schwag'),
     re_path(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     re_path(r'^reddit/?', retail.views.reddit, name='reddit'),
-    re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
+    re_path(r'^calendar/?', retail.views.calendar, name='calendar'),
+    re_path(r'^livestream/?', retail.views.calendar, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
@@ -551,6 +575,11 @@ urlpatterns = [
         retail.emails.successful_contribution,
         name='admin_successful_contribution'
     ),
+    path(
+        '_administration/email/pending_contributions',
+        retail.emails.pending_contribution,
+        name='admin_pending_contribution'
+    ),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
@@ -597,6 +626,11 @@ urlpatterns = [
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
     path(
+        '_administration/email/tribe_hackathon_prizes',
+        retail.emails.tribe_hackathon_prizes,
+        name='tribe_hackathon_prizes'
+    ),
+    path(
         '_administration/email/day_email_campaign/<int:day>',
         marketing.views.day_email_campaign,
         name='day_email_campaign'
@@ -612,6 +646,7 @@ urlpatterns = [
         name='process_faucet_request'
     ),
     re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
+    re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),
@@ -680,6 +715,7 @@ urlpatterns = [
     re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
     re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
+    url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),

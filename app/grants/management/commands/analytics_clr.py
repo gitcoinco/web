@@ -54,7 +54,8 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
             v_threshold,
             uv_threshold
         )
-        debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
+        # debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
+        debug_output.append([grant.id, grant.title, grant.positive_round_contributor_count, float(grant.amount_received_in_round), clr_amount])
 
     return debug_output
 

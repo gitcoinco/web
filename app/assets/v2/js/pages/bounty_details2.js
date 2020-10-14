@@ -49,6 +49,10 @@ Vue.mixin({
       let url;
 
       switch (token_name) {
+        case 'BTC':
+          url = `https://blockstream.info/tx/${txn}`;
+          break;
+
         case 'ETC':
           url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
           break;
@@ -70,6 +74,10 @@ Vue.mixin({
           url = `https://kusama.subscan.io/extrinsic/${txn}`;
           break;
 
+        case 'FIL':
+          url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -80,6 +88,10 @@ Vue.mixin({
       let url;
 
       switch (token_name) {
+        case 'BTC':
+          url = `https://blockstream.info/address/${address}`;
+          break;
+
         case 'ETC':
           url = `https://blockscout.com/etc/mainnet/address/${address}`;
           break;
@@ -101,6 +113,10 @@ Vue.mixin({
           url = `https://kusama.subscan.io/account/${address}`;
           break;
 
+        case 'FIL':
+          url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
+          break;
+
         default:
           url = `https://etherscan.io/address/${address}`;
       }
@@ -112,6 +128,12 @@ Vue.mixin({
       let qr_string;
 
       switch (token_name) {
+        case 'BTC':
+          qr_string = value ?
+            `bitcoin:${address}?amount=${value}` :
+            `bitcoin:${address}`;
+          break;
+
         case 'ETC':
           qr_string = value ?
             `ethereum:${address}?value=${value}` :
@@ -129,6 +151,12 @@ Vue.mixin({
           qr_string = value ?
             `zilliqa://${address}?amount=${value}` :
             `zilliqa://${address}`;
+          break;
+
+        case 'FIL':
+          qr_string = value ?
+            `filecoin://${address}?amount=${value}` :
+            `filecoin://${address}`;
           break;
       }
 
@@ -272,6 +300,10 @@ Vue.mixin({
         case 'ETC':
           tenant = 'ETC';
           break;
+        
+        case 'BTC':
+          tenant = 'BTC';
+          break;
 
         case 'CELO':
         case 'cUSD':
@@ -285,6 +317,10 @@ Vue.mixin({
         case 'DOT':
         case 'KSM':
           tenant = 'POLKADOT';
+          break;
+
+        case 'FIL':
+          tenant = 'FILECOIN';
           break;
 
         default:

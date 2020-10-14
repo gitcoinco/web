@@ -215,6 +215,7 @@ class Announcement(SuperModel):
         ('header', 'header'),
         ('footer', 'footer'),
         ('founders_note_daily_email', 'founders_note_daily_email'),
+        ('grants', 'grants'),
     ]
     key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)
@@ -242,6 +243,11 @@ class Announcement(SuperModel):
     def __str__(self):
         return f"{self.created_on} => {self.title}"
 
+    @property
+    def salt(self):
+        if self.pk < 49:
+            return self.rank
+        return self.pk
 
 class MatchRoundQuerySet(models.QuerySet):
     """Handle the manager queryset for MatchRanking."""

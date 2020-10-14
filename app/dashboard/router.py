@@ -212,7 +212,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_obj', 'admin_url')
         depth = 1
 
 
@@ -252,7 +252,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 hackathon_event = HackathonEvent.objects.last()
 
             queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             if sponsor:
                 queryset = queryset.filter(
@@ -261,7 +261,16 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         elif sponsor:
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
+
+            projects = []
+            for project in queryset:
+                bounty = project.bounty
+                org_name = bounty.org_name
+                if org_name != sponsor:
+                    projects.append(project.pk)
+
+            queryset = queryset.exclude(pk__in=projects)
 
         if q:
             queryset = queryset.filter(
@@ -274,7 +283,6 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 Q(profiles__keywords__icontains=skills)
             )
-
         if rating:
             queryset = queryset.filter(
                 Q(rating__gte=rating)
@@ -283,6 +291,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         if 'winners' in filters:
             queryset = queryset.filter(
                 Q(winner=True)
+            )
+        if 'grants' in filters:
+            queryset = queryset.filter(
+                Q(grant_obj__isnull=False)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(
@@ -307,7 +319,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'metadata'
         )
 
 

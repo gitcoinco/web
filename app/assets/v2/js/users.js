@@ -7,11 +7,6 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 // let funderBounties = [];
 
 Vue.mixin({
-  computed: {
-    orderedUsers: function() {
-      return _.orderBy(this.users, 'position_contributor', 'asc');
-    }
-  },
   methods: {
     chatWindow: function(channel) {
       window.chatSidebar.chatWindow(channel);
@@ -383,6 +378,12 @@ if (document.getElementById('gc-users-directory')) {
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
     mounted() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has('ptokens')) {
+        this.$set(this.params, 'only_with_token', true);
+      }
+
       this.fetchUsers();
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();

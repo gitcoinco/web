@@ -106,7 +106,7 @@
     <h3 class="no-subtitle">{% trans " Featured bounties for you!" %}</h3>
 
     {% for bounty in featured_bounties %}
-      {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
+      {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1 featured=True %}
     {% endfor %}
 
   </div>

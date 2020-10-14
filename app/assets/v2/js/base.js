@@ -351,12 +351,11 @@ var show_persona_modal = function(e) {
   $('#persona_modal').bootstrapModal('show');
 };
 
-if (
-  document.contxt.github_handle &&
-  !document.contxt.persona_is_funder &&
-  !document.contxt.persona_is_hunter
-) {
-  show_persona_modal();
+function popOnboard(step) {
+  if (step) {
+    appOnboard.step = step;
+  }
+  appOnboard.$refs['onboard-modal'].openModal();
 }
 
 $('body').on('click', '[data-persona]', function(e) {
@@ -462,6 +461,7 @@ function applyCartMenuStyles() {
 
   if (CartData.hasItems()) {
     dot.addClass('notification__dot_active');
+    dot.text(CartData.length());
   } else {
     dot.removeClass('notification__dot_active');
     if (document.location.href.indexOf('/grants') == -1) {
