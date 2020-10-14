@@ -1,0 +1,21 @@
+{
+  "website": "https://each.land",
+  "published_on": "2020-10-15",
+  "links": {
+    "telegram": "",
+    "reddit": "",
+    "github": "",
+    "twitter": ""
+  },
+  "overview": {
+    "en": "Blockchain Game Platform.",
+    "zh": "区块链游戏平台。"
+  },
+  "symbol": "LAND",
+  "initial_price": {
+    "USD": "",
+    "ETH": ""
+  },
+  "whitepaper": "",
+  "address": "0x96c520a79bf62c955eaa044f600f67e3ecfeff52"
+}
