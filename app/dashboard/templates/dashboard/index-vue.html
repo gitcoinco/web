@@ -279,6 +279,9 @@
                               <b-form-checkbox value="lfm" v-model="params.filters" name="lfm" switch>
                                 Looking for Members
                               </b-form-checkbox>
+                              <b-form-checkbox value="grants" v-model="params.filters" name="grants" switch>
+                                Grants
+                              </b-form-checkbox>
                             </div>
                             <div class="pb-4 border-bottom form-group">
                               <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
@@ -299,8 +302,6 @@
                                 </select2>
                               </div>
                             </div>
-
-
                             <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                             <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
                               <span class="font-weight-bold">[[ numProjects ]]</span> projects found

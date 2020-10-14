@@ -77,24 +77,28 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input_title">{% trans "Project Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" placeholder="The Human Fund" required />
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" value="{{project_data.name}}" placeholder="The Human Fund" required />
                 </div>
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-description">{% trans "Project Description" %}</label>
                   <div id="input-description">
+                  <textarea class="form-control" name="summary" id="input-description" maxlength="100" style="height: 120px"  cols="20" rows="2" placeholder="Tell us about your project!" required>{{data.project.summary}}</textarea>
                   </div>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-url">{% trans "Project Website" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" placeholder="https://human.fund/" required/>
+                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" value="{{project_data.work_url}}" placeholder="https://human.fund/" required/>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Project Team members" %}</label>
                   <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg team_members" name="team_members[]" multiple="multiple">
+                    {% for profile in project_data.profiles.all %}
+                      <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
+                    {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -111,7 +115,7 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="github_project_url">{% trans "Github Project URL" %}</label>
-                  <input type="url" class="form__input form__input-lg " id="github_project_url" name="github_project_url" placeholder="https://github.com/human-fund"/>
+                  <input type="url" class="form__input form__input-lg " id="github_project_url" name="github_project_url" value="{{project_data.work_url}}" placeholder="https://github.com/human-fund"/>
                 </div>
 
                 <h5 class="mt-4">Categorization Information</h5>
@@ -163,6 +167,7 @@
                 </div>
 
                 <div>
+                  <input type="hidden" id="project_pk" name="project_pk" value="{{project_data.project.id}}" />
                   <input type="hidden" id="transaction_hash" name="transaction_hash" />
                   <input type="hidden" id="contract_address" name="contract_address" />
                   <input type="hidden" id="contract_owner_address" name="contract_owner_address">

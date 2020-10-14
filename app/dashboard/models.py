@@ -5098,6 +5098,13 @@ class HackathonProject(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     winner = models.BooleanField(default=False)
     extra = JSONField(default=dict, blank=True, null=True)
+    grant_obj = models.ForeignKey(
+        'grants.Grant',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Link to grant if project is converted to grant') 
+    )
 
     class Meta:
         ordering = ['-name']
@@ -5155,6 +5162,7 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
+            'grant_obj': self.grant_obj,
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }

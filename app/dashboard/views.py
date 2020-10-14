@@ -86,6 +86,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
+from grants.models import Grant
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
@@ -4317,6 +4318,12 @@ def hackathon_projects(request, hackathon='', specify_project=''):
         projects = projects.filter(
             Q(badge__isnull=False)
         )
+
+    if filters == 'grants':
+        projects = projects.filter(
+            Q(grant_obj__isnull=False)
+        )
+           
     if specify_project:
         projects = projects.filter(name__iexact=specify_project.replace('-', ' '))
         if projects.exists():
@@ -4486,10 +4493,17 @@ def hackathon_save_project(request):
 def get_project(request, project_id):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    if not project:
+    params = project_data(project_id)
+    if not params:
         raise Http404("The project doesnt exists.")
 
+    return JsonResponse(params)
+
+def project_data(project_id):
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        return None
+    
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     params = {
         'project': {
@@ -4515,18 +4529,19 @@ def get_project(request, project_id):
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'team_members_profile': project.profiles.all()
         },
         'hackathon': hackathon_obj[0],
     }
+    return params
 
-    return JsonResponse(params)
-
-
+    
 def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+
     if not project:
         raise Http404("No Hackathon Project matches the given query.")
 
@@ -4573,7 +4588,8 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'grant_url': project.grant_obj.url if project.grant_obj else False
         },
         'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
