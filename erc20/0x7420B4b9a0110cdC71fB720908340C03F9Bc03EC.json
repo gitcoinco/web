@@ -9,6 +9,7 @@
   "whitepaper": "https://jasmy.co.jp/images/whitepaper20200618_eng.pdf",
   },
   "links": {
-    "github": "https://github.com/TokyoToken/JasmyCoin",
+    "github":    "https://github.com/TokyoToken/JasmyCoin",
+    "community": "https://jasmy.io/"
   }
 }
