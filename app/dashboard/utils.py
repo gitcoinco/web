@@ -806,10 +806,17 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+
 def is_valid_eth_address(eth_address):
     return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
+
 def get_tx_status(txid, network, created_on):
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on)
+    return status, timestamp
+
+
+def get_tx_status_and_details(txid, network, created_on):
     from django.utils import timezone
     from dashboard.utils import get_web3
     import pytz
@@ -817,6 +824,7 @@ def get_tx_status(txid, network, created_on):
     DROPPED_DAYS = 4
 
     # get status
+    tx = {}
     status = None
     if txid == 'override':
         return 'success', None #overridden by admin
@@ -853,7 +861,7 @@ def get_tx_status(txid, network, created_on):
             timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
     except:
         pass
-    return status, timestamp
+    return status, timestamp, tx
 
 
 def is_blocked(handle):

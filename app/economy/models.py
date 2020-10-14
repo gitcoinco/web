@@ -41,14 +41,20 @@ from django.utils.timezone import localtime
 
 import pytz
 from app.services import RedisService
+from hexbytes import HexBytes
+from web3.utils.datastructures import AttributeDict
 
 
 class EncodeAnything(DjangoJSONEncoder):
     def default(self, obj):
+        if isinstance(obj, AttributeDict):
+            return dict(obj)
         if isinstance(obj, Promise):
             return force_text(obj)
         elif isinstance(obj, FieldFile):
             return bool(obj)
+        elif isinstance(obj, HexBytes):
+            return str(obj)
         elif isinstance(obj, SuperModel):
             return (obj.to_standard_dict())
         elif isinstance(obj, models.Model):
