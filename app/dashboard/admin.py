@@ -30,8 +30,8 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription,
-    UserAction, UserVerificationModel,
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
+    TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -53,6 +53,15 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class TransactionHistoryAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', 'status', '__str__']
+    raw_id_fields = ['earning']
+    search_fields = [
+        'payload', 'txid', 'status'
+    ]
 
 
 class ObjectViewAdmin(admin.ModelAdmin):
@@ -606,6 +615,7 @@ admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
+admin.site.register(TransactionHistory, TransactionHistoryAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
 admin.site.register(TribesSubscription, TribesSubscriptionAdmin)

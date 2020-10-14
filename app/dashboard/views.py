@@ -4493,13 +4493,13 @@ def hackathon_save_project(request):
 def get_project(request, project_id):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    params = project(project_id)
+    params = project_data(project_id)
     if not params:
         raise Http404("The project doesnt exists.")
 
     return JsonResponse(params)
 
-def project(project_id):
+def project_data(project_id):
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
     if not project:
         return None
@@ -4530,7 +4530,7 @@ def project(project_id):
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
             } for member_profile in project.profiles.all()],
-            'team_members_profile': [member_profile for member_profile in project.profiles.all()]
+            'team_members_profile': project.profiles.all()
         },
         'hackathon': hackathon_obj[0],
     }
@@ -5433,7 +5433,6 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-    print('### GITCOIN BOT A0')
     maybe_market_to_github(bounty, event_name)
 
     response = {
@@ -5545,7 +5544,7 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     try:
-       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
+        bounty = Bounty.objects.get(pk=request.POST.get('bountyPk'))
     except Bounty.DoesNotExist:
         response['message'] = 'error: bounty not found'
         return JsonResponse(response)
@@ -5853,6 +5852,37 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+
+@staff_member_required
+def bulkemail(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+    subject = request.POST.get('subject', '')
+    from_name = request.POST.get('from_name', '')
+    from_email = request.POST.get('from_email', '')
+
+    if handles and message and subject: 
+        from marketing.mails import send_mail
+        _handles = list(set(handles.split(',')))
+        for handle in _handles:
+            handle = handle.strip()
+            profile = Profile.objects.filter(handle=handle).first()
+            if profile:
+                to_email = profile.email
+                body = message
+                send_mail(from_email, to_email, subject, body, False, from_name)
+
+            messages.success(request, 'sent')
+
+    context = {
+        'message': message,
+        'subject': subject,
+        'handles': handles,
+    }
+
+    return TemplateResponse(request, 'bulk_email.html', context)
 
 
 @staff_member_required

@@ -617,23 +617,6 @@ Vue.component('project-card', {
     }
   },
   methods: {
-    markWinner: function($event, project) {
-      let vm = this;
-
-      const url = '/api/v0.1/hackathon_project/set_winner/';
-      const markWinner = fetchData(url, 'POST', {
-        project_id: project.pk,
-        winner: $event ? 1 : 0
-      }, {'X-CSRFToken': vm.csrf});
-
-      $.when(markWinner).then(response => {
-        if (response.message) {
-          alert(response.message);
-        }
-      }).catch(err => {
-        console.log(err);
-      });
-    },
     projectModal() {
       let project = this.$props.project;
 
