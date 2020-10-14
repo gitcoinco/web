@@ -1,0 +1,23 @@
+{
+  "symbol": "QHC",
+  "address": "0x5df94780f00140FE72d239D0D261f7797E3Fbd1B",
+  "overview":{
+        "en": "QChi Chain (QHC) is a cross industry application platform that brings blockchain technology to a wide range of industries. QHC provides solid and stable technical support and establishes a robust model through a world-class communication platform and an economically sustainable ecosystem, enabling easy blockchain based P2P asset transfer.",
+        "zh": "金汇币（QHC）是跨行业的应用程序平台，将区块链技术带入了广泛的行业。 QHC通过世界一流的通信平台和经济上可持续的生态系统提供了坚实而稳定的技术支持，并建立了可靠的模型，从而使基于区块链的P2P资产转移变得容易。"
+  },
+  "email": "support@qchichain.com",
+  "website": "https://qchichain.com/",
+  "whitepaper": "https://qchichain.com/qhc.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-01",
+  "initial_price":{
+        "ETH":"0.0000074 ETH",
+        "USD":"0.002 USD",
+        "BTC":"0.00000023 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/qchichain",
+    "telegram": "https://t.me/qchichain",
+    "github": "https://github.com/qch-qchi"
+  }
+}
