@@ -78,7 +78,7 @@ from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    profile_helper,
+    profile_helper, get_poap_earliest_owned_token_timestamp
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -134,12 +134,15 @@ from .utils import (
     re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
+from eth_account.messages import defunct_hash_message
+
 logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
 
 
 @protected_resource()
@@ -2913,6 +2916,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['upcoming_calls'] = []
 
         context['is_sms_verified'] = profile.sms_verification
+        context['is_poap_verified'] = profile.is_poap_verified
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
     else:
@@ -6239,3 +6243,62 @@ def events(request, hackathon):
     return JsonResponse({
         'events': events,
     })
+
+
+@login_required
+@require_POST
+def verify_user_poap(request, handle):
+    # TODO add test
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_poap_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    signature = request_data.get('signature', '')
+    eth_address = request_data.get('eth_address', '')
+    if eth_address == '' or signature == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Empty signature or Ethereum address',
+        })
+
+    message_hash = defunct_hash_message(text="verify_poap_badges")
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    if eth_address != signer:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid signature',
+        })
+
+    # commented out because network = get_default_network() results in dashboard.utils.UnsupportedNetworkException: rinkeby
+    # network = get_default_network()
+    network = "mainnet"
+    fifteen_days_ago = datetime.now()-timedelta(days=15)
+
+    timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
+    if timestamp is None:
+        # We couldn't find any POAP badge for this ethereum address
+        return JsonResponse({
+            'ok': False,
+            'msg': 'No POAP badges(ERC721 NFTs) is holded by this address',
+        })
+
+    if timestamp < fifteen_days_ago.timestamp():
+            profile = profile_helper(handle, True)
+            profile.is_poap_verified = True
+            profile.save()
+    return JsonResponse({
+                'ok': True,
+                'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+            }
+    )
