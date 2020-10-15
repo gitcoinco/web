@@ -31,8 +31,8 @@ from grants.views import (
 app_name = 'grants'
 urlpatterns = [
     path('', grants, name='grants'),
-    path('clr/<slug:round_num>', clr_grants, name='clr_grants'),
-    path('clr/<slug:round_num>/', clr_grants, name='clr_grants'),
+    path('clr/<int:round_num>', clr_grants, name='clr_grants'),
+    path('clr/<int:round_num>/<str:sub_round_slug>', clr_grants, name='clr_grants'),
     path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),

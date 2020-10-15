@@ -105,7 +105,7 @@ Vue.component('grant-sidebar', {
         document.location.href = this.round_num ?
           `/grants/clr/${this.round_num}?type=${params.type}` :
           `/grants/${params.type}`
-        ;
+        ;  //TODO
       }
     },
     searchKeyword: function() {
@@ -185,7 +185,7 @@ if (document.getElementById('grants-showcase')) {
         const q = vm.getQueryParams();
 
         if (vm.round_num) {
-          let uri = `/grants/clr/${vm.round_num}/`;
+          let uri = `/grants/clr/${vm.round_num}/`; //TODO
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);

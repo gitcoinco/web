@@ -332,11 +332,11 @@ def bulk_grants_for_cart(request):
     return JsonResponse({'grants': grants})
 
 
-def clr_grants(request, round_num):
+def clr_grants(request, round_num, sub_round_slug=''):
     """CLR grants explorer."""
 
     try:
-        clr_round = GrantCLR.objects.get(round_num__icontains=round_num)
+        clr_round = GrantCLR.objects.get(round_num=round_num, sub_round_slug=sub_round_slug)
 
     except GrantCLR.DoesNotExist:
         return redirect('/grants')
