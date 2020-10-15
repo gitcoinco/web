@@ -1,8 +1,6 @@
 # HTTPS API
 
-Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1
-
-### Grants
+## Grants API
 
 * Get a full list of grants at `https://gitcoin.co/grants/grants.json`
 * Get a list of contributors to each Gitcoin Grants Round at `https://gitcoin.co/grants/v1/api/export_addresses/roundX.json` where X is the round number, (1-7 supported as of Oct 2020)
@@ -17,6 +15,13 @@ Click through to try them below:
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
 * https://gitcoin.co/grants/v1/api/export_addresses/all.json
+
+NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at `https://gitcoin.co/settings/privacy` at anytime.
+
+## Generalized API
+
+Gitcoin provides a simple read-only HTTPS API to access data. The API is live at https://gitcoin.co/api/v0.1
+
 
 ### Datatypes
 
@@ -255,6 +260,8 @@ You can filter the data returned from the API by providing these keys as URL par
 ```
 
 # WEB3 API
+
+## Note: this API is now in the process of being deprecated, as since going cross-chain, Gitcoin no longer uses standardbounties as the base layer of it's bounties experience.  This API will still  be useful for legacy bounties which are posted to standcard bounties.
 
 You may interact with the HTTPS API as follows
 
