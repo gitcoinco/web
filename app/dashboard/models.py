@@ -2784,7 +2784,11 @@ class Profile(SuperModel):
     )
     hide_wallet_address = models.BooleanField(
         default=True,
-        help_text='If this option is chosen, we will remove your wallet information all together',
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs wherever it\'s associated with your handle or other PIA (personally identifiable information) wherever possible.',
+    )
+    hide_wallet_address_anonymized = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs, even in instances in which it\'s anonymized',
     )
     pref_do_not_track = models.BooleanField(
         default=False,
