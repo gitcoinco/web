@@ -56,7 +56,7 @@ def index(request):
 # ratelimit.UNSAFE is a shortcut for ('POST', 'PUT', 'PATCH', 'DELETE').
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 # @require_http_methods(["GET", "POST"])
-def claim_tokens(request):
+def claim(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
    
@@ -111,22 +111,32 @@ def claim_tokens(request):
                 there_is_a_problem = True 
 
             # redirect to a new URL:
-            return TemplateResponse(request, 'quadraticlands/welcome-to-the-quadratic-lands.html')
-    
+            # return TemplateResponse(request, 'quadraticlands/welcome-to-the-quadratic-lands.html')
+            # return to page that loads up transaction for send 
+            # pass returned values from eth signer microservice
+
+            # ESM returns bytes object of json. so, we decode it
+            esms_response = json.loads( micro_content.decode('utf-8'))
+            logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
+            return TemplateResponse(request, 'quadraticlands/send_token_claim.html', context=esms_response)
+            
+
     # if GET 
     else:
         # from forms.py 
         form = ClaimForm()
         
         context = {
-            'active': 'verified',
             'title': _('Claim GTC'),
             'profile': profile,
             'user' : user,
             'form' : form,
         }
-
+       
         return TemplateResponse(request, 'quadraticlands/claim.html', context)
+
+def send_token_claim(request, context):
+    return TemplateResponse(request, 'quadraticlands/send_token_claim.html', context)
 
 def welcome(request):
     return TemplateResponse(request, 'quadraticlands/welcome-to-the-quadratic-lands.html')

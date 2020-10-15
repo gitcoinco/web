@@ -1,0 +1,118 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+<!DOCTYPE HTML>
+<html>
+  <head>
+    {% include 'shared/tag_manager_1.html' %}
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}">
+
+    <style>
+      .d-flex {
+        display: flex;
+      }
+
+      .align-items-baseline {
+        align-items: center;
+      }
+
+      .mr-2 {
+        margin-right: 1rem;
+      }
+
+      .rounded-circle {
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      .select2-container .select2-selection--single {
+        height: 34px;
+        text-align: left;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 32px;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px;
+      }
+
+      img.hackathon-card-logo {
+        max-height: 12rem;
+        max-width: 9rem;
+      }
+    </style>
+
+    <script>
+      var static_url = "{{ STATIC_URL }}";
+      var media_url = "{{ MEDIA_URL }}";
+    </script>
+    <noscript>
+      <link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}">
+    </noscript>
+  </head>
+  <body id="yge" class="{{ class }} tips transaction g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/analytics.html' with suppress_sumo=1 %}
+    {% block 'world' %} {% endblock %}
+
+    <!-- Wrapper -->
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% cookielaw_banner %}
+    <div id="wrapper" class="container-fluid">
+      {% include 'shared/onepager_auth.html' with source='authed' %}
+      <!-- Main -->
+      {% block 'main' %} {% endblock %}
+      <footer id="footer" class="copyright d-flex font-smaller-1 justify-content-center mt-5 p-4">
+        <a href="/">&copy; Gitcoin.co</a>
+        {% if not hide_send_tip %}
+          <a href="{% url "send_tip_2" %}">{% trans "Claim Tokens" %}</a>
+        {% endif %}
+      </footer>
+    </div>
+    <!-- Scripts -->
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+
+    {% block 'scripts' %}{% endblock %}
+
+    <script>
+      needWalletConnection();
+      if ('addEventListener' in window) {
+        window.addEventListener('load', function () {
+          document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+      }
+    </script>
+
+    <script>
+      var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
+      var ipfsConfig = {
+        host: host,
+        port: {{ ipfs_config.port }},
+        protocol: "{{ ipfs_config.protocol }}",
+        root: "{{ ipfs_config.root }}"
+      };
+    </script>
+    <script src="{% static "cookielaw/js/cl.js" %}"></script>
+  </body>
+</html>
