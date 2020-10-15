@@ -81,7 +81,7 @@ def claim(request):
             post_data['user_id'] = user.id
             post_data['user_sig'] = form.cleaned_data['user_sig']
             post_data['user_address'] = profile.preferred_payout_address
-            post_data['user_amount'] = 50000000000000000000 # placeholder for amount, need to use big number 
+            post_data['user_amount'] = 1000000000000000 # placeholder for amount, need to use big number 
 
             # create a hash of post data                
             sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data))
@@ -117,6 +117,20 @@ def claim(request):
 
             # ESM returns bytes object of json. so, we decode it
             esms_response = json.loads( micro_content.decode('utf-8'))
+            # construct nested dict for easy access in templates
+         
+            '''
+            esms_response = {
+                "esms" : {
+                    "user_id" : esms_decoded_response["user_id"],
+                    "user_account" : esms_decoded_response["user_address"],
+                    "user_amount" : esms_decoded_response["user_amount"],
+                    "msg_hash_hex" : esms_decoded_response["msg_hash_hex"],
+                    "eth_signed_message_hash_hex" : esms_decoded_response["eth_signed_message_hash_hex"],
+                    "eth_signed_signature_hex" : esms_decoded_response["eth_signed_signature_hex"],
+                }
+            }
+            '''
             logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
             return TemplateResponse(request, 'quadraticlands/send_token_claim.html', context=esms_response)
             
