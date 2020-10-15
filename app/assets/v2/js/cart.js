@@ -551,6 +551,7 @@ Vue.component('grants-cart', {
       }
     },
     confirmZcashPayment: function(e, grant) {
+      let vm = this;
       e.preventDefault();
       console.log(e)
 
@@ -559,19 +560,46 @@ Vue.component('grants-cart', {
         return;
       }
 
+      grant.test= 'my'
 
+      let data = {'contributions': [{
 
-      let data = {
+        'grant_id': grant.grant_id,
+        'contributor_address': grant.contributor_address,
+        'tx_id': grant.payoutTxId,
+        'token_symbol': grant.grant_donation_currency,
+        'tenant': this.tabSelected,
+        'comment': grant.grant_comments,
+        'amount_per_period': grant.grant_donation_num_rounds
 
-        "grant_id": grant.grant_id,
-        "contributor_address": grant.contributor_address,
-        "token_symbol": grant.grant_donation_currency,
-        "tenant": this.tabSelected,
-        "comment": grant.grant_comments,
-        "amount_per_period": grant.grant_donation_num_rounds
-
-      }
+      }]}
       console.log(data)
+
+
+      const postContribution = fetchData('v1/api/contribute', 'POST', JSON.stringify(data));
+
+      vm.errorMessage = '';
+
+      $.when(postContribution).then(response => {
+        // set the cooldown time to one minute
+        console.log(response)
+        if (response.invalid_contributions) {
+          console.log(grant.grant_id === response.invalid_contributions[0].grant_id)
+          if(grant.grant_id === response.invalid_contributions[0].grant_id ){
+            // grant.error= response.invalid_contributions[0].message;
+            vm.$set(grant, 'error', response.invalid_contributions[0].message);
+          }
+          // vm.grantData.filter((item)=>{
+          //   if(item.grant_id.includes(e.invalid_contributions[0].grant_id)) {
+          //     // return item.error = e.invalid_contributions[0].message
+          //     return
+          //   }
+          // });
+
+        }
+      }).catch((e) => {
+
+      });
     },
     // TODO: SMS related methos and state should be removed and refactored into the component that
     // should be shared between the cart and the Trust Bonus tab
@@ -2124,7 +2152,7 @@ Vue.component('grants-cart', {
         this.zkSyncCheckoutStep2Status = 'complete';
         this.zkSyncCheckoutStep3Status = 'pending';
         this.zkSyncCheckoutFlowStep = 2; // Steps 0 and 1 are skipped here
-        
+
         // Do the transfers
         await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
         let nonce = await this.getGitcoinSyncWalletNonce();
@@ -2598,7 +2626,7 @@ Vue.component('grants-cart', {
       await this.finishZkSyncTransfersAllFlows();
     },
 
-    
+
     // =============================================================================================
     // ==================================== END ZKSYNC METHODS =====================================
     // =============================================================================================
@@ -2766,7 +2794,7 @@ Vue.component('grants-cart', {
           // Get list of grants with the expected validator comment
           const response = await fetch('get-interrupted-contributions');
           const incompleteContributions = await response.json();
-    
+
           // Convert into localStorage format
           this.grantData = incompleteContributions.contributions.map((grant) => {
             this.gitcoinFactorRaw = 100 * grant.amount_per_period_to_gitcoin / grant.amount_per_period;
@@ -2777,7 +2805,7 @@ Vue.component('grants-cart', {
               grant_donation_currency: grant.token_symbol
             };
           });
-      
+
         } catch (e) {
           this.handleError(e);
         }
