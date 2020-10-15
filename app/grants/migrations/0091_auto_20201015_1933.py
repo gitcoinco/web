@@ -8,6 +8,9 @@ def forwards(apps, schema_editor):
         gclr.sub_round_slug = gclr.round_num
         gclr.round_num = 7
         gclr.save()
+    for gclr in GrantCLR.objects.all():
+        gclr.customer_name = "ethereum"
+        gclr.save()
 
 
 def backwards(apps, schema_editor):

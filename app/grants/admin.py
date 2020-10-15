@@ -381,7 +381,7 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
+    list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
 
 
 class GrantCollectionAdmin(admin.ModelAdmin):

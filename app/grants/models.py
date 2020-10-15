@@ -118,6 +118,8 @@ class GrantType(SuperModel):
 
 
 class GrantCLR(SuperModel):
+    
+    customer_name = models.PositiveIntegerField(help_text="CLR Round Number")
     round_num = models.PositiveIntegerField(help_text="CLR Round Number")
     sub_round_slug = models.CharField(max_length=255, help_text="Sub Round Slug", default='all')
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")

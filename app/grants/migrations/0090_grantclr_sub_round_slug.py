@@ -12,6 +12,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='grantclr',
+            name='customer_name',
+            field=models.CharField(default='all', help_text='Customer Name', max_length=255),
+        ),
+        migrations.AddField(
+            model_name='grantclr',
             name='sub_round_slug',
             field=models.CharField(default='all', help_text='Sub Round Slug', max_length=255),
         ),
