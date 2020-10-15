@@ -39,7 +39,7 @@ def round_num_to_dates(round_id):
         amount = 120 * 3 * 1000
     return start, end, amount
 
-for i in range(1, 6):
+for i in range(1, 7):
     skip = GrantCLR.objects.filter(round_num=i).exists()
     if not skip:
         start, end, amount = round_num_to_dates(i)
