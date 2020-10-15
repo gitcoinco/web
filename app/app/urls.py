@@ -493,7 +493,8 @@ urlpatterns = [
     re_path(r'^schwag/?', retail.views.schwag, name='schwag'),
     re_path(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     re_path(r'^reddit/?', retail.views.reddit, name='reddit'),
-    re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
+    re_path(r'^calendar/?', retail.views.calendar, name='calendar'),
+    re_path(r'^livestream/?', retail.views.calendar, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
@@ -645,6 +646,7 @@ urlpatterns = [
         name='process_faucet_request'
     ),
     re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
+    re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),

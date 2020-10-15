@@ -163,6 +163,7 @@ def privacy_settings(request):
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
             profile.pref_do_not_track = bool(request.POST.get('pref_do_not_track', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
+            profile.hide_wallet_address_anonymized = bool(request.POST.get('hide_wallet_address_anonymized', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()

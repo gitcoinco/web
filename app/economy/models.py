@@ -178,6 +178,7 @@ class ConversionRate(SuperModel):
         ('poloniex', 'poloniex'),
         ('uniswap', 'uniswap'),
         ('manual', 'manual'),
+        ('coingecko', 'coingecko'),
     ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
@@ -243,6 +244,14 @@ class TXUpdate(SuperModel):
 class Token(SuperModel):
     """Define the Token model."""
 
+    CONVERSION_RATE_SOURCE = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+        ('coingecko', 'coingecko'),
+    ]
+
     address = models.CharField(max_length=255, db_index=True)
     symbol = models.CharField(max_length=10, db_index=True)
     network = models.CharField(max_length=25, db_index=True)
@@ -252,6 +261,9 @@ class Token(SuperModel):
     network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
+    conversion_rate_id = models.CharField(max_length=25, blank=True, null=True, help_text="unique identifier used by conversion_rate_source")
+    conversion_rate_source = models.CharField(max_length=25, blank=True, null=True, help_text="API source", choices=CONVERSION_RATE_SOURCE)
+
 
     def __str__(self):
         """Define the string representation of a conversion rate."""

@@ -58,7 +58,7 @@ from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
@@ -1409,12 +1409,21 @@ def grant_new(request):
             new_grant(grant, profile)
             add_grant_to_active_clrs(grant)
 
+            project_pk = request.POST.get('project_pk', '')
+            if project_pk:
+                HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
+
             return JsonResponse({
                 'success': True,
                 'url': grant.url,
             })
 
-
+    project = None
+    project_id = request.GET.get('project_id', None)
+    if project_id is not None:
+        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+        if request.user.profile in hackathon_project.profiles.all():
+            project = hackathon_project
 
     params = {
         'active': 'new_grant',
@@ -1431,8 +1440,10 @@ def grant_new(request):
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': GrantType.objects.all()
+        'grant_types': GrantType.objects.all(),
+        'project_data': project
     }
+
     return TemplateResponse(request, 'grants/new.html', params)
 
 

@@ -308,7 +308,7 @@ class Bounty(SuperModel):
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
-    bounty_owner_address = models.CharField(max_length=50, blank=True, null=True)
+    bounty_owner_address = models.CharField(max_length=100, blank=True, null=True)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
@@ -1092,21 +1092,13 @@ class Bounty(SuperModel):
             bool: Whether or not the Bounty is eligible for outbound notifications.
 
         """
-        print(f'### GITCOIN BOT A2 network {self.network}')
-        print(f'### GITCOIN BOT A2 settings.DEBUG {settings.DEBUG}')
-        print(f'### GITCOIN BOT A2 settings.ENV {settings.ENV}')
 
         if self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
             return False
 
-        print(f'### GITCOIN BOT A3')
-
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
 
-        print(f'### GITCOIN BOT A4')
-
-        print(f'### GITCOIN BOT A5 - Is Eligible')
         return True
 
     @property
@@ -1418,6 +1410,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1429,8 +1422,8 @@ class BountyFulfillment(SuperModel):
     # TODO: RETIRE
     fulfiller_metadata = JSONField(default=dict, blank=True)
 
-    fulfiller_address = models.CharField(max_length=50, null=True, blank=True, help_text="address to which amount is credited")
-    funder_address = models.CharField(max_length=50, null=True, blank=True, help_text="address from which amount is deducted")
+    fulfiller_address = models.CharField(max_length=100, null=True, blank=True, help_text="address to which amount is credited")
+    funder_address = models.CharField(max_length=100, null=True, blank=True, help_text="address from which amount is deducted")
 
     # TODO: rename to fulfiller_profile
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")
@@ -2791,7 +2784,11 @@ class Profile(SuperModel):
     )
     hide_wallet_address = models.BooleanField(
         default=True,
-        help_text='If this option is chosen, we will remove your wallet information all together',
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs wherever it\'s associated with your handle or other PIA (personally identifiable information) wherever possible.',
+    )
+    hide_wallet_address_anonymized = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs, even in instances in which it\'s anonymized',
     )
     pref_do_not_track = models.BooleanField(
         default=False,
@@ -2857,6 +2854,7 @@ class Profile(SuperModel):
     success_rate = models.IntegerField(default=0)
     reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
     as_dict = JSONField(default=dict, blank=True)
+    override_dict = JSONField(default=dict, blank=True, help_text="Used to admin override anything in the dic representation of this profile")
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
@@ -4401,6 +4399,10 @@ class Profile(SuperModel):
             context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
         if context['spent_total'] > 1000:
             context['spent_total'] = f"{round(context['spent_total']/1000)}k"
+
+        for key, val in self.override_dict.items():
+            context[key] = val
+
         return context
 
 
@@ -5100,6 +5102,13 @@ class HackathonProject(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     winner = models.BooleanField(default=False)
     extra = JSONField(default=dict, blank=True, null=True)
+    grant_obj = models.ForeignKey(
+        'grants.Grant',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Link to grant if project is converted to grant') 
+    )
 
     class Meta:
         ordering = ['-name']
@@ -5157,6 +5166,7 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
+            'grant_obj': self.grant_obj,
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }
