@@ -5091,7 +5091,8 @@ class HackathonProject(SuperModel):
     status = models.CharField(
         max_length=20,
         choices=PROJECT_STATUS,
-        blank=True
+        blank=True,
+        db_index=True,
     )
     message = models.CharField(
         max_length=150,
@@ -5100,7 +5101,7 @@ class HackathonProject(SuperModel):
     )
     looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
-    winner = models.BooleanField(default=False)
+    winner = models.BooleanField(default=False, db_index=True)
     extra = JSONField(default=dict, blank=True, null=True)
     grant_obj = models.ForeignKey(
         'grants.Grant',

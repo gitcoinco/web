@@ -235,7 +235,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = HackathonProjectSerializer
     pagination_class = HackathonProjectsPagination
 
-    def get_queryset(self):
+    def get_queryset233(self):
 
         q = self.request.query_params.get('search', '')
         order_by = self.request.query_params.get('order_by', '-created_on')
@@ -259,7 +259,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                     Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
-            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
+            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
