@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 if (bountyChainId !== '58') {
-  console.log('not 58')
   needWalletConnection();
-
 
   const fetchFromWeb3Wallet = () => {
     if (!provider) {
