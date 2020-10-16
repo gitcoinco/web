@@ -261,7 +261,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         elif sponsor:
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             projects = []
             for project in queryset:
