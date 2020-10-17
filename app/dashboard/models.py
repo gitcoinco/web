@@ -187,16 +187,6 @@ class BountyQuerySet(models.QuerySet):
         return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
 
 
-class BountyManager(models.Manager):
-    """Enables changing the default queryset function for bounties."""
-
-    def get_queryset(self):
-        if settings.ENV == 'prod':
-            return super().get_queryset().filter(network='mainnet')
-        else:
-            return super().get_queryset()
-
-
 """Fields that bonties table should index together."""
 def get_bounty_index_together():
     import copy
@@ -318,7 +308,7 @@ class Bounty(SuperModel):
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
-    bounty_owner_address = models.CharField(max_length=50, blank=True, null=True)
+    bounty_owner_address = models.CharField(max_length=100, blank=True, null=True)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
@@ -403,8 +393,9 @@ class Bounty(SuperModel):
         default=False, help_text=_('This bounty will be part of the hypercharged bounties')
     )
     hyper_next_publication = models.DateTimeField(null=True, blank=True)
-    # Bounty Manager from QuerySet
-    objects = BountyManager.from_queryset(BountyQuerySet)()
+
+    # Bounty QuerySet Manager
+    objects = BountyQuerySet.as_manager()
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -1102,21 +1093,13 @@ class Bounty(SuperModel):
             bool: Whether or not the Bounty is eligible for outbound notifications.
 
         """
-        print(f'### GITCOIN BOT A2 network {self.network}')
-        print(f'### GITCOIN BOT A2 settings.DEBUG {settings.DEBUG}')
-        print(f'### GITCOIN BOT A2 settings.ENV {settings.ENV}')
 
         if self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
             return False
 
-        print(f'### GITCOIN BOT A3')
-
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
 
-        print(f'### GITCOIN BOT A4')
-
-        print(f'### GITCOIN BOT A5 - Is Eligible')
         return True
 
     @property
@@ -1428,6 +1411,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1439,8 +1423,8 @@ class BountyFulfillment(SuperModel):
     # TODO: RETIRE
     fulfiller_metadata = JSONField(default=dict, blank=True)
 
-    fulfiller_address = models.CharField(max_length=50, null=True, blank=True, help_text="address to which amount is credited")
-    funder_address = models.CharField(max_length=50, null=True, blank=True, help_text="address from which amount is deducted")
+    fulfiller_address = models.CharField(max_length=100, null=True, blank=True, help_text="address to which amount is credited")
+    funder_address = models.CharField(max_length=100, null=True, blank=True, help_text="address from which amount is deducted")
 
     # TODO: rename to fulfiller_profile
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")
@@ -2811,7 +2795,11 @@ class Profile(SuperModel):
     )
     hide_wallet_address = models.BooleanField(
         default=True,
-        help_text='If this option is chosen, we will remove your wallet information all together',
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs wherever it\'s associated with your handle or other PIA (personally identifiable information) wherever possible.',
+    )
+    hide_wallet_address_anonymized = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs, even in instances in which it\'s anonymized',
     )
     pref_do_not_track = models.BooleanField(
         default=False,
@@ -2877,6 +2865,7 @@ class Profile(SuperModel):
     success_rate = models.IntegerField(default=0)
     reliability = models.CharField(max_length=10, blank=True, help_text=_('the users reliability level (high, medium, unproven)'))
     as_dict = JSONField(default=dict, blank=True)
+    override_dict = JSONField(default=dict, blank=True, help_text="Used to admin override anything in the dic representation of this profile")
     rank_funder = models.IntegerField(default=0)
     rank_org = models.IntegerField(default=0)
     rank_coder = models.IntegerField(default=0)
@@ -4421,6 +4410,10 @@ class Profile(SuperModel):
             context['earnings_total'] = f"{round(context['earnings_total']/1000)}k"
         if context['spent_total'] > 1000:
             context['spent_total'] = f"{round(context['spent_total']/1000)}k"
+
+        for key, val in self.override_dict.items():
+            context[key] = val
+
         return context
 
 
@@ -5120,6 +5113,13 @@ class HackathonProject(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     winner = models.BooleanField(default=False)
     extra = JSONField(default=dict, blank=True, null=True)
+    grant_obj = models.ForeignKey(
+        'grants.Grant',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Link to grant if project is converted to grant') 
+    )
 
     class Meta:
         ordering = ['-name']
@@ -5177,6 +5177,7 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
+            'grant_obj': self.grant_obj,
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }
@@ -5304,6 +5305,15 @@ class Earning(SuperModel):
     token_name = models.CharField(max_length=255, default='')
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
+
+    def has_read_perms(self, profile):
+        if self.source_type_human == 'grant':
+            return self.source.team_members.filter(pk__in=profile.pk)
+        if self.source_type_human in ['tip', 'kudos transfer']:
+            return self.source.receiver_profile == profile or self.source.sender_profile == profile
+        if self.source_type_human == 'bounty':
+            return self.source.profile == profile or self.source.funder_profile == profile
+        return False
 
     @property
     def source_type_human(self):
@@ -5733,3 +5743,16 @@ class HackathonWorkshop(SuperModel):
     )
     url = models.URLField(help_text='Blog link, calendar link, or other.')
     visible = models.BooleanField(help_text=_('Can this HackathonWorkshop be seen on /hackathons ?'), default=True)
+
+
+class TransactionHistory(SuperModel):
+
+    earning = models.ForeignKey('dashboard.Earning', related_name='history', on_delete=models.CASCADE, db_index=True, null=True)
+    txid = models.CharField(max_length=255, default='')
+    status = models.CharField(max_length=50, default='', db_index=True)
+    payload = JSONField(default=dict, blank=True, null=True)
+    network = models.CharField(max_length=255, blank=True, db_index=True)
+    captured_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.status} <> {self.earning.pk} at {self.captured_at}"
