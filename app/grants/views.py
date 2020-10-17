@@ -1487,9 +1487,9 @@ def grant_new(request):
             new_grant(grant, profile)
             add_grant_to_active_clrs(grant)
 
-            project_pk = request.POST.get('project_pk', '')
-            if project_pk:
-                HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
+            # project_pk = request.POST.get('project_pk', None)
+            # if project_pk:
+            #     HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
             return JsonResponse({
                 'success': True,
@@ -1497,11 +1497,11 @@ def grant_new(request):
             })
 
     project = None
-    project_id = request.GET.get('project_id', None)
-    if project_id is not None:
-        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-        if request.user.profile in hackathon_project.profiles.all():
-            project = hackathon_project
+    # project_id = request.GET.get('project_id', None)
+    # if project_id is not None:
+    #     hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    #     if request.user.profile in hackathon_project.profiles.all():
+    #         project = hackathon_project
 
     params = {
         'active': 'new_grant',
