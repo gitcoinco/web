@@ -1253,6 +1253,14 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
+    CHECKOUT_TYPES = [
+        ('eth_std', 'eth_std'),
+        ('eth_zksync_deposit', 'eth_zksync_deposit'),
+        ('eth_zksync_batch_deposit', 'eth_zksync_batch_deposit'),
+        ('eth_zksync_pure', 'eth_zksync_pure'),
+        ('zcash_std', 'zcash_std')
+    ]
+
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
@@ -1304,6 +1312,13 @@ class Contribution(SuperModel):
         help_text=_('The profile to attribute this contribution to..'),
         null=True,
         blank=True,
+    )
+    checkout_type = models.CharField(
+        max_length=30,
+        null=True,
+        help_text=_('The checkout method used while making the contribution'),
+        blank=True,
+        choices=CHECKOUT_TYPES
     )
 
     def get_absolute_url(self):
