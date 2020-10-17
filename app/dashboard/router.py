@@ -235,7 +235,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = HackathonProjectSerializer
     pagination_class = HackathonProjectsPagination
 
-    def get_queryset233(self):
+    def get_queryset(self):
 
         q = self.request.query_params.get('search', '')
         order_by = self.request.query_params.get('order_by', '-created_on')
