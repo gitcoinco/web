@@ -43,9 +43,9 @@
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
                   <span class="text-white">keywords</span>
                     <select2 class="select2-filter" multiple minInputLength="0" name="" :placeholder="'select multiple'" :id="'keywords_exact_top'" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
-                        <option v-for="(item, index) in items" :value="item.key">
-                          <label v-if="displayCount && item.key.trim()" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
-                        </option>
+                      <option v-for="(item, index) in items" :value="item.key" :selected="params['keywords'] && params['keywords'].indexOf(item.key) > -1">
+                        <label v-if="displayCount && item.key.trim()" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
+                      </option>
                     </select2>
                 </template>
               </refinement-list-filter>
@@ -63,10 +63,11 @@
                     <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
                 </template>
               </numeric-list-filter>
-              <refinement-list-filter v-else="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.key" :size="5000" :title="filter.text" operator="OR">
+              <refinement-list-filter :id="filter.text" :key="filter.text" :field="filter.key" :size="5000" :title="filter.text" operator="OR">
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
                     <select2 class="select2-filter" multiple minInputLength="0" name="" :placeholder="'select multiple'" :id="filter.type" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
-                        <option v-for="(item, index) in items" :value="item.key">
+                        <option v-if="params" v-for="(item, index) in params" :value="item"><label>[[ item ]]</label></option>
+                        <option v-else v-for="(item, index) in items" :value="item.key">
                           <label v-if="displayCount && item.key.trim()" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
                         </option>
                     </select2>

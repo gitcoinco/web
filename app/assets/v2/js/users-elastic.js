@@ -221,18 +221,36 @@ Vue.mixin({
     },
     extractURLFilters: function() {
       let vm = this;
-      let params = getURLParams();
+      const params = getAllUrlParams();
 
-      vm.users = [];
+      if (Object.values(params).length > 0) {
+        // eslint-disable-next-line guard-for-in
+        for (let prop in params) {
 
-      if (params) {
-        for (var prop in params) {
-          if (prop === 'skills') {
-            vm.$set(vm.params, prop, params[prop].split(','));
-          } else {
-            vm.$set(vm.params, prop, params[prop]);
+          // eslint-disable-next-line guard-for-in
+          for (let key in params[prop]) {
+
+            let value = params[prop][key];
+            const columnMeta = $.extend({}, vm.esColumns[prop]);
+
+            if (!columnMeta) {
+              continue;
+            }
+            columnMeta['key'] = prop;
+            columnMeta['value'] = value;
+
+            let _instruction = {
+              fun: 'orFilter',
+              args: [ 'term', `${columnMeta.key}_exact`, columnMeta.value ]
+            };
+
+            this.addInstruction(_instruction);
           }
         }
+        debugger;
+        vm.params = params;
+        this.mount();
+        this.fetch(this);
       }
     },
     joinTribe: function(user, event) {
@@ -264,257 +282,88 @@ Vue = Vue.extend({
 });
 
 
-Vue.component('directory-card', {
-  name: 'DirectoryCard',
-  delimiters: [ '[[', ']]' ],
-  props: [ 'user', 'funderBounties' ]
-});
-Vue.use(innerSearch.default);
-Vue.component('autocomplete', {
-  props: [ 'options', 'value' ],
-  template: '#select2-template',
-  methods: {
-    formatMapping: function(item) {
-      console.log(item);
-      return item.name;
-    },
-    formatMappingSelection: function(filter) {
-      return '';
-    }
-  },
-  mounted() {
-    let count = 0;
-    let vm = this;
-    let mappedFilters = {};
-    let data = $.map(this.options, function(obj, key) {
-
-      if (key.indexOf('_exact') === -1)
-        return;
-      let newKey = key.replace('_exact', '');
-
-      if (mappedFilters[newKey])
-        return;
-      obj.id = count++;
-      obj.text = newKey;
-      obj.key = key;
-
-      mappedFilters[newKey] = true;
-      mappedFilters[key] = true;
-      return obj;
-    });
-
-
-    $(vm.$el).select2({
-      data: data,
-      multiple: true,
-      allowClear: true,
-      placeholder: 'Search for another filter to add',
-      minimumInputLength: 1,
-      escapeMarkup: function(markup) {
-        return markup;
-      }
-    })
-      .on('change', function() {
-        console.log('changed');
-        let val = $(vm.$el).val();
-
-        let changeData = $.map(val, function(filter) {
-          return data[filter];
-        });
-
-        vm.$emit('input', changeData);
-      });
-
-    // fix for wrong position on select open
-    var select2Instance = $(vm.$el).data('select2');
-
-    select2Instance.on('results:message', function(params) {
-      this.dropdown._resizeDropdown();
-      this.dropdown._positionDropdown();
-    });
-  },
-  destroyed: function() {
-    $(this.$el).off().select2('destroy');
-    this.$emit('destroyed');
-  }
-});
-Vue.component('user-directory', {
-  delimiters: [ '[[', ']]' ],
-  props: [ 'tribe', 'is_my_org' ],
-  data: function() {
-    return {
-      orgOwner: this.is_my_org || false,
-      userFilter: {
-        options: [
-          {text: 'All', value: 'all'},
-          {text: 'Tribe Owners', value: 'owners'},
-          {text: 'Tribe Members', value: 'members'},
-          {text: 'Tribe Hackers', value: 'hackers'}
-        ]
-      },
-      tribeFilter: this.tribe || '',
-      users,
-      usersPage,
-      hackathonId,
-      usersNumPages,
-      usersHasNext,
-      numUsers,
-      media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
-      searchTerm: null,
-      bottom: false,
-      params: {
-        'user_filter': 'all'
-      },
-      funderBounties: [],
-      currentBounty: undefined,
-      contributorInvite: undefined,
-      isFunder: false,
-      bountySelected: null,
-      userSelected: [],
-      showModal: false,
-      showFilters: true,
-      skills: document.keywords,
-      selectedSkills: [],
-      noResults: false,
-      isLoading: true,
-      gitcoinIssueUrl: '',
-      issueDetails: undefined,
-      errorIssueDetails: undefined,
-      showBanner: undefined,
-      persona: undefined,
-      hideFilterButton: !!document.getElementById('explore_tribes'),
-      expandFilter: true
-    };
-  },
-
-  mounted() {
-    this.fetchUsers();
-    this.tribeFilter = this.tribe;
-    this.$watch('params', function(newVal, oldVal) {
-      this.searchUsers();
-    }, {
-      deep: true
-    });
-  },
-  created() {
-    if (document.contxt.github_handle && this.is_my_org) {
-      this.fetchBounties();
-    }
-    this.inviteOnMount();
-    this.extractURLFilters();
-  },
-  beforeMount() {
-    if (this.isMobile) {
-      this.showFilters = false;
-    }
-    window.addEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    }, false);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    });
-  }
-});
-Vue.component('user-directory-elastic', {
-  delimiters: [ '[[', ']]' ],
-  data: function() {
-    return {
-      filters: [],
-      esColumns: [],
-      filterLoaded: false,
-      users,
-      usersPage,
-      usersNumPages,
-      usersHasNext,
-      numUsers,
-      media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
-      searchTerm: null,
-      bottom: false,
-      params: {},
-      funderBounties: [],
-      currentBounty: undefined,
-      contributorInvite: undefined,
-      isFunder: false,
-      bountySelected: null,
-      userSelected: [],
-      showModal: false,
-      showFilters: !document.getElementById('explore_tribes'),
-      skills: document.keywords,
-      selectedSkills: [],
-      noResults: false,
-      isLoading: true,
-      gitcoinIssueUrl: '',
-      issueDetails: undefined,
-      errorIssueDetails: undefined,
-      showBanner: undefined,
-      persona: undefined,
-      hideFilterButton: !!document.getElementById('explore_tribes')
-    };
-  },
-  methods: {
-    autoCompleteDestroyed: function() {
-      this.filters = [];
-    },
-    autoCompleteChange: function(filters) {
-      this.filters = filters;
-    },
-    outputToCSV: function() {
-      let url = '/api/v0.1/users_csv/';
-
-      $.get(url, this.body).then(resp => resp.json()).then(json => {
-        _alert(json.message);
-      }).catch(() => _alert('There was an issue processing your request'));
-    },
-    fetchMappings: function() {
-      let vm = this;
-
-      $.when(vm.header.client.indices.getMapping())
-        .then(response => {
-          vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
-          vm.filterLoaded = true;
-        });
-    }
-  },
-  mounted() {
-    this.fetchMappings();
-    // this.fetchUsers();
-    this.$watch('params', function(newVal, oldVal) {
-      this.searchUsers();
-    }, {
-      deep: true
-    });
-  },
-  created() {
-    this.setHost(document.contxt.search_url);
-    this.setIndex('haystack');
-    this.setType('modelresult');
-    this.fetchBounties();
-    this.inviteOnMount();
-    this.extractURLFilters();
-  },
-  beforeMount() {
-    window.addEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    }, false);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    });
-  }
-});
 if (document.getElementById('gc-users-elastic')) {
 
+  Vue.component('directory-card', {
+    name: 'DirectoryCard',
+    delimiters: [ '[[', ']]' ],
+    props: [ 'user', 'funderBounties' ]
+  });
+
+  Vue.use(innerSearch.default);
+  Vue.component('autocomplete', {
+    props: [ 'options', 'value' ],
+    template: '#select2-template',
+    methods: {
+      formatMapping: function(item) {
+        console.log(item);
+        return item.name;
+      },
+      formatMappingSelection: function(filter) {
+        return '';
+      }
+    },
+    mounted() {
+      let count = 0;
+      let vm = this;
+      let mappedFilters = {};
+      let data = $.map(this.options, function(obj, key) {
+
+        if (key.indexOf('_exact') === -1)
+          return;
+        let newKey = key.replace('_exact', '');
+
+        if (mappedFilters[newKey])
+          return;
+        obj.id = count++;
+        obj.text = newKey;
+        obj.key = key;
+
+        mappedFilters[newKey] = true;
+        mappedFilters[key] = true;
+        return obj;
+      });
+
+
+      $(vm.$el).select2({
+        data: data,
+        multiple: true,
+        allowClear: true,
+        placeholder: 'Search for another filter to add',
+        minimumInputLength: 1,
+        escapeMarkup: function(markup) {
+          return markup;
+        }
+      })
+        .on('change', function() {
+          console.log('changed');
+          let val = $(vm.$el).val();
+
+          let changeData = $.map(val, function(filter) {
+            return data[filter];
+          });
+
+          vm.$emit('input', changeData);
+        });
+
+      // fix for wrong position on select open
+      var select2Instance = $(vm.$el).data('select2');
+
+      select2Instance.on('results:message', function(params) {
+        this.dropdown._resizeDropdown();
+        this.dropdown._positionDropdown();
+      });
+    },
+    destroyed: function() {
+      $(this.$el).off().select2('destroy');
+      this.$emit('destroyed');
+    }
+  });
   window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-users-elastic',
     data: {
       csrf: document.csrf,
-      filters: [],
       esColumns: [],
       filterLoaded: false,
       users,
@@ -527,6 +376,7 @@ if (document.getElementById('gc-users-elastic')) {
       searchTerm: null,
       bottom: false,
       params: {},
+      filters: [],
       funderBounties: [],
       currentBounty: undefined,
       contributorInvite: undefined,
@@ -574,24 +424,19 @@ if (document.getElementById('gc-users-elastic')) {
           .then(response => {
             vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
             vm.filterLoaded = true;
+            this.extractURLFilters();
+            this.fetch(this);
+
           });
       }
     },
     mounted() {
       this.fetchMappings();
-      this.fetch(this);
-      this.$watch('params', function(newVal, oldVal) {
-        this.searchUsers();
-      }, {
-        deep: true
-      });
     },
     created() {
       this.setHost(document.contxt.search_url);
       this.setIndex('haystack');
       this.setType('modelresult');
-
-      // this.extractURLFilters();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
