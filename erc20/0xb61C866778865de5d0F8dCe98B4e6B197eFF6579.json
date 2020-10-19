@@ -1,0 +1,17 @@
+{
+    "symbol": "UFE",
+    "address": "0xb61C866778865de5d0F8dCe98B4e6B197eFF6579",
+    "overview":{
+          "en": "UFE is a distributed financial system based on blockchain. It is committed to promoting the development and improvement of the distributed financial DeFi ecosystem, creating on-chain finance, and then building an efficient distributed financial DeFi ecological infrastructure.",
+          "zh": "UFE是基于区块链的分布式金融系统，致力于推动分布式金融DeFi生态的发展和完善，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "ufedefiservice@gmail.com",
+    "website": "http://ufedefi.world/",
+    "whitepaper": "http://ufedefi.world/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-14",
+    "links": {
+        "telegram": "https://t.me/ufegroup",
+        "twitter": "https://twitter.com/ufedefi"
+      }
+}
