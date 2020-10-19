@@ -146,6 +146,8 @@ class Token(SuperModel):
 
     @property
     def on_xdai(self):
+        # returns a kudos token object thats on the xdai network; a mirro
+        # a mirror of the mainnet with 1000x better costs ( https://github.com/gitcoinco/web/pull/7702/ )
         target = self
         if self.gen > 1:
             target = self.kudos_token_cloned_from
