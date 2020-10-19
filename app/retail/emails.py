@@ -1703,6 +1703,11 @@ def start_work_applicant_expired(request):
     return HttpResponse(response_html)
 
 @staff_member_required
+def convert_project_grant(request):
+    response_html, _= render_convert_project_grant(request.user)
+    return HttpResponse(response_html)
+
+@staff_member_required
 def tribe_hackathon_prizes(request):
     from dashboard.models import HackathonEvent
     from marketing.utils import generate_hackathon_email_intro
