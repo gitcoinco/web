@@ -38,30 +38,36 @@ class Command(BaseCommand):
         trs = TokenRequest.objects.filter(approved=True, network='mainnet')
         print(trs.count())
         for token in trs:
-            already_xdaid = TokenRequest.objects.filter(network='xdai', name=token.name)
-            if not already_xdaid:
-                token.pk = None
-                token.network = 'xdai'
-                token.save()
-                print(f'-/- {token.pk}')
-                mint_token_request(token.pk, send_notif_email=False)
+            try:
+                already_xdaid = TokenRequest.objects.filter(network='xdai', name=token.name)
+                if not already_xdaid:
+                    token.pk = None
+                    token.network = 'xdai'
+                    token.save()
+                    print(f'-/- {token.pk}')
+                    mint_token_request(token.pk, send_notif_email=False)
+                except Exception as e:
+                    print(e)
 
         for token in Token.objects.filter(contract__network='mainnet'):
             if token.gen == 1 and not token.on_xdai:
-                tr = TokenRequest.objects.create(
-                    network='xdai',
-                    name=token.name,
-                    description=token.description,
-                    priceFinney=token.priceFinney,
-                    artist=token.artist,
-                    platform=token.platform,
-                    to_address=token.to_address,
-                    numClonesAllowed=token.numClonesAllowed,
-                    metadata=token.metadata,
-                    tags=token.tags,
-                    approved=True,
-                    profile=Profile.objects.get(handle='gitcoinbot'),
-                    processed=True,
-                    )
-                print(f'*/* {tr.pk}')
-                mint_token_request(tr.pk, send_notif_email=False)
+                try:
+                    tr = TokenRequest.objects.create(
+                        network='xdai',
+                        name=token.name,
+                        description=token.description,
+                        priceFinney=token.priceFinney,
+                        artist=token.artist,
+                        platform=token.platform,
+                        to_address=token.to_address,
+                        numClonesAllowed=token.numClonesAllowed,
+                        metadata=token.metadata,
+                        tags=token.tags,
+                        approved=True,
+                        profile=Profile.objects.get(handle='gitcoinbot'),
+                        processed=True,
+                        )
+                    print(f'*/* {tr.pk}')
+                    mint_token_request(tr.pk, send_notif_email=False)
+                except Exception as e:
+                    print(e)
