@@ -148,10 +148,33 @@ class Token(SuperModel):
     def on_xdai(self):
         # returns a kudos token object thats on the xdai network; a mirro
         # a mirror of the mainnet with 1000x better costs ( https://github.com/gitcoinco/web/pull/7702/ )
+        return self.on_network('xdai')
+
+    @property
+    def on_mainnet(self):
+        return self.on_network('mainnet')
+
+    @property
+    def on_rinkeby(self):
+        return self.on_network('rinkeby')
+
+    @property
+    def on_networks(self):
+        return_me = []
+        for network in ['xdai', 'rinkeby', 'mainnet']:
+            ref = self.on_network(network)
+            if ref:
+                return_me.append((network, ref))
+        return return_me
+
+
+    def on_network(self, network):
+        if self.contract.network == network:
+            return None
         target = self
         if self.gen > 1:
             target = self.kudos_token_cloned_from
-        for token in Token.objects.filter(contract__network='xdai', name=target.name):
+        for token in Token.objects.filter(contract__network=network, num_clones_allowed__gt=1, name=target.name):
             if token.gen == 1:
                 return token
         return None

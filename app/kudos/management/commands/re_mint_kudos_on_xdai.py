@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 token.network = 'xdai'
                 token.save()
                 print(f'-/- {token.pk}')
-                mint_token_request(token.pk)
+                mint_token_request(token.pk, send_notif_email=False)
 
         for token in Token.objects.filter(contract__network='mainnet'):
             if token.gen == 1 and not token.on_xdai:
@@ -64,4 +64,4 @@ class Command(BaseCommand):
                     processed=True,
                     )
                 print(f'*/* {tr.pk}')
-                mint_token_request(tr.pk)
+                mint_token_request(tr.pk, send_notif_email=False)

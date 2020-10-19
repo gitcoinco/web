@@ -25,7 +25,7 @@ LOCK_TIMEOUT = 60 * 2
 delay_if_gas_prices_gt_mint = 150
 
 @app.shared_task(bind=True, max_retries=10)
-def mint_token_request(self, token_req_id, retry=False):
+def mint_token_request(self, token_req_id, send_notif_email=True, retry=False):
     """
     :param self:
     :param token_req_id:
@@ -50,7 +50,8 @@ def mint_token_request(self, token_req_id, retry=False):
                     time.sleep(1)
                 for i in range(0, 5):
                     sync_latest(i, network=obj.network)
-                notify_kudos_minted(obj)
+                if send_notif_email:
+                    notify_kudos_minted(obj)
             else:
                 self.retry(countdown=(30 * (self.request.retries + 1)))
 

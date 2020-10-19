@@ -96,10 +96,15 @@ class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
     raw_id_fields = ['contract']
-    readonly_fields = ['link', 'view_count']
+    readonly_fields = ['links', 'view_count']
 
-    def link(self, instance):
+    def links(self, instance):
         html = f"<a href={instance.url}>{instance.url}</a>"
+        other_items = instance.on_networks
+        if other_items:
+            html += "<BR>also avaialble on :"
+        for oi in other_items:
+            html += f"<BR> - <a href='{oi[1].url}'>{oi[0]}</a>"
         return mark_safe(html)
 
     def view_count(self, instance):
