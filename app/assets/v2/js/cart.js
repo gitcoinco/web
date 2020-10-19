@@ -560,8 +560,6 @@ Vue.component('grants-cart', {
         return;
       }
 
-      grant.test= 'my'
-
       let data = {'contributions': [{
 
         'grant_id': grant.grant_id,
@@ -575,7 +573,7 @@ Vue.component('grants-cart', {
       }]}
       console.log(data)
 
-
+      vm.$set(grant, 'error', null);
       const postContribution = fetchData('v1/api/contribute', 'POST', JSON.stringify(data));
 
       vm.errorMessage = '';
@@ -583,12 +581,20 @@ Vue.component('grants-cart', {
       $.when(postContribution).then(response => {
         // set the cooldown time to one minute
         console.log(response)
+        if (response.success_contributions) {
+          console.log(grant.grant_id , response.success_contributions[0].grant_id)
+          if(grant.grant_id === response.success_contributions[0].grant_id ){
+            // grant.error= response.invalid_contributions[0].message;
+            vm.$set(grant, 'success', response.success_contributions[0].message);
+          }
+        }
         if (response.invalid_contributions) {
           console.log(grant.grant_id === response.invalid_contributions[0].grant_id)
           if(grant.grant_id === response.invalid_contributions[0].grant_id ){
             // grant.error= response.invalid_contributions[0].message;
             vm.$set(grant, 'error', response.invalid_contributions[0].message);
           }
+
           // vm.grantData.filter((item)=>{
           //   if(item.grant_id.includes(e.invalid_contributions[0].grant_id)) {
           //     // return item.error = e.invalid_contributions[0].message
@@ -598,6 +604,7 @@ Vue.component('grants-cart', {
 
         }
       }).catch((e) => {
+        vm.$set(grant, 'error', 'error submitting data, try again later');
 
       });
     },

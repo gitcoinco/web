@@ -2458,6 +2458,14 @@ def contribute_to_grants_v1(request):
             })
             continue
 
+        tx_id = contribution.get('tx_id', None)
+        if not tx_id:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: tx_id is mandatory param'
+            })
+            continue
+
         token_symbol = contribution.get('token_symbol', None)
         if not token_symbol:
             invalid_contributions.append({
@@ -2489,8 +2497,9 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        tx_id = contribution.get('tx_id', None)
-        comment = contribution.get('comment', None)
+        # tx_id = contribution.get('tx_id', None)
+        # contributor_address = contribution.get('contributor_address', None)
+        comment = contribution.get('comment', '')
         network = grant.network
         hide_wallet_address = contribution.get('hide_wallet_address', None)
 
@@ -2531,7 +2540,10 @@ def contribute_to_grants_v1(request):
                 profile.hide_wallet_address = hide_wallet_address
                 profile.save()
 
-            success_contributions.append(grant_id)
+            success_contributions.append({
+                'grant_id': grant_id,
+                'message': 'grant contributions recorded'
+            })
 
         except Exception as error:
             failed_contributions.append({

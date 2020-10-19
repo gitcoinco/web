@@ -365,11 +365,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                         <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$">
                                       </div>
                                     </div>
+                                    <div class="col">
+                                      <div class="">
+                                        <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Contributor Address:</label>
+                                        <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$">
+                                      </div>
+                                    </div>
                                     <div class="">
                                       <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="!grant.payoutTxId">Confirm</button>
                                     </div>
                                   </div>
                                   <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>
+                                  <div v-if="grant.success" class="font-body text-success">[[grant.success]]</div>
                                 </div>
                               </div>
                               <!-- <input v-model="grant.payoutTxId" name="payout_tx_id" id="payout_tx_id" placeholder="Wallet Address" class="w-100 p-2 font-smaller-5 border-0"> -->
