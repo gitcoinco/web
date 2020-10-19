@@ -137,6 +137,14 @@ class TransferAdmin(admin.ModelAdmin):
     search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'txid', 'receive_txid']
     list_display = ['created_on', '__str__']
 
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_broadcast_txn" in request.POST:
+            from kudos.tasks import redeem_bulk_kudos
+            redeem_bulk_kudos.delay(obj.pk, send_notif_email=True)
+            self.message_user(request, f"submitted broadcast to queues")
+            return redirect(obj.admin_url)
+
     def claim(self, instance):
         if instance.web3_type == 'yge':
             return 'n/a'

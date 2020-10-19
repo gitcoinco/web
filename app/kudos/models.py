@@ -514,6 +514,8 @@ class KudosTransfer(SendCryptoAsset):
         status = 'funded' if self.txid else 'not funded'
         if self.receive_txid:
             status = 'received'
+        if self.txid == "pending_celery":
+            status = 'pending broadcast'
         to = self.username if self.username else self.receive_address
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {to} on {self.network}"
 
