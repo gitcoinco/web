@@ -28,6 +28,16 @@ from kudos.models import Token, TokenRequest
 from kudos.tasks import mint_token_request
 
 
+def delete_town_square_posts():
+    from django.utils import timezone
+    from dashboard.models import Profile
+    then = timezone.now() - timezone.timedelta(hours=12)
+
+    gcb = Profile.objects.get(handle='gitcoinbot')
+    activities = gcb.activities.filter(activity_type='created_kudos', created_on__gt=then)
+    activities.delete()
+
+
 class Command(BaseCommand):
 
     help = 'mints all kudos in the platform on xdai'
@@ -46,6 +56,7 @@ class Command(BaseCommand):
                     token.save()
                     print(f'-/- {token.pk}')
                     mint_token_request(token.pk, send_notif_email=False)
+                    delete_town_square_posts()
             except Exception as e:
                 print(e)
 
@@ -69,5 +80,6 @@ class Command(BaseCommand):
                         )
                     print(f'*/* {tr.pk}')
                     mint_token_request(tr.pk, send_notif_email=False)
+                    delete_town_square_posts()
                 except Exception as e:
                     print(e)
