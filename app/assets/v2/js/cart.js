@@ -4,6 +4,9 @@
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
 const BN = Web3.utils.BN;
+const { parseUnits, parseEther, formatEther } = ethers.utils;
+const { Zero: ZERO } = ethers.constants;
+const { BigNumber } = ethers;
 let appCart;
 
 window.addEventListener('dataWalletReady', function(e) {
@@ -136,8 +139,6 @@ Vue.component('grants-cart', {
       }, {});
 
       return grantsTentantsCount;
-
-
     },
     sortByPriority: function() {
       console.log(this.currentTokens);
@@ -226,18 +227,14 @@ Vue.component('grants-cart', {
         return undefined;
 
       // Generate array of objects containing donation info from cart
-      let gitcoinFactor = 100 * this.gitcoinFactor;
+      let gitcoinFactor = 100 - (100 * this.gitcoinFactor);
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
-        const amount = this.toWeiString(
-          Number(grant.grant_donation_amount),
-          tokenDetails.decimals,
-          100 - gitcoinFactor
-        );
+        const amount = parseUnits(grant.grant_donation_amount, tokenDetails.decimals).mul(gitcoinFactor).div(100);
 
         return {
           token: tokenDetails.addr,
-          amount,
+          amount: amount.toString(),
           dest: grant.grant_admin_address,
           name: grant.grant_donation_currency, // token abbreviation, e.g. DAI
           grant, // all grant data from localStorage
@@ -249,7 +246,7 @@ Vue.component('grants-cart', {
       // Append the Gitcoin donations (these already account for gitcoinFactor)
       Object.keys(this.donationsToGitcoin).forEach((token) => {
         const tokenDetails = this.getTokenByName(token);
-        const amount = this.toWeiString(this.donationsToGitcoin[token], tokenDetails.decimals);
+        const amount = parseUnits(String(this.donationsToGitcoin[token]), tokenDetails.decimals);
 
         const gitcoinGrantInfo = {
           // Manually fill this in so we can access it for the POST requests.
@@ -272,9 +269,9 @@ Vue.component('grants-cart', {
         };
 
         // Only add to donation inputs array if donation amount is greater than 0
-        if ((new BN(amount)).gt(new BN('0'))) {
+        if (amount.gt(ZERO)) {
           donations.push({
-            amount,
+            amount: amount.toString(),
             token: tokenDetails.addr,
             dest: gitcoinAddress,
             name: token, // token abbreviation, e.g. DAI
@@ -765,13 +762,22 @@ Vue.component('grants-cart', {
       const totals = {};
 
       this.grantsByTenant.forEach(grant => {
+        // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
+        const totalDonationAmount = parseEther(grant.grant_donation_amount).mul(scaleFactor * 100).div(100);
+
+        // Add the number to the totals object
         if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = Number(grant.grant_donation_amount) * scaleFactor;
+          totals[grant.grant_donation_currency] = totalDonationAmount;
         } else {
           // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += (Number(grant.grant_donation_amount) * scaleFactor);
+          totals[grant.grant_donation_currency].add(totalDonationAmount);
         }
+      });
+
+      // Convert from BigNumber back to regular numbers
+      Object.keys(totals).map((key) => {
+        totals[key] = formatEther(totals[key]);
       });
       return totals;
     },
@@ -843,32 +849,6 @@ Vue.component('grants-cart', {
         };
       }
       return this.currentTokens.filter(token => token.name === name)[0];
-    },
-
-    /**
-     * @notice Returns a string of the human-readable value, in "Wei", where by wei we refer
-     * to the proper integer value based on the number of token decimals
-     * @param {Number} number Human-readable number to convert, e.g. 0.1 or 3
-     * @param {Number} decimals Number of decimals for conversion to Wei
-     * @param {Number} scaleFactor Factor to multiply number by, as percent*100, e.g. value of 100
-     * means multiply by scale factor of 1
-     */
-    toWeiString(number, decimals, scaleFactor = 100) {
-      let wei;
-
-      try {
-        wei = Web3.utils.toWei(String(number));
-      } catch (e) {
-        // When numbers are too small toWei fails because there's too many decimal places
-        wei = Math.round(number * 10 ** 18);
-      }
-
-      const base = new BN(10, 10);
-      const factor = base.pow(new BN(18 - decimals, 10));
-      const scale = new BN(scaleFactor, 10);
-      const amount = (new BN(wei)).mul(scale).div(new BN(100, 10));
-
-      return amount.div(factor).toString(10);
     },
 
     async applyAmountToAllGrants(grant) {
@@ -1506,50 +1486,6 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Login to zkSync account associated with user's web3 wallet
-     */
-    async zkSyncLoginNominal() {
-      console.log('Waiting for user to sign the prompt to log in to zkSync directly...');
-      const nominalSyncWallet = await zksync.Wallet.fromEthSigner(this.signer, this.syncProvider);
-
-      console.log('✅ Login complete. Nominal sync wallet generated from web3 account. View wallet:', nominalSyncWallet);
-      return nominalSyncWallet;
-    },
-
-    /**
-     * @notice Generate a Gitcoin-specific private key to use and login to zkSync with it
-     * @returns User's gitcoinSyncWallet instance
-     */
-    async zkSyncLoginGitcoin() {
-      // Prompt for user's signature to generate deterministic private key. This enables us
-      // to determinstically generate the same, Gitcoin-specific zkSync wallet on each visit
-      const message = 'Access Gitcoin zkSync account.\n\nOnly sign this message for a trusted client!';
-
-      indicateMetamaskPopup();
-      let signature;
-
-      signature = await this.signer.signMessage(message); // web3 prompt to user is here
-      if (!signature) {
-        // Fallback to personal_sign if eth_sign isn't supported (for Status and other wallets)
-        signature = await this.ethersProvider.send(
-          'personal_sign',
-          [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), this.userAddress.toLowerCase() ]
-        );
-      }
-
-      indicateMetamaskPopup(true);
-      const privateKey = ethers.utils.sha256(signature);
-      const wallet = new ethers.Wallet(privateKey);
-
-      // Login to zkSync
-      console.log('Waiting for user to sign the prompt to log in to zkSync via Gitcoin...');
-      const gitcoinSyncWallet = await zksync.Wallet.fromEthSigner(wallet, this.syncProvider);
-
-      console.log('✅ Login complete. Gitcoin sync wallet generated from web3 account. View wallet:', gitcoinSyncWallet);
-      return gitcoinSyncWallet;
-    },
-
-    /**
      * @notice Initialize UI updates for tracking confirmation counter
      */
     updateConfirmationsInUI() {
@@ -1639,198 +1575,6 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice For the given syncWallet, see if the public key needs to be registered, and if so,
-     * register it
-     */
-    async checkAndRegisterSigningKey(syncWallet) {
-      // To control assets in zkSync network, an account must register a separate public key
-      // once. This can only be done once they have interacted with the network in some way, such
-      // as receiving a deposit, so we do that now since the deposit is complete. It cannot be
-      // done earlier because otherwise the account won't exist in the zkSync accounts Merkle tree
-      console.log('Registering public key to unlock deterministic wallet on zkSync...');
-      if (!(await syncWallet.isSigningKeySet())) {
-        if ((await syncWallet.getAccountId()) == undefined) {
-          // This means the account has never interacted with the network
-          throw new Error('Unknown account');
-        }
-
-        // Get the first token listed and use that to pay for signing key transaction
-        const syncWalletState = await syncWallet.getAccountState();
-        const tokensInWallet = Object.keys(syncWalletState.committed.balances);
-        const feeToken = tokensInWallet[0];
-
-        // Determine how to set key based on wallet type
-        let changePubkey;
-
-        if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
-          console.log('  Using ECDSA to set signing key');
-          changePubkey = await syncWallet.setSigningKey({ feeToken });
-        } else {
-          console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
-          const signingKeyTx = await syncWallet.onchainAuthSigningKey();
-
-          changePubkey = await syncWallet.setSigningKey({ feeToken, onchainAuth: true });
-        }
-
-        // Wait until the tx is committed
-        console.log('Signing key set, waiting for transaction receipt');
-        await changePubkey.awaitReceipt();
-        console.log('✅ specified sync wallet is ready to use on zkSync');
-      } else {
-        console.log('✅ specified sync wallet was already initialized');
-      }
-      return;
-    },
-
-    /**
-     * @notice Returns next expected nonce for the user's Gitcoin sync wallet
-     */
-    async getGitcoinSyncWalletNonce() {
-      console.log('Getting state and nonce of Gitcoin sync wallet...');
-      const syncWalletState = await this.gitcoinSyncWallet.getAccountState();
-      const nonce = syncWalletState.committed.nonce;
-
-      console.log('✅ State of Gitcoin sync wallet retrieved', syncWalletState);
-      return nonce;
-    },
-
-    /**
-     * @notice Generates the zkSync transfer signature
-     * @param {Number} nonce Initial nonce that should be used for first signature
-     * @returns Array of signatures that can be sent on zkSync
-     */
-    async generateTransferSignatures(nonce) {
-      const donationInputs = this.donationInputs; // just for convenience
-
-      console.log('Generating signatures for transfers...');
-      console.log('  Array of donations to be made is', donationInputs);
-
-      const donationSignatures = []; // signatures for grant contribution transfers
-
-      // Get signatures for donation transfers
-      for (let i = 0; i < donationInputs.length; i += 1) {
-        this.currentTxNumber += 1;
-        console.log(`  Generating signature ${i + 1} of ${donationInputs.length}...`);
-        const donationInput = donationInputs[i];
-        const { fee, amount } = await this.getZkSyncFeeAndAmount(donationInput);
-
-        // Now we can generate the signature for this transfer
-        const signedTransfer = await this.gitcoinSyncWallet.signSyncTransfer({
-          to: donationInput.dest,
-          token: donationInput.name,
-          amount,
-          fee,
-          nonce
-        });
-
-        donationSignatures.push(signedTransfer);
-
-        // Increment nonce to prepare for next signature
-        nonce += 1;
-      }
-      this.currentTxNumber = 0;
-      console.log('✅ All signatures have been generated', donationSignatures);
-      return donationSignatures;
-    },
-
-    /**
-     * @notices Accepts signed transfers and dispatches those transfers
-     * @param donationSignatures Array of signatures each output from signSyncTransfer
-     */
-    async dispatchSignedTransfers(donationSignatures) {
-      console.log('Sending transfers to the network...');
-      this.zkSyncCheckoutFlowStep += 1; // sending transactions
-
-      // Dispatch donations ------------------------------------------------------------------------
-      for (let i = 0; i < donationSignatures.length; i += 1) {
-        try {
-          this.currentTxNumber += 1;
-          console.log(`  Sending transfer ${i + 1} of ${donationSignatures.length}...`);
-          const transfer = await zksync.wallet.submitSignedTransaction(donationSignatures[i], this.syncProvider);
-
-          console.log(`  Transfer ${i + 1} sent`, transfer);
-          const receipt = await transfer.awaitReceipt();
-
-          console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
-        } catch (e) {
-          // Prevent failed transfer from blocking the rest
-          console.error(e);
-          continue;
-        }
-      }
-
-      // Transfer any remaining tokens to user's main wallet ---------------------------------------
-      this.zkSyncCheckoutFlowStep += 1; // Done!
-      const gitcoinZkSyncState = await this.syncProvider.getState(this.gitcoinSyncWallet.cachedAddress);
-      const balances = gitcoinZkSyncState.committed.balances;
-      const tokens = Object.keys(balances);
-
-      // Loop through each token the user has
-      for (let i = 0; i < tokens.length; i += 1) {
-        try {
-          const tokenSymbol = tokens[i];
-          const transferInfo = {
-            dest: this.userAddress,
-            name: tokenSymbol,
-            amount: balances[tokenSymbol]
-          };
-
-          console.log(`Sending remaining ${tokenSymbol} to user's main zkSync wallet...`);
-
-          // The amount returned is the packable version of the amount input. Note that closest
-          // packable amount is strictly less than or equal to the input amount
-          const { fee, amount } = await this.getZkSyncFeeAndAmount(transferInfo);
-
-          // This fee and amount cannot be used directly, because the amount is the full balance.
-          // We now need to subtract the fee from this amount, and must ensure there is
-          // actually enough balance left to send this transfer. Otherwise we do not have enough
-          // balance to cover the transfer fee
-
-          if (amount.gt(fee)) {
-            // Packed account balance is greater than fee, so we can proceed with transfer
-            const transferAmount = zksync.utils.closestPackableTransactionAmount(amount.sub(fee));
-
-            // Send transfer
-            const tx = await this.gitcoinSyncWallet.syncTransfer({
-              to: transferInfo.dest,
-              token: transferInfo.name,
-              amount: transferAmount,
-              fee
-            });
-
-            console.log('  Transfer sent', tx);
-
-            // Wait for it to be committed
-            const receipt = await tx.awaitReceipt();
-
-            console.log('  ✅ Got transfer receipt', receipt);
-
-          } else {
-            console.log('  ❗ Remaining balance is less than the fee, skipping this transfer');
-            continue;
-          }
-
-        } catch (e) {
-          if (e.message === 'zkSync transaction failed: Not enough balance') {
-            // Only dust is left for this token, so skip it
-            console.log('  ❗ Only dust left, skipping this transfer');
-            continue;
-          }
-          // Everything worked successfully, so let's not throw an error here because the user's
-          // donations did succeed. Instead, there is just small excess funds left in the account
-          console.error(e);
-          continue;
-        }
-      }
-
-      // Done!
-      this.zkSyncCheckoutStep3Status = 'complete';
-      this.zkSyncCheckoutFlowStep += 1; // Done!
-      console.log('✅ All transfers have been successfully sent');
-      return;
-    },
-
-    /**
      * @notice For a given donation in this.donationInputs, returns the packed fee and amount
      * @param donation Object, one element from the this.donationInputs array
      */
@@ -1849,26 +1593,6 @@ Vue.component('grants-cart', {
       const amount = zksync.utils.closestPackableTransactionAmount(amountBN);
 
       return { fee: fee.totalFee, amount };
-    },
-
-    /**
-     * @notice Setup parameters needed for zkSync checkout
-     */
-    async setupZkSync() {
-      // Configure ethers and zkSync
-      const network = document.web3network || 'mainnet';
-
-      this.ethersProvider = new ethers.providers.Web3Provider(provider);
-      this.signer = this.ethersProvider.getSigner();
-      this.syncProvider = await zksync.getDefaultProvider(network, 'HTTP');
-      this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
-      this.zkSyncDonationInputsEthAmount = this.donationInputsEthAmount;
-      this.zkSyncWalletState = await this.syncProvider.getState(this.userAddress);
-
-      // Set zkSync contract address based on network
-      this.zkSyncContractAddress = network === 'mainnet'
-        ? zkSyncContractAddressMainnet // mainnet
-        : zkSyncContractAddressRinkeby; // rinkeby
     },
 
     /**

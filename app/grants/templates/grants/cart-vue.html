@@ -374,9 +374,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             </div>
                             <div class="row align-items-center justify-content-between">
                               <div class="col-auto">
-                                <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
-                                  Checkout with zkSync
-                                </button>
+                                <grants-cart-ethereum-zksync 
+                                  :current-tokens="currentTokens"
+                                  :donation-inputs="donationInputs"
+                                  :network="network"
+                                >
+                                </grants-cart-ethereum-zksync>
                                 </div>
                               <div class="col-auto">
                                 <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
@@ -1051,6 +1054,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       document.authenticated = {{ authenticated | yesno:"true,false" }};
       document.brightid_uuid = "{{ brightid_uuid }}";
     </script>
+    <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
     <script src="{% static "v2/js/cart.js" %}"></script>
   </body>
 
