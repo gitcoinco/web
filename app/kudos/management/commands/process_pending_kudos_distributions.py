@@ -62,6 +62,7 @@ class Command(BaseCommand):
                 counter_processed += 1
                 if counter_processed < num_to_process:
                     print(f"PROCESS - {counter_pulled}/{num_to_pull} - {counter_processed}/{num_to_process} - {kt}")
+                    print(kt.admin_url)
                     func = redeem_bulk_kudos.delay if _async else redeem_bulk_kudos
                     try:
                         func(kt.id, delay_if_gas_prices_gt_redeem=delay_if_gas_prices_gt_redeem, override_gas_price=override_gas_price, send_notif_email=send_notif_email)
