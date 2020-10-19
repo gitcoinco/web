@@ -61,9 +61,7 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
 
     if kudos_contract.network == 'rinkeby':
         external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-    elif kudos_contract.network == 'mainnet':
-        external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-    elif kudos_contract.network == 'xdai':
+    elif kudos_contract.network in ['mainnet', 'xdai']:
         external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
     elif kudos_contract.network == 'localhost':
         external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
