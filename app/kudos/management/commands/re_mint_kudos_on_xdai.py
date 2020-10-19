@@ -46,8 +46,8 @@ class Command(BaseCommand):
                     token.save()
                     print(f'-/- {token.pk}')
                     mint_token_request(token.pk, send_notif_email=False)
-                except Exception as e:
-                    print(e)
+            except Exception as e:
+                print(e)
 
         for token in Token.objects.filter(contract__network='mainnet'):
             if token.gen == 1 and not token.on_xdai:
