@@ -1,0 +1,23 @@
+{
+  "symbol": "CVP",
+  "address": "0x38e4adB44ef08F22F5B5b76A8f0c2d0dCbE7DcA1",
+  "overview":{
+    "en": "PowerPool is a solution for accumulating governance power in Ethereum-based protocols by pooling tokens (COMP, BAL, LEND, YFI, BZRX, AKRO, etc.). The CVP token name refers to Concentrated Voting Power: CVP holders decide how pooled GTs will vote when the vote occurs in their root protocol. Also, CVP holders govern the entire protocol (key ecosystem variables, collateral types, adding new pools).",
+    "zh": ""
+  },
+  "email": "info@powerpool.finance",
+  "website": "https://powerpool.finance/",
+  "whitepaper": "",
+  "state": "NORMAL",
+  "published_on": "2020-08-20",
+  "initial_price":{
+    "ETH":"0.00055466 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/powerpoolcvp",
+    "telegram": "https://t.me/powerpoolcvp",
+    "github": "https://github.com/powerpool-finance",
+    "medium": "https://link.medium.com/bWcPgVnpN8",
+    "discord": "https://discord.gg/hYJXUBQ"
+  }
+}
