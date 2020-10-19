@@ -2784,7 +2784,11 @@ class Profile(SuperModel):
     )
     hide_wallet_address = models.BooleanField(
         default=True,
-        help_text='If this option is chosen, we will remove your wallet information all together',
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs wherever it\'s associated with your handle or other PIA (personally identifiable information) wherever possible.',
+    )
+    hide_wallet_address_anonymized = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, Gitcoin will hide your wallet address in it\'s UI/APIs, even in instances in which it\'s anonymized',
     )
     pref_do_not_track = models.BooleanField(
         default=False,
@@ -5290,6 +5294,15 @@ class Earning(SuperModel):
     token_name = models.CharField(max_length=255, default='')
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
+
+    def has_read_perms(self, profile):
+        if self.source_type_human == 'grant':
+            return self.source.team_members.filter(pk__in=profile.pk)
+        if self.source_type_human in ['tip', 'kudos transfer']:
+            return self.source.receiver_profile == profile or self.source.sender_profile == profile
+        if self.source_type_human == 'bounty':
+            return self.source.profile == profile or self.source.funder_profile == profile
+        return False
 
     @property
     def source_type_human(self):
