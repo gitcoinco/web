@@ -1,0 +1,40 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n humanize static %}
+
+{% block content %}
+
+<div class="container" style="margin-bottom: 3em; padding: 0;">
+<div class="inner-container">
+  <h1>Get funding for your project by converting to Grant!</h1>
+
+  <p class="left message">Do you know that a lot of important companies in the Web3 space currently started out as hackathon projects?</p>
+
+  <p class="left">At Gitcoin, we believe every hackathon project is the start of something big. To get you started on your journey, now you're able to <b>convert your project to grant!</b></p>
+
+  <img src="{% static "v2/images/emails/convert_project_grant.jpg" %}" alt="" style="width: 100%; margin-top: 1em;">
+
+  <p class="left message">Simply go to your project, click the Convert to Grant button, and you'll be able to <b>get funding from contributors </b>and<b> be eligible for CLR matching on Gitcoin Grants Rounds!</b></p>
+
+  <div style="margin-bottom: 2em; margin-top: 3em;">
+    <a class="button large" href="https://gitcoin.co/{{user}}/hackathons">View My Projects</a>
+  </div>
+
+</div>
+</div>
+{% endblock %}

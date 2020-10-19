@@ -1,0 +1,9 @@
+Get funding for your project by converting to Grant!
+
+    Do you know that a lot of important companies in the Web3 space currently started out as hackathon projects?
+
+    At Gitcoin, we believe every hackathon project is the start of something big. To get you started on your journey, now you're able to convert your project to grant!
+
+    Simply go to your project, click the Convert to Grant button, and you'll be able to get funding from contributors and be eligible for CLR matching on Gitcoin Grants Rounds!
+
+  View My Projects
