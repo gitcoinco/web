@@ -1,0 +1,17 @@
+{
+    "symbol": "BHTT",
+    "address": "0xAc1e3F4Fd03530ABaF4d56C5A2F291c0A17e7a58",
+    "overview":{
+          "en": "BHTT is a four-in-one digital asset wallet that innovatively integrates custodial wallets, self-managed wallets, shared wallets, and hardware wallets.",
+          "zh": "BHTT是一款四位一体数字资产钱包，创新性融合托管钱包、自管钱包、共管钱包、硬件钱包于一体。"
+    },
+    "email": "mndsjfjf963@gmail.com",
+    "website": "http://www.bhtt.pro/",
+    "whitepaper": "http://www.bhtt.pro/Curren%20white%20paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-30",
+    "links": {
+        "telegram": "https://t.me/Bhtt1/8",
+        "twitter": "https://twitter.com/bhtt20823411"
+      }
+}
