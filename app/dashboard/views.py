@@ -4323,7 +4323,7 @@ def hackathon_projects(request, hackathon='', specify_project=''):
         projects = projects.filter(
             Q(grant_obj__isnull=False)
         )
-           
+
     if specify_project:
         projects = projects.filter(name__iexact=specify_project.replace('-', ' '))
         if projects.exists():
@@ -4503,7 +4503,7 @@ def project_data(project_id):
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
     if not project:
         return None
-    
+
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     params = {
         'project': {
@@ -4536,7 +4536,7 @@ def project_data(project_id):
     }
     return params
 
-    
+
 def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
@@ -5566,7 +5566,7 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     hours_worked = request.POST.get('hoursWorked')
-    if not hours_worked or not hours_worked.isdigit():
+    if not hours_worked:
         response['message'] = 'error: missing hoursWorked'
         return JsonResponse(response)
 
@@ -5863,7 +5863,7 @@ def bulkemail(request):
     from_name = request.POST.get('from_name', '')
     from_email = request.POST.get('from_email', '')
 
-    if handles and message and subject: 
+    if handles and message and subject:
         from marketing.mails import send_mail
         _handles = list(set(handles.split(',')))
         for handle in _handles:

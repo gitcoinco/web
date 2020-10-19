@@ -43,10 +43,14 @@ window.onload = function() {
       if (typeof ga !== 'undefined') {
         ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter')
       }
-
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
+      if (eventTag && !data.projectId) {
+        unloading_button($('.js-submit'));
+        return _alert('Please add a project first', 'error');
+      }
 
       if (is_bounties_network) {
         ethFulfillBounty(data);
