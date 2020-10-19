@@ -37,6 +37,7 @@ class Command(BaseCommand):
         parser.add_argument('num_to_process', type=int, help='num_to_process')
         parser.add_argument('override_gas_price', type=int, help='override_gas_price (0 if none)')
         parser.add_argument('async', type=int, help='async')
+        parser.add_argument('order_by', type=int, help='order_by')
 
     def handle(self, *args, **options):
         # config
@@ -44,14 +45,16 @@ class Command(BaseCommand):
         num_to_pull = options['num_to_pull']
         _async = options['async']
         override_gas_price = options['override_gas_price']
+        order_by = options['order_by']
         delay_if_gas_prices_gt_redeem = 300
         send_notif_email = True
+        send_on_xdai = true
 
         counter_processed = 0
         counter_pulled = 0
         start_time = int(time.time())
 
-        kudos_transfers = KudosTransfer.objects.filter(txid='pending_celery')
+        kudos_transfers = KudosTransfer.objects.filter(txid='pending_celery').order_by(order_by)
         for kt in kudos_transfers:
             counter_pulled += 1
             if counter_pulled < num_to_pull:
@@ -60,9 +63,16 @@ class Command(BaseCommand):
                 print(f"({avg_processing}/s)")
                 print(f"PULL - {counter_pulled}/{num_to_pull} - {counter_processed}/{num_to_process} - {kt}")
                 counter_processed += 1
+                print(f"PROCESS - {counter_pulled}/{num_to_pull} - {counter_processed}/{num_to_process} - {kt}")
+                print(kt.admin_url)
                 if counter_processed < num_to_process:
-                    print(f"PROCESS - {counter_pulled}/{num_to_pull} - {counter_processed}/{num_to_process} - {kt}")
-                    print(kt.admin_url)
+                    if send_on_xdai:
+                        kt.network = 'xdai'
+                        kt.kudos_token_cloned_from = kt.kudos_token_cloned_from.on_xdai
+                        if not kt.kudos_token_cloned_from:
+                            print("target token not found on xdai network :/")
+                            continue
+                        kt.save()
                     func = redeem_bulk_kudos.delay if _async else redeem_bulk_kudos
                     try:
                         func(kt.id, delay_if_gas_prices_gt_redeem=delay_if_gas_prices_gt_redeem, override_gas_price=override_gas_price, send_notif_email=send_notif_email)

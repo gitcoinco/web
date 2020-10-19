@@ -144,6 +144,17 @@ class Token(SuperModel):
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
 
+    @property
+    def on_xdai(self):
+        target = self
+        if self.gen > 1:
+            target = self.kudos_token_cloned_from
+        for token in Token.objects.filter(contract__network='xdai', name=target.name):
+            if token.gen == 1:
+                return token
+        return None
+
+
     def save(self, *args, **kwargs):
         if self.owner_address:
             self.owner_address = to_checksum_address(self.owner_address)
