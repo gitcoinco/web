@@ -219,39 +219,46 @@ Vue.mixin({
         });
       }
     },
-    extractURLFilters: function() {
+    extractURLFilters: function(serverFilters) {
+      let params = getAllUrlParams();
       let vm = this;
-      const params = getAllUrlParams();
+
+      let columns = serverFilters[vm.header.index]['mappings'][vm.header.type]['properties'];
 
       if (Object.values(params).length > 0) {
         // eslint-disable-next-line guard-for-in
         for (let prop in params) {
+          let meta = columns[prop];
 
+          if (!meta)
+            continue;
+
+          if (typeof params[prop] !== 'object') {
+            params[prop] = [params[prop]];
+          }
+          columns[`${prop}_exact`]['selected'] = true;
+          columns[`${prop}_exact`]['selectedValues'] = [];
           // eslint-disable-next-line guard-for-in
           for (let key in params[prop]) {
 
             let value = params[prop][key];
-            const columnMeta = $.extend({}, vm.esColumns[prop]);
 
-            if (!columnMeta) {
+            if (!value)
               continue;
-            }
-            columnMeta['key'] = prop;
-            columnMeta['value'] = value;
+            columns[`${prop}_exact`]['selectedValues'].push(value);
 
             let _instruction = {
               fun: 'orFilter',
-              args: [ 'term', `${columnMeta.key}_exact`, columnMeta.value ]
+              args: [ 'term', `${prop}_exact`, value ]
             };
 
             this.addInstruction(_instruction);
           }
         }
-        debugger;
         vm.params = params;
-        this.mount();
-        this.fetch(this);
       }
+      vm.esColumns = columns;
+      vm.filterLoaded = true;
     },
     joinTribe: function(user, event) {
       event.target.disabled = true;
@@ -294,6 +301,11 @@ if (document.getElementById('gc-users-elastic')) {
   Vue.component('autocomplete', {
     props: [ 'options', 'value' ],
     template: '#select2-template',
+    data: function() {
+      return {
+        selectedFilters: []
+      };
+    },
     methods: {
       formatMapping: function(item) {
         console.log(item);
@@ -319,13 +331,18 @@ if (document.getElementById('gc-users-elastic')) {
         obj.text = newKey;
         obj.key = key;
 
+        if (obj.selected) {
+          console.log(`${obj.text} is selected`);
+          vm.selectedFilters.push(obj.id);
+        }
+
         mappedFilters[newKey] = true;
         mappedFilters[key] = true;
         return obj;
       });
 
 
-      $(vm.$el).select2({
+      const s2 = $(vm.$el).select2({
         data: data,
         multiple: true,
         allowClear: true,
@@ -336,9 +353,7 @@ if (document.getElementById('gc-users-elastic')) {
         }
       })
         .on('change', function() {
-          console.log('changed');
           let val = $(vm.$el).val();
-
           let changeData = $.map(val, function(filter) {
             return data[filter];
           });
@@ -346,6 +361,8 @@ if (document.getElementById('gc-users-elastic')) {
           vm.$emit('input', changeData);
         });
 
+      s2.val(vm.selectedFilters);
+      s2.trigger('change');
       // fix for wrong position on select open
       var select2Instance = $(vm.$el).data('select2');
 
@@ -422,11 +439,10 @@ if (document.getElementById('gc-users-elastic')) {
 
         $.when(vm.header.client.indices.getMapping())
           .then(response => {
-            vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
-            vm.filterLoaded = true;
-            this.extractURLFilters();
-            this.fetch(this);
 
+            this.extractURLFilters(response);
+            this.mount();
+            this.fetch(this);
           });
       }
     },
