@@ -280,6 +280,19 @@ def render_tip_email(to_email, tip, is_new):
 
     return response_html, response_txt
 
+def render_convert_project_grant(user):
+    email_style = 'hackathon'
+    params = {
+        'user': user,
+        'email_style': email_style,
+        'hide_bottom_logo': True,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/convert_project_grant.html", params))
+    response_txt = render_to_string("emails/convert_project_grant.txt", params)
+
+    return response_html, response_txt
+
 def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
     email_style = 'hackathon'
 
