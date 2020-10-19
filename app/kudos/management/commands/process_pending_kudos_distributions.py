@@ -42,7 +42,7 @@ class Command(BaseCommand):
         # config
         num_to_process = options['num_to_process']
         num_to_pull = options['num_to_pull']
-        async = options['async']
+        _async = options['async']
         override_gas_price = options['override_gas_price']
         delay_if_gas_prices_gt_redeem = 300
         send_notif_email = True
@@ -62,7 +62,7 @@ class Command(BaseCommand):
                 counter_processed += 1
                 if counter_processed < num_to_process:
                     print(f"PROCESS - {counter_pulled}/{num_to_pull} - {counter_processed}/{num_to_process} - {kt}")
-                    func = redeem_bulk_kudos.delay if async else redeem_bulk_kudos
+                    func = redeem_bulk_kudos.delay if _async else redeem_bulk_kudos
                     try:
                         func(kt.id, delay_if_gas_prices_gt_redeem=delay_if_gas_prices_gt_redeem, override_gas_price=override_gas_price, send_notif_email=send_notif_email)
                     except Exception as e:
