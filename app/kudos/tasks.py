@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import time
 
 from django.conf import settings
@@ -11,7 +13,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from kudos.models import KudosTransfer, TokenRequest
 from kudos.utils import kudos_abi
-from marketing.mails import notify_kudos_minted
+from marketing.mails import notify_kudos_minted, send_mail
 from web3 import Web3
 
 logger = get_task_logger(__name__)
@@ -20,7 +22,6 @@ redis = RedisService().redis
 
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
-delay_if_gas_prices_gt_redeem = 50
 delay_if_gas_prices_gt_mint = 150
 
 @app.shared_task(bind=True, max_retries=10)
@@ -57,7 +58,7 @@ def mint_token_request(self, token_req_id, retry=False):
 
 
 @app.shared_task(bind=True, max_retries=10, rate_limit="60/h")
-def redeem_bulk_kudos(self, kt_id, retry=False):
+def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_gas_price=None, send_notif_email=False, retry=False):
     """
     :param self:
     :param kt_id:
@@ -68,12 +69,16 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             multiplier = 1
             # high gas prices, 5 hour gas limit - DL
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
+            if override_gas_price:
+                gas_price = override_gas_price
             if gas_price > delay_if_gas_prices_gt_redeem:
                 # do not retry is gas prices are too high
                 # TODO: revisit this when gas prices go down
                 # self.retry(countdown=60*10)
                 return
 
+            if override_gas_price:
+                gas_price = override_gas_price * 10 ** 9
             obj = KudosTransfer.objects.get(pk=kt_id)
             w3 = get_web3(obj.network)
             token = obj.kudos_token_cloned_from
@@ -98,6 +103,22 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             while not has_tx_mined(obj.txid, obj.network):
                 time.sleep(1)
             pass
+            if send_notif_email:
+                from_email = 'kevin@gitcoin.co'
+                from_name = 'Kevin @ Gitcoin'
+                _to_email = obj.recipient_profile.email
+                subject = f"Your '{obj.kudos_token_cloned_from.name}' Kudos has been minted 🌈"
+                body = f'''
+Hello @{obj.recipient_profile.handle},
+
+Back on {obj.created_on} you minted a '{obj.kudos_token_cloned_from.name}' Kudos, but the Ethereum network's gas fees were too high for us to mint it on-chain.
+
+We're writing with good news.  The gas prices on Ethereum have come down, and we are have now minted your token.  You can now see the Kudos in your gitcoin profile ( https://gitcoin.co/{obj.recipient_profile.handle} ) or any blockchain wallet ( https://etherscan.io/tx/{obj.txid} ).  HOORAY!
+
+Party on,
+Kevin + the Gitcoin team
+                '''
+                send_mail(from_email, _to_email, subject, body, from_name=from_name)
     except (SoftTimeLimitExceeded, TimeLimitExceeded):
         print('max timeout for bulk kudos redeem exceeded ... giving up!')
     except Exception as e:

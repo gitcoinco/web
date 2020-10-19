@@ -688,7 +688,7 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
-def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, submit_later=False, exit_after_sending_tx=False):
+def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, submit_later=False, exit_after_sending_tx=False, max_gas_price_we_are_willing_to_pay_gwei=15):
     try:
         address = Web3.toChecksumAddress(address)
     except:
@@ -738,7 +738,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
         else:
             try:
                 # TODO - in the future, override this if the user pays for expediated processing
-                if recommend_min_gas_price_to_confirm_in_time(1) > 15:
+                if recommend_min_gas_price_to_confirm_in_time(1) > max_gas_price_we_are_willing_to_pay_gwei:
                     raise Exception("gas price is too high.  try again when its not pls")
 
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
