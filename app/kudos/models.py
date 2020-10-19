@@ -170,7 +170,7 @@ class Token(SuperModel):
 
     def on_network(self, network):
         if self.contract.network == network:
-            return None
+            return self
         target = self
         if self.gen > 1:
             target = self.kudos_token_cloned_from
