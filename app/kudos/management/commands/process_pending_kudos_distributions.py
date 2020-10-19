@@ -37,7 +37,7 @@ class Command(BaseCommand):
         parser.add_argument('num_to_process', type=int, help='num_to_process')
         parser.add_argument('override_gas_price', type=int, help='override_gas_price (0 if none)')
         parser.add_argument('async', type=int, help='async')
-        parser.add_argument('order_by', type=int, help='order_by')
+        parser.add_argument('order_by', type=str, help='order_by')
 
     def handle(self, *args, **options):
         # config
@@ -45,10 +45,10 @@ class Command(BaseCommand):
         num_to_pull = options['num_to_pull']
         _async = options['async']
         override_gas_price = options['override_gas_price']
-        order_by = options['order_by']
+        order_by = options['order_by'].replace('_', '-')
         delay_if_gas_prices_gt_redeem = 300
         send_notif_email = True
-        send_on_xdai = true
+        send_on_xdai = True
 
         counter_processed = 0
         counter_pulled = 0
