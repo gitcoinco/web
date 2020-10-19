@@ -174,7 +174,7 @@ class Token(SuperModel):
         target = self
         if self.gen > 1:
             target = self.kudos_token_cloned_from
-        for token in Token.objects.filter(contract__network=network, num_clones_allowed__gt=1, name=target.name):
+        for token in Token.objects.filter(contract__network=network, num_clones_allowed__gt=1, name=target.name, owner_address=self.owner_address):
             if token.gen == 1:
                 return token
         return None

@@ -25,10 +25,10 @@ tr = TokenRequest.objects.create(
     numClonesAllowed=token.num_clones_allowed,
     metadata=token.metadata,
     tags=token.tags.split(','),
+    artwork_url=token.image,
     approved=True,
     profile=Profile.objects.get(handle='gitcoinbot'),
     processed=True,
     )
 print(f'*/* {tr.pk}')
 mint_token_request(tr.pk, send_notif_email=False)
-delete_town_square_posts()

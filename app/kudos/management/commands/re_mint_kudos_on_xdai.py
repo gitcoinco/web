@@ -72,6 +72,7 @@ class Command(BaseCommand):
                         platform=token.platform,
                         to_address=token.owner_address,
                         numClonesAllowed=token.num_clones_allowed,
+                        artwork_url=token.image,
                         metadata=token.metadata,
                         tags=token.tags.split(','),
                         approved=True,
