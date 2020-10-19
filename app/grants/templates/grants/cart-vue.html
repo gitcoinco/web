@@ -221,6 +221,157 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
                       </div>
                     </div>
+
+                    <div class="flex-container font-bigger-1 text-left grant-header-row black" style="font-weight: bold">
+                      <div style="width: 25%">
+                        <div class="flex-container" style="justify-content: start">
+                          TOTAL
+                        </div>
+                      </div>
+                      <div style="width: 75%">
+                        <div class="flex-container" style="justify-content: start">
+                          [[donationsTotalString]]
+                        </div>
+                      </div>
+                    </div>
+
+                    {% comment %} Hide wallet option {% endcomment %}
+                    <div class="flex-container text-left grant-header-row black">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address"
+                            style="margin-right:1rem">
+                          <span class="font-smaller-1 darker-gray"
+                            for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
+                          <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
+                            style="margin-left: 0.5rem;">
+                            {% trans "If this option is chosen, your wallet address will be hidden" %}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
+                    <div class="flex-container text-left grant-header-row black">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
+                            <div class="row">
+                              <div class="col-12 mb-3">
+                                <p class="font-body">
+                                  {% trans "By using this service, you’ll also be contributing" %}
+                                  <span class="gitcoin-grant-percent">[[gitcoinFactorRaw]]%</span>
+                                  {% trans "of your contribution to the" %} <a
+                                    href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
+                                    Grants Round 7+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                                  <div class="font-smaller-1 hyperlink" @click="adjustGitcoinFactor=true">
+                                    Adjust &gt;&gt;
+                                  </div>
+                                </p>
+                              </div>
+                              <div v-if="adjustGitcoinFactor" class="col-12 col-xl-8 text-center text-xl-left fee-slider">
+                                {% include './heart.html' %}
+                                <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
+                                  <div class="badge badge-active font-title font-weight-normal"
+                                    :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
+                                    @click="gitcoinFactorRaw=5">
+                                    5%</div>
+                                  <div class="badge badge-active font-title font-weight-normal ml-xl-2"
+                                    :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
+                                    @click="gitcoinFactorRaw=10">
+                                    10%</div>
+                                  <div class="badge badge-active font-title font-weight-normal ml-xl-2"
+                                    :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
+                                    @click="gitcoinFactorRaw=15">
+                                    15%</div>
+                                </div>
+                              </div>
+                              <div v-if="adjustGitcoinFactor"
+                                class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
+                                <div class="text-center custom d-inline-block">
+                                  <input type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
+                                    name="gitcoin-grant-input-amount" class="form__input text-center"
+                                    :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
+                                    v-model="gitcoinFactorRaw">
+                                  <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% comment %} Summary {% endcomment %}
+                    <div class="flex-container font-bigger-1 text-left grant-header-row black"
+                      style="font-weight: bold; margin-top: 1rem;">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          SUMMARY
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex-container text-left cart-section black">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <ul>
+                            <li>
+                              You are contributing <span style="font-weight: bold">[[donationsToGrantsString]]</span>
+                            </li>
+                            <li>
+                              You are additionally contributing
+                              <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
+                              to the Gitcoin Mainainter Grant
+                            </li>
+                            <li>
+                              Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
+                              <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
+                                Read how this works</a>.
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex-container" style="margin-top: 3rem;">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <button v-if="!isLoggedIn" class="btn btn-gc-blue button--full shadow-none py-3"
+                            id='js-fundGrants-button' @click="loginWithGitHub">
+                            <i class="fab fa-github"></i>
+                            Login with GitHub to Continue
+                          </button>
+                          <div v-else>
+                            <div class="mb-1">
+                              <div v-if="zkSyncUnsupportedTokens.length > 0">
+                                zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+                              </div>
+                              <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
+                                zkSync checkout not supported
+                              </div>
+                              <div v-else>
+                                Save
+                                <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
+                                on gas costs with [[ checkoutRecommendation.name ]]
+                              </div>
+                            </div>
+                            <div class="row align-items-center justify-content-between">
+                              <div class="col-auto">
+                                <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
+                                  Checkout with zkSync
+                                </button>
+                                </div>
+                              <div class="col-auto">
+                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
+                                  Standard Checkout
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </b-tab>
                   <b-tab :title-link-class="'nav-line'">
                     <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
@@ -379,9 +530,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                   <div v-if="grant.success" class="font-body text-success">[[grant.success]]</div>
                                 </div>
                               </div>
-                              <!-- <input v-model="grant.payoutTxId" name="payout_tx_id" id="payout_tx_id" placeholder="Wallet Address" class="w-100 p-2 font-smaller-5 border-0"> -->
-
-
 
                             </form>
                           </b-collapse>
@@ -391,240 +539,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   </b-tab>
                 </b-tabs>
               </div>
-              <!-- {% comment %} Cart Contents: MOBILE {% endcomment %} -->
-              <!-- <div v-if="isMobileDevice">
-                <div v-for="(grant, index) in grantsByTenant" :key="grant.grant_id" class="grant-row">
-                  <div class="grant-row-style">
-                    <div class="row align-items-center justify-content-between">
-                      {% comment %} Logo, title, and delete button {% endcomment %}
-                      <div class="col-12">
-                        <div class="row flex-nowrap">
-                          <img class="col-2" style="padding:0 0.5rem" :src="grant.grant_logo" alt="Grant logo"
-                            width="40" height="24">
-                          <div class="col-8 grant-name black" style="padding:0"><a :href="grant.grant_url">[[grant.grant_title]]</a></div>
-                          <div class="col-1" style="opacity: 40%">
-                            <i class="fas fa-trash-alt" style="cursor: pointer"
-                              @click="removeGrantFromCart(grant.grant_id)"></i>
-                          </div>
-                        </div>
-                      </div>
-                      {% comment %} Grant amount and curency {% endcomment %}
-                      <div class="col-12" style="margin-top:1rem;">
-                        <div class="row flex-nowrap justify-content-between">
-                          <input class="col-5 form-control" min="0" step="any"
-                            v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
-                          <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
-                            style="margin-right:0.5rem" placeholder="Select token">
-                            <option v-for="(option, index) in currencies[index]" v-bind:value="option" :disabled="!option" :key="`currency-${index}`">
-                              <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
-                              <span v-else>[[ option ]]</span>
-                            </option>
-                          </select2>
-                        </div>
-                        <div class="font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant, index)">
-                          Apply to all
-                        </div>
-                      </div>
-                      {% comment %} Add comment {% endcomment %}
-                      <div class="col-12 font-smaller-3" style="margin-top:1rem">
-                        <div class="row">
-                          <div class="comment-option col-auto" @click="addComment(index)">
-                            <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`"
-                                   :checked="grant.grant_comments === ''"
-                            >
-                            <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
-                          </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
-                            <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`"
-                                   :checked="grant.grant_comments === '🙌 Great Job'"
-                            >
-                            <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
-                          </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
-                            <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`"
-                                   :checked="grant.grant_comments === '👍 i appreciate you'"
-                            >
-                            <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
-                          </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
-                            <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`"
-                                   :checked="grant.grant_comments === '💪 keep up the great work'"
-                            >
-                            <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
-                          </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
-                            <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`"
-                                   :checked="grant.grant_comments === '😍 love the mission of your project'"
-                            >
-                            <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
-                          </div>
-                        </div>
-                      </div>
-                      <div v-if="grant.grant_comments !== undefined" class="col-12" style="margin-top:1rem;">
-                        <div class="row flex-nowrap justify-content-between">
-                          <input class="form-control" v-model="grant.grant_comments"
-                            type="textarea" placeholder="Enter message">
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-              </div> -->
-              <!-- {% comment %} Cart Contents: NOT MOBILE {% endcomment %} -->
-
-
               {% comment %} Cart total {% endcomment %}
-              <div class="flex-container font-bigger-1 text-left grant-header-row black" style="font-weight: bold">
-                <div style="width: 25%">
-                  <div class="flex-container" style="justify-content: start">
-                    TOTAL
-                  </div>
-                </div>
-                <div style="width: 75%">
-                  <div class="flex-container" style="justify-content: start">
-                    [[donationsTotalString]]
-                  </div>
-                </div>
-              </div>
 
-              {% comment %} Hide wallet option {% endcomment %}
-              <div class="flex-container text-left grant-header-row black">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address"
-                      style="margin-right:1rem">
-                    <span class="font-smaller-1 darker-gray"
-                      for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
-                    <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
-                      style="margin-left: 0.5rem;">
-                      {% trans "If this option is chosen, your wallet address will be hidden" %}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
-              <div class="flex-container text-left grant-header-row black">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
-                      <div class="row">
-                        <div class="col-12 mb-3">
-                          <p class="font-body">
-                            {% trans "By using this service, you’ll also be contributing" %}
-                            <span class="gitcoin-grant-percent">[[gitcoinFactorRaw]]%</span>
-                            {% trans "of your contribution to the" %} <a
-                              href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
-                              Grants Round 7+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
-                            <div class="font-smaller-1 hyperlink" @click="adjustGitcoinFactor=true">
-                              Adjust &gt;&gt;
-                            </div>
-                          </p>
-                        </div>
-                        <div v-if="adjustGitcoinFactor" class="col-12 col-xl-8 text-center text-xl-left fee-slider">
-                          {% include './heart.html' %}
-                          <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
-                            <div class="badge badge-active font-title font-weight-normal"
-                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
-                              @click="gitcoinFactorRaw=5">
-                              5%</div>
-                            <div class="badge badge-active font-title font-weight-normal ml-xl-2"
-                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
-                              @click="gitcoinFactorRaw=10">
-                              10%</div>
-                            <div class="badge badge-active font-title font-weight-normal ml-xl-2"
-                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
-                              @click="gitcoinFactorRaw=15">
-                              15%</div>
-                          </div>
-                        </div>
-                        <div v-if="adjustGitcoinFactor"
-                          class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
-                          <div class="text-center custom d-inline-block">
-                            <input type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
-                              name="gitcoin-grant-input-amount" class="form__input text-center"
-                              :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
-                              v-model="gitcoinFactorRaw">
-                            <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {% comment %} Summary {% endcomment %}
-              <div class="flex-container font-bigger-1 text-left grant-header-row black"
-                style="font-weight: bold; margin-top: 1rem;">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    SUMMARY
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex-container text-left cart-section black">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <ul>
-                      <li>
-                        You are contributing <span style="font-weight: bold">[[donationsToGrantsString]]</span>
-                      </li>
-                      <li>
-                        You are additionally contributing
-                        <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
-                        to the Gitcoin Mainainter Grant
-                      </li>
-                      <li>
-                        Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
-                        <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
-                          Read how this works</a>.
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex-container" style="margin-top: 3rem;">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <button v-if="!isLoggedIn" class="btn btn-gc-blue button--full shadow-none py-3"
-                      id='js-fundGrants-button' @click="loginWithGitHub">
-                      <i class="fab fa-github"></i>
-                      Login with GitHub to Continue
-                    </button>
-                    <div v-else>
-                      <div class="mb-1">
-                        <div v-if="zkSyncUnsupportedTokens.length > 0">
-                          zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
-                        </div>
-                        <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
-                          zkSync checkout not supported
-                        </div>
-                        <div v-else>
-                          Save
-                          <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
-                          on gas costs with [[ checkoutRecommendation.name ]]
-                        </div>
-                      </div>
-                      <div class="row align-items-center justify-content-between">
-                        <div class="col-auto">
-                          <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
-                            Checkout with zkSync
-                          </button>
-                          </div>
-                        <div class="col-auto">
-                          <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
-                            Standard Checkout
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
             </div>
             {% comment %}
