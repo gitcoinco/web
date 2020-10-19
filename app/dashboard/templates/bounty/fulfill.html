@@ -93,6 +93,12 @@
                         {% endfor %}
                       </select>
                     </div>
+
+                  {% elif bounty.event %}
+                    <div class="mt-2">
+                      <label class="form__label" for="projectId">{% trans "Please create your project:" %}</label>
+                      <button type="button" onclick="projectModal({{bounty.pk}})" class="btn btn-sm btn-gc-green d-block">Add project</button>
+                    </div>
                   {% endif %}
 
                   {% if bounty.web3_type == 'fiat' %}
@@ -188,7 +194,7 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
-  </body>
+  {% include 'shared/current_profile.html' %}
 
   <script>
     $('[data-toggle="popover"]').popover()
@@ -210,6 +216,8 @@
       });
     })
   </script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
 
   {% if is_bounties_network %}
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -224,5 +232,6 @@
   {% endif %}
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty/index.js" %}"></script>
+</body>
 
 </html>
