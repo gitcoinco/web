@@ -1,5 +1,11 @@
 
 // DOCUMENT
+let allTokens;
+const fetchTokens = async() => {
+  const tokensResponse = await fetch('/api/v1/tokens');
+  allTokens = await tokensResponse.json();
+}
+fetchTokens();
 
 $(document).ready(function() {
 
@@ -118,7 +124,7 @@ function sideCartRowForGrant(grant, index) {
             <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
           </div>
           <div class="col-5">
-            <select id="side-cart-currency-${grant.grant_id}" class="form-control">
+            <select id="side-cart-currency-${grant.grant_id}" class="form-control" style="width:100%;">
     `;
 
   cartRow += tokenOptionsForGrant(grant);
@@ -139,38 +145,56 @@ function sideCartRowForGrant(grant, index) {
   return cartRow;
 }
 
+
+
 function tokenOptionsForGrant(grant) {
+  console.log(grant)
   var network = document.web3network;
 
   if (!network) {
     network = 'mainnet';
   }
 
-  let tokenDataList = tokens(network);
-  const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000');
+  // let tokenDataList = tokens(network);
+  let tokenDataList = allTokens.filter((token) => token.network === networkName || 'mainnet');
+  let tokenDefault = 'ETH'
+
+  if ( grant.tenants.includes('ZCASH')) {
+    tokenDataList.filter((token) => token.chainId === 123123)
+    tokenDefault = 'ZEC'
+  } else {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 1)
+    console.log(tokenDataList)
+    // console.log(test)
+
+  }
+  const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000' ||
+  grant.grant_token_address === '0x0');
 
   let options = '';
 
   if (!acceptsAllTokens) {
     options += `
-            <option value="ETH">ETH</option>
+            <option value="${tokenDefault}">${tokenDefault}</option>
         `;
 
     tokenDataList = tokenDataList.filter(tokenData => {
-      return (tokenData.addr === grant.grant_token_address);
+      console.log(tokenData.address, grant.grant_token_address)
+      return (tokenData.address === grant.grant_token_address);
     });
+    console.log(tokenDataList)
   }
 
   for (let index = 0; index < tokenDataList.length; index++) {
     const tokenData = tokenDataList[index];
-
+    console.log(tokenData)
     if (tokenData.divider) {
       options += `
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
             `;
     } else {
       options += `
-                <option value="${tokenData.name}">${tokenData.name}</option>
+                <option value="${tokenData.symbol}">${tokenData.symbol}</option>
             `;
     }
   }
@@ -212,6 +236,8 @@ function showSideCart() {
     $(`#side-cart-currency-${grant.grant_id}`).change(function() {
       CartData.updateCartItem(grant.grant_id, 'grant_donation_currency', $(this).val());
     });
+
+    $(`#side-cart-currency-${grant.grant_id}`).select2();
   });
 
   const isShowing = $('#side-cart').hasClass('col-12');
