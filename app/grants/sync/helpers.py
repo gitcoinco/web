@@ -18,6 +18,7 @@ def txn_already_used(txn, token_symbol):
 def record_contribution_activity(contribution):
     from dashboard.models import Activity
     from marketing.mails import new_supporter, thank_you_for_supporting
+    from grants.tasks import update_grant_metadata
 
     try:
         event_name = 'new_grant_contribution'
@@ -54,6 +55,7 @@ def record_contribution_activity(contribution):
 
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
+        update_grant_metadata.delay(grant.pk)
 
     except Exception as e:
         logger.error(f"error in record_contribution_activity: {e} - {contribution}")
