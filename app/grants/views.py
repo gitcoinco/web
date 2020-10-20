@@ -1400,6 +1400,30 @@ def grant_new_whitelabel(request):
 
     profile = get_profile(request)
 
+    project = None
+    project_id = request.GET.get('project_id', None)
+    if project_id is not None:
+        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+        if hackathon_project is not None:
+            if hackathon_project.grant_obj is None:
+                if request.user.profile in hackathon_project.profiles.all():
+                    project = hackathon_project
+                else:
+                    messages.error(
+                        request,
+                        _('Only Team Members can convert project to grant!')
+                    )
+            else:
+                messages.error(
+                    request,
+                    _('Grant exists for this project.')
+                )
+        else:
+            messages.error(
+                request,
+                _('Project doesn\'t exist for this id.')
+            )
+
     params = {
         'active': 'new_grant',
         'title': _('Matic Build-n-Earn x Gitcoin'),
@@ -1470,6 +1494,14 @@ def grant_new(request):
             team_members = [int(i) for i in team_members if i != '']
 
             grant.team_members.add(*team_members)
+
+            project_pk = request.POST.get('project_pk', None)
+            if project_pk:
+                HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
+                messages.success(
+                   request,
+                   _('Your project is successfully converted into a grant!')
+                )
             grant.save()
 
             form_category_ids = request.POST.getlist('categories[]')
@@ -1487,21 +1519,35 @@ def grant_new(request):
             new_grant(grant, profile)
             add_grant_to_active_clrs(grant)
 
-            # project_pk = request.POST.get('project_pk', None)
-            # if project_pk:
-            #     HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
-
             return JsonResponse({
                 'success': True,
                 'url': grant.url,
             })
 
     project = None
-    # project_id = request.GET.get('project_id', None)
-    # if project_id is not None:
-    #     hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    #     if request.user.profile in hackathon_project.profiles.all():
-    #         project = hackathon_project
+    project_id = request.GET.get('project_id', None)
+    if project_id is not None:
+        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+        if hackathon_project is not None:
+            if hackathon_project.grant_obj is None:
+                if request.user.profile in hackathon_project.profiles.all():
+                    project = hackathon_project
+                else:
+                    messages.error(
+                        request,
+                        _('Only Team Members can convert project to grant!')
+                    )
+            else:
+                messages.error(
+                    request,
+                    _('Grant exists for this project.')
+                )
+        else:
+            messages.error(
+                request,
+                _('Project doesn\'t exist for this id.')
+            )
+
 
     params = {
         'active': 'new_grant',

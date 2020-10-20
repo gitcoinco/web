@@ -78,7 +78,7 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input_title">{% trans "Project Title" %}</label>
-                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" placeholder="The Human Fund" required />
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" value="{{project_data.name}}" placeholder="The Human Fund" required />
                 </div>
 
                 <div class="form__group-horizontal pb-3">
@@ -89,13 +89,16 @@
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-url">{% trans "Project Website" %}</label>
-                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" placeholder="https://human.fund/" required/>
+                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" value="{{project_data.work_url}}" placeholder="https://human.fund/" required/>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Project Team members" %}</label>
                   <div class="form__select2 g-multiselect">
                     <select id="input-team_members" class="form__input form__input-lg team_members" name="team_members[]" multiple="multiple">
+                    {% for profile in project_data.profiles.all %}
+                      <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
+                    {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -139,6 +142,7 @@
                   </h3>
                 </div>
                 <div>
+                  <input type="hidden" id="project_pk" name="project_pk" value="{{project_data.id}}" />
                   <input type="hidden" id="transaction_hash" name="transaction_hash" />
                   <input type="hidden" id="contract_address" name="contract_address" />
                   <input type="hidden" id="contract_owner_address" name="contract_owner_address">
