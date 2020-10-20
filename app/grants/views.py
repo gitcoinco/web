@@ -1375,7 +1375,8 @@ def grant_details(request, grant_id, grant_slug):
         }
         for key, value in add_in_params.items():
             params[key] = value
-
+    if request.GET.get('vue'):
+        return TemplateResponse(request, 'grants/_detail/index.html', params)
     return TemplateResponse(request, 'grants/detail/index.html', params)
 
 
