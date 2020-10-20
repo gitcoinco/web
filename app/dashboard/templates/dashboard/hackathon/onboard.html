@@ -475,11 +475,14 @@
           const data = {'name': name, 'referer': referer};
           const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
-          $('[data-registration]').addClass('disabled');
+          $('[data-registration]').attr('disabled', true);
           $.when(sendRegister).then((response) => {
             _alert('You have now registered for this hackathon.', 'success');
             document.location.href = response.redirect;
-          });
+          })
+            .fail(function() {
+              $('[data-registration]').attr('disabled', false);
+            });
         } else {
           $('#questions-form').modal('show');
           $('#poll-submit').unbind('click')
@@ -492,12 +495,15 @@
             const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)};
             const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
-            $(this).addClass('disabled');
+            $('#poll-submit').attr('disabled', true);
             $.when(sendRegister).then((response) => {
               _alert('You have now registered for this hackathon.', 'success');
               console.log(response)
               document.location.href = response.redirect;
-            });
+            })
+              .fail(function() {
+                $('#poll-submit').attr('disabled', false);
+              });
           });
         }
       }
