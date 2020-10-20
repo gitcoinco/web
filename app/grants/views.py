@@ -31,6 +31,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import Paginator
 from django.db import connection
@@ -232,6 +233,159 @@ def lazy_round_number(n):
     if n>1000:
         return f"{round(n/1000, 1)}k"
     return n
+
+# helper functions - start
+def helper_grants_round_start_end_date(request, round_id):
+    start = timezone.now()
+    end = timezone.now()
+    if round_id == 7:
+        # TODO: fix the round_number field in grantclr being overloaded
+        start = timezone.datetime(2020, 9, 15)
+        end = timezone.datetime(2020, 10, 3)
+    else:
+        try:
+            gclr = GrantCLR.objects.filter(round_num=round_id).first()
+            start = gclr.start_date
+            end = gclr.end_date
+        except Exception as e:
+            print(e)
+    return start, end
+
+def helper_contributions_to_earnings(_contributions):
+    from dashboard.models import Earning #avoid circulr import
+    return Earning.objects.filter(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id__in=_contributions,
+        )
+
+def helper_earnings_to_addr_list(earnings):
+    items = earnings.values_list('history__payload__from', flat=True)
+    return list(items)
+
+def helper_grants_output(request, meta_data, earnings):
+
+    # gather_stats
+    tx_count_start = earnings.count()
+    addr_count_start = len(set([ele for ele in helper_earnings_to_addr_list(earnings)]))
+
+    # privacy first
+    earnings = earnings.exclude(from_profile__hide_wallet_address_anonymized=True)
+    
+    # gather metadata, before & aftter filtering
+    addresses = list(set([ele for ele in helper_earnings_to_addr_list(earnings) if ele]))
+    addr_count_end = len(set(addresses))
+
+    response = {
+        'meta': {
+            'generated_at': request.build_absolute_uri(),
+            'generated_on': timezone.now().strftime("%Y-%m-%d"),
+            'stat':{
+                'transactions_found': tx_count_start,
+                'unique_addresses_found': addr_count_start,
+                'unique_addresses_found_after_privacy_preferences': addr_count_end,
+                'unique_addresses_removed_per_privacy_preferences': addr_count_start - addr_count_end,
+            },
+            'meta': meta_data,
+        },
+        'addresses': addresses
+    }
+    return JsonResponse(response, safe=False)
+# helper functions - end
+
+grants_data_release_date = timezone.datetime(2020, 10, 22)
+
+@login_required
+def contribution_addr_from_grant_as_json(request, grant_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+       'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id,
+        created_on__gt=start, created_on__lt=end
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+        'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+@login_required
+def contribution_addr_from_round_as_json(request, round_id):
+
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', created_on__gt=start, created_on__lt=end
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+def contribution_addr_from_all_as_json(request):
+
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet'
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
 
 def grants_addr_as_json(request):
     _grants = Grant.objects.filter(
@@ -1193,6 +1347,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_active': is_clr_active,
         'round_num': clr_round_num,
         'is_team_member': is_team_member,
+        'is_owner': grant.admin_profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,
