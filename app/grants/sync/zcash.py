@@ -74,16 +74,17 @@ def get_zcash_txn_status(txnid):
 
 
 def sync_zcash_payout(contribution):
-    if not contribution.tx_id:
-        txn = find_txn_on_zcash_explorer(contribution)
-        if txn:
-            contribution.tx_id = txn
+#     if not contribution.tx_id:
+    txn = find_txn_on_zcash_explorer(contribution)
+    if txn:
+        contribution.tx_id = txn
 
-    if contribution.tx_id:
+#     if contribution.tx_id:
         is_sucessfull_txn = get_zcash_txn_status(contribution.tx_id)
         if is_sucessfull_txn:
             contribution.success = True
             contribution.tx_cleared = True
+            contribution.checkout_type = 'zcash_std'
             record_contribution_activity(contribution)
 
         contribution.save()
