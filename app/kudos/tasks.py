@@ -111,13 +111,13 @@ def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_g
                 subject = f"Your '{obj.kudos_token_cloned_from.name}' Kudos has been minted 🌈"
                 block_url = f'https://etherscan.io/tx/{obj.txid}'
                 if obj.network == 'xdai':
-                    block_url = f'https://explorer.anyblock.tools/ethereum/poa/xdai/transaction/{obj.txid}'
+                    block_url = f'https://blockscout.com/poa/xdai/tx/{obj.txid}/internal-transactions'
                 body = f'''
 Hello @{obj.recipient_profile.handle},
 
 Back on {obj.created_on} you minted a '{obj.kudos_token_cloned_from.name}' Kudos, but the Ethereum network's gas fees were too high for us to mint it on-chain.
 
-We're writing with good news.  The gas prices on Ethereum have come down, and we are have now minted your token.  You can now see the Kudos in your gitcoin profile ( https://gitcoin.co/{obj.recipient_profile.handle} ) or any blockchain wallet ( {block_url} ).  HOORAY!
+We're writing with good news.  The gas prices on Ethereum have come down, and we are have now minted your token.  You can now see the Kudos in your gitcoin profile ( https://gitcoin.co/{obj.recipient_profile.handle} ) or any blockchain wallet that connects to the {obj.network} network ( {block_url} ).  HOORAY!
 
 Party on,
 Kevin + the Gitcoin team
