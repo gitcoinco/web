@@ -189,7 +189,12 @@ Vue.mixin({
           type = 'web3_modal';
           break;
         case '58':
+          // polkadot
           type = 'polkadot_ext';
+          break;
+        case '1000':
+          // harmony
+          type = 'harmony_ext';
           break;
         case '666':
           // paypal

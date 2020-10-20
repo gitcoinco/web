@@ -78,6 +78,10 @@ Vue.mixin({
           url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
           break;
 
+        case 'ONE':
+          url = `https://explorer.harmony.one/#/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -115,6 +119,10 @@ Vue.mixin({
 
         case 'FIL':
           url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
+          break;
+
+        case 'ONE':
+          url = `https://explorer.harmony.one/#/address/${address}`;
           break;
 
         default:
@@ -300,7 +308,7 @@ Vue.mixin({
         case 'ETC':
           tenant = 'ETC';
           break;
-        
+
         case 'BTC':
           tenant = 'BTC';
           break;
@@ -321,6 +329,10 @@ Vue.mixin({
 
         case 'FIL':
           tenant = 'FILECOIN';
+          break;
+
+        case 'ONE':
+          tenant = 'HARMONY';
           break;
 
         default:
@@ -385,17 +397,24 @@ Vue.mixin({
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
-    payWithWeb3Step: function(fulfillment_id, fulfiller_address) {
+    payWithExtension: function(fulfillment_id, fulfiller_address, payout_type) {
       let vm = this;
       const modal = this.$refs['payout-modal'][0];
 
-      payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
-    },
-    payWithPolkadotExtensionStep: function(fulfillment_id, fulfiller_address) {
-      let vm = this;
-      const modal = this.$refs['payout-modal'][0];
+      switch (payout_type) {
+        case 'web3_modal':
+          payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
+          break;
 
-      payWithPolkadotExtension(fulfillment_id, fulfiller_address, vm, modal);
+        case 'polkadot_ext':
+          payWithPolkadotExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'harmony_ext':
+          payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+      }
+
     },
     closeBounty: function() {
 
@@ -596,12 +615,16 @@ Vue.mixin({
             polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
               vm.fulfillment_context.active_step = 'payout_amount';
             }).catch(err => {
-              _alert('Pleasure ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
               console.log(err);
             });
           });
           break;
         }
+
+        case 'harmony_ext':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
       }
     }
   },
