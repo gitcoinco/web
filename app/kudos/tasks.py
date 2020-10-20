@@ -87,7 +87,12 @@ def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_g
                 raise Exception("kudos isnt owned by Gitcoin; cowardly refusing to spend Gitcoin's ETH minting it")
             kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT
             kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
-            kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+            contract_addr = settings.KUDOS_CONTRACT_MAINNET
+            if obj.network == 'xdai':
+                contract_addr = settings.KUDOS_CONTRACT_XDAI
+            if obj.network == 'rinkeby':
+                contract_addr = settings.KUDOS_CONTRACT_RINKEBY
+            kudos_contract_address = Web3.toChecksumAddress(contract_addr)
             contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
             nonce = w3.eth.getTransactionCount(kudos_owner_address)
             tx = contract.functions.clone(Web3.toChecksumAddress(obj.receive_address), token.token_id, 1).buildTransaction({
