@@ -353,7 +353,7 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Hackathons', 'Grants', 'Old Products'],
+        ['', 'Hackathons', 'Grants', 'Other'],
     ]
     initial_stats = [
         ["December 2017", 5534 + 2011, 0, 0],
