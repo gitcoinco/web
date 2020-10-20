@@ -1185,7 +1185,7 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice POSTs donation data to database. Intended to be called from finalizeCheckout()
+     * @notice POSTs donation data to database
      */
     async postToDatabase(txHash, contractAddress, userAddress) {
       // this.donationInputs is the array used for bulk donations
@@ -1291,17 +1291,12 @@ Vue.component('grants-cart', {
       // Clear cart, redirect back to grants page, and show success alert
       localStorage.setItem('contributions_were_successful', 'true');
       localStorage.setItem('contributions_count', String(this.grantsByTenant.length));
-      var network = document.web3network;
       let timeout_amount = 1500 + (CartData.loadCart().length * 500);
 
       setTimeout(function() {
         _alert('Contributions saved', 'success', 1000);
         setTimeout(function() {
-          if (network === 'rinkeby') {
-            window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
-          } else {
-            window.location.href = `${window.location.origin}/grants`;
-          }
+          window.location.href = `${window.location.origin}/grants`;
         }, 500);
       }, timeout_amount);
     },
