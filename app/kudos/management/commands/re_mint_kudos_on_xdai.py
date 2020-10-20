@@ -81,6 +81,17 @@ class Command(BaseCommand):
                         )
                     print(f'*/* {tr.pk}')
                     mint_token_request(tr.pk, send_notif_email=False)
+                    
+                    # post - minting hooks; like transfering over info or deleting townsquare posts
                     delete_town_square_posts()
+                    if token.on_xdai:
+                        ku = token.on_xdai
+                        if ku.on_mainnet:
+                            if ku.on_mainnet.preview_img_mode == 'svg':
+                                if ku.preview_img_mode == 'png':
+                                    ku.preview_img_mode = ku.on_mainnet.preview_img_mode
+                                    print(ku.id)
+                                    ku.save()
+
                 except Exception as e:
                     print(e)

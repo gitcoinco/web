@@ -57,14 +57,14 @@ def mint_token_request(self, token_req_id, send_notif_email=True, retry=False):
 
 
 @app.shared_task(bind=True, max_retries=10, rate_limit="60/h")
-def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_gas_price=None, send_notif_email=False, retry=False):
+def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_gas_price=None, send_notif_email=False, override_lock_timeout=LOCK_TIMEOUT, retry=False):
     """
     :param self:
     :param kt_id:
     :return:
     """
     try:
-        with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
+        with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=override_lock_timeout):
             multiplier = 1
             # high gas prices, 5 hour gas limit - DL
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
