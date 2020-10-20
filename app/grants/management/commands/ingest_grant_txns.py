@@ -46,7 +46,7 @@ txid = "0xdc85d562b0c0caf25e03e692d0ccc696ebcf5046cb36d12d4fdf88ceb7cac0e1" # L1
 token = "USDT" # token contributions were made in
 to_address = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF" # recipient of the L1 transaction
 from_address = "0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD" # from address for hash given by txid 
-do_write = True # Use True to save contributions to Databse
+do_write = True # Use True to save contributions to Database
 created_on = datetime.datetime(2020, 10, 5, 17, 22, tzinfo=pytz.UTC) # UTC timestamp oftxid 
 gitcoin_zksync_addr = "0x5b4e39e6649a9c0afd39f068f7076f0ea3125e8a" # user's Gitcoin zkSync address, only used for zkSync cases
 
