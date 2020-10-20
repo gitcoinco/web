@@ -82,20 +82,32 @@ class CartData {
     }
 
     grantData.uuid = get_UUID();
-
-    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
-      if (!grantData.grant_donation_amount) {
-        grantData.grant_donation_amount = 5;
-      }
-      if (!grantData.grant_donation_currency) {
-        grantData.grant_donation_currency = 'DAI';
-      }
-    } else {
+    console.log(grantData.tenants, grantData.tenants.includes('ZCASH'))
+    if ( grantData.tenants.includes('ZCASH')) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 0.01;
       }
-      grantData.grant_donation_currency = 'ETH';
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ZEC';
+      }
+
+    } else {
+      if (acceptsAllTokens || 'DAI' == accptedTokenName) {
+        if (!grantData.grant_donation_amount) {
+          grantData.grant_donation_amount = 5;
+        }
+        if (!grantData.grant_donation_currency) {
+          grantData.grant_donation_currency = 'DAI';
+        }
+      } else {
+        if (!grantData.grant_donation_amount) {
+          grantData.grant_donation_amount = 0.01;
+        }
+        grantData.grant_donation_currency = 'ETH';
+      }
+
     }
+
 
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 0;
