@@ -23,11 +23,12 @@ from marketing.mails import pending_contribution
 
 
 class Command(BaseCommand):
-
     help = 'Send reminder for pending grant contributions- This is a scenario where funds were deposited into their Gitcoin zkSync account, but the user didnt keep the page open to finish chekout. So funds are "stuck" there until the revisit the cart and complete checkout'
 
     def handle(self, *args, **options):
         contributions = Contribution.objects.filter(
-            validator_comment__contains="User may not be aware so send them email reminders")
+            validator_comment__contains="User may not be aware so send them email reminders").distinct('subscription__contributor_profile')
+
         for contribution in contributions:
+            print(f'Sending cart reminder to {contribution.subscription.contributor_profile.handle}')
             pending_contribution(contribution)

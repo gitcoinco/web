@@ -4,8 +4,13 @@
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
 const BN = Web3.utils.BN;
+let appCart;
 
-needWalletConnection();
+window.addEventListener('dataWalletReady', function(e) {
+  appCart.$refs['cart'].network = networkName;
+}, false);
+
+// needWalletConnection();
 
 // Constants
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -32,7 +37,10 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       // Checkout, shared
+      chainId: '',
+      network: 'mainnet',
       tabSelected: 'ETH',
+      tabIndex: null,
       currentTokens: [], // list of all available tokens
       adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
       tokenList: undefined, // array of all tokens for selected network
@@ -101,12 +109,60 @@ Vue.component('grants-cart', {
   computed: {
     grantsByTenant() {
       let vm = this;
-      console.log(vm.tabSelected)
-      return vm.grantData.filter((item)=>{
-        console.log(item)
+      let result;
+
+      result =  vm.grantData.filter((item)=>{
         return item.tenants.includes(vm.tabSelected)
       });
 
+      return result;
+
+    },
+    grantsCountByTenant() {
+      let vm = this;
+      let tenants = ['ETH', 'ZCASH']
+
+      var grantsTentantsCount = vm.grantData.reduce(function (result, grant) {
+        var currentCount = result[grant.tenants] || 0;
+        result[grant.tenants] = currentCount + 1;
+        return result;
+      }, {});
+
+      return grantsTentantsCount;
+
+
+
+
+    },
+    sortByPriority: function() {
+      console.log(this.currentTokens)
+      return this.currentTokens.sort(function(a, b) {
+        return b.priority - a.priority;
+      });
+    },
+    filterByNetwork: function() {
+      const vm = this;
+
+      if (vm.network == '') {
+        return vm.sortByPriority;
+      }
+      return vm.sortByPriority.filter((item)=>{
+        return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
+      });
+    },
+    filterByChainId: function() {
+      const vm = this;
+      let result;
+
+      if (vm.chainId == '') {
+        result = vm.filterByNetwork;
+      } else {
+        result = vm.filterByNetwork.filter((item) => {
+          console.log(item.chainId, vm.chainId)
+          return String(item.chainId) === vm.chainId;
+        });
+      }
+      return result;
     },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
@@ -473,17 +529,84 @@ Vue.component('grants-cart', {
   },
 
   methods: {
-    tabChange: function(input) {
+    tabChange: async function(input) {
       let vm = this;
+      console.log(input)
       switch (input) {
         default:
         case 0:
-          vm.tabSelected = 'ETH'
+          vm.tabSelected = 'ETH';
+          vm.chainId = '1';
+          if (!vm.grantsCountByTenant.ETH) {
+            return vm.tabIndex = 1
+          }
+          if (!provider) {
+            await onConnect();
+          }
           break;
         case 1:
-          vm.tabSelected = 'ZCASH'
+          vm.tabSelected = 'ZCASH';
+          vm.chainId = '123123';
           break;
       }
+    },
+    confirmZcashPayment: function(e, grant) {
+      let vm = this;
+      e.preventDefault();
+      console.log(e)
+
+      // this.$refs.form.reportValidity()
+      if(!e.target.reportValidity()) {
+        return;
+      }
+
+      let data = {'contributions': [{
+
+        'grant_id': grant.grant_id,
+        'contributor_address': grant.contributor_address,
+        'tx_id': grant.payoutTxId,
+        'token_symbol': grant.grant_donation_currency,
+        'tenant': this.tabSelected,
+        'comment': grant.grant_comments,
+        'amount_per_period': grant.grant_donation_num_rounds
+
+      }]}
+      console.log(data)
+
+      vm.$set(grant, 'error', null);
+      const postContribution = fetchData('v1/api/contribute', 'POST', JSON.stringify(data));
+
+      vm.errorMessage = '';
+
+      $.when(postContribution).then(response => {
+        // set the cooldown time to one minute
+        console.log(response)
+        if (response.success_contributions) {
+          console.log(grant.grant_id , response.success_contributions[0].grant_id)
+          if(grant.grant_id === response.success_contributions[0].grant_id ){
+            // grant.error= response.invalid_contributions[0].message;
+            vm.$set(grant, 'success', response.success_contributions[0].message);
+          }
+        }
+        if (response.invalid_contributions) {
+          console.log(grant.grant_id === response.invalid_contributions[0].grant_id)
+          if(grant.grant_id === response.invalid_contributions[0].grant_id ){
+            // grant.error= response.invalid_contributions[0].message;
+            vm.$set(grant, 'error', response.invalid_contributions[0].message);
+          }
+
+          // vm.grantData.filter((item)=>{
+          //   if(item.grant_id.includes(e.invalid_contributions[0].grant_id)) {
+          //     // return item.error = e.invalid_contributions[0].message
+          //     return
+          //   }
+          // });
+
+        }
+      }).catch((e) => {
+        vm.$set(grant, 'error', 'error submitting data, try again later');
+
+      });
     },
     // TODO: SMS related methos and state should be removed and refactored into the component that
     // should be shared between the cart and the Trust Bonus tab
@@ -1186,6 +1309,7 @@ Vue.component('grants-cart', {
     },
 
     valueToDai(amount, tokenSymbol, tokenPrices) {
+      console.log(amount, tokenSymbol, tokenPrices)
       const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
       const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
 
@@ -1541,20 +1665,26 @@ Vue.component('grants-cart', {
           throw new Error('Unknown account');
         }
 
+        // Get the first token listed and use that to pay for signing key transaction
+        const syncWalletState = await syncWallet.getAccountState();
+        const tokensInWallet = Object.keys(syncWalletState.committed.balances);
+        const feeToken = tokensInWallet[0];
+
         // Determine how to set key based on wallet type
         let changePubkey;
 
         if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
           console.log('  Using ECDSA to set signing key');
-          changePubkey = await syncWallet.setSigningKey();
+          changePubkey = await syncWallet.setSigningKey({ feeToken });
         } else {
           console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
           const signingKeyTx = await syncWallet.onchainAuthSigningKey();
 
-          changePubkey = await syncWallet.setSigningKey('committed', true);
+          changePubkey = await syncWallet.setSigningKey({ feeToken, onchainAuth: true });
         }
 
         // Wait until the tx is committed
+        console.log('Signing key set, waiting for transaction receipt');
         await changePubkey.awaitReceipt();
         console.log('✅ specified sync wallet is ready to use on zkSync');
       } else {
@@ -1624,14 +1754,20 @@ Vue.component('grants-cart', {
 
       // Dispatch donations ------------------------------------------------------------------------
       for (let i = 0; i < donationSignatures.length; i += 1) {
-        this.currentTxNumber += 1;
-        console.log(`  Sending transfer ${i + 1} of ${donationSignatures.length}...`);
-        const transfer = await zksync.wallet.submitSignedTransaction(donationSignatures[i], this.syncProvider);
+        try {
+          this.currentTxNumber += 1;
+          console.log(`  Sending transfer ${i + 1} of ${donationSignatures.length}...`);
+          const transfer = await zksync.wallet.submitSignedTransaction(donationSignatures[i], this.syncProvider);
 
-        console.log(`  Transfer ${i + 1} sent`, transfer);
-        const receipt = await transfer.awaitReceipt();
+          console.log(`  Transfer ${i + 1} sent`, transfer);
+          const receipt = await transfer.awaitReceipt();
 
-        console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
+          console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
+        } catch (e) {
+          // Prevent failed transfer from blocking the rest
+          console.error(e);
+          continue;
+        }
       }
 
       // Transfer any remaining tokens to user's main wallet ---------------------------------------
@@ -1694,6 +1830,7 @@ Vue.component('grants-cart', {
           // Everything worked successfully, so let's not throw an error here because the user's
           // donations did succeed. Instead, there is just small excess funds left in the account
           console.error(e);
+          continue;
         }
       }
 
@@ -1994,6 +2131,48 @@ Vue.component('grants-cart', {
       } catch (e) {
         this.zkSyncCheckoutStep1Status = 'not-started';
         this.handleError(e);
+      }
+    },
+
+    /**
+     * @notice Step 1: Initialize app state and login to zkSync via Gitcoin, then send cart txs.
+     * This is a special flow to handle incomplete checkouts.
+     */
+    async zkSyncLoginGitcoinFlowRecovery() {
+      try {
+        this.zkSyncCheckoutStep1Status = 'pending';
+
+        // Set contract to deposit through based on number of tokens used. We do this to save
+        // gas costs by avoiding the overhead of the batch deposit contract if the user is only
+        // donating one token
+        const numberOfCurrencies = Object.keys(this.donationsToGrants).length;
+
+        this.depositContractToUse = numberOfCurrencies === 1
+          ? this.depositContractToUse = this.zkSyncContractAddress
+          : this.depositContractToUse = batchZkSyncDepositContractAddress;
+
+        // Prompt for user's signature to login to zkSync
+        this.gitcoinSyncWallet = await this.zkSyncLoginGitcoin();
+
+        // Manually set status steps
+        this.zkSyncCheckoutStep1Status = 'complete';
+        this.zkSyncCheckoutStep2Status = 'complete';
+        this.zkSyncCheckoutStep3Status = 'pending';
+        this.zkSyncCheckoutFlowStep = 2; // Steps 0 and 1 are skipped here
+
+        // Do the transfers
+        await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
+        let nonce = await this.getGitcoinSyncWalletNonce();
+        const donationSignatures = await this.generateTransferSignatures(nonce);
+
+        await this.dispatchSignedTransfers(donationSignatures);
+        console.log('✅✅✅ Checkout complete!');
+
+        // Final processing
+        await this.setInterruptStatus(null, this.userAddress);
+        await this.finalizeCheckout();
+      } catch (e) {
+        this.zkSyncCheckoutStep1Status = 'not-started';
       }
     },
 
@@ -2423,24 +2602,35 @@ Vue.component('grants-cart', {
      * @notice Final shared steps between Flow A and Flow B
      */
     async finishZkSyncTransfersAllFlows() {
-      // Unlock deterministic wallet's zkSync account
-      await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
+      try {
+        // Unlock deterministic wallet's zkSync account
+        await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
 
-      // Fetch the expected nonce from the network. We cannot assume it's zero because this may
-      // not be the user's first checkout
-      let nonce = await this.getGitcoinSyncWalletNonce();
+        // Fetch the expected nonce from the network. We cannot assume it's zero because this may
+        // not be the user's first checkout
+        let nonce = await this.getGitcoinSyncWalletNonce();
 
+        // Generate signatures
+        const donationSignatures = await this.generateTransferSignatures(nonce);
 
-      // Generate signatures
-      const donationSignatures = await this.generateTransferSignatures(nonce);
+        // Dispatch the transfers
+        await this.dispatchSignedTransfers(donationSignatures);
+        console.log('✅✅✅ Checkout complete!');
 
-      // Dispatch the transfers
-      await this.dispatchSignedTransfers(donationSignatures);
-      console.log('✅✅✅ Checkout complete!');
+        // Final processing
+        await this.setInterruptStatus(null, this.userAddress);
+        await this.finalizeCheckout();
+      } catch (e) {
+        this.handleError(e);
+      }
+    },
 
-      // Final processing
-      await this.setInterruptStatus(null, this.userAddress);
-      await this.finalizeCheckout();
+    /**
+     * @notice Transfer funds from Gitcoin zkSync wallet to the user's regular zkSync wallet
+     */
+    async returnZkSyncFunds() {
+      this.zkSyncCheckoutStep3Status = 'pending';
+      await this.finishZkSyncTransfersAllFlows();
     },
 
 
@@ -2488,6 +2678,13 @@ Vue.component('grants-cart', {
   },
 
   watch: {
+    chainId: async function(val) {
+      // if (!provider && val === '1') {
+      //   await onConnect();
+      // }
+
+
+    },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
       async handler() {
@@ -2590,6 +2787,37 @@ Vue.component('grants-cart', {
     });
     CartData.setCart(grantData);
     this.grantData = grantData;
+
+    // Overwrite grantData if zksync-recovery page
+    if (window.location.pathname.includes('zksync-recovery')) {
+      window.addEventListener('dataWalletReady', async(e) => {
+        try {
+          // Connect wallet and setup zkSync
+          await needWalletConnection();
+          this.selectedNetwork = document.web3network;
+          this.userAddress = (await web3.eth.getAccounts())[0];
+          await this.setupZkSync();
+
+          // Get list of grants with the expected validator comment
+          const response = await fetch('get-interrupted-contributions');
+          const incompleteContributions = await response.json();
+
+          // Convert into localStorage format
+          this.grantData = incompleteContributions.contributions.map((grant) => {
+            this.gitcoinFactorRaw = 100 * grant.amount_per_period_to_gitcoin / grant.amount_per_period;
+            return {
+              grant_admin_address: grant.admin_address,
+              grant_clr_prediction_curve: [],
+              grant_donation_amount: grant.amount_per_period,
+              grant_donation_currency: grant.token_symbol
+            };
+          });
+
+        } catch (e) {
+          this.handleError(e);
+        }
+      }, false);
+    }
 
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
@@ -2721,7 +2949,7 @@ $(document).ready(function() {
 
 if (document.getElementById('gc-grants-cart')) {
 
-  const app = new Vue({
+  appCart = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-grants-cart',
     data: {
@@ -2731,6 +2959,6 @@ if (document.getElementById('gc-grants-cart')) {
   });
 
   if (document.contxt.github_handle && !document.verified && localStorage.getItem('dismiss-sms-validation') !== 'true') {
-    app.$refs.cart.showSMSValidationModal();
+    appCart.$refs.cart.showSMSValidationModal();
   }
 }

@@ -31,6 +31,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import Paginator
 from django.db import connection
@@ -58,7 +59,7 @@ from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
@@ -233,6 +234,159 @@ def lazy_round_number(n):
         return f"{round(n/1000, 1)}k"
     return n
 
+# helper functions - start
+def helper_grants_round_start_end_date(request, round_id):
+    start = timezone.now()
+    end = timezone.now()
+    if round_id == 7:
+        # TODO: fix the round_number field in grantclr being overloaded
+        start = timezone.datetime(2020, 9, 15)
+        end = timezone.datetime(2020, 10, 3)
+    else:
+        try:
+            gclr = GrantCLR.objects.filter(round_num=round_id).first()
+            start = gclr.start_date
+            end = gclr.end_date
+        except Exception as e:
+            print(e)
+    return start, end
+
+def helper_contributions_to_earnings(_contributions):
+    from dashboard.models import Earning #avoid circulr import
+    return Earning.objects.filter(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id__in=_contributions,
+        )
+
+def helper_earnings_to_addr_list(earnings):
+    items = earnings.values_list('history__payload__from', flat=True)
+    return list(items)
+
+def helper_grants_output(request, meta_data, earnings):
+
+    # gather_stats
+    tx_count_start = earnings.count()
+    addr_count_start = len(set([ele for ele in helper_earnings_to_addr_list(earnings)]))
+
+    # privacy first
+    earnings = earnings.exclude(from_profile__hide_wallet_address_anonymized=True)
+    
+    # gather metadata, before & aftter filtering
+    addresses = list(set([ele for ele in helper_earnings_to_addr_list(earnings) if ele]))
+    addr_count_end = len(set(addresses))
+
+    response = {
+        'meta': {
+            'generated_at': request.build_absolute_uri(),
+            'generated_on': timezone.now().strftime("%Y-%m-%d"),
+            'stat':{
+                'transactions_found': tx_count_start,
+                'unique_addresses_found': addr_count_start,
+                'unique_addresses_found_after_privacy_preferences': addr_count_end,
+                'unique_addresses_removed_per_privacy_preferences': addr_count_start - addr_count_end,
+            },
+            'meta': meta_data,
+        },
+        'addresses': addresses
+    }
+    return JsonResponse(response, safe=False)
+# helper functions - end
+
+grants_data_release_date = timezone.datetime(2020, 10, 22)
+
+@login_required
+def contribution_addr_from_grant_as_json(request, grant_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+       'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id,
+        created_on__gt=start, created_on__lt=end
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+        'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+@login_required
+def contribution_addr_from_round_as_json(request, round_id):
+
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', created_on__gt=start, created_on__lt=end
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+def contribution_addr_from_all_as_json(request):
+
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet'
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
 def grants_addr_as_json(request):
     _grants = Grant.objects.filter(
         network='mainnet', hidden=False
@@ -343,6 +497,24 @@ def clr_grants(request, round_num):
         return redirect('/grants')
 
     return grants_by_grant_clr(request, clr_round)
+
+@login_required
+def get_interrupted_contributions(request):
+    all_contributions = Contribution.objects.filter(profile_for_clr=request.user.profile)
+    user_contributions = []
+
+    for contribution in all_contributions:
+        validator_comment = contribution.validator_comment
+        is_zksync = "zkSync" in validator_comment
+        tx_not_found = "Transaction not found, unknown reason" in validator_comment
+        deposit_no_transfer = "Found deposit but no transfer" in validator_comment
+        if is_zksync and (tx_not_found or deposit_no_transfer):
+            user_contributions.append(contribution.normalized_data)
+
+    return JsonResponse({
+        'success': True,
+        'contributions': user_contributions
+    })
 
 
 def get_grants(request):
@@ -465,7 +637,10 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
     if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-        _grants = _grants.filter(is_clr_active=True)
+        grant_type_obj = GrantType.objects.filter(name=grant_type).first()
+        is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
+        if is_there_a_clr_round_active_for_this_grant_type_now:
+            _grants = _grants.filter(is_clr_active=True)
 
     if omit_my_grants and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
@@ -1173,6 +1348,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_active': is_clr_active,
         'round_num': clr_round_num,
         'is_team_member': is_team_member,
+        'is_owner': grant.admin_profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,
@@ -1284,7 +1460,6 @@ def grant_new(request):
             response['message'] = 'error: title is a mandatory parameter'
             return JsonResponse(response)
 
-
         description = request.POST.get('description', None)
         if not description:
             response['message'] = 'error: description is a mandatory parameter'
@@ -1304,6 +1479,9 @@ def grant_new(request):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
+        project_pk = request.POST.get('project_pk', '')
+        if project_pk:
+            HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
@@ -1400,6 +1578,13 @@ def grant_new(request):
             'categories': grant_categories
         })
 
+    project = None
+    project_id = request.GET.get('project_id', None)
+    if project_id is not None:
+        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+        if request.user.profile in hackathon_project.profiles.all():
+            project = hackathon_project
+
     params = {
         'active': 'new_grant',
         'title': _('New Grant'),
@@ -1415,7 +1600,8 @@ def grant_new(request):
         # 'conf_time_spread': conf_time_spread(),
         # 'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': grant_types
+        'grant_types': grant_types,
+        'project_data': project
     }
     return TemplateResponse(request, 'grants/_new.html', params)
 
@@ -1800,6 +1986,18 @@ def grants_cart_view(request):
         return redirect('/login/github?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+def grants_zksync_recovery_view(request):
+    context = {
+        'title': 'Recover Funds',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    response = TemplateResponse(request, 'grants/zksync-recovery.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
@@ -2415,6 +2613,14 @@ def contribute_to_grants_v1(request):
             })
             continue
 
+        tx_id = contribution.get('tx_id', None)
+        if not tx_id:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: tx_id is mandatory param'
+            })
+            continue
+
         token_symbol = contribution.get('token_symbol', None)
         if not token_symbol:
             invalid_contributions.append({
@@ -2446,8 +2652,9 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        tx_id = contribution.get('tx_id', None)
-        comment = contribution.get('comment', None)
+        # tx_id = contribution.get('tx_id', None)
+        # contributor_address = contribution.get('contributor_address', None)
+        comment = contribution.get('comment', '')
         network = grant.network
         hide_wallet_address = contribution.get('hide_wallet_address', None)
 
@@ -2488,7 +2695,10 @@ def contribute_to_grants_v1(request):
                 profile.hide_wallet_address = hide_wallet_address
                 profile.save()
 
-            success_contributions.append(grant_id)
+            success_contributions.append({
+                'grant_id': grant_id,
+                'message': 'grant contributions recorded'
+            })
 
         except Exception as error:
             failed_contributions.append({
