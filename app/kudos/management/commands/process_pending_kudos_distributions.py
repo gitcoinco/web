@@ -49,17 +49,18 @@ class Command(BaseCommand):
         delay_if_gas_prices_gt_redeem = 300
         send_notif_email = True
         send_on_xdai = True
-
+        gitcoin_owner_addr = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+        
         counter_processed = 0
         counter_pulled = 0
         start_time = int(time.time())
 
-        kudos_transfers = KudosTransfer.objects.filter(txid='pending_celery').order_by(order_by)
+        kudos_transfers = KudosTransfer.objects.filter(txid='pending_celery', kudos_token_cloned_from__owner_address=gitcoin_owner_addr).order_by(order_by)
         for kt in kudos_transfers:
             counter_pulled += 1
             if counter_pulled < num_to_pull:
                 run_time = max(1, int(time.time()) - start_time)
-                avg_processing = round(run_time / counter_pulled, 1)
+                avg_processing = round(counter_pulled / run_time, 1)
                 print(f"({avg_processing}/s)")
                 print(f"PULL - {counter_pulled}/{num_to_pull} - {counter_processed}/{num_to_process} - {kt}")
                 counter_processed += 1
