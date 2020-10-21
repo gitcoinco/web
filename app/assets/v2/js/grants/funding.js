@@ -135,12 +135,7 @@ function sideCartRowForGrant(grant, index) {
             </select>
           </div>
         </div>
-        <div class="form-row">
-          <div class="col-2"></div>
-          <div class="col-auto font-smaller-3 pt-1 text-highlight-gc-blue" style="cursor:pointer;" data-id="${index}" id="apply-to-all">
-            Apply to all
-          </div>
-        </div>
+
       </div>
   `;
 
