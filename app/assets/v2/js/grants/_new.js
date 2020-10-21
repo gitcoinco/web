@@ -78,7 +78,7 @@ Vue.mixin({
         });
       });
     },
-    checkForm: async function(e) {
+    checkForm: function(e) {
       let vm = this;
 
       vm.submitted = true;
@@ -113,15 +113,18 @@ Vue.mixin({
       }
 
       if (Object.keys(vm.errors).length) {
-        return false;
+        return false; // there are errors the user must correct
       }
+      return true; // no errors, continue to create grant
     },
     submitForm: async function(event) {
       event.preventDefault();
       let vm = this;
       let form = vm.form;
 
-      vm.checkForm(event);
+      // Exit if form is not valid
+      if (!vm.checkForm(event))
+        return;
 
       const params = {
         'title': form.title,

@@ -248,6 +248,7 @@
 
               <div class="form-group">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Category</label>
+                <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
                 <v-select placeholder="Pick a category" :options="grant_types" label="label" v-model="form.grant_type" :reduce="state => state.name">
                   <template v-slot:option="option">
                     <span class="font-weight-semibold">[[ option.label ]]</span>
@@ -261,6 +262,7 @@
 
               <div v-if="form.grant_type" class="form-group">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
+                <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
                 <v-select placeholder="Select categories" :options="type_to_category_mapping()" label="name" v-model="form.grant_categories" :reduce="state => state.id" multiple>
                   <template v-slot:option="option">
                     <span class="font-weight-semibold">[[ option.name ]]</span>
