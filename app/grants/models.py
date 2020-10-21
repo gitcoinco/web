@@ -1137,7 +1137,7 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
-    def create_contribution(self, tx_id):
+    def create_contribution(self, tx_id, is_successful_contribution=True):
         from marketing.mails import successful_contribution
         from grants.tasks import update_grant_metadata
 
@@ -1173,7 +1173,8 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
-        successful_contribution(self.grant, self, contribution)
+        if is_successful_contribution:
+            successful_contribution(self.grant, self, contribution)
 
         update_grant_metadata.delay(self.pk)
         return contribution

@@ -1507,7 +1507,7 @@ def grant_new(request):
             'zcash_payout_address': zcash_payout_address,
             'token_symbol': token_symbol,
             'contract_version': contract_version,
-            'deploy_tx_id': request.POST.get('transaction_hash', ''),
+            'deploy_tx_id': request.POST.get('transaction_hash', None),
             'network': network,
             'twitter_handle_1': twitter_handle_1,
             'twitter_handle_2': twitter_handle_2,
@@ -2533,7 +2533,6 @@ def add_grant_from_collection(request, collection_id):
 
 @csrf_exempt
 @require_POST
-# @login_required
 def contribute_to_grants_v1(request):
 
     response = {
@@ -2613,13 +2612,13 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        tx_id = contribution.get('tx_id', None)
-        if not tx_id:
-            invalid_contributions.append({
-                'grant_id': grant_id,
-                'message': 'error: tx_id is mandatory param'
-            })
-            continue
+        # tx_id = contribution.get('tx_id', None)
+        # if not tx_id:
+        #     invalid_contributions.append({
+        #         'grant_id': grant_id,
+        #         'message': 'error: tx_id is mandatory param'
+        #     })
+        #     continue
 
         token_symbol = contribution.get('token_symbol', None)
         if not token_symbol:
@@ -2652,8 +2651,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        # tx_id = contribution.get('tx_id', None)
-        # contributor_address = contribution.get('contributor_address', None)
+        tx_id = contribution.get('tx_id', None)
         comment = contribution.get('comment', '')
         network = grant.network
         hide_wallet_address = contribution.get('hide_wallet_address', None)
@@ -2686,7 +2684,7 @@ def contribute_to_grants_v1(request):
             subscription.save()
 
             # step 3: create contribution + fire celery
-            contribution = subscription.create_contribution(tx_id)
+            contribution = subscription.create_contribution(tx_id, False)
             sync_payout(contribution)
 
 

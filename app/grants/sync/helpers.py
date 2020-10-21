@@ -11,13 +11,15 @@ def txn_already_used(txn, token_symbol):
 
     return Contribution.objects.filter(
         tx_id = txn,
-        subscription__token_symbol = token_symbol
+        subscription__token_symbol = token_symbol,
+        success=True,
+        tx_cleared=True
     ).exists()
 
 
 def record_contribution_activity(contribution):
     from dashboard.models import Activity
-    from marketing.mails import new_supporter, thank_you_for_supporting
+    from marketing.mails import new_supporter, thank_you_for_supporting, successful_contribution
     from grants.tasks import update_grant_metadata
 
     try:
@@ -53,6 +55,7 @@ def record_contribution_activity(contribution):
                 comment= subscription.comments
             )
 
+        successful_contribution(grant, subscription, contribution)
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
         update_grant_metadata.delay(grant.pk)
