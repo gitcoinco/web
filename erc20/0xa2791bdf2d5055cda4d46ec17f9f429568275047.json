@@ -1,6 +1,6 @@
 {
   "symbol": "NULS",
-  "address": "Contract Address",
+  "address": "0xa2791bdf2d5055cda4d46ec17f9f429568275047",
   "overview":{
         "en": "NULS is an open-source, enterprise-grade, adaptive blockchain platform",
         "zh": ""
@@ -11,9 +11,9 @@
   "state": "NORMAL",
   "published_on": "2017-09-27",
   "initial_price":{
-        "ETH":"0.00166666 ETH",
-        "USD":"0.7 USD",
-        "BTC":"0.00004137 BTC"
+        "ETH":"0.00086666 ETH",
+        "USD":"0.8 USD",
+        "BTC":"0.00002137 BTC"
   },
   "links": {
     "blog": "https://bbs.nuls.io/",
@@ -22,6 +22,7 @@
     "github": "https://github.com/nuls-io",
     "facebook": "https://www.facebook.com/nulscommunity/",
     "reddit": "https://www.reddit.com/r/nulsservice/",
+    "slack": "https://nuls.slack.com/",
     "medium": "https://medium.com/@nuls"
   }
 }
