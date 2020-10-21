@@ -40,7 +40,7 @@
     </div>
 
     <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-new-grant">
-      <form action="" @submit="checkForm">
+      <form action="" @submit="checkForm" v-cloak>
         <div class="container mt-3 mb-3 bg-white position-relative rounded col-lg-6 mx-auto">
           <div class="row p-4 p-md-5">
 
@@ -124,31 +124,27 @@
             <!-- Team -->
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
+              <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch"  :options="usersOptions" placeholder="Add your team" v-model="teamMembers" multiple>
+                <template slot="no-options">
+                  type to search Users..
+                </template>
 
-                <v-select id="team_members" label="text" @search="userSearch" :reduce="user => user.id" :options="usersOptions" placeholder="Add your team" v-model="form.team_members" multiple>
-                  <template slot="no-options">
-                    type to search Users..
-                  </template>
-
-                  <template slot="option" slot-scope="option">
-                    <div class="d-flex align-items-baseline">
-                      <div class="mr-2">
-                        <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
-                      </div>
-                      <div>[[ option.text ]]</div>
+                <template slot="option" slot-scope="option">
+                  <div class="d-flex align-items-baseline">
+                    <div class="mr-2">
+                      <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
                     </div>
-                  </template>
+                    <div>[[ option.text ]]</div>
+                  </div>
+                </template>
 
-                  <template slot="selected-option" slot-scope="option">
-                    <div class="d-flex align-items-baseline">
-                      <div class="mr-2">
-                        <img class="rounded-circle" :src="option.avatar_url" width="20" height="20"/>
-                      </div>
-                      <div>[[ option.text ]]</div>
-                    </div>
-                  </template>
-                </v-select>
-
+                <template slot="selected-option" slot-scope="option">
+                  <div class="d-flex align-items-center">
+                    <img class="rounded-circle mr-2" :src="option.avatar_url" width="20" height="20"/>
+                    <div>[[ option.text ]]</div>
+                  </div>
+                </template>
+              </v-select>
             </div>
 
             <!-- Project twitter -->
@@ -282,7 +278,7 @@
         <div class="container mt-5">
           <div class="row">
             <div class="col-12 text-center">
-              <button class="btn btn-gc-blue btn-lg mb-3 px-5 btn-lg-padding" type="submit" @click="submitForm($event)">Create Grant</button>
+              <button class="btn btn-gc-blue btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="submitForm($event)">Create Grant</button>
             </div>
             <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
               Please verify forms errors and try again

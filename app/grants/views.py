@@ -270,7 +270,7 @@ def helper_grants_output(request, meta_data, earnings):
 
     # privacy first
     earnings = earnings.exclude(from_profile__hide_wallet_address_anonymized=True)
-    
+
     # gather metadata, before & aftter filtering
     addresses = list(set([ele for ele in helper_earnings_to_addr_list(earnings) if ele]))
     addr_count_end = len(set(addresses))
@@ -1507,7 +1507,7 @@ def grant_new(request):
             'zcash_payout_address': zcash_payout_address,
             'token_symbol': token_symbol,
             'contract_version': contract_version,
-            'deploy_tx_id': request.POST.get('transaction_hash', None),
+            'deploy_tx_id': request.POST.get('transaction_hash', ''),
             'network': network,
             'twitter_handle_1': twitter_handle_1,
             'twitter_handle_2': twitter_handle_2,

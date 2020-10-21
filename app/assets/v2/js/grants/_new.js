@@ -65,7 +65,7 @@ Vue.mixin({
           headers: myHeaders
         }).then(res => {
           res.json().then(json => {
-            vm.usersOptions = json;
+            vm.$set(vm, 'usersOptions',json);
             if (selected) {
               // TODO: BUG -> Make append
               vm.$set(vm.form, 'team_members', vm.usersOptions[0].text);
@@ -115,6 +115,7 @@ Vue.mixin({
       if (Object.keys(vm.errors).length) {
         return false; // there are errors the user must correct
       }
+      vm.submitted = false;
       return true; // no errors, continue to create grant
     },
     submitForm: async function(event) {
@@ -153,10 +154,13 @@ Vue.mixin({
       };
 
       console.log(params);
+      vm.submitted = true;
       vm.submitGrant(params);
 
     },
     submitGrant(data) {
+      let vm = this;
+
       if (typeof ga !== 'undefined') {
         ga('send', 'event', 'Create Grant', 'click', 'Grant Creator');
       }
@@ -178,11 +182,13 @@ Vue.mixin({
           if (response.status == 200) {
             window.location = response.url;
           } else {
+            vm.submitted = false;
             _alert('Unable to create grant. Please try again', 'error');
             console.error(`error: grant creation failed with status: ${response.status} and message: ${response.message}`);
           }
         },
         error: err => {
+          vm.submitted = false;
           _alert('Unable to create grant. Please try again', 'error');
           console.error(`error: grant creation failed with msg ${err}`);
         }
@@ -197,6 +203,20 @@ Vue.mixin({
     }
   },
   watch: {
+    deep: true,
+    teamMembers: {
+      handler(newVal, oldVal) {
+        let team_members_id;
+
+        team_members_id = newVal.reduce((oldItem, newItem)=> {
+           oldItem.push(newItem.id);
+           return oldItem;
+        }, [])
+        return this.$set(this.form, 'team_members', team_members_id);
+
+      }
+
+    },
     form: {
       deep: true,
       handler(newVal, oldVal) {
@@ -215,7 +235,7 @@ Vue.mixin({
           _alert(`Grant Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
         } else {
           let reader = new FileReader();
-  
+
           reader.onload = function(e) {
             vm.logoPreview = e.target.result;
             $('#preview').css('width', '100%');
@@ -245,6 +265,8 @@ if (document.getElementById('gc-new-grant')) {
         network: 'mainnet',
         logo: null,
         logoPreview: null,
+        teamMembers: [],
+        submitted: false,
         errors: {},
         form: {
           title: '',
