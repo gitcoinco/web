@@ -571,8 +571,8 @@ Vue.component('grants-cart', {
         'amount_per_period': grant.grant_donation_num_rounds
 
       }]}
-      console.log(data)
 
+      vm.$set(grant, 'loading', true);
       vm.$set(grant, 'error', null);
       const postContribution = fetchData('v1/api/contribute', 'POST', JSON.stringify(data));
 
@@ -580,18 +580,16 @@ Vue.component('grants-cart', {
 
       $.when(postContribution).then(response => {
         // set the cooldown time to one minute
-        console.log(response)
-        if (response.success_contributions) {
-          console.log(grant.grant_id , response.success_contributions[0].grant_id)
+        if (response.success_contributions.length) {
           if(grant.grant_id === response.success_contributions[0].grant_id ){
             // grant.error= response.invalid_contributions[0].message;
             vm.$set(grant, 'success', response.success_contributions[0].message);
           }
         }
-        if (response.invalid_contributions) {
-          console.log(grant.grant_id === response.invalid_contributions[0].grant_id)
+        if (response.invalid_contributions.length) {
           if(grant.grant_id === response.invalid_contributions[0].grant_id ){
             // grant.error= response.invalid_contributions[0].message;
+            vm.$set(grant, 'loading', false);
             vm.$set(grant, 'error', response.invalid_contributions[0].message);
           }
 
@@ -605,7 +603,7 @@ Vue.component('grants-cart', {
         }
       }).catch((e) => {
         vm.$set(grant, 'error', 'error submitting data, try again later');
-
+        vm.$set(grant, 'loading', false);
       });
     },
     // TODO: SMS related methos and state should be removed and refactored into the component that
