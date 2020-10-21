@@ -43,16 +43,11 @@
    {% if user.is_authenticated %} 
     <div id="nav-user" class="particleAttract" >
      
-      {% comment "ZW: standard gitcoin navbar way to call user image. not sure why this doesn't work"  %}
-      <a href="/profile/" id="_profile" class="nav_avatar d-none d-md-block"
-      data-gtm="profile" style="background-image: url('../../dynamic/avatar/{{user.username}}')">
-      </a>
-      {% endcomment %}
-
       <div>
           <img src="/dynamic/avatar/{{user.username}}" >
           <span>{{user.username}}</span>
       </div>
+
     </div>
     
     <div id="nav-wallet" class="">
