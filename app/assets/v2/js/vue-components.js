@@ -106,15 +106,21 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength', 'sorter' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
-
-    $(vm.$el).select2({
+    let select2Options = {
       data: vm.options,
       placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
-      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1
+    };
+
+    if (vm.sorter) {
+      select2Options['sorter'] = vm.sorter;
+    }
+
+    $(vm.$el).select2(select2Options)
       .val(vm.value)
       .trigger('change')
       .on('change', function() {
@@ -624,7 +630,7 @@ Vue.component('project-card', {
     }
   },
   template: `<div class="card card-user shadow-sm border-0">
-    <div class="card card-project">     
+    <div class="card card-project">
       <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
       <img v-if="project.grant_obj" class="position-absolute" style="left: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
       <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />

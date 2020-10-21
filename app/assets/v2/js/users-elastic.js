@@ -5,6 +5,8 @@ let usersHasNext = false;
 let numUsers = '';
 let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_id : '';
 
+const EventBus = new Vue();
+
 Vue.mixin({
   methods: {
     messageUser: function(handle) {
@@ -219,45 +221,84 @@ Vue.mixin({
         });
       }
     },
-    extractURLFilters: function(serverFilters) {
-      let params = getAllUrlParams();
-      let vm = this;
 
+    extractURLFilters: function(serverFilters) {
+      let vm = this;
+      let params = getAllUrlParams();
       let columns = serverFilters[vm.header.index]['mappings'][vm.header.type]['properties'];
 
-      if (Object.values(params).length > 0) {
-        // eslint-disable-next-line guard-for-in
-        for (let prop in params) {
-          let meta = columns[prop];
+      if (params.body && !vm.filtersLoaded) {
+        let decodedBody = decodeURIComponent(params.body);
 
-          if (!meta)
-            continue;
 
-          if (typeof params[prop] !== 'object') {
-            params[prop] = [params[prop]];
-          }
-          columns[`${prop}_exact`]['selected'] = true;
-          columns[`${prop}_exact`]['selectedValues'] = [];
-          // eslint-disable-next-line guard-for-in
-          for (let key in params[prop]) {
+        let newBody = JSON.parse(decodedBody);
 
-            let value = params[prop][key];
+        this.setBody(newBody);
+        this.fetch(this);
 
-            if (!value)
-              continue;
-            columns[`${prop}_exact`]['selectedValues'].push(value);
+        if (Object.values(newBody).length > 0) {
+          try {
+            // eslint-disable-next-line guard-for-in
+            let query = newBody['query'];
+            let activeFilters = [];
 
-            let _instruction = {
-              fun: 'orFilter',
-              args: [ 'term', `${prop}_exact`, value ]
-            };
+            if (query.hasOwnProperty('bool') && query['bool'].hasOwnProperty('filter') && query['bool']['filter'].hasOwnProperty('bool') && query['bool']['filter']['bool'].hasOwnProperty('should')) {
+              query = query['bool']['filter']['bool']['should'];
+              for (let x in query) {
+                if (!query[x])
+                  continue;
+                let terms = query[x]['term'];
 
-            this.addInstruction(_instruction);
+                if (!terms) {
+                  continue;
+                }
+                // eslint-disable-next-line guard-for-in
+                for (let prop in terms) {
+                  let term = terms[prop];
+
+                  let meta = columns[prop];
+
+                  if (!meta)
+                    continue;
+                  let propKey = prop.replace('_exact', '');
+
+                  if (typeof activeFilters[propKey] !== 'object') {
+                    activeFilters[propKey] = [];
+                  }
+                  activeFilters[propKey].push(term);
+                  if (columns[propKey]['selected'] !== true) {
+                    columns[propKey]['selected'] = true;
+                    columns[propKey]['selectedValues'] = [];
+                  }
+
+
+                  let value = Object.values(activeFilters[propKey])[0];
+
+                  if (!value)
+                    continue;
+                  columns[propKey]['selectedValues'].push(value);
+
+                  let _instruction = {
+                    fun: 'orFilter',
+                    args: [ 'term', propKey, value ]
+                  };
+
+                  this.localInstructions.push(_instruction);
+                  this.addInstruction(_instruction);
+                }
+              }
+              vm.params = activeFilters;
+            }
+
+
+          } catch (e) {
+            console.log(e);
           }
         }
-        vm.params = params;
+
       }
       vm.esColumns = columns;
+
       vm.filterLoaded = true;
     },
     joinTribe: function(user, event) {
@@ -307,6 +348,9 @@ if (document.getElementById('gc-users-elastic')) {
       };
     },
     methods: {
+      reset: function() {
+        $(this.$el).select2().val(null).trigger('change');
+      },
       formatMapping: function(item) {
         console.log(item);
         return item.name;
@@ -314,6 +358,11 @@ if (document.getElementById('gc-users-elastic')) {
       formatMappingSelection: function(filter) {
         return '';
       }
+    },
+    created() {
+      EventBus.$on('reset', () => {
+        this.s2.val([]).trigger('change');
+      });
     },
     mounted() {
       let count = 0;
@@ -331,7 +380,7 @@ if (document.getElementById('gc-users-elastic')) {
         obj.text = newKey;
         obj.key = key;
 
-        if (obj.selected) {
+        if (obj.selected && obj.key !== 'keywords') {
           console.log(`${obj.text} is selected`);
           vm.selectedFilters.push(obj.id);
         }
@@ -341,17 +390,17 @@ if (document.getElementById('gc-users-elastic')) {
         return obj;
       });
 
-
-      const s2 = $(vm.$el).select2({
-        data: data,
-        multiple: true,
-        allowClear: true,
-        placeholder: 'Search for another filter to add',
-        minimumInputLength: 1,
-        escapeMarkup: function(markup) {
-          return markup;
-        }
-      })
+      vm.s2 = $(vm.$el)
+        .select2({
+          data: data,
+          multiple: true,
+          allowClear: true,
+          placeholder: 'Search for another filter to add',
+          minimumInputLength: 1,
+          escapeMarkup: function(markup) {
+            return markup;
+          }
+        })
         .on('change', function() {
           let val = $(vm.$el).val();
           let changeData = $.map(val, function(filter) {
@@ -359,10 +408,10 @@ if (document.getElementById('gc-users-elastic')) {
           });
 
           vm.$emit('input', changeData);
+          EventBus.$emit('query:changed');
         });
 
-      s2.val(vm.selectedFilters);
-      s2.trigger('change');
+      vm.s2.val(vm.selectedFilters).trigger('change');
       // fix for wrong position on select open
       var select2Instance = $(vm.$el).data('select2');
 
@@ -380,6 +429,7 @@ if (document.getElementById('gc-users-elastic')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-users-elastic',
     data: {
+      localInstructions: [],
       csrf: document.csrf,
       esColumns: [],
       filterLoaded: false,
@@ -414,6 +464,13 @@ if (document.getElementById('gc-users-elastic')) {
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
     methods: {
+      filterSorter: function(results) {
+        return results;
+      },
+      select2InputEventListener(cb, args) {
+        cb(args);
+        this.serializeBodytoShare();
+      },
       resetCallback: function() {
         this.checkedItems = [];
       },
@@ -422,6 +479,18 @@ if (document.getElementById('gc-users-elastic')) {
       },
       autoCompleteChange: function(filters) {
         this.filters = filters;
+      },
+      serializeBodytoShare: function() {
+        const currBody = this.body;
+
+        const jsonBody = JSON.stringify(currBody);
+
+        const params = `body=${encodeURIComponent(jsonBody)}`;
+        const shareURL = `${window.location.origin}${window.location.pathname}?${params}`;
+
+        window.history.pushState('', '', shareURL);
+
+        console.log(shareURL);
       },
       outputToCSV: function() {
 
@@ -439,12 +508,13 @@ if (document.getElementById('gc-users-elastic')) {
 
         $.when(vm.header.client.indices.getMapping())
           .then(response => {
-
             this.extractURLFilters(response);
-            this.mount();
             this.fetch(this);
           });
       }
+    },
+    updated() {
+      this.serializeBodytoShare();
     },
     mounted() {
       this.fetchMappings();
@@ -453,6 +523,12 @@ if (document.getElementById('gc-users-elastic')) {
       this.setHost(document.contxt.search_url);
       this.setIndex('haystack');
       this.setType('modelresult');
+
+      this.bus.$on('reset', () => {
+        EventBus.$emit('reset');
+        this.removeInstructions();
+        this.fetch(this);
+      });
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
