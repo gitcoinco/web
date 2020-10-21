@@ -290,6 +290,7 @@ class Bounty(SuperModel):
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
         ('polkadot_ext', 'Polkadot Ext'),
+        ('binance_ext', 'Binance Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1399,6 +1400,7 @@ class BountyFulfillment(SuperModel):
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
         ('polkadot_ext', 'polkadot_ext'),
+        ('binance_ext', 'binance_ext'),
         ('manual', 'manual')
     ]
 
