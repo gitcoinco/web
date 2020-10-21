@@ -43,9 +43,11 @@ $(document).ready(function() {
   $('#js-addToCart-form').submit(function(event) {
     event.preventDefault();
 
-    const formData = objectifySerialized($(this).serializeArray());
+    // const formData = objectifySerialized($(this).serializeArray());
+    // const formData = objectifySerialized($(this).serializeArray());
 
-    CartData.addToCart(formData);
+
+    CartData.addToCart(grantDetails);
 
     showSideCart();
   });
@@ -148,7 +150,7 @@ function sideCartRowForGrant(grant, index) {
 
 
 function tokenOptionsForGrant(grant) {
-  console.log(grant)
+
   var network = document.web3network;
 
   if (!network) {
@@ -157,17 +159,15 @@ function tokenOptionsForGrant(grant) {
 
   // let tokenDataList = tokens(network);
   let tokenDataList = allTokens.filter((token) => token.network === networkName || 'mainnet');
-  let tokenDefault = 'ETH'
+  let tokenDefault = 'ETH';
 
   if ( grant.tenants.includes('ZCASH')) {
-    tokenDataList.filter((token) => token.chainId === 123123)
-    tokenDefault = 'ZEC'
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
+    tokenDefault = 'ZEC';
   } else {
-    tokenDataList = tokenDataList.filter((token) => token.chainId === 1)
-    console.log(tokenDataList)
-    // console.log(test)
-
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
   }
+
   const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000' ||
   grant.grant_token_address === '0x0');
 
@@ -179,15 +179,13 @@ function tokenOptionsForGrant(grant) {
         `;
 
     tokenDataList = tokenDataList.filter(tokenData => {
-      console.log(tokenData.address, grant.grant_token_address)
       return (tokenData.address === grant.grant_token_address);
     });
-    console.log(tokenDataList)
   }
 
   for (let index = 0; index < tokenDataList.length; index++) {
     const tokenData = tokenDataList[index];
-    console.log(tokenData)
+
     if (tokenData.divider) {
       options += `
                 <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
