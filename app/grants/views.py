@@ -1440,7 +1440,8 @@ def grant_new_whitelabel(request):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
-        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
+        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
+        'project_data': project
     }
     return TemplateResponse(request, 'grants/new-whitelabel.html', params)
 
