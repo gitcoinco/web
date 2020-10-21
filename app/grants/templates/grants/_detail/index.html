@@ -1,0 +1,119 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n grants_extra %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/cart.css" %}">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.bubble.css" rel="stylesheet">
+  </head>
+  <body class="interior {{ active }} grant grant-detail g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+
+    {% include 'grants/shared/waiting_state.html' %}
+
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+    </div>
+    {% endif %}
+
+    <div id="gc-grant-detail">
+      <h2>This is Vue</h2>
+      <div class="row"> 
+        <div id="grants-details" class="col-12">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+                {% include 'grants/_detail/info.html' %}
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 px-5 px-md-0">
+              {% include 'grants/_detail/funding.html' %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 px-5">
+              {% include 'grants/_detail/tabs.html' %}
+            </div>
+          </div>
+        </div>
+        <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+          {% include 'grants/_detail/side-cart.html' %}
+        </div>
+      </div>
+      <!-- Modal 1
+      ** Subject:  Verify Grant Ownership
+      ** Message: Verify your grant ownership to ensure that your supporters are contributing to the correct grant.
+      ** CTA: Verify with twitter
+      -->
+      
+      <!-- Modal 2
+      ** Subject:  Verify Grant Ownership with Twitter
+      ** Message: Step 1: Fill your twitter account into the grants twitter field
+                  Step 2: Click to send the verification tweet from the grant account (<b>{{ grant.twitter_handle_1 }}</b>
+                  Step 3:  Click the "Verify" button below
+
+      ** CTA: Verify
+      -->
+      
+      
+  
+      <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
+    </div>
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
+    {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+  </body>
+
+  {% include 'shared/activity_scripts.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+  <script src="{% static "v2/js/status.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script src="{% static "v2/js/grants/funding.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
+  <script src="{% static "v2/js/grants/_detail.js" %}"></script>
+</html>
