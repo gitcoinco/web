@@ -304,6 +304,8 @@ def get_web3(network, sockets=False):
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         return w3
+    elif network == 'xdai':
+        return Web3(HTTPProvider(f'https://dai.poa.network/'))
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 

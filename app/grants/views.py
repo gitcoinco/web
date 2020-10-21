@@ -1565,6 +1565,9 @@ def grant_new(request):
     grant_types = []
     for g_type in GrantType.objects.all():
         grant_categories = []
+            # project_pk = request.POST.get('project_pk', None)
+            # if project_pk:
+            #     HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
         for g_category in g_type.categories.all():
             grant_categories.append({
@@ -1579,11 +1582,11 @@ def grant_new(request):
         })
 
     project = None
-    project_id = request.GET.get('project_id', None)
-    if project_id is not None:
-        hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-        if request.user.profile in hackathon_project.profiles.all():
-            project = hackathon_project
+    # project_id = request.GET.get('project_id', None)
+    # if project_id is not None:
+    #     hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    #     if request.user.profile in hackathon_project.profiles.all():
+    #         project = hackathon_project
 
     params = {
         'active': 'new_grant',
