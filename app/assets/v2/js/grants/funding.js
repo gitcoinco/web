@@ -13,6 +13,8 @@ $(document).ready(function() {
   const shouldShowAlert = Boolean(localStorage.getItem('contributions_were_successful'));
 
   if (shouldShowAlert) {
+    // This alert currently shows after Ethereum checkouts only. As a result, we make sure to
+    // only clear ETH grants from local storage
     const numberOfContributions = Number(localStorage.getItem('contributions_count'));
     const grantWord = numberOfContributions === 1 ? 'grant' : 'grants';
     const message = `You have successfully funded ${numberOfContributions} ${grantWord}. Thank you for your contribution!`;
@@ -21,23 +23,26 @@ $(document).ready(function() {
     localStorage.removeItem('contributions_were_successful');
     localStorage.removeItem('contributions_count');
     $('#tweetModal').modal('show');
-    let donations = CartData.loadCart();
 
-    if (donations.length) {
+    const allDonations = CartData.loadCart();
+    const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
+    const otherDonations = allDonations.filter((grant) => grant.tenants[0] !== 'ETH');
+    
+    if (allDonations.length) {
       let cart_html = 'You just funded: ';
       let bulk_add_cart = CartData.share_url();
 
-      for (let i = 0; i < donations.length; i += 1) {
-        const donation = donations[i];
+      for (let i = 0; i < allDonations.length; i += 1) {
+        const donation = allDonations[i];
 
         cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'] + ' (+' + donation['grant_donation_clr_match'] + ' DAI match)</li>';
       }
       cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';
       $("<span class='mt-2 mb-2 w-100'>" + cart_html + '</span>').insertBefore($('#tweetModal span.copy'));
-      $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + donations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
+      $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + allDonations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
       $('#tweetModal a.button').text('Tweet about it');
     }
-    CartData.setCart([]);
+    CartData.setCart(otherDonations);
   }
 
   $('#js-addToCart-form').submit(function(event) {

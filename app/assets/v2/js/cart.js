@@ -182,11 +182,11 @@ Vue.component('grants-cart', {
 
     // Array of arrays, item i lists supported tokens for donating to grant given by grantData[i]
     currencies() {
-      if (!this.grantData || !this.tokenList)
+      if (!this.grantsByTenant || !this.tokenList)
         return undefined;
 
       // Get supported tokens for each grant
-      const currencies = this.grantData.map(grant => {
+      const currencies = this.grantsByTenant.map(grant => {
         // Return full list if grant accepts all tokens
         if (grant.grant_token_address === '0x0000000000000000000000000000000000000000') {
           return this.tokenList.map(token => token.name);
@@ -242,12 +242,12 @@ Vue.component('grants-cart', {
 
     // Array of objects containing all donations and associated data
     donationInputs() {
-      if (!this.grantData)
+      if (!this.grantsByTenant)
         return undefined;
 
       // Generate array of objects containing donation info from cart
       let gitcoinFactor = 100 * this.gitcoinFactor;
-      const donations = this.grantData.map((grant, index) => {
+      const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
         const amount = this.toWeiString(
           Number(grant.grant_donation_amount),
@@ -781,7 +781,7 @@ Vue.component('grants-cart', {
     donationSummaryTotals(scaleFactor = 1) {
       const totals = {};
 
-      this.grantData.forEach(grant => {
+      this.grantsByTenant.forEach(grant => {
         if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
           totals[grant.grant_donation_currency] = Number(grant.grant_donation_amount) * scaleFactor;
@@ -805,6 +805,10 @@ Vue.component('grants-cart', {
       let string = '';
 
       Object.keys(this[propertyName]).forEach(key => {
+        // key is our token symbol, so for now let's skip this if key is ZEC
+        if (key === 'ZEC')
+          return;
+
         // Round to 2 digits
         const amount = this[propertyName][key];
         const formattedAmount = amount.toLocaleString(undefined, {
@@ -888,10 +892,16 @@ Vue.component('grants-cart', {
       const preferredAmount = grant.grant_donation_amount;
       const preferredTokenName = grant.grant_donation_currency;
       const fallbackAmount = await this.valueToEth(preferredAmount, preferredTokenName);
+      const tenant = grant.tenant[0];
 
       this.grantData.forEach((grant, index) => {
         const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
-
+        
+        // Skip this loop if this grant is not the same tenant as the clicked grant
+        if (this.grantData[index].tenant[0] !== tenant)
+          return;
+        
+        // Update the values
         if (!acceptedCurrencies.includes(preferredTokenName)) {
           // If the selected token is not available, fallback to ETH
           this.grantData[index].grant_donation_amount = fallbackAmount;
@@ -1173,7 +1183,7 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice POSTs donation data to database. Intended to be called from finalizeCheckout()
+     * @notice POSTs donation data to database
      */
     async postToDatabase(txHash, contractAddress, userAddress) {
       // this.donationInputs is the array used for bulk donations
@@ -1278,18 +1288,13 @@ Vue.component('grants-cart', {
     async finalizeCheckout() {
       // Clear cart, redirect back to grants page, and show success alert
       localStorage.setItem('contributions_were_successful', 'true');
-      localStorage.setItem('contributions_count', String(this.grantData.length));
-      var network = document.web3network;
+      localStorage.setItem('contributions_count', String(this.grantsByTenant.length));
       let timeout_amount = 1500 + (CartData.loadCart().length * 500);
 
       setTimeout(function() {
         _alert('Contributions saved', 'success', 1000);
         setTimeout(function() {
-          if (network === 'rinkeby') {
-            window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
-          } else {
-            window.location.href = `${window.location.origin}/grants`;
-          }
+          window.location.href = `${window.location.origin}/grants`;
         }, 500);
       }, timeout_amount);
     },
@@ -1902,7 +1907,7 @@ Vue.component('grants-cart', {
           this.zkSyncFeeTotals[tokenSymbol] = await this.getMaxFee(tokenSymbol);
           this.setZkSyncFeesString();
 
-          // Note: Don't `break` out of the if statements if insufficient balance, because we
+          // NOTE: Don't `break` out of the if statements if insufficient balance, because we
           // also use this function to set the fee string shown to the user on the checkout modal
 
           // Balance will be undefined if the user does not have that token, so we can break
@@ -1911,7 +1916,7 @@ Vue.component('grants-cart', {
           }
 
           // Otherwise, we compare their balance against the required amount
-          if (ethers.BigNumber.from(balance).lt(totalRequiredAmount)) {
+          if (balance && ethers.BigNumber.from(balance).lt(totalRequiredAmount)) {
             this.hasSufficientZkSyncBalance = false;
           }
         }
