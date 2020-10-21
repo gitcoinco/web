@@ -110,16 +110,12 @@ def claim(request):
                 logger.error(f'GTC Distributor - Error posting to signature service - {e}')
                 there_is_a_problem = True 
 
-            # redirect to a new URL:
-            # return TemplateResponse(request, 'quadraticlands/welcome-to-the-quadratic-lands.html')
-            # return to page that loads up transaction for send 
             # pass returned values from eth signer microservice
-
             # ESM returns bytes object of json. so, we decode it
             esms_response = json.loads( micro_content.decode('utf-8'))
             # construct nested dict for easy access in templates
          
-            '''
+            ''' This would simplify template side a bit but I wasn't able to get access to the objects via js 
             esms_response = {
                 "esms" : {
                     "user_id" : esms_decoded_response["user_id"],
@@ -132,7 +128,7 @@ def claim(request):
             }
             '''
             logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
-            return TemplateResponse(request, 'quadraticlands/send_token_claim.html', context=esms_response)
+            return TemplateResponse(request, 'quadraticlands/demo.html', context=esms_response)
             
 
     # if GET 
@@ -147,19 +143,22 @@ def claim(request):
             'form' : form,
         }
        
-        return TemplateResponse(request, 'quadraticlands/claim.html', context)
+        return TemplateResponse(request, 'quadraticlands/demo.html', context)
 
 def send_token_claim(request, context):
     return TemplateResponse(request, 'quadraticlands/send_token_claim.html', context)
 
-def welcome(request):
-    return TemplateResponse(request, 'quadraticlands/welcome-to-the-quadratic-lands.html')
-
 def about(request):
     return TemplateResponse(request, 'quadraticlands/about.html')
 
-def governance(request):
-    return TemplateResponse(request, 'quadraticlands/governance.html')
+def terms(request):
+    return TemplateResponse(request, 'quadraticlands/terms-of-service.html')
+
+def privacy(request):
+    return TemplateResponse(request, 'quadraticlands/privacy.html')
+
+def faq(request):
+    return TemplateResponse(request, 'quadraticlands/faq.html')
 
 def missions(request):
     return TemplateResponse(request, 'quadraticlands/missions.html')
