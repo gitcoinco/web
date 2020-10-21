@@ -1,0 +1,83 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static matches cookielaw_tags %}
+
+<header>
+
+  <div class="logo">
+    <a href="/">
+      
+      {% include "quadraticlands/_inlinesvg/ql.svg" %}
+
+    </a>
+  </div>
+
+  <nav>
+
+    <div id="nav-links" >
+      <div id="burger">
+        {% include "quadraticlands/_inlinesvg/burger.svg" %}
+      </div>
+      <ul>
+        <a class="particleAttract" href="about" aria-current="page"><li>About</li></a>
+        <a class="particleAttract" href="mission-proofofknowledge"><li>Mission</li></a>
+      </ul>
+    </div>
+
+
+   {% if user.is_authenticated %} 
+    <div id="nav-user" class="particleAttract" >
+     
+      <div>
+          <img src="/dynamic/avatar/{{user.username}}" >
+          <span>{{user.username}}</span>
+      </div>
+
+    </div>
+    
+    <div id="nav-wallet" class="">
+      <div id="noproviderIcon">
+        {% include "quadraticlands/_inlinesvg/wallet.svg" %}
+      </div>
+
+      <div id="providerIcon">
+        <img class="hide" src="">
+      </div>
+    </div>
+
+    {% comment "ZW: did not appear to be working." %}
+    <div id="nav-signin" class="hide particleAttract">
+      <a href="#" class="btn sm">Sign In</a>
+    </div>
+    {% endcomment %}
+    
+    {% else %}
+    <a id="nav-signin" class="btn sm" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
+      <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
+    </a>
+  {% endif %}
+   
+
+
+  </nav>
+
+
+
+</header>
+
+

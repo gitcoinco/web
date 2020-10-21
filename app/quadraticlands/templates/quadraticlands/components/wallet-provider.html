@@ -1,0 +1,76 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+
+<div id="wallet-provider">
+
+	<div class="header" id="close-wallet-provider">
+		<span>Connect to a wallet</span>
+		{% include "quadraticlands/_inlinesvg/close.svg" %}
+	</div>
+
+	<div class="status">
+		<div class="token">0.843 eth, 403 gtc</div>
+		<div class="net">Mainnet</div>
+		<div class="adress">0xbadc...8d90</div>
+	</div>
+
+	<div id="providerMetamask" class="provider active">
+		<span>Metamask</span>
+		<img src="/static/quadraticlands/images/provider/metamask.svg" >
+	</div>
+
+	<div id="providerWalletconnect" class="provider">
+		<span>WalletConnect</span>
+		<img src="/static/quadraticlands/images/provider/walletconnect.svg" >
+	</div>
+
+	<div id="providerPortis" class="provider">
+		<span>Portis</span>
+		<img src="/static/quadraticlands/images/provider/portis.svg" >
+	</div>
+
+	<div id="providerFortmatic" class="provider">
+		<span>Fortmatic</span>
+		<img src="/static/quadraticlands/images/provider/fortmatic.svg" >
+	</div>		
+
+	<div id="providerAuthereum" class="provider">
+		<span>Authereum</span>
+		<img src="/static/quadraticlands/images/provider/authereum.svg" >
+	</div>
+
+	<div id="providerDisconnect" class="provider">
+		<span>Disconnect</span>
+		{% include "quadraticlands/_inlinesvg/disconnect.svg" %}
+	</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
