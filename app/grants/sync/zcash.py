@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.utils import timezone
 
 import requests
@@ -32,6 +34,7 @@ def find_txn_on_zcash_explorer(contribution):
                         output['address'] == to_address and
                         response['data']['address'] == from_address and
                         float(output['value']) == float(amount) and
+                        is_txn_done_recently(txn['time']) and
                         not txn_already_used(txn['txid'], token_symbol)
                     ):
                         return txn['txid']
@@ -49,6 +52,7 @@ def find_txn_on_zcash_explorer(contribution):
                     if (
                         input_tx['address'] == from_address and
                         response['data']['address'] == to_address and
+                        is_txn_done_recently(txn['time']) and
                         not txn_already_used(txn['txid'], token_symbol)
                     ):
                         return txn['txid']
@@ -71,6 +75,19 @@ def get_zcash_txn_status(txnid):
         return True
 
     return None
+
+
+def is_txn_done_recently(time_of_txn):
+    if not time_of_txn:
+        return False
+
+    now = timezone.now().replace(tzinfo=None)
+    five_hours_ago = now - timezone.timedelta(hours=5)
+    time_of_txn = datetime.fromtimestamp(time_of_txn)
+
+    if time_of_txn > five_hours_ago:
+        return True
+    return False
 
 
 def sync_zcash_payout(contribution):
