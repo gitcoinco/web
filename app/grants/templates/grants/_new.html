@@ -186,7 +186,7 @@
                   <input type="radio" name="grant_chain" id="eth_chain" value="eth" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
                 </label>
 
-                {% if is_staff %}
+                {% if 'zcash_testers' in user_groups or is_staff %}
                 <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
                   <input type="radio" name="grant_chain" id="zcash_chain" value="zcash" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="20"> Zcash
                 </label>
