@@ -64,8 +64,8 @@ def sync_binance_payout(fulfillment):
                 fulfillment.payout_status = 'done'
                 fulfillment.accepted_on = timezone.now()
                 fulfillment.accepted = True
+                fulfillment.save()
                 record_payout_activity(fulfillment)
             elif status_description == 'expired':
                 fulfillment.payout_status = 'expired'
-
-        fulfillment.save()
+                fulfillment.save()
