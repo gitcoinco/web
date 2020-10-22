@@ -18,80 +18,112 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
+
+
+<!-- scripts block  - are you shure this scripts block should not go to the end after all html ??? -->
+
 {% block 'scripts' %}
-{% include 'shared/current_profile.html' %}
-<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-<script src="/dynamic/js/tokens_dynamic.js"></script>
-<script src="{% static "v2/js/quadraticlands/claim-gtc-tokens.js" %}"></script>
-<script src="{% static "onepager/js/confetti.js" %}"></script>
-<script src="{% static "v2/js/user-search.js" %}"></script>
-<script src="{% static "v2/js/tooltip_hover.js" %}"></script>
 
-	<!--some custom particles-->
+  <!-- richard : why this include is in here. its not a script. why its in script block? -->
+  {% include 'shared/current_profile.html' %}
+
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/quadraticlands/claim-gtc-tokens.js" %}"></script>
+  <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+
+
+	<!--richards click scripts-->
 	<script src="/static/quadraticlands/js/particles.js"></script>
-	
-	<!--Scroll Animation Library (sal) INIT-->
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
-
-	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
+
 {% endblock %}
+
+
+
 
 
 {% block 'content' %}
 
-	<!-- HERO IMAGE -->
 
-	<section class="hero">
-		<div class="background">
-			<img src="/static/quadraticlands/images/town.svg" alt="">
-        </div>
-        {% if not eth_signed_signature_hex %}
-		<div class="content">
-            <h1>Click below to claim your GTC tokens!</h1>    		
+	
+
+  {% if not eth_signed_signature_hex %}
+
+  <!--FORM TO SUBMIT-->
+
+  <section class="column">
+
+    <h1>Click below to claim your GTC tokens!</h1>    		
+   
+    <form class="content" action="./demo" method="post">
+        {% csrf_token %}
         
-           
-        <form class="content" action="./demo" method="post">
-            {% csrf_token %}
-            
-            {% comment %}
-            {{ form }}
-            {% endcomment %}
-            
-            <button action="./demo" method="post" class="btn" type="submit" value="Submit">ENTER THE QUADRATIC LANDS</button>
-        </form>
-       </div>
-        {% else %}
-        <div class="content">
-            {{ user_id|json_script:"user_id" }}
-            {{ user_address|json_script:"user_address" }}
-            {{ user_amount|json_script:"user_amount" }}
-            {{ msg_hash_hex|json_script:"msg_hash_hex" }}
-            {{ eth_signed_message_hash_hex|json_script:"eth_signed_message_hash_hex" }}
-            {{ eth_signed_signature_hex|json_script:"eth_signed_signature_hex" }}
-
-            <h2>user_id: {{ user_id }}</h2>
-            <h2>user_amount: {{ user_amount }}</h2>
-            <h2>user_address: {{ user_address }}</h2>
-            <h2>msg_hash_hex: {{ msg_hash_hex }}</h2>
-            <h2>eth_signed_message_hash_hex: {{ eth_signed_message_hash_hex }}</h2>
-            <h2>eth_signed_signature_hex: {{ eth_signed_signature_hex }}</h2>
+        {% comment %}
+        {{ form }}
+        {% endcomment %}
         
-            <input type="checkbox" id="tos" value="1">
-            <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
-            <br> 
-            <a href="#" id="claim" class="button button--primary">{% trans "Enter the Quadratic Lands!" %} <span class="emoji">⚡️</span></a>
-          </div>
-    
-        {% endif %}
-    </section>
+        <button action="./demo" method="post" class="btn" type="submit" value="Submit">ENTER THE QUADRATIC LANDS</button>
+    </form>
+  
+  </section>
 
-    {% endblock %}
+
+
+  {% else %}
+
+
+
+  <!-- AFTER FORM SUBMIT -->
+
+  <section class="column">
+
+  <h1>some technical details for tech lovers</h1> 
+
+
+    <!-- all these are empty so you need these ? if  not just delete this p -->
+    <p>
+      {{ user_id|json_script:"user_id" }}<br/>
+      {{ user_address|json_script:"user_address" }}<br/>
+      {{ user_amount|json_script:"user_amount" }}<br/>
+      {{ msg_hash_hex|json_script:"msg_hash_hex" }}<br/>
+      {{ eth_signed_message_hash_hex|json_script:"eth_signed_message_hash_hex" }}<br/>
+      {{ eth_signed_signature_hex|json_script:"eth_signed_signature_hex" }}
+    </p>
+
+
+    <!-- i use word-break to break long hashes into multiple lines to not destroy layout width-->
+    <p style="word-break: break-all;">
+      user_id: {{ user_id }}<br/>
+      user_amount: {{ user_amount }}<br/>
+      user_address: {{ user_address }}<br/>
+      msg_hash_hex: {{ msg_hash_hex }}<br/>
+      eth_signed_message_hash_hex: {{ eth_signed_message_hash_hex }}<br/>
+      eth_signed_signature_hex: {{ eth_signed_signature_hex }}
+    </p>
+
+    <!--TOS stuff (invisible by display none for now-->
+    <input style="display:none;" type="checkbox" id="tos" value="1" checked>
+    <label style="display:none;" for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+
+    <!-- btn -->
+    <a href="#" id="claim" class="btn">{% trans "Claim" %}</a>
+
+  </section>
+
+
+  {% endif %}
+
+
+{% endblock %}
 
 
