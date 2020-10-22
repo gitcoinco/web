@@ -538,7 +538,8 @@ Vue.component('grants-cart', {
           vm.tabSelected = 'ETH';
           vm.chainId = '1';
           if (!vm.grantsCountByTenant.ETH) {
-            return vm.tabIndex = 1;
+            vm.tabIndex = 1;
+            return;
           }
           if (!provider) {
             await onConnect();
@@ -603,7 +604,6 @@ Vue.component('grants-cart', {
 
         }
       }).catch((e) => {
-        console.log(e)
         vm.$set(grant, 'error', 'error submitting data, try again later');
         vm.$set(grant, 'loading', false);
       });
