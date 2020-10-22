@@ -44,18 +44,18 @@ def find_txn_on_zcash_explorer(contribution):
     response = requests.get(url).json()
 
     # Check funders txn history
-    if response['status'] == 'success' and response['data'] and response['data']['txs']:
-        txns = response['data']['txs']
-        for txn in txns:
-            if txn.get('incoming') and txn['incoming']['inputs']:
-                for input_tx in txn['incoming']['inputs']:
-                    if (
-                        input_tx['address'] == from_address and
-                        response['data']['address'] == to_address and
-                        is_txn_done_recently(txn['time']) and
-                        not txn_already_used(txn['txid'], token_symbol)
-                    ):
-                        return txn['txid']
+    # if response['status'] == 'success' and response['data'] and response['data']['txs']:
+    #     txns = response['data']['txs']
+    #     for txn in txns:
+    #         if txn.get('incoming') and txn['incoming']['inputs']:
+    #             for input_tx in txn['incoming']['inputs']:
+    #                 if (
+    #                     input_tx['address'] == from_address and
+    #                     response['data']['address'] == to_address and
+    #                     is_txn_done_recently(txn['time']) and
+    #                     not txn_already_used(txn['txid'], token_symbol)
+    #                 ):
+    #                     return txn['txid']
     return None
 
 
