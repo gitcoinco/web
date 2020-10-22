@@ -66,6 +66,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 */5 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet 6 >> /var/log/gitcoin/estimate_clr_filecoin.log  2>&1
 5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash validate_grants_contributions last_hour >> /var/log/gitcoin/validate_grants_contributions.log  2>&1
 
+## GRANTS
+*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_contributions >> /var/log/gitcoin/sync_pending_contributions.log  2>&1
+
 ## GITCOIN MARKETING
 30 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1
 30 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash process_pending_kudos_distributions 20 20 2 0  >> /var/log/gitcoin/process_pending_kudos_distributions.log  2>&1
