@@ -3,7 +3,11 @@
 <div class="clr clr-prediction arrow_box">
   <p class="title">
     Your contribution goes a long way!
-    <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
+    {% if 'ETH' in grant.tenants %}
+      <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
+    {% elif 'ZCASH' in grant.tenants %}
+      <img class="float-right" src="{% static "v2/images/chains/zcash.svg" %}">
+    {% endif %}
   </p>
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">

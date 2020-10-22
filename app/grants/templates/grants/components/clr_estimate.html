@@ -3,7 +3,9 @@
 <div class="clr clr-prediction arrow_box">
   <p class="title">
     Your contribution goes a long way!
-    <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
+
+    <img class="float-right" src="{% static "v2/images/chains/zcash.svg" %}" v-if="grant.tenants.indexOf('ZCASH') > -1">
+    <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" v-else>
   </p>
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">
