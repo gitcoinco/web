@@ -126,17 +126,14 @@
     {% endif %}
 
 
-    {% comment "ZW: did not appear to be working." %}
-    <div id="nav-signin" class="hide particleAttract">
-      <a href="#" class="btn sm">Sign In</a>
-    </div>
-    {% endcomment %}
-    
     {% else %}
-    <a id="nav-signin" class="btn sm" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
-      <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
-    </a>
-  {% endif %}
+
+    <div id="nav-signin" class="particleAttract">
+      <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});"
+      class="btn sm">{% trans "Log in" %}</a>
+    </div>
+
+    {% endif %}
    
 
 
