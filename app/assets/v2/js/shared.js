@@ -1060,6 +1060,7 @@ const getAllUrlParams = () => {
         }
       } else {
         // we're dealing with a string
+        // eslint-disable-next-line no-lonely-if
         if (!obj[paramName]) {
           // if it doesn't exist, create property
           obj[paramName] = paramValue;
