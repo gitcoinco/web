@@ -569,7 +569,7 @@ Vue.component('grants-cart', {
         'token_symbol': grant.grant_donation_currency,
         'tenant': this.tabSelected,
         'comment': grant.grant_comments,
-        'amount_per_period': grant.grant_donation_num_rounds
+        'amount_per_period': grant.grant_donation_amount
 
       }]};
 
