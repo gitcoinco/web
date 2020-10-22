@@ -161,7 +161,7 @@ function tokenOptionsForGrant(grant) {
   let tokenDataList = allTokens.filter((token) => token.network === networkName || 'mainnet');
   let tokenDefault = 'ETH';
 
-  if ( grant.tenants.includes('ZCASH')) {
+  if (grant.tenants && grant.tenants.includes('ZCASH')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
     tokenDefault = 'ZEC';
   } else {
