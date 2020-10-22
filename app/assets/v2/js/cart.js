@@ -581,13 +581,13 @@ Vue.component('grants-cart', {
 
       $.when(postContribution).then(response => {
         // set the cooldown time to one minute
-        if (response.success_contributions.length) {
+        if (response.success_contributions && response.success_contributions.length) {
           if (grant.grant_id === response.success_contributions[0].grant_id) {
             // grant.error= response.invalid_contributions[0].message;
             vm.$set(grant, 'success', response.success_contributions[0].message);
           }
         }
-        if (response.invalid_contributions.length) {
+        if (response.invalid_contributions && response.invalid_contributions.length) {
           if (grant.grant_id === response.invalid_contributions[0].grant_id) {
             // grant.error= response.invalid_contributions[0].message;
             vm.$set(grant, 'loading', false);
@@ -603,6 +603,7 @@ Vue.component('grants-cart', {
 
         }
       }).catch((e) => {
+        console.log(e)
         vm.$set(grant, 'error', 'error submitting data, try again later');
         vm.$set(grant, 'loading', false);
       });
@@ -897,11 +898,11 @@ Vue.component('grants-cart', {
 
       this.grantData.forEach((grant, index) => {
         const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
-        
+
         // Skip this loop if this grant is not the same tenant as the clicked grant
         if (this.grantData[index].tenant[0] !== tenant)
           return;
-        
+
         // Update the values
         if (!acceptedCurrencies.includes(preferredTokenName)) {
           // If the selected token is not available, fallback to ETH

@@ -437,7 +437,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             </div>
                           </div>
                           <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-                            <b-button v-b-toggle="`collapse-${grant.grant_id}`" class="btn-gc-blue">Payout</b-button>
+                            <b-button v-b-toggle="`collapse-${grant.grant_id}`" class="btn-gc-blue" v-if="!grant.success">
+                              Payout
+                              <i class="fa fa-fw fa-chevron-up when-open"></i>
+                              <i class="fa fa-fw fa-chevron-down when-closed"></i>
+                            </b-button>
+                            <b-button v-b-toggle="`collapse-${grant.grant_id}`" class="btn-gc-blue" v-else>
+                              Completed
+                              <i class="fa fa-fw fa-chevron-up when-open"></i>
+                              <i class="fa fa-fw fa-chevron-down when-closed"></i>
+                            </b-button>
                           </div>
                           {% comment %} Delete Icon {% endcomment %}
                           <div class="d-flex">
@@ -524,7 +533,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                       </div>
                                     </div>
                                     <div class="">
-                                      <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="!grant.contributor_address || grant.loading">Confirm</button>
+                                      <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="!grant.contributor_address || grant.loading || grant.success">Confirm</button>
                                     </div>
                                   </div>
                                   <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>
