@@ -1507,7 +1507,7 @@ def grant_new(request):
             'zcash_payout_address': zcash_payout_address,
             'token_symbol': token_symbol,
             'contract_version': contract_version,
-            'deploy_tx_id': request.POST.get('transaction_hash', ''),
+            'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
             'network': network,
             'twitter_handle_1': twitter_handle_1,
             'twitter_handle_2': twitter_handle_2,
