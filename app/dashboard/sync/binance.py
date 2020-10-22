@@ -11,7 +11,6 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36
 
 
 def get_binance_txn_status(fulfillment):
-
     txnid = fulfillment.payout_tx_id
     network = fulfillment.bounty.network if fulfillment.bounty.network else None
 
@@ -27,10 +26,10 @@ def get_binance_txn_status(fulfillment):
             binance_url = f'https://data-seed-prebsc-1-s1.binance.org:8545'
 
         data = {
+            'id': 0,
             'jsonrpc': '2.0',
             'method': 'eth_getTransactionReceipt',
-            'params': [ txnid ],
-            'id': 0
+            'params': [ txnid ]
         }
 
         binance_response = requests.post(binance_url, json=data, headers=headers).json()
@@ -57,13 +56,16 @@ def get_binance_txn_status(fulfillment):
 def sync_binance_payout(fulfillment):
     if fulfillment.payout_tx_id:
         txn_status = get_binance_txn_status(fulfillment)
+
         if txn_status:
-            if txn_status.get('status') == 'done':
+            status_description = txn_status.get('status')
+
+            if status_description == 'done':
                 fulfillment.payout_status = 'done'
                 fulfillment.accepted_on = timezone.now()
                 fulfillment.accepted = True
                 record_payout_activity(fulfillment)
-            elif txn_status.get('status') == 'expired':
+            elif status_description == 'expired':
                 fulfillment.payout_status = 'expired'
 
         fulfillment.save()
