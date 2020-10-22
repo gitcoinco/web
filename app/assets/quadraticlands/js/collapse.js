@@ -2,7 +2,8 @@
 //
 // find all classes .collapse 
 // 
-// on click toggle class "visible"
+// click div.question
+// toggle visibility on div.awnser
 
 const collapse = document.querySelectorAll(".collapse");
 

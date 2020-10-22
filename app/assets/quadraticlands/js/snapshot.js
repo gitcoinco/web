@@ -33,26 +33,26 @@ setInterval(checkApi, refresh);
 
 function checkApi(){
 
-	fetch(url)
-	  .then(response => response.json())
-	  .then(data => 
-		  	{
-		  		console.log(data);
+  fetch(url)
+    .then(response => response.json())
+    .then(data => 
+        {
+          console.log(data);
 
-				for (const [address] of Object.entries(data)) {
-					
-				  if ( address == userAddress )
-				  {
-				  	console.log("checkAPi : true (userAddress is in Proposal)");
-				  	// hide spinner
-				  	const waitingSpinner = document.getElementById("waitingSpinner");
-				  	waitingSpinner.classList.add("hide");
-				  	// show next button
-				  	const nextButton = document.getElementById("nextButton");
-				  	nextButton.classList.remove("hide");
-				  }
+        for (const [address] of Object.entries(data)) {
+          
+          if ( address == userAddress )
+          {
+            console.log("checkAPi : true (userAddress is in Proposal)");
+            // hide spinner
+            const waitingSpinner = document.getElementById("waitingSpinner");
+            waitingSpinner.classList.add("hide");
+            // show next button
+            const nextButton = document.getElementById("nextButton");
+            nextButton.classList.remove("hide");
+          }
 
-				}
-		  	}
-	  	)
+        }
+        }
+      )
 }
