@@ -5,10 +5,14 @@
 // const expiryLink = "mission-proofofknowledge-quest1-wrong";
 // then run this script by embed as script ...
 
+console.log ("quiz timer");
+
 
 time = maxTime;
 const timeleft = document.getElementById("timeleft");
 const progressbar = document.getElementById("progressbar");
+
+
 
 questInterval = setInterval(function() { 
 

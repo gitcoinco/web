@@ -204,18 +204,27 @@ particleAttractTrigger.forEach(p => {
 // particleStarfield function
 // if its not in viewport kill the particleStarfield function
 
-let intervalID;
+
 
 const particleStarfieldTrigger = document.querySelector('.particleStarfieldTrigger');
 
-particleStarfieldTrigger.addEventListener('sal:in', ({ detail }) => {
-  intervalID = setInterval(particleStarfield, 300);
-});
+if(particleStarfieldTrigger)
+  {
 
-particleStarfieldTrigger.addEventListener('sal:out', ({ detail }) => {
-  clearInterval(intervalID);
-  particleInit();
-});
+  let intervalID;
+  
+  particleStarfieldTrigger.addEventListener('sal:in', ({ detail }) => {
+    intervalID = setInterval(particleStarfield, 300);
+  });
+
+  particleStarfieldTrigger.addEventListener('sal:out', ({ detail }) => {
+    clearInterval(intervalID);
+    particleInit();
+  });
+
+  }
+
+
 
 
 

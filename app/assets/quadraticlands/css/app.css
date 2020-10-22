@@ -1025,12 +1025,34 @@ section#footer a:hover {
 }
 
 @media (max-width: 688px) {
+  section#footer {
+    margin: 6em 1.5em;
+  }
   section#footer a {
     display: block;
     margin-right: initial;
     padding-bottom: 2em;
   }
 }
+.collapse {
+  cursor: pointer;
+}
+.collapse .question {
+  padding: 1em 0em;
+  border-bottom: 1px solid var(--smoke);
+  color: var(--white);
+}
+.collapse .answer {
+  display: none;
+  padding: 1em 0em;
+}
+.collapse:hover .question {
+  color: var(--purple_light);
+}
+.collapse.visible .answer {
+  display: block;
+}
+
 /* section */
 section.column {
   margin-bottom: 6em;

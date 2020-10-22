@@ -1,0 +1,55 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<!--FAQ-->
+
+<section class="column">
+
+	<h1>Frequently Asked Questions</h1>
+
+
+	<div class="collapse">
+		<div class="question">How do i get my Tokens?</div>
+		<div class="answer">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed <a href="#">xxxxxxxx</a> voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+	</div>
+
+	<div class="collapse">
+		<div class="question">I did not get my Tokens!</div>
+		<div class="answer">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</div>
+	</div>
+
+	<div class="collapse">
+		<div class="question">What i can do with GTC Tokens?</div>
+		<div class="answer">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+	</div>		
+
+
+</section>
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+	<!-- collapse (for faq collapse q&a -->
+	<script src="/static/quadraticlands/js/collapse.js"></script>
+	
+{% endblock %}
+
+
