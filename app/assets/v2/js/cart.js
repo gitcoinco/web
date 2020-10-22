@@ -111,8 +111,8 @@ Vue.component('grants-cart', {
       let vm = this;
       let result;
 
-      result =  vm.grantData.filter((item)=>{
-        return item.tenants.includes(vm.tabSelected)
+      result = vm.grantData.filter((item)=>{
+        return item.tenants.includes(vm.tabSelected);
       });
 
       return result;
@@ -120,10 +120,11 @@ Vue.component('grants-cart', {
     },
     grantsCountByTenant() {
       let vm = this;
-      let tenants = ['ETH', 'ZCASH']
+      let tenants = [ 'ETH', 'ZCASH' ];
 
-      var grantsTentantsCount = vm.grantData.reduce(function (result, grant) {
+      var grantsTentantsCount = vm.grantData.reduce(function(result, grant) {
         var currentCount = result[grant.tenants] || 0;
+
         result[grant.tenants] = currentCount + 1;
         return result;
       }, {});
@@ -131,11 +132,9 @@ Vue.component('grants-cart', {
       return grantsTentantsCount;
 
 
-
-
     },
     sortByPriority: function() {
-      console.log(this.currentTokens)
+      console.log(this.currentTokens);
       return this.currentTokens.sort(function(a, b) {
         return b.priority - a.priority;
       });
@@ -158,7 +157,7 @@ Vue.component('grants-cart', {
         result = vm.filterByNetwork;
       } else {
         result = vm.filterByNetwork.filter((item) => {
-          console.log(item.chainId, vm.chainId)
+          console.log(item.chainId, vm.chainId);
           return String(item.chainId) === vm.chainId;
         });
       }
@@ -531,14 +530,15 @@ Vue.component('grants-cart', {
   methods: {
     tabChange: async function(input) {
       let vm = this;
-      console.log(input)
+
+      console.log(input);
       switch (input) {
         default:
         case 0:
           vm.tabSelected = 'ETH';
           vm.chainId = '1';
           if (!vm.grantsCountByTenant.ETH) {
-            return vm.tabIndex = 1
+            return vm.tabIndex = 1;
           }
           if (!provider) {
             await onConnect();
@@ -552,11 +552,12 @@ Vue.component('grants-cart', {
     },
     confirmZcashPayment: function(e, grant) {
       let vm = this;
+
       e.preventDefault();
-      console.log(e)
+      console.log(e);
 
       // this.$refs.form.reportValidity()
-      if(!e.target.reportValidity()) {
+      if (!e.target.reportValidity()) {
         return;
       }
 
@@ -570,7 +571,7 @@ Vue.component('grants-cart', {
         'comment': grant.grant_comments,
         'amount_per_period': grant.grant_donation_num_rounds
 
-      }]}
+      }]};
 
       vm.$set(grant, 'loading', true);
       vm.$set(grant, 'error', null);
@@ -581,13 +582,13 @@ Vue.component('grants-cart', {
       $.when(postContribution).then(response => {
         // set the cooldown time to one minute
         if (response.success_contributions.length) {
-          if(grant.grant_id === response.success_contributions[0].grant_id ){
+          if (grant.grant_id === response.success_contributions[0].grant_id) {
             // grant.error= response.invalid_contributions[0].message;
             vm.$set(grant, 'success', response.success_contributions[0].message);
           }
         }
         if (response.invalid_contributions.length) {
-          if(grant.grant_id === response.invalid_contributions[0].grant_id ){
+          if (grant.grant_id === response.invalid_contributions[0].grant_id) {
             // grant.error= response.invalid_contributions[0].message;
             vm.$set(grant, 'loading', false);
             vm.$set(grant, 'error', response.invalid_contributions[0].message);
@@ -1312,7 +1313,7 @@ Vue.component('grants-cart', {
     },
 
     valueToDai(amount, tokenSymbol, tokenPrices) {
-      console.log(amount, tokenSymbol, tokenPrices)
+      console.log(amount, tokenSymbol, tokenPrices);
       const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
       const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
 

@@ -82,8 +82,8 @@ class CartData {
     }
 
     grantData.uuid = get_UUID();
-    console.log(grantData.tenants, grantData.tenants.includes('ZCASH'))
-    if ( grantData.tenants.includes('ZCASH')) {
+    console.log(grantData.tenants, grantData.tenants.includes('ZCASH'));
+    if (grantData.tenants.includes('ZCASH')) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 0.01;
       }
@@ -91,21 +91,18 @@ class CartData {
         grantData.grant_donation_currency = 'ZEC';
       }
 
-    } else {
-      if (acceptsAllTokens || 'DAI' == accptedTokenName) {
-        if (!grantData.grant_donation_amount) {
-          grantData.grant_donation_amount = 5;
-        }
-        if (!grantData.grant_donation_currency) {
-          grantData.grant_donation_currency = 'DAI';
-        }
-      } else {
-        if (!grantData.grant_donation_amount) {
-          grantData.grant_donation_amount = 0.01;
-        }
-        grantData.grant_donation_currency = 'ETH';
+    } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 5;
       }
-
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'DAI';
+      }
+    } else {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.01;
+      }
+      grantData.grant_donation_currency = 'ETH';
     }
 
 

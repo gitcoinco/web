@@ -3,8 +3,10 @@
 let allTokens;
 const fetchTokens = async() => {
   const tokensResponse = await fetch('/api/v1/tokens');
+
   allTokens = await tokensResponse.json();
-}
+};
+
 fetchTokens();
 
 $(document).ready(function() {
@@ -146,7 +148,6 @@ function sideCartRowForGrant(grant, index) {
 
   return cartRow;
 }
-
 
 
 function tokenOptionsForGrant(grant) {

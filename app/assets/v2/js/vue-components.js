@@ -154,12 +154,12 @@ Vue.component('loading-screen', {
 
 
 Vue.component('qrcode', {
-  props: ['string', 'size'],
+  props: [ 'string', 'size' ],
   template: '<div class="qrcode"></div>',
   data() {
     return {
       jqEl: null,
-      qrcode: null,
+      qrcode: null
     };
   },
   mounted() {
@@ -170,9 +170,9 @@ Vue.component('qrcode', {
     if (vm.size) {
       vm.qrcode = new QRCode(vm.jqEl[0], {
         text: vm.string,
-        width:vm.size,
+        width: vm.size,
         height: vm.size
-      })
+      });
 
     } else {
       vm.qrcode = new QRCode(vm.jqEl[0], vm.string);

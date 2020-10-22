@@ -65,7 +65,7 @@ Vue.mixin({
           headers: myHeaders
         }).then(res => {
           res.json().then(json => {
-            vm.$set(vm, 'usersOptions',json);
+            vm.$set(vm, 'usersOptions', json);
             if (selected) {
               // TODO: BUG -> Make append
               vm.$set(vm.form, 'team_members', vm.usersOptions[0].text);
@@ -209,9 +209,9 @@ Vue.mixin({
         let team_members_id;
 
         team_members_id = newVal.reduce((oldItem, newItem)=> {
-           oldItem.push(newItem.id);
-           return oldItem;
-        }, [])
+          oldItem.push(newItem.id);
+          return oldItem;
+        }, []);
         return this.$set(this.form, 'team_members', team_members_id);
 
       }
