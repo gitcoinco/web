@@ -894,13 +894,13 @@ Vue.component('grants-cart', {
       const preferredAmount = grant.grant_donation_amount;
       const preferredTokenName = grant.grant_donation_currency;
       const fallbackAmount = await this.valueToEth(preferredAmount, preferredTokenName);
-      const tenant = grant.tenant[0];
+      const tenant = grant.tenants[0];
 
       this.grantData.forEach((grant, index) => {
         const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
 
         // Skip this loop if this grant is not the same tenant as the clicked grant
-        if (this.grantData[index].tenant[0] !== tenant)
+        if (this.grantData[index].tenants[0] !== tenant)
           return;
 
         // Update the values
