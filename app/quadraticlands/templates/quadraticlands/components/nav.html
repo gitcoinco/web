@@ -16,12 +16,12 @@
 {% endcomment %}
 
 {% load i18n static matches cookielaw_tags %}
-<input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
+
 
 <header>
 
   <div class="logo">
-    <a href="/">
+    <a href="/quadraticlands/">
       
       {% include "quadraticlands/_inlinesvg/ql.svg" %}
 
@@ -63,29 +63,67 @@
     </div>
     
     {% if user.is_authenticated %}
-    <div class="nav-item dropdown interior">
-  
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
-        <a class="dropdown-item" href="#" id="wallet-btn">
-          Connect Wallet
-        </a>
-        <div class="dropdown-item wallet-hidden d-none">
-          <small>connected to:</small>
-          <div class="network-name"></div>
-          <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
-        </div>
-        <div class="dropdown-divider wallet-hidden d-none"></div>
-        <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
-        <div class="dropdown-divider wallet-hidden d-none"></div>
-        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+    <div id="wallet-provider">
+
+      <div class="header" id="close-wallet-provider">
+        <span>
+        <a href="#" id="wallet-btn">
+          Connect to a wallet
+          </a>
+        </span>
+        {% include "quadraticlands/_inlinesvg/close.svg" %}
+      </div>
+      <!--
+      <div class="status">
+        <div class="token">0.843 eth, 403 gtc</div>
+        <div class="net">Mainnet</div>
+        <div class="adress">0xbadc...8d90</div>
+      </div>
+       -->
+       <div id="templates" style="display: none">
+        <template id="template-balance">
+          <div class="wallet-option">
+            <div class="wallet-address"></div>
+            <small class="wallet-balance"></small>
+          </div>
+        </template>
+      </div>
+      <div id="providerMetamask" class="provider active">
+        <span>Metamask</span>
+        <img src="/static/quadraticlands/images/provider/metamask.svg" >
+      </div>
+    
+      <div id="providerWalletconnect" class="provider">
+        <span>WalletConnect</span>
+        <img src="/static/quadraticlands/images/provider/walletconnect.svg" >
+      </div>
+    
+      <div id="providerPortis" class="provider">
+        <span>Portis</span>
+        <img src="/static/quadraticlands/images/provider/portis.svg" >
+      </div>
+    
+      <div id="providerFortmatic" class="provider">
+        <span>Fortmatic</span>
+        <img src="/static/quadraticlands/images/provider/fortmatic.svg" >
+      </div>		
+    
+      <div id="providerAuthereum" class="provider">
+        <span>Authereum</span>
+        <img src="/static/quadraticlands/images/provider/authereum.svg" >
+      </div>
+    
+      <div id="providerDisconnect" class="provider">
+        <span>
+        <a href="#" class="provider" id="btn-disconnect">
           Disconnect
         </a>
+      </span>
+        {% include "quadraticlands/_inlinesvg/disconnect.svg" %}
       </div>
-      {% endif %}
+    
+    </div>
+    {% endif %}
 
 
     {% comment "ZW: did not appear to be working." %}

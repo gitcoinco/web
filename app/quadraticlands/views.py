@@ -63,23 +63,24 @@ def claim(request):
     # if POST 
     if request.method == 'POST':
         # create a form instance and populate it with data from the request (from forms.py)
-        form = ClaimForm(request.POST)
-
+        # form = ClaimForm(request.POST)
+         
         # iterate through post keys and log them for debugging
         # for key in request.POST.keys():
         #     logger.info(f'claim_tokens post key logger: {request.POST.get(key)}')
     
         # check whether it's valid:
-        if form.is_valid():
+        # if form.is_valid():
+        if True:
                    
             # lets log our cleaned data for debug (for now)
-            logger.info(f'cleaned datas: {form.cleaned_data}')
+            # logger.info(f'cleaned datas: {form.cleaned_data}')
             logger.info(f'USER ID: {user.id}')
             logger.info(f'GTC DIST KEY {settings.GTC_DIST_KEY}')  
             
             post_data = {}
             post_data['user_id'] = user.id
-            post_data['user_sig'] = form.cleaned_data['user_sig']
+            # post_data['user_sig'] = form.cleaned_data['user_sig']
             post_data['user_address'] = profile.preferred_payout_address
             post_data['user_amount'] = 1000000000000000 # placeholder for amount, need to use big number 
 
@@ -110,6 +111,11 @@ def claim(request):
                 logger.error(f'GTC Distributor - Error posting to signature service - {e}')
                 there_is_a_problem = True 
 
+            # check response status, maybe better to use .raise_for_status()? 
+            # maybe need context on return here too?
+            if micro_response.status_code == 500:
+                logger.info(f'500 received from ESMS! - This probably means there was a problem with token claim!')
+                return TemplateResponse(request, 'quadraticlands/demo.html')
             # pass returned values from eth signer microservice
             # ESM returns bytes object of json. so, we decode it
             esms_response = json.loads( micro_content.decode('utf-8'))
