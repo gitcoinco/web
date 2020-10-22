@@ -5296,7 +5296,7 @@ class Earning(SuperModel):
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
 
-    def has_export_perms(self, profile):
+    def has_read_perms(self, profile):
         if self.source_type_human == 'grant':
             return self.source.team_members.filter(pk__in=profile.pk)
         if self.source_type_human in ['tip', 'kudos transfer']:
