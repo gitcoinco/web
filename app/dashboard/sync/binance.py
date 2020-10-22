@@ -18,9 +18,7 @@ def get_binance_txn_status(fulfillment):
     if not txnid:
         return None
 
-    response = {
-        'status': 'pending'
-    }
+    response = { 'status': 'pending' }
 
     try:
         if network == 'mainnet':
@@ -31,9 +29,7 @@ def get_binance_txn_status(fulfillment):
         data = {
             'jsonrpc': '2.0',
             'method': 'eth_getTransactionReceipt',
-            'params': [
-                txnid
-            ],
+            'params': [ txnid ],
             'id': 0
         }
 
@@ -41,31 +37,19 @@ def get_binance_txn_status(fulfillment):
 
         result = binance_response['result']
 
-        response = {
-            'status': 'pending'
-        }
+        response = { 'status': 'pending' }
 
         if result:
-
             tx_status = int(result.get('status'), 16) # convert hex to decimal
 
             if tx_status == '1':
-                response = {
-                    'status': 'done'
-                }
+                response = { 'status': 'done' }
             elif tx_status == '0':
-                response = {
-                    'status': 'expired'
-                }
-            else:
-                replacedTxnId = getReplacedTX(txnid)
-                if replacedTxnId:
-                    fulfillment.payout_tx_id = replacedTxnId
-                    fulfillment.save()
-                    response = get_binance_txn_status(fulfillment)
+                response = { 'status': 'expired' }
 
     except Exception as e:
         logger.error(f'error: get_binance_txn_status - {e}')
+
     finally:
         return response
 
