@@ -33,18 +33,23 @@
     {% endblock %}
 
     {% include 'quadraticlands/components/footer.html' %}
-    
-    {% comment "ZW - below script required for Web3. lite is missing shared.js.. we can work around this if need be but for now, this gets web3 working." %}
-    {% include 'quadraticlands/components/footer_scripts_lite.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% endcomment %}
-    
+   
+    {% include 'quadraticlands/components/footer_scripts.html' %}
 
- 
   </body>
 
 
-  {% block 'scripts' %}
-  {% endblock %}
+  {% block 'scripts' %}{% endblock %}
 
+
+  <script>
+    needWalletConnection();
+    if ('addEventListener' in window) {
+      window.addEventListener('load', function () {
+        document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+      });
+      document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+  </script>
+  
 </html>

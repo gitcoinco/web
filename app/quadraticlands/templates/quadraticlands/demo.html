@@ -54,12 +54,17 @@
         </div>
         {% if not eth_signed_signature_hex %}
 		<div class="content">
-            <h1>This is a page that shows how the claim GTC Token function will work!</h1>    		
+            <h1>Click below to claim your GTC tokens!</h1>    		
         
+           
         <form class="content" action="./demo" method="post">
             {% csrf_token %}
+            
+            {% comment %}
             {{ form }}
-            <button class="btn" type="submit" value="Submit">im a button type submit</button>
+            {% endcomment %}
+            
+            <button action="./demo" method="post" class="btn" type="submit" value="Submit">ENTER THE QUADRATIC LANDS</button>
         </form>
        </div>
         {% else %}
