@@ -101,8 +101,4 @@ providerDisconnect.addEventListener("click", () => {
   walletProvider.classList.toggle("active"); // hide walletProvider menu
 });
 
-
-
-
-
 */
