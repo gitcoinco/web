@@ -27,14 +27,28 @@
 
     {% include 'quadraticlands/components/particles.html' %}
     {% include 'quadraticlands/components/nav.html' %}
-    {% include 'quadraticlands/components/wallet-provider.html' %}
 
+
+    <!-- just load wallet menu when user is auth -->
+    {% if user.is_authenticated %}
+      {% include 'quadraticlands/components/wallet-provider.html' %}
+    {% endif %}
+
+    
     {% block 'content' %}
     {% endblock %}
+
 
     {% include 'quadraticlands/components/footer.html' %}
    
     {% include 'quadraticlands/components/footer_scripts.html' %}
+
+
+    <!-- this is just here to have some test links - it have to go out
+      on deploy to real world -->
+    {% include 'quadraticlands/components/dev.html' %}
+
+
 
   </body>
 
