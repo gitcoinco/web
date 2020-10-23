@@ -35,6 +35,7 @@
   </head>
   <body class="interior {{ active }} grant grant-detail g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
+
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
@@ -51,6 +52,25 @@
 
     <div id="gc-grant-detail">
       <h2>This is Vue</h2>
+
+      <div class="modal fade show d-block" tabindex="-1" role="dialog" style="padding-right: 15px; " aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content text-center">
+            <div class="modal-header" style="border-bottom: none">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body px-5">
+              <img height="45" class="mb-4 unveil-loaded" src="http://localhost:8000/static/v2/images/badge-verify.svg">
+              <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
+              <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
+              <button id="triggerTwitter" class="btn btn-lg btn-gc-blue" data-toggle="modal" data-target="#startTwitterVerification">Verify with twitter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row"> 
         <div id="grants-details" class="col-12">
           <div class="row">
