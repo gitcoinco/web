@@ -375,13 +375,28 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#datatypes" title="Datatypes" class="md-nav__link">
-    Datatypes
+  <a href="#grants-api" title="Grants API" class="md-nav__link">
+    Grants API
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#generalized-api" title="Generalized API" class="md-nav__link">
+    Generalized API
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datatypes" title="Datatypes" class="md-nav__link">
+    Datatypes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#bounties" title="bounties" class="md-nav__link">
     bounties
   </a>
@@ -414,8 +429,8 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#grants" title="grants" class="md-nav__link">
     grants
   </a>
@@ -441,6 +456,11 @@
   <a href="#example-request_1" title="Example Request" class="md-nav__link">
     Example Request
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1409,7 +1429,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../grants/commands/" title="Commands" class="md-nav__link">
+    <a href="../grants/commands.md" title="Commands" class="md-nav__link">
       Commands
     </a>
   </li>
@@ -2070,13 +2090,28 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#datatypes" title="Datatypes" class="md-nav__link">
-    Datatypes
+  <a href="#grants-api" title="Grants API" class="md-nav__link">
+    Grants API
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#generalized-api" title="Generalized API" class="md-nav__link">
+    Generalized API
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datatypes" title="Datatypes" class="md-nav__link">
+    Datatypes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#bounties" title="bounties" class="md-nav__link">
     bounties
   </a>
@@ -2109,8 +2144,8 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#grants" title="grants" class="md-nav__link">
     grants
   </a>
@@ -2143,6 +2178,11 @@
     </nav>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
       
       
@@ -2162,7 +2202,25 @@
                 
                 
                 <h1 id="https-api">HTTPS API</h1>
-<p>Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1</p>
+<h2 id="grants-api">Grants API</h2>
+<ul>
+<li>Get a full list of grants at <code>https://gitcoin.co/grants/grants.json</code></li>
+<li>Get a list of contributors to each Gitcoin Grants Round at <code>https://gitcoin.co/grants/v1/api/export_addresses/roundX.json</code> where X is the round number, (1-7 supported as of Oct 2020)</li>
+<li>Get a list of contributors to a Gitcoin Grant at <code>https://gitcoin.co/grants/v1/api/export_addresses/grantX.json</code> where X is the ID of the grant.  You must be authenticated as a team member of the grant to access the data.</li>
+<li>Get a list of contributors to a Gitcoin Grant at a specififc round <code>https://gitcoin.co/grants/v1/api/export_addresses/grantX_roundY.json</code> where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.</li>
+<li>We've got an <code>https://gitcoin.co/grants/v1/api/export_addresses/all.json</code> endpoint available for those who'd like to just get all addresses that've ever funded a Gitcoin Grant.</li>
+<li>We've also put together a list of all grants on the platform, and the addresses you can contribute to them at, at https://gitcoin.co/grants/grants.json</li>
+</ul>
+<p>These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases..</p>
+<p>Click through to try them below:
+* https://gitcoin.co/grants/v1/api/export_addresses/round7.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
+* https://gitcoin.co/grants/v1/api/export_addresses/all.json
+* https://gitcoin.co/grants/grants.json</p>
+<p>NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at <code>https://gitcoin.co/settings/privacy</code> at anytime.</p>
+<h2 id="generalized-api">Generalized API</h2>
+<p>Gitcoin provides a simple read-only HTTPS API to access data. The API is live at https://gitcoin.co/api/v0.1</p>
 <h3 id="datatypes">Datatypes</h3>
 <p>Beyond simple datatypes like <code>string</code> or <code>integer</code> the API returns datatypes like dates that are serialized in a very specific fashion.</p>
 <table>
@@ -2672,6 +2730,7 @@
 </code></pre>
 
 <h1 id="web3-api">WEB3 API</h1>
+<h2 id="note-this-api-is-now-in-the-process-of-being-deprecated-as-since-going-cross-chain-gitcoin-no-longer-uses-standardbounties-as-the-base-layer-of-its-bounties-experience-this-api-will-still-be-useful-for-legacy-bounties-which-are-posted-to-standcard-bounties">Note: this API is now in the process of being deprecated, as since going cross-chain, Gitcoin no longer uses standardbounties as the base layer of it's bounties experience.  This API will still  be useful for legacy bounties which are posted to standcard bounties.</h2>
 <p>You may interact with the HTTPS API as follows</p>
 <pre><code class="shell">truffle(development)&gt; BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd').bountydetails.call('https://github.com/owocki/pytrader/pull/83');
 [ { [String: '100000000000000000'] s: 1, e: 17, c: [ 1000 ] },
