@@ -20,67 +20,74 @@
 <div id="wallet-provider">
 
 	<div class="header" id="close-wallet-provider">
-		<span>
-		<a href="#" id="wallet-btn">
-			Connect to a wallet
-		  </a>
-		</span>
+		Wallet
 		{% include "quadraticlands/_inlinesvg/close.svg" %}
 	</div>
 
-	<div class="status">
-		<div class="token">0.843 eth, 403 gtc</div>
-		<div class="net">Mainnet</div>
-		<div class="adress">0xbadc...8d90</div>
+
+
+	<!-- status infos about the connected wallet -->
+	<div class="status wallet-hidden d-none">
+
+		<!-- network name e.g. rinkeby, mainnet -->
+		<div class="network-name"></div>
+
+		<!-- the account address -->
+		<div class="selected-account"></div>
+
+		<!-- wallet accounts -->
+		<span id="wallet-accounts"></span>
+
+		
+       
 	</div>
 
-	<div id="providerMetamask" class="provider active">
-		<span>Metamask</span>
-		<img src="/static/quadraticlands/images/provider/metamask.svg" >
-	</div>
+	<!-- connect -->
+	<div class="provider" id="wallet-btn">Connect to a wallet</div>
 
-	<div id="providerWalletconnect" class="provider">
-		<span>WalletConnect</span>
-		<img src="/static/quadraticlands/images/provider/walletconnect.svg" >
-	</div>
-
-	<div id="providerPortis" class="provider">
-		<span>Portis</span>
-		<img src="/static/quadraticlands/images/provider/portis.svg" >
-	</div>
-
-	<div id="providerFortmatic" class="provider">
-		<span>Fortmatic</span>
-		<img src="/static/quadraticlands/images/provider/fortmatic.svg" >
-	</div>		
-
-	<div id="providerAuthereum" class="provider">
-		<span>Authereum</span>
-		<img src="/static/quadraticlands/images/provider/authereum.svg" >
-	</div>
-
-	<div id="providerDisconnect" class="provider">
-		<span>Disconnect</span>
+	<!-- disconnect -->
+	<div class="provider wallet-hidden d-none" id="btn-disconnect">
+		Disconnect
 		{% include "quadraticlands/_inlinesvg/disconnect.svg" %}
 	</div>
-	<div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
-        <a class="dropdown-item" href="#" id="wallet-btn">
-          Connect Wallet
-        </a>
-        <div class="dropdown-item wallet-hidden d-none">
-          <small>connected to:</small>
-          <div class="network-name"></div>
-          <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
-        </div>
-        <div class="dropdown-divider wallet-hidden d-none"></div>
-        <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
-        <div class="dropdown-divider wallet-hidden d-none"></div>
-        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
-          Disconnect
-        </a>
-      </div>
 
 </div>
+
+
+
+
+
+
+
+
+  <!-- cleaned out rest of gitcoins working wallet code
+    that seems to be mandatory to work ...
+    most of it could be transported to my menu ...
+    its all invisible anyway - it here so no existing js code do break.
+  -->
+  
+
+  <div style="display:none;">
+
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+    </a>
+
+    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet"></div>
+
+  </div>
+
+
+  <div id="templates" style="display: none;">
+    <template id="template-balance">
+      <div class="wallet-option" data-toggle="tooltip" title="Click to select this wallet">
+        <div class="wallet-address"></div>
+        <small class="wallet-balance"></small>
+      </div>
+    </template>
+  </div>
+
 
 
 

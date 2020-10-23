@@ -412,6 +412,10 @@ header nav {
   cursor: pointer;
   background-color: var(--space);
   border-bottom: 1px solid var(--smoke);
+  color: var(--stone);
+  font-size: 80%;
+  font-weight: 600;
+  align-self: center;
 }
 #wallet-provider div.header img, #wallet-provider div.header svg {
   width: 32px;
@@ -419,15 +423,6 @@ header nav {
   display: block;
   align-self: center;
   cursor: pointer;
-}
-#wallet-provider div.header img.hide, #wallet-provider div.header svg.hide {
-  display: none;
-}
-#wallet-provider div.header span {
-  color: var(--stone);
-  font-size: 80%;
-  font-weight: 600;
-  align-self: center;
 }
 #wallet-provider div.status {
   padding: 1em 2em;
@@ -439,11 +434,19 @@ header nav {
   color: var(--space);
   cursor: default;
 }
+#wallet-provider div.status small {
+  font-size: 100%;
+}
 #wallet-provider div.provider {
   display: grid;
   grid-template-columns: auto 32px;
   grid-column-gap: 1em;
   padding: 0.7em 1em;
+  cursor: pointer;
+  color: var(--stone);
+  font-size: 80%;
+  font-weight: 600;
+  align-self: center;
   cursor: pointer;
 }
 #wallet-provider div.provider img, #wallet-provider div.provider svg {
@@ -453,24 +456,9 @@ header nav {
   align-self: center;
   cursor: pointer;
 }
-#wallet-provider div.provider span {
-  color: var(--stone);
-  font-size: 80%;
-  font-weight: 600;
-  align-self: center;
-  cursor: pointer;
-}
-#wallet-provider div.provider.active span {
-  color: var(--white);
-  color: var(--purple);
-}
 #wallet-provider div.provider:hover {
-  background-color: var(--smoke);
-  background-color: var(--purple);
-}
-#wallet-provider div.provider:hover span {
-  color: var(--aqua);
   color: var(--space);
+  background-color: var(--purple);
 }
 
 [data-sal] {
@@ -1371,4 +1359,8 @@ section.background img, section.background svg {
 /*layout*/
 .hide {
   display: none;
+}
+
+.d-none {
+  display: none !important;
 }
