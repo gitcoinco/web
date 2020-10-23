@@ -186,3 +186,11 @@ $(document).ready(function() {
   compiledSplitter = typeof compiledSplitter0 != 'undefined' ? compiledSplitter0 : null;
 
 });
+
+
+const getFormData = object => {
+  const formData = new FormData();
+
+  Object.keys(object).forEach(key => formData.append(key, object[key]));
+  return formData;
+};
