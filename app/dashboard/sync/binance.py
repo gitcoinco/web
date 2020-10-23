@@ -7,8 +7,6 @@ from dashboard.sync.helpers import record_payout_activity
 
 logger = logging.getLogger(__name__)
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0. 2272.118 Safari/537.36.'}
-
 
 def get_binance_txn_status(fulfillment):
     txnid = fulfillment.payout_tx_id
@@ -30,6 +28,10 @@ def get_binance_txn_status(fulfillment):
             'jsonrpc': '2.0',
             'method': 'eth_getTransactionReceipt',
             'params': [ txnid ]
+        }
+
+        headers = {
+            'Host': 'gitcoin.co'
         }
 
         binance_response = requests.post(binance_url, json=data, headers=headers).json()
