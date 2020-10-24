@@ -38,14 +38,16 @@
       </div>
 
 
-      <!-- all navigation elements 
-        please add  'aria-current="page"' to a href what is the current page -->
-
       <ul>
-        <a href="about" class="particleAttract"><li>About</li></a>
+
+        <a href="/quadraticlands/about" class="particleAttract"
+        {% if "about" in request.path %} aria-current="page" {% endif %}
+        ><li>About</li></a>
 
         <!-- the URL of this href have to be dynamic based on users progress -->
-        <a href="mission" class="particleAttract" >
+        <a href="/quadraticlands/mission" class="particleAttract" 
+        {% if "mission" in request.path %} aria-current="page" {% endif %}
+        >
           <li>
             Mission
             <!-- this span should just be here, if user can claim x GTC tokens AND logged in -->

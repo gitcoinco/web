@@ -322,7 +322,6 @@ header {
   font-weight: 600;
   font-size: 80%;
   margin: 0em 30px;
-  margin-bottom: 3em;
 }
 header .logo {
   height: 48px;
@@ -1003,6 +1002,9 @@ section#footer a {
   font-weight: 600;
   font-size: 80%;
   color: var(--purple_light);
+}
+section#footer a[aria-current=page] {
+  color: var(--white);
 }
 section#footer a:last-child {
   margin-right: initial;
