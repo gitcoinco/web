@@ -56,29 +56,24 @@
 
 
 	
-
+<!-- This is used to find out if we have a signed claim yet or not -->
   {% if not eth_signed_signature_hex %}
 
   <!--FORM TO SUBMIT-->
 
   <section class="column">
 
-    <h1>Click below to claim your GTC tokens!</h1>    		
+    <h1>Click below to generate your signed claim message!</h1>    		
    
     <form class="content" action="./demo" method="post">
         {% csrf_token %}
-        
-        {% comment %}
-        {{ form }}
-        {% endcomment %}
-        
-        <button action="./demo" method="post" class="btn" type="submit" value="Submit">ENTER THE QUADRATIC LANDS</button>
+        <button action="./demo" method="post" class="btn" type="submit" value="Submit">GENERATE CLAIM!</button>
     </form>
   
   </section>
 
 
-
+  <!-- we do have signed claim data so we can proceed to interact with the TokenDistribution contract -->
   {% else %}
 
 
@@ -90,15 +85,13 @@
   <h1>some technical details for tech lovers</h1> 
 
 
-    <!-- all these are empty so you need these ? if  not just delete this p -->
-    <p>
+    <!-- These are required -->
       {{ user_id|json_script:"user_id" }}<br/>
       {{ user_address|json_script:"user_address" }}<br/>
       {{ user_amount|json_script:"user_amount" }}<br/>
       {{ msg_hash_hex|json_script:"msg_hash_hex" }}<br/>
       {{ eth_signed_message_hash_hex|json_script:"eth_signed_message_hash_hex" }}<br/>
       {{ eth_signed_signature_hex|json_script:"eth_signed_signature_hex" }}
-    </p>
 
 
     <!-- i use word-break to break long hashes into multiple lines to not destroy layout width-->
@@ -116,7 +109,7 @@
     <label style="display:none;" for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
 
     <!-- btn -->
-    <a href="#" id="claim" class="btn">{% trans "Claim" %}</a>
+    <a href="#" id="claim" class="btn">{% trans "CLAIM GTC TOKENS" %}</a>
 
   </section>
 

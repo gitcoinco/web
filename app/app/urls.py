@@ -46,7 +46,7 @@ import marketing.views
 import marketing.webhookviews
 import perftools.views
 import ptokens.views
-import quadraticlands.views
+# import quadraticlands.views
 import quests.views
 import retail.emails
 import retail.views
@@ -756,14 +756,9 @@ urlpatterns = [
     path('wiki/notifications/', include('django_nyt.urls')),
 
     # quadratic lands 
-    re_path(r'^quadraticlands/?$', quadraticlands.views.index, name='quadraticlands_index'),
-    re_path(r'^quadraticlands/demo/?', quadraticlands.views.claim, name='demo'),
-    re_path(r'^quadraticlands/about/?', quadraticlands.views.about, name='about'),
-    re_path(r'^quadraticlands/terms/?', quadraticlands.views.terms, name='terms'),
-    re_path(r'^quadraticlands/privacy/?', quadraticlands.views.privacy, name='privacy'),
-    re_path(r'^quadraticlands/faq/?', quadraticlands.views.faq, name='privacy'),
-    re_path(r'^quadraticlands/missions/?', quadraticlands.views.missions, name='missions'),
-    re_path(r'^quadraticlands/send_token_claim/?', quadraticlands.views.send_token_claim, name='claim_tokens'), 
+    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
+    re_path(r'^quadraticlands/$', include('quadraticlands.urls', namespace='ql_catchall_')),
+    # re_path(r'^quadraticlands/$', include('quadraticlands.urls', namespace='ql_catchall')),
 
 ]
 
