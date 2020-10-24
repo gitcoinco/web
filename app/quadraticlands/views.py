@@ -47,16 +47,64 @@ logger = logging.getLogger(__name__)
 
 # TODO - add a new envar for Token Request Siging micro service URL
 # TODO - add a new envar for HMAC or other auth key for communicating with micro service 
-# settings.DATABASE_URL
+
+
+# @Richard, please feel free to adjust these as necessary. 
+# This is mostly a matter of preference and I don't know what you prefer 
+# it's worth note, these do not denote the URI path for user, but just where the files live in our app 
+# the URIs from a user perspective are defined in urls.py ;) 
 
 def index(request):
     return TemplateResponse(request, 'quadraticlands/index.html')
 
+def about(request):
+    return TemplateResponse(request, 'quadraticlands/about.html')
 
+def terms(request):
+    return TemplateResponse(request, 'quadraticlands/terms-of-service.html')
+
+def privacy(request):
+    return TemplateResponse(request, 'quadraticlands/privacy.html')
+
+def faq(request):
+    return TemplateResponse(request, 'quadraticlands/faq.html')
+
+def dashboard(request):
+    return TemplateResponse(request, 'quadraticlands/dashboard.html')
+
+def m_k_i(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/intro.html')
+
+def m_k_q_1(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_1.html')
+
+def m_k_q_1_w(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_1_wrong.html')
+
+def m_k_q_1_r(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_1_right.html')
+
+def m_k_q_2(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_2.html')
+
+def m_k_q_2_w(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_2_wrong.html')
+
+def m_k_q_2_r(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_2_right.html')   
+
+def m_k_o(request):
+    return TemplateResponse(request, 'quadraticlands/missions/knowledge/outro.html')
+
+
+# @Richard please don't adjust anything below here without talking to me first 
+# @require_http_methods(["GET", "POST"]) --> not working as likely not used by gitcoin.co app?
 # ratelimit.UNSAFE is a shortcut for ('POST', 'PUT', 'PATCH', 'DELETE').
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-# @require_http_methods(["GET", "POST"])
 def claim(request):
+    '''
+    TODO - fill this in with some detailed info on how claim works 
+    '''
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
    
@@ -153,23 +201,6 @@ def claim(request):
        
         return TemplateResponse(request, 'quadraticlands/demo.html', context)
 
-def send_token_claim(request, context):
-    return TemplateResponse(request, 'quadraticlands/send_token_claim.html', context)
-
-def about(request):
-    return TemplateResponse(request, 'quadraticlands/about.html')
-
-def terms(request):
-    return TemplateResponse(request, 'quadraticlands/terms-of-service.html')
-
-def privacy(request):
-    return TemplateResponse(request, 'quadraticlands/privacy.html')
-
-def faq(request):
-    return TemplateResponse(request, 'quadraticlands/faq.html')
-
-def missions(request):
-    return TemplateResponse(request, 'quadraticlands/missions.html')
 
 # HMAC sig function 
 def create_sha256_signature(key, message):

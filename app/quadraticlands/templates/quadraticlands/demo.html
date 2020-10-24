@@ -63,11 +63,11 @@
 
   <section class="column">
 
-    <h1>Click below to claim your GTC tokens!</h1>    		
+    <h1>Click below to generate your signed claim message!</h1>    		
    
     <form class="content" action="./demo" method="post">
         {% csrf_token %}
-        <button action="./demo" method="post" class="btn" type="submit" value="Submit">ENTER THE QUADRATIC LANDS</button>
+        <button action="./demo" method="post" class="btn" type="submit" value="Submit">GENERATE CLAIM!</button>
     </form>
   
   </section>
@@ -109,7 +109,7 @@
     <label style="display:none;" for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
 
     <!-- btn -->
-    <a href="#" id="claim" class="btn">{% trans "Claim" %}</a>
+    <a href="#" id="claim" class="btn">{% trans "CLAIM GTC TOKENS" %}</a>
 
   </section>
 
