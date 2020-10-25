@@ -1,0 +1,75 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+<!--PROOF OF RECIEVE -->
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background-question.svg">
+</section>
+
+<section class="quest">
+
+	<!-- content-->
+	<main>
+		<div class="wrapper">
+			<div class="claim">
+				<h3>Claiming <span>(Pending)</span></h3>
+				<h1>300 GTC</h1>
+				<p>The tokens are on the way this will need some minutes. <br/>
+				<a href="#">View on Etherscan</a></p>
+			</div>
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav>
+
+		<div class="left">
+			<a href="/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Recieve
+		</div>
+
+		<div class="right">
+			<div class="">
+				<a class="" href="/quadraticlands/mission/recieve/claimed">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+				</a>
+			</div>
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!-- simulate sucessfull transaction -->
+	<meta http-equiv="refresh" content="10; URL=/quadraticlands/mission/recieve/claimed">
+
+{% endblock %}
+
+

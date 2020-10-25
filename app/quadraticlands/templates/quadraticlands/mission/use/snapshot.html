@@ -1,0 +1,77 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background-question.svg">
+</section>
+
+
+<section class="quest">
+
+	<!-- content-->
+	<main>
+		<div class="wrapper">
+			<div class="claim">
+				<h3>Vote</h3>
+				<h1>Does Gitcoin needs a Redesign?</h1>
+				<p style="margin-bottom:2em;">Connect your wallet with snapshot.page and contribute in our this vote. Then come back.</p>
+				<a class="btn" target="_blank" href="https://snapshot.page/#/yam/proposal/QmQxMTQkz7fW3AXma69ueEwhq5Sf8HNdUYseEFQFw3uKEx">Vote</a>
+			</div>
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav>
+
+		<div class="left">
+			<a href="/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Use
+		</div>
+
+		<div class="right">
+			<div id="nextButton" class="hide" >
+				<a class="btn" href="/quadraticlands/mission/use/outro">Continue</a>
+			</div>
+			
+			<div id="waitingSpinner">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+			</div>
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<script>
+		const space = "balancer";
+		const proposal = "QmQpKL29E6ydTvC6p9NoEbTda9ddDkVtWe2YWpWK3NFYqq";
+		const userAddress = "0xA95b42B41D84d5CD176df38eFDFA0d8706018F21";
+	</script>
+
+	<script src="/static/quadraticlands/js/snapshot.js"></script>
+
+{% endblock %}
+
+

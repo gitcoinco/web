@@ -1,0 +1,60 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background-question.svg">
+</section>
+
+
+<section class="quest">
+
+	<!-- quest content with video-->
+	<main>
+		<div class="wrapper">
+			<div class="video">
+				<iframe src="https://www.youtube.com/embed/QtgFm38ck0k?rel=0" frameborder="0"allowfullscreen></iframe>
+			</div>
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav>
+
+		<div class="left">
+			<a href="/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Knowledge
+		</div>
+
+		<div class="right">
+			<a class="btn" href="/quadraticlands/mission/knowledge/question/1">Start</a>
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+{% endblock %}
+
+

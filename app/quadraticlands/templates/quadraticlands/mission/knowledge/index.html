@@ -1,0 +1,41 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="grid">
+	
+	<figure>
+		<img src="/static/quadraticlands/images/proof-of-know-start.svg">
+	</figure>
+
+	<div>
+		<h3><span>#</span>Chapter 1 of 3</h3>
+		<h1>Proof of knowledge</h1>
+		<p>You will see a video about Gitcoin and will play a little quiz to pass this Test.</p>
+		<a href="/quadraticlands/mission/knowledge/intro" class="btn">I am ready</a>
+	</div>
+
+</section>
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+	
+{% endblock %}
+
+

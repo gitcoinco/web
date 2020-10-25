@@ -72,29 +72,85 @@ def faq(request):
 def dashboard(request):
     return TemplateResponse(request, 'quadraticlands/dashboard.html')
 
-def m_k_i(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/intro.html')
 
-def m_k_q_1(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_1.html')
+def mission(request):
+    return TemplateResponse(request, 'quadraticlands/mission/index.html')   
 
-def m_k_q_1_w(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_1_wrong.html')
 
-def m_k_q_1_r(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_1_right.html')
 
-def m_k_q_2(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_2.html')
 
-def m_k_q_2_w(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_2_wrong.html')
+def mission_knowledge_index(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/index.html')
+    
+def mission_knowledge_intro(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/intro.html')
 
-def m_k_q_2_r(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/question_2_right.html')   
+def mission_knowledge_question_1(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1.html')
 
-def m_k_o(request):
-    return TemplateResponse(request, 'quadraticlands/missions/knowledge/outro.html')
+def mission_knowledge_question_1_right(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1_right.html')
+
+def mission_knowledge_question_1_wrong(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1_wrong.html')    
+
+def mission_knowledge_question_1_timeout(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1_timeout.html')    
+
+def mission_knowledge_question_2(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2.html')
+
+def mission_knowledge_question_2_right(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2_right.html')
+
+def mission_knowledge_question_2_wrong(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2_wrong.html')    
+
+def mission_knowledge_question_2_timeout(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2_timeout.html')   
+
+def mission_knowledge_outro(request):
+    return TemplateResponse(request, 'quadraticlands/mission/knowledge/outro.html')   
+
+
+
+
+def mission_recieve_index(request):
+    return TemplateResponse(request, 'quadraticlands/mission/recieve/index.html')   
+
+def mission_revieve_claim(request):
+    return TemplateResponse(request, 'quadraticlands/mission/recieve/claim.html')   
+
+def mission_revieve_claiming(request):
+    return TemplateResponse(request, 'quadraticlands/mission/recieve/claiming.html')  
+
+def mission_revieve_claimed(request):
+    return TemplateResponse(request, 'quadraticlands/mission/recieve/claimed.html') 
+
+def mission_recieve_outro(request):
+    return TemplateResponse(request, 'quadraticlands/mission/recieve/outro.html')   
+
+
+
+
+def mission_use_index(request):
+    return TemplateResponse(request, 'quadraticlands/mission/use/index.html')  
+
+def mission_use_snapshot(request):
+    return TemplateResponse(request, 'quadraticlands/mission/use/snapshot.html') 
+
+def mission_use_outro(request):
+    return TemplateResponse(request, 'quadraticlands/mission/use/outro.html')   
+
+     
+
+
+def mission_end(request):
+    return TemplateResponse(request, 'quadraticlands/mission/end.html')   
+
+    
+
+
 
 
 # @Richard please don't adjust anything below here without talking to me first 
