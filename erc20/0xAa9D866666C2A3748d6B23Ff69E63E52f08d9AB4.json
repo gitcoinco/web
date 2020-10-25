@@ -1,0 +1,27 @@
+{
+  "symbol": "FMTA",
+  "address": "0xAa9D866666C2A3748d6B23Ff69E63E52f08d9AB4",
+  "overview": {
+    "en": "The Fundamenta Token (FMTA) and Civitas Fundamenta are a bold new take on Capital and start-up funding. Through DeFi and Liquidity Pools Civitas Fundamenta wants to build a Community Governed Capital funding platform that will let YOU decide what is worthy of funding."
+  },
+  "email": "mhooft@fundamenta.network",
+  "website": "https://fundamenta.network/",
+  "whitepaper": "https://fundamenta.network/theme/asset/Fundamenta.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-16",
+  "initial_price": {
+    "ETH": "0.000047 ETH",
+    "USD": "0.019 USD",
+    "BTC": "0.0000015 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/@CivitasFundamenta",
+    "twitter": "https://twitter.com/FundamentaToken",
+    "telegram": "https://t.me/CivitasFundamenta",
+    "reddit": "https://reddit.com/r/FMTA",
+    "github": "https://github.com/civitas-fundamenta",
+    "facebook": "",
+    "slack": "",
+    "medium": "https://medium.com/@CivitasFundamenta"
+  }
+}
