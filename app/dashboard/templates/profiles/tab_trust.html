@@ -64,19 +64,15 @@
           </div>
         </div>
         <div class="col-6 col-md-2">
-          {% if is_idena_connected %}
-          <!-- TODO -->
-          <form name="disconnect-idena-link" method="post" action="{{ logout_idena_url }}">
-            {% csrf_token %}
-            <input type="submit" value="Disconnect" class="button button--primary text-nowrap"/>
-        </form>
-            <!-- <a href={{ logout_idena_url }} role="button" id="disconnect-idena-link" class="button button--primary text-nowrap">Disconnect</a> -->
+          {% if is_idena_verified %}
+            <span style="color:limegreen"><i class="fas fa-check"></i> Verified </span>
+          {% elif is_idena_connected %}
+            <span style="color:orange"><i class="fal fa-exclamation-circle"></i> Pending Validation</span>
           {% else %}
             <a href={{ login_idena_url }} role="button" id="connect-idena-link" class="button button--primary text-nowrap">Connect</a>
           {% endif %}
         </div>
       </div>
-
 
       <!-- SMS ROW -->
       <div class="row mb-4">
