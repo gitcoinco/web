@@ -74,7 +74,7 @@
               <div class="from-group mb-3 mt-4">
                 <label  class="font-weight-semibold" for="project_profiles">Team Members (Optional) <small>Add Gitcoin Usernames</small></label>
                 <div class="form__select2 g-multiselect">
-                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp">
                       {% for profile in project_selected.profiles.all %}
                       <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
                     {% endfor %}
@@ -142,7 +142,7 @@
               <div class="from-group mb-3 mt-4">
                 <label class="font-weight-semibold" for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">
-                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp">
                   </select>
                 </div>
                 <small id="profilesHelp" class="form-text text-muted">
