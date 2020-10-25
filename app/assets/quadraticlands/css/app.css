@@ -281,7 +281,6 @@ nav {
 
 #nav-signin {
   align-self: center;
-  background-color: brown;
 }
 #nav-signin .btn {
   margin-bottom: 0px;
@@ -1041,6 +1040,14 @@ section#footer a:hover {
 }
 .collapse.visible .answer {
   display: block;
+}
+
+.web3modal-modal-card {
+  background-color: var(--space) !important;
+}
+
+.web3modal-provider-wrapper {
+  border: none !important;
 }
 
 /* section */
