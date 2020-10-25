@@ -1,0 +1,40 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="grid">
+	
+	<figure>
+		<img src="/static/quadraticlands/images/proof-of-recieve-start.svg">
+	</figure>
+
+	<div>
+		<h3><span>#</span>Chapter 2 of 3</h3>
+		<h1>Proof of recieve</h1>
+		<p>You will be rewarded with GTC Tokens.</p>
+		<a href="/quadraticlands/mission/recieve/claim" class="btn">I am ready</a>
+	</div>
+
+</section>
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+{% endblock %}
+
+

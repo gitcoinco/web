@@ -44,7 +44,6 @@
         {% if "about" in request.path %} aria-current="page" {% endif %}
         ><li>About</li></a>
 
-        <!-- the URL of this href have to be dynamic based on users progress -->
         <a href="/quadraticlands/mission" class="particleAttract" 
         {% if "mission" in request.path %} aria-current="page" {% endif %}
         >
@@ -68,10 +67,12 @@
 
     <!-- user avatar / username -->
     <div id="nav-user" class="particleAttract" >
-      <div>
-          <img src="/dynamic/avatar/{{user.username}}" >
-          <span>{{user.username}}</span>
-      </div>
+      <a href="/quadraticlands/dashboard">
+        <div>
+            <img src="/dynamic/avatar/{{user.username}}" >
+            <span>{{user.username}}</span>
+        </div>
+      </a>
     </div>
 
     <!-- default wallet button / wallet status

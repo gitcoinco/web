@@ -1,0 +1,38 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<section class="grid">
+	
+	<figure>
+		<img src="/static/quadraticlands/images/proof-of-use-start.svg">
+	</figure>
+
+	<div>
+		<h3><span>#</span>Chapter 3 of 3</h3>
+		<h1>Proof of use</h1>
+		<p>You will connect your wallet with snapshot.page and contribute in a vote.</p>
+		<a href="/quadraticlands/mission/use/snapshot" class="btn">I am ready</a>
+	</div>
+
+</section>
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+{% endblock %}
+
+
