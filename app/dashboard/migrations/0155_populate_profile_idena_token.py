@@ -32,7 +32,7 @@ def gen_uuid_0(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0155_profile_idena_token'),
+        ('dashboard', '0154_profile_idena_address'),
     ]
 
     operations = [

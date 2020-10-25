@@ -13,6 +13,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='idena_address',
-            field=models.CharField(blank=True, max_length=128),
+            field=models.CharField(null=True, unique=True, max_length=128),
+        ),
+        migrations.AddField(
+            model_name='profile',
+            name='is_idena_connected',
+            field=models.BooleanField(default=False),
+        ),
+        migrations.AddField(
+            model_name='profile',
+            name='idena_nonce',
+            field=models.CharField(null=True, max_length=128),
+        ),
+        migrations.AddField(
+            model_name='profile',
+            name='idena_token',
+            field=models.UUIDField(null=True),
         ),
     ]

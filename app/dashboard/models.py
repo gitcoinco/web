@@ -2941,8 +2941,8 @@ class Profile(SuperModel):
     # Idena fields
     idena_token = models.UUIDField(default=uuid.uuid4, unique=True)
     is_idena_connected=models.BooleanField(default=False)
-    idena_address = models.CharField(max_length=128, blank=True)
-    idena_nonce = models.CharField(max_length=128, blank=True)
+    idena_address = models.CharField(max_length=128, null=True, unique=True)
+    idena_nonce = models.CharField(max_length=128, null=True)
 
     def idena_status(self):
         return get_idena_status(self.idena_address)

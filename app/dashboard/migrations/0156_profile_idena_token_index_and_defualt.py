@@ -7,7 +7,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0156_populate_profile_idena_token'),
+        ('dashboard', '0155_populate_profile_idena_token'),
     ]
 
     operations = [

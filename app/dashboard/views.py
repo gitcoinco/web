@@ -2946,6 +2946,7 @@ def get_profile_by_idena_token(token):
 @require_POST
 def logout_idena(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+   
     if not is_logged_in_user:
         return JsonResponse({
             'ok': False,
@@ -2995,6 +2996,14 @@ def start_session_idena(request, handle):
         return JsonResponse({
             'success': False,
             'error': f'Address is invalid'
+        })
+
+    address_exists = Profile.objects.filter(idena_address=idena_address).exists()
+    
+    if address_exists:
+        return JsonResponse({
+            'success': False,
+            'error': f'Address already exists'
         })
 
     profile.idena_nonce = gen_idena_nonce()
