@@ -4503,25 +4503,13 @@ def hackathon_save_project(request):
         })
 
 
-@login_required
 def get_project(request, project_id):
-    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-    params = project(project_id)
-    if not params:
-        raise Http404("The project doesnt exists.")
-
-    return JsonResponse(params)
-
-
-def project(project_id):
-    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    if not project:
-        raise None
     params = project_data(project_id)
     if not params:
         raise Http404("The project doesnt exists.")
 
     return JsonResponse(params)
+
 
 def project_data(project_id):
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
@@ -4562,7 +4550,6 @@ def project_data(project_id):
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
             } for member_profile in project.profiles.all()],
-            'team_members_profile': project.profiles.all()
         },
         'comments': comments,
         'hackathon': hackathon_obj[0],

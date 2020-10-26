@@ -69,20 +69,26 @@ const projectModal = (bountyId, projectId, callback) => {
     });
     $('#projectForm').on('submit', function(e) {
       e.preventDefault();
+      const url = $('#videodemo-url').val();
+      const metadata = getVideoMetadata(url);
+
+      if (metadata) {
+        $('#videodemo-provider').val(metadata.provider);
+      }
       let logo = $(this)[0]['logo'].files[0];
       let data = $(this).serializeArray();
 
       submitProject(logo, data, callback);
     });
-  });
 
-  $('#videodemo-url').keyup(function(event) {
-    const url = $('#videodemo-url').val();
-    const metadata = getVideoMetadata(url);
+    $('#videodemo-url').keyup(function(event) {
+      const url = $('#videodemo-url').val();
+      const metadata = getVideoMetadata(url);
 
-    if (metadata) {
-      $('#videodemo-provider').val(metadata.provider);
-    }
+      if (metadata) {
+        $('#videodemo-provider').val(metadata.provider);
+      }
+    });
   });
 
   $(document).on('change', '#project_logo', function() {
