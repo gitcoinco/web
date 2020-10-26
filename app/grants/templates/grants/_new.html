@@ -124,7 +124,7 @@
             <!-- Team -->
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
-              <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch"  :options="usersOptions" placeholder="Add your team" v-model="teamMembers" multiple>
+              <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch"  :options="usersOptions" placeholder="Add your team Gitcoin usernames" v-model="teamMembers" multiple>
                 <template slot="no-options">
                   type to search Users..
                 </template>
