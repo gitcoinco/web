@@ -2777,6 +2777,10 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
     )
+    anonymize_gitcoin_grants_contributions_help = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will anonymize your Gitcoin Grants contributions',
+    )
     hide_profile = models.BooleanField(
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',

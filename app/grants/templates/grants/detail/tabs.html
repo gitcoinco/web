@@ -333,7 +333,9 @@
     <div id="section-nav-contributors">
       <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributors %}
-          {% if contribution.subscription %}
+          {% if contribution.anonymous %}
+            {% trans  'Anonymous' as handle %}
+          {% elif contribution.subscription %}
             {% trans  contribution.subscription.contributor_profile.handle  as handle %}
           {% else %}
             {% trans  contribution.profile.handle  as handle %}

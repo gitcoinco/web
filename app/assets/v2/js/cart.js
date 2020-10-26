@@ -50,6 +50,7 @@ Vue.component('grants-cart', {
       grantData,
       comments: undefined,
       hideWalletAddress: true,
+      AnonymizeGrantsContribution: true,
       windowWidth: window.innerWidth,
       userAddress: undefined,
       // Checkout, zkSync
@@ -1203,6 +1204,7 @@ Vue.component('grants-cart', {
         gas_price: 0,
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,
+        anonymize_gitcoin_grants_contributions: this.AnonymizeGrantsContribution,
         match_direction: '+',
         network: document.web3network,
         num_periods: 1,
