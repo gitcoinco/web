@@ -29,7 +29,11 @@ const submitProject = (logo, data, callback) => {
     if (callback) {
       callback(response);
     }
+    if (document.location.pathname.includes('fulfill')) {
+      document.location.reload();
+    }
     return _alert({message: response.msg}, 'info');
+
 
   }).fail(function(data) {
     _alert(data.responseJSON['error'], 'error');

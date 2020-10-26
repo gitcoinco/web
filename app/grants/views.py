@@ -31,6 +31,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import Paginator
 from django.db import connection
@@ -58,7 +59,7 @@ from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
@@ -68,7 +69,8 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
-from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member
+from grants.tasks import update_grant_metadata
+from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
@@ -232,6 +234,159 @@ def lazy_round_number(n):
         return f"{round(n/1000, 1)}k"
     return n
 
+# helper functions - start
+def helper_grants_round_start_end_date(request, round_id):
+    start = timezone.now()
+    end = timezone.now()
+    if round_id == 7:
+        # TODO: fix the round_number field in grantclr being overloaded
+        start = timezone.datetime(2020, 9, 15)
+        end = timezone.datetime(2020, 10, 3)
+    else:
+        try:
+            gclr = GrantCLR.objects.filter(round_num=round_id).first()
+            start = gclr.start_date
+            end = gclr.end_date
+        except Exception as e:
+            print(e)
+    return start, end
+
+def helper_contributions_to_earnings(_contributions):
+    from dashboard.models import Earning #avoid circulr import
+    return Earning.objects.filter(
+        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+        source_id__in=_contributions,
+        )
+
+def helper_earnings_to_addr_list(earnings):
+    items = earnings.values_list('history__payload__from', flat=True)
+    return list(items)
+
+def helper_grants_output(request, meta_data, earnings):
+
+    # gather_stats
+    tx_count_start = earnings.count()
+    addr_count_start = len(set([ele for ele in helper_earnings_to_addr_list(earnings)]))
+
+    # privacy first
+    earnings = earnings.exclude(from_profile__hide_wallet_address_anonymized=True)
+
+    # gather metadata, before & aftter filtering
+    addresses = list(set([ele for ele in helper_earnings_to_addr_list(earnings) if ele]))
+    addr_count_end = len(set(addresses))
+
+    response = {
+        'meta': {
+            'generated_at': request.build_absolute_uri(),
+            'generated_on': timezone.now().strftime("%Y-%m-%d"),
+            'stat':{
+                'transactions_found': tx_count_start,
+                'unique_addresses_found': addr_count_start,
+                'unique_addresses_found_after_privacy_preferences': addr_count_end,
+                'unique_addresses_removed_per_privacy_preferences': addr_count_start - addr_count_end,
+            },
+            'meta': meta_data,
+        },
+        'addresses': addresses
+    }
+    return JsonResponse(response, safe=False)
+# helper functions - end
+
+grants_data_release_date = timezone.datetime(2020, 10, 22)
+
+@login_required
+def contribution_addr_from_grant_as_json(request, grant_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+       'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', subscription__grant__id=grant_id,
+        created_on__gt=start, created_on__lt=end
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+        'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+@login_required
+def contribution_addr_from_round_as_json(request, round_id):
+
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet', created_on__gt=start, created_on__lt=end
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+def contribution_addr_from_all_as_json(request):
+
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    _contributions = Contribution.objects.filter(
+        subscription__network='mainnet'
+    )
+    earnings = helper_contributions_to_earnings(_contributions)
+    meta_data = {
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
 def grants_addr_as_json(request):
     _grants = Grant.objects.filter(
         network='mainnet', hidden=False
@@ -327,7 +482,7 @@ def bulk_grants_for_cart(request):
     grants = []
 
     for grant in _grants:
-        grants.append(grant.cart_payload())
+        grants.append(grant.cart_payload(request.build_absolute_uri))
 
     return JsonResponse({'grants': grants})
 
@@ -482,7 +637,10 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
     if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-        _grants = _grants.filter(is_clr_active=True)
+        grant_type_obj = GrantType.objects.filter(name=grant_type).first()
+        is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
+        if is_there_a_clr_round_active_for_this_grant_type_now:
+            _grants = _grants.filter(is_clr_active=True)
 
     if omit_my_grants and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
@@ -972,6 +1130,7 @@ def grants_by_grant_clr(request, clr_round):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
+# TODO: REMOVE
 def add_form_categories_to_grant(form_category_ids, grant, grant_type):
     form_category_ids = [int(i) for i in form_category_ids if i != '']
 
@@ -1189,12 +1348,14 @@ def grant_details(request, grant_id, grant_slug):
         'clr_active': is_clr_active,
         'round_num': clr_round_num,
         'is_team_member': is_team_member,
+        'is_owner': grant.admin_profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
+        'tenants': grant.tenants,
     }
 
     if tab == 'stats':
@@ -1268,92 +1429,184 @@ def grant_new_whitelabel(request):
 def grant_new(request):
     """Handle new grant."""
 
-    from grants.utils import add_grant_to_active_clrs
+    if request.method == 'POST':
+
+        from grants.utils import add_grant_to_active_clrs
+
+        response = {
+            'status': 400,
+            'message': 'error: Bad Request. Unable to create grant'
+        }
+
+        # step 1: validate input
+
+        user = request.user if request.user.is_authenticated else None
+        if not user:
+            response['message'] = 'error: user needs to be authenticated to create grant'
+            return JsonResponse(response)
+
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            response['message'] = 'error: no matching profile found'
+            return JsonResponse(response)
+
+        grant_type = request.POST.get('grant_type', None)
+        if not grant_type:
+            response['message'] = 'error: grant_type is a mandatory parameter'
+            return JsonResponse(response)
+
+        title = request.POST.get('title', None)
+        if not title:
+            response['message'] = 'error: title is a mandatory parameter'
+            return JsonResponse(response)
+
+        description = request.POST.get('description', None)
+        if not description:
+            response['message'] = 'error: description is a mandatory parameter'
+            return JsonResponse(response)
+
+        description_rich = request.POST.get('description_rich', None)
+        if not description_rich:
+            description_rich = description
+
+        eth_payout_address = request.POST.get('eth_payout_address', None)
+        zcash_payout_address = request.POST.get('zcash_payout_address', None)
+        if not eth_payout_address and not zcash_payout_address:
+            response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
+            return JsonResponse(response)
+
+        if zcash_payout_address and not zcash_payout_address.startswith('t'):
+            response['message'] = 'error: zcash_payout_address must be a transparent address'
+            return JsonResponse(response)
+
+        project_pk = request.POST.get('project_pk', '')
+        if project_pk:
+            HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
+
+        token_symbol = request.POST.get('token_symbol', 'Any Token')
+        logo = request.FILES.get('logo', None)
+        metdata = json.loads(request.POST.get('receipt', '{}'))
+        team_members = request.POST.getlist('team_members[]')
+        reference_url = request.POST.get('reference_url', '')
+        github_project_url = request.POST.get('github_project_url', None)
+        network = request.POST.get('network', 'mainnet')
+        twitter_handle_1 = request.POST.get('handle1', '')
+        twitter_handle_2 = request.POST.get('handle2', '')
+
+
+        # TODO: REMOVE
+        contract_version = request.POST.get('contract_version', '2')
+
+        grant_kwargs = {
+            'title': title,
+            'description': description,
+            'description_rich': description_rich,
+            'reference_url': reference_url,
+            'github_project_url': github_project_url,
+            'admin_address': eth_payout_address,
+            'zcash_payout_address': zcash_payout_address,
+            'token_symbol': token_symbol,
+            'contract_version': contract_version,
+            'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
+            'network': network,
+            'twitter_handle_1': twitter_handle_1,
+            'twitter_handle_2': twitter_handle_2,
+            'metadata': metdata,
+            'last_update': timezone.now(),
+            'admin_profile': profile,
+            'logo': logo,
+            'hidden': False,
+            'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
+            'grant_type': GrantType.objects.get(name=grant_type),
+        }
+
+
+        grant = Grant.objects.create(**grant_kwargs)
+        new_grant_admin(grant)
+
+        team_members = (team_members[0].split(','))
+        team_members.append(profile.id)
+        team_members = list(set(team_members))
+
+        team_members = [int(i) for i in team_members if i != '']
+
+        grant.team_members.add(*team_members)
+
+        form_category_ids = request.POST.getlist('categories[]')
+        form_category_ids = (form_category_ids[0].split(','))
+        form_category_ids = list(set(form_category_ids))
+
+        for category_id in form_category_ids:
+            grant_category = GrantCategory.objects.get(pk=category_id)
+            grant.categories.add(grant_category)
+
+        grant.save()
+
+        messages.info(
+            request,
+            _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+        )
+
+        record_grant_activity_helper('new_grant', grant, profile)
+        new_grant(grant, profile)
+
+        response = {
+            'status': 200,
+            'success': True,
+            'message': 'grant created',
+            'url': grant.url,
+        }
+
+        return JsonResponse(response)
+
 
     profile = get_profile(request)
 
-    if request.method == 'POST':
-        if 'title' in request.POST:
-            logo = request.FILES.get('input_image', None)
-            receipt = json.loads(request.POST.get('receipt', '{}'))
-            team_members = request.POST.getlist('team_members[]')
-            grant_type = request.POST.get('grant_type', 'tech')
+    grant_types = []
+    for g_type in GrantType.objects.all():
+        grant_categories = []
+            # project_pk = request.POST.get('project_pk', None)
+            # if project_pk:
+            #     HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
-            grant_kwargs = {
-                'title': request.POST.get('title', ''),
-                'description': request.POST.get('description', ''),
-                'description_rich': request.POST.get('description_rich', ''),
-                'reference_url': request.POST.get('reference_url', ''),
-                'github_project_url': request.POST.get('github_project_url', ''),
-                'admin_address': request.POST.get('admin_address', ''),
-                'contract_owner_address': request.POST.get('contract_owner_address', ''),
-                'token_address': request.POST.get('token_address', ''),
-                'token_symbol': request.POST.get('token_symbol', ''),
-                'contract_version': request.POST.get('contract_version', ''),
-                'deploy_tx_id': request.POST.get('transaction_hash', ''),
-                'network': request.POST.get('network', 'mainnet'),
-                'twitter_handle_1': request.POST.get('handle1', ''),
-                'twitter_handle_2': request.POST.get('handle2', ''),
-                'metadata': receipt,
-                'last_update': timezone.now(),
-                'admin_profile': profile,
-                'logo': logo,
-                'hidden': False,
-                'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
-                'grant_type': GrantType.objects.get(name=grant_type)
-            }
-            grant = Grant.objects.create(**grant_kwargs)
-            new_grant_admin(grant)
-
-            team_members = (team_members[0].split(','))
-            team_members.append(profile.id)
-            team_members = list(set(team_members))
-
-            team_members = [int(i) for i in team_members if i != '']
-
-            grant.team_members.add(*team_members)
-            grant.save()
-
-            form_category_ids = request.POST.getlist('categories[]')
-            form_category_ids = (form_category_ids[0].split(','))
-            form_category_ids = list(set(form_category_ids))
-
-            add_form_categories_to_grant(form_category_ids, grant, grant_type)
-
-            messages.info(
-                request,
-                _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
-            )
-            grant.save()
-            record_grant_activity_helper('new_grant', grant, profile)
-            new_grant(grant, profile)
-            add_grant_to_active_clrs(grant)
-
-            return JsonResponse({
-                'success': True,
-                'url': grant.url,
+        for g_category in g_type.categories.all():
+            grant_categories.append({
+                'id': g_category.pk,
+                'name': g_category.category
             })
+        grant_types.append({
+            'id': g_type.pk,
+            'name': g_type.name,
+            'label': g_type.label,
+            'categories': grant_categories
+        })
 
-
+    project = None
+    # project_id = request.GET.get('project_id', None)
+    # if project_id is not None:
+    #     hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    #     if request.user.profile in hackathon_project.profiles.all():
+    #         project = hackathon_project
 
     params = {
         'active': 'new_grant',
         'title': _('New Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
-        'grant': {},
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
+        # 'grant': {},
+        # 'keywords': get_keywords(),
+        # 'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        # 'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        # 'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        # 'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        # 'eth_usd_conv_rate': eth_usd_conv_rate(),
+        # 'conf_time_spread': conf_time_spread(),
+        # 'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': GrantType.objects.all()
+        'grant_types': grant_types,
+        'project_data': project
     }
-    return TemplateResponse(request, 'grants/new.html', params)
+    return TemplateResponse(request, 'grants/_new.html', params)
 
 
 @login_required
@@ -2022,7 +2275,7 @@ def grant_activity(request, grant_id=None):
     })
 
 @require_GET
-def grants_clr(request):
+def grants_info(request):
     response = {
         'status': 400,
         'message': 'error: Bad Request. Unable to fetch grant clr'
@@ -2038,11 +2291,7 @@ def grants_clr(request):
 
     try:
         for grant in Grant.objects.filter(pk__in=pks.split(',')):
-           grants.append({
-               'pk': grant.pk,
-               'title': grant.title,
-               'clr_prediction_curve': grant.clr_prediction_curve
-           })
+            grants.append(grant.repr(request.user, request.build_absolute_uri))
     except Exception as e:
         print(e)
         response = {
@@ -2086,7 +2335,13 @@ def get_grant_verification_text(grant, long=True):
 
 @login_required
 def verify_grant(request, grant_id):
-    grant = Grant.objects.get(pk=grant_id)
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid Gant.'
+        })
 
     if not is_grant_team_member(grant, request.user.profile):
         return JsonResponse({
@@ -2213,7 +2468,7 @@ def save_collection(request):
 def get_collection(request, collection_id):
     collection = GrantCollection.objects.get(pk=collection_id)
 
-    grants = [grant.cart_payload() for grant in collection.grants.order_by('-clr_prediction_curve__0__1')]
+    grants = [grant.cart_payload(request.build_absolute_uri) for grant in collection.grants.order_by('-clr_prediction_curve__0__1')]
     curators = [{
         'url': curator.url,
         'handle': curator.handle,
@@ -2239,7 +2494,7 @@ def get_grant_payload(request, grant_id):
     grant = Grant.objects.get(pk=grant_id)
 
     return JsonResponse({
-        'grant': grant.cart_payload(),
+        'grant': grant.cart_payload(request.build_absolute_uri),
     })
 
 
@@ -2277,3 +2532,200 @@ def add_grant_from_collection(request, collection_id):
     return JsonResponse({
         'grants': grants,
     })
+
+
+@csrf_exempt
+@require_POST
+def contribute_to_grants_v1(request):
+
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to contribute to grant'
+    }
+
+    # step 1: validate input
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to contribute to grant'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    # profile = Profile.objects.get(pk=64423)
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: contribution to a grant is a POST operation'
+        return JsonResponse(response)
+
+    request_body = json.loads(request.body.decode("utf-8"))
+
+    contributions = request_body.get('contributions', None)
+    if not contributions:
+        response['message'] = 'error: contributions in a mandatory parameter'
+        return JsonResponse(response)
+
+
+    failed_contributions = []
+    invalid_contributions = []
+    success_contributions = []
+
+    for contribution in contributions:
+
+        grant_id = contribution.get('grant_id', None)
+        if not grant_id:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: grant_id is mandatory param',
+            })
+            continue
+
+        try:
+            grant = Grant.objects.get(pk=grant_id)
+        except Grant.DoesNotExist:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: invalid grant'
+            })
+            continue
+
+        if grant.link_to_new_grant or not grant.active:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: grant is no longer active'
+            })
+            continue
+
+        if is_grant_team_member(grant, profile):
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: team members cannot contribute to own grant'
+            })
+            continue
+
+        contributor_address = contribution.get('contributor_address', None)
+        if not contributor_address:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: contributor_address is mandatory param'
+            })
+            continue
+
+        # tx_id = contribution.get('tx_id', None)
+        # if not tx_id:
+        #     invalid_contributions.append({
+        #         'grant_id': grant_id,
+        #         'message': 'error: tx_id is mandatory param'
+        #     })
+        #     continue
+
+        token_symbol = contribution.get('token_symbol', None)
+        if not token_symbol:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: token_symbol is mandatory param'
+            })
+            continue
+
+        amount_per_period = contribution.get('amount_per_period', None)
+        if not amount_per_period:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: amount_per_period is mandatory param'
+            })
+            continue
+
+        tenant = contribution.get('tenant', None)
+        if not tenant:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: tenant is mandatory param'
+            })
+            continue
+
+        if not tenant in ['ETH', 'ZCASH']:
+            invalid_contributions.append({
+                'grant_id': grant_id,
+                'message': 'error: tenant chain is not supported for grant'
+            })
+            continue
+
+        tx_id = contribution.get('tx_id', None)
+        comment = contribution.get('comment', '')
+        network = grant.network
+        hide_wallet_address = contribution.get('hide_wallet_address', None)
+
+        try:
+
+            # step 2 : create 1 time subscription
+            subscription = Subscription()
+            subscription.contributor_address = contributor_address
+            subscription.amount_per_period = amount_per_period
+            subscription.token_symbol = token_symbol
+            subscription.contributor_profile = profile
+            subscription.grant = grant
+            subscription.comments = comment
+            subscription.network = network
+            subscription.tenant = tenant
+            # recurring payments set to none
+            subscription.active = False
+            subscription.real_period_seconds = 0
+            subscription.frequency = 1
+            subscription.frequency_unit ='days'
+            subscription.token_address = ''
+            subscription.gas_price = 0
+            subscription.new_approve_tx_id = ''
+            subscription.split_tx_id = ''
+
+            subscription.error = True # cancel subs so it doesnt try to bill again
+            subscription.subminer_comments = "skipping subminer as subscriptions aren't supported for this flow"
+
+            subscription.save()
+
+            # step 3: create contribution + fire celery
+            contribution = subscription.create_contribution(tx_id, False)
+            sync_payout(contribution)
+
+
+            # step 4 : other tasks
+            if hide_wallet_address and not profile.hide_wallet_address:
+                profile.hide_wallet_address = hide_wallet_address
+                profile.save()
+
+            success_contributions.append({
+                'grant_id': grant_id,
+                'message': 'grant contributions recorded'
+            })
+
+        except Exception as error:
+            failed_contributions.append({
+                'grant_id': grant_id,
+                'message': f'grant contribution not recorded',
+                'error': error
+            })
+
+    if len(failed_contributions):
+        response = {
+            'status': 500,
+            'success_contributions': success_contributions,
+            'invalid_contributions': invalid_contributions,
+            'failed_contributions': failed_contributions
+        }
+    elif len(invalid_contributions):
+        response = {
+            'status': 400,
+            'success_contributions': success_contributions,
+            'invalid_contributions': invalid_contributions,
+            'failed_contributions': failed_contributions
+        }
+    else:
+        response = {
+            'status': 204,
+            'success_contributions': success_contributions,
+            'message': 'grant contributions recorded'
+        }
+    return JsonResponse(response)

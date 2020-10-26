@@ -154,7 +154,7 @@ Vue.component('loading-screen', {
 
 
 Vue.component('qrcode', {
-  props: ['string'],
+  props: [ 'string', 'size' ],
   template: '<div class="qrcode"></div>',
   data() {
     return {
@@ -166,7 +166,17 @@ Vue.component('qrcode', {
     let vm = this;
 
     vm.jqEl = $(this.$el);
-    vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+
+    if (vm.size) {
+      vm.qrcode = new QRCode(vm.jqEl[0], {
+        text: vm.string,
+        width: vm.size,
+        height: vm.size
+      });
+
+    } else {
+      vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+    }
     return vm.qrcode;
 
     // document.getElementsByClassName("qrcode")[0].innerHTML = qr.createImgTag();
@@ -617,23 +627,6 @@ Vue.component('project-card', {
     }
   },
   methods: {
-    markWinner: function($event, project) {
-      let vm = this;
-
-      const url = '/api/v0.1/hackathon_project/set_winner/';
-      const markWinner = fetchData(url, 'POST', {
-        project_id: project.pk,
-        winner: $event ? 1 : 0
-      }, {'X-CSRFToken': vm.csrf});
-
-      $.when(markWinner).then(response => {
-        if (response.message) {
-          alert(response.message);
-        }
-      }).catch(err => {
-        console.log(err);
-      });
-    },
     projectModal() {
       let project = this.$props.project;
 
@@ -642,8 +635,8 @@ Vue.component('project-card', {
   },
   template: `<div class="card card-user shadow-sm border-0">
     <div class="card card-project">
-      <b-form-checkbox v-if="is_staff" switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
-      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <img v-if="project.grant_obj" class="position-absolute" style="left: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
       <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
       <div class="card-bg rounded-top">
         <div v-if="project.winner" class="ribbon ribbon-top-right"><span>winner</span></div>
@@ -848,4 +841,28 @@ Vue.component('date-range-picker', {
     });
   }
 
+});
+
+
+Vue.component('copy-clipboard', {
+  props: ['string'],
+  template: '<button @click="copy()" type="button"><slot>Copy</slot></button>',
+  data() {
+    return {
+
+    };
+  },
+  methods: {
+    copy() {
+      if (!navigator.clipboard) {
+        _alert('Could not copy text to clipboard', 'error', 5000);
+      } else {
+        navigator.clipboard.writeText(this.string).then(function() {
+          _alert('Text copied to clipboard', 'success', 4000);
+        }, function(err) {
+          _alert('Could not copy text to clipboard', 'error', 5000);
+        });
+      }
+    }
+  }
 });

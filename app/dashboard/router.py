@@ -213,7 +213,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url', 'comments',)
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_obj', 'admin_url', 'comments',)
         depth = 1
 
     def get_comments(self, obj):
@@ -255,16 +255,16 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 hackathon_event = HackathonEvent.objects.last()
 
             queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             if sponsor:
                 queryset = queryset.filter(
                     Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
-            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
+            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             projects = []
             for project in queryset:
@@ -286,7 +286,6 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 Q(profiles__keywords__icontains=skills)
             )
-
         if rating:
             queryset = queryset.filter(
                 Q(rating__gte=rating)
@@ -295,6 +294,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         if 'winners' in filters:
             queryset = queryset.filter(
                 Q(winner=True)
+            )
+        if 'grants' in filters:
+            queryset = queryset.filter(
+                Q(grant_obj__isnull=False)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(
