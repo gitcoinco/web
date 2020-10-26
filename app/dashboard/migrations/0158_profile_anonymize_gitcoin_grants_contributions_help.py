@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='profile',
-            name='anonymize_gitcoin_grants_contributions_help',
+            name='anonymize_gitcoin_grants_contributions',
             field=models.BooleanField(default=False, help_text='If this option is chosen, we will anonymize your Gitcoin Grants contributions'),
         ),
     ]
