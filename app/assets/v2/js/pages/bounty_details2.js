@@ -78,6 +78,10 @@ Vue.mixin({
           url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
           break;
 
+        case 'BNB':
+          url = `https://bscscan.com/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -115,6 +119,10 @@ Vue.mixin({
 
         case 'FIL':
           url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
+          break;
+
+        case 'BNB':
+          url = `https://bscscan.com/address/${address}`;
           break;
 
         default:
@@ -321,6 +329,10 @@ Vue.mixin({
 
         case 'FIL':
           tenant = 'FILECOIN';
+          break;
+
+        case 'BNB':
+          tenant = 'BINANCE';
           break;
 
         default:
@@ -596,7 +608,7 @@ Vue.mixin({
             polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
               vm.fulfillment_context.active_step = 'payout_amount';
             }).catch(err => {
-              _alert('Pleasure ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
               console.log(err);
             });
           });
