@@ -1473,7 +1473,8 @@ def grant_new(request):
         if not description_rich:
             description_rich = description
 
-        eth_payout_address = request.POST.get('eth_payout_address', None)
+        eth_payout_address = request.POST.get('eth_payout_address',
+            request.POST.get('admin_address'))
         zcash_payout_address = request.POST.get('zcash_payout_address', None)
         if not eth_payout_address and not zcash_payout_address:
             response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
@@ -1483,8 +1484,8 @@ def grant_new(request):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
-        project_pk = request.POST.get('project_pk', '')
-        if project_pk:
+        project_pk = request.POST.get('project_pk')
+        if project_pk and project_pk != 'undefined':
             HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
@@ -1541,8 +1542,11 @@ def grant_new(request):
         form_category_ids = list(set(form_category_ids))
 
         for category_id in form_category_ids:
-            grant_category = GrantCategory.objects.get(pk=category_id)
-            grant.categories.add(grant_category)
+            try:
+                grant_category = GrantCategory.objects.get(pk=category_id)
+                grant.categories.add(grant_category)
+            except Exception as e:
+                pass
 
         grant.save()
 
