@@ -2817,13 +2817,13 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_org:
             context['team'] = profile.team_or_none_if_timeout
     elif tab == 'hackathons':
-        context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
+        context['projects'] = HackathonProject.objects.filter(profiles__id=profile.id)
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grants':
         from grants.models import Contribution
         contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
-        if request.user.is_authenticated and request.user.username.lower() == handle.lower():
+        if request.user.is_authenticated and request.user.username.lower() == profile.handle.lower():
             pass # dont do anything; its your profile
         else:
             contributions = contributions.filter(anonymous=False)
