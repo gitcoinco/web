@@ -130,6 +130,10 @@
       <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
     </div>
     <div class="form-group">
+      <label for="">{% trans "Network" %}:</label>
+      <input type="text" value="{{kudos.contract.network}}" id="issueURL" disabled="disabled" class="form-control">
+    </div>
+    <div class="form-group">
       <label for="">{% trans "Public Comments" %} ({% trans "optional" %}):</label>
       <textarea id="comments_public" class="form-control"></textarea>
     </div>

@@ -185,7 +185,9 @@
             </div>
             <div class="col-6 float-right px-0" v-if="grant.clr_round_num">
               <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
+                [[ grant.amount_received_in_round || 0 | round | formatNumber ]]
+                <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
+                <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">ZEC</template>
               </h2>
               <p class="amount mb-2 font-caption font-weight-semibold">
                 raised from [[ grant.positive_round_contributor_count ]] contributors
@@ -195,7 +197,9 @@
 
               <template v-if="grant.is_clr_eligible">
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
+                  [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]
+                  <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
+                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">ZEC</template>
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">
                   Estimated CLR Match
@@ -203,7 +207,9 @@
               </template>
               <template v-else>
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  [[ grant.amount_received || 0 | round | formatNumber ]] DAI
+                  [[ grant.amount_received || 0 | round | formatNumber ]]
+                  <template v-if="grant.tenants.indexOf('ETH') > -1 ">DAI</template>
+                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1 ">ZEC</template>
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">All Time Funding</p>
               </template>
@@ -211,7 +217,12 @@
           </div>
 
           <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
-            {% include 'grants/components/clr_estimate.html' %}
+            <template v-if="grant.tenants.indexOf('ETH') > -1">
+              {% include 'grants/components/clr_estimate.html' with token='DAI' %}
+            </template>
+            <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
+              {% include 'grants/components/clr_estimate.html' with token='ZEC' %}
+            </template>
           </div>
           <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
             <template v-slot:button-content>
