@@ -4426,6 +4426,7 @@ class Profile(SuperModel):
             for history in earning.history.all().order_by('-created_on'):
                 if history.payload.get('from'):
                      return history.payload.get('from')
+        return ''
 
     @property
     def locations(self):
