@@ -25,6 +25,7 @@ from secrets import token_hex
 
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.zcash import sync_zcash_payout
 from perftools.models import JSONStore
 
 logger = logging.getLogger(__name__)
@@ -165,3 +166,16 @@ def add_grant_to_active_clrs(grant):
         if grants_in_clr.filter(pk=grant.pk).count():
             grant.in_active_clrs.add(clr_round)
             grant.save()
+
+
+def sync_payout(contribution):
+    if not contribution:
+        return None
+
+    subscription = contribution.subscription
+
+    if not subscription:
+        return None
+
+    if subscription.tenant == 'ZCASH':
+        sync_zcash_payout(contribution)

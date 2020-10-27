@@ -12,6 +12,10 @@
             {% endif %}
             <input type="submit" value="Recalculate Sybil Investigation" name="_recalc_sybil" value="1">
             <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
+        {% elif 'kudostransfer' in request.build_absolute_uri %}
+            {% if original.txid == 'pending_celery' %}
+                <input type="submit" value="Broadcast Txn" name="_broadcast_txn" value="1">
+            {% endif %}
         {% elif 'dashboard/activity' in request.build_absolute_uri %}
             <input type="submit" value="Make Into Nano Bounty" name="_make_nano_bounty" value="1">
         {% elif 'arketing/roundupemail' in request.build_absolute_uri %}
