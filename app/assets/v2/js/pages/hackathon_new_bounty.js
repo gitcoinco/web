@@ -106,6 +106,11 @@ Vue.mixin({
           break;
         }
 
+        case '56': {
+          // INITIALIZE BINANCE WALLET EXTENSION HERE
+          break;
+        }
+
         default:
           break;
 
@@ -177,6 +182,10 @@ Vue.mixin({
         case '58':
           // polkadot
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
           break;
         case '666':
           // paypal

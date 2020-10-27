@@ -614,6 +614,9 @@ Vue.mixin({
           });
           break;
         }
+        case 'binance_ext': {
+          // INITIALIZE BINANCE CHAIN VIA WALLET EXTENSION HERE
+        }
       }
     }
   },
