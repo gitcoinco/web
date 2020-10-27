@@ -75,7 +75,11 @@
             <br>
           {% endif %}
           {% if row.project %}
-            <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            <a href="{% if row.project.name%}
+                      {% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}
+                    {% else %}
+                      {% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id  %}
+                    {% endif %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
           {% endif %}
 
           {% if row.hackathonevent %}

@@ -4537,7 +4537,7 @@ def project_data(project_id):
     return params
 
 
-def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
+def hackathon_project_page(request, hackathon, project_id, project_name='', tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
