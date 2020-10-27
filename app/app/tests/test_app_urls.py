@@ -50,7 +50,7 @@ class AppUrlsTestCase(TestCase):
     def test_email_settings_reverse(self):
         """Test the email_settings url and check the reverse."""
         priv_key = token_hex(16)[:29]
-        self.assertEqual(reverse('email_settings', args=(priv_key, )), f'/settings/email/{priv_key}')
+        self.assertEqual(reerse('email_settings', args=(priv_key, )), f'/settings/email/{priv_key}')
 
     def test_email_settings_resolve(self):
         """Test the email_settings url and check the resolution."""

@@ -982,7 +982,7 @@
                         {% endif %}
 
                         <div class="text-center mt-2">
-                          <a href="{%if project.name %}
+                          <a href="{% if project.name %}
                             {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
                           {% else %}
                             {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
