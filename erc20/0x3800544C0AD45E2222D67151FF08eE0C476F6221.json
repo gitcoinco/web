@@ -1,0 +1,26 @@
+{
+    "symbol": "DBL",
+    "address": "0x3800544C0AD45E2222D67151FF08eE0C476F6221",
+    "overview":{
+          "en": "",
+          "zh": "DBLend去中心化借贷平台，其通证“DBL”全部通过挖矿产出，总量210万，产出逐年减半，团队无预留。DBLend通过多重化的智能合约，在平台中实现不管是借方还是贷方都能够享受到对应借贷产品的收益，年化收益最高可超过 500%"
+    },
+    "email": "admin@dibic.net",
+    "website": "https://www.dblend.pro",
+    "whitepaper": "https://www.dblend.pro/whitepaper_EN.html",
+    "state": "NORMAL",
+    "published_on": "2020-10-20",
+    "initial_price":{
+          "USD":"3.00 USD"
+    },
+    "links": {
+      "blog": "",
+      "twitter": "https://twitter.com/DibiGlobal",
+      "telegram": "https://t.me/dblendmining",
+      "github": "",
+      "facebook": "https://www.facebook.com/dibiglobal",
+      "reddit": "",
+      "slack": "",
+      "medium": ""
+    }
+  }
