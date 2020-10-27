@@ -75,7 +75,7 @@
             <br>
           {% endif %}
           {% if row.project %}
-            <a href="{% if row.project.name%}
+            <a href="{% if row.project.name %}
                       {% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}
                     {% else %}
                       {% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id  %}
