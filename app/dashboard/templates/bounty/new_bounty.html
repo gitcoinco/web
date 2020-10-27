@@ -103,6 +103,10 @@
                       <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="16"> PayPal
                     </label>
                   {% endif %}
+                  
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '56'}">
+                    <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/bnb.svg' %}" alt="" width="16"> BNB
+                  </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 58}">
                     <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> Polkadot
@@ -722,6 +726,9 @@
     <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
     <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
     <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/@binance-chain/javascript-sdk@4.1.1/lib/index.min.js"></script>
+    <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
 
     <script>
       $('body').bootstrapTooltip({
