@@ -131,10 +131,6 @@
   </p>
   <p>
     <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
-      {% if subscription.num_tx_approved > 1 %}
-        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
-      {% endif %}
-    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
 
   </p>
   <p>{% trans "You can see all the grants you support and your transaction history " %}
@@ -146,8 +142,6 @@
 <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
 <br>
 <br>
-<p>{% trans "If you ever need to, you can cancel your support" %}
-  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
-</p>
+
 <hr>
 {% endblock %}

@@ -1198,8 +1198,6 @@ Vue.component('grants-cart', {
         // Values that are constant for all donations
         contributor_address: userAddress,
         csrfmiddlewaretoken,
-        frequency_count: 1,
-        frequency_unit: 'rounds',
         gas_price: 0,
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,

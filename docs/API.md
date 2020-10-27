@@ -165,7 +165,6 @@ The grants endpoint provides a listing of grants and all it's information. There
 | `contract_address` | `ethereum_address` | Contract address of the Grant                                     |
 | `metadata`         | `dictionary`       | Misc metadata about the Grant                                     |
 | `network`          | `string`           | Network in which the Grant contract resides                       |
-| `required_gas_price`| `float`           | Required gas price for the Grant                                  |
 | `admin_profile`    | `dictionary`       | Grant Admin's profile                                             |
 | `team_members`     | `array`            | Array of Dictionaries of team members contributing to this Grant  |
 
@@ -211,7 +210,6 @@ You can filter the data returned from the API by providing these keys as URL par
     "contract_address": "0xbcAE3e2893722698535aaf355F0aA92CA846354F",
     "metadata": {},
     "network": "mainnet",
-    "required_gas_price": "0",
     "admin_profile": {
       "id": 82330,
       "url": "/deadblackclover",

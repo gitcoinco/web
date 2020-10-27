@@ -17,8 +17,8 @@ class GrantSerializer(serializers.ModelSerializer):
         model = Grant
         fields = (
             'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address',
-            'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
-            'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
+            'amount_received', 'token_address', 'token_symbol', 'metadata',
+            'network', 'admin_profile', 'team_members', 'clr_prediction_curve',
         )
 
 
@@ -33,8 +33,8 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
         model = Subscription
         fields = (
-            'active', 'subscription_hash', 'contributor_signature', 'contributor_address', 'amount_per_period',
-            'real_period_seconds', 'frequency_unit', 'frequency', 'token_address', 'token_symbol', 'gas_price',
+            'active', 'contributor_address', 'amount_per_period',
+            'real_period_seconds', 'token_address', 'token_symbol', 'gas_price',
             'network', 'grant', 'contributor_profile',
         )
 

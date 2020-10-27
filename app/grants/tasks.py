@@ -28,7 +28,6 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     instance.slug = slugify(instance.title)[:49]
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
-    instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
     instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
     instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
 
@@ -138,8 +137,6 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.contributor_address = package.get('contributor_address', '')
         subscription.amount_per_period = package.get('amount_per_period', 0)
         subscription.real_period_seconds = package.get('real_period_seconds', 2592000)
-        subscription.frequency = package.get('frequency', 30)
-        subscription.frequency_unit = package.get('frequency_unit', 'days')
         subscription.token_address = package.get('token_address', '')
         subscription.token_symbol = package.get('token_symbol', '')
         subscription.gas_price = (float(subscription.amount_per_period) * (fee_pct/100))

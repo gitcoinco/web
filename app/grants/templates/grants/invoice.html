@@ -170,7 +170,7 @@
           </td>
 
           <td>
-            {{subscription.grant.contract_address}}
+            {{subscription.grant.admin_address}}
           </td>
         </tr>
 
@@ -187,7 +187,6 @@
           <tr class="item">
             <td>
               {% trans "Contribution from " %}{{subscription.contributor_profile.handle}} {{subscription.contributor_address}}<br>
-              {{subscription.num_tx_approved|floatformat:"0" }} {% trans "period of " %} {{subscription.frequency}} {{subscription.frequency_unit}} ({{subscription.subscription_contribution.count}} / {{subscription.num_tx_approved|floatformat:"0" }})
             </td>
 
             <td>

@@ -27,16 +27,7 @@
   max-height: 100%;
 }
 
-.frequency .select2-container .select2-selection--single {
-  height: 2.05rem !important;
-}
 
-.frequency .select2-container--default .select2-selection--single .select2-selection__rendered {
-  position: relative;
-  font-size: 1rem;
-}
-
-.frequency .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__arrow {
   top: -3px;
 }

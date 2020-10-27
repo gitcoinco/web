@@ -7,7 +7,6 @@
               grant_url: "{{ grant.url }}",
               grant_title: "{{ grant.title }}",
               grant_contract_version: "{{ grant.contract_version }}",
-              grant_contract_address: "{{ grant.contract_address }}",
               grant_token_symbol: "{{ grant.token_symbol }}",
               grant_admin_address: "{{ grant.admin_address }}",
               zcash_payout_address: "{{ grant.zcash_payout_address }}",
@@ -28,7 +27,6 @@
 <input type="hidden" id="grant_url" name="grant_url" value="{{ grant.url }}">
 <input type="hidden" id="grant_title" name="grant_title" value="{{ grant.title }}">
 <input type="hidden" id="grant_contract_version" name="grant_contract_version" value="{{ grant.contract_version }}">
-<input type="hidden" id="grant_contract_address" name="grant_contract_address" value="{{ grant.contract_address }}">
 <input type="hidden" id="grant_token_symbol" name="grant_token_symbol" value="{{ grant.grant.token_symbol }}">
 <input type="hidden" id="grant_admin_address" name="grant_admin_address" value="{{ grant.admin_address }}">
 <input type="hidden" id="zcash_payout_address" name="zcash_payout_address" value="{{ grant.zcash_payout_address }}">

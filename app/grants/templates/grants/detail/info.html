@@ -196,7 +196,7 @@
             <p class="mb-0 d-inline-block" data-toggle="tooltip" data-placement="top" title="Your Current Active Subscription">
               You are contributing
               {{ user_non_errored_subscription.amount_per_period|floatformat:2|intcomma }}
-              {{ user_non_errored_subscription.token_symbol }} every {{ user_non_errored_subscription.frequency }} {{ user_non_errored_subscription.frequency_unit }}
+              {{ user_non_errored_subscription.token_symbol }}
             </p>
           </div>
         {% endif %}
@@ -289,7 +289,6 @@
     {% if is_admin and grant.active %}
       {% csrf_token %}
       <div id="js-cancel_grant" class="mt-3">
-        <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
         <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
         <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id" value="">
         <div id="cancel_grant_tooltip" data-toggle="tooltip" data-placement="bottom">

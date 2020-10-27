@@ -33,10 +33,6 @@ const init = () => {
 
   addGrantLogo();
 
-  $('.js-select2, #frequency_unit').each(function() {
-    $(this).select2();
-  });
-
   jQuery.validator.setDefaults({
     ignore: ":hidden, [contenteditable='true']:not([name])"
   });
@@ -170,7 +166,6 @@ const init = () => {
       formData.append('team_members[]', $('#input-team_members').val());
       formData.append('categories[]', $('#input-categories').val());
       formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
-      formData.append('contract_address', '0x0');
       formData.append('transaction_hash', '0x0');
 
       saveGrant(formData, true);

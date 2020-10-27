@@ -12,7 +12,7 @@ lt_pk = 47067421 * 999
 key_titles = [
     ('_match', 'Estimated Matching Amount ($)', '-positive_round_contributor_count', 'grants' ),
     ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
-    ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
+    ('_nctrbs', 'Negative Contributors', 'grants' ),
     ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
     ('_admt1', 'Estimated Matching Amount (in cents) / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
 ]

@@ -75,7 +75,7 @@ from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
-    subscription_terminated, support_cancellation, thank_you_for_supporting,
+    thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
@@ -119,7 +119,7 @@ def get_stats(round_type):
     key_titles = [
         ('_match', 'Estimated Matching Amount ($)', '-positive_round_contributor_count', 'grants' ),
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
-        ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
+        ('_nctrbs', 'Negative Contributors', 'grants' ),
         ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
         ('_admt1', 'Estimated Matching Amount (in cents) / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
         ('count_', 'Top Contributors by Num Contributations', '-val', 'profile' ),
@@ -1252,14 +1252,6 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-        if 'grant_cancel_tx_id' in request.POST:
-            grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
-            grant.active = False
-            grant.save()
-            grant_cancellation(grant, user_subscription)
-            for sub in subscriptions:
-                subscription_terminated(grant, sub)
-            record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
@@ -1507,7 +1499,6 @@ def grant_new(request):
             'zcash_payout_address': zcash_payout_address,
             'token_symbol': token_symbol,
             'contract_version': contract_version,
-            'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
             'network': network,
             'twitter_handle_1': twitter_handle_1,
             'twitter_handle_2': twitter_handle_2,
@@ -1610,78 +1601,6 @@ def grant_new(request):
 
 
 @login_required
-def grant_fund(request, grant_id, grant_slug):
-    """Handle grant funding."""
-    try:
-        grant = Grant.objects.get(pk=grant_id, slug=grant_slug)
-    except Grant.DoesNotExist:
-        raise Http404
-
-    profile = get_profile(request)
-
-    if not grant.active:
-        params = {
-            'active': 'grant_error',
-            'title': _('Fund - Grant Ended'),
-            'grant': grant,
-            'text': _('This Grant has ended.'),
-            'subtext': _('Contributions can no longer be made this grant')
-        }
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    if is_grant_team_member(grant, profile):
-        params = {
-            'active': 'grant_error',
-            'title': _('Fund - Grant funding blocked'),
-            'grant': grant,
-            'text': _('This Grant cannot be funded'),
-            'subtext': _('Grant team members cannot contribute to their own grant.')
-        }
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    if grant.link_to_new_grant:
-        params = {
-            'active': 'grant_error',
-            'title': _('Fund - Grant Migrated'),
-            'grant': grant.link_to_new_grant,
-            'text': f'This Grant has ended',
-            'subtext': 'Contributions can no longer be made to this grant. <br> Visit the new grant to contribute.',
-            'button_txt': 'View New Grant'
-        }
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
-    )
-
-    if active_subscription:
-        params = {
-            'active': 'grant_error',
-            'title': _('Subscription Exists'),
-            'grant': grant,
-            'text': _('You already have an active subscription for this grant.')
-        }
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    if not grant.configured_to_receieve_funding:
-        messages.info(
-            request,
-            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
-        )
-        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    if request.method == 'POST':
-        from grants.tasks import process_grant_contribution
-        process_grant_contribution.delay(grant_id, grant_slug, profile.pk, request.POST)
-
-        return JsonResponse({
-            'success': True,
-        })
-
-    raise Http404
-
-@login_required
 def bulk_fund(request):
     if request.method != 'POST':
         raise Http404
@@ -1768,7 +1687,7 @@ def bulk_fund(request):
                 'title': _('Fund - Grant Not Configured'),
                 'grant':grant_id,
                 'text': _('This Grant is not configured to accept funding at this time.'),
-                'subtext': _('Grant is not properly configured for funding.  Please set grant.contract_address on this grant, or contact founders@gitcoin.co if you believe this message is in error!'),
+                'subtext': _('Grant is not properly configured for funding'),
                 'success': False
             })
             continue
@@ -1779,8 +1698,6 @@ def bulk_fund(request):
                 # Values that are constant for all donations
                 'contributor_address': request.POST.get('contributor_address'),
                 'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken'),
-                'frequency_count': request.POST.get('frequency_count'),
-                'frequency_unit': request.POST.get('frequency_unit'),
                 'gas_price': request.POST.get('gas_price'),
                 'gitcoin_donation_address': request.POST.get('gitcoin_donation_address'),
                 'hide_wallet_address': request.POST.get('hide_wallet_address'),
@@ -1792,13 +1709,11 @@ def bulk_fund(request):
                 'signature': request.POST.get('signature'),
                 'split_tx_id': request.POST.get('split_tx_id'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
-                'subscription_hash': request.POST.get('subscription_hash'),
                 # Values that vary by donation
                 'admin_address': request.POST.get('admin_address').split(',')[index],
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
                 'comment': request.POST.get('comment').split(',')[index],
                 'confirmed': request.POST.get('confirmed').split(',')[index],
-                'contract_address': request.POST.get('contract_address').split(',')[index],
                 'contract_version': request.POST.get('contract_version').split(',')[index],
                 'denomination': request.POST.get('denomination').split(',')[index],
                 'gitcoin-grant-input-amount': request.POST.get('gitcoin-grant-input-amount').split(',')[index],
@@ -1910,69 +1825,6 @@ def get_replaced_tx(request):
             'success': True,
             'tx_hash': tx_hash
         })
-
-
-@login_required
-def subscription_cancel(request, grant_id, grant_slug, subscription_id):
-    """Handle the cancellation of a grant subscription."""
-    subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
-    grant = getattr(subscription, 'grant', None)
-    now = datetime.datetime.now()
-    profile = get_profile(request)
-
-    if not subscription.active:
-        params = {
-            'active': 'grant_error',
-            'title': _('Grant Subscription Cancelled'),
-            'grant': grant
-        }
-
-        if grant.active:
-            params['text'] = _('This Grant subscription has already been cancelled.')
-        else:
-            params['text'] = _('This Subscription is already cancelled as the grant is not longer active.')
-
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    if request.method == 'POST' and (
-        profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
-    ):
-        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
-        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
-        subscription.active = False
-        subscription.save()
-        record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
-
-        value_usdt = subscription.get_converted_amount()
-        if value_usdt:
-            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
-
-        grant.save()
-        support_cancellation(grant, subscription)
-        messages.info(
-            request,
-            _('Your subscription has been canceled. We hope you continue to support other open source projects!')
-        )
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    params = {
-        'active': 'cancel_grant',
-        'title': _('Cancel Grant Subscription'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'subscription': subscription,
-        'grant': grant,
-        'now': now,
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-    }
-
-    return TemplateResponse(request, 'grants/cancel.html', params)
 
 
 def grants_cart_view(request):
@@ -2536,6 +2388,53 @@ def add_grant_from_collection(request, collection_id):
 
 @csrf_exempt
 @require_POST
+def cancel_grant_v1(request, grant_id):
+
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to contribute to grant'
+    }
+
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to cancel grant'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: grant cancellation is a POST operation'
+        return JsonResponse(response)
+
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        response['message'] = 'error: grant cannot be found'
+        return JsonResponse(response)
+    
+    if not is_grant_team_member(grant, profile):
+        response['message'] = 'error: grant cancellation can be done only by grant owner'
+        return JsonResponse(response)
+
+    if not grant.active: 
+        response['message'] = 'error: grant is already cancelled'
+        return JsonResponse(response)
+
+    grant.active = False
+    grant.save()
+    
+    grant_cancellation(grant)
+    record_grant_activity_helper('killed_grant', grant, profile)
+
+
+
+@csrf_exempt
+@require_POST
 def contribute_to_grants_v1(request):
 
     response = {
@@ -2674,11 +2573,8 @@ def contribute_to_grants_v1(request):
             # recurring payments set to none
             subscription.active = False
             subscription.real_period_seconds = 0
-            subscription.frequency = 1
-            subscription.frequency_unit ='days'
             subscription.token_address = ''
             subscription.gas_price = 0
-            subscription.new_approve_tx_id = ''
             subscription.split_tx_id = ''
 
             subscription.error = True # cancel subs so it doesnt try to bill again

@@ -144,12 +144,10 @@ Vue.mixin({
         'network': form.network
         // logoPreview
         // admin_address
-        // contract_owner_address
         // token_address
         // token_symbol
         // contract_version
         // transaction_hash
-        // contract_address
         // transaction_hash
       };
 

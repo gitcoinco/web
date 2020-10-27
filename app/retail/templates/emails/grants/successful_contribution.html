@@ -151,10 +151,6 @@
 <br>
 <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Grant" %}</a>
 <br>
-<br>
-<p>{% trans "If you ever need to, you can cancel your support" %}
-  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
-</p>
 <hr>
 
 {% endblock %}

@@ -54,11 +54,9 @@ def new_grant(profile):
         'description': 'test description',
         'reference_url': 'http://www.example.com',
         'admin_address': '0x8B04e71007A783B4965BaFE068EC062D935E93b5',
-        'contract_owner_address': '0x8B04e71007A783B4965BaFE068EC062D935E93b5',
         'token_address': '0xFc1079D41D56D78e9FA2a857991F41D777104c74',
         'token_symbol': 'E18R',
         'contract_version':  Decimal('0'),
-        'deploy_tx_id': '0xa95d30415427f76c778207e789c78d436b5c4ca4339797cff52ed21de8419554',
         'network': 'rinkeby',
         'metadata': {},
         'admin_profile': profile,
@@ -131,8 +129,6 @@ def new_subscription(new_grant, profile):
         'contributor_address': '0x8B04e71007A783B4965BaFE068EC062D935E93b5',
         'amount_per_period': 5,
         'real_period_seconds': 2592000,
-        'frequency': 30,
-        'frequency_unit': 'days',
         'token_address': '0xFc1079D41D56D78e9FA2a857991F41D777104c74',
         'token_symbol': 'E18R',
         'gas_price': 10,
@@ -141,8 +137,6 @@ def new_subscription(new_grant, profile):
         'network': 'rinkeby',
         'contributor_profile': profile,
         'grant': new_grant,
-        'last_contribution_date': datetime(2018, 1, 1, 15, 5, 25, tzinfo=UTC),
-        'next_contribution_date': datetime(2020, 1, 1, 15, 5, 25, tzinfo=UTC),
     }
     return Subscription.objects.create(**kwargs)
 
@@ -183,7 +177,6 @@ def new_contribution_with_activity(new_contribution, profile):
 
 @pytest.fixture
 def cancelled_subscription(new_subscription):
-    new_subscription.end_approve_tx_id = '0xa95d30415427f76c778207e789c78d436b5c4ca4339797cff52ed21de8419554'
     new_subscription.cancel_tx_id = '0xa95d30415427f76c778207e789c78d436b5c4ca4339797cff52ed21de8419554'
     new_subscription.active = False
     new_subscription.modified_on = datetime(2018, 12, 31, 14, 22, 35, tzinfo=UTC)

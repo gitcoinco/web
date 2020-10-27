@@ -553,22 +553,12 @@ urlpatterns = [
         retail.emails.featured_funded_bounty,
         name='admin_featured_funded_bounty'
     ),
-    path(
-        '_administration/email/subscription_terminated',
-        retail.emails.subscription_terminated,
-        name='admin_subscription_terminated'
-    ),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(
         '_administration/email/thank_you_for_supporting',
         retail.emails.thank_you_for_supporting,
         name='admin_thank_you_for_supporting'
-    ),
-    path(
-        '_administration/email/support_cancellation',
-        retail.emails.support_cancellation,
-        name='admin_support_cancellation'
     ),
     path(
         '_administration/email/successful_contribution',
