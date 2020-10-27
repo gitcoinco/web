@@ -1,0 +1,23 @@
+{
+  "symbol": "BEL",
+  "address": "0xA91ac63D040dEB1b7A5E4d4134aD23eb0ba07e14",
+  "overview": {
+    "en": "Bella is a suite of open finance products including automated yield farming tools, lending protocol, 1-click savings account, customized robo-advisor, and more. $BEL is the governance token in the Bella ecosystem. BEL holders can benefit from the following aspect: Fee Collection, Discount, Staking, Voting and Governance.",
+    "zh": "Bella Protocol是一站式的开放式金融平台，目前包括自动进行流动性挖矿的工具、借贷协议、一键储蓄账户、智能机器投顾等。Bella BEL是Bella生态系统中的治理代币，用户持有BEL可以享受收入分成，手续费折扣，质押奖励，投票和治理等权利。"
+  },
+  "email": "about@bella.fi",
+  "website": "https://bella.fi/",
+  "whitepaper": "https://research.binance.com/en/projects/bella",
+  "state": "NORMAL",
+  "published_on": "2020-11-09",
+  "initial_price":{
+        "USD":"0.75 USD"
+  },
+  "links": {
+    "blog": " https://medium.com/@Bellaofficial",
+    "twitter": "https://twitter.com/BellaProtocol",
+    "telegram": "https://t.me/bellaprotocol",
+    "reddit": "https://www.reddit.com/user/BellaFinance",
+    "medium": "https://medium.com/@Bellaofficial"
+  }
+}
