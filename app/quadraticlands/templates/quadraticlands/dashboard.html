@@ -10,6 +10,7 @@
 
 	<h1>dashboard</h1>
 
+	<a class="btn" href="{% url "logout" %}?next={{ request.get_full_path }}">logout</a>
 
 
 </section>
@@ -25,9 +26,6 @@
 	
 	<!--Scroll Animation Library (sal) INIT-->
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
-
-	<!--APP - burger menu, wallet menu, provider select-->
-	<script src="/static/quadraticlands/js/app.js"></script>
 
 	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
