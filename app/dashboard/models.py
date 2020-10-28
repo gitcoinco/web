@@ -807,14 +807,17 @@ class Bounty(SuperModel):
         is_traditional_bounty_type = self.project_type == 'traditional'
         try:
             has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-            if has_tips and is_traditional_bounty_type and not self.is_open :
+            has_fulfillments = self.fulfillments.filter(payout_status='done').exists()
+            has_payments = has_tips or has_fulfillments
+
+            if has_payments and is_traditional_bounty_type and not self.is_open :
                 return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                elif has_tips:
+                elif has_payments:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
@@ -4486,18 +4489,21 @@ def psave_profile(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     if instance.pk:
-        SearchResult.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
-            source_id=instance.pk,
-            defaults={
-                "created_on":instance.created_on,
-                "title":instance.handle,
-                "description":instance.desc,
-                "url":instance.url,
-                "visible_to":None,
-                'img_url': instance.avatar_url,
-            }
-        )
+        try:
+            SearchResult.objects.update_or_create(
+                source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+                source_id=instance.pk,
+                defaults={
+                    "created_on":instance.created_on,
+                    "title":instance.handle,
+                    "description":instance.desc,
+                    "url":instance.url,
+                    "visible_to":None,
+                    'img_url': instance.avatar_url,
+                }
+            )
+        except:
+            pass
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
