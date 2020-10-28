@@ -118,10 +118,6 @@ Vue.mixin({
           break;
         }
 
-        case '56': {
-          // INITIALIZE BINANCE WALLET EXTENSION HERE
-          break;
-        }
 
         default:
           break;
