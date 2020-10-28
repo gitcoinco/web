@@ -1063,9 +1063,6 @@
       <p>{{ noscript.issue_description_text }}</p>
     </noscript>
 
-    {% if PYPL_CLIENT_ID %}
-      <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
-    {% endif %}
     <script>
       document.issueURL = '{{ issueURL }}';
 
@@ -1111,6 +1108,9 @@
       <script src="{% static "v2/js/pages/bounty_detail/polkadot_extension.js" %}"></script>
 
     {% elif web3_type == 'fiat' %}
+      {% if PYPL_CLIENT_ID %}
+        <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
+      {% endif %}
       <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
 
     {% elif web3_type == 'web3_modal' %}
