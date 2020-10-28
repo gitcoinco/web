@@ -55,7 +55,7 @@ Vue.mixin({
     getUser: async function(loading, search, selected) {
       let vm = this;
       let myHeaders = new Headers();
-      let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}`;
+      let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}&suppress_non_gitcoiners=true`;
 
       myHeaders.append('X-Requested-With', 'XMLHttpRequest');
       return new Promise(resolve => {

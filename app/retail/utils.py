@@ -83,7 +83,7 @@ def strip_double_chars(txt, char=' '):
 
 
 def get_bounty_history_row(label, date, keyword):
-    bounties = get_bounty_history_at_date(['done'], date, keyword)
+    bounties = get_bounty_history_at_date(['done', 'submitted'], date, keyword)
     ecosystem = get_ecosystem_history_at_date(date, keyword)
     codefund = get_codefund_history_at_date(date, keyword)
     tips = get_tip_history_at_date(date, keyword) - ecosystem
