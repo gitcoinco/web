@@ -514,7 +514,7 @@ def sendcryptoassets():
     }
 
     for key, SendCryptoAsset in iterate_me.items():
-        objs = SendCryptoAsset.objects.filter(network='mainnet').send_success()
+        objs = SendCryptoAsset.objects.filter(network__in=['mainnet', 'xdai']).send_success()
         val = sum(obj.value_in_usdt for obj in objs if obj.value_in_usdt)
 
         stats_to_create = [

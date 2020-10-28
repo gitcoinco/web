@@ -160,7 +160,7 @@ Vue.component('loading-screen', {
 
 
 Vue.component('qrcode', {
-  props: ['string'],
+  props: [ 'string', 'size' ],
   template: '<div class="qrcode"></div>',
   data() {
     return {
@@ -172,7 +172,17 @@ Vue.component('qrcode', {
     let vm = this;
 
     vm.jqEl = $(this.$el);
-    vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+
+    if (vm.size) {
+      vm.qrcode = new QRCode(vm.jqEl[0], {
+        text: vm.string,
+        width: vm.size,
+        height: vm.size
+      });
+
+    } else {
+      vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+    }
     return vm.qrcode;
 
     // document.getElementsByClassName("qrcode")[0].innerHTML = qr.createImgTag();
@@ -837,4 +847,28 @@ Vue.component('date-range-picker', {
     });
   }
 
+});
+
+
+Vue.component('copy-clipboard', {
+  props: ['string'],
+  template: '<button @click="copy()" type="button"><slot>Copy</slot></button>',
+  data() {
+    return {
+
+    };
+  },
+  methods: {
+    copy() {
+      if (!navigator.clipboard) {
+        _alert('Could not copy text to clipboard', 'error', 5000);
+      } else {
+        navigator.clipboard.writeText(this.string).then(function() {
+          _alert('Text copied to clipboard', 'success', 4000);
+        }, function(err) {
+          _alert('Could not copy text to clipboard', 'error', 5000);
+        });
+      }
+    }
+  }
 });

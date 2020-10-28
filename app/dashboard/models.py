@@ -807,14 +807,17 @@ class Bounty(SuperModel):
         is_traditional_bounty_type = self.project_type == 'traditional'
         try:
             has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-            if has_tips and is_traditional_bounty_type and not self.is_open :
+            has_fulfillments = self.fulfillments.filter(payout_status='done').exists()
+            has_payments = has_tips or has_fulfillments
+
+            if has_payments and is_traditional_bounty_type and not self.is_open :
                 return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                elif has_tips:
+                elif has_payments:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
@@ -3108,7 +3111,7 @@ class Profile(SuperModel):
 
         kudos_transfers = kt_profile | kt_owner_address
         kudos_transfers = kudos_transfers.filter(
-            kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
+            kudos_token_cloned_from__contract__network__in=[settings.KUDOS_NETWORK, 'xdai']
         )
         kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
 
@@ -3128,7 +3131,7 @@ class Profile(SuperModel):
         kudos_transfers = kt_address | kt_sender_profile
         kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
         kudos_transfers = kudos_transfers.filter(
-            kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
+            kudos_token_cloned_from__contract__network__in=[settings.KUDOS_NETWORK, 'xdai']
         )
 
         # remove this line IFF we ever move to showing multiple kudos transfers on a profile
@@ -4482,18 +4485,21 @@ def psave_profile(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     if instance.pk:
-        SearchResult.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
-            source_id=instance.pk,
-            defaults={
-                "created_on":instance.created_on,
-                "title":instance.handle,
-                "description":instance.desc,
-                "url":instance.url,
-                "visible_to":None,
-                'img_url': instance.avatar_url,
-            }
-        )
+        try:
+            SearchResult.objects.update_or_create(
+                source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+                source_id=instance.pk,
+                defaults={
+                    "created_on":instance.created_on,
+                    "title":instance.handle,
+                    "description":instance.desc,
+                    "url":instance.url,
+                    "visible_to":None,
+                    'img_url': instance.avatar_url,
+                }
+            )
+        except:
+            pass
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -5091,7 +5097,8 @@ class HackathonProject(SuperModel):
     status = models.CharField(
         max_length=20,
         choices=PROJECT_STATUS,
-        blank=True
+        blank=True,
+        db_index=True,
     )
     message = models.CharField(
         max_length=150,
@@ -5100,7 +5107,7 @@ class HackathonProject(SuperModel):
     )
     looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
-    winner = models.BooleanField(default=False)
+    winner = models.BooleanField(default=False, db_index=True)
     extra = JSONField(default=dict, blank=True, null=True)
     grant_obj = models.ForeignKey(
         'grants.Grant',
