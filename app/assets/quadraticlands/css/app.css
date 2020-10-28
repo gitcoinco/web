@@ -187,16 +187,17 @@ nav {
   color: var(--purple_light);
   margin-right: 30px;
 }
-#nav-links a[aria-current=page] {
+#nav-links a[aria-current=page] li {
+  color: var(--white);
+}
+#nav-links a:hover li {
   color: var(--white);
 }
 #nav-links a:last-child {
   margin-right: initial;
 }
-#nav-links a:hover {
-  color: var(--white);
-}
 #nav-links a li {
+  color: var(--purple_light);
   display: inline-block;
   /* token ammount in menu bar*/
 }
@@ -360,6 +361,8 @@ header nav {
   border: none;
   cursor: pointer;
   line-height: 1.5em;
+  background-color: var(--pink_light);
+  color: var(--space);
 }
 .btn:hover {
   animation: colorcycle 1s ease-in-out infinite;
@@ -367,6 +370,7 @@ header nav {
 }
 .btn:focus {
   outline: none;
+  color: var(--space);
 }
 
 /* sizes */
@@ -376,11 +380,6 @@ header nav {
 }
 
 /* colors */
-.btn {
-  background-color: var(--pink_light);
-  color: var(--space);
-}
-
 .btn.purple {
   background-color: var(--purple_light);
 }
@@ -939,6 +938,20 @@ section#particles svg {
     color: var(--pink);
   }
 }
+@keyframes colorcycle-stroke {
+  0% {
+    stroke: var(--pink);
+  }
+  33% {
+    stroke: var(--aqua);
+  }
+  66% {
+    stroke: var(--purple);
+  }
+  100% {
+    stroke: var(--pink);
+  }
+}
 @keyframes colorcycle-shadow {
   0% {
     filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink));
@@ -989,40 +1002,6 @@ section#particles svg {
     transform: translate(0, 15px);
   }
 }
-section#footer {
-  text-align: center;
-  margin: 6em 3em;
-  padding-top: 3em;
-  border-top: 1px solid var(--smoke);
-}
-section#footer a {
-  margin-right: 1.5em;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 80%;
-  color: var(--purple_light);
-}
-section#footer a[aria-current=page] {
-  color: var(--white);
-}
-section#footer a:last-child {
-  margin-right: initial;
-}
-section#footer a:hover {
-  animation: inherit;
-  color: var(--white);
-}
-
-@media (max-width: 688px) {
-  section#footer {
-    margin: 6em 1.5em;
-  }
-  section#footer a {
-    display: block;
-    margin-right: initial;
-    padding-bottom: 2em;
-  }
-}
 .collapse {
   cursor: pointer;
 }
@@ -1042,12 +1021,52 @@ section#footer a:hover {
   display: block;
 }
 
+.web3modal-modal-lightbox {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  background-color: var(--space_glass) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
 .web3modal-modal-card {
-  background-color: var(--space) !important;
+  background-color: transparent !important;
+  padding: 0em !important;
+  border-radius: initial !important;
 }
 
 .web3modal-provider-wrapper {
   border: none !important;
+  border-radius: inherit !important;
+}
+
+.web3modal-modal-container {
+  padding: 0px !important;
+}
+
+.web3modal-provider-wrapper {
+  padding: 10px !important;
+}
+
+.web3modal-provider-container {
+  background-color: var(--space) !important;
+  border-radius: initial !important;
+  cursor: pointer;
+  border: 1px solid var(--smoke) !important;
+}
+.web3modal-provider-container .web3modal-provider-icon {
+  margin-top: 0.5em !important;
+}
+.web3modal-provider-container .web3modal-provider-name {
+  color: var(--purple_light) !important;
+  font-family: "Space Mono", monospace !important;
+  font-weight: 400 !important;
+  font-size: 150% !important;
+}
+.web3modal-provider-container .web3modal-provider-description {
+  color: var(--stone) !important;
+}
+.web3modal-provider-container:hover .web3modal-provider-name {
+  color: var(--white) !important;
+  animation: colorcycle-shadow 3s ease-in-out infinite;
 }
 
 /* section */
@@ -1365,6 +1384,72 @@ section.background img, section.background svg {
   object-fit: cover;
 }
 
+section#footersocial {
+  display: flex;
+  justify-content: space-between;
+  margin: 0em 3em;
+  margin-top: 8em;
+}
+section#footersocial a {
+  display: block;
+}
+section#footersocial a svg {
+  display: block;
+  background-color: none;
+  stroke: var(--purple_light);
+  stroke-width: 2;
+  stroke-miterlimit: 5;
+  width: 48px;
+  height: 48px;
+  fill: none;
+}
+section#footersocial a svg:hover {
+  animation: colorcycle-stroke 3s ease-in-out infinite;
+}
+
+@media (max-width: 688px) {
+  section#footersocial {
+    margin: 6em 1.5em;
+  }
+  section#footersocial a svg {
+    width: 36px;
+    height: 36px;
+  }
+}
+section#footer {
+  text-align: center;
+  margin: 3em 3em;
+  padding: 3em;
+  border-top: 1px solid var(--smoke);
+}
+section#footer a {
+  margin-right: 1.5em;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 80%;
+  color: var(--purple_light);
+}
+section#footer a[aria-current=page] {
+  color: var(--white);
+}
+section#footer a:last-child {
+  margin-right: initial;
+}
+section#footer a:hover {
+  animation: inherit;
+  color: var(--white);
+}
+
+@media (max-width: 688px) {
+  section#footer {
+    margin: 6em 1.5em;
+  }
+  section#footer a {
+    display: block;
+    margin-right: initial;
+    padding-bottom: 2em;
+  }
+}
 /*layout*/
 .hide {
   display: none;
