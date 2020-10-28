@@ -1,0 +1,17 @@
+{
+  "symbol": "MSKI",
+  "address": "0x687A0A369C3222C532fb488BBD70700F571d6445",
+  "overview":{
+        "zh": "MSKI是Mask-DeFi生态旗下Maskswap去中心化交易所的平台币，Maskswap致力于打造全球首屈一指的去中心化交易所。Maskswap技术团队是由斯坦福大学Dan Boneh教授指导的世界级硅谷技术团队和瑞波实验室技术团队成员开发的DEX产品。构建一个完整的DeFi去中心化金融全生态——马斯克生态，集去中心化交易所、资管银行、抵押、借贷、衍生品交易、聚合挖矿、预言机、资管经纪人等DeFi技术设施为一体 、跨链的科技金融服务生态."
+		},
+  "email": "maskdaoyeah@gmail.com",
+  "website": "http://maskdao.finance/MSKI/",
+  "whitepaper": "http://maskdao.finance/MSKI/mski.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-07",
+  "links": {
+    "twitter": "https://twitter.com/DaoMask",
+    "telegram": "https://t.me/MaskDAO",
+    "facebook": "https://www.facebook.com/Maskdao-103180304867592"
+  }
+}

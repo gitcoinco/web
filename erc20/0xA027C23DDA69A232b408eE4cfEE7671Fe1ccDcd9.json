@@ -1,0 +1,17 @@
+{
+    "symbol": "SUCN",
+    "address": "0xA027C23DDA69A232b408eE4cfEE7671Fe1ccDcd9",
+    "overview":{
+          "en": "SU Exchange provides a variety of digital currency trading services such as Bitcoin and Ethereum to the world. It is a safe and reliable digital currency trading network and a financial-grade international trading platform built with multiple security protection technologies.",
+          "zh": "SU交易所是面向全球提供比特币、以太坊等多种数字货币交易服务，是安全可信赖的数字货币交易网，是使用多重安全防护技术打造的金融级国际交易平台。"
+    },
+    "email": "sucoin@sucoin.cc",
+    "website": "http://www.sucoin.cc/",
+    "whitepaper": "http://www.sucoin.cc/help?id=19",
+    "state": "NORMAL",
+    "published_on": "2020-07-05",
+    "links": {
+        "telegram": "https://t.me/StepUpCoin",
+        "twitter": "https://twitter.com/StepUpCoin"
+      }
+}
