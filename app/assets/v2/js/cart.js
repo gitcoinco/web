@@ -179,31 +179,6 @@ Vue.component('grants-cart', {
       return false;
     },
 
-    // Array of arrays, item i lists supported tokens for donating to grant given by grantData[i]
-    currencies() {
-      if (!this.grantsByTenant || !this.tokenList)
-        return undefined;
-
-      // Get supported tokens for each grant
-      const currencies = this.grantsByTenant.map(grant => {
-        // Return full list if grant accepts all tokens
-        if (grant.grant_token_address === '0x0000000000000000000000000000000000000000') {
-          return this.tokenList.map(token => token.name);
-        }
-
-        // Return ETH + selected token otherwise
-        let allowedTokens = ['ETH'];
-
-        this.tokenList.forEach(tokenData => {
-          if (tokenData.addr === grant.grant_token_address)
-            allowedTokens.push(tokenData.name);
-        });
-        return allowedTokens;
-      });
-
-      return currencies;
-    },
-
     // Percentage of donation that goes to Gitcoin
     gitcoinFactor() {
       return Number(this.gitcoinFactorRaw) / 100;
@@ -897,7 +872,9 @@ Vue.component('grants-cart', {
       const tenant = grant.tenants[0];
 
       this.grantData.forEach((grant, index) => {
-        const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
+        // Assume all tokens available on this chain are accepted by this grant. This gives us
+        // an array of token symbols to compare against
+        const acceptedCurrencies = this.filterByChainId.map((token) => token.symbol);
 
         // Skip this loop if this grant is not the same tenant as the clicked grant
         if (this.grantData[index].tenants[0] !== tenant)
