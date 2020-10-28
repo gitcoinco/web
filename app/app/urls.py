@@ -272,6 +272,11 @@ urlpatterns = [
         name='hackathon_edit_project'
     ),
     path(
+        'hackathon/<str:hackathon>/projects/<int:project_id>',
+        dashboard.views.hackathon_project_page,
+        name='hackathon_project_page'
+    ),
+    path(
         'hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>',
         dashboard.views.hackathon_project_page,
         name='hackathon_project_page'
