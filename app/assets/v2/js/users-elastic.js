@@ -376,6 +376,8 @@ if (document.getElementById('gc-users-elastic')) {
 
         if (mappedFilters[newKey])
           return;
+        if (obj.type === 'date' || obj.type === 'boolean')
+          return;
         obj.id = count++;
         obj.text = newKey;
         obj.key = key;

@@ -6,8 +6,8 @@ from .models import UserDirectory
 class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=False)
     profile_id = indexes.IntegerField(null=True,model_attr='profile_id')
-    join_date = indexes.CharField(null=True,model_attr='join_date')
-    github_created_at = indexes.CharField(null=True,model_attr='github_created_at')
+    join_date = indexes.DateTimeField(null=True,model_attr='join_date')
+    github_created_at = indexes.DateTimeField(null=True,model_attr='github_created_at')
     email = indexes.CharField(null=True,model_attr='email_if_not_supressed')
     first_name = indexes.CharField(null=True,model_attr='first_name', faceted=True)
     last_name = indexes.CharField(null=True,model_attr='last_name', faceted=True)
