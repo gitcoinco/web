@@ -24,11 +24,8 @@
   </head>
 
   <body>
-
     {% include 'quadraticlands/components/particles.html' %}
     {% include 'quadraticlands/components/nav.html' %}
-
-
 
     <!-- just load wallet menu when user is auth -->
     {% if user.is_authenticated %}
@@ -40,6 +37,7 @@
     {% endblock %}
 
 
+    {% include 'quadraticlands/components/footersocial.html' %}
     {% include 'quadraticlands/components/footer.html' %}
    
     {% include 'quadraticlands/components/footer_scripts.html' %}
