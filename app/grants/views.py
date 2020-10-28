@@ -1192,6 +1192,27 @@ def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, inde
         pass
 
     return [rows, sybil_avg]
+@csrf_exempt
+def grant_details_api(request, grant_id):
+    """Json the Grant details."""
+    grant = None
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        grant_json = grant.repr(request.user, request.build_absolute_uri)
+    except Exception as e:
+        print(e)
+        response = {
+            'status': 500,
+            'message': 'error: something went wrong while fetching grants clr'
+        }
+        return JsonResponse(response)
+
+    response = {
+        'status': 200,
+        'grants': grant_json
+    }
+    return JsonResponse(response)
+
 
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
@@ -1383,7 +1404,8 @@ def grant_details(request, grant_id, grant_slug):
         for key, value in add_in_params.items():
             params[key] = value
 
-    return TemplateResponse(request, 'grants/detail/index.html', params)
+    # return TemplateResponse(request, 'grants/detail/index.html', params)
+    return TemplateResponse(request, 'grants/detail/_index.html', params)
 
 
 @login_required
