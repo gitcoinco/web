@@ -807,14 +807,17 @@ class Bounty(SuperModel):
         is_traditional_bounty_type = self.project_type == 'traditional'
         try:
             has_tips = self.tips.filter(is_for_bounty_fulfiller=False).send_happy_path().exists()
-            if has_tips and is_traditional_bounty_type and not self.is_open :
+            has_fulfillments = self.fulfillments.filter(payout_status='done').exists()
+            has_payments = has_tips or has_fulfillments
+
+            if has_payments and is_traditional_bounty_type and not self.is_open :
                 return 'done'
             if not self.is_open:
                 if self.accepted:
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                elif has_tips:
+                elif has_payments:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
@@ -2777,6 +2780,10 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
     )
+    anonymize_gitcoin_grants_contributions = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will anonymize your Gitcoin Grants contributions',
+    )
     hide_profile = models.BooleanField(
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
@@ -2813,6 +2820,7 @@ class Profile(SuperModel):
     max_num_issues_start_work = models.IntegerField(default=5)
     etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
+    last_observed_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=20000, decimal_places=2, max_digits=50)
@@ -4420,7 +4428,12 @@ class Profile(SuperModel):
         params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params.get('portfolio', []))
         return params
 
-
+    def get_last_observed_payout_address(self):
+        for earning in self.sent_earnings.filter(network='mainnet').order_by('-created_on'):
+            for history in earning.history.all().order_by('-created_on'):
+                if history.payload.get('from'):
+                     return history.payload.get('from')
+        return ''
 
     @property
     def locations(self):
@@ -4479,21 +4492,27 @@ def psave_profile(sender, instance, **kwargs):
     instance.follower_count = instance.org.count()
     instance.earnings_count = instance.earnings.count()
     instance.spent_count = instance.sent_earnings.count()
+
+    instance.last_observed_payout_address = instance.get_last_observed_payout_address()
+
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     if instance.pk:
-        SearchResult.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
-            source_id=instance.pk,
-            defaults={
-                "created_on":instance.created_on,
-                "title":instance.handle,
-                "description":instance.desc,
-                "url":instance.url,
-                "visible_to":None,
-                'img_url': instance.avatar_url,
-            }
-        )
+        try:
+            SearchResult.objects.update_or_create(
+                source_type=ContentType.objects.get(app_label='dashboard', model='profile'),
+                source_id=instance.pk,
+                defaults={
+                    "created_on":instance.created_on,
+                    "title":instance.handle,
+                    "description":instance.desc,
+                    "url":instance.url,
+                    "visible_to":None,
+                    'img_url': instance.avatar_url,
+                }
+            )
+        except:
+            pass
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):

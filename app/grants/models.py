@@ -1389,6 +1389,7 @@ class Contribution(SuperModel):
         blank=True,
         choices=CHECKOUT_TYPES
     )
+    anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'

@@ -2817,12 +2817,16 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_org:
             context['team'] = profile.team_or_none_if_timeout
     elif tab == 'hackathons':
-        context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
+        context['projects'] = HackathonProject.objects.filter(profiles__id=profile.id)
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grants':
         from grants.models import Contribution
         contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
+        if request.user.is_authenticated and request.user.username.lower() == profile.handle.lower():
+            pass # dont do anything; its your profile
+        else:
+            contributions = contributions.filter(anonymous=False)
         history = []
         for ele in contributions:
             history.append(ele.normalized_data)
@@ -4537,7 +4541,7 @@ def project_data(project_id):
     return params
 
 
-def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
+def hackathon_project_page(request, hackathon, project_id, project_name='', tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
