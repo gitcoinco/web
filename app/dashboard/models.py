@@ -2820,6 +2820,7 @@ class Profile(SuperModel):
     max_num_issues_start_work = models.IntegerField(default=5)
     etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
+    last_observed_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=20000, decimal_places=2, max_digits=50)
@@ -4427,7 +4428,12 @@ class Profile(SuperModel):
         params['portfolio'] = BountyFulfillment.objects.filter(pk__in=params.get('portfolio', []))
         return params
 
-
+    def get_last_observed_payout_address(self):
+        for earning in self.sent_earnings.filter(network='mainnet').order_by('-created_on'):
+            for history in earning.history.all().order_by('-created_on'):
+                if history.payload.get('from'):
+                     return history.payload.get('from')
+        return ''
 
     @property
     def locations(self):
@@ -4486,6 +4492,9 @@ def psave_profile(sender, instance, **kwargs):
     instance.follower_count = instance.org.count()
     instance.earnings_count = instance.earnings.count()
     instance.spent_count = instance.sent_earnings.count()
+
+    instance.last_observed_payout_address = instance.get_last_observed_payout_address()
+
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     if instance.pk:
