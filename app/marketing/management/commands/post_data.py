@@ -261,20 +261,24 @@ def grants():
     pprint("")
     pprint("================================")
     pprint(f"== BEEP BOOP BOP ⚡️          ")
-    pprint(f"== Grants Round ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
+    for aclr in active_clr_rounds.order_by('start_date'):
+        pprint(f"== *{aclr.round_num}* Grants Round ({aclr.start_date.strftime('%m/%d/%Y')} ➡️ {aclr.end_date.strftime('%m/%d/%Y')})")
     pprint(f"== Day {day} Stats 💰🌲👇 ")
     pprint("================================")
     pprint("")
 
     must_be_successful = True
+    grants_pks = []
+    for aclr in active_clr_rounds:
+        grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
     total = contributions.count() + pfs.count()
 
-    current_carts = CartActivity.objects.filter(latest=True)
+    current_carts = CartActivity.objects.filter(latest=True, grant__in=grants_pks)
     num_carts = 0
     amount_in_carts = {}
     discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
