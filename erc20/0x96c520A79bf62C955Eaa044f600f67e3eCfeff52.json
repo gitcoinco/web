@@ -9,9 +9,6 @@
   "website": "https://each.land",
   "state": "NORMAL",
   "published_on": "2020-10-14",
-  "initial_price": {
-    "USD": ""
-  },
   "links": {
     "github": "https://github.com/holdeachland"
   }
