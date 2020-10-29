@@ -46,7 +46,8 @@
               {% else %}
                 <span style="color:gray"><i class="fas fa-circle"></i>
               {% endif %}
-              &nbsp; Status: {{ idena_status }}
+              &nbsp; Status: {{ idena_status }}.
+              <a href={{ recheck_idena_status }} id="recheck-idena-status" class="text-nowrap">Re-Check</a>
               <a href={{ logout_idena_url }} id="disconnect-idena-link" class="text-nowrap">Disconnect</a>
             </div>
           {% else %}

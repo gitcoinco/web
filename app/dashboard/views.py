@@ -2911,6 +2911,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_idena_connected:
             context['idena_address'] = profile.idena_address
             context['logout_idena_url'] = reverse(logout_idena, args=(profile.handle,))
+            context['recheck_idena_status'] = reverse(recheck_idena_status, args=(profile.handle,))
             context['is_idena_verified'] = profile.is_idena_verified
             context['idena_status'] = profile.idena_status
             if not context['is_idena_verified']:
@@ -3072,6 +3073,20 @@ def authenticate_idena(request, handle):
             "authenticated": True
         }
     })
+
+@login_required
+def recheck_idena_status(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    profile.update_idena_status()
+    profile.save()
+    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
