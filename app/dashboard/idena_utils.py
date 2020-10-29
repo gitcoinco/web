@@ -14,14 +14,26 @@ from eth_utils import keccak, decode_hex
 from app.services import RedisService
 
 IDENA_TOKEN_KEY_PREFIX = 'idena_token'
+IDENA_NONCE_KEY_PREFIX = 'idena_nonce'
 
 redis = RedisService().redis
 
 requests.request
 
 def create_idena_token(handle):
-    token = str(uuid4())
-    redis.set(f'{IDENA_TOKEN_KEY_PREFIX}_{token}', handle, settings.IDENA_TOKEN_EXPIRY)
+    # Check for exsiting token by handle
+    token = redis.get(f'{IDENA_TOKEN_KEY_PREFIX}_{handle}')
+
+    if token is None:
+        # Create a new one and store it
+        token = str(uuid4())
+        key = f'{IDENA_TOKEN_KEY_PREFIX}_{token}'
+        reverse_key = f'{IDENA_TOKEN_KEY_PREFIX}_{handle}'
+        redis.set(key, handle, settings.IDENA_TOKEN_EXPIRY)
+        redis.set(reverse_key, token, settings.IDENA_TOKEN_EXPIRY)
+    else:
+        token = token.decode('utf-8')
+
     return token
 
 def get_handle_by_idena_token(token):
@@ -44,8 +56,19 @@ def idena_callback_url(request, profile):
            f'authentication_endpoint={authentication_endpoint}&' \
            f'favicon_url={settings.BASE_URL}static/v2/images/helmet.png&'
 
-def gen_idena_nonce():
-    return f'signin-{uuid4().hex}'
+class IdenaNonce:
+
+    def __init__(self, handle):
+        self.handle = handle
+
+    def generate(self):
+        nonce = f'signin-{uuid4().hex}'
+        redis.set(f'{IDENA_NONCE_KEY_PREFIX}_{self.handle}', nonce, settings.IDENA_NONCE_EXPIRY)
+        return nonce
+
+    def get(self):
+        nonce = (redis.get(f'{IDENA_NONCE_KEY_PREFIX}_{self.handle}') or b'').decode('utf-8')
+        return nonce
 
 def signature_address(nonce, signature):
     nonce_hash = keccak(keccak(text=nonce))

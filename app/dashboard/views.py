@@ -75,7 +75,7 @@ from chat.tasks import (
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
-    idena_callback_url, gen_idena_nonce, signature_address, next_validation_time, get_handle_by_idena_token
+    idena_callback_url, IdenaNonce, signature_address, next_validation_time, get_handle_by_idena_token
 )
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
@@ -2956,13 +2956,11 @@ def logout_idena(request, handle):
     
     profile = profile_helper(handle, True)
     if profile.is_idena_connected:
-        profile.idena_address = ''
-        profile.idena_nonce = ''
+        profile.idena_address = None
         profile.is_idena_connected = False
         profile.save()
 
     return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
-
 
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
@@ -3004,7 +3002,9 @@ def start_session_idena(request, handle):
             'error': f'Address is invalid'
         })
 
-    address_exists = Profile.objects.filter(idena_address=idena_address).exists()
+    address_exists = Profile.objects.filter(idena_address=idena_address)\
+        .exclude(handle=profile.handle) \
+        .exists()
     
     if address_exists:
         return JsonResponse({
@@ -3012,14 +3012,13 @@ def start_session_idena(request, handle):
             'error': f'Address already exists'
         })
 
-    profile.idena_nonce = gen_idena_nonce()
     profile.idena_address = idena_address
     profile.save()
 
     return JsonResponse({
         'success': True,
         'data': {
-            'nonce': profile.idena_nonce,
+            'nonce': IdenaNonce(profile.handle).generate(),
         }
     })
 
@@ -3044,11 +3043,16 @@ def authenticate_idena(request, handle):
             'success': False,
             'error': f'Invalid Idena Token'
         })
+    
+    nonce_controller = IdenaNonce(profile.handle)
 
     sig = data.get('signature', '0x0')
-    sig_addr = signature_address(profile.idena_nonce, sig)
+    sig_addr = signature_address(nonce_controller.get(), sig)
 
     if not is_same_address(sig_addr, profile.idena_address):
+        profile.idena_address = None
+        profile.save()
+        
         return JsonResponse({
             'success': True,
             'data': {
