@@ -20,4 +20,14 @@ class Migration(migrations.Migration):
             name='is_idena_connected',
             field=models.BooleanField(default=False),
         ),
+        migrations.AddField(
+            model_name='profile',
+            name='idena_status',
+            field=models.CharField(max_length=32, null=True),
+        ),
+        migrations.AddField(
+            model_name='profile',
+            name='is_idena_verified',
+            field=models.BooleanField(default=False),
+        ),
     ]

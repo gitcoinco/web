@@ -2911,8 +2911,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_idena_connected:
             context['idena_address'] = profile.idena_address
             context['logout_idena_url'] = reverse(logout_idena, args=(profile.handle,))
-            context['is_idena_verified'] = profile.is_idena_verified()
-            context['idena_status'] = profile.idena_status()
+            context['is_idena_verified'] = profile.is_idena_verified
+            context['idena_status'] = profile.idena_status
             if not context['is_idena_verified']:
                 # FIXME: timezone
                 context['idena_next_validation'] = localtime(next_validation_time())
@@ -2957,6 +2957,8 @@ def logout_idena(request, handle):
     profile = profile_helper(handle, True)
     if profile.is_idena_connected:
         profile.idena_address = None
+        profile.idena_status = None
+        profile.is_idena_verified = False
         profile.is_idena_connected = False
         profile.save()
 
@@ -3061,6 +3063,7 @@ def authenticate_idena(request, handle):
         })
 
     profile.is_idena_connected = True
+    profile.update_idena_status()
     profile.save()
 
     return JsonResponse({

@@ -86,7 +86,7 @@ def parse_datetime_from_iso(iso):
 
 def next_validation_time():
     key = 'idena_validation_time'
-    value = (redis.get(key) or b'' ).decode('utf-8')
+    value = (redis.get(key) or b'').decode('utf-8')
 
     if not value:
         url = 'https://api.idena.io/api/Epoch/Last'
@@ -102,18 +102,12 @@ def next_validation_time():
     return idena_validation_time
 
 def get_idena_status(address):
-    key = f'idena_status_{address}'
-    status = (redis.get(key) or b'' ).decode('utf-8')
+    url = f'https://api.idena.io/api/Identity/{address}'
+    r = requests.get(url).json()
 
-    if not status:
-        url = f'https://api.idena.io/api/Identity/{address}'
-        r = requests.get(url).json()
-        if 'error' in r:
-            status = 'Not validated'
-        else:
-            status = r['result']['state']
-        
-        expiry = int(next_validation_time().timestamp() - datetime.utcnow().timestamp()) # cache until next epoch
-        redis.set(key, status, expiry)
+    if 'error' in r:
+        status = 'Not validated'
+    else:
+        status = r['result']['state']
 
     return status

@@ -2939,23 +2939,19 @@ class Profile(SuperModel):
     contact_email = models.EmailField(max_length=255, blank=True)
 
     # Idena fields
-    is_idena_connected=models.BooleanField(default=False)
+    is_idena_connected = models.BooleanField(default=False)
+    is_idena_verified = models.BooleanField(default=False)
     idena_address = models.CharField(max_length=128, null=True, unique=True)
+    idena_status = models.CharField(max_length=32, null=True)
 
-    def idena_status(self):
-        return get_idena_status(self.idena_address)
-
-    def is_idena_verified(self):
-        if not self.is_idena_connected:
-            return False
-
-        status = self.idena_status()
+    def update_idena_status(self):
+        self.idena_status = get_idena_status(self.idena_address)
         
-        if status in ['Newbie', 'Verified', 'Human']:
-            return True
+        if self.idena_status in ['Newbie', 'Verified', 'Human']:
+            self.is_idena_verified = True
+        else:
+            self.is_idena_verified = False
         
-        return False
-
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
