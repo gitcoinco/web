@@ -13,6 +13,7 @@ class Command(BaseCommand):
         total_count = Profile.objects.filter(is_idena_connected=True).count()
 
         for index, profile in enumerate(connected_profiles):
-            print(f'{index + 1}/{total_count}: Updating {profile.handle}')
+            prev = profile.idena_status
             profile.update_idena_status()
             profile.save()
+            print(f'{index + 1}/{total_count} -> Updating {profile.handle}: {prev} -> {profile.idena_status}')
