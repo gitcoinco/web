@@ -2943,7 +2943,6 @@ def get_profile_by_idena_token(token):
     except ObjectDoesNotExist:
         return None
 
-@require_POST
 def logout_idena(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
    
@@ -2993,6 +2992,8 @@ def start_session_idena(request, handle):
             'success': False,
             'error': f'Address is required'
         })
+
+    idena_address = idena_address.lower()
 
     if not is_address(idena_address):
         return JsonResponse({
