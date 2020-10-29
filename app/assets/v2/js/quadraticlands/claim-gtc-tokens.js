@@ -4,10 +4,6 @@
 // let token_distributor_abi = [ { "inputs":[ { "internalType":"address", "name":"_token", "type":"address" }, { "internalType":"address", "name":"_signer", "type":"address" } ], "stateMutability":"nonpayable", "type":"constructor" }, { "anonymous":false, "inputs":[ { "indexed":false, "internalType":"uint256", "name":"index", "type":"uint256" }, { "indexed":false, "internalType":"address", "name":"account", "type":"address" }, { "indexed":false, "internalType":"uint256", "name":"amount", "type":"uint256" } ], "name":"Claimed", "type":"event" }, { "inputs":[ { "internalType":"uint32", "name":"user_id", "type":"uint32" }, { "internalType":"address", "name":"user_address", "type":"address" }, { "internalType":"uint256", "name":"user_amount", "type":"uint256" }, { "internalType":"bytes32", "name":"eth_signed_message_hash_hex", "type":"bytes32" }, { "internalType":"bytes", "name":"eth_signed_signature_hex", "type":"bytes" } ], "name":"claimTokens", "outputs":[], "stateMutability":"nonpayable", "type":"function" }, { "inputs":[ { "internalType":"uint32", "name":"user_id", "type":"uint32" }, { "internalType":"address", "name":"user_address", "type":"address" }, { "internalType":"uint256", "name":"user_amount", "type":"uint256" }, { "internalType":"bytes32", "name":"eth_signed_message_hash_hex", "type":"bytes32" } ], "name":"confirmMessage", "outputs":[ { "internalType":"bool", "name":"", "type":"bool" } ], "stateMutability":"pure", "type":"function" }]
 let BN;
 
-$(document).on('click', '#WTF', (event) => {
-  console.log('WTF HEREHERHERE!');
-});
-
 $(document).on('click', '#claim', (event) => {
   event.preventDefault();
   const user_id = document.getElementById('user_id').textContent;
@@ -55,10 +51,11 @@ async function claimGTCTokens(user_id, user_address_cleaned, user_amount, eth_si
     BN = web3.utils.BN;
     [user] = await web3.eth.getAccounts();
 
-    // move token contract addy to env or standard abi.js file
+    // TODO - move token contract addy to env or standard abi.js file
+    // ZW: added new Rinkeby tokendist contract 10/29/2020
     const tokenDistributor = await new web3.eth.Contract(
       token_distributor_abi,
-      '0x2d421946b6Ba59e336B6d8D8C426537c3FfBb5f4'
+      '0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
     );
         
     const claimGTCtoken = () => {

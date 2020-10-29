@@ -156,16 +156,17 @@ def mission_end(request):
 # @Richard please don't adjust anything below here without talking to me first 
 # @require_http_methods(["GET", "POST"]) --> not working as likely not used by gitcoin.co app?
 # ratelimit.UNSAFE is a shortcut for ('POST', 'PUT', 'PATCH', 'DELETE').
+@login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def claim(request):
     '''
-    TODO - fill this in with some detailed info on how claim works 
+    Used for GTC Token claim
     '''
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
    
     # if POST 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         # create a form instance and populate it with data from the request (from forms.py)
         # form = ClaimForm(request.POST)
          
