@@ -82,6 +82,9 @@ h2 {
   line-height: 1.6em;
   margin-bottom: 2rem;
 }
+h2 span {
+  animation: colorcycle-text 1s ease-in-out infinite;
+}
 
 h3 {
   font-family: "Poppins", sans-serif;
@@ -98,6 +101,14 @@ p {
   font-size: 100%;
   font-weight: 400;
   margin-bottom: 2rem;
+}
+
+ol, ul {
+  margin-bottom: 2rem;
+}
+
+li {
+  margin-bottom: 0.5em;
 }
 
 a {
@@ -199,6 +210,7 @@ nav {
 #nav-links a li {
   color: var(--purple_light);
   display: inline-block;
+  margin-bottom: initial;
   /* token ammount in menu bar*/
 }
 #nav-links a li span {
@@ -209,6 +221,9 @@ nav {
   font-family: "Space Mono", monospace;
   padding: 0.5em 0.5em;
   margin-left: 0.5em;
+}
+#nav-links ul {
+  margin-bottom: initial;
 }
 
 @media (max-width: 992px) {
@@ -1069,6 +1084,22 @@ section#particles svg {
   animation: colorcycle-shadow 3s ease-in-out infinite;
 }
 
+table {
+  display: table;
+  box-sizing: border-box;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+table td {
+  vertical-align: top;
+  order-collapse: collapse;
+  border: 1px solid var(--smoke);
+  padding: 0.5rem;
+}
+table thead td {
+  color: var(--white);
+}
+
 /* section */
 section.column {
   margin-bottom: 6em;
@@ -1409,7 +1440,10 @@ section#footersocial a svg:hover {
 
 @media (max-width: 688px) {
   section#footersocial {
-    margin: 6em 1.5em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    margin-top: 6em;
+    margin-bottom: 3em;
   }
   section#footersocial a svg {
     width: 36px;
@@ -1442,7 +1476,8 @@ section#footer a:hover {
 
 @media (max-width: 688px) {
   section#footer {
-    margin: 6em 1.5em;
+    margin: 0em 1.5em;
+    padding: 3em;
   }
   section#footer a {
     display: block;
