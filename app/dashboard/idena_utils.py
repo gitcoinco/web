@@ -1,5 +1,4 @@
 from datetime import datetime
-from logging import error
 from pytz import UTC
 from uuid import uuid4
 
@@ -30,12 +29,8 @@ def get_idena_url(request, profile):
 def gen_idena_nonce():
     return f'signin-{uuid4().hex}'
 
-def signature_hash(value):
-    error(value)
-    return keccak(keccak(text=value))
-
 def signature_address(nonce, signature):
-    nonce_hash = signature_hash(nonce)
+    nonce_hash = keccak(keccak(text=nonce))
     address = Account.recoverHash(nonce_hash, signature=decode_hex(signature))
     return address
 

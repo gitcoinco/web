@@ -2963,7 +2963,9 @@ def logout_idena(request, handle):
     return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
 
 
-@csrf_exempt # Call from external service
+# Response model differ from rest of project because idena client excepts this shape:
+# Using {success, error} instead of {ok, msg}
+@csrf_exempt # Call from idena client
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 @require_POST
 def start_session_idena(request, handle):
@@ -2989,7 +2991,7 @@ def start_session_idena(request, handle):
     if idena_address is None:
         return JsonResponse({
             'success': False,
-            'error': f'Address is reqired'
+            'error': f'Address is required'
         })
 
     if not is_address(idena_address):
@@ -3017,7 +3019,9 @@ def start_session_idena(request, handle):
         }
     })
 
-@csrf_exempt # Call from external service
+# Response model differ from rest of project because idena client excepts this shape:
+# Using {success, error} instead of {ok, msg}
+@csrf_exempt # Call from idena client
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 @require_POST
 def authenticate_idena(request, handle):

@@ -9,7 +9,7 @@ def gen_uuid_0(apps, schema_editor):
 
     profiles_with_uuid = Profile.objects.filter(idena_token__isnull=False)
     for profile in profiles_with_uuid:
-        idena_token = profile.brightid_uuid
+        idena_token = profile.idena_token
         print(f"UUID for profile -> {profile.pk} -> {idena_token}")
         while idena_token in existing_uuid:
             idena_token = uuid.uuid4()
