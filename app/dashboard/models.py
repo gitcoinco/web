@@ -4526,8 +4526,8 @@ class UserDirectoryManager(models.Manager):
 
 class UserDirectory(models.Model):
     profile_id = models.CharField(max_length=255, primary_key=True)
-    join_date = models.CharField(null=True, max_length=255)
-    github_created_at = models.CharField(null=True, max_length=255)
+    join_date = models.DateTimeField(null=True, max_length=255)
+    github_created_at = models.DateTimeField(null=True, max_length=255)
     first_name = models.CharField(null=True, max_length=255)
     last_name = models.CharField(null=True, max_length=255)
     email = models.EmailField()

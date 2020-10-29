@@ -26,6 +26,7 @@
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
   </head>
 
   <body id="{{ explore }}" class="interior {{active}} g-font-muli">
@@ -61,11 +62,16 @@
             </div>
 
             <template v-for="filter in filters">
-              <numeric-list-filter v-if="filter.type == 'float' || filter.type == 'long' || filter.type == 'date'" :id="filter.text" :field="filter.text" operator="OR">
+              <numeric-list-filter v-if="filter.type == 'float' || filter.type == 'long'" :id="filter.text" :field="filter.text" operator="OR">
                 <template slot="header">
                     <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
                 </template>
               </numeric-list-filter>
+              <date-range-filter v-else-if="filter.type == 'date'" :id="filter.text" :field="filter.text" operator="OR">
+                <template slot="header">
+                    <h3 class="is-date-range-title">[[ filter.text ]] : </h3>
+                </template>
+              </date-range-filter>
               <refinement-list-filter v-else :id="filter.text" :orderKey="'doc_count'" :orderDirection="'desc'" :key="filter.text" :field="filter.key" :size="5000" :title="filter.text" operator="OR">
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
                     <select2 class="select2-filter" multiple minInputLength="0" name="" :sorter="filterSorter" :placeholder="'select multiple'" :id="filter.type" v-model="checkedItems"  @input="select2InputEventListener(clickOnItem, checkedItems)">
@@ -269,6 +275,11 @@
         </div>
       </div>
     </div>
+    <script type="text/x-template" id="date-range-template">
+      <div class="">
+        <input class="form__input" type="text" v-model="pickDate" :disabled="disabled" placeholder="" />
+      </div>
+    </script>
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
@@ -277,6 +288,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim="1" %}
+    <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.5.1/vuex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/vue-innersearch.min.js"></script>
     <script>
@@ -287,6 +299,7 @@
       document.csrf = csrftoken;
       document.keywords = {{keywords | safe}};
     </script>
+
   <script src="{% static "v2/js/users-elastic.js" %}"></script>
   </body>
 </html>

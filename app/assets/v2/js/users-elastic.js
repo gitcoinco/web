@@ -242,7 +242,7 @@ Vue.mixin({
             let query = newBody['query'];
             let activeFilters = [];
 
-            if (query.hasOwnProperty('bool') && query['bool'].hasOwnProperty('filter') && query['bool']['filter'].hasOwnProperty('bool') && query['bool']['filter']['bool'].hasOwnProperty('should')) {
+            if (query && query.hasOwnProperty('bool') && query['bool'].hasOwnProperty('filter') && query['bool']['filter'].hasOwnProperty('bool') && query['bool']['filter']['bool'].hasOwnProperty('should')) {
               query = query['bool']['filter']['bool']['should'];
               for (let x in query) {
                 if (!query[x])
@@ -331,6 +331,7 @@ Vue = Vue.extend({
 
 
 if (document.getElementById('gc-users-elastic')) {
+  Vue.use(window.innerSearch.default);
 
   Vue.component('directory-card', {
     name: 'DirectoryCard',
@@ -338,7 +339,88 @@ if (document.getElementById('gc-users-elastic')) {
     props: [ 'user', 'funderBounties' ]
   });
 
-  Vue.use(innerSearch.default);
+  Vue.component('date-range-filter', {
+    mixins: [window.innerSearch.Generics],
+    props: [ 'id', 'field' ],
+    template: `<section>
+        <div class="is-nlf">
+            <slot name="header"></slot>
+            <date-range-picker :ranges="ranges" :showDropdown="true" :multiple="true" :format="'YYYY-MM-DD'" @apply-daterangepicker="performRequest($event)"></date-range-picker>
+        </div>
+    </section>`,
+    data: function() {
+      let ranges = {
+        'Last week': [ moment().subtract(7, 'days'), moment() ],
+        'Last month': [ moment().subtract(1, 'month'), moment() ],
+        'Last Quarter': [ moment().subtract(3, 'month'), moment() ],
+        'Last year': [ moment().subtract(1, 'year'), moment() ]
+      };
+
+      return {
+        ranges,
+        CID: undefined,
+        name: null,
+        from: undefined,
+        to: undefined,
+        localInstructions: [], // local request
+        tagFilters: []
+      };
+    },
+
+    methods: {
+      performRequest: function(chosenRanges) {
+
+        this.removeInstructions();
+
+        const [ from, to ] = chosenRanges;
+
+        this.from = from;
+        this.to = to;
+        let _rangeObj = {
+          gte: this.from,
+          lte: this.to
+        };
+        let _instruction = {
+          fun: 'query',
+          args: [ 'range', this.field, _rangeObj ]
+        };
+
+        this.localInstructions.push(_instruction);
+        this.addInstruction(_instruction);
+        // Send the value to TagFilter component(s)
+        this.tagFilters.forEach(tagFilter => {
+          this.bus.$emit(tagFilter, _rangeObj);
+        });
+        // Update the request
+        this.mount();
+        // Execute request
+        this.fetch(this);
+      },
+      reset: function() {
+        this.from = undefined;
+        this.to = undefined;
+        this.tagFilters.forEach(tagFilter => {
+          this.bus.$emit(tagFilter, {});
+        });
+        if (this.localInstructions.length !== 0)
+          this.removeInstructions();
+      }
+    },
+    created() {
+      this.CID = this.addComponent('date-range-filter', this);
+      // Assign the name to the component if needed
+      if (this.id !== undefined)
+        this.name = this.id;
+      // Triggered by ResetButton component
+      this.bus.$on('reset', () => this.reset());
+      this.bus.$on('reset_' + this.CID, () => this.reset());
+      // Save TagFilter channel(s)
+      this.bus.$on('tagFilter_' + this.CID, (channel) => {
+        this.tagFilters.push(channel);
+      });
+    }
+  });
+
   Vue.component('autocomplete', {
     props: [ 'options', 'value' ],
     template: '#select2-template',
@@ -370,14 +452,13 @@ if (document.getElementById('gc-users-elastic')) {
       let mappedFilters = {};
       let data = $.map(this.options, function(obj, key) {
 
-        if (key.indexOf('_exact') === -1)
+        if (key.indexOf('_exact') === -1 && obj.type !== 'date')
           return;
         let newKey = key.replace('_exact', '');
 
         if (mappedFilters[newKey])
           return;
-        if (obj.type === 'date' || obj.type === 'boolean')
-          return;
+
         obj.id = count++;
         obj.text = newKey;
         obj.key = key;

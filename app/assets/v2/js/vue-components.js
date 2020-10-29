@@ -809,7 +809,7 @@ Vue.component('suggested-profile', {
 
 Vue.component('date-range-picker', {
   template: '#date-range-template',
-  props: [ 'date', 'disabled' ],
+  props: [ 'date', 'disabled', 'multiple', 'format', 'ranges', 'showDropdowns' ],
 
   data: function() {
     return {
@@ -825,11 +825,15 @@ Vue.component('date-range-picker', {
     let vm = this;
 
     this.$nextTick(function() {
+      let format = vm.format || 'MM/DD/YYYY';
+
       window.$(this.$el).daterangepicker({
-        singleDatePicker: true,
+        showDropdowns: !vm.showDropdowns,
+        singleDatePicker: !vm.multiple,
         startDate: moment().add(1, 'month'),
         alwaysShowCalendars: false,
-        ranges: {
+        linkedCalendars: false,
+        ranges: vm.ranges || {
           '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
           '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
           '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
@@ -838,11 +842,17 @@ Vue.component('date-range-picker', {
         },
         'locale': {
           'customRangeLabel': 'Custom',
-          'format': 'MM/DD/YYYY'
+          'format': format
         }
       }).on('apply.daterangepicker', function(e, picker) {
-        vm.$emit('apply-daterangepicker', picker.startDate);
-        vm.newDate = picker.startDate.format('MM/DD/YYYY');
+        if (!vm.multiple) {
+          vm.$emit('apply-daterangepicker', picker.startDate);
+          vm.newDate = picker.startDate.format(format);
+        } else {
+          vm.$emit('apply-daterangepicker', [ picker.startDate.format(format), picker.endDate.format(format) ]);
+
+          vm.newDate = `${picker.startDate.format(format)} - ${picker.endDate.format(format)}`;
+        }
       });
     });
   }
