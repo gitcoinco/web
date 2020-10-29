@@ -13,7 +13,6 @@ console.log("init scroll animation  library");
 
 const h1 = document.querySelectorAll("h1");
 const h3 = document.querySelectorAll("h3");
-const p = document.querySelectorAll("p");
 const btn = document.querySelectorAll(".btn");
 const figure = document.querySelectorAll("figure");
 
@@ -27,12 +26,6 @@ h1.forEach(element => {
     element.setAttribute("data-sal", "flip-up");
     element.setAttribute("data-sal-delay", "100");
     element.setAttribute("data-sal-duration", "300");
-});
-
-p.forEach(element => {
-    element.setAttribute("data-sal", "fade");
-    element.setAttribute("data-sal-delay", "200");
-    element.setAttribute("data-sal-duration", "500");
 });
 
 btn.forEach(element => {

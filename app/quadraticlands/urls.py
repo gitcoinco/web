@@ -45,6 +45,7 @@ urlpatterns = [
     path('about', about, name='about'),
     path('faq', faq, name='faq'),
     path('terms', terms, name='terms'),
+    path('privacy', privacy, name='privacy'),
     path('demo', claim, name='demo-claim'),
     path('dashboard', dashboard, name='dashboard'),
 
