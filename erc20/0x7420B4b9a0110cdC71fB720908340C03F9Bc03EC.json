@@ -1,0 +1,13 @@
+{
+  "symbol": "JASMY",
+  "address": "0x7420B4b9a0110cdC71fB720908340C03F9Bc03EC",
+  "overview":{
+        "en": "JasmyCoin is based on the ERC 20 standard. The token can also be used by an unspecified number of individuals and businesses to transfer tokens using digital devices as proof of value exchange or payment for services. By not limiting its usability, the token can have a wide range of purposes."
+  },
+  "email": "contact@bwe-inc.jp",
+  "website": "https://jasmy.co.jp/index.html",
+  "whitepaper": "https://jasmy.co.jp/images/whitepaper20200618_eng.pdf",
+  "links": {
+    "github": "https://github.com/TokyoToken/JasmyCoin"
+  }
+}
