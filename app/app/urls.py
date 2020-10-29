@@ -757,8 +757,8 @@ urlpatterns = [
 
     # quadratic lands 
     path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
-    re_path(r'^quadraticlands/$', include('quadraticlands.urls', namespace='ql_catchall_')),
-    # re_path(r'^quadraticlands/$', include('quadraticlands.urls', namespace='ql_catchall')),
+    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
+    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
 
 ]
 
