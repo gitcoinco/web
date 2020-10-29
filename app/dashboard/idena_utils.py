@@ -13,14 +13,32 @@ from eth_utils import keccak, decode_hex
 
 from app.services import RedisService
 
+IDENA_TOKEN_KEY_PREFIX = 'idena_token'
+
 redis = RedisService().redis
 
-def get_idena_url(request, profile):
+requests.request
+
+def create_idena_token(handle):
+    token = str(uuid4())
+    redis.set(f'{IDENA_TOKEN_KEY_PREFIX}_{token}', handle, settings.IDENA_TOKEN_EXPIRY)
+    return token
+
+def get_handle_by_idena_token(token):
+    handle = redis.get(f'{IDENA_TOKEN_KEY_PREFIX}_{token}')
+
+    if handle is None:
+        return None
+    return handle.decode('utf-8')
+
+def idena_callback_url(request, profile):
     callback_url = request.build_absolute_uri(reverse("profile_by_tab", args=("trust",)))
     nonce_endpoint = request.build_absolute_uri(reverse("start_session_idena", args=(profile.handle,)))
     authentication_endpoint = request.build_absolute_uri(reverse("authenticate_idena", args=(profile.handle,)))
 
-    return f'dna://signin/v1?token={profile.idena_token}&'\
+    idena_token = create_idena_token(profile.handle)
+
+    return f'dna://signin/v1?token={idena_token}&'\
            f'callback_url={callback_url}&' \
            f'nonce_endpoint={nonce_endpoint}&' \
            f'authentication_endpoint={authentication_endpoint}&' \

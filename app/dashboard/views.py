@@ -74,7 +74,9 @@ from chat.tasks import (
 )
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
-from dashboard.idena_utils import get_idena_url, gen_idena_nonce, signature_address, next_validation_time
+from dashboard.idena_utils import (
+    idena_callback_url, gen_idena_nonce, signature_address, next_validation_time, get_handle_by_idena_token
+)
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
@@ -2914,9 +2916,8 @@ def get_profile_tab(request, profile, tab, prev_context):
             if not context['is_idena_verified']:
                 # FIXME: timezone
                 context['idena_next_validation'] = localtime(next_validation_time())
-
         else:
-            context['login_idena_url'] = get_idena_url(request, profile)
+            context['login_idena_url'] = idena_callback_url(request, profile)
 
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
@@ -2938,8 +2939,9 @@ def get_profile_tab(request, profile, tab, prev_context):
     return context
 
 def get_profile_by_idena_token(token):
+    handle = get_handle_by_idena_token(token)
     try:
-        return Profile.objects.get(idena_token=token)
+        return Profile.objects.get(handle=handle)
     except ObjectDoesNotExist:
         return None
 
@@ -2976,6 +2978,7 @@ def start_session_idena(request, handle):
             'success': False,
             'error': 'Invalid json data'
         })
+
 
     profile = get_profile_by_idena_token(data.get('token', 'invalid-token'))
 

@@ -25,9 +25,4 @@ class Migration(migrations.Migration):
             name='idena_nonce',
             field=models.CharField(null=True, max_length=128),
         ),
-        migrations.AddField(
-            model_name='profile',
-            name='idena_token',
-            field=models.UUIDField(null=True),
-        ),
     ]

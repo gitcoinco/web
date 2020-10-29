@@ -896,4 +896,4 @@ ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
 
 # Idena
-IDENA_TOKEN_EXPIRY = 60 * 60 * 12 # 12 Hours
+IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
