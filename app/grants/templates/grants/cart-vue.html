@@ -434,9 +434,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               </select2> -->
                             </div>
                             <div class="">
-                              <!-- <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
+                              <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
                                 Apply to all
-                              </div> -->
+                              </div>
                             </div>
                           </div>
 
@@ -444,7 +444,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                           <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
                             <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
-                              <div class="mr-2">[[grant.grant_donation_clr_match]] ZEC</div>
+                              <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
                               <img src="{% static 'v2/images/chains/zcash.svg' %}" alt="Diamonds high-fiving"
                               width="20">
                             </div>
