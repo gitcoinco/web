@@ -2698,7 +2698,9 @@ def contribute_to_grants_v1(request):
             subscription.save()
 
             # step 3: create contribution + fire celery
-            contribution = subscription.create_contribution(tx_id, False)
+            contribution = subscription.create_contribution(tx_id, True)
+            contribution.success = True
+            contribution.save()
             sync_payout(contribution)
 
 

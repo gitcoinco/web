@@ -93,8 +93,9 @@ def is_txn_done_recently(time_of_txn):
 def sync_zcash_payout(contribution):
 #     if not contribution.tx_id:
     txn = find_txn_on_zcash_explorer(contribution)
-    if txn:
+    if txn and not contribution.tx_id:
         contribution.tx_id = txn
+        contribution.save()
 
 #     if contribution.tx_id:
         is_sucessfull_txn = get_zcash_txn_status(contribution.tx_id)
@@ -103,5 +104,4 @@ def sync_zcash_payout(contribution):
             contribution.tx_cleared = True
             contribution.checkout_type = 'zcash_std'
             record_contribution_activity(contribution)
-
-        contribution.save()
+            contribution.save()

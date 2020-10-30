@@ -55,7 +55,8 @@ def record_contribution_activity(contribution):
                 comment= subscription.comments
             )
 
-        successful_contribution(grant, subscription, contribution)
+        # note: commenting out for optimistic UI
+        # successful_contribution(grant, subscription, contribution)
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
         update_grant_metadata.delay(grant.pk)
