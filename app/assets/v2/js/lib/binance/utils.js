@@ -36,6 +36,21 @@ binance_utils.getAddressBalance = async address => {
   return Promise.resolve(bnbBalance.toFixed(4));
 };
 
+/**
+ * Get accounts connected in extension
+ */
+binance_utils.getExtensionConnectedAccounts = async () => {
+  const isConnected = await BinanceChain.isConnected()
+
+  if (!isConnected)
+    return;
+
+  const accounts = await BinanceChain.requestAccounts();
+
+  return Promise.resolve(accounts);
+};
+
+
 /* EVENTS */
 BinanceChain.on('connect', info => {
   console.log(`connected to ${binance_utils.getChainVerbose(info.chainId).name}!`);
