@@ -39,6 +39,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 import requests
+from eth_utils import is_checksum_address, is_normalized_address, to_checksum_address
 from ratelimit.decorators import ratelimit
 
 from .forms import ClaimForm
@@ -72,12 +73,33 @@ def faq(request):
 def dashboard(request):
     return TemplateResponse(request, 'quadraticlands/dashboard.html')
 
+def demo2(request):
+    print(request.user.profile.preferred_payout_address)
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+    
+    # begin logic for establishing primary token claim address
+    # first, we check preferred_payout_address 
+    # this is currently used only as a means of knowing what to display to the user on claim page
+    # @claim2 is the gatekeeper/source-of-truth on payout addy - this way we dont have to trust user supplied content as much 
+
+    if request.user.profile.preferred_payout_address: 
+        payout_address = request.user.profile.preferred_payout_address
+    else:
+        payout_address = None 
+
+    # testing if user payout addy isn't set in Gitcoin web 
+    payout_address = None
+    context = {
+            'title': _('Claim GTC'),
+            'profile': profile,
+            'user' : user,
+            'payout_address' : payout_address
+          }
+    return TemplateResponse(request, 'quadraticlands/demo2.html', context)
 
 def mission(request):
     return TemplateResponse(request, 'quadraticlands/mission/index.html')   
-
-
-
 
 def mission_knowledge_index(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/index.html')
@@ -112,9 +134,6 @@ def mission_knowledge_question_2_timeout(request):
 def mission_knowledge_outro(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/outro.html')   
 
-
-
-
 def mission_recieve_index(request):
     return TemplateResponse(request, 'quadraticlands/mission/recieve/index.html')   
 
@@ -130,9 +149,6 @@ def mission_revieve_claimed(request):
 def mission_recieve_outro(request):
     return TemplateResponse(request, 'quadraticlands/mission/recieve/outro.html')   
 
-
-
-
 def mission_use_index(request):
     return TemplateResponse(request, 'quadraticlands/mission/use/index.html')  
 
@@ -142,15 +158,117 @@ def mission_use_snapshot(request):
 def mission_use_outro(request):
     return TemplateResponse(request, 'quadraticlands/mission/use/outro.html')   
 
-     
-
-
 def mission_end(request):
     return TemplateResponse(request, 'quadraticlands/mission/end.html')   
 
-    
+
+# used for testing generic getFetch POSTs from client side JS
+@login_required
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def testPost(request):
+            logger.info(f'successfully called testPost')
+            resp = {'payload': 'example'}
+            return JsonResponse(resp)
 
 
+# ratelimit.UNSAFE is a shortcut for ('POST', 'PUT', 'PATCH', 'DELETE').
+@login_required
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def claim2(request):
+    '''
+    Receives AJAX post from CLAIM button 
+    Returns JSON response from Ethereum Message Signing Service (emss)
+    '''
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+      
+    # if POST 
+    if request.method == 'POST' and request.user.is_authenticated:
+         
+        logger.info(f'USER ID: {user.id}')
+        logger.info(f'GTC DIST KEY {settings.GTC_DIST_KEY}')  
+        
+        post_data_to_emss = {}
+        post_data_to_emss['user_id'] = user.id
+       
+        # if a primary user active wallet address was supplied
+        # then we will make sure that it's a checksum'd eth address
+        if request.POST.get('address'):
+            try:
+                if is_checksum_address(request.POST.get('address')):
+                    primary_wallet_address = request.POST.get('address')
+                elif is_normalized_address(request.POST.get('address')):
+                    primary_wallet_address = to_checksum_address(request.POST.get('address'))
+                else:
+                    primary_wallet_address = None 
+                    logger.info('QuadLands: Primary wallet address failed integrity checks')
+            except:
+                logger.error('QuadLands: There was an issue intreperting user wallet address!')
+                 
+                   
+        # IMPORTANT - below is the current central source of truth for address on claim 
+        # if user profile address is not set, then we will take the 'address' value 
+        # submitted along with a ajax post to /claim2 - 
+        # if no address in post and no profile addy then we dont have an addy for the user
+        # user claim will return error 
+        # feature tracked here - https://github.com/nopslip/gitcoin-web-ql/issues/21
+                  
+        # if profile.preferred_payout_address:
+        if False: # used to test for users with out primary addy set 
+            post_data_to_emss['user_address'] = profile.preferred_payout_address
+        # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data 
+        elif request.POST.get('address'):
+            post_data_to_emss['user_address'] = primary_wallet_address
+        else: 
+            logger.error(f'QuadLands: Cannot find an address for the user claim!')
+            return JsonResponse({'error': 'no address found for user!'})
+        
+        # will pull token claim data from the user, this is hard coded for now 
+        post_data_to_emss['user_amount'] = 1000000000000000 # need to use big number in units WEI 
+
+        # create a hash of post data                
+        sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
+        logger.info(f'POST data: {json.dumps(post_data_to_emss)}')
+        logger.info(f'Server side hash: { sig }')
+        
+        header = { 
+            "X-GITCOIN-SIG" : sig,
+            "content-type": "application/json",
+        }
+        
+        # POST relevant user data to micro service that returns signed transation data for the user broadcast  
+        try: 
+            emss_response = requests.post(settings.GTC_DIST_API_URL, data=json.dumps(post_data_to_emss), headers=header)
+            emss_response_content = emss_response.content
+            logger.info(f'GTC Distributor: emss_response_content: {emss_response_content}')
+        except requests.exceptions.ConnectionError:
+            logger.info('GTC Distributor: ConnectionError while connecting to EMSS!')
+        except requests.exceptions.Timeout:
+            # Maybe set up for a retry
+            logger.info('GTC Distributor: Timeout while connecting to EMSS!')
+        except requests.exceptions.TooManyRedirects:
+            logger.info('GTC Distributor: Too many redirects while connecting to EMSS!')
+        except requests.exceptions.RequestException as e:
+            # catastrophic error. bail.
+            logger.error(f'GTC Distributor:  Error posting to EMSS - {e}')
+            there_is_a_problem = True 
+
+        # check response status, maybe better to use .raise_for_status()? 
+        # need to streamline error response for this whole function 
+        # TODO - sounds like we'll use custom quadlands 500 https://github.com/nopslip/gitcoin-web-ql/issues/23
+        if emss_response.status_code == 500:
+            logger.info(f'GTC Distributor: 500 received from ESMS! - This probably means there was a problem with token claim!')
+            resp = {'error': 'TRUE'}
+            return JsonResponse(resp)
+        
+        # pass returned values from eth signer microservice
+        # ESM returns bytes object of json. so, we decode it
+        esms_response = json.loads( emss_response_content.decode('utf-8'))
+        # construct nested dict for easy access in templates
+
+        logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
+        return JsonResponse(esms_response)
+           
 
 
 # @Richard please don't adjust anything below here without talking to me first 
