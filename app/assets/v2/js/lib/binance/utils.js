@@ -32,7 +32,7 @@ binance_utils.getAddressBalance = async address => {
   const result = await BinanceChain.request(data);
   
   // convert hex balance to integer and account for decimal points
-  const bnbBalance = BigInt(result).toString(10) * Math.pow(10, -18);
+  const bnbBalance = BigInt(result).toString(10) * 10 ** -18;
 
   return Promise.resolve(bnbBalance.toFixed(4));
 };
@@ -95,7 +95,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address) =>
         {
           from: from_address,
           to: to_address,
-          value: '0x' + (amount * Math.pow(10, 18)).toString(16) // convert amount to hex
+          value: '0x' + amount.toString(16) // convert amount to hex
         },
       ];
 
