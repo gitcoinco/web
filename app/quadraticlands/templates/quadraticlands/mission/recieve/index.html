@@ -14,17 +14,8 @@
 	<div>
 		<h3><span>#</span>Chapter 2 of 3</h3>
 		<h1>Proof of recieve</h1>
-
-		<!-- this p is to display status text -->
-		<p id="recieveMessage"></p>
-
-		<!-- display users adress -->
-		<span id="recieveAdress" class="recieveadress"></span>
-
-		<!-- change wallet button - to trigger the web3modal -->
-		<a id="buttonChangeWallet" href="#" class="btn aqua">Select a Wallet</a>
-
-		<!-- continue button is hidden by default (class .hide) -->
+		<p id="recieveMessage">Please connect to your Wallet in the top right corner!</p>
+		<span id="recieveAdress" class="recieveadress hide"></span>
 		<a id="buttonContinue" href="/quadraticlands/mission/recieve/claim" class="btn hide">Continue</a>
 	</div>
 
@@ -36,81 +27,46 @@
 
 {% block 'scripts' %}
 
-	<!--some custom particles-->
 	<script src="/static/quadraticlands/js/particles.js"></script>
-	
-	<!--Scroll Animation Library (sal) INIT-->
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
-
-	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
 
 
 
-
-
-	<!-- richards little interface manipulation methods for zach -->
-
 	<script>
 
-		// interface elements
+		// make sure user definitly have selected a provider.
+		// and if so update the interface to show the
+		// next button, a message, and the eth-adress
+
 		const recieveMessage = document.getElementById("recieveMessage");
 		const recieveAdress = document.getElementById("recieveAdress");
-		const buttonChangeWallet = document.getElementById("buttonChangeWallet");
 		const buttonContinue = document.getElementById("buttonContinue");
+	
 
-
-		// @zack you can change from false to true to see both states of interface
-		var check = false;
-
-
-		if (check == true)
-		{
-			// provider = true 
-
-			// display a positive text
+		window.addEventListener("dataWalletReady", () => {
 			recieveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
-
-			// display adress
 			recieveAdress.classList.remove("hide");
+			recieveAdress.innerHTML = selectedAccount;
+			buttonContinue.classList.remove("hide");				
+		});
 
-			// change adress to the users current adress to display it big
-			recieveAdress.innerHTML = "0xB8B281E556c478583087Ae5af5356B485B83E811";
+		// reset the view when there is no Wallet
+		// it would be better to check something like
+		// dataWalletReady = false ... but i can not find a function for this
+		// so i trigger this on the buttonDisconnect in my interface for now
 
-			// unhide the continue button 
-			buttonContinue.classList.remove("hide");
+		const buttonDisconnect = document.getElementById("btn-disconnect");
 
-			// change text of buttonChangeWallet to "change" as he HAVE a wallet selected
-			buttonChangeWallet.innerHTML = "Change Wallet";
-
-		}
-
-		else
-
-		{
-			// provider = false
-
-			// display a negative text to user - select wallet
-			recieveMessage.innerHTML = "You need to connect to a Wallet!";
-
-			// hide adress as there is none
+		buttonDisconnect.addEventListener("click", () => {
+			recieveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
 			recieveAdress.classList.add("hide");
-
-			// change text of buttonChangeWallet to "select" as he have NO wallet selected
-			buttonChangeWallet.innerHTML = "Select Wallet";
-
-			// hide the continue button 
-			buttonContinue.classList.add("hide");			
-		}
-
+			buttonContinue.classList.add("hide");
+		});	
 
 
 
 	</script>
-
-
-
-
 
 
 {% endblock %}
