@@ -5,15 +5,19 @@ var signed_message_payload
 // post into microservice 
 /// payback (sign msg)
 
+window.addEventListener('dataWalletReady', function(e) {
+    console.log('hereherhere!')
+    $('wallet-address').html(selectedAccount)
+ }, false);
+
 $( document ).ready(function() {
     console.log( "ready!" );
-    
+   
 $(document).on('click', '#beginClaim', (event) => {
     console.log('-->#beginClaim successfully triggered')
     console.log('selectedAccount', selectedAccount);
     // var sendForm = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
     
-
     var sendForm = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
 
     $.when(sendForm).then((response, status, statusCode) => {
@@ -93,13 +97,24 @@ async function setupGTCTokenClaim(emss_response) {
         // that their transaction will fail because the approval tx has not yet been confirmed
           .send({ from: user, gasLimit: '300000' })
           .on('transactionHash', async function(transactionHash) {
-      
+            // push txid to DB 
+            // idk what these are for yet 
+            // set/send variable with TXID --> view 
+        
+            // indicateMetamaskPopup(true);
             _alert('Your claim has been broadcast to the network!.', 'success', 5000);
-       
             const successMsg = 'Congratulations, your token purchase was successful!';
             const errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
-  
-          }).on('error', (error, receipt) => {
+          })
+          .on('receipt', receipt => {
+                console.log('receipt:', receipt);
+          })
+          .on('confirmation', (confirmationNumber, receipt) => {
+                if (confirmationNumber >= 1) {
+                  console.log('confirmations:', confirmationNumber, receipt);
+                }
+          })
+          .on('error', (error, receipt) => {
             // waitingState(false);
             handleError(error);
           });
