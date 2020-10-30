@@ -1487,9 +1487,22 @@ section#footer a:hover {
 }
 /*layout*/
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .d-none {
   display: none !important;
+}
+
+.recieveadress {
+  display: block;
+  padding: 1em 2em;
+  border: 1px solid var(--aqua_light);
+  color: var(--aqua_light);
+  font-family: "Space Mono", monospace;
+  background-color: var(--smoke);
+  font-size: 100%;
+  text-align: right;
+  margin-bottom: 2em;
+  word-wrap: break-word;
 }
