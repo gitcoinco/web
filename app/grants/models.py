@@ -24,6 +24,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core import serializers
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
@@ -34,6 +35,7 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
+import json
 import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField
@@ -616,6 +618,14 @@ class Grant(SuperModel):
         }
 
     def repr(self, user, build_absolute_uri):
+        team_members = serializers.serialize('json', self.team_members.all(),
+                            fields=['handle', 'url', 'profile__avatar_url']
+                        )
+        grant_type = serializers.serialize('json', [self.grant_type],
+                            fields=['name', 'label']
+                        )
+        categories = serializers.serialize('json', self.categories.all(),
+                            fields=['category'])
         return {
                 'id': self.id,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
@@ -653,6 +663,15 @@ class Grant(SuperModel):
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
+                'team_members': json.loads(team_members),
+                'metadata': self.metadata,
+                'grant_type': json.loads(grant_type),
+                'categories': json.loads(categories),
+                'twitter_handle_1': self.twitter_handle_1,
+                'reference_url': self.reference_url,
+                'github_project_url': self.github_project_url,
+
+
             }
 
     def favorite(self, user):

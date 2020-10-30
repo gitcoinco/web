@@ -41,17 +41,77 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
     </div>
-    <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-grant-detail"  v-cloak>
+    {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+      </div>
+    {% endif %}
+    <div class="container-fluid bg-lightblue pb-5" id="gc-grant-detail"  v-cloak>
       <!-- sdf {{grant}} -->
-      <img :src="grant.logo_url" alt="" height="40px">
-      <h1>
-        [[grant.title]]
-      </h1>
-      [[grant.last_update]]
-      <i class="fab fa-ethereum"></i> [[grant.admin_address]]
-      <a target="_blank" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
-      <a target="_blank" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
-      [[grant.description]]
+      <img :src="grant.logo_url" alt="" height="290px" class="m-auto d-block">
+
+      <div class="row">
+        <div class="container">
+          <div class="d-flex">
+            <h1>
+              [[grant.title]]
+            </h1>
+            <span class="">Updated: [[grant.last_update]]</span>
+          </div>
+          <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
+            <i class="fab fa-ethereum"></i> [[grant.admin_address]]
+
+            <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
+            <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
+          </template>
+          <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
+            <div class="mb-2">
+              <img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://sochain.com/address/ZEC/${grant.zcash_payout_address}`">
+                <span id="z-cash-address" class="wallet-address"
+                  target="_blank" data-toggle="tooltip" data-placement="top" title="Project Zcash Funding Address">
+                  [[grant.zcash_payout_address]]
+                </span>
+              </a>
+            </div>
+          </template>
+
+
+          <span>
+            <i class="fab fa-twitter-square mr-2"></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
+            <span v-if="grant.verified" class="py-0 position-relative px-0 btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+              <p class="h6 my-2 text-left">
+                Verified Ownership
+                <img width="18" src="{% static "v2/images/badge-verify.svg" %}">
+              </p>
+              <p>Grant owner has verified ownership of their twitter account.</p>
+              <a href="#">Learn more.</p>'
+            >
+              <img width="13" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+            </span>
+          </span>
+
+          <div v-if="grant.github_project_url">
+            <i class="fab fa-github"></i> <a :href="grant.github_project_url">[[grant.github_project_url]]</a>
+          </div>
+          <div>
+            <i class="fas fa-link"></i> <a :href="grant.reference_url">[[grant.reference_url]]</a>
+          </div>
+          <div v-for="member in grant.team_members" :key="member.pk">
+            <b-img-lazy class="rounded-circle bg-white" width="40" height="40" :src="`/dynamic/avatar/${member.fields.handle}`" alt="Image 1"></b-img-lazy>
+            [[member.fields.handle]]
+          </div>
+          <div>
+            [[grant.description]]
+          </div>
+          [[grant.isInCart]]
+
+          <button @click="removeFromCart()" v-if="grant.isInCart">removeFromCart</button>
+          <button @click="addToCart()" v-else >Add</button>
+
+        </div>
+      </div>
 
     </div>
     {% include 'shared/bottom_notification.html' %}
@@ -83,6 +143,8 @@
                };
 
    </script>
+    {% include 'shared/activity_scripts.html' %}
+
     <script src="{% static "v2/js/grants/_detail.js" %}"></script>
 
 

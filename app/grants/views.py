@@ -1192,6 +1192,8 @@ def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, inde
         pass
 
     return [rows, sybil_avg]
+
+
 @csrf_exempt
 def grant_details_api(request, grant_id):
     """Json the Grant details."""
