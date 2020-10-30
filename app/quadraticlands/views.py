@@ -191,6 +191,14 @@ def claim2(request):
         post_data_to_emss = {}
         post_data_to_emss['user_id'] = user.id
        
+
+        # IMPORTANT - below is the current central source of truth for address on claim 
+        # if user profile address is not set, then we will take the 'address' value 
+        # submitted along with a ajax post to /claim2 - 
+        # if no address in post and no profile addy then we dont have an addy for the user
+        # user claim will return error 
+        # feature tracked here - https://github.com/nopslip/gitcoin-web-ql/issues/21
+                  
         # if a primary user active wallet address was supplied
         # then we will make sure that it's a checksum'd eth address
         if request.POST.get('address'):
@@ -205,19 +213,11 @@ def claim2(request):
             except:
                 logger.error('QuadLands: There was an issue intreperting user wallet address!')
                  
-                   
-        # IMPORTANT - below is the current central source of truth for address on claim 
-        # if user profile address is not set, then we will take the 'address' value 
-        # submitted along with a ajax post to /claim2 - 
-        # if no address in post and no profile addy then we dont have an addy for the user
-        # user claim will return error 
-        # feature tracked here - https://github.com/nopslip/gitcoin-web-ql/issues/21
-                  
-        # if profile.preferred_payout_address:
-        if False: # used to test for users with out primary addy set 
+        if profile.preferred_payout_address:
+        # if False: # used to test for users with out primary addy set 
             post_data_to_emss['user_address'] = profile.preferred_payout_address
         # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data 
-        elif request.POST.get('address'):
+        elif primary_wallet_address:
             post_data_to_emss['user_address'] = primary_wallet_address
         else: 
             logger.error(f'QuadLands: Cannot find an address for the user claim!')
