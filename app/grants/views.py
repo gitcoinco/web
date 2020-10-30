@@ -2102,7 +2102,7 @@ def leaderboard(request):
     return redirect ('https://gitcoin.co/leaderboard/payers?cadence=quarterly&keyword=all&product=grants')
 
 
-def record_subscription_activity_helper(activity_type, subscription, profile):
+def record_subscription_activity_helper(activity_type, subscription, profile, anonymize=False):
     """Registers a new activity concerning a grant subscription
 
     Args:
@@ -2111,9 +2111,8 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
-    if subscription and subscription.negative:
+    if anonymize:
         profile = Profile.objects.filter(handle='gitcoinbot').first()
-        activity_type = 'negative_contribution'
     try:
         grant_logo = subscription.grant.logo.url
     except:
@@ -2127,6 +2126,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'grant_logo': grant_logo,
         'grant_url': subscription.grant.url,
         'num_tx_approved': subscription.num_tx_approved,
+        'anonymize': anonymize,
         'category': 'grant',
     }
     kwargs = {
