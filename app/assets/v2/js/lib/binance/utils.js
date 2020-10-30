@@ -1,5 +1,18 @@
 var binance_utils = {};
 
+binance_utils.getChainVerbose = chainId => {
+  switch (chainId) {
+    case 'Binance-Chain-Tigris':
+      return { name: 'Binance Chain Network', addressType: 'bbc-mainnet' };
+    case 'Binance-Chain-Ganges':
+      return { name: 'Binance Chain Test Network', addressType: 'bbc-testnet' };
+    case '0x38':
+      return { name: 'Binance Smart Chain Network', addressType: 'eth' };
+    case '0x61':
+      return { name: 'Binance Smart Chain Test Network', addressType: 'eth' };
+  }
+}
+
 /**
  * Returns wallet's balance on the connected binance network
  * @param {String} address
@@ -22,3 +35,13 @@ binance_utils.getAddressBalance = async address => {
 
   return Promise.resolve(bnbBalance.toFixed(4));
 };
+
+/* EVENTS */
+BinanceChain.on('connect', info => {
+  console.log(`connected to ${binance_utils.getChainVerbose(info.chainId).name}!`);
+});
+
+BinanceChain.on('chainChanged', chainId => {
+  console.log(`connected to ${binance_utils.getChainVerbose(chainId).name}!`);
+  window.location.reload(); // reload page when chain changes
+});
