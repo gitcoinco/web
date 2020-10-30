@@ -1412,6 +1412,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('BINANCE', 'BINANCE'),
         ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
     ]
