@@ -1,0 +1,22 @@
+{
+    "symbol":"KUN",
+    "address":"0x65d9bC970aA9B2413027fA339F7f179B3F3f2604",
+    "overview":{
+        "en":"KUN is the governance token of the QIAN stablecoin protocol. It is used to vote on QIAN governance and to maintain QUSD price stability.",
+        "zh":"KUN 是稳定币协议 QIAN 的治理代币，用于对 QIAN 生态治理投票和维持QUSD价格稳定"
+    },
+    "email":"committee@qian.finance",
+    "website":"https://qian.finance/mining",
+    "whitepaper":"https://qian.finance/qian_whitepaper_zh.pdf",
+    "state":"NORMAL",
+    "published_on":"2020-10-23",
+    "initial_price":{
+        "USD":"12 USD"
+    },
+    "links":{
+        "twitter":"https://twitter.com/QIAN_Stablecoin",
+        "github":"https://github.com/QIAN-Protocol/QIAN",
+        "discord":"https://discord.com/invite/MYKm35s",
+        "medium":"https://medium.com/qian-stablecoin"
+    }
+}
