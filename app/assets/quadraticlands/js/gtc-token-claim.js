@@ -6,8 +6,8 @@ var signed_message_payload
 /// payback (sign msg)
 
 window.addEventListener('dataWalletReady', function(e) {
-    console.log('hereherhere!')
-    $('wallet-address').html(selectedAccount)
+    console.log('hereherhere!', selectedAccount)
+    $('#wallet-address').html(selectedAccount)
  }, false);
 
 $( document ).ready(function() {

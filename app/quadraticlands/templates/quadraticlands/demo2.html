@@ -61,7 +61,6 @@
     {% if payout_address %}
     <h1>{{ payout_address}}</body></h1>
     {% else %}
-    <h1>print user address here!</h1>
     <h1><span id="wallet-address"></span></h1>
     {% endif %}
 
@@ -72,13 +71,7 @@
   <script>
      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   </script>
-  <script>
-      window.addEventListener('dataWalletReady', function(e) {
-          $('wallet-address').html(selectedAccount)
-       }, false);
-  </script>
-
-
+  
   
   </section>
   <body>
