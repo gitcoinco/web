@@ -227,10 +227,12 @@ Vue.component('grants-cart', {
         return undefined;
 
       // Generate array of objects containing donation info from cart
-      let gitcoinFactor = 100 - (100 * this.gitcoinFactor);
+      let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
-        const amount = parseUnits(grant.grant_donation_amount, tokenDetails.decimals).mul(gitcoinFactor).div(100);
+        const amount = parseUnits(String(grant.grant_donation_amount), tokenDetails.decimals)
+          .mul(gitcoinFactor)
+          .div(100);
 
         return {
           token: tokenDetails.addr,
@@ -763,16 +765,17 @@ Vue.component('grants-cart', {
 
       this.grantsByTenant.forEach(grant => {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
-        const totalDonationAmount = parseEther(grant.grant_donation_amount).mul(scaleFactor * 100).div(100);
+        const totalDonationAmount = parseEther(String(grant.grant_donation_amount))
+          .mul(String(scaleFactor * 100))
+          .div('100');
 
         // Add the number to the totals object
-        if (!totals[grant.grant_donation_currency]) {
-          // First time seeing this token, set the field and initial value
+        // First time seeing this token, set the field and initial value
+        if (!totals[grant.grant_donation_currency])
           totals[grant.grant_donation_currency] = totalDonationAmount;
-        } else {
-          // We've seen this token, so just update the total
+        // We've seen this token, so just update the total
+        else
           totals[grant.grant_donation_currency].add(totalDonationAmount);
-        }
       });
 
       // Convert from BigNumber back to regular numbers
@@ -1741,7 +1744,6 @@ Vue.component('grants-cart', {
 
         // Make sure user is connected to web3 and setup zkSync
         this.userAddress = await this.initializeCheckout();
-        await this.setupZkSync();
 
         // See if user was previously interrupted during checkout
         await this.checkInterruptStatus();

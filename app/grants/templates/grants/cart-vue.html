@@ -1032,15 +1032,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% comment %} ================================================================= {% endcomment %}
 
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/zksync@0.7.5/dist/main.js"></script>
-    <script type="text/javascript">
-    (async () => {
-        // Loads and compiles wasm library
-        await zksync.crypto.loadZkSyncCrypto();
-        console.log('zkSync library is ready');
-        // Now we are ready to use zkSync with ethers, both are attached to the window
-    })();
-    </script>
+    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.2/dist/main.js"></script>
 
     {% comment %} ================================================================= {% endcomment %}
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
