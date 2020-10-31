@@ -215,8 +215,12 @@ async function setupGTCTokenClaim(emss_response) {
 
 	// make sure it's check summ'd address and strip quotes
 	const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, ''));
-	const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex;
-	const eth_signed_signature_hex = emss_response.eth_signed_signature_hex;
+    const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, ''); // strip quotes 
+    const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, ''); // strip quotes 
+
+    
+ 
+
 
 	try {
 		// confirm we have a working web3 connection, if not, bail   
@@ -240,7 +244,7 @@ async function setupGTCTokenClaim(emss_response) {
 			// waitingState(true);
 
 			tokenDistributor.methods
-			.claimTokens(user_id, user_address_cleaned, user_amount, eth_signed_message_hash_hex.replace(/\"/g, ''), eth_signed_signature_hex.replace(/\"/g, ''))
+			.claimTokens(user_id, user_address_cleaned, user_amount, eth_signed_message_hash_hex, eth_signed_signature_hex)
 
 
 			// We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
@@ -312,7 +316,7 @@ async function setupGTCTokenClaim(emss_response) {
 		};
 
 		// now we run the function.
-		
+
 		//indicateMetamaskPopup();
 
 
