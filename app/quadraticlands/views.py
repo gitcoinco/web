@@ -73,31 +73,6 @@ def faq(request):
 def dashboard(request):
     return TemplateResponse(request, 'quadraticlands/dashboard.html')
 
-def demo2(request):
-    print(request.user.profile.preferred_payout_address)
-    user = request.user if request.user.is_authenticated else None
-    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
-    
-    # begin logic for establishing primary token claim address
-    # first, we check preferred_payout_address 
-    # this is currently used only as a means of knowing what to display to the user on claim page
-    # @claim2 is the gatekeeper/source-of-truth on payout addy - this way we dont have to trust user supplied content as much 
-
-    if request.user.profile.preferred_payout_address: 
-        payout_address = request.user.profile.preferred_payout_address
-    else:
-        payout_address = None 
-
-    # testing if user payout addy isn't set in Gitcoin web 
-    payout_address = None
-    context = {
-            'title': _('Claim GTC'),
-            'profile': profile,
-            'user' : user,
-            'payout_address' : payout_address
-          }
-    return TemplateResponse(request, 'quadraticlands/demo2.html', context)
-
 def mission(request):
     return TemplateResponse(request, 'quadraticlands/mission/index.html')   
 
@@ -162,6 +137,32 @@ def mission_end(request):
     return TemplateResponse(request, 'quadraticlands/mission/end.html')   
 
 
+def demo2(request):
+    
+    user = request.user if request.user.is_authenticated else None
+    if user: # is logged in  
+        profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+   
+        if request.user.profile.preferred_payout_address: 
+            payout_address = request.user.profile.preferred_payout_address
+        else:
+            payout_address = None 
+
+        # testing if user payout addy isn't set in Gitcoin web 
+        # payout_address = None
+        context = {
+                'title': _('Claim GTC'),
+                'profile': profile,
+                'payout_address' : payout_address
+            }
+        return TemplateResponse(request, 'quadraticlands/demo2.html', context)
+    
+    else: # user is not logged in
+        context = {
+                'title': _('Claim GTC')
+            }
+        return TemplateResponse(request, 'quadraticlands/demo2.html', context)
+
 # used for testing generic getFetch POSTs from client side JS
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
@@ -201,6 +202,7 @@ def claim2(request):
                   
         # if a primary user active wallet address was supplied
         # then we will make sure that it's a checksum'd eth address
+
         if request.POST.get('address'):
             try:
                 if is_checksum_address(request.POST.get('address')):
@@ -268,7 +270,9 @@ def claim2(request):
 
         logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
         return JsonResponse(esms_response)
-           
+    else:
+        logger.info('Non authenticated or non-POST requested sent to claim2/ - request ignored!')
+        return JsonResponse({'message':'request ignored!'})   
 
 
 # @Richard please don't adjust anything below here without talking to me first 
