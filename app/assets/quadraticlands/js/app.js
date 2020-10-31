@@ -11,8 +11,6 @@ burger.addEventListener("click", () => {
 
 
 
-
-
 // WALLET MENU
 //
 // open & close wallet menu.
@@ -43,6 +41,37 @@ navWalletCloseOnClick.forEach(item => {
   });
 });
 
+
+
+
+
+// FLASH MESSAGE
+//
+// display all kind of errors and messages to a users client
+
+const flashMessageContainer = document.getElementById("flashMessageContainer");
+
+console.log("FLASH MESSAGE");
+
+
+
+
+
+
+// COLLAPSE
+//
+// find all classes .collapse 
+// 
+// click div.question
+// toggle visibility on div.awnser
+
+const collapse = document.querySelectorAll(".collapse");
+
+collapse.forEach(item => {
+	item.addEventListener("click", () => {
+		item.classList.toggle("visible");
+	});
+});
 
 
 
