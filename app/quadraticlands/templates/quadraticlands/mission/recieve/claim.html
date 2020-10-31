@@ -9,7 +9,7 @@
 
 
 <section class="background">
-	<img src="/static/quadraticlands/images/background/claim.svg">
+	<img id="claimBackground" src="/static/quadraticlands/images/background/claim.svg">
 </section>
 
 
@@ -18,20 +18,36 @@
 	<!-- content-->
 	<main>
 		<div class="wrapper">
+
 			<div class="claim">
-				<h3>Claim your GTC Tokens</h3>
-				
-				<div class="grid">
-					<span class="description">Member of Gitcoin</span><span class="token">+50</span>
-					<span class="description">Helpfull Person</span><span class="token">+80</span>
-					<span class="description">Have a Grand</span><span class="token">+50</span>
-					<span class="description">Have a Kudos</span><span class="token">+50</span>
-					<span class="description">Staff</span><span class="token">+2000</span>
+
+				<!-- headline -->
+				<h3 id="claimHeadline">Claim your GTC Tokens</h3>
+	
+				<!-- details why you get X tokens -->
+				<div id="claimListing" class="grid">
+					<!-- @zach : need data from db + here a loop of one row -->
+					<span class="description">Member of Gitcoin</span><span class="token">+50 GTC</span>
+					<span class="description">Helpfull Person</span><span class="token">+80 GTC</span>
+					<span class="description">Have a Grand</span><span class="token">+50 GTC</span>
+					<span class="description">Have a Kudos</span><span class="token">+50 GTC</span>
+					<span class="description">Staff</span><span class="token">+2000 GTC</span>
+					<!-- end loop -->
 				</div>
 
-				<div class="grid total">
-					<span class="description">Total</span><span class="token">+2220</span>
+				<!-- sum of this X tokens -->
+				<div id="claimListingTotal" class="grid total">
+					<span class="description">Total</span><span class="token">+2220 GTC</span>
 				</div>
+
+				<!-- just the x Tokens you get -->
+				<h1 id="claimTokenAmount" class="hide">2220 GTC</h1>
+
+				<!-- a status message  -->
+				<p id="claimStatusMessage" class="hide"></p>
+
+				<!-- place for a link to a block explorer -->
+				<p id="claimTXLink" class="hide"></p>
 
 			</div>
 		</div>
@@ -52,16 +68,28 @@
 		</div>
 
 		<div class="right">
-			<a class="btn" href="/quadraticlands/mission/recieve/claiming">Claim</a>
+			
+			<!-- a div to appear when claim:status claim -->
+			<div id="divClaimButton" class="">
+				<a id="beginClaim" class="btn" href="#">Claim</a>
+				{% csrf_token %}
+			</div>
+
+			<!-- a div to appear when claim:status claiming -->
+			<div id="divClaimingSpinner" class="hide">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+			</div>
+
+			<!-- a div to appear when claim:status claimed -->
+			<div id="divclaimedButton" class="hide">
+				<a class="btn" href="/quadraticlands/mission/recieve/outro">Continue</a>
+			</div>			
+
 		</div>
 
 	</nav>
 	
-
 </section>
-
-
-
 
 
 
@@ -69,7 +97,329 @@
 
 
 
+
+
 {% block 'scripts' %}
+
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+
+
+
+<script>
+
+// define block explorer for generating a link with txhash
+const blockExplorer = "https://rinkeby.etherscan.io/tx/";
+const blockExplorerName ="Etherscan";  
+
+// interface
+const claimBackground = document.getElementById("claimBackground");
+const claimHeadline = document.getElementById("claimHeadline");
+const claimListing = document.getElementById("claimListing");
+const claimListingTotal = document.getElementById("claimListingTotal");
+const claimTokenAmount = document.getElementById("claimTokenAmount");
+const claimStatusMessage = document.getElementById("claimStatusMessage");
+const claimTXLink = document.getElementById("claimTXLink");
+const divClaimButton = document.getElementById("divClaimButton");
+const divClaimingSpinner = document.getElementById("divClaimingSpinner");
+const divclaimedButton = document.getElementById("divclaimedButton");
+
+// security token
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+
+
+
+// DOMContentLoaded
+//
+// 
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    console.log( "DOCUMENT READY" );
+
+	$(document).on('click', '#beginClaim', (event) => {
+
+		console.log('-->#beginClaim successfully triggered');
+		console.log('selectedAccount', selectedAccount);
+		// var sendForm = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
+
+		var sendForm = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
+
+		$.when(sendForm).then((response, status, statusCode) => {
+			//for debugging, remove for prod 
+			console.log('POST RETURNED!', statusCode, response, status)
+
+			// if we don't get a 200 from the Ethereum Message Signing Service then return error  
+			if (statusCode.status != 200) {
+				/**  
+				* I need to confirm/deny _alert will trigger here, I don't think it's all setup correctly yet 
+				* _alert is currently set/driven by web3alert.js included directly in demo2.html 
+				* as needed, we can adjust and change that so that all our _alerts are imported on base.html 
+				**/
+				return _alert(response.msg, 'error');
+			}
+
+			// setup & send our contract call 
+			setupGTCTokenClaim(response);
+
+		});
+
+	});
+
+
+
+
+	// run other functions
+
+	littletest();
+
+
+});
+
+
+
+
+
+
+
+// FUNCTIONS
+//
+// DOWN HERE JUST FUNCTIONS 
+// THAT CAN BE CALL INSIDE THE DOMContentLoaded ...
+
+
+
+// littletest
+// 
+function littletest(){
+	console.log('littletest');
+}
+
+
+
+// setupGTCTokenClaim
+// 
+async function setupGTCTokenClaim(emss_response) {
+
+	// if user messes with these, the contract will reject the claim
+	// for this reason, extensive validation is not necessary     
+	const user_id = emss_response.user_id;
+	const user_amount = emss_response.user_amount;
+
+	// make sure it's check summ'd address and strip quotes
+	const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, ''));
+	const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex;
+	const eth_signed_signature_hex = emss_response.eth_signed_signature_hex;
+
+	try {
+		// confirm we have a working web3 connection, if not, bail   
+		const network = checkWeb3();
+
+		// get the current active account/address from the user 
+		// not needed here unless we want to do a final check to confirm something with active address
+		// i dont think so tho...? 
+		[user] = await web3.eth.getAccounts();
+
+		// TODO - move token contract addy to env or standard abi.js file
+		// ZW: added new Rinkeby tokendist contract 10/29/2020
+		// also, we will want to update the contract ABI at somepoint. it's old but still works as the function name is the same :) 
+		const tokenDistributor = await new web3.eth.Contract(
+			token_distributor_abi,
+			'0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
+		);
+
+
+		const claimGTCtokens = () => {
+			// waitingState(true);
+
+			tokenDistributor.methods
+			.claimTokens(user_id, user_address_cleaned, user_amount, eth_signed_message_hash_hex.replace(/\"/g, ''), eth_signed_signature_hex.replace(/\"/g, ''))
+
+
+			// We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
+			// that their transaction will fail because the approval tx has not yet been confirmed
+			.send({ from: user, gasLimit: '300000' })
+
+			.on('transactionHash', async function(transactionHash) {
+				// push txid to DB 
+				// idk what these are for yet 
+				// set/send variable with TXID --> view 
+
+				// indicateMetamaskPopup(true);
+
+				// INTERFACE UPDATE
+				claimBackground.src = "/static/quadraticlands/images/background/claiming.svg";
+				claimHeadline.innerHTML = "Claiming <span>(Pending)</span>";
+				claimTokenAmount.classList.remove("hide");
+				claimStatusMessage.innerHTML = "The tokens are on the way...";
+				claimStatusMessage.classList.remove("hide");
+				claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
+				claimTXLink.classList.remove("hide");
+				claimListing.classList.add("hide");
+				claimListingTotal.classList.add("hide");
+				divClaimButton.classList.add("hide");
+				divClaimingSpinner.classList.remove("hide");
+				divclaimedButton.classList.add("hide");
+
+
+				// _alert('Your claim has been broadcast to the network!.', 'success', 5000);
+				const successMsg = 'Congratulations, your token purchase was successful!';
+				const errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
+			})
+
+			.on('receipt', receipt => {
+			    console.log('receipt:', receipt);
+			})
+
+			.on('confirmation', (confirmationNumber, receipt) => {
+
+				console.log('confirmations:', confirmationNumber, receipt);
+
+			    if (confirmationNumber >= 1) {
+
+			    	console.log('IF confirmations:', confirmationNumber, receipt);
+
+					// INTERFACE UPDATE
+					claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
+					claimHeadline.innerHTML = "Claimed with <span>"+ confirmationNumber +"</span> Confirmations";
+					claimTokenAmount.classList.remove("hide");
+					claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
+					claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
+					claimTXLink.classList.remove("hide");
+					claimListing.classList.add("hide");
+					claimListingTotal.classList.add("hide");
+					divClaimButton.classList.add("hide");
+					divClaimingSpinner.classList.add("hide");
+					divclaimedButton.classList.remove("hide");
+
+			    }
+			})
+
+			.on('error', (error, receipt) => {
+				const errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
+            	console.log('errorMsg',errorMsg);
+            	//handleError(error);
+
+			});
+
+		};
+
+		// now we run the function.
+		
+		//indicateMetamaskPopup();
+
+
+		claimGTCtokens();
+
+	} 
+
+	catch (error) {
+		// handleError(error);
+		const errorMsg = 'catch error';
+        console.log('errorMsg',errorMsg);
+	}
+
+}
+
+
+
+
+// checkNetwork
+//
+function checkNetwork() {
+	const supportedNetworks = [ 'rinkeby', 'mainnet' ];
+
+	if (!supportedNetworks.includes(document.web3network)) {
+	  //_alert('Unsupported network', 'error');
+	  throw new Error('Please connect a wallet');
+	}
+	return document.web3network;
+}
+
+
+// checkWeb3
+//
+function checkWeb3() {
+	if (!web3) {
+	  //_alert('Please connect a wallet', 'error');
+	  throw new Error('Please connect a wallet');
+	}
+	return checkNetwork();
+}
+
+
+// handleError
+//
+function handleError(err) {
+	console.error(err);
+	let message = 'There was an error';
+
+	if (err.message)
+	  message = err.message;
+	else if (err.msg)
+	  message = err.msg;
+	else if (err.responseJSON)
+	  message = err.responseJSON.message;
+	else if (typeof err === 'string')
+	  message = err;
+
+	//_alert(message, 'error');
+	indicateMetamaskPopup(true);
+}
+
+
+
+// isNumeric
+//
+function isNumeric(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
+
+// testClaim
+//
+async function testClaim(response) {
+    try {
+        console.log('testclaim: trigger successfully!');
+        console.log('testClaim-response: ', response)
+        console.log('user_id', response.user_id)
+        const network = checkWeb3();
+        
+        // get current active wallet account 
+        [user_active_account] = await web3.eth.getAccounts();
+        console.log('user_active_account', user_active_account);
+
+        //if response['user_address']
+
+    } catch(error) { 
+        console.log(error);
+        handleError(error);
+    }
+
+}
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
 {% endblock %}
 
 
