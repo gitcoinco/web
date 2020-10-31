@@ -143,9 +143,10 @@ def demo2(request):
     if user: # is logged in  
         profile = request.user.profile if user and hasattr(request.user, 'profile') else None
    
-        if request.user.profile.preferred_payout_address: 
+        try: 
             payout_address = request.user.profile.preferred_payout_address
-        else:
+        except:
+            logger.info('QuadraticLands: - User does not have a preferred_payout_address set')
             payout_address = None 
 
         # testing if user payout addy isn't set in Gitcoin web 
@@ -214,16 +215,22 @@ def claim2(request):
                     logger.info('QuadLands: Primary wallet address failed integrity checks')
             except:
                 logger.error('QuadLands: There was an issue intreperting user wallet address!')
-                 
-        if profile.preferred_payout_address:
-        # if False: # used to test for users with out primary addy set 
+                
+        try:         
             post_data_to_emss['user_address'] = profile.preferred_payout_address
-        # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data 
-        elif primary_wallet_address:
-            post_data_to_emss['user_address'] = primary_wallet_address
-        else: 
-            logger.error(f'QuadLands: Cannot find an address for the user claim!')
-            return JsonResponse({'error': 'no address found for user!'})
+            # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data
+        except: 
+            logger.info('QuadraticLands - No preferred_payout_address set for user!')
+            payout_address = None 
+
+        if not payout_address: 
+        
+            try: 
+                post_data_to_emss['user_address'] = primary_wallet_address
+            except:
+                logger.error('QuadLands: Cannot find an address for the user claim!')
+                return JsonResponse({'error': 'no address found for user!'})
+
         
         # will pull token claim data from the user, this is hard coded for now 
         post_data_to_emss['user_amount'] = 1000000000000000 # need to use big number in units WEI 
