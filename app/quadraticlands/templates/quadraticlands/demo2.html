@@ -25,61 +25,55 @@
 {% block 'scripts' %}
 
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-  <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
-  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
-  <script src="{% static "onepager/js/confetti.js" %}"></script>
-  <script src="{% static "v2/js/user-search.js" %}"></script>
-  <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "onepager/js/confetti.js" %}"></script>
+<script src="{% static "v2/js/user-search.js" %}"></script>
+<script src="{% static "v2/js/tooltip_hover.js" %}"></script>
 
-	<!--richards click scripts-->
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
-	<script src="/static/quadraticlands/js/app.js"></script>
+<!--richards click scripts-->
+<script src="/static/quadraticlands/js/particles.js"></script>
+<script src="/static/quadraticlands/js/sal_init.js"></script>
+<script src="/static/quadraticlands/js/app.js"></script>
 
-  <!--zacs scripts-->
-  <script src="{% static "/quadraticlands/js/gtc-token-claim.js" %}"></script>
-  <!-- web3alerts is a simple starting point and it can (and should) be modified as necessary. I copy/pasted it from /app/onepager/js/web3Alerts.js-->
-  <!--<script src="{% static "/quadraticlands/js/web3alert.js" %}"></script>-->
+<!--zacs scripts-->
+<script src="{% static "/quadraticlands/js/gtc-token-claim.js" %}"></script>
+<!-- web3alerts is a simple starting point and it can (and should) be modified as necessary. I copy/pasted it from /app/onepager/js/web3Alerts.js-->
+<!-- <script src="{% static "/quadraticlands/js/web3alert.js" %}"></script>-->
 
 
 {% endblock %}
-
-
-
 
 {% block 'content' %}
 
 <body>
   <section class="column">
-    <br/>
-    <h1>Click below to claim your tokens, yo</h1>    		
-    {% if payout_address %}
-    <h1>{{ payout_address}}</body></h1>
+    {% if user.is_authenticated %}
+        <br/>
+        <h1>Please click below to claim your GTC tokens!</h1>
+        <h3>Tokens will be sent to you at this address:</h3>    		
+            {% if payout_address %}
+            <h2>{{ payout_address}}</body></h2>
+            {% else %}
+            <h2><span id="wallet-address"></span></h2>
+            {% endif %}
+        {% csrf_token %}
+        <a href="#" id="beginClaim" class="btn">{% trans "CLAIM GTC TOKENS" %}</a>
     {% else %}
-    <h1>print user address here!</h1>
-    <h1><span id="wallet-address"></span></h1>
+    <br/>
+    <h1>Please login & connect your wallet to claim your GTC!</h1>
     {% endif %}
 
-  <!-- btn -->
-  <a href="#" id="beginClaim" class="btn">{% trans "CLAIM GTC TOKENS" %}</a>
-  
-  {% csrf_token %}
+
   <script>
      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   </script>
-  <script>
-      window.addEventListener('dataWalletReady', function(e) {
-          $('wallet-address').html(selectedAccount)
-       }, false);
-  </script>
-
-
-  
+    
   </section>
   <body>
 
