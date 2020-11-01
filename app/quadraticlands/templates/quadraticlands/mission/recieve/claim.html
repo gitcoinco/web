@@ -107,7 +107,7 @@
 			</div>
 
 			<!-- a div to appear when claim:status claimed -->
-			<div id="divclaimedButton" class="hide">
+			<div id="divClaimedButton" class="hide">
 				<a class="btn" href="/quadraticlands/mission/recieve/outro">Continue</a>
 			</div>			
 
@@ -157,12 +157,13 @@ const claimStatusMessage = document.getElementById("claimStatusMessage");
 const claimTXLink = document.getElementById("claimTXLink");
 const divClaimButton = document.getElementById("divClaimButton");
 const divClaimingSpinner = document.getElementById("divClaimingSpinner");
-const divclaimedButton = document.getElementById("divclaimedButton");
+const divClaimedButton = document.getElementById("divClaimedButton");
 
 // security token
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-
+// setup a confirmation counter ( seems this is how ppl do it right)
+var currentConfirmations = 0;
 
 
 // DOMContentLoaded
@@ -239,7 +240,6 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
-
 // setupGTCTokenClaim
 // 
 async function setupGTCTokenClaim(emss_response) {
@@ -292,7 +292,7 @@ async function setupGTCTokenClaim(emss_response) {
 				claimListingTotal.classList.add("hide");
 				divClaimButton.classList.add("hide");
 				divClaimingSpinner.classList.remove("hide");
-				divclaimedButton.classList.add("hide");
+				divClaimedButton.classList.add("hide");
 
 	            flashMessage("Your claim has been broadcast to the network!",5000);
              	
@@ -315,13 +315,21 @@ async function setupGTCTokenClaim(emss_response) {
 			// also added for debug/testing - I will keep it in for now in case we want to trigger an event on tx confirmation
 			.on('confirmation', (confirmationNumber, receipt) => {
 
-				console.log('confirmations:', confirmationNumber, receipt);
 
-			    if (confirmationNumber >= 1) {
+				// i feel this is the wrong method to display a success 
+				// as it just check confirmations
+				// what can also happen on NOT SUCCESS
+
+
+				currentConfirmations++;
+
+				console.log('confirmations:', confirmationNumber, receipt, currentConfirmations);
+
+			    if (currentConfirmations >= 3) {
 
 					// INTERFACE UPDATE
 					claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
-					claimHeadline.innerHTML = "Claimed with <span>"+ confirmationNumber +"</span> Confirmations";
+					claimHeadline.innerHTML = "Claimed with <span>"+ currentConfirmations +"</span> Confirmations";
 					claimTokenAmount.classList.remove("hide");
 					claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
 					claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
@@ -330,11 +338,11 @@ async function setupGTCTokenClaim(emss_response) {
 					claimListingTotal.classList.add("hide");
 					divClaimButton.classList.add("hide");
 					divClaimingSpinner.classList.add("hide");
-					divclaimedButton.classList.remove("hide");
+					divClaimedButton.classList.remove("hide");
 
 			    	flashMessage("Transaction Confirmed",5000);
 
-			    	console.log('IF confirmations:', confirmationNumber, receipt);
+			    	console.log('IF confirmations:', confirmationNumber, receipt, currentConfirmations);
 
 			    }
 			})
@@ -345,17 +353,20 @@ async function setupGTCTokenClaim(emss_response) {
 				claimHeadline.innerHTML = "Oops";
 				claimTokenAmount.classList.remove("hide");
 				claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
-				claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
-				claimTXLink.classList.remove("hide");
-				claimListing.classList.add("hide");
-				claimListingTotal.classList.add("hide");
 
 				divClaimButton.classList.remove("hide");
-				//divClaimButton.innerHTML = "Retry Claim";
+				divClaimButton.innerHTML = "Retry Claim";
 				
 				divClaimingSpinner.classList.add("hide");
-				divclaimedButton.classList.add("hide");
+				divClaimedButton.classList.add("hide");
 	
+				// we need to do something like   exit();  here
+				// as errors still will have confirmations
+				// and then it will display the wrong view
+				// happy happy "all ok" with 1,2,3,4,5 confirmations ...
+				// but for now i let in in the code so we can see
+				// the success screen anyway.
+
 
 				var errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
 				console.log('errorMsg',errorMsg);
