@@ -330,17 +330,17 @@ async function setupGTCTokenClaim(emss_response) {
 
 			    if (currentConfirmations >= 1) {
 
-			    	// some thing of this inner stuff
-			    	// makes it possible to see and count up
-			    	// this view . if everything is outcommented
-			    	// it shows the RIGHT view : the .on('error')
+			    	// DUDE i found out why this loops and prevent
+			    	// to go to ERROR and simulate this is a valid 
+			    	// transaction. its because  i call transactionHash
+			    	console.log(transactionHash);
+
 
 					// INTERFACE UPDATE
 					claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
 					claimTokenAmount.classList.remove("hide");
 					claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
-					claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
-					claimTXLink.classList.remove("hide");
+					
 					claimListing.classList.add("hide");
 					claimListingTotal.classList.add("hide");
 					divClaimButton.classList.add("hide");
@@ -351,7 +351,7 @@ async function setupGTCTokenClaim(emss_response) {
 			    	console.log('IN IF confirmationNumber : ' + confirmationNumber );
 			    	console.log('IN IF receipt : ' + receipt );
 			    	console.log('IN IF currentConfirmations : ' + currentConfirmations );
-			    	
+
 			    }
 			})
 
@@ -364,13 +364,9 @@ async function setupGTCTokenClaim(emss_response) {
 				claimTokenAmount.classList.remove("hide");
 				claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
 
-				// remove amount of tokens ( big  number )
 				claimTokenAmount.classList.add("hide");
-				//remove spinner
 				divClaimingSpinner.classList.add("hide");
-				//remove "claimed button what goto /outro"
 				divClaimedButton.classList.add("hide");
-				//show up initial claim button again to try again
 				divClaimButton.classList.remove("hide");
 	
 
