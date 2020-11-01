@@ -158,6 +158,8 @@ const claimTXLink = document.getElementById("claimTXLink");
 const divClaimButton = document.getElementById("divClaimButton");
 const divClaimingSpinner = document.getElementById("divClaimingSpinner");
 const divClaimedButton = document.getElementById("divClaimedButton");
+const claimAdress = document.getElementById("claimAdress");
+
 
 // security token
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -279,8 +281,9 @@ async function setupGTCTokenClaim(emss_response) {
 			.send({ from: user, gasLimit: '300000' })
 
 			.on('transactionHash', async function(transactionHash) {
-			
-				// INTERFACE UPDATE
+
+				// pending view
+	
 				claimBackground.src = "/static/quadraticlands/images/background/claiming.svg";
 				claimHeadline.innerHTML = "Claiming <span>(Pending)</span>";
 				claimTokenAmount.classList.remove("hide");
@@ -315,21 +318,25 @@ async function setupGTCTokenClaim(emss_response) {
 			// also added for debug/testing - I will keep it in for now in case we want to trigger an event on tx confirmation
 			.on('confirmation', (confirmationNumber, receipt) => {
 
+				// on confirmations view
 
-				// i feel this is the wrong method to display a success 
-				// as it just check confirmations
-				// what can also happen on NOT SUCCESS
+				currentConfirmations ++;
 
+				console.log("currentConfirmations: " + currentConfirmations);
+				console.log("receipt: " + receipt);
 
-				currentConfirmations++;
+				// change headline to X currentConfirmations
+				claimHeadline.innerHTML = "Claimed with <span>"+ currentConfirmations +"</span> Confirmations";
 
-				console.log('confirmations:', confirmationNumber, receipt, currentConfirmations);
+			    if (currentConfirmations >= 1) {
 
-			    if (currentConfirmations >= 3) {
+			    	// some thing of this inner stuff
+			    	// makes it possible to see and count up
+			    	// this view . if everything is outcommented
+			    	// it shows the RIGHT view : the .on('error')
 
 					// INTERFACE UPDATE
 					claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
-					claimHeadline.innerHTML = "Claimed with <span>"+ currentConfirmations +"</span> Confirmations";
 					claimTokenAmount.classList.remove("hide");
 					claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
 					claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
@@ -341,11 +348,14 @@ async function setupGTCTokenClaim(emss_response) {
 					divClaimedButton.classList.remove("hide");
 
 			    	flashMessage("Transaction Confirmed",5000);
-
-			    	console.log('IF confirmations:', confirmationNumber, receipt, currentConfirmations);
-
+			    	console.log('IN IF confirmationNumber : ' + confirmationNumber );
+			    	console.log('IN IF receipt : ' + receipt );
+			    	console.log('IN IF currentConfirmations : ' + currentConfirmations );
+			    	
 			    }
 			})
+
+
 
 			.on('error', (error) => { 
 				
@@ -354,19 +364,15 @@ async function setupGTCTokenClaim(emss_response) {
 				claimTokenAmount.classList.remove("hide");
 				claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
 
-				divClaimButton.classList.remove("hide");
-				divClaimButton.innerHTML = "Retry Claim";
-				
+				// remove amount of tokens ( big  number )
+				claimTokenAmount.classList.add("hide");
+				//remove spinner
 				divClaimingSpinner.classList.add("hide");
+				//remove "claimed button what goto /outro"
 				divClaimedButton.classList.add("hide");
+				//show up initial claim button again to try again
+				divClaimButton.classList.remove("hide");
 	
-				// we need to do something like   exit();  here
-				// as errors still will have confirmations
-				// and then it will display the wrong view
-				// happy happy "all ok" with 1,2,3,4,5 confirmations ...
-				// but for now i let in in the code so we can see
-				// the success screen anyway.
-
 
 				var errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
 				console.log('errorMsg',errorMsg);

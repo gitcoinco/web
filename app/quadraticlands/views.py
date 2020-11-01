@@ -218,6 +218,7 @@ def claim2(request):
                 
         try:         
             post_data_to_emss['user_address'] = profile.preferred_payout_address
+            payout_address = True
             # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data
         except: 
             logger.info('QuadraticLands - No preferred_payout_address set for user!')
