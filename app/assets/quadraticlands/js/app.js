@@ -11,8 +11,6 @@ burger.addEventListener("click", () => {
 
 
 
-
-
 // WALLET MENU
 //
 // open & close wallet menu.
@@ -42,6 +40,53 @@ navWalletCloseOnClick.forEach(item => {
     walletProvider.classList.toggle("active");
   });
 });
+
+
+
+// COLLAPSE
+//
+// find all classes .collapse 
+// 
+// click div.question
+// toggle visibility on div.awnser
+
+const collapse = document.querySelectorAll(".collapse");
+
+collapse.forEach(item => {
+	item.addEventListener("click", () => {
+		item.classList.toggle("visible");
+	});
+});
+
+
+
+
+// FLASH MESSAGE
+//
+// display all kind of errors and messages to a users client
+
+
+function flashMessage(text, duration=8000){
+
+	const flashMessageContainer = document.getElementById("flashMessageContainer");
+
+	var msg = document.createElement("div");
+	msg.innerHTML = text;
+	flashMessageContainer.appendChild(msg);
+
+	setTimeout(() => {  
+		flashMessageContainer.removeChild(msg);
+	}, duration);
+
+}
+
+//test flash message 
+//setTimeout(() => {  flashMessage("eine sekunde"); }, 1000);
+//setTimeout(() => {  flashMessage("zehn sekunden",10000); }, 3000);
+//setTimeout(() => {  flashMessage("zwei sekunden",2000); }, 5000);
+
+
+
 
 
 
