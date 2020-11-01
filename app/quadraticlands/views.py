@@ -215,10 +215,10 @@ def claim2(request):
                     logger.info('QuadLands: Primary wallet address failed integrity checks')
             except:
                 logger.error('QuadLands: There was an issue intreperting user wallet address!')
-        # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data
+                
         try:         
             post_data_to_emss['user_address'] = profile.preferred_payout_address
-            payout_address = True
+            # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data
         except: 
             logger.info('QuadraticLands - No preferred_payout_address set for user!')
             payout_address = None 
@@ -233,7 +233,7 @@ def claim2(request):
 
         
         # will pull token claim data from the user, this is hard coded for now 
-        post_data_to_emss['user_amount'] = 1000000000000000000000 # need to use big number in units WEI 
+        post_data_to_emss['user_amount'] = 1000000000000000 # need to use big number in units WEI 
 
         # create a hash of post data                
         sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
