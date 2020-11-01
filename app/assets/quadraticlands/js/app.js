@@ -43,21 +43,6 @@ navWalletCloseOnClick.forEach(item => {
 
 
 
-
-
-// FLASH MESSAGE
-//
-// display all kind of errors and messages to a users client
-
-const flashMessageContainer = document.getElementById("flashMessageContainer");
-
-console.log("FLASH MESSAGE");
-
-
-
-
-
-
 // COLLAPSE
 //
 // find all classes .collapse 
@@ -72,6 +57,37 @@ collapse.forEach(item => {
 		item.classList.toggle("visible");
 	});
 });
+
+
+
+
+// FLASH MESSAGE
+//
+// display all kind of errors and messages to a users client
+
+
+function flashMessage(text, duration=8000){
+
+	const flashMessageContainer = document.getElementById("flashMessageContainer");
+
+	var msg = document.createElement("div");
+	msg.innerHTML = text;
+	flashMessageContainer.appendChild(msg);
+
+	setTimeout(() => {  
+		flashMessageContainer.removeChild(msg);
+	}, duration);
+
+}
+
+//test flash message 
+//setTimeout(() => {  flashMessage("eine sekunde"); }, 1000);
+//setTimeout(() => {  flashMessage("zehn sekunden",10000); }, 3000);
+//setTimeout(() => {  flashMessage("zwei sekunden",2000); }, 5000);
+
+
+
+
 
 
 
