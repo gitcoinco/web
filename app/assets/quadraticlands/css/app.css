@@ -1292,12 +1292,15 @@ section.quest main div.claim {
 section.quest main div.claim p {
   margin-bottom: initial;
 }
+section.quest main div.claim .claimAdress {
+  width: 100%;
+}
 section.quest main div.claim div.grid {
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-row-gap: 0.3em;
+  grid-row-gap: 0.2em;
   font-family: "Space Mono", monospace;
-  line-height: 1.6em;
+  line-height: 1.5em;
 }
 section.quest main div.claim div.grid span.description {
   justify-self: start;
@@ -1517,13 +1520,12 @@ section#footer a:hover {
 
 .recieveadress {
   display: block;
-  padding: 1em 2em;
-  border: 1px solid var(--aqua_light);
+  padding: 0.5em 1em;
   color: var(--aqua_light);
   font-family: "Space Mono", monospace;
   background-color: var(--smoke);
   font-size: 100%;
-  text-align: right;
+  text-align: center;
   margin-bottom: 2em;
-  word-wrap: break-word;
+  word-break: break-all;
 }
