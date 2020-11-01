@@ -40,8 +40,11 @@ $(document).on('click', '#beginClaim', (event) => {
         }
        
         // setup & send our contract call 
-        setupGTCTokenClaim(response)
-
+        // setupGTCTokenClaim(response)
+        
+        // used to test succesful response from the contract, this will return true provided a legit signed message and hash 
+        // probably dont want to use this and setupGTCTokenClaim at once 
+        setupIsSigned(response)
         // used for debugging if you want to confirm calling function after POST
         // will be removed for prod 
         // testClaim(response);
@@ -50,7 +53,51 @@ $(document).on('click', '#beginClaim', (event) => {
     });
 
 });
+async function setupIsSigned(emss_response) {
+    
+  const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, ''); // strip quotes 
+  const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, ''); // strip quotes 
+  
+  try {
+    // who will send the transaction? (active user wallet account)
+    [user] = await web3.eth.getAccounts();
+    // notes, this function calls the actual tokendist v2 ABI 
+    const tokenDistributor_v2 = await new web3.eth.Contract(
+      token_distributor_v2_abi,
+      '0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
+    );
+        
+    const isSigned = () => {
 
+        tokenDistributor_v2.methods
+        .isSigned(eth_signed_message_hash_hex, eth_signed_signature_hex)
+        .send({ from: user, gasLimit: '300000' })
+        .on('transactionHash', async function(transactionHash) {})
+        .on('receipt', receipt => {
+              console.log('receipt:', receipt);
+        })
+        .on('confirmation', (confirmationNumber, receipt) => {
+              if (confirmationNumber <= 5 ) {
+                console.log('confirmations:', confirmationNumber, receipt);
+              }
+        })
+        .on('error', (error) => { 
+          const errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
+          console.log('errorMsg',errorMsg);
+        });
+
+       
+    };
+    // make our contract call 
+    isSigned();  
+         
+
+  } catch (error) {
+    console.log('error on isClaimed: ', error)
+    // handleError(error);
+  }
+
+}
 async function setupGTCTokenClaim(emss_response) {
     
     const user_id = emss_response.user_id;
