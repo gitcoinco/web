@@ -234,7 +234,7 @@ def claim2(request):
 
         
         # will pull token claim data from the user, this is hard coded for now 
-        post_data_to_emss['user_amount'] = 1000000000000000 # need to use big number in units WEI 
+        post_data_to_emss['user_amount'] = 1000000000000000000000 # 1000 ETH - need to use big number in units WEI 
 
         # create a hash of post data                
         sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))

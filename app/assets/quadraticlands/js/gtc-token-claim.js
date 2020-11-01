@@ -1,5 +1,5 @@
 var signed_message_payload
-// let BN;
+let BN;
 
 /// request.user.id, request.POST.get('address') 
 // post into microservice 
@@ -40,11 +40,11 @@ $(document).on('click', '#beginClaim', (event) => {
         }
        
         // setup & send our contract call 
-        // setupGTCTokenClaim(response)
+        setupGTCTokenClaim(response)
         
         // used to test succesful response from the contract, this will return true provided a legit signed message and hash 
         // probably dont want to use this and setupGTCTokenClaim at once 
-        setupIsSigned(response)
+        // setupIsSigned(response)
         // used for debugging if you want to confirm calling function after POST
         // will be removed for prod 
         // testClaim(response);
@@ -100,7 +100,9 @@ async function setupIsSigned(emss_response) {
 }
 async function setupGTCTokenClaim(emss_response) {
     
+    // BN = web3.utils.BN;
     const user_id = emss_response.user_id;
+    // const user_amount = new BN(emss_response.user_amount);
     const user_amount = emss_response.user_amount;
     const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, '')); // make sure it's check summ'd address and strip quotes
     const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, ''); // strip quotes 
@@ -119,7 +121,7 @@ async function setupGTCTokenClaim(emss_response) {
       const claimGTCtokens = () => {
         // waitingState(true);
                tokenDistributor.methods
-          .claimTokens(user_id, user_address_cleaned, user_amount, eth_signed_message_hash_hex, eth_signed_signature_hex)
+          .claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), eth_signed_message_hash_hex, eth_signed_signature_hex)
           
           /** TODO - Evaluate optimal gas settings for token claims 
           * strat: hard coded price is fallback, dynamic real time gas adjustment is optimal  - how much gas can we save? 
