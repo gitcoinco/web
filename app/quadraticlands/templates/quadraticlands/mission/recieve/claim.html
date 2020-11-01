@@ -24,18 +24,13 @@
 			<div class="claim">
 
 				<!-- headline -->
-				<h3 id="claimHeadline">Claim your GTC Tokens to:</h3>
+				<h3 id="claimHeadline"></h3>
 
-				
-				<div class="claimAdress">
-					{% if payout_address %}
-						<div class="recieveadress">{{ payout_address }}</div>
-					{% else %}
-						<div class="recieveadress" id="wallet-address"></div>
-					{% endif %}
+				<!-- selected wallet adress -->
+				<div id="claimAdress" class="claimAdress">
+					<div class="recieveadress" id="wallet-address"></div>
 				</div>
 				
-
 				<!-- details why you get X tokens -->
 				<div id="claimListing" class="grid">
 					<!-- @zach : need data from db + here a loop of one row -->
@@ -66,14 +61,11 @@
 
 			{% else %}
 
-			<div class="claim">
-				<!-- quickfix. will not work on just connect to wallet ... have to reload page-->
-				<h1>Please login & connect your wallet to claim your GTC!</h1>
-			</div>
-
+				<!--  richard: if user is not loged in, he should not SEE ANYTHING,
+					not even a warning, he should even be able to come here without logged in 
+					by controller ... not need to check or build views for this.  -->
 
 			{% endif %}
-
 
 
 		</div>
@@ -124,7 +116,6 @@
 
 
 
-
 {% block 'scripts' %}
 
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
@@ -140,53 +131,26 @@
 <script src="/static/quadraticlands/js/app.js"></script>
 
 
-
 <script>
-
-// define block explorer for generating a link with txhash
-const blockExplorer = "https://rinkeby.etherscan.io/tx/";
-const blockExplorerName ="Etherscan";  
-
-// interface
-const claimBackground = document.getElementById("claimBackground");
-const claimHeadline = document.getElementById("claimHeadline");
-const claimListing = document.getElementById("claimListing");
-const claimListingTotal = document.getElementById("claimListingTotal");
-const claimTokenAmount = document.getElementById("claimTokenAmount");
-const claimStatusMessage = document.getElementById("claimStatusMessage");
-const claimTXLink = document.getElementById("claimTXLink");
-const divClaimButton = document.getElementById("divClaimButton");
-const divClaimingSpinner = document.getElementById("divClaimingSpinner");
-const divClaimedButton = document.getElementById("divClaimedButton");
-const claimAdress = document.getElementById("claimAdress");
-
 
 // security token
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-// setup a confirmation counter ( seems this is how ppl do it right)
-var currentConfirmations = 0;
-
-
 // DOMContentLoaded
-//
-// 
-
 document.addEventListener("DOMContentLoaded",function(){
 
+	// update the interface to the first initial state
+	updateInterface('init');
 
 	window.addEventListener('dataWalletReady', function(e) {
-	    // $('.wallet-address').html(selectedAccount) //class
 	    $('#wallet-address').html(selectedAccount)
 	 }, false);
-
-
 
     console.log( "CLAIM DOCUMENT READY" );
 
 	$(document).on('click', '#beginClaim', (event) => {
 
-		// console.log('-->#beginClaim successfully triggered');
+		console.log('BEGIN CLAIM');
 		// console.log('selectedAccount', selectedAccount);
 		// var sendForm = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
 
@@ -194,8 +158,9 @@ document.addEventListener("DOMContentLoaded",function(){
 	    try {
 	        const network = checkWeb3();
 	    } catch (error) {
-	        // @Richard, this is where we could trigger a user notification 
-	        // that they are not connected to a wallet/web3 and thus the claim will not proceed. 
+	        
+	    	updateInterface('nowallet');
+
 	        return console.log('Please confirm you have a wallet connected!!');
 	    }
 
@@ -220,6 +185,9 @@ document.addEventListener("DOMContentLoaded",function(){
 	        // setup & send our contract call 
 	        setupGTCTokenClaim(response);
 
+	        // test zachs new ABI
+	        // setupIsSigned(response)
+
 	        // used for debugging if you want to confirm calling function after POST
 	        // will be removed for prod 
 	        // testClaim(response);
@@ -229,11 +197,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 	});
 
-
-
-
 	// run other functions on load here
-
 
 });
 
@@ -243,16 +207,16 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 // setupGTCTokenClaim
-// 
+//
+
 async function setupGTCTokenClaim(emss_response) {
 
     const user_id = emss_response.user_id;
     const user_amount = emss_response.user_amount;
-    const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, '')); // make sure it's check summ'd address and strip quotes
-    const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, ''); // strip quotes 
-    const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, ''); // strip quotes 
+    const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, ''));
+    const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, '');
+    const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, '');
 
- 
 	try {
 		// who will send the transaction? (active user wallet account)
 		[user] = await web3.eth.getAccounts();
@@ -271,7 +235,6 @@ async function setupGTCTokenClaim(emss_response) {
 			tokenDistributor.methods
 			.claimTokens(user_id, user_address_cleaned, user_amount, eth_signed_message_hash_hex, eth_signed_signature_hex)
           
-
 			/** TODO - Evaluate optimal gas settings for token claims 
 			* strat: hard coded price is fallback, dynamic real time gas adjustment is optimal  - how much gas can we save? 
 			*  // Legacy Note- We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
@@ -282,103 +245,37 @@ async function setupGTCTokenClaim(emss_response) {
 
 			.on('transactionHash', async function(transactionHash) {
 
-				// pending view
-	
-				claimBackground.src = "/static/quadraticlands/images/background/claiming.svg";
-				claimHeadline.innerHTML = "Claiming <span>(Pending)</span>";
-				claimTokenAmount.classList.remove("hide");
-				claimStatusMessage.innerHTML = "The tokens are on the way...";
-				claimStatusMessage.classList.remove("hide");
-				claimTXLink.innerHTML = "<a href='"+blockExplorer+transactionHash+"'>"+blockExplorerName+"</a>";
-				claimTXLink.classList.remove("hide");
-				claimListing.classList.add("hide");
-				claimListingTotal.classList.add("hide");
-				divClaimButton.classList.add("hide");
-				divClaimingSpinner.classList.remove("hide");
-				divClaimedButton.classList.add("hide");
-
-	            flashMessage("Your claim has been broadcast to the network!",5000);
-             	
-				// this is not live yet, need to create DB models first before we can write txid to postgres db 
+				// update interface to the pending view ( claiming )
+				updateInterface('pending', transactionHash);
+				console.log("ON TRANSACTION HASH - PENDING");
+				console.log(transactionHash);
+				
+				// need to create DB models first before we can write txid to postgres db 
 				// pushTXID2DB(transactionHash);
-
-				var successMsg = 'Your claim has been broadcast to the network!';
-				var errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
-				console.log('successMsg', successMsg, 'txid: ', transactionHash);
 
 			})
 
-
-			// this was added for debug/testing - I'm not sure there is any value in having this and it will likely be removed.
 			.on('receipt', receipt => {
+				console.log("ON RECEIPT - WHAT EVER THIS IS");
 			    console.log('receipt:', receipt);
 			})
 
-
-			// also added for debug/testing - I will keep it in for now in case we want to trigger an event on tx confirmation
 			.on('confirmation', (confirmationNumber, receipt) => {
-
-				// on confirmations view
-
-				currentConfirmations ++;
-
-				console.log("currentConfirmations: " + currentConfirmations);
-				console.log("receipt: " + receipt);
-
-				// change headline to X currentConfirmations
-				claimHeadline.innerHTML = "Claimed with <span>"+ currentConfirmations +"</span> Confirmations";
-
-			    if (currentConfirmations >= 1) {
-
-			    	// DUDE i found out why this loops and prevent
-			    	// to go to ERROR and simulate this is a valid 
-			    	// transaction. its because  i call transactionHash
-			    	console.log(transactionHash);
-
-
-					// INTERFACE UPDATE
-					claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
-					claimTokenAmount.classList.remove("hide");
-					claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
-					
-					claimListing.classList.add("hide");
-					claimListingTotal.classList.add("hide");
-					divClaimButton.classList.add("hide");
-					divClaimingSpinner.classList.add("hide");
-					divClaimedButton.classList.remove("hide");
-
-			    	flashMessage("Transaction Confirmed",5000);
-			    	console.log('IN IF confirmationNumber : ' + confirmationNumber );
-			    	console.log('IN IF receipt : ' + receipt );
-			    	console.log('IN IF currentConfirmations : ' + currentConfirmations );
-
+				console.log("ON CONFIRMATION");
+			    if (confirmationNumber >= 1) {
+			    	// update interface to the success view ( claimed )
+			    	updateInterface('success');
+			    	console.log("ON CONFIRMATION >=1");
 			    }
 			})
 
-
-
 			.on('error', (error) => { 
-				
-				claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
-				claimHeadline.innerHTML = "Oops";
-				claimTokenAmount.classList.remove("hide");
-				claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
-
-				claimTokenAmount.classList.add("hide");
-				divClaimingSpinner.classList.add("hide");
-				divClaimedButton.classList.add("hide");
-				divClaimButton.classList.remove("hide");
-	
-
-				var errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
-				console.log('errorMsg',errorMsg);
-				// console.error(error)
-				// waitingState(false);
-				// handleError(error);
+				// update interface to the generic error view
+				updateInterface('error');
+				console.log("ON ERROR");
 			});
 
 		};
-
 
 		// now we run the function.
 		//indicateMetamaskPopup();
@@ -395,6 +292,65 @@ async function setupGTCTokenClaim(emss_response) {
 
 
 }
+
+
+
+
+
+
+
+//setupIsSigned
+// zachs new ABI thing
+//
+
+async function setupIsSigned(emss_response) {
+    
+  const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, ''); // strip quotes 
+  const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, ''); // strip quotes 
+  
+  try {
+    // who will send the transaction? (active user wallet account)
+    [user] = await web3.eth.getAccounts();
+    // notes, this function calls the actual tokendist v2 ABI 
+    const tokenDistributor_v2 = await new web3.eth.Contract(
+      token_distributor_v2_abi,
+      '0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
+    );
+        
+    const isSigned = () => {
+
+        tokenDistributor_v2.methods
+        .isSigned(eth_signed_message_hash_hex, eth_signed_signature_hex)
+        .send({ from: user, gasLimit: '300000' })
+        .on('transactionHash', async function(transactionHash) {})
+        .on('receipt', receipt => {
+              console.log('receipt:', receipt);
+        })
+        .on('confirmation', (confirmationNumber, receipt) => {
+              if (confirmationNumber <= 5 ) {
+                console.log('confirmations:', confirmationNumber, receipt);
+              }
+        })
+        .on('error', (error) => { 
+          const errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
+          console.log('errorMsg',errorMsg);
+        });
+
+       
+    };
+    // make our contract call 
+    isSigned();  
+         
+
+  } catch (error) {
+    console.log('error on isClaimed: ', error)
+    // handleError(error);
+  }
+
+}
+
+
+
 
 
 
@@ -427,7 +383,6 @@ function checkNetwork() {
     const supportedNetworks = [ 'rinkeby', 'mainnet' ];
     
     if (!supportedNetworks.includes(document.web3network)) {
-      //_alert('Unsupported network', 'error');
       flashMessage("Unsupported network",5000);
       throw new Error;
     }
@@ -439,7 +394,6 @@ function checkNetwork() {
 //
 function checkWeb3() {
 	if (!web3) {
-		// _alert('Please connect a wallet', 'error');
 		flashMessage("Please connect a wallet",5000);
 		throw new Error;
 	}
@@ -462,7 +416,6 @@ function handleError(err) {
     else if (typeof err === 'string')
       message = err;
     
-    //_alert(message, 'error');
     flashMessage("Error:" + message ,5000);
     indicateMetamaskPopup(true);
 }
@@ -498,6 +451,114 @@ async function testClaim(response) {
 
 }
 
+
+
+
+
+// DYNAMIC USER INTERFACE 
+// status = init, pending, success, nowallet, error
+
+function updateInterface(status="init", transactionHash="") {
+
+	// define block explorer for generating a link with txhash
+	const blockExplorerLink = "https://rinkeby.etherscan.io/tx/";
+	const blockExplorerName ="Etherscan";  
+
+	// interface
+	const claimBackground = document.getElementById("claimBackground");
+	const claimHeadline = document.getElementById("claimHeadline");
+	const claimListing = document.getElementById("claimListing");
+	const claimListingTotal = document.getElementById("claimListingTotal");
+	const claimTokenAmount = document.getElementById("claimTokenAmount");
+	const claimStatusMessage = document.getElementById("claimStatusMessage");
+	const claimTXLink = document.getElementById("claimTXLink");
+	const divClaimButton = document.getElementById("divClaimButton");
+	const divClaimingSpinner = document.getElementById("divClaimingSpinner");
+	const divClaimedButton = document.getElementById("divClaimedButton");
+	const claimAdress = document.getElementById("claimAdress");
+
+	if (status=="init")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
+		claimHeadline.innerHTML = "Claim your GTC Tokens to:";
+		claimTokenAmount.classList.add("hide");
+		claimStatusMessage.innerHTML = "";
+		claimStatusMessage.classList.add("hide");
+		claimTXLink.classList.add("hide");
+		claimListing.classList.remove("hide");
+		claimListingTotal.classList.remove("hide");
+		divClaimButton.classList.remove("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.add("hide");
+		claimAdress.classList.remove("hide");
+	}
+
+	if (status=="pending")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claiming.svg";
+		claimHeadline.innerHTML = "Claiming <span>(Pending)</span>";
+		claimTokenAmount.classList.remove("hide");
+		claimStatusMessage.innerHTML = "The tokens are on the way...";
+		claimStatusMessage.classList.remove("hide");
+		claimTXLink.innerHTML = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>";
+		claimTXLink.classList.remove("hide");
+		claimListing.classList.add("hide");
+		claimListingTotal.classList.add("hide");
+		divClaimButton.classList.add("hide");
+		divClaimingSpinner.classList.remove("hide");
+		divClaimedButton.classList.add("hide");
+		claimAdress.classList.remove("hide");
+		flashMessage("Your claim has been broadcast to the network!",5000);
+	}
+
+	if (status=="success")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
+		claimHeadline.innerHTML = "Claimed";
+		claimTokenAmount.classList.remove("hide");
+		claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
+		claimListing.classList.add("hide");
+		claimListingTotal.classList.add("hide");
+		divClaimButton.classList.add("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.remove("hide");
+		claimAdress.classList.remove("hide");
+    	flashMessage("Transaction Confirmed",5000);
+	}
+
+	if (status=="error")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
+		claimHeadline.innerHTML = "Oops";
+		claimTokenAmount.classList.remove("hide");
+		claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
+		claimTokenAmount.classList.add("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.add("hide");
+		divClaimButton.classList.remove("hide");
+		claimAdress.classList.remove("hide");
+		flashMessage("Error",5000);
+	}
+
+	if (status=="nowallet")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
+		claimHeadline.innerHTML = "No Wallet found";
+		claimTokenAmount.classList.add("hide");
+		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/recieve'>Proof of Recieve</a>";
+		claimStatusMessage.classList.remove("hide");
+		claimTXLink.classList.add("hide");
+		claimListing.classList.add("hide");
+		claimListingTotal.classList.add("hide");
+		divClaimButton.classList.add("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.add("hide");
+		claimAdress.classList.add("hide");
+	}
+
+
+
+}
 
 
 

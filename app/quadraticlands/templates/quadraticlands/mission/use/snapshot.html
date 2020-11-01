@@ -64,13 +64,82 @@
 
 {% block 'scripts' %}
 
-	<script>
-		const space = "balancer";
-		const proposal = "QmQpKL29E6ydTvC6p9NoEbTda9ddDkVtWe2YWpWK3NFYqq";
-		const userAddress = "0xA95b42B41D84d5CD176df38eFDFA0d8706018F21";
-	</script>
 
-	<script src="/static/quadraticlands/js/snapshot.js"></script>
+<script>
+
+
+// check specific proposal on a snapshot space
+// for adress ( did a user voted on this )
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	window.addEventListener("dataWalletReady", () => {
+
+		// space, proposal, interval, adress
+		checkShapshotProposalForAdress(
+			"wolfdefi",
+			"QmaLD93xmBTPqBtWCjGV9CaztUkavm8uNoanMMmzcJS7iY",
+			5000,
+			selectedAccount
+		);
+
+	});
+
+});
+
+
+
+
+
+function checkShapshotProposalForAdress(space, proposal, interval, adress){
+
+	const url = "https://hub.snapshot.page/api/" + space + "/proposal/" + proposal;
+
+
+	setInterval(() => {
+
+		fetch(url)
+			.then(response => response.json())
+			.then(data => 
+				{
+				console.log(data);
+
+				for (const [address] of Object.entries(data)) {
+
+				if ( address == userAddress )
+				{
+					console.log("checkAPi : true (userAddress is in Proposal)");
+					// hide spinner
+					const waitingSpinner = document.getElementById("waitingSpinner");
+					waitingSpinner.classList.add("hide");
+					// show next button
+					const nextButton = document.getElementById("nextButton");
+					nextButton.classList.remove("hide");
+				}
+
+				}
+			}
+		)
+
+
+	}, interval);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
 
 {% endblock %}
 
