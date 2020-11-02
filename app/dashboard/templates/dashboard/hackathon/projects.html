@@ -170,7 +170,7 @@
                 <div class="card-body">
                   <h5 class="card-title text-uppercase">{{ project.name }}</h5>
                   <a href="
-                   {% if project.name%}
+                   {% if project.name %}
                       {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
                    {% else %}
                       {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}

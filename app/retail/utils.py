@@ -83,7 +83,7 @@ def strip_double_chars(txt, char=' '):
 
 
 def get_bounty_history_row(label, date, keyword):
-    bounties = get_bounty_history_at_date(['done'], date, keyword)
+    bounties = get_bounty_history_at_date(['done', 'submitted'], date, keyword)
     ecosystem = get_ecosystem_history_at_date(date, keyword)
     codefund = get_codefund_history_at_date(date, keyword)
     tips = get_tip_history_at_date(date, keyword) - ecosystem
@@ -92,12 +92,9 @@ def get_bounty_history_row(label, date, keyword):
     print(label, date, core_platform, keyword, bounties, tips, ecosystem)
     return [
         label,
-        bounties,
-        tips,
+        bounties + tips,
         get_grants_history_at_date(date, keyword),
-        get_kudos_history_at_date(date, keyword),
-        codefund,
-        ecosystem,
+        codefund + ecosystem + get_kudos_history_at_date(date, keyword),
     ]
 
 
@@ -356,14 +353,14 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def get_bounty_history(keyword=None, cumulative=True):
     bh = [
-        ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ads', 'Ecosystem'],
+        ['', 'Hackathons', 'Grants', 'Other'],
     ]
     initial_stats = [
-        ["December 2017", 5534, 2011, 0, 0, 0, 0],
-        ["January 2018", 15930, 5093, 0, 0, 0, 0],
-        ["February 2018", 16302, 7391, 0, 0, 0, 0],
-        ["March 2018", 26390, 8302, 0, 0, 0, 0],
-        ["April 2018", 37342, 10109, 0, 0, 0, 0],
+        ["December 2017", 5534 + 2011, 0, 0],
+        ["January 2018", 15930 + 5093, 0, 0],
+        ["February 2018", 16302 + 7391, 0, 0],
+        ["March 2018", 26390 + 8302, 0, 0],
+        ["April 2018", 37342 + 10109, 0, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
@@ -525,20 +522,24 @@ def build_stat_results(keyword=None):
     # Bounties
     from marketing.models import ManualStat
     completion_rate = get_completion_rate(keyword)
+    pp.profile_time('completion_rate')
     funder_receiver_stats = get_funder_receiver_stats(keyword)
+    pp.profile_time('funder_receiver_stats')
     context['kudos_leaderboards'] = [
         ['Top Kudos Artists 👩‍🎨', get_kudos_leaderboard('kudos_token.artist'), 'created'],
         ['Top Kudos Collectors 🖼', get_kudos_leaderboard('kudos_kudostransfer.username'), 'collected'],
         ['Top Kudos Senders 💌', get_kudos_leaderboard('kudos_kudostransfer.from_username'), 'sent']
         ]
+    pp.profile_time('kudos_leaderboard')
     context['funders'] = funder_receiver_stats['funders']
     context['avg_value'] = funder_receiver_stats['avg_value']
     context['median_value'] = funder_receiver_stats['median_value']
     context['transactions'] = funder_receiver_stats['transactions']
     context['recipients'] = funder_receiver_stats['recipients']
+    pp.profile_time('funder_receiver_stats2')
     context['mau'] = ManualStat.objects.filter(key='MAUs').order_by('-pk').values_list('val', flat=True)[0]
     context['audience'] = json.loads(context['members_history'])[-1][1]
-    pp.profile_time('completion_rate')
+    pp.profile_time('audience')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
