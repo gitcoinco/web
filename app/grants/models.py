@@ -404,6 +404,19 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
+    def calc_clr_round(self):
+        clr_round = None
+        grant= self
+
+        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
+            clr_round = grant.in_active_clrs.first()
+
+        if clr_round:
+            grant.is_clr_active = True
+            grant.clr_round_num = clr_round.round_num
+        else:
+            grant.is_clr_active = False
+            grant.clr_round_num = ''
 
     @property
     def tenants(self):
@@ -1090,7 +1103,6 @@ next_valid_timestamp: {next_valid_timestamp}
             result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
 
         return result
-
 
     def save_split_tx_to_contribution(self):
         sc = self.subscription_contribution.first()
