@@ -13,5 +13,10 @@
   "initial_price":{
         "ETH":"0.00604887 ETH",
         "USD":"2.5 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/GreenorangeGOF/",
+    "telegram": "https://t.me/greenorangefinance",
+    "facebook": "https://www.facebook.com/greenorangefinance"
   }
 }
