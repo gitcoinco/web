@@ -1,0 +1,17 @@
+{
+    "symbol": "PTG",
+    "address": "0xd963a907f83e1b391D664617AE8e87f744aD8F82",
+    "overview":{
+          "en": "PTG is a distributed financial system based on blockchain. It is committed to promoting the development and improvement of the distributed financial DeFi ecosystem, creating on-chain finance, and then building an efficient distributed financial DeFi ecological infrastructure.",
+          "zh": "PTG是基于区块链的分布式金融系统，致力于推动分布式金融DeFi生态的发展和完善，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "ptgdefi@gmail.com",
+    "website": "http://ptgdefi.club/",
+    "whitepaper": "http://ptgdefi.club/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-29",
+    "links": {
+        "telegram": "https://t.me/ptggroup",
+        "twitter": "https://twitter.com/ptgdefi"
+      }
+}
