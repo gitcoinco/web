@@ -11,8 +11,8 @@
 {% trans "You have agreed to give" %}
 
 {{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
-{% if grant.type == 'ZCash' %}
-  {% trans "You can see the transaction at" %} {% url 'grants:details' grant.id grant.slug %}
+{% if subscription.token_symbol == 'ZEC' %}
+  {% trans "You can see the transaction info at" %} {% url 'grants:details' grant.id grant.slug %}
 {% else %}
   {% trans "You can see the transaction " %} {{ transaction.link }} {% trans "here." %}
 {% endif %}
