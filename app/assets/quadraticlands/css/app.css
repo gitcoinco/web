@@ -221,6 +221,7 @@ nav {
   font-family: "Space Mono", monospace;
   padding: 0.5em 0.5em;
   margin-left: 0.5em;
+  animation: colorcycle-shadow 3s ease-in-out infinite;
 }
 #nav-links ul {
   margin-bottom: initial;
