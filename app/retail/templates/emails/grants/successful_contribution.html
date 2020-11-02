@@ -142,7 +142,7 @@
   <p>{% trans "You can see the transaction " %}
     {% if grant.type == 'ZCash' %}
      <a href="{% url 'grants:details' grant.id grant.slug %}">{% trans "here." %}</a>
-    {% if subscription.network == 'mainnet' %}
+    {% elif subscription.network == 'mainnet' %}
       <a href="http://etherscan.io/tx/{{ contribution.tx_id }}">{% trans "here." %}</a>
     {% else %}
       <a href="http://{{ grant.network }}.etherscan.io/tx/{{ contribution.tx_id }}">{% trans "here." %}</a>
