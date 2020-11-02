@@ -64,9 +64,7 @@ def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_g
     :return:
     """
     try:
-        if True: # override for allowing many xdai minting; we can change this back later there is a race condition
-        # but for now the lock was providing more trouble than good - KO 10/20/2020
-        #with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=override_lock_timeout):
+        with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=override_lock_timeout):
             multiplier = 1
             # high gas prices, 5 hour gas limit - DL
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
