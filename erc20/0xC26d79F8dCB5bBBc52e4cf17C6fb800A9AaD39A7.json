@@ -1,0 +1,17 @@
+{
+    "symbol": "MQ",
+    "address": "0xC26d79F8dCB5bBBc52e4cf17C6fb800A9AaD39A7",
+    "overview": {
+        "en": "MiQiSwap will create a new cross-chain decentralization exchange agreement that connects the public chains to make these public chain assets be freely convertible, and MiQiSwap acts as a vehicle for value exchange between different chains. MiQiSwap’s cross-chain decentralization exchange agreement will make cross-chain trading across all public chains come true. MiQiSwap is a completely decentralized exchange. It can automatically and quickly connect other public chains to MiQiSwap’s spatial nodes. The node will automatically re-sign the address to trade on MiQiSwap. Thus, if trades on MiQiSwap, all trades are on the chain, and no one can tamper with them or reverse them.",
+        "zh": "MiQiSwap将创建⼀个新的跨链去中⼼化兑换协议，连通各公链，让这些公链的资产能够⾃由兑换， MiQiSwap则充当了不同公链之间价值兑换的载体，MiQiSwap的跨链去中心化兑换协议将实现所有公链上的跨链交易，这是一个完全去中心化的交易所，将其他公链自动快速的接入 MiQiSwap的空间节点，空间节点将会自动重签名该地址，从而在 MiQiSwap上进行交易，所有交易均为链上交易，任何人不能篡改，不能逆转。"
+    },
+    "email": "mq@miqitoken.com",
+    "website": "https://www.miqitoken.com/",
+    "whitepaper": "https://miqitoken.com/downloads/MiqiswapWhitePaper1.21.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-03",
+    "links": {
+        "twitter": "https://twitter.com/miqiswap20",
+        "telegram": "https://t.me/miqiswap"
+    }
+}
