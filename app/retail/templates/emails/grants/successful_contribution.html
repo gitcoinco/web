@@ -141,7 +141,7 @@
   <p>{{ contribution.created_on|date:"fa F j, Y" }}</p>
   <p>{% trans "You can see the transaction " %}
     {% if grant.type == 'ZCash' %}
-     <a href="{% url 'grants:details' grant.id grant.slug %}">{% trans "here." %}</a>
+      <a href="{% url 'grants:details' grant.id grant.slug %}">{% trans "here." %}</a>
     {% elif subscription.network == 'mainnet' %}
       <a href="http://etherscan.io/tx/{{ contribution.tx_id }}">{% trans "here." %}</a>
     {% else %}

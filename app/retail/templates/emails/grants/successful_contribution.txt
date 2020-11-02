@@ -12,7 +12,7 @@
 
 {{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
 {% if grant.type == 'ZCash' %}
-  at {% url 'grants:details' grant.id grant.slug %}
+  {% trans "You can see the transaction at" %} {% url 'grants:details' grant.id grant.slug %}
 {% else %}
   {% trans "You can see the transaction " %} {{ transaction.link }} {% trans "here." %}
 {% endif %}
