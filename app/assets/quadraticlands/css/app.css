@@ -1519,7 +1519,7 @@ section#footer a:hover {
   display: none !important;
 }
 
-.recieveadress {
+.receiveadress {
   display: block;
   padding: 0.5em 1em;
   color: var(--aqua_light);

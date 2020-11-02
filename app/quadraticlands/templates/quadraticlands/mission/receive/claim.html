@@ -28,7 +28,7 @@
 
 				<!-- selected wallet adress -->
 				<div id="claimAdress" class="claimAdress">
-					<div class="recieveadress" id="wallet-address"></div>
+					<div class="receiveadress" id="wallet-address"></div>
 				</div>
 				
 				<!-- details why you get X tokens -->
@@ -82,7 +82,7 @@
 		</div>
 
 		<div class="center">
-			Proof of Recieve
+			Proof of Receive
 		</div>
 
 		<div class="right">
@@ -100,7 +100,7 @@
 
 			<!-- a div to appear when claim:status claimed -->
 			<div id="divClaimedButton" class="hide">
-				<a class="btn" href="/quadraticlands/mission/recieve/outro">Continue</a>
+				<a class="btn" href="/quadraticlands/mission/receive/outro">Continue</a>
 			</div>			
 
 		</div>
@@ -545,7 +545,7 @@ function updateInterface(status="init", transactionHash="") {
 		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
 		claimHeadline.innerHTML = "No Wallet found";
 		claimTokenAmount.classList.add("hide");
-		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/recieve'>Proof of Recieve</a>";
+		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/receive'>Proof of Receive</a>";
 		claimStatusMessage.classList.remove("hide");
 		claimTXLink.classList.add("hide");
 		claimListing.classList.add("hide");

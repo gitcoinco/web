@@ -8,11 +8,11 @@
 
 
 
+<!--PROOF OF RECEIVE -->
 
 <section class="background">
-	<img src="/static/quadraticlands/images/background/claimed.svg">
+	<img src="/static/quadraticlands/images/background/claiming.svg">
 </section>
-
 
 <section class="quest">
 
@@ -20,9 +20,9 @@
 	<main>
 		<div class="wrapper">
 			<div class="claim">
-				<h3>Claimed</h3>
-				<h1>+2200 GTC</h1>
-				<p>You successfully claimed some GTC Tokens. Welcome to the DAO.<br/>
+				<h3>Claiming <span>(Pending)</span></h3>
+				<h1>300 GTC</h1>
+				<p>The tokens are on the way this will need some minutes. <br/>
 				<a href="#">View on Etherscan</a></p>
 			</div>
 		</div>
@@ -39,11 +39,15 @@
 		</div>
 
 		<div class="center">
-			Proof of Recieve
+			Proof of Receive
 		</div>
 
 		<div class="right">
-			<a class="btn" href="/quadraticlands/mission/recieve/outro">Continue</a>
+			<div class="">
+				<a class="" href="/quadraticlands/mission/receive/claimed">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+				</a>
+			</div>
 		</div>
 
 	</nav>
@@ -56,15 +60,15 @@
 
 
 
+
 {% endblock %}
 
 
 
 {% block 'scripts' %}
 
-	<!--APP - burger menu, wallet menu, provider select-->
-	<script src="/static/quadraticlands/js/app.js"></script>
-	
+	<!-- simulate sucessfull transaction -->
+	<meta http-equiv="refresh" content="10; URL=/quadraticlands/mission/receive/claimed">
 
 {% endblock %}
 
