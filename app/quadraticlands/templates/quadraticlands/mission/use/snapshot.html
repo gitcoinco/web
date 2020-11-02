@@ -14,14 +14,14 @@
 
 <section class="quest">
 
-	<!-- content-->
+	<!-- content gets filled by js see more down ... -->
 	<main>
 		<div class="wrapper">
 			<div class="claim">
-				<h3>Vote</h3>
-				<h1>Does Gitcoin needs a Redesign?</h1>
-				<p style="margin-bottom:2em;">Connect your wallet with snapshot.page and contribute in our this vote. Then come back.</p>
-				<a class="btn" target="_blank" href="https://snapshot.page/#/yam/proposal/QmQxMTQkz7fW3AXma69ueEwhq5Sf8HNdUYseEFQFw3uKEx">Vote</a>
+				<h3 id="voteSubheadline"></h3>
+				<h1 id="voteHeadline"></h1>
+				<p id="voteMessage" style="margin-bottom:2em;"></p>
+				<a id="voteButton" class="btn" target="_blank" href="">Vote</a>
 			</div>
 		</div>
 	</main>
@@ -68,72 +68,99 @@
 <script>
 
 
-// check specific proposal on a snapshot space
-// for adress ( did a user voted on this )
-
 document.addEventListener("DOMContentLoaded",function(){
+
+	const space = "wolfdefi";
+	const proposal = "QmaLD93xmBTPqBtWCjGV9CaztUkavm8uNoanMMmzcJS7iY";
+
+
+	// show default ( no wallet )
+	updateInterface("init");
 
 	window.addEventListener("dataWalletReady", () => {
 
-		// space, proposal, interval, adress
-		checkShapshotProposalForAdress(
-			"wolfdefi",
-			"QmaLD93xmBTPqBtWCjGV9CaztUkavm8uNoanMMmzcJS7iY",
-			5000,
-			selectedAccount
-		);
+		// when wallet found show voting question ( adding space and proposal too to generate vote link)
+		updateInterface("voting");
 
+		// check all 5000ms a check for adress is in proposal
+		setInterval(() => {
+			checkShapshotProposalForAdress( space, proposal, selectedAccount );
+
+		}, 5000);
 	});
+
 
 });
 
 
 
 
+// did a user voted ?
+// check in shapshot > space > proposal for adress
 
-function checkShapshotProposalForAdress(space, proposal, interval, adress){
+function checkShapshotProposalForAdress(space, proposal, adress){
 
-	const url = "https://hub.snapshot.page/api/" + space + "/proposal/" + proposal;
+	fetch("https://hub.snapshot.page/api/" + space + "/proposal/" + proposal)
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
 
-
-	setInterval(() => {
-
-		fetch(url)
-			.then(response => response.json())
-			.then(data => 
-				{
-				console.log(data);
-
-				for (const [address] of Object.entries(data)) {
-
-				if ( address == userAddress )
-				{
-					console.log("checkAPi : true (userAddress is in Proposal)");
-					// hide spinner
-					const waitingSpinner = document.getElementById("waitingSpinner");
-					waitingSpinner.classList.add("hide");
-					// show next button
-					const nextButton = document.getElementById("nextButton");
-					nextButton.classList.remove("hide");
-				}
-
-				}
+			for (const [a] of Object.entries(data))
+			{
+				if ( a == adress ) {  updateInterface("success");  }
 			}
-		)
-
-
-	}, interval);
-
+		}
+	)
 
 }
 
 
+// update the interface to let user continue with mission
+// after we found a vote
+// init, success
 
 
+function updateInterface(status){
 
+	const voteSubheadline = document.getElementById("voteSubheadline");
+	const voteHeadline = document.getElementById("voteHeadline");
+	const voteMessage = document.getElementById("voteMessage");
+	const voteButton = document.getElementById("voteButton");
+	const waitingSpinner = document.getElementById("waitingSpinner");
+	const nextButton = document.getElementById("nextButton");
 
+	// no wallet error on load
+	if (status=="init")
+	{
+		voteSubheadline.innerHTML = "Please";
+		voteHeadline.innerHTML = "Connect a Wallet"
+		voteMessage.innerHTML =	"Please select a Wallet by going back to <a href='/quadraticlands/mission/use'>Proof of Use</a>";
+		voteButton.classList.add("hide");
+		console.log("INTERFACE:INIT");
+	}
 
+	// when wallet show voting / question
+	if (status=="voting")
+	{
+		voteSubheadline.innerHTML = "Waiting for your <span>vote</span>";
+		voteHeadline.innerHTML = "Does Gitcoin needs a Redesign?"
+		voteMessage.innerHTML =	"Connect your wallet with snapshot.page and contribute in our this vote. Then come back.";
+		voteButton.classList.remove("hide");
+		voteButton.href= "https://snapshot.page/#/wolfdefi/proposal/QmaLD93xmBTPqBtWCjGV9CaztUkavm8uNoanMMmzcJS7iY";
+		console.log("INTERFACE:VOTING");
+	}
 
+	// when voted - show success page and let user continue
+	if (status=="success")
+	{
+		waitingSpinner.classList.add("hide");
+		nextButton.classList.remove("hide");
+		voteMessage.innerHTML = "Thanks for Voting!";
+		voteButton.classList.add("hide");
+		console.log("INTERFACE:SUCCESS");
+	}
+	
+}
 
 
 
