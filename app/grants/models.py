@@ -406,17 +406,16 @@ class Grant(SuperModel):
 
     def calc_clr_round(self):
         clr_round = None
-        grant= self
 
-        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
-            clr_round = grant.in_active_clrs.first()
+        if self.in_active_clrs.count() > 0 and self.is_clr_eligible:
+            clr_round = self.in_active_clrs.first()
 
         if clr_round:
-            grant.is_clr_active = True
-            grant.clr_round_num = clr_round.round_num
+            self.is_clr_active = True
+            self.clr_round_num = clr_round.round_num
         else:
-            grant.is_clr_active = False
-            grant.clr_round_num = ''
+            self.is_clr_active = False
+            self.clr_round_num = ''
 
     @property
     def tenants(self):
