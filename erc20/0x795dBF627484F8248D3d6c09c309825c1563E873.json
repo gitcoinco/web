@@ -1,0 +1,19 @@
+{
+    "symbol": "SNP",
+    "address": "0x795dBF627484F8248D3d6c09c309825c1563E873",
+    "overview": {
+        "en": "Nerv Ledger is an open and automated financial and asset management platform that can realize financial business traceability through access to DeFi protocol. It’s open and transparent and it optimizes user experience through platform products, reduces users’ costs, and helps users capture the maximum value of DeFi.",
+        "zh": "Nerv Ledger由SeeleN团队孵化,是一个开放的自动化聚合理财和资产管理平台，通过接入DeFi协议实现金融业务的可追溯，公开透明，通过平台产品优化用户体验，减少用户成本，帮助用户捕获DeFi金融最大价值。"
+    },
+    "email": "contact@nervledger.fi",
+    "website": "http://nervledger.fi",
+    "whitepaper": "http://nervledger.fi",
+    "state": "NORMAL",
+    "published_on": "2020-10-26",
+    "links": {
+        "blog": "https://medium.com/@NevrLedger",
+        "twitter": "https://twitter.com/NevrLedger",
+        "telegram": "https://t.me/nevrledger2020",
+        "github": "https://github.com/Seele-N"
+    }
+}
