@@ -64,68 +64,69 @@ def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_g
     :return:
     """
     try:
-        with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=override_lock_timeout):
-            multiplier = 1
-            # high gas prices, 5 hour gas limit - DL
-            gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
-            if override_gas_price:
-                gas_price = override_gas_price
-            if gas_price > delay_if_gas_prices_gt_redeem:
-                # do not retry is gas prices are too high
-                # TODO: revisit this when gas prices go down
-                # self.retry(countdown=60*10)
-                return
+        with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
+            with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=override_lock_timeout):
+                multiplier = 1
+                # high gas prices, 5 hour gas limit - DL
+                gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
+                if override_gas_price:
+                    gas_price = override_gas_price
+                if gas_price > delay_if_gas_prices_gt_redeem:
+                    # do not retry is gas prices are too high
+                    # TODO: revisit this when gas prices go down
+                    # self.retry(countdown=60*10)
+                    return
 
-            if override_gas_price:
-                gas_price = override_gas_price * 10 ** 9
-            obj = KudosTransfer.objects.get(pk=kt_id)
-            w3 = get_web3(obj.network)
-            token = obj.kudos_token_cloned_from
-            if token.owner_address.lower() != '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'.lower():
-                raise Exception("kudos isnt owned by Gitcoin; cowardly refusing to spend Gitcoin's ETH minting it")
-            kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT
-            kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
-            contract_addr = settings.KUDOS_CONTRACT_MAINNET
-            if obj.network == 'xdai':
-                contract_addr = settings.KUDOS_CONTRACT_XDAI
-            if obj.network == 'rinkeby':
-                contract_addr = settings.KUDOS_CONTRACT_RINKEBY
-            kudos_contract_address = Web3.toChecksumAddress(contract_addr)
-            contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
-            nonce = w3.eth.getTransactionCount(kudos_owner_address)
-            tx = contract.functions.clone(Web3.toChecksumAddress(obj.receive_address), token.token_id, 1).buildTransaction({
-                'nonce': nonce,
-                'gas': 500000,
-                'gasPrice': gas_price,
-                'value': int(token.price_finney / 1000.0 * 10**18),
-            })
-            private_key = settings.KUDOS_PRIVATE_KEY
-            signed = w3.eth.account.signTransaction(tx, private_key)
-            obj.txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-            obj.receive_txid = obj.txid
-            obj.save()
-            while not has_tx_mined(obj.txid, obj.network):
-                time.sleep(1)
-            pass
-            if send_notif_email:
-                from_email = 'kevin@gitcoin.co'
-                from_name = 'Kevin @ Gitcoin'
-                _to_email = obj.recipient_profile.email
-                subject = f"Your '{obj.kudos_token_cloned_from.name}' Kudos has been minted 🌈"
-                block_url = f'https://etherscan.io/tx/{obj.txid}'
+                if override_gas_price:
+                    gas_price = override_gas_price * 10 ** 9
+                obj = KudosTransfer.objects.get(pk=kt_id)
+                w3 = get_web3(obj.network)
+                token = obj.kudos_token_cloned_from
+                if token.owner_address.lower() != '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'.lower():
+                    raise Exception("kudos isnt owned by Gitcoin; cowardly refusing to spend Gitcoin's ETH minting it")
+                kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT
+                kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
+                contract_addr = settings.KUDOS_CONTRACT_MAINNET
                 if obj.network == 'xdai':
-                    block_url = f'https://blockscout.com/poa/xdai/tx/{obj.txid}/internal-transactions'
-                body = f'''
-Hello @{obj.recipient_profile.handle},
+                    contract_addr = settings.KUDOS_CONTRACT_XDAI
+                if obj.network == 'rinkeby':
+                    contract_addr = settings.KUDOS_CONTRACT_RINKEBY
+                kudos_contract_address = Web3.toChecksumAddress(contract_addr)
+                contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+                nonce = w3.eth.getTransactionCount(kudos_owner_address)
+                tx = contract.functions.clone(Web3.toChecksumAddress(obj.receive_address), token.token_id, 1).buildTransaction({
+                    'nonce': nonce,
+                    'gas': 500000,
+                    'gasPrice': gas_price,
+                    'value': int(token.price_finney / 1000.0 * 10**18),
+                })
+                private_key = settings.KUDOS_PRIVATE_KEY
+                signed = w3.eth.account.signTransaction(tx, private_key)
+                obj.txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                obj.receive_txid = obj.txid
+                obj.save()
+                while not has_tx_mined(obj.txid, obj.network):
+                    time.sleep(1)
+                pass
+                if send_notif_email:
+                    from_email = 'kevin@gitcoin.co'
+                    from_name = 'Kevin @ Gitcoin'
+                    _to_email = obj.recipient_profile.email
+                    subject = f"Your '{obj.kudos_token_cloned_from.name}' Kudos has been minted 🌈"
+                    block_url = f'https://etherscan.io/tx/{obj.txid}'
+                    if obj.network == 'xdai':
+                        block_url = f'https://blockscout.com/poa/xdai/tx/{obj.txid}/internal-transactions'
+                    body = f'''
+    Hello @{obj.recipient_profile.handle},
 
-Back on {obj.created_on} you minted a '{obj.kudos_token_cloned_from.name}' Kudos, but the Ethereum network's gas fees were too high for us to mint it on-chain.
+    Back on {obj.created_on} you minted a '{obj.kudos_token_cloned_from.name}' Kudos, but the Ethereum network's gas fees were too high for us to mint it on-chain.
 
-We're writing with good news.  The gas prices on Ethereum have come down, and we are have now minted your token.  You can now see the Kudos in your gitcoin profile ( https://gitcoin.co/{obj.recipient_profile.handle} ) or any blockchain wallet that connects to the {obj.network} network ( {block_url} ).  HOORAY!
+    We're writing with good news.  The gas prices on Ethereum have come down, and we are have now minted your token.  You can now see the Kudos in your gitcoin profile ( https://gitcoin.co/{obj.recipient_profile.handle} ) or any blockchain wallet that connects to the {obj.network} network ( {block_url} ).  HOORAY!
 
-Party on,
-Kevin + the Gitcoin team
-                '''
-                send_mail(from_email, _to_email, subject, body, from_name=from_name)
+    Party on,
+    Kevin + the Gitcoin team
+                    '''
+                    send_mail(from_email, _to_email, subject, body, from_name=from_name)
     except (SoftTimeLimitExceeded, TimeLimitExceeded):
         print('max timeout for bulk kudos redeem exceeded ... giving up!')
     except Exception as e:
