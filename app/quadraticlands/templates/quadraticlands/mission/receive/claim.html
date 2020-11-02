@@ -28,27 +28,27 @@
 
 				<!-- selected wallet adress -->
 				<div id="claimAdress" class="claimAdress">
-					<div class="recieveadress" id="wallet-address"></div>
+					<div class="receiveadress" id="wallet-address"></div>
 				</div>
 				
 				<!-- details why you get X tokens -->
 				<div id="claimListing" class="grid">
 					<!-- @zach : need data from db + here a loop of one row -->
-					<span class="description">Member of Gitcoin</span><span class="token">+50 GTC</span>
-					<span class="description">Helpfull Person</span><span class="token">+80 GTC</span>
-					<span class="description">Have a Grand</span><span class="token">+50 GTC</span>
-					<span class="description">Have a Kudos</span><span class="token">+50 GTC</span>
-					<span class="description">Staff</span><span class="token">+2000 GTC</span>
+					<span class="description">Member of Gitcoin</span><span class="token">+200 GTC</span>
+					<span class="description">Helpfull Person</span><span class="token">+100 GTC</span>
+					<span class="description">Have a Grand</span><span class="token">+100 GTC</span>
+					<span class="description">Have a Kudos</span><span class="token">+100 GTC</span>
+					<span class="description">Staff</span><span class="token">+500 GTC</span>
 					<!-- end loop -->
 				</div>
 
 				<!-- sum of this X tokens -->
 				<div id="claimListingTotal" class="grid total">
-					<span class="description">Total</span><span class="token">+2220 GTC</span>
+					<span class="description">Total</span><span class="token">+1000 GTC</span>
 				</div>
 
 				<!-- just the x Tokens you get -->
-				<h1 id="claimTokenAmount" class="hide">2220 GTC</h1>
+				<h1 id="claimTokenAmount" class="hide">+1000 GTC</h1>
 
 				<!-- a status message  -->
 				<p id="claimStatusMessage" class="hide"></p>
@@ -82,7 +82,7 @@
 		</div>
 
 		<div class="center">
-			Proof of Recieve
+			Proof of Receive
 		</div>
 
 		<div class="right">
@@ -100,7 +100,7 @@
 
 			<!-- a div to appear when claim:status claimed -->
 			<div id="divClaimedButton" class="hide">
-				<a class="btn" href="/quadraticlands/mission/recieve/outro">Continue</a>
+				<a class="btn" href="/quadraticlands/mission/receive/outro">Continue</a>
 			</div>			
 
 		</div>
@@ -545,7 +545,7 @@ function updateInterface(status="init", transactionHash="") {
 		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
 		claimHeadline.innerHTML = "No Wallet found";
 		claimTokenAmount.classList.add("hide");
-		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/recieve'>Proof of Recieve</a>";
+		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/receive'>Proof of Receive</a>";
 		claimStatusMessage.classList.remove("hide");
 		claimTXLink.classList.add("hide");
 		claimListing.classList.add("hide");

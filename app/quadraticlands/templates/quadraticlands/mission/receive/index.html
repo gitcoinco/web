@@ -8,18 +8,18 @@
 <section class="grid">
 	
 	<figure>
-		<img src="/static/quadraticlands/images/proof-of-recieve-start.svg">
+		<img src="/static/quadraticlands/images/proof-of-receive-start.svg">
 	</figure>
 
 	<div>
 		<h3><span>#</span>Chapter 2 of 3</h3>
-		<h1>Proof of recieve</h1>
-		<p id="recieveMessage">Please connect to your Wallet in the top right corner!</p>
+		<h1>Proof of receive</h1>
+		<p id="receiveMessage">Please connect to your Wallet in the top right corner!</p>
 
-		<span id="recieveAdress" class="recieveadress hide" ></span>
+		<span id="receiveAdress" class="receiveadress hide" ></span>
 	
 	
-		<a id="buttonContinue" href="/quadraticlands/mission/recieve/claim" class="btn hide">Continue</a>
+		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn hide">Continue</a>
 	</div>
 
 </section>
@@ -40,15 +40,15 @@
 		// and if so update the interface to show the
 		// next button, a message, and the eth-adress
 
-		const recieveMessage = document.getElementById("recieveMessage");
-		const recieveAdress = document.getElementById("recieveAdress");
+		const receiveMessage = document.getElementById("receiveMessage");
+		const receiveAdress = document.getElementById("receiveAdress");
 		const buttonContinue = document.getElementById("buttonContinue");
 	
 
 		window.addEventListener("dataWalletReady", () => {
-			recieveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
-			recieveAdress.classList.remove("hide");
-			recieveAdress.innerHTML = selectedAccount;
+			receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
+			receiveAdress.classList.remove("hide");
+			receiveAdress.innerHTML = selectedAccount;
 			buttonContinue.classList.remove("hide");				
 		});
 
@@ -60,8 +60,8 @@
 		const buttonDisconnect = document.getElementById("btn-disconnect");
 
 		buttonDisconnect.addEventListener("click", () => {
-			recieveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
-			recieveAdress.classList.add("hide");
+			receiveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
+			receiveAdress.classList.add("hide");
 			buttonContinue.classList.add("hide");
 		});	
 
