@@ -1,0 +1,17 @@
+{
+    "symbol": "FIC",
+    "address": "0xA83f603a762bcE955c6D1Aa8666A0f85FEEdeeDD",
+    "overview":{
+          "en": "FIC is the aggregation token of the IPFS network. The two major landing ecosystems of FIC include KT80s++ mining machine and KLUUK browser. KT80s++ mining machine can directly mine FIL by staking FIC and KLUUK browser can participate in retrieval and storage by staking FIC to obtain rewards FIC.",
+          "zh": "FIC是IPFS网络的聚合Token，FIC的两大落地生态，包括KT80s++矿机和KLUUK浏览器，KT80s++矿机通过质押FIC可以直接挖FIL和KLUUK浏览器通过质押FIC参与检索、存储获得打赏奖励FIC。"
+    },
+    "email": "fic@filecash.info",
+    "website": "http://www.filecash.info/store.html",
+    "whitepaper": "http://www.filecash.info/FileCash%20white%20paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-19",
+    "links": {
+        "telegram": "https://t.me/FileCashCN",
+        "twitter": "https://twitter.com/FileCash2"
+      }
+}
