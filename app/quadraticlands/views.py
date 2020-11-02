@@ -39,7 +39,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from eth_utils import is_checksum_address, is_normalized_address, to_checksum_address
+from eth_utils import is_address, is_checksum_address, to_checksum_address
 from ratelimit.decorators import ratelimit
 
 from .forms import ClaimForm
@@ -70,73 +70,95 @@ def privacy(request):
 def faq(request):
     return TemplateResponse(request, 'quadraticlands/faq.html')
 
+@login_required
 def dashboard(request):
     return TemplateResponse(request, 'quadraticlands/dashboard.html')
 
+@login_required
 def mission(request):
     return TemplateResponse(request, 'quadraticlands/mission/index.html')   
 
+@login_required
 def mission_knowledge_index(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/index.html')
-    
+
+@login_required
 def mission_knowledge_intro(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/intro.html')
 
+@login_required
 def mission_knowledge_question_1(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1.html')
 
+@login_required
 def mission_knowledge_question_1_right(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1_right.html')
 
+@login_required
 def mission_knowledge_question_1_wrong(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1_wrong.html')    
 
+@login_required
 def mission_knowledge_question_1_timeout(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_1_timeout.html')    
 
+@login_required
 def mission_knowledge_question_2(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2.html')
 
+@login_required
 def mission_knowledge_question_2_right(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2_right.html')
 
+@login_required
 def mission_knowledge_question_2_wrong(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2_wrong.html')    
 
+@login_required
 def mission_knowledge_question_2_timeout(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/question_2_timeout.html')   
 
+@login_required
 def mission_knowledge_outro(request):
     return TemplateResponse(request, 'quadraticlands/mission/knowledge/outro.html')   
 
-def mission_recieve_index(request):
-    return TemplateResponse(request, 'quadraticlands/mission/recieve/index.html')   
+@login_required
+def mission_receive_index(request):
+    return TemplateResponse(request, 'quadraticlands/mission/receive/index.html')   
 
-def mission_revieve_claim(request):
-    return TemplateResponse(request, 'quadraticlands/mission/recieve/claim.html')   
+@login_required
+def mission_receive_claim(request):
+    return TemplateResponse(request, 'quadraticlands/mission/receive/claim.html')   
 
-def mission_revieve_claiming(request):
-    return TemplateResponse(request, 'quadraticlands/mission/recieve/claiming.html')  
+@login_required
+def mission_receive_claiming(request):
+    return TemplateResponse(request, 'quadraticlands/mission/receive/claiming.html')  
 
-def mission_revieve_claimed(request):
-    return TemplateResponse(request, 'quadraticlands/mission/recieve/claimed.html') 
+@login_required
+def mission_receive_claimed(request):
+    return TemplateResponse(request, 'quadraticlands/mission/receive/claimed.html') 
 
-def mission_recieve_outro(request):
-    return TemplateResponse(request, 'quadraticlands/mission/recieve/outro.html')   
+@login_required
+def mission_receive_outro(request):
+    return TemplateResponse(request, 'quadraticlands/mission/receive/outro.html')   
 
+@login_required
 def mission_use_index(request):
     return TemplateResponse(request, 'quadraticlands/mission/use/index.html')  
 
+@login_required
 def mission_use_snapshot(request):
     return TemplateResponse(request, 'quadraticlands/mission/use/snapshot.html') 
 
+@login_required
 def mission_use_outro(request):
     return TemplateResponse(request, 'quadraticlands/mission/use/outro.html')   
 
+@login_required
 def mission_end(request):
     return TemplateResponse(request, 'quadraticlands/mission/end.html')   
 
-
+# this will phased out soon and may already no longer work 
 def demo2(request):
     
     user = request.user if request.user.is_authenticated else None
@@ -164,15 +186,6 @@ def demo2(request):
             }
         return TemplateResponse(request, 'quadraticlands/demo2.html', context)
 
-# used for testing generic getFetch POSTs from client side JS
-@login_required
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-def testPost(request):
-            logger.info(f'successfully called testPost')
-            resp = {'payload': 'example'}
-            return JsonResponse(resp)
-
-
 # ratelimit.UNSAFE is a shortcut for ('POST', 'PUT', 'PATCH', 'DELETE').
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
@@ -182,7 +195,6 @@ def claim2(request):
     Returns JSON response from Ethereum Message Signing Service (emss)
     '''
     user = request.user if request.user.is_authenticated else None
-    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
       
     # if POST 
     if request.method == 'POST' and request.user.is_authenticated:
@@ -193,46 +205,19 @@ def claim2(request):
         post_data_to_emss = {}
         post_data_to_emss['user_id'] = user.id
        
-
-        # IMPORTANT - below is the current central source of truth for address on claim 
-        # if user profile address is not set, then we will take the 'address' value 
-        # submitted along with a ajax post to /claim2 - 
-        # if no address in post and no profile addy then we dont have an addy for the user
-        # user claim will return error 
-        # feature tracked here - https://github.com/nopslip/gitcoin-web-ql/issues/21
-                  
-        # if a primary user active wallet address was supplied
-        # then we will make sure that it's a checksum'd eth address
-
-        if request.POST.get('address'):
-            try:
-                if is_checksum_address(request.POST.get('address')):
-                    primary_wallet_address = request.POST.get('address')
-                elif is_normalized_address(request.POST.get('address')):
-                    primary_wallet_address = to_checksum_address(request.POST.get('address'))
-                else:
-                    primary_wallet_address = None 
-                    logger.info('QuadLands: Primary wallet address failed integrity checks')
-            except:
-                logger.error('QuadLands: There was an issue intreperting user wallet address!')
-                
-        try:         
-            post_data_to_emss['user_address'] = profile.preferred_payout_address
-            payout_address = True
-            # TODO - this should be sanitized before passing directly to the EMSS as this should be considered un-trusted user supplied data
-        except: 
-            logger.info('QuadraticLands - No preferred_payout_address set for user!')
-            payout_address = None 
-
-        if not payout_address: 
-        
-            try: 
-                post_data_to_emss['user_address'] = primary_wallet_address
-            except:
-                logger.error('QuadLands: Cannot find an address for the user claim!')
-                return JsonResponse({'error': 'no address found for user!'})
-
-        
+        # confirm we received a valid, checksummed address for the token claim 
+        try:
+            if is_checksum_address(request.POST.get('address')):
+                post_data_to_emss['user_address'] = request.POST.get('address')
+            elif is_address(request.POST.get('address')):
+                post_data_to_emss['user_address'] = to_checksum_address(request.POST.get('address'))
+            else:
+                logger.info('QuadLands: token claim address failed integrity check. No claim will be generated.')
+                return JsonResponse({'error': 'Token claim address failed integrity checks.'})
+        except:
+            logger.error('QuadLands: There was an issue validating user wallet address.')
+            return JsonResponse({'error': 'Token claim address failed validation'})
+          
         # will pull token claim data from the user, this is hard coded for now 
         post_data_to_emss['user_amount'] = 1000000000000000000000 # 1000 ETH - need to use big number in units WEI 
 

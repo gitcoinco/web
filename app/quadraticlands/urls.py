@@ -24,8 +24,8 @@ from quadraticlands.views import (
     mission_knowledge_intro, mission_knowledge_outro, mission_knowledge_question_1, mission_knowledge_question_1_right,
     mission_knowledge_question_1_timeout, mission_knowledge_question_1_wrong, mission_knowledge_question_2,
     mission_knowledge_question_2_right, mission_knowledge_question_2_timeout, mission_knowledge_question_2_wrong,
-    mission_recieve_index, mission_recieve_outro, mission_revieve_claim, mission_revieve_claimed,
-    mission_revieve_claiming, mission_use_index, mission_use_outro, mission_use_snapshot, privacy, terms,
+    mission_receive_claim, mission_receive_claimed, mission_receive_claiming, mission_receive_index,
+    mission_receive_outro, mission_use_index, mission_use_outro, mission_use_snapshot, privacy, terms,
 )
 
 app_name = 'quadraticlands'
@@ -37,7 +37,7 @@ app_name = 'quadraticlands'
 # should be a helper route with no view involved 
 # that redirects based on user mission status in database to 
 # 0 = knowledge
-# 1 = recieve
+# 1 = receive
 # 2 = use
 
 urlpatterns = [
@@ -46,7 +46,6 @@ urlpatterns = [
     path('faq', faq, name='faq'),
     path('terms', terms, name='terms'),
     path('privacy', privacy, name='privacy'),
-    path('demo', claim, name='demo-claim'),
     path('dashboard', dashboard, name='dashboard'),
     path('claim2', claim2, name='claim2_json'), # initial trigger for token claim requests 
     path('demo2', demo2, name='demo2'),
@@ -65,11 +64,11 @@ urlpatterns = [
     path('mission/knowledge/question/2/timeout', mission_knowledge_question_2_timeout, name='mission_knowledge_question_2_timeout'),
     path('mission/knowledge/outro', mission_knowledge_outro, name='mission_knowledge_outro'),
 
-    path('mission/recieve', mission_recieve_index, name='mission_recieve_index'),
-    path('mission/recieve/claim', mission_revieve_claim, name='mission_revieve_claim'),
-    path('mission/recieve/claiming', mission_revieve_claiming, name='mission_revieve_claiming'),
-    path('mission/recieve/claimed', mission_revieve_claimed, name='mission_revieve_claimed'),
-    path('mission/recieve/outro', mission_recieve_outro, name='mission_recieve_outro'),
+    path('mission/receive', mission_receive_index, name='mission_receive_index'),
+    path('mission/receive/claim', mission_receive_claim, name='mission_receive_claim'),
+    path('mission/receive/claiming', mission_receive_claiming, name='mission_receive_claiming'),
+    path('mission/receive/claimed', mission_receive_claimed, name='mission_receive_claimed'),
+    path('mission/receive/outro', mission_receive_outro, name='mission_receive_outro'),
 
     path('mission/use', mission_use_index, name='mission_use_index'),
     path('mission/use/snapshot', mission_use_snapshot, name='mission_use_snapshot'),
