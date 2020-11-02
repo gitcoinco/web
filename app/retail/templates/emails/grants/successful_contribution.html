@@ -139,7 +139,9 @@
   </p>
   <p>{% trans "occurred at" %} </p>
   <p>{{ contribution.created_on|date:"fa F j, Y" }}</p>
-  <p>{% trans "You can see the transaction on Etherscan " %}
+  <p>{% trans "You can see the transaction " %}
+    {% if grant.type == 'ZCash' %}
+     <a href="{% url 'grants:details' grant.id grant.slug %}">{% trans "here." %}</a>
     {% if subscription.network == 'mainnet' %}
       <a href="http://etherscan.io/tx/{{ contribution.tx_id }}">{% trans "here." %}</a>
     {% else %}
