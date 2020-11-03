@@ -296,6 +296,21 @@ if (document.getElementById('gc-new-grant')) {
           placeholder: 'Give a detailed desciription about your Grant'
         }
       };
+    },
+    computed: {
+      queryParams () {
+        let query = window.location.search.substr(1)
+        query = query.split("&")
+        const returnVal = {}
+        query.map(q => {
+          const parts = q.split("=")
+          returnVal[parts[0]] = decodeURIComponent(parts[1])
+        })
+        return returnVal
+      }
+    },
+    mounted () {
+      this.form = {...this.form, ...this.queryParams}
     }
   });
 }
