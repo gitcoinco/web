@@ -81,7 +81,7 @@ along with this program. If not, see
             {% endif %}
             <div id="grants-showcase" v-cloak>
               <div class="row" style="max-width: 99vw">
-                <div class="col-12 col-lg-3 col-xl-2 pr-xl-0" id="sidebar_container">
+                <div class="col-12 col-lg-3 col-xl-2 pr-0" id="sidebar_container">
                   {% include 'grants/shared/sidebar_search.html' %}
                 </div>
 
@@ -98,7 +98,7 @@ along with this program. If not, see
                   <template v-else-if="'stats' == current_type">
                     <div id="insert_iframe">
                       <div style="background-color: #eee; font-size: 14px; text-align: center;">
-                        <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a>
+                        <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
                       </div>
                       <iframe :src="`/grants/getstats/?category=${category}`" style="width: 100%; height: 100%; min-height: 1000px;">
                       </iframe>

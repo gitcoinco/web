@@ -33,5 +33,5 @@ def save_profile(backend, user, response, request, *args, **kwargs):
         if not user.is_active:
             raise SuspiciousOperation('You cannot login')
 
-        sync_profile(handle, user, hide_profile=False)
+        sync_profile(handle, user, hide_profile=False, delay_okay=True)
         setup_lang(request, user)

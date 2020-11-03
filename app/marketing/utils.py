@@ -348,6 +348,14 @@ def handle_marketing_callback(_input, request):
             else:
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
 
+def generate_hackathon_email_intro(sponsors_prizes):
+    sponsor_names = [sponsor['sponsor'].name for sponsor in sponsors_prizes]
+    if (len(sponsors_prizes) > 2):
+        return  f"{', '.join(sponsor_names)} are"
+    elif (len(sponsors_prizes) == 2):
+        return  f"{' and '.join(sponsor_names)} are"
+    else:
+        return f"{sponsors_prizes[0]['sponsor'].name} is"
 
 def func_name():
     """Determine the calling function's name.

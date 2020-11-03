@@ -51,7 +51,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--hours',
             type=int,
-            help="Should the cart being delivered partially"
+            help="how many hours forward to full to look"
         )
 
 

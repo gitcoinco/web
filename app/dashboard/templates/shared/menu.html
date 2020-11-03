@@ -84,9 +84,6 @@
                 <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
               </li>
               <li>
-                <a class="dropdown-item dropdown-item-small" href="{% url 'grants:leaderboard' %}">{% trans "Grants Leaderboard" %}</a>
-              </li>
-              <li>
                 <a class="dropdown-item dropdown-item-small" href="{% url 'grants:new' %}">{% trans "Create Grant" %}</a>
               </li>
               <li>
@@ -126,6 +123,19 @@
               </li>
               <li>
                 <a class="dropdown-item dropdown-item-small" href="{% url 'kudos_about' %}">{% trans "About Kudos" %}</a>
+              </li>
+            </ul>
+
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kernel' in request.path %}gc-megamenu-active{% endif %}">
+              <li>
+                <a class="text-reset" href="https://kernel.community">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kudos" height="48">
+                  <b class="gc-megamenu-title">{% trans "Kernel" %}</b>
+                </a>
+                <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "An web3-native, community-centric, accelerator." %}</p>
+              </li>
+              <li>
+                <a class="dropdown-item dropdown-item-small" href="https://kernel.community">{% trans "Explore Kernel" %}</a>
               </li>
             </ul>
 

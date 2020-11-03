@@ -95,7 +95,8 @@ class GrantAdmin(GeneralAdmin):
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
-        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history'
+        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
+        'zcash_payout_address'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -158,6 +159,13 @@ class GrantAdmin(GeneralAdmin):
             eles.append(html)
 
         return mark_safe("<BR>".join(eles))
+
+    def response_change(self, request, obj):
+        if "_calc_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            recalc_clr.delay(obj.pk)
+            self.message_user(request, "recaclulation of clr queued")
+        return redirect(obj.admin_url)
 
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
@@ -274,10 +282,17 @@ class ContributionAdmin(GeneralAdmin):
     search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
     def txn_url(self, obj):
-        tx_id = obj.tx_id
-        if not tx_id:
-            tx_id = obj.split_tx_id
-        tx_url = 'https://etherscan.io/tx/' + tx_id
+
+        if obj.subscription.tenant == 'ZCASH':
+            tx_id = obj.tx_id
+            tx_url = 'https://sochain.com/tx/ZEC/' + tx_id
+
+        elif obj.subscription.tenant == 'ETH':
+            tx_id = obj.tx_id
+            if not tx_id:
+                tx_id = obj.split_tx_id
+            tx_url = 'https://etherscan.io/tx/' + tx_id
+
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):

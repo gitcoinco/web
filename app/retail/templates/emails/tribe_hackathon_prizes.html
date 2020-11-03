@@ -1,0 +1,88 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .sponsor-logo {
+    width: 65px;
+    height: 65px;
+    margin: 20px 0;
+  }
+  .hackathon-image {
+    width: 100%;
+    height: 200px;
+    margin-top: 30px;
+    background-color: #000000;
+  }
+  .left {
+    text-align: left;
+  }
+  .message {
+    margin-top: 3em;
+    margin-bottom: 0;
+  }
+  .container p a {
+    color: #3E00FF;
+  }
+  .inner-container {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+
+<div class="container" style="margin-bottom: 3em; padding: 0;">
+<div class="inner-container">
+  {% for sponsor in sponsors_prizes %}
+    <img class="sponsor-logo" src="{{sponsor.image_url}}">
+  {% endfor %}
+  <h1>Win exciting prizes at {{ hackathon.name }}</h1>
+
+  <p class="left message"><b>{{intro}}<b>{{ hackathon.name }}</b> 🚀</p>
+
+  {% if hackathon %}
+    {% if hackathon.image_url %}
+      <img class="hackathon-image" src="{{hackathon.image_url}}">
+    {% endif %}
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+      <a class="button large" href="{{ hackathon.url }}">Join Hackathon</a>
+    </div>
+  {% endif %}
+
+  <p class="left message">Meet a community of like-minded hackers, buidl cool stuff, and win these exciting prizes:</p>
+  <div style="margin-bottom: 3em;">
+    {% for sponsor in sponsors_prizes %}
+      {% if sponsor.prizes %}
+      <div style="margin: 4em 0">
+        <h3 style="text-decoration: underline;">Bounties by {{sponsor.name}}:</h3>
+          {% for prize in sponsor.prizes %}
+            {% include 'emails/bounty.html' with bounty=prize count=forloop.counter small=1 prize=1 %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endfor %}
+    </div>
+
+  <p class="left" style="margin-top: 5em;">See you @ <a href="{{ hackathon.url }}">{{ hackathon.name }}</a>!</p>
+
+  <p class="left">The Gitcoin team</p>
+</div>
+</div>
+{% endblock %}

@@ -105,6 +105,10 @@ class GrantType(SuperModel):
         return f"{self.name}"
 
     @property
+    def clrs(self):
+        return GrantCLR.objects.filter(grant_filters__grant_type=str(self.pk))
+
+    @property
     def active_clrs(self):
         return GrantCLR.objects.filter(is_active=True, grant_filters__grant_type=str(self.pk))
 
@@ -163,7 +167,7 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        return Grant.objects.filter(**self.grant_filters)
+        return Grant.objects.filter(**self.grant_filters).filter(is_clr_eligible=True)
 
 
 class Grant(SuperModel):
@@ -174,23 +178,15 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
-    # GRANT_TYPES = [
-    #     ('tech', 'tech'),
-    #     ('health', 'health'),
-    #     ('media', 'Community'),
-    #     ('change', 'change'),
-    #     ('matic', 'matic')
-    # ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
-    # grant_type_purge = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
-    github_project_url = models.URLField(blank=True, help_text=_('Grant Github Project URL'))
+    github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
@@ -215,6 +211,8 @@ class Grant(SuperModel):
     admin_address = models.CharField(
         max_length=255,
         default='0x0',
+        null=True,
+        blank=True,
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
     zcash_payout_address = models.CharField(
@@ -248,6 +246,7 @@ class Grant(SuperModel):
         max_digits=50,
         help_text=_('The total amount received for the Grant in USDT/DAI.'),
     )
+    # TODO-GRANTS: remove
     token_address = models.CharField(
         max_length=255,
         default='0x0',
@@ -258,16 +257,19 @@ class Grant(SuperModel):
         default='',
         help_text=_('The token symbol to be used with the Grant.'),
     )
+    # TODO-GRANTS: remove
     contract_address = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The contract address of the Grant.'),
     )
+    # TODO-GRANTS: remove
     deploy_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for contract deployment.'),
     )
+    # TODO-GRANTS: remove
     cancel_tx_id = models.CharField(
         max_length=255,
         default='0x0',
@@ -333,7 +335,9 @@ class Grant(SuperModel):
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    # TODO-GRANTS: remove
     positive_round_contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    # TODO-GRANTS: remove
     negative_round_contributor_count = models.PositiveIntegerField(blank=True, default=0)
 
     defer_clr_to = models.ForeignKey(
@@ -401,6 +405,19 @@ class Grant(SuperModel):
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
 
+    @property
+    def tenants(self):
+        """returns list of chains the grant can recieve contributions in"""
+        tenants = []
+        # TODO: rename to eth_payout_address
+        if self.admin_address and self.admin_address != '0x0':
+            tenants.append('ETH')
+        if self.zcash_payout_address and self.zcash_payout_address != '0x0':
+            tenants.append('ZCASH')
+
+        return tenants
+
+
     def updateActiveSubscriptions(self):
         """updates the active subscriptions list"""
         handles = []
@@ -417,6 +434,18 @@ class Grant(SuperModel):
     @property
     def recurring_funding_supported(self):
         return self.contract_version < 2
+
+    @property
+    def related_grants(self):
+        pkg = self.metadata.get('related', [])
+        pks = [ele[0] for ele in pkg]
+        rg = Grant.objects.filter(pk__in=pks)
+        return_me = []
+        for ele in pkg:
+            grant = rg.get(pk=ele[0])
+            return_me.append([grant, ele[1]])
+        return return_me
+
 
     @property
     def configured_to_receieve_funding(self):
@@ -567,7 +596,7 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
-    def cart_payload(self):
+    def cart_payload(self, build_absolute_uri):
         return {
             'grant_id': str(self.id),
             'grant_slug': self.slug,
@@ -578,10 +607,12 @@ class Grant(SuperModel):
             'grant_token_symbol': self.token_symbol,
             'grant_admin_address': self.admin_address,
             'grant_token_address': self.token_address,
-            'grant_logo': self.logo.url if self.logo and self.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+            'grant_logo': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
             'grant_clr_prediction_curve': self.clr_prediction_curve,
             'grant_image_css': self.image_css,
-            'is_clr_eligible': self.is_clr_eligible
+            'is_clr_eligible': self.is_clr_eligible,
+            'tenants': self.tenants,
+            'zcash_payout_address': self.zcash_payout_address,
         }
 
     def repr(self, user, build_absolute_uri):
@@ -617,9 +648,11 @@ class Grant(SuperModel):
                 'contract_address': self.contract_address,
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
+                'zcash_payout_address': self.zcash_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
+                'tenants': self.tenants,
             }
 
     def favorite(self, user):
@@ -682,11 +715,13 @@ class Subscription(SuperModel):
         max_digits=50,
         help_text=_('The real payout frequency of the Subscription in seconds.'),
     )
+    # TODO: REMOVE
     frequency_unit = models.CharField(
         max_length=255,
         default='',
         help_text=_('The text version of frequency units e.g. days, months'),
     )
+    # TODO: REMOVE
     frequency = models.DecimalField(
         default=0,
         decimal_places=0,
@@ -709,27 +744,32 @@ class Subscription(SuperModel):
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
     )
+    # TODO: REMOVE
     new_approve_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
+    # TODO: REMOVE
     end_approve_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
     )
+    # TODO: REMOVE
     cancel_tx_id = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for cancelSubscription.'),
     )
+    # TODO: REMOVE
     num_tx_approved = models.DecimalField(
         default=1,
         decimal_places=4,
         max_digits=50,
         help_text=_('The number of transactions approved for the Subscription.'),
     )
+    # TODO: REMOVE
     num_tx_processed = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -755,10 +795,12 @@ class Subscription(SuperModel):
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
     )
+    # TODO: REMOVE
     last_contribution_date = models.DateTimeField(
         help_text=_('The last contribution date'),
         default=timezone.datetime(1990, 1, 1),
     )
+    # TODO: REMOVE
     next_contribution_date = models.DateTimeField(
         help_text=_('The next contribution date'),
         default=timezone.datetime(1990, 1, 1),
@@ -1082,12 +1124,65 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
+
+        if grant.pk == 86:
+            # KO 9/28/2020 - per community feedback, contributions that are auto-matched should not count towards
+            # CLR matching, as it gives gitcoin an unfair advantage
+            is_automatic = bool(contribution.subscription.amount_per_period == contribution.subscription.gas_price)
+            from dashboard.models import Profile
+            contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
+            contribution.match = False
+            contribution.save()
+
+        return contribution
+
+
+    def create_contribution(self, tx_id, is_successful_contribution=True):
+        from marketing.mails import successful_contribution
+        from grants.tasks import update_grant_metadata
+
+        now = timezone.now()
+        self.last_contribution_date = now
+        self.next_contribution_date = now
+
+        self.num_tx_processed += 1
+
+        contribution = Contribution()
+
+        contribution.success = False
+        contribution.tx_cleared = False
+        contribution.subscription = self
+        contribution.split_tx_id = self.split_tx_id
+        contribution.split_tx_confirmed = self.split_tx_confirmed
+
+        if tx_id:
+            contribution.tx_id = tx_id
+
+        contribution.save()
+        grant = self.grant
+
+        value_usdt = self.get_converted_amount(False)
+        if value_usdt:
+            self.amount_per_period_usdt = value_usdt
+            grant.amount_received += Decimal(value_usdt)
+
+        if self.num_tx_processed == self.num_tx_approved and value_usdt:
+            grant.monthly_amount_subscribed -= self.get_converted_monthly_amount()
+            self.active = False
+
+        self.save()
+        grant.updateActiveSubscriptions()
+        grant.save()
+        if is_successful_contribution:
+            successful_contribution(self.grant, self, contribution)
+
+        update_grant_metadata.delay(self.pk)
         return contribution
 
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=5)):
+    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
         from grants.tasks import update_grant_metadata
         update_grant_metadata.delay(instance.pk)
 
@@ -1227,6 +1322,14 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
+    CHECKOUT_TYPES = [
+        ('eth_std', 'eth_std'),
+        ('eth_zksync_deposit', 'eth_zksync_deposit'),
+        ('eth_zksync_batch_deposit', 'eth_zksync_batch_deposit'),
+        ('eth_zksync_pure', 'eth_zksync_pure'),
+        ('zcash_std', 'zcash_std')
+    ]
+
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
@@ -1279,6 +1382,14 @@ class Contribution(SuperModel):
         null=True,
         blank=True,
     )
+    checkout_type = models.CharField(
+        max_length=30,
+        null=True,
+        help_text=_('The checkout method used while making the contribution'),
+        blank=True,
+        choices=CHECKOUT_TYPES
+    )
+    anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
@@ -1401,14 +1512,36 @@ class Contribution(SuperModel):
 
 
             elif case_number == 2:
+                self.validator_comment = 'zkSync with L1 deposit'
+                self.originated_address = self.subscription.contributor_address
+
+                # Make sure L1 tx succeeded
+                if receipt.status == 0:
+                    print('okkkk')
+                    self.tx_cleared = True
+                    self.success = False
+                    self.validator_passed = True
+                    self.split_tx_confirmed = True
+                    self.validator_comment = f"{self.validator_comment}. L1 transaction failed (receipt.status == 0)"
+                    print("TODO: do stuff related to failed contribs, like emails (failed tx)")
+                    return
+
                 # If Case 2, we get the address of the gitcoin zkSync account from events
                 zksync_abi = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockVerification","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"totalBlocksVerified","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"totalBlocksCommitted","type":"uint32"}],"name":"BlocksRevert","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"DepositCommit","type":"event"},{"anonymous":false,"inputs":[],"name":"ExodusMode","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint32","name":"nonce","type":"uint32"},{"indexed":false,"internalType":"bytes","name":"fact","type":"bytes"}],"name":"FactAuth","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"FullExitCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint64","name":"serialId","type":"uint64"},{"indexed":false,"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"indexed":false,"internalType":"bytes","name":"pubData","type":"bytes"},{"indexed":false,"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"name":"NewPriorityRequest","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}],"name":"OnchainDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"OnchainWithdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsAdd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsComplete","type":"event"},{"constant":true,"inputs":[],"name":"EMPTY_STRING_KECCAK","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"}],"name":"authFacts","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"bytes22","name":"","type":"bytes22"}],"name":"balancesToWithdraw","outputs":[{"internalType":"uint128","name":"balanceToWithdraw","type":"uint128"},{"internalType":"uint8","name":"gasReserveValue","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"blocks","outputs":[{"internalType":"uint32","name":"committedAtBlock","type":"uint32"},{"internalType":"uint64","name":"priorityOperations","type":"uint64"},{"internalType":"uint32","name":"chunks","type":"uint32"},{"internalType":"bytes32","name":"withdrawalsDataHash","type":"bytes32"},{"internalType":"bytes32","name":"commitment","type":"bytes32"},{"internalType":"bytes32","name":"stateRoot","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint64","name":"_n","type":"uint64"}],"name":"cancelOutstandingDepositsForExodusMode","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint32","name":"_feeAccount","type":"uint32"},{"internalType":"bytes32[]","name":"_newBlockInfo","type":"bytes32[]"},{"internalType":"bytes","name":"_publicData","type":"bytes"},{"internalType":"bytes","name":"_ethWitness","type":"bytes"},{"internalType":"uint32[]","name":"_ethWitnessSizes","type":"uint32[]"}],"name":"commitBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_n","type":"uint32"}],"name":"completeWithdrawals","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint104","name":"_amount","type":"uint104"},{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositETH","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"uint16","name":"_tokenId","type":"uint16"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint16","name":"","type":"uint16"}],"name":"exited","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"exodusMode","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPendingWithdrawalIndex","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPriorityRequestId","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"address","name":"_token","type":"address"}],"name":"fullExit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint16","name":"_tokenId","type":"uint16"}],"name":"getBalanceToWithdraw","outputs":[{"internalType":"uint128","name":"","type":"uint128"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"getNoticePeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"initializationParameters","type":"bytes"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"isReadyForUpgrade","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfPendingWithdrawals","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"pendingWithdrawals","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint16","name":"tokenId","type":"uint16"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint64","name":"","type":"uint64"}],"name":"priorityRequests","outputs":[{"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"internalType":"bytes","name":"pubData","type":"bytes"},{"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_maxBlocksToRevert","type":"uint32"}],"name":"revertBlocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"_pubkey_hash","type":"bytes"},{"internalType":"uint32","name":"_nonce","type":"uint32"}],"name":"setAuthPubkeyHash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksCommitted","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksVerified","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCommittedPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalOpenPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"triggerExodusIfNeeded","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"upgradeParameters","type":"bytes"}],"name":"upgrade","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeCanceled","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeFinishes","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeNoticePeriodStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActivationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"upgradePreparationStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"},{"internalType":"bytes","name":"_withdrawalsData","type":"bytes"}],"name":"verifyBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint128","name":"_maxAmount","type":"uint128"}],"name":"withdrawERC20Guarded","outputs":[{"internalType":"uint128","name":"withdrawnAmount","type":"uint128"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawETH","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]'
                 zksync_contract = w3.eth.contract(address=zksync_contract_addr, abi=zksync_abi)
                 parsed_logs = zksync_contract.events.OnchainDeposit().processReceipt(receipt)
+                if len(parsed_logs) == 0:
+                    self.tx_cleared = True
+                    self.success = False
+                    self.validator_passed = True
+                    self.split_tx_confirmed = True
+                    self.validator_comment = f"{self.validator_comment}. No event logs found"
+                    print("TODO: do stuff related to failed contribs, like emails (no event logs found)")
+                    return
+
+                # Event logs found, continue
                 gitcoin_zksync_addr = parsed_logs[0]['args']['owner']
-                self.originated_address = self.subscription.contributor_address
                 self.validator_passed = True
-                self.validator_comment = 'zkSync with L1 deposit'
                 self.split_tx_confirmed = True
 
             elif case_number == 3:
