@@ -785,7 +785,7 @@ def get_bg(grant_type):
     if grant_type != 'matic':
         bg = '../grants/grants_header_donors_round_7-6.png'
     if grant_type == 'ZCash':
-        bg = '../grants/grants_header_donors_zcash_round_1_2.jpg'
+        bg = '../grants/grants_header_donors_zcash_round_1_2.png'
         bg_color = '#FFFFFF'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
