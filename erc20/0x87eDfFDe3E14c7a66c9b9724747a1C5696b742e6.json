@@ -1,0 +1,22 @@
+{
+    "symbol": "SWAG",
+    "address": "0x87eDfFDe3E14c7a66c9b9724747a1C5696b742e6",
+    "overview":{
+          "en": "Decentralizing the Global Adult Entertainment Industry",
+          "zh": "将全球成人娱乐产业去中心化"
+    },
+    "email": "j@swag.finance",
+    "website": "https://www.swag.finance/",
+    "whitepaper": "https://b4f5b75a-8321-4992-a888-c5ef4aa112a2.filesusr.com/ugd/1fd2d1_da42ff27308b4a39ba9bc56e0ebaaa44.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-14",
+    "initial_price":{
+          "USD":"0.1 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/swag_finance",
+      "telegram": "https://t.me/swagfinance",
+      "github": "https://github.com/SWAGFinance",
+      "medium": "https://swag-dao.medium.com"
+    }
+  }
