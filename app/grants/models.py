@@ -679,6 +679,19 @@ class Grant(SuperModel):
     def favorite(self, user):
         return Favorite.objects.filter(user=user, grant=self).exists()
 
+    def save(self, update=True, *args, **kwargs):
+        """Override the Grant save to optionally handle modified_on logic."""
+        if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
+            from grants.tasks import update_grant_metadata
+            update_grant_metadata.delay(self.pk)
+
+        from economy.models import get_time
+        if update:
+            self.modified_on = get_time()
+
+        return super(Grant, self).save(*args, **kwargs)
+
+
 class SubscriptionQuerySet(models.QuerySet):
     """Define the Subscription default queryset and manager."""
 
@@ -1200,11 +1213,6 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
-@receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
-def psave_grant(sender, instance, **kwargs):
-    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
-        from grants.tasks import update_grant_metadata
-        update_grant_metadata.delay(instance.pk)
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
