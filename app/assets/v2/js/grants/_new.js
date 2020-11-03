@@ -304,7 +304,16 @@ if (document.getElementById('gc-new-grant')) {
         const returnVal = {}
         query.map(q => {
           const parts = q.split("=")
-          returnVal[parts[0]] = decodeURIComponent(parts[1])
+          const arrayCheckRegex = /\[.+\]/
+          let value = decodeURIComponent(parts[1])
+
+          if (arrayCheckRegex.test(value)) { 
+            // check if array is passed in query params and return it as an array instead of default string.
+            // i.e change "[1, 2]" to [1, 2]
+            value = value.substr(1, value.length-2)
+            value = value.split(",")
+          }
+          returnVal[parts[0]] = value
         })
         return returnVal
       }
