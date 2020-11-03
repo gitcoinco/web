@@ -310,7 +310,16 @@ if (document.getElementById('gc-new-grant')) {
       }
     },
     mounted () {
+      const writeToRoot = ['chainId']
+      for (const key of writeToRoot) {
+        if (this.queryParams[key]) {
+          this[key] = this.queryParams[key]
+          delete this.queryParams[key]
+        }
+      }
       this.form = {...this.form, ...this.queryParams}
+
+     
     }
   });
 }
