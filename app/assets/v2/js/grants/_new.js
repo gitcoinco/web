@@ -316,6 +316,13 @@ if (document.getElementById('gc-new-grant')) {
           returnVal[parts[0]] = value
         })
         return returnVal
+      },
+      grant_type_logo () {
+        const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type)
+        if (grant_type) {
+          return grant_type.image_url
+        }
+        return "hahaha"
       }
     },
     mounted () {
