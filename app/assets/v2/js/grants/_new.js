@@ -131,6 +131,7 @@ Vue.mixin({
         'title': form.title,
         'reference_url': form.reference_url,
         'logo': vm.logo,
+        'telegram_id': form.telegram_id,
         'description': vm.$refs.quillEditorDesc.quill.getText(),
         'description_rich': JSON.stringify(vm.$refs.quillEditorDesc.quill.getContents()),
         'team_members[]': form.team_members,
