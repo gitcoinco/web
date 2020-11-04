@@ -95,6 +95,7 @@ class GrantType(SuperModel):
 
     name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
+    is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
     categories  = models.ManyToManyField(
         GrantCategory,
         help_text="Grant Categories associated with Grant Type"
@@ -132,6 +133,11 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grant Subscription to be allowed in this CLR round"
     )
+    collection_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grant Collections to be allowed in this CLR round"
+    )
     verified_threshold = models.DecimalField(help_text="Verfied CLR Threshold",
         default=25.0,
         decimal_places=2,
@@ -153,7 +159,6 @@ class GrantCLR(SuperModel):
         decimal_places=4,
         max_digits=10,
     )
-
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -1815,7 +1820,7 @@ class MatchPledge(SuperModel):
         max_digits=50,
         help_text=_('The matching pledge amount in DAI.'),
     )
-    pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
+    pledge_type = models.CharField(max_length=15, null=True, blank=True, choices=PLEDGE_TYPES, help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = JSONField(null=True, blank=True)
