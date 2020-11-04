@@ -329,7 +329,7 @@ if (document.getElementById('gc-new-grant')) {
         if (grant_type) {
           return grant_type.image_url
         }
-        return "hahaha"
+        return undefined
       }
     },
     mounted () {
