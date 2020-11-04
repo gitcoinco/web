@@ -24,17 +24,34 @@ Vue.mixin({
         }).then(function(json) {
           vm.grant = json.grants
           vm.grantInCart();
+
+          // if (vm.grant.metadata.related[0].length) {
+          //   vm.fetchRelated(String(vm.grant.metadata.related[0]))
+          // }
+
           resolve()
         }).catch(console.error)
       })
 
 
     },
-    fetchRelated: function(ids) {
+    fetchRelated: function() {
       let vm = this;
+      let ids;
+
+      if (!vm.grant.metadata.related[0].length || vm.relatedGrants.length) {
+        return;
+      }
+
+      ids = String(vm.grant.metadata.related[0]);
 
       let url = `http://localhost:8000/grants/v1/api/grants?pks=${ids}`
-      vm.relatedGrants
+      fetch(url).then(function(res)  {
+        return res.json();
+      }).then(function(json) {
+        vm.relatedGrants = json.grants;
+
+      }).catch(console.error)
     },
     grantInCart: function() {
       let vm = this;
@@ -58,6 +75,38 @@ Vue.mixin({
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
     },
+    flag: function() {
+      let vm = this;
+
+
+      const comment = prompt('What is your reason for flagging this Grant?');
+
+      if (!comment) {
+        return;
+      }
+
+      if (!document.contxt.github_handle) {
+        _alert({ message: gettext('Please login.') }, 'error', 1000);
+        return;
+      }
+
+      const data = {
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        'comment': comment
+      };
+
+      $.ajax({
+        type: 'post',
+        url: `/grants/flag/${vm.grant.id}`,
+        data,
+        success: function(json) {
+          _alert({ message: gettext('Your flag has been sent to Gitcoin.') }, 'success', 1000);
+        },
+        error: function() {
+          _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
+        }
+      });
+    }
   },
   computed: {
 

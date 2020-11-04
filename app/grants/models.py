@@ -649,6 +649,7 @@ class Grant(SuperModel):
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
                 'safe_next_clr_calc_date': naturaltime(self.safe_next_clr_calc_date) if self.safe_next_clr_calc_date else None,
                 'amount_received_in_round': self.amount_received_in_round,
+                'amount_received': self.amount_received,
                 'positive_round_contributor_count': self.positive_round_contributor_count,
                 'monthly_amount_subscribed': self.monthly_amount_subscribed,
                 'is_clr_eligible': self.is_clr_eligible,
@@ -670,8 +671,8 @@ class Grant(SuperModel):
                 'twitter_handle_1': self.twitter_handle_1,
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url,
-
-
+                'funding_info': self.funding_info,
+                'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
             }
 
     def favorite(self, user):
