@@ -82,7 +82,7 @@ def is_txn_done_recently(time_of_txn):
         return False
 
     now = timezone.now().replace(tzinfo=None)
-    five_hours_ago = now - timezone.timedelta(hours=5)
+    five_hours_ago = now - timezone.timedelta(hours=500)
     time_of_txn = datetime.fromtimestamp(time_of_txn)
 
     if time_of_txn > five_hours_ago:
@@ -95,6 +95,7 @@ def sync_zcash_payout(contribution):
     txn = find_txn_on_zcash_explorer(contribution)
     if txn:
         contribution.tx_id = txn
+        contribution.save()
 
 #     if contribution.tx_id:
         is_sucessfull_txn = get_zcash_txn_status(contribution.tx_id)
@@ -103,5 +104,4 @@ def sync_zcash_payout(contribution):
             contribution.tx_cleared = True
             contribution.checkout_type = 'zcash_std'
             record_contribution_activity(contribution)
-
-        contribution.save()
+            contribution.save()

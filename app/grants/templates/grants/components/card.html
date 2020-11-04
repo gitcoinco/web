@@ -65,7 +65,13 @@
                 <div class="match__round--inline mr-3">
                   <template v-if="grant.clr_round_num">
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
+                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]
+                      <template v-if="grant.tenants.indexOf('ETH') > -1">
+                        DAI
+                      </template>
+                      <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
+                        USD
+                      </template>
                     </span>
                     <span class="amount mb-2 font-smaller-3">
                       CLR Match
@@ -76,7 +82,13 @@
                 </div>
                 <div v-if="grant.clr_round_num">
                   <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
+                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]]
+                    <template v-if="grant.tenants.indexOf('ETH') > -1">
+                      DAI
+                    </template>
+                    <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
+                      USD
+                    </template>
                   </span>
                   <span class="amount mb-2 font-smaller-3">
                     raised from
@@ -187,7 +199,7 @@
               <h2 class="font-title font-weight-bold amount pt-1 mb-2">
                 [[ grant.amount_received_in_round || 0 | round | formatNumber ]]
                 <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-                <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">ZEC</template>
+                <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">USD</template>
               </h2>
               <p class="amount mb-2 font-caption font-weight-semibold">
                 raised from [[ grant.positive_round_contributor_count ]] contributors
@@ -199,7 +211,7 @@
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
                   [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]
                   <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">ZEC</template>
+                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">USD</template>
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">
                   Estimated CLR Match
@@ -209,7 +221,7 @@
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
                   [[ grant.amount_received || 0 | round | formatNumber ]]
                   <template v-if="grant.tenants.indexOf('ETH') > -1 ">DAI</template>
-                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1 ">ZEC</template>
+                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1 ">USD</template>
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">All Time Funding</p>
               </template>

@@ -106,15 +106,21 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength', 'sorter' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
-
-    $(vm.$el).select2({
+    let select2Options = {
       data: vm.options,
       placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
-      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1
+    };
+
+    if (vm.sorter) {
+      select2Options['sorter'] = vm.sorter;
+    }
+
+    $(vm.$el).select2(select2Options)
       .val(vm.value)
       .trigger('change')
       .on('change', function() {

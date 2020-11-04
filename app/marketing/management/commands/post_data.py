@@ -87,12 +87,12 @@ def quote():
     ]
     quote = random.choice(quotes)
     quote = f"{quote[0]}\n\n{quote[1]}"
-    pprint(f"Open Source Quote of the Day: {quote}")
+    pprint(f"Open Source Quote of the Week: {quote}")
     do_post(text)
 
 
 def welcome():
-    hours = 6 if not settings.DEBUG else 1000
+    hours = 24 if not settings.DEBUG else 1000
     limit = 30
     prompts = [
         'How is everyone doing today?',
