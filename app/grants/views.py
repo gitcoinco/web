@@ -1585,12 +1585,18 @@ def grant_new(request):
                 'id': g_category.pk,
                 'name': g_category.category
             })
-        grant_types.append({
+
+        grant_type_temp = {
             'id': g_type.pk,
             'name': g_type.name,
             'label': g_type.label,
             'categories': grant_categories
-        })
+        }
+        if g_type.logo:
+            grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
+
+        grant_types.append(grant_type_temp
+)
 
     project = None
     # project_id = request.GET.get('project_id', None)
