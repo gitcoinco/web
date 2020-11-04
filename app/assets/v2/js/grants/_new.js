@@ -312,7 +312,14 @@ if (document.getElementById('gc-new-grant')) {
             // i.e change "[1, 2]" to [1, 2]
             value = value.substr(1, value.length-2)
             value = value.split(",")
+            value = value.map(item => {
+              if (!isNaN(item)) {
+                return +item
+              }
+              return item
+            })
           }
+
           returnVal[parts[0]] = value
         })
         return returnVal
