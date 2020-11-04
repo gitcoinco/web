@@ -1473,6 +1473,11 @@ def grant_new(request):
             response['message'] = 'error: description is a mandatory parameter'
             return JsonResponse(response)
 
+        telegram_id = request.POST.get('telegram_id', None)
+        if not telegram_id:
+            response['message'] = 'error: creator\'s telegram id is required to make reaching out easier'
+            return JsonResponse(response)
+
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
@@ -1508,6 +1513,7 @@ def grant_new(request):
 
         grant_kwargs = {
             'title': title,
+            'telegram_id': telegram_id,
             'description': description,
             'description_rich': description_rich,
             'reference_url': reference_url,
