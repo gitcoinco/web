@@ -1,0 +1,17 @@
+{
+    "symbol": "GFC",
+    "address": "0x2222e75b751c05Ee9eAfFC7D7E539501D448a91C",
+    "overview":{
+          "en": "GFC is the beauty industry ecological public chain, meaning a chain of openness and freedom in the vast cosmetics market, and a chain of beauty consensus in the cosmetics market.",
+          "zh": "GFC是美业生态公链，意喻为浩瀚化妆品市场中的开放自由之链，也是化妆品市场中的美丽共识之链。"
+    },
+    "email": "gfcchain@yahoo.com",
+    "website": "http://gfcsite.com/",
+    "whitepaper": "http://gfcsite.com/Public/Home/Gloria%20Foundations%20Chain%20(GFC)%20White%20Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-05",
+    "links": {
+        "telegram": "https://t.me/GFCchain",
+        "twitter": "https://twitter.com/GFCCHAIN"
+      }
+}

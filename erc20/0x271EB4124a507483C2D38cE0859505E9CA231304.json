@@ -1,0 +1,20 @@
+{
+    "symbol": "YFIM",
+    "address": "0x271EB4124a507483C2D38cE0859505E9CA231304",
+    "overview": {
+        "en": "YFIM is an ERC-20 based-platform that aims to make swap, farm, lend, and vault easier. The YFIM platform simplifies investor interaction with the DeFi protocol which is made easier and also provides access to services such as Swap, Farm, Lend, and Vault directly in one place.",
+        "zh": "YFIM是基于ERC-20的平台，旨在简化交换，农场，借出和保管库。 YFIM平台简化了投资者与DeFi协议的交互，该协议变得更加容易，并且还可以直接在一个地方访问掉期，农场，借出和保管库等服务"
+   },
+  "email": "support@yearnfinance.money",
+  "website": "https://yearnfinance.money",
+  "state": "NORMAL",
+  "published_on": "2020-10-18",
+  "initial_price":{
+    "ETH":"1 ETH",
+  },
+  "links": {
+    "telegram": "https://t.me/yearnfinancemoney",
+    "twitter": "https://twitter.com/yfimoney",
+    "github": "https://github.com/yearnfinancemoney"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "symbol": "HDF",
+  "address": "0xC9cd08a4b7121466Da10E36af70C96dd077FFFf1",
+  "overview":{
+        "en": "Community-Directed, Superior Store of Value.",
+        "zh": "以社区为导向的卓越价值存储"
+  },
+  "email": "hdf@hdfcoin.io",
+  "website": "https://hdfcoin.io/",
+  "whitepaper": "https://hdfcoin.io/hdfchain_brief.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-19",
+  "initial_price":{
+        "USD":"0.3 USD"
+  },
+  "links": {
+    "blog": "https://hdfcoin.io/press/",
+    "twitter": "",
+    "telegram": "",
+    "github": "https://github.com/hdfchain",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
