@@ -1160,13 +1160,13 @@ section.grid div {
   text-align: right;
   margin: 0em 3em;
 }
-section.grid figure {
-  animation: floating 3s ease-in-out infinite;
-}
 section.grid figure img, section.grid figure svg {
   object-fit: cover;
   height: 100%;
   padding: 3em;
+}
+section.grid figure.floating {
+  animation: floating 3s ease-in-out infinite;
 }
 section.grid.reverse {
   grid-template-columns: 50% 50%;
@@ -1179,6 +1179,8 @@ section.grid.reverse div {
 section.grid.reverse figure {
   grid-column: 2;
   grid-row: 1;
+}
+section.grid.reverse figure.floating {
   animation: floating-reverse 3s ease-in-out infinite;
 }
 
@@ -1238,19 +1240,19 @@ section.hero h1 {
   color: var(--white);
   animation: inherit;
 }
-section.hero.half {
-  height: 50vh;
+section.hero.widescreen {
+  height: 70vh;
 }
-section.hero.half img, section.hero.half svg {
-  height: 50vh;
+section.hero.widescreen img, section.hero.widescreen svg {
+  height: 70vh;
 }
-section.hero.half div.content {
+section.hero.widescreen div.content {
   width: 100%;
   max-width: 100%;
   margin: initial;
   text-align: center;
 }
-section.hero.half h1 {
+section.hero.widescreen h1 {
   margin: initial;
   margin: 3em;
 }

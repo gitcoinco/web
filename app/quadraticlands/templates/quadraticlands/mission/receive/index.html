@@ -14,11 +14,8 @@
 	<div>
 		<h3><span>#</span>Chapter 2 of 3</h3>
 		<h1>Proof of receive</h1>
-		<p id="receiveMessage">Please connect to your Wallet in the top right corner!</p>
-
+		<p id="receiveMessage"></p>
 		<span id="receiveAdress" class="receiveadress hide" ></span>
-	
-	
 		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn hide">Continue</a>
 	</div>
 
@@ -30,44 +27,68 @@
 
 {% block 'scripts' %}
 
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
-	<script src="/static/quadraticlands/js/app.js"></script>
+<script src="/static/quadraticlands/js/particles.js"></script>
+<script src="/static/quadraticlands/js/sal_init.js"></script>
+<script src="/static/quadraticlands/js/app.js"></script>
 
-	<script>
+<script>
 
-		// make sure user definitly have selected a provider.
-		// and if so update the interface to show the
-		// next button, a message, and the eth-adress
+// DOMContentLoaded
+document.addEventListener("DOMContentLoaded",function(){
 
-		const receiveMessage = document.getElementById("receiveMessage");
-		const receiveAdress = document.getElementById("receiveAdress");
-		const buttonContinue = document.getElementById("buttonContinue");
-	
+	// expect the worst by default : no wallet
+	updateInterface("nowallet");
 
-		window.addEventListener("dataWalletReady", () => {
-			receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
-			receiveAdress.classList.remove("hide");
-			receiveAdress.innerHTML = selectedAccount;
-			buttonContinue.classList.remove("hide");				
-		});
+	// wallet found
+	window.addEventListener("dataWalletReady", () => {
+		updateInterface("continue");		
+	});
 
-		// reset the view when there is no Wallet
-		// it would be better to check something like
-		// dataWalletReady = false ... but i can not find a function for this
-		// so i trigger this on the buttonDisconnect in my interface for now
+	//user manualy disconnect wallet by button
+	const buttonDisconnect = document.getElementById("btn-disconnect");
+	buttonDisconnect.addEventListener("click", () => {
+		updateInterface("nowallet");
+	});	
 
-		const buttonDisconnect = document.getElementById("btn-disconnect");
+	//user disconnect somehow else - eg by log out from metamask
+	setInterval(() => {
+		if(!selectedAccount) { 
+			updateInterface("nowallet");
+		}
+	}, 2000);
 
-		buttonDisconnect.addEventListener("click", () => {
-			receiveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
-			receiveAdress.classList.add("hide");
-			buttonContinue.classList.add("hide");
-		});	
+});
 
 
+function updateInterface(status){
 
-	</script>
+	const receiveMessage = document.getElementById("receiveMessage");
+	const receiveAdress = document.getElementById("receiveAdress");
+	const buttonContinue = document.getElementById("buttonContinue");
+
+	// no wallet > warning
+	if (status=="nowallet")
+	{
+		receiveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
+		receiveAdress.classList.add("hide");
+		buttonContinue.classList.add("hide");
+		console.log("INTERFACE:NOWALLET");
+	}
+
+	// wallet existing > continue
+	if (status=="continue")
+	{
+		receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
+		receiveAdress.classList.remove("hide");
+		receiveAdress.innerHTML = selectedAccount;
+		buttonContinue.classList.remove("hide");
+		console.log("INTERFACE:CONTINUE");
+	}
+
+}
+
+
+</script>
 
 
 {% endblock %}
