@@ -110,15 +110,19 @@ Vue.component('select2', {
   template: '#select2-template',
   mounted: function() {
     let vm = this;
+
+    let data = vm.options;
+
+    if (vm.sorter) {
+      data = data.sort(vm.sorter);
+    }
+
     let select2Options = {
-      data: vm.options,
+      data: data,
       placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
       minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1
     };
 
-    if (vm.sorter) {
-      select2Options['sorter'] = vm.sorter;
-    }
 
     $(vm.$el).select2(select2Options)
       .val(vm.value)
