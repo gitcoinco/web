@@ -409,11 +409,11 @@ class Grant(SuperModel):
 
         # create_grant_active_clr_mapping
         clr_rounds = GrantCLR.objects.filter(is_active=True)
-        for clr_round in clr_rounds:
+        for this_clr_round in clr_rounds:
             if self in clr_round.grants:
-                self.in_active_clrs.add(clr_round)
+                self.in_active_clrs.add(this_clr_round)
             else:
-                self.in_active_clrs.remove(clr_round)
+                self.in_active_clrs.remove(this_clr_round)
 
         # create_grant_clr_cache
         if self.in_active_clrs.count() > 0 and self.is_clr_eligible:
