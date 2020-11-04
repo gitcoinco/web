@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 	// expect the worst by default : no wallet
 	updateInterface("nowallet");
+
 	// wallet found
 	window.addEventListener("dataWalletReady", () => {
 		updateInterface("continue");		
