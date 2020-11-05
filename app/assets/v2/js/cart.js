@@ -50,7 +50,7 @@ Vue.component('grants-cart', {
       grantData,
       comments: undefined,
       hideWalletAddress: true,
-      AnonymizeGrantsContribution: true,
+      AnonymizeGrantsContribution: false,
       windowWidth: window.innerWidth,
       userAddress: undefined,
       // Checkout, zkSync
