@@ -8,6 +8,11 @@ window.addEventListener('dataWalletReady', function(e) {
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.mixin({
   methods: {
+    estHoursValidator: function() {
+      this.form.hours = parseFloat(this.form.hours || 0);
+      this.form.hours = Math.ceil(this.form.hours);
+      this.calcValues('token');
+    },
     getIssueDetails: function(url) {
       let vm = this;
 
@@ -190,8 +195,10 @@ Vue.mixin({
           // paypal
           type = 'fiat';
           break;
+        case '0': // bitcoin
         case '61': // ethereum classic
         case '102': // zilliqa
+        case '600': // filecoin
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
         case '717171': // other

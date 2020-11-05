@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
-from grants.models import Grant, GrantStat
+from grants.models import CartActivity, Grant, GrantStat
 
 
 class Command(BaseCommand):
@@ -15,7 +16,7 @@ class Command(BaseCommand):
             # snapshot
             data = {
                 'impressions': grant.get_view_count,
-                'in_cart': grant.cart_actions.filter(latest=True).count(),
+                'in_cart': CartActivity.objects.filter(metadata__icontains=f'/grants/{grant.pk}/').filter(latest=True, created_on__gt=(timezone.now() - timezone.timedelta(days=14))).count(),
                 'contributions': grant.contribution_count
             }
             snapshot_type = 'total'

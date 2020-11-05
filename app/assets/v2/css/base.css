@@ -1,7 +1,10 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
-
+html {
+  --profile-step-fill: #cfbfff;
+  --profile-step: var(--gc-blue);
+}
 
 
 .iframe-embed-loading {
@@ -1671,4 +1674,169 @@ div.busyOverlay {
 .dark-mode #CookielawBanner{
   background: var(--main-bg);
   color: white;
+}
+
+/* profile widget  */
+.profile-widget {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: auto auto;
+  width: 100%;
+  max-width: 100%;
+  z-index: 0;
+  position: relative;
+  padding-bottom: 2em;
+}
+.step-label {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  bottom: -26px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.bar-view {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+}
+
+.bar-view:after {
+  height: 2px;
+  top: calc(50% - 1px);
+  transition: transform 0.06s cubic-bezier(0, 0.72, 0.58, 1);
+  transform: scaleX(0);
+  background: var(--profile-step-fill);
+  transform-origin: left;
+  z-index: 1;
+}
+.bar-view:not(:last-child):before,
+.bar-view:not(:last-child):after {
+  content: "";
+  width: calc(100% - 26px);
+  position: absolute;
+  right: calc(50% + 13px);
+}
+.bar-view:not(:last-child):before {
+  height: 6px;
+  top: calc(50% - 3px);
+  border: 2px solid var(--profile-step);
+  background: white;
+  border-width: 2px 0;
+  z-index: 1;
+}
+
+.bar-dot {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  border-radius: 50%;
+  border: 2px solid var(--profile-step);
+  position: relative;
+  cursor: pointer;
+  z-index: -1;
+}
+.bar-dot:before,
+.bar-dot:after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.bar-dot:before {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /*   // background: radial-gradient(circle at center, #FFDD4A, #FE9000); */
+  background: var(--profile-step-fill);
+  transform: scale(0.3);
+  opacity: 0;
+  transition-property: transform, opacity;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0, 0.72, 0.58, 1);
+}
+.complete .bar-dot:before {
+  transform: none;
+  opacity: 1;
+}
+
+.bar-view.complete:after {
+  transform: scaleX(1);
+}
+
+.bar-view:not(:last-child):nth-child(2):after {
+  -webkit-transition-delay: 0s;
+  transition-delay: 0s;
+}
+.bar-view:not(:last-child):nth-child(2) .bar-dot:before {
+  -webkit-transition-delay: 0.06s;
+  transition-delay: 0.06s;
+}
+.bar-view:not(:last-child):nth-child(4):after {
+  -webkit-transition-delay: 0.1s;
+  transition-delay: 0.1s;
+}
+.bar-view:not(:last-child):nth-child(4) .bar-dot:before {
+  -webkit-transition-delay: 0.16s;
+  transition-delay: 0.16s;
+}
+.bar-view:not(:last-child):nth-child(6):after {
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+}
+.bar-view:not(:last-child):nth-child(6) .bar-dot:before {
+  -webkit-transition-delay: 0.26s;
+  transition-delay: 0.26s;
+}
+.bar-view:not(:last-child):nth-child(8):after {
+  -webkit-transition-delay: 0.3s;
+  transition-delay: 0.3s;
+}
+.bar-view:not(:last-child):nth-child(8) .bar-dot:before {
+  -webkit-transition-delay: 0.36s;
+  transition-delay: 0.36s;
+}
+.bar-view:not(:last-child):nth-child(10):after {
+  -webkit-transition-delay: 0.4s;
+  transition-delay: 0.4s;
+}
+.bar-view:not(:last-child):nth-child(10) .bar-dot:before {
+  -webkit-transition-delay: 0.46s;
+  transition-delay: 0.46s;
+}
+
+@-webkit-keyframes bouncing {
+  0%,
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(5px);
+    transform: translateY(5px);
+  }
+}
+
+@keyframes bouncing {
+  0%,
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(5px);
+    transform: translateY(5px);
+  }
+}
+@-webkit-keyframes fade {
+  50% {
+    opacity: 0.3;
+  }
+}
+@keyframes fade {
+  50% {
+    opacity: 0.3;
+  }
 }
