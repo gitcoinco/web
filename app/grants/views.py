@@ -1595,8 +1595,7 @@ def grant_new(request):
         if g_type.logo:
             grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
 
-        grant_types.append(grant_type_temp
-)
+        grant_types.append(grant_type_temp)
 
     project = None
     # project_id = request.GET.get('project_id', None)
