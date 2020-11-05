@@ -2915,7 +2915,6 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['is_idena_verified'] = profile.is_idena_verified
             context['idena_status'] = profile.idena_status
             if not context['is_idena_verified']:
-                # FIXME: timezone
                 context['idena_next_validation'] = localtime(next_validation_time())
         else:
             context['login_idena_url'] = idena_callback_url(request, profile)

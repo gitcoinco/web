@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from requests.exceptions import RequestException
+
 from dashboard.models import Profile
 
 
@@ -14,6 +16,11 @@ class Command(BaseCommand):
 
         for index, profile in enumerate(connected_profiles):
             prev = profile.idena_status
-            profile.update_idena_status()
-            profile.save()
-            print(f'{index + 1}/{total_count} -> Updating {profile.handle}: {prev} -> {profile.idena_status}')
+            try:
+                profile.update_idena_status()
+                profile.save()
+                print(f'{index + 1}/{total_count} -> Updating {profile.handle}: {prev} -> {profile.idena_status}')
+            except RequestException as ex:
+                print(f'{index + 1}/{total_count} -> Error getting {profile.handle}: {ex}')
+                
+
