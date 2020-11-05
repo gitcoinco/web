@@ -280,7 +280,6 @@ class Grant(SuperModel):
         related_name='grant_teams',
         help_text=_('The team members contributing to this Grant.'),
     )
-    image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
     amount_received_with_phantom_funds = models.DecimalField(
         default=0,
         decimal_places=2,
@@ -561,7 +560,6 @@ class Grant(SuperModel):
             'grant_token_address': self.token_address,
             'grant_logo': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
             'grant_clr_prediction_curve': self.clr_prediction_curve,
-            'grant_image_css': self.image_css,
             'is_clr_eligible': self.is_clr_eligible,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
@@ -601,7 +599,6 @@ class Grant(SuperModel):
                 'admin_address': self.admin_address,
                 'zcash_payout_address': self.zcash_payout_address,
                 'token_address': self.token_address,
-                'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
             }

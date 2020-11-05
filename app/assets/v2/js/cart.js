@@ -281,7 +281,6 @@ Vue.component('grants-cart', {
           grant_donation_currency: token,
           grant_donation_num_rounds: 1,
           grant_id: '86',
-          grant_image_css: '',
           grant_logo: '',
           grant_slug: 'gitcoin-sustainability-fund',
           grant_title: 'Gitcoin Grants Round 7+ Development Fund',

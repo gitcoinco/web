@@ -2416,18 +2416,18 @@ def cancel_grant_v1(request, grant_id):
     except Grant.DoesNotExist:
         response['message'] = 'error: grant cannot be found'
         return JsonResponse(response)
-    
+
     if not is_grant_team_member(grant, profile):
         response['message'] = 'error: grant cancellation can be done only by grant owner'
         return JsonResponse(response)
 
-    if not grant.active: 
+    if not grant.active:
         response['message'] = 'error: grant is already cancelled'
         return JsonResponse(response)
 
     grant.active = False
     grant.save()
-    
+
     grant_cancellation(grant)
     record_grant_activity_helper('killed_grant', grant, profile)
 
