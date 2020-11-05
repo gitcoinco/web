@@ -389,7 +389,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </div>
                     </div>
                   </b-tab>
-                  {% if 'zcash_testers' in user_groups or is_staff %}
                   <b-tab :title-link-class="'nav-line'">
                     <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
 
@@ -563,7 +562,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </div>
                     </div>
                   </b-tab>
-                  {% endif %}
 
                 </b-tabs>
               </div>
