@@ -68,17 +68,7 @@ def create_grant_clr_cache():
     pks = Grant.objects.values_list('pk', flat=True)
     for pk in pks:
         grant = Grant.objects.get(pk=pk)
-        clr_round = None
-
-        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
-            clr_round = grant.in_active_clrs.first()
-
-        if clr_round:
-            grant.is_clr_active = True
-            grant.clr_round_num = clr_round.round_num
-        else:
-            grant.is_clr_active = False
-            grant.clr_round_num = ''
+        grant.calc_clr_round()
         grant.save()
 
 def create_grant_type_cache():

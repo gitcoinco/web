@@ -35,8 +35,8 @@ class GeneralAdmin(admin.ModelAdmin):
 
 class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    search_fields = ['profile', 'name']
-    list_display = ['pk', 'profile', 'created_on', '__str__']
+    search_fields = ['profile__handle', 'name']
+    list_display = ['pk', 'profile', 'network', 'created_on', '__str__']
     raw_id_fields = ['profile']
     readonly_fields = ['preview']
 

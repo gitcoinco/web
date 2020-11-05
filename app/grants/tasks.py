@@ -103,7 +103,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                 related[key] = 0
             related[key] += 1
     instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
-
+    instance.calc_clr_round()
     instance.save()
 
 

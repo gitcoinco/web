@@ -211,7 +211,11 @@
             {{ row.grant.title }}
           </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
-          {% trans "contributed to" %}
+          {% if row.metadata.anonymize %}
+            {% trans "observed an anonymous contribution to" %}
+          {% else %}
+            {% trans "contributed to" %}
+          {% endif %}
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
