@@ -1309,7 +1309,6 @@ const getVideoMetadata = (videoURL) => {
   }
 
   const youtube_match = videoURL.match(youtube_re);
-  const vimeoId = isVimeoProvider(videoURL);
   const loom_match = videoURL.match(loom_re);
 
   if (youtube_match !== null && youtube_match[1].length === 11) {
@@ -1318,16 +1317,22 @@ const getVideoMetadata = (videoURL) => {
       'id': youtube_match[1],
       'url': videoURL
     };
-  } else if (vimeoId) {
-    return {
-      'provider': 'vimeo',
-      'id': vimeoId,
-      'url': videoURL
-    };
-  } else if (loom_match !== null) {
+  }
+
+  if (loom_match !== null) {
     return {
       'provider': 'loom',
       'id': loom_match[1],
+      'url': videoURL
+    };
+  }
+
+  const vimeoId = isVimeoProvider(videoURL);
+
+  if (vimeoId) {
+    return {
+      'provider': 'vimeo',
+      'id': vimeoId,
       'url': videoURL
     };
   }

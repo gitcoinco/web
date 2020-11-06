@@ -71,12 +71,13 @@ const projectModal = (bountyId, projectId, callback) => {
       e.preventDefault();
       const url = $('#videodemo-url').val();
       const metadata = getVideoMetadata(url);
-
-      if (metadata) {
-        $('#videodemo-provider').val(metadata.provider);
-      }
+      
       let logo = $(this)[0]['logo'].files[0];
       let data = $(this).serializeArray();
+
+      if (metadata) {
+        data.push({name: 'videodemo-provider', value: metadata.provider});
+      }
 
       submitProject(logo, data, callback);
     });
