@@ -3,7 +3,7 @@ let appFormBounty;
 window.addEventListener('dataWalletReady', function(e) {
   appFormBounty.network = networkName;
   if (appFormBounty.chainId == 0) {
-    appFormBounty.form.funderAddress = "";
+    appFormBounty.form.funderAddress = '';
   } else {
     appFormBounty.form.funderAddress = selectedAccount;
   }
@@ -152,11 +152,12 @@ Vue.mixin({
 
       // validate BTC address
       if (appFormBounty.chainId == 0) {
-         let ADDRESS_REGEX = new RegExp("^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$");
-         let BECH32_REGEX = new RegExp("^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$");
-         let valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
-         let valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
-        if (valid_legacy == true || valid_segwit == true){
+        const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
+        const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
+        const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
+        const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
+
+        if (valid_legacy == true || valid_segwit == true) {
           // valid
         } else {
           vm.$set(vm.errors, 'funderAddress', 'Please enter a valid BTC address');
