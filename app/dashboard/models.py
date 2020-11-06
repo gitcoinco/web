@@ -290,6 +290,7 @@ class Bounty(SuperModel):
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
         ('polkadot_ext', 'Polkadot Ext'),
+        ('harmony_ext', 'Harmony Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1402,6 +1403,7 @@ class BountyFulfillment(SuperModel):
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
         ('polkadot_ext', 'polkadot_ext'),
+        ('harmony_ext', 'harmony_ext'),
         ('manual', 'manual')
     ]
 
@@ -1413,6 +1415,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
     ]
@@ -2910,6 +2913,20 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+
+    @property
+    def trust_bonus(self):
+        # returns a percentage trust bonus, for this curent user.
+        # trust bonus compounds for every new verification added
+        tb = 1
+        if self.is_brightid_verified:
+            tb *= 1.25
+        if self.is_twitter_verified:
+            tb *= 1.05
+        if self.sms_verification:
+            tb *= 1.05
+        return tb
+
 
     @property
     def is_blocked(self):

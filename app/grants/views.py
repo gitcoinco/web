@@ -785,7 +785,7 @@ def get_bg(grant_type):
     if grant_type != 'matic':
         bg = '../grants/grants_header_donors_round_7-6.png'
     if grant_type == 'ZCash':
-        bg = '../grants/grants_header_donors_zcash_round_1_1.jpg'
+        bg = '../grants/grants_header_donors_zcash_round_1_2.png'
         bg_color = '#FFFFFF'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
@@ -1269,6 +1269,7 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
+            grant.github_project_url = request.POST.get('edit-github_project_url')
             grant.reference_url = request.POST.get('edit-reference_url')
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
@@ -2102,7 +2103,7 @@ def leaderboard(request):
     return redirect ('https://gitcoin.co/leaderboard/payers?cadence=quarterly&keyword=all&product=grants')
 
 
-def record_subscription_activity_helper(activity_type, subscription, profile):
+def record_subscription_activity_helper(activity_type, subscription, profile, anonymize=False):
     """Registers a new activity concerning a grant subscription
 
     Args:
@@ -2111,9 +2112,8 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
-    if subscription and subscription.negative:
+    if anonymize:
         profile = Profile.objects.filter(handle='gitcoinbot').first()
-        activity_type = 'negative_contribution'
     try:
         grant_logo = subscription.grant.logo.url
     except:
@@ -2127,6 +2127,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'grant_logo': grant_logo,
         'grant_url': subscription.grant.url,
         'num_tx_approved': subscription.num_tx_approved,
+        'anonymize': anonymize,
         'category': 'grant',
     }
     kwargs = {
@@ -2698,8 +2699,11 @@ def contribute_to_grants_v1(request):
             subscription.save()
 
             # step 3: create contribution + fire celery
-            contribution = subscription.create_contribution(tx_id, False)
+            contribution = subscription.create_contribution(tx_id, is_successful_contribution=True)
+            contribution.success = True
+            contribution.save()
             sync_payout(contribution)
+            update_grant_metadata.delay(grant.pk)
 
 
             # step 4 : other tasks
