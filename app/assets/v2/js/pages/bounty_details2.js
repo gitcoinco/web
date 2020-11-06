@@ -523,8 +523,8 @@ Vue.mixin({
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
           let text = isOwner ?
-            "'You\'ve stopped the user from working on this bounty ?" :
-            "'You\'ve stopped work on this bounty";
+            "You\'ve stopped the user from working on this bounty ?" :
+            "You\'ve stopped work on this bounty";
 
           _alert(text, 'success');
         } else {

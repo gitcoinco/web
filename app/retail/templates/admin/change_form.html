@@ -13,7 +13,7 @@
             <input type="submit" value="Recalculate Sybil Investigation" name="_recalc_sybil" value="1">
             <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
         {% elif 'kudostransfer' in request.build_absolute_uri %}
-            {% if original.txid == 'pending_celery' %}
+            {% if original.txid == 'pending_celery' or original.tx_status == 'dropped' or original.tx_status == 'pending' %}
                 <input type="submit" value="Broadcast Txn" name="_broadcast_txn" value="1">
             {% endif %}
         {% elif 'dashboard/activity' in request.build_absolute_uri %}

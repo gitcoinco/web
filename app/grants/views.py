@@ -295,6 +295,7 @@ def helper_grants_output(request, meta_data, earnings):
 grants_data_release_date = timezone.datetime(2020, 10, 22)
 
 @login_required
+@cached_view(timeout=3600)
 def contribution_addr_from_grant_as_json(request, grant_id):
 
     # return all contirbutor addresses to the grant
@@ -320,6 +321,7 @@ def contribution_addr_from_grant_as_json(request, grant_id):
 
 
 @login_required
+@cached_view(timeout=3600)
 def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_id):
 
     # return all contirbutor addresses to the grant
@@ -350,6 +352,7 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
     return helper_grants_output(request, meta_data, earnings)
 
 @login_required
+@cached_view(timeout=3600)
 def contribution_addr_from_round_as_json(request, round_id):
 
     if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
@@ -371,6 +374,7 @@ def contribution_addr_from_round_as_json(request, round_id):
 
 
 @login_required
+@cached_view(timeout=3600)
 def contribution_addr_from_all_as_json(request):
 
     if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
@@ -780,6 +784,9 @@ def get_bg(grant_type):
         bg = '3.jpg'
     if grant_type != 'matic':
         bg = '../grants/grants_header_donors_round_7-6.png'
+    if grant_type == 'ZCash':
+        bg = '../grants/grants_header_donors_zcash_round_1_2.png'
+        bg_color = '#FFFFFF'
     if grant_type == 'matic':
         # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'
@@ -1469,7 +1476,8 @@ def grant_new(request):
         if not description_rich:
             description_rich = description
 
-        eth_payout_address = request.POST.get('eth_payout_address', None)
+        eth_payout_address = request.POST.get('eth_payout_address',
+            request.POST.get('admin_address'))
         zcash_payout_address = request.POST.get('zcash_payout_address', None)
         if not eth_payout_address and not zcash_payout_address:
             response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
@@ -1479,8 +1487,8 @@ def grant_new(request):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
-        project_pk = request.POST.get('project_pk', '')
-        if project_pk:
+        project_pk = request.POST.get('project_pk')
+        if project_pk and project_pk != 'undefined':
             HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
@@ -1537,8 +1545,11 @@ def grant_new(request):
         form_category_ids = list(set(form_category_ids))
 
         for category_id in form_category_ids:
-            grant_category = GrantCategory.objects.get(pk=category_id)
-            grant.categories.add(grant_category)
+            try:
+                grant_category = GrantCategory.objects.get(pk=category_id)
+                grant.categories.add(grant_category)
+            except Exception as e:
+                pass
 
         grant.save()
 
@@ -2091,7 +2102,7 @@ def leaderboard(request):
     return redirect ('https://gitcoin.co/leaderboard/payers?cadence=quarterly&keyword=all&product=grants')
 
 
-def record_subscription_activity_helper(activity_type, subscription, profile):
+def record_subscription_activity_helper(activity_type, subscription, profile, anonymize=False):
     """Registers a new activity concerning a grant subscription
 
     Args:
@@ -2100,9 +2111,8 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
-    if subscription and subscription.negative:
+    if anonymize:
         profile = Profile.objects.filter(handle='gitcoinbot').first()
-        activity_type = 'negative_contribution'
     try:
         grant_logo = subscription.grant.logo.url
     except:
@@ -2116,6 +2126,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'grant_logo': grant_logo,
         'grant_url': subscription.grant.url,
         'num_tx_approved': subscription.num_tx_approved,
+        'anonymize': anonymize,
         'category': 'grant',
     }
     kwargs = {
@@ -2687,8 +2698,11 @@ def contribute_to_grants_v1(request):
             subscription.save()
 
             # step 3: create contribution + fire celery
-            contribution = subscription.create_contribution(tx_id, False)
+            contribution = subscription.create_contribution(tx_id, is_successful_contribution=True)
+            contribution.success = True
+            contribution.save()
             sync_payout(contribution)
+            update_grant_metadata.delay(grant.pk)
 
 
             # step 4 : other tasks

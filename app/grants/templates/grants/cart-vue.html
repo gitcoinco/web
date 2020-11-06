@@ -236,16 +236,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
 
                     {% comment %} Hide wallet option {% endcomment %}
-                    <div class="flex-container text-left grant-header-row black">
+                    <div class="flex-container text-left grant-header-row black m-1 p-1">
                       <div style="width: 100%">
                         <div class="flex-container" style="justify-content: start">
                           <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address"
                             style="margin-right:1rem">
-                          <span class="font-smaller-1 darker-gray"
-                            for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
+                          <label class="font-smaller-1 darker-gray mb-0 pb-0"
+                            for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
                           <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
                             style="margin-left: 0.5rem;">
                             {% trans "If this option is chosen, your wallet address will be hidden" %}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% comment %} Anonymize my contribution {% endcomment %}
+                    <div class="flex-container text-left grant-header-row black m-1 p-1">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <input v-model="AnonymizeGrantsContribution" type="checkbox" id="anonymize_gitcoin_grants_contributions"
+                            style="margin-right:1rem">
+                          <label class="font-smaller-1 darker-gray mb-0 pb-0"
+                            for="anonymize_gitcoin_grants_contributions">{% trans "Anonymize my contribution" %}</label>
+                          <span id="hide_wallet_address" class="font-smaller-2 medium-dark-gray"
+                            style="margin-left: 0.5rem;">
+                            {% trans "If this option is chosen, your the contribution will not be attributed to your profile publicly" %}
                           </span>
                         </div>
                       </div>
@@ -417,18 +433,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 </option>
                               </select2> -->
                             </div>
-                            <div class="">
+                            <!-- <div class="">
                               <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
                                 Apply to all
                               </div>
-                            </div>
+                            </div> -->
                           </div>
 
                           {% comment %} CLR Match Amount {% endcomment %}
 
                           <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
                             <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
-                              <div class="mr-2">[[grant.grant_donation_clr_match]] ZEC</div>
+                              <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
                               <img src="{% static 'v2/images/chains/zcash.svg' %}" alt="Diamonds high-fiving"
                               width="20">
                             </div>

@@ -9,7 +9,7 @@
     {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}
     <!-- TODO-GRANTS: UPDATE UI WHEN BOTH ARE PRESENT -->
     {% if 'ETH' in grant.tenants %} DAI
-    {% elif 'ZCASH' in grant.tenants %} ZEC {% endif %}
+    {% elif 'ZCASH' in grant.tenants %} USD {% endif %}
   </h2>
   <p class="amount mb-2 font-caption font-weight-semibold">
     {% if round_num == 'LAST' %} FINAL {% else %} ESTIMATED {% endif %}

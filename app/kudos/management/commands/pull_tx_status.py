@@ -32,7 +32,7 @@ class Command(BaseCommand):
     help = 'pulls tx statuses and stores them in the DB to be queried later'
 
     def handle(self, *args, **options):
-        earnings = Earning.objects.filter(history__pk__isnull=True).order_by('-pk')
+        earnings = Earning.objects.all().order_by('-pk')
         for earning in earnings:
             if earning.history.count():
                 continue
