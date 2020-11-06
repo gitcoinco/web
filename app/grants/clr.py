@@ -62,11 +62,11 @@ def translate_data(grants_data):
         grant_id = g.get('id')
         for c in g.get('contributions'):
             profile_id = c.get('id')
-            trust_bonus = c.get('trust_bonus')
+            trust_bonus = c.get('profile_trust_bonus')
             if profile_id:
                 val = [grant_id] + [c.get('id')] + [c.get('sum_of_each_profiles_contributions')]
                 grants_list.append(val)
-                profile_trust[c.get('id')] = trust_bonus
+                trust_dict[profile_id] = trust_bonus
 
     return grants_list, trust_dict
 
@@ -292,7 +292,7 @@ def fetch_data(clr_round, network='mainnet'):
     grant_filters = clr_round.grant_filters
     subscription_filters = clr_round.subscription_filters
 
-    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
+    contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 
@@ -341,32 +341,21 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         # contributions
         contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # phantom funding
-        grant_phantom_funding_contributions = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
-
         # combine
-        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_contributions]))
+        contributing_profile_ids = list(set([(c.identity_identifier(mechanism), c.profile_for_clr.trust_bonus) for c in contribs]))
 
         summed_contributions = []
 
         # contributions
         if len(contributing_profile_ids) > 0:
-            for profile_id in contributing_profile_ids:
+            for profile_id, trust_bonus in contributing_profile_ids:
                 profile_contributions = contribs.filter(profile_for_clr__id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt * clr_round.contribution_multiplier for c in profile_contributions if c.subscription.amount_per_period_usdt]))
-                phantom_funding = grant_phantom_funding_contributions.filter(profile_id=profile_id)
-
-                # get trust bonus
-                # # # MIGHT HAVE TO TURN THIS INTO A DISTINCT SET
-                profile_trust_bonus = profile_contributions.profile_for_clr.trust_bonus
-
-                if phantom_funding.exists():
-                    sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
                 summed_contributions.append({
                     'id': str(profile_id),
                     'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
-                    'profile_trust_bonus': profile_trust_bonus
+                    'profile_trust_bonus': trust_bonus
                 })
 
             contrib_data_list.append({
