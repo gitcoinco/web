@@ -30,6 +30,19 @@
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+  <script>
+    $('.user-tooltip > .user-img').click(function() {
+      $('.user-tooltip > .user-img').removeClass('active');
+      $(this).addClass('active');
+      $('#username').empty();
+      parent = $(this).parent('.user-tooltip');
+      $('#username').append(`<option value="${parent.attr("user-id")}" avatar_url="${parent.attr("avatar-url")}"  preferred_payout_address="${parent.attr("preferred_payout_address")}">${parent.attr("username")}</option>`)
+    });
+    $('#username').on('select2:select', function(e) {
+      $('.user-tooltip > .user-img').removeClass('active');
+      $(`.user-tooltip[user-id=${e.params.data.id}] > .user-img`).addClass('active');
+    });
+  </script>
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
