@@ -92,6 +92,39 @@
     text-decoration: none;
   }
 
+  .user-tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  .user-tooltip .user-tooltip-text {
+    visibility: hidden;
+
+    background-color: #ffffff;
+    border: 1px solid var(--gc-dark-grey);
+    border-radius: 2px;
+    padding: 3px;
+    
+    top: 100%;
+    left:50%;
+    transform:translateX(-50%);
+
+    text-align: center;
+    width: max-content;
+    position: absolute;
+    z-index: 1;
+    margin-top: 5px;
+    
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .user-tooltip:hover .user-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+  .user-tooltip .user-tooltip-text a {
+    color: var(--gc-dark-grey) !important;
+  }
+
 </style>
 <div>
   <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
@@ -139,6 +172,10 @@
           <ul><li class="recent-tips-list">
               {% for profile in recent_tips_profiles %}
                 {% if profile %}
+                  <div class="user-tooltip" user-id="{{profile.id}}" username="{{profile.username}}" avatar-url="{{profile.avatar_url}}" preferred_payout_address="{{profile.preferred_payout_address}}">
+                    <img class="user-img" src="{{profile.avatar_url}}">
+                    <div class='user-tooltip-text tooltip-xs'><a href="{% url 'profile' profile %}" target="_blank">@{{profile.username}}</a></div>
+                  </div>
                 {% endif %}
               {% endfor %}
             </li></ul>
