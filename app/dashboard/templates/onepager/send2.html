@@ -63,6 +63,35 @@
   .terms {
     margin-top: 0.75rem;
   }
+
+  .recent-tips {
+    color: var(--gc-dark-grey);
+    text-align: left;
+  }
+  .recent-tips .label {
+    float: left;
+    width: 15%;
+    line-height: 1.2;
+  }
+  .recent-tips ul {
+    list-style: none;
+  }
+  .recent-tips-list img {
+    max-width: 40px;
+    border-radius: 50%;
+    padding: 2px;
+  }
+  .recent-tips-list img:hover {
+    box-shadow: 0 0 0 2px var(--gc-green-hover);
+    cursor: pointer;
+  }
+  .recent-tips-list img.active {
+    box-shadow: 0 0 0 2px var(--gc-blue);
+  }
+  .recent-tips-list a:hover {
+    text-decoration: none;
+  }
+
 </style>
 <div>
   <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
@@ -103,6 +132,19 @@
         {% endif %}
       </select>
     </div>
+    {% if recent_tips_profiles %}
+      <div class="my-3 recent-tips">
+          <span class="label my-2 font-smaller-5">{% trans "Recently Sent" %}</span>
+        <div>
+          <ul><li class="recent-tips-list">
+              {% for profile in recent_tips_profiles %}
+                {% if profile %}
+                {% endif %}
+              {% endfor %}
+            </li></ul>
+        </div>
+      </div>
+    {% endif %}
     {% if is_staff %}
     <div class="terms pb-1">
       <input type="checkbox" id="secret_link" value="1" >
