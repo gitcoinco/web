@@ -1240,6 +1240,9 @@ section.hero h1 {
   color: var(--white);
   animation: inherit;
 }
+section.hero h1 span {
+  background-color: rgba(106, 67, 179, 0.66);
+}
 section.hero.widescreen {
   height: 70vh;
 }
