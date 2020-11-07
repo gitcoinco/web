@@ -42,6 +42,7 @@ from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.filecoin import sync_filecoin_payout
+from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
@@ -514,6 +515,9 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'polkadot_ext':
          sync_polkadot_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'harmony_ext':
+        sync_harmony_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
