@@ -47,7 +47,6 @@ class CalenderTestLoader:
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), fname)) as f:
             return Calendar.from_ical(f.read())
 
-'''
 # These Tests don't actually work - DL
 class TestIngestCommunityEvents(TestCase):
     """Define tests for ingest community events. """
@@ -96,4 +95,3 @@ class TestIngestCommunityEvents(TestCase):
     def tearDown(self):
         calendar, event = load_icalendar("test_ics_files/update.ics")
         UpcomingDate.objects.filter(title=event.get('summary')).delete()
-'''
