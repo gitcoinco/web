@@ -103,3 +103,4 @@ ed25519
 tweepy
 oogway==0.7.0
 icalendar==4.0.7
+duniterpy

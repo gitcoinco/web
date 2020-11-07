@@ -53,6 +53,10 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import asyncio
+from duniterpy.api.client import Client, RESPONSE_AIOHTTP
+from duniterpy.api import bma
+
 import dateutil.parser
 import magic
 import pytz
@@ -140,6 +144,8 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+duniter_wot = (settings.BMAS_ENDPOINT)
+duniter_user = (settings.ES_USER_ENDPOINT)
 
 
 @protected_resource()
@@ -3022,6 +3028,70 @@ def verify_user_twitter(request, handle):
         'msg': full_text,
         'found': tweet_split,
         'expected': expected_split
+    })
+
+@login_required
+async def verify_user_duniter(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_duniter_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    publickey_duniter = request_data.get('publickey_duniter', '')
+
+    if publickey_duniter == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must include a Public Key Duniter'
+        })
+
+    try:
+        clientWOT = Client(duniter_wot)
+        wot = await clientWOT.get("wot/certified-by/{0}".format(publickey_duniter.strip(" \n")))
+
+        response = requests.get(wot)
+        response_data = response.json()
+        isVerified = response_data.get('isMember', {})
+
+        if isVerified:
+            return JsonResponse({
+                'ok': True,
+            })
+
+        clientUser = Client(duniter_user)
+        user = await clientUser.get("user/profile/{0}/_source_exclude=avatar._content".format(pubkey.strip(" \n")))
+        userCheck = handle.lower() == response_data['uid']
+
+        # Verify  if duniter user == gitcoinuser
+        if userCheck != True:
+            return JsonResponse({
+                'ok': False,
+                'msg': f'You nead a same user on Duniter and Gitcoin'
+            })
+
+
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, not working'
+        })
+
+    profile.is_duniter_verified = True
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
     })
 
 def profile_filter_activities(activities, activity_name, activity_tabs):

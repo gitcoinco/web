@@ -288,6 +288,108 @@ Vue.component('twitter-verify-modal', {
   }
 });
 
+Vue.component('duniter-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      showValidation: false,
+      validationStep: 'validate-duniter',
+      duniterPublicKey: '',
+      validationError: ''
+    };
+  },
+  computed: {
+  },
+  mounted: function() {
+    $(document).on('click', '#verify-duniter-link', function(event) {
+      event.preventDefault();
+      this.showValidation = true;
+    }.bind(this));
+  },
+  template: `<b-modal id="twitter-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+                <template v-slot:default="{ hide }">
+                  <div class="mx-5 mt-5 mb-4 text-center">
+                    <div class="mb-3">
+                      <h1 class="font-bigger-4 font-weight-bold">Verify your Twitter account</h1>
+                    </div>
+                    <div v-if="validationStep === 'validate-duniter' || validationStep == 'perform-validation'">
+                      <p class="mb-4">
+                        Now we'll validate your duniter public key. Enter your public key duniter and press validate.
+                      </p>
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="public key duniter" aria-label="public key duniter" aria-describedby="basic-addon1" required maxlength="45" v-model="duniterPublicKey">
+                      </div>
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                        Validate
+                      </b-button>
+                      <br />
+                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
+                        Go Back
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'validation-complete'">
+                      Your Duniter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                    </div>
+                  </div>
+                </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.showValidation = false;
+    },
+    clickedGoBack(event) {
+      event.preventDefault();
+      this.validationStep = 'validate-duniter';
+      this.validationError = '';
+    },
+    clickedValidate(event) {
+      event.preventDefault();
+
+      // Validate duniter Public Key is 45 word characters
+      const isValidPubKey = null !== this.duniterPublicKey.match(/^(\w){0,45}$/);
+
+      if (!isValidPubKey) {
+        this.validationError = 'Please enter a valid Duniter PublicKey';
+        return;
+      }
+
+      // Reset after a prior error
+      this.validationError = '';
+
+      this.validationStep = 'perform-validation';
+
+      this.verifyDuniter();
+    },
+    verifyDuniter() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const payload = JSON.stringify({
+        'publickey_duniter': this.duniterPublicKey
+      });
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+
+      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_duniter`, 'POST', payload, headers);
+
+      $.when(verificationRequest).then(response => {
+        if (response.ok) {
+          this.validationStep = 'validation-complete';
+        } else {
+          this.validationError = response.msg;
+          this.validationStep = 'validate-duniter';
+        }
+
+      }).catch((_error) => {
+        this.validationError = 'There was an error; please try again later';
+        this.validationStep = 'validate-duniter';
+      });
+    }
+  }
+});
+
 // TODO: This component consists primarily of code taken from the SMS verification flow in the cart.
 // This approach is not DRY, and after Grants Round 7 completes, the cart should be refactored to include
 // this as a shared component, rather than duplicating the code.
