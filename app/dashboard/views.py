@@ -6286,17 +6286,16 @@ def verify_user_poap(request, handle):
     fifteen_days_ago = datetime.now()-timedelta(days=15)
 
     timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
-    if timestamp is None:
+    if timestamp is None or timestamp > fifteen_days_ago.timestamp():
         # We couldn't find any POAP badge for this ethereum address
         return JsonResponse({
             'ok': False,
-            'msg': 'No POAP badges(ERC721 NFTs) is holded by this address',
+            'msg': 'No POAP badges(ERC721 NFTs) has been sitting in this wallet for more than 15 days!',
         })
 
-    if timestamp < fifteen_days_ago.timestamp():
-            profile = profile_helper(handle, True)
-            profile.is_poap_verified = True
-            profile.save()
+    profile = profile_helper(handle, True)
+    profile.is_poap_verified = True
+    profile.save()
     return JsonResponse({
                 'ok': True,
                 'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
