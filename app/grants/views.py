@@ -1472,12 +1472,7 @@ def grant_new(request):
         if not description:
             response['message'] = 'error: description is a mandatory parameter'
             return JsonResponse(response)
-
-        telegram_id = request.POST.get('telegram_id', None)
-        if not telegram_id:
-            response['message'] = 'error: creator\'s telegram id is required to make reaching out easier'
-            return JsonResponse(response)
-
+ 
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
@@ -1498,6 +1493,7 @@ def grant_new(request):
             HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
+        telegram_id = request.POST.get('telegram_id', None)
         logo = request.FILES.get('logo', None)
         metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')

@@ -195,7 +195,7 @@ class Grant(SuperModel):
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
-    telegram_id = models.CharField(default='', max_length=255, help_text=_('The telegram id of Grant creator.'), blank=True, null=True)
+    telegram_id = models.CharField(max_length=255, help_text=_('The telegram id of Grant creator.'), blank=True, null=True)
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))

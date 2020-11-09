@@ -92,9 +92,7 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-      if (!vm.form.telegram_id || !vm.form.telegram_id.length) {
-        vm.$set(vm.errors, 'telegram_id', 'Please enter your telegram ID to make reaching out easier');
-      }
+
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
       } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
