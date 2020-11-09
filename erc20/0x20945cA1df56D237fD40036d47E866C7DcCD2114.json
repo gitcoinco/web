@@ -1,0 +1,25 @@
+{
+  "symbol": "Nsure",
+  "address": "0x20945cA1df56D237fD40036d47E866C7DcCD2114",
+  "overview":{
+        "en": "Nsure is an open insurance platform for Open Finance. The project borrows the idea of Lloyd’s London, a market place to trade insurance risks, where premiums are determined by a Dynamic Pricing Model. Capital mining will be implemented to secure capital required to back the risks at any point of time. A 3-phase crowd voting mechanism is used to ensure every claim is handled professionally.",
+        "zh": "Nsure是一个是一个为开放性金融准备的开放性保险平台，是去中心化的“劳合社”，为希望转移风险的人与愿意承接风险的资本提供交易平台。"
+  },
+  "email": "contact@nsure.network",
+  "website": "https://nsure.network/",
+  "whitepaper": "https://nsure.network/Nsure_WP_0.7.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-28",
+  "initial_price":{
+        "ETH":"0.001026 ETH",
+        "USD":"0.4 USD",
+        "BTC":"0.00003053 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Nsure_network",
+    "telegram": "https://t.me/nsurenet",
+    "github": "https://github.com/nsure-tech",
+    "discord": "https://discord.com/invite/nSvAapa",
+    "medium": "https://nsure-network.medium.com"
+  }
+}
