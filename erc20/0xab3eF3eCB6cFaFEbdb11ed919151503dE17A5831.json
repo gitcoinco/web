@@ -1,0 +1,17 @@
+{
+    "symbol": "PAYC",
+    "address": "0xab3eF3eCB6cFaFEbdb11ed919151503dE17A5831",
+    "overview":{
+          "en": "PAYC is committed to creating a variety of open tools for blockchain payment scenarios, providing them to merchants and enterprises, and ultimately creating an open ecosystem based on blockchain finance.",
+          "zh": "PAYC致力于打造各种应用于区块链支付场景的开放工具，提供给商家和企业，最终打造基于区块链金融的开放生态系统。"
+    },
+    "email": "paycblocker@gmail.com",
+    "website": "https://www.payc.cc",
+    "whitepaper": "https://www.payc.cc/PAYCEN.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-26",
+    "links": {
+        "telegram": "https://t.me/paycgroup",
+        "twitter": "https://twitter.com/paymentchain"
+      }
+}
