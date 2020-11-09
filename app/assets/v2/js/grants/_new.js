@@ -307,6 +307,11 @@ if (document.getElementById('gc-new-grant')) {
           const arrayCheckRegex = /\[.+\]/
           let value = decodeURIComponent(parts[1])
 
+          if (/<[a-zA-Z\\\/]+>/.test(value)) {
+            // if it matches a tag, reset the value to empty
+            value = ""
+          }
+
           if (arrayCheckRegex.test(value)) { 
             // check if array is passed in query params and return it as an array instead of default string.
             // i.e change "[1, 2]" to [1, 2]
@@ -319,10 +324,9 @@ if (document.getElementById('gc-new-grant')) {
               return item
             })
           }
-
+          
           returnVal[parts[0]] = value
         })
-        return returnVal
       },
       grant_type_logo () {
         const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type)
@@ -341,8 +345,6 @@ if (document.getElementById('gc-new-grant')) {
         }
       }
       this.form = {...this.form, ...this.queryParams}
-
-     
     }
   });
 }
