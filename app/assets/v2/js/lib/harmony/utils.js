@@ -46,8 +46,29 @@ harmony_utils.getAddressBalance = async (hmy, address) => {
 /**
  * init the harmony extension to be used for transfer
  * */
-harmony_utils.initHarmonyExtension = async () => {
-  return new HarmonyJs.HarmonyExtension(window.onewallet);
+harmony_utils.initHarmonyExtension = async (network='mainnet') => {
+
+  let chainId;
+  let chainType = HarmonyUtils.ChainType.Harmony;
+  let rpcUrl;
+
+  if (network == 'test') {
+    chainId = HarmonyUtils.ChainID.HmyTestnet;
+    rpcUrl = 'https://api.s0.b.hmny.io';
+  } else {
+    chainId = HarmonyUtils.ChainID.HmyMainnet;
+    rpcUrl = 'https://api.s0.t.hmny.io';
+  }
+
+  let ext = new HarmonyJs.HarmonyExtension(window.onewallet);
+  ext.provider = new HarmonyNetwork.Provider(rpcUrl).provider;
+  ext.messenger = new HarmonyNetwork.Messenger(
+    ext.provider,
+    chainType,
+    chainId
+  );
+
+  return ext;
 }
 
 /**
@@ -85,22 +106,18 @@ harmony_utils.logoutHarmonyExtension = async harmonyExt => {
  */
 harmony_utils.transfer = async(hmy, harmonyExt, from, to, amount) => {
   const txn = hmy.transactions.newTx({
-    from: from,
-    to: to,
+    from: new HarmonyCrypto.HarmonyAddress(from).checksum,
+    to: new HarmonyCrypto.HarmonyAddress(to).checksum,
     value: new HarmonyUtils.Unit(amount).asOne().toWei(),
-    gasLimit: '31000',
+    gasLimit: '21000',
     shardID: 0,
     toShardID: 0,
-    gasPrice: new hmy.utils.Unit(amount).asGwei().toWei(),
+    gasPrice: new hmy.utils.Unit(1).asGwei().toWei(),
   });
 
-  console.log(txn);
-
-  // hmy.wallet.addByPrivateKey('');
-  // const signedTxn = await hmy.wallet.signTransaction(txn);
-  // const response = await hmy.blockchain.sendTransaction(signedTxn);
 
   const signedTxn = await harmonyExt.wallet.signTransaction(txn);
+  // const signedTxn = await window.onewallet.signTransaction(txn);
   const response = await signedTxn.sendTransaction();
 
   if (response[0] && response[0].txStatus == 'REJECTED') {
@@ -109,6 +126,10 @@ harmony_utils.transfer = async(hmy, harmonyExt, from, to, amount) => {
 
   if (response.error && response.error.code) {
     throw response.error.message
+  }
+
+  if (txn && txn.id) {
+    return txn.id;
   }
 
   return response.result;
