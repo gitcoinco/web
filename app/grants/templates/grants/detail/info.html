@@ -120,11 +120,12 @@
           </div>
         {% endif %}
         {% if grant.github_project_url %}
-        <div class="font-body mb-2">
-          <i style="width: 14px;" class="fab fa-github-square mr-2 text-center"></i>
+        <div class="d-flex my-3">
+          <i style="width: 14px;" class="fab fa-github-square mr-2 text-center my-auto"></i>
+          <input type="hidden" id="form--input__github-project-url" placeholder="Github Project URL" class="p-2 m-0 inline-edit font-body" maxlength="150" value="{{ grant.github_project_url }}"></input>
           <p class="d-inline-block mb-0">
-            <a href="{{ grant.github_project_url }}" target="_blank" rel="" data-toggle="tooltip" data-html="true" data-placement="top" for="github_project_url"
-            title="Project Github URL">
+            <a href="{{ grant.github_project_url }}" target="_blank" id="form--a__github-project-url" rel="" data-toggle="tooltip" data-html="true" data-placement="top" for="github_project_url"
+            title="Github Project URL">
               {{ grant.github_project_url }}
             </a>
           </p>

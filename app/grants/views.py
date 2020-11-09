@@ -1269,6 +1269,7 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
+            grant.github_project_url = request.POST.get('edit-github_project_url')
             grant.reference_url = request.POST.get('edit-reference_url')
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
