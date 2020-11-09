@@ -1,0 +1,23 @@
+{
+  "symbol": "DTA",
+  "token_name": "DigitalTwinAgreement",
+  "address": "0x31497f218c005fE3d5eE87e5a33e133A909A7a4b",
+  "total_supply": "21000000",
+  "suggested_gas_limit_setting": "60000",
+  "overview":{
+        "en": "The full name of the Digital Twin Agreement is the Digital Twin Agreement, which is a super oracle agreement, and DTA is the only token of its ecological value. DTA is currently initiated by a group of active and mysterious cypherpunk organizations, including cryptographers, financiers, mathematicians, machine intelligence experts, blockchain experts and other geeks in various fields. Its organizational form is not limited to The cognition and human boundary of a certain initiator forms the DAO organization to govern this great network protocol with group wisdom and code laws.",
+        "zh": "数字孪生协议全称Digital Twin Agreement，是一种超级预言机协议，DTA是其生态唯一价值通证。DTA 目前由一群活跃而神秘的密码朋克组织发起，其中 包括密码学家、金融学家、数学家、机器智能专家、区块链专家等各领域极客组成，其组织 形式起初并不受限制于某个发起人的认知和人性边界，而是形成 DAO 组织，以群体智慧和 代码法律来治理这个伟大的网络协议。"
+  },
+  "email": "dtaorgtop@sohu.com",
+  "website": "http://dtaorg.top",
+  "whitepaper": "http://dtaorg.top/doc/dta.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-15",
+  "initial_price":{
+        "USDT":"3.72 USDT"
+  },
+  "links": {
+    "media_publications": "https://www.bishijie.com/kuaixun/786454.html",
+    "etherscan_link": "https://etherscan.io/address/0x31497f218c005fE3d5eE87e5a33e133A909A7a4b"
+  }
+}
