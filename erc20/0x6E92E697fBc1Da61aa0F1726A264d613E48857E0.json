@@ -1,0 +1,17 @@
+{
+    "symbol": "MRA",
+    "address": "0x6E92E697fBc1Da61aa0F1726A264d613E48857E0",
+    "overview":{
+          "en": "MRA is a fair decentralized financial system, a one-stop digital asset investment service platform. Provide users with lending, payment and multi-currency wallet exchange services.",
+          "zh": "MRA是一个公平的去中心化金融系统，一站式数字资产投资服务平台。为用户提供借贷，支付及多币种钱包兑换服务。"
+    },
+    "email": "meteora@gmail.com",
+    "website": "http://mtra.io/",
+    "whitepaper": "http://mtra.io/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-26",
+    "links": {
+        "telegram": "https://t.me/meteoragroup",
+        "twitter": "https://twitter.com/meteora"
+      }
+}
