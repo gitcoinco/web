@@ -1,0 +1,28 @@
+{
+  "symbol": "SXC",
+  "address": "0x6A48BA795e3289b9151036E189e352e3eE2c7798",
+  "overview": {
+    "en": "SXC (Stable XT Cash) is a stable token issued by the XT Foundation based on the Ethereum (erc20) Smart Contract. The value of SXC is based on the comprehensive price of cryptocurrencies such as QC and CNYT. The initial state of SXC is fully locked, so users can mortgage digital assets to swap. The SXC in circulation is mortgaged at 100% of the value. The collateral can be mainstream digital assets including BTC, ETH, LTC and QTUM, and all circulation records should be tracked on the blockchain.",
+    "zh": "SXC（Stable XT Cash），是基于以太坊（erc20）智能合约，由XT基金会发行的稳定代币，SXC价值依据qc、cnyt等一揽子虚拟币综合定价。初始状态为全锁定状态，用户可以通过抵押数字资产的方式进行兑换，流通的SXC按照100%的价值抵押，抵押品可以为BTC、ETH、LTC、QTUM等主流数字资产，所有流通记录在区块链上公开展示。"
+  },
+  "email": "support@xt.com",
+  "website": "https://www.xt.com/",
+  "whitepaper": "",
+  "state": "NORMAL",
+  "published_on": "2019-01-05",
+  "initial_price":{
+        "ETH":"0.00077 ETH",
+        "USD":"0.143 USD",
+        "BTC":"0.00001389 BTC"
+  },
+  "links": {
+    "blog": "",
+    "twitter": "https://twitter.com/XTexchange",
+    "telegram": "https://t.me/XTsupport",
+    "reddit": "https://www.reddit.com/r/XT_Exchange/",
+    "github": "",
+    "facebook": "https://www.facebook.com/XT.comexchange",
+    "slack": "",
+    "medium": "https://medium.com/@XT_com"
+  }
+}
