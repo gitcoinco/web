@@ -7,6 +7,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from dashboard.utils import has_tx_mined
 from kudos.utils import kudos_abi
 from web3 import Web3
+from kudos.models import KudosTransfer
 
 #setup
 network = 'mainnet'
@@ -19,7 +20,7 @@ nonce = w3.eth.getTransactionCount(kudos_owner_address)
 min_pk = 1684
 max_pk = 1740
 TIME_SLEEP = 1
-username = 'jhanlew'
+username = 'jdorfman'
 gas_clear_within_mins = 1
 
 kts = KudosTransfer.objects.filter(pk__gte=min_pk, pk__lte=max_pk)
