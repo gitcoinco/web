@@ -243,10 +243,12 @@ if (document.getElementById('gc-onboard')) {
       if (
         document.contxt.github_handle &&
         !document.contxt.persona_is_funder &&
-        !document.contxt.persona_is_hunter
+        !document.contxt.persona_is_hunter &&
+        !window.sessionStorage.getItem('alreadyViewed')
       ) {
         // show_persona_modal();
         this.$refs['onboard-modal'].openModal();
+        window.sessionStorage.setItem('alreadyViewed', true);
       }
       this.fetchOnboardData();
     }
