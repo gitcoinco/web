@@ -6248,7 +6248,6 @@ def events(request, hackathon):
 @login_required
 @require_POST
 def verify_user_poap(request, handle):
-    # TODO add test
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
         return JsonResponse({
