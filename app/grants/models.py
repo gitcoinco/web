@@ -1994,3 +1994,19 @@ class GrantStat(SuperModel):
 
     def __str__(self):
         return f'{self.snapshot_type} {self.created_on} for {self.grant.title}'
+
+
+class GrantBrandingRoutingPolicy(SuperModel):
+    url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
+    banner_image = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text=_('The banner image for a grant page'),
+    )
+    priority = models.PositiveSmallIntegerField(help_text=_("The priority ranking of this image 1-255. Higher priorities would be loaded first"))
+    background_image = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text=_('Background image'),
+    )
+
+    def __str__(self):
+        return f'{self.url_pattern} >> {self.priority}'
