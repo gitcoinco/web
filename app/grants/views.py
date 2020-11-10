@@ -2240,29 +2240,6 @@ def create_matching_pledge_v1(request):
     if grant_collections:
         grant_collections = grant_collections.split(',')
 
-    # print("SHIT")
-    # print(grant_types)
-    # print(grant_categories)
-    # print(grant_collections)
-
-    # grant_filters = None
-    # collection_filters = None
-    # if grant_types:
-    #     grant_filters = {
-    #         'grant_type__in': grant_types
-    #     }
-    # if grant_categories:
-    #     grant_filters['categories__in'] = grant_categories
-
-    # if grant_collections:
-    #     collection_filters = {
-    #         'pk__in': grant_collections
-    #     }
-
-    # print("SHIT 2")
-    # print(grant_filters)
-    # print(collection_filters)
-
     if not grant_types and not grant_collections:
         response['message'] = 'error:  grant_types / grant_collections is parameter'
         return JsonResponse(response)
