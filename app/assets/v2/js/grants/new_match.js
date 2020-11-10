@@ -3,6 +3,22 @@ Vue.component('v-select', VueSelect.VueSelect);
 
 Vue.mixin({
   methods: {
+    clearForm: function() {
+      let vm = this;
+
+      vm.form = {
+        why: '',
+        amount: 0,
+        stage: '',
+        grant_types: [],
+        grant_categories: [],
+        grant_collections: [],
+        anonymous: false,
+        comment: '',
+        tx_id: ''
+      };
+
+    },
     transfer_web3: function(params) {
       let vm = this;
 
@@ -75,6 +91,13 @@ Vue.mixin({
       if (!vm.checkForm(event))
         return;
 
+      if (vm.grants_to_fund == 'types') {
+        vm.form.grant_collections = [];
+      } else if (vm.grants_to_fund == 'collections') {
+        vm.form.grant_types = [];
+        vm.form.grant_categories = [];
+      }
+
       const params = {
         'why': form.why,
         'amount': form.amount,
@@ -87,6 +110,11 @@ Vue.mixin({
       };
 
       if (form.stage == 'ready') {
+        if (!provider) {
+          onConnect();
+          return false;
+        }
+
         vm.transfer_web3(params);
       } else {
         vm.submitted = true;
@@ -113,6 +141,7 @@ Vue.mixin({
 
         if (response.status == 200) {
           _alert('Match Pledge Request Created.');
+          vm.clearForm();
         } else {
           vm.submitted = false;
           _alert('Unable to create matching pledge. Please try again', 'error');
