@@ -49,7 +49,7 @@ from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
-from marketing.models import Alumni, Job, LeaderboardRank
+from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
@@ -575,6 +575,90 @@ def about(request):
             True
         ),
         (
+            "jdorfman",
+            "DevRel SuperStar",
+            "jdorfman",
+            '',
+            "Weekly Mint",
+            "Thai",
+            "",
+            "Open Source Paladin",
+            "jdorfman",
+            True
+        ),
+        (
+            "nglglhtr",
+            "DevRel Mage",
+            "nglglhtr",
+            '',
+            "Quests",
+            "Quinoa",
+            "",
+            "",
+            "angelagilhotra",
+            True
+        ),
+        (
+            "chibie",
+            "Engineer",
+            "chibie",
+            '',
+            "Grants",
+            "semovita with afang soup",
+            "",
+            "OSS Freedom Fighter",
+            "stchibe",
+            True
+        ),
+        (
+            "aamustapha",
+            "Engineer",
+            "aamustapha",
+            '',
+            "Grants",
+            "Pounded yam with Veg. soup",
+            "",
+            "OSS Mechanic",
+            "_amustapha",
+            True
+        ),
+        (
+            "scco",
+            "Design",
+            "scco",
+            '',
+            "grants",
+            "boeuf bourguignon",
+            "",
+            "Mage",
+            "schumanncombo",
+            True
+        ),
+        (
+            "thesachinmittal",
+            "DevRel SuperSstar",
+            "thesachinmittal",
+            '',
+            "KERNEL",
+            "",
+            "",
+            "Druid",
+            "sm_judge",
+            True
+        ),
+        (
+            "octaviaan",
+            "Design",
+            "octaviaan",
+            '',
+            "Kudos",
+            "",
+            "",
+            "Rainbow Unicorn",
+            "",
+            True
+        ),
+        (
             "gitcoinbot",
             "beep boop bop",
             "gitcoinbot",
@@ -828,8 +912,11 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
+    only_profile_cards = ['mint_ptoken', 'edit_price_ptoken', 'accept_redemption_ptoken',
+                          'denies_redemption_ptoken', 'incoming_redemption_ptoken', 'buy_ptoken']
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
+    activities = activities.exclude(activity_type__in=only_profile_cards)
     view_count_threshold = 10
 
     is_auth = user and user.is_authenticated
@@ -1200,7 +1287,7 @@ def portal(request):
 
 
 def community(request):
-    return redirect('https://github.com/gitcoinco/community')
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 
 def onboard(request):
@@ -1325,9 +1412,8 @@ def reddit(request):
 def blog(request):
     return redirect('https://gitcoin.co/blog')
 
-def livestream(request):
-    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
-
+def calendar(request):
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 def twitter(request):
     return redirect('http://twitter.com/gitcoin')
@@ -1464,9 +1550,10 @@ def tribes_home(request):
 
     return TemplateResponse(request, 'tribes/landing.html', context)
 
+
 def admin_index(request):
     from dashboard.utils import get_all_urls # avoid circular import
-    urls = get_all_urls()
+    urls = get_all_urls() # source of truth is the app; email_info data just augments it
     search_str = '_administration/email'
     def clean_url(url):
         url = "".join(url)
@@ -1475,8 +1562,17 @@ def admin_index(request):
         return url
     urls = [clean_url(url) for url in urls]
     urls = [url for url in urls if search_str in url]
+    urls_dict = {}
+    for url in urls:
+        key = url.replace('_administration/email','')
+        urls_dict[key] = ()
+    email_info = EmailInventory.objects.all()
+    for val in email_info:
+        key = val.path
+        urls_dict[key] = val
+    del urls_dict['/']
     context = {
-        'urls': urls,
+        'urls': urls_dict,
     }
 
     return TemplateResponse(request, 'admin_index.html', context)

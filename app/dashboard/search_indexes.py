@@ -4,13 +4,14 @@ from .models import UserDirectory
 
 
 class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.CharField(document=True, use_template=False)
     profile_id = indexes.IntegerField(null=True,model_attr='profile_id')
     join_date = indexes.CharField(null=True,model_attr='join_date')
     github_created_at = indexes.CharField(null=True,model_attr='github_created_at')
-    first_name = indexes.CharField(null=True,model_attr='first_name')
-    last_name = indexes.CharField(null=True,model_attr='last_name')
-    handle = indexes.CharField(null=True,model_attr='handle')
+    email = indexes.CharField(null=True,model_attr='email_if_not_supressed')
+    first_name = indexes.CharField(null=True,model_attr='first_name', faceted=True)
+    last_name = indexes.CharField(null=True,model_attr='last_name', faceted=True)
+    handle = indexes.CharField(null=True,model_attr='handle', faceted=True)
     sms_verification = indexes.BooleanField(null=True,model_attr='sms_verification',faceted=True)
     persona = indexes.CharField(null=True,model_attr='persona',faceted=True)
     rank_coder = indexes.IntegerField(null=True,model_attr='rank_coder',faceted=True)
@@ -61,7 +62,7 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     action_points = indexes.IntegerField(null=True,model_attr='action_points',faceted=True)
     avg_points_per_action = indexes.FloatField(null=True,model_attr='avg_points_per_action',faceted=True)
     last_action_on = indexes.CharField(null=True,model_attr='last_action_on')
-    keywords = indexes.MultiValueField(null=True,model_attr='keywords',faceted=True)
+    keywords = indexes.MultiValueField(null=True,model_attr='keywords', faceted=True)
     activity_level = indexes.CharField(null=True,model_attr='activity_level',faceted=True)
     reliability = indexes.CharField(null=True,model_attr='reliability',faceted=True)
     average_rating = indexes.FloatField(null=True,model_attr='average_rating',faceted=True)
@@ -71,13 +72,6 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     following_count = indexes.IntegerField(null=True,model_attr='following_count',faceted=True)
     num_repeated_relationships = indexes.IntegerField(null=True,model_attr='num_repeated_relationships',faceted=True)
     verification_status = indexes.CharField(null=True,model_attr='verification_status',faceted=True)
-
-    # We add this for autocomplete.
-    handle_auto = indexes.EdgeNgramField(model_attr='handle')
-    keywords_auto = indexes.EdgeNgramField(model_attr='keywords')
-    first_name_auto = indexes.EdgeNgramField(null=True,model_attr='first_name')
-    last_name_auto = indexes.EdgeNgramField(null=True,model_attr='last_name')
-    persona_auto = indexes.EdgeNgramField(null=True,model_attr='persona')
 
     def get_model(self):
         return UserDirectory

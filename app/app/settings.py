@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import os
 import socket
 
@@ -60,6 +61,7 @@ FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-F
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
+FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
 RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
@@ -105,6 +107,7 @@ INSTALLED_APPS = [
     'app',
     'avatar',
     'retail',
+    'ptokens',
     'rest_framework',
     'marketing',
     'economy',
@@ -180,7 +183,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -514,6 +517,22 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
+# https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
+CELERY_ROUTES = [
+    ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
+    ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
+    ('marketing.tasks.*', {'queue': 'marketing'}),
+    ('grants.tasks.*', {'queue': 'default'}),
+    ('chat.tasks.*', {'queue': 'default'}),
+    ('dashboard.tasks.*', {'queue': 'default'}),
+    ('townsquare.tasks.*', {'queue': 'default'}),
+    ('kudos.tasks.*', {'queue': 'default'}),
+    ]
+if DEBUG:
+    CELERY_ROUTES = [
+        ('*', {'queue': 'default'}),
+        ]
+
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -654,6 +673,7 @@ OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
 KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
 KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf38b63d09a75de1a7b94aa24163')
+KUDOS_CONTRACT_XDAI = env('KUDOS_CONTRACT_XDAI', default='0x74e596525C63393f42C76987b6A66F4e52733efa')
 KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
@@ -824,6 +844,19 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
+PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
+PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x75589C2e56095c80f63EC773509f033aC595c34e')
+PTOKEN_ABI = ''
+PTOKEN_FACTORY_ABI = ''
+
+if PTOKEN_ABI_PATH:
+    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
+        PTOKEN_ABI = json.load(f)
+
+if PTOKEN_FACTORY_ABI_PATH:
+    with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
+        PTOKEN_FACTORY_ABI = json.load(f)
 
 HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
 
@@ -847,5 +880,7 @@ EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
 PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
 
 HYPERCHARGE_BOUNTIES_PROFILE_HANDLE = env('HYPERCHARGE_BOUNTIES_PROFILE', default='gitcoinbot')
+ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
+ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')

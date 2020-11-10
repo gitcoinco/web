@@ -178,12 +178,18 @@ Vue.mixin({
           // polkadot
           type = 'polkadot_ext';
           break;
+        case '1000':
+          // harmony
+          type = 'harmony_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
           break;
+        case '0': // bitcoin
         case '61': // ethereum classic
         case '102': // zilliqa
+        case '600': // filecoin
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
           type = 'qr';

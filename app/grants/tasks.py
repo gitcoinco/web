@@ -11,7 +11,6 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from grants.views import record_subscription_activity_helper
 from marketing.mails import new_supporter, thank_you_for_supporting
 from townsquare.models import Comment
 
@@ -73,6 +72,8 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     try:
         ss = float(instance.sybil_score)
         instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
+        if ss < 0:
+            instance.weighted_risk_score = 0
     except Exception as e:
         print(e)
 
@@ -88,6 +89,23 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     wall_of_love = sorted(wall_of_love.items(), key=lambda x: x[1], reverse=True)
     instance.metadata['wall_of_love'] = wall_of_love
 
+    # save related addresses
+    # related = same contirbutor, same cart
+    related = {}
+    from django.utils import timezone
+    for subscription in instance.subscriptions.all():
+        _from = subscription.created_on - timezone.timedelta(hours=1)
+        _to = subscription.created_on + timezone.timedelta(hours=1)
+        profile = subscription.contributor_profile
+        for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=grant_id):
+            key = _subs.grant.pk
+            if key not in related.keys():
+                related[key] = 0
+            related[key] += 1
+    instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
+    instance.calc_clr_round()
+    instance.clr_prediction_curve = instance.calc_clr_prediction_curve
+    instance.clr_round_num = instance.calc_clr_round_nums
     instance.save()
 
 
@@ -101,6 +119,8 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
     :param package:
     :return:
     """
+    from grants.views import record_subscription_activity_helper
+
     grant = Grant.objects.get(pk=grant_id)
     profile = Profile.objects.get(pk=profile_id)
 
@@ -140,13 +160,25 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.error = True #cancel subs so it doesnt try to bill again
         subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
         subscription.save()
-        activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+
+
+        if 'hide_wallet_address' in package:
+            profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
+            profile.save()
+
+        if 'anonymize_gitcoin_grants_contributions' in package:
+            profile.anonymize_gitcoin_grants_contributions = bool(package.get('anonymize_gitcoin_grants_contributions', False))
+            profile.save()
+
+        activity_profile = profile if not profile.anonymize_gitcoin_grants_contributions else Profile.objects.get(handle='gitcoinbot')
+
+        activity = record_subscription_activity_helper('new_grant_contribution', subscription, activity_profile)
 
         if 'comment' in package:
             _profile = profile
             comment = package.get('comment')
             if comment and activity:
-                if subscription and subscription.negative:
+                if profile.anonymize_gitcoin_grants_contributions:
                     _profile = Profile.objects.filter(handle='gitcoinbot').first()
                     comment = f"Comment from contributor: {comment}"
                 comment = Comment.objects.create(
@@ -154,13 +186,24 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     activity=activity,
                     comment=comment)
 
-        if 'hide_wallet_address' in package:
-            profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
-            profile.save()
-
         # emails to grant owner
         new_supporter(grant, subscription)
         # emails to contributor
         thank_you_for_supporting(grant, subscription)
 
         update_grant_metadata.delay(grant_id)
+
+@app.shared_task(bind=True, max_retries=1)
+def recalc_clr(self, grant_id, retry: bool = True) -> None:
+    obj = Grant.objects.get(pk=grant_id)
+    from grants.clr import predict_clr
+    from django.utils import timezone
+    for clr_round in obj.in_active_clrs.all():
+        network = 'mainnet'
+        predict_clr(
+            save_to_db=True,
+            from_date=timezone.now(),
+            clr_round=clr_round,
+            network=network,
+            only_grant_pk=obj.pk
+        )

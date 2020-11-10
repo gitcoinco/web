@@ -24,7 +24,6 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-select@3.10.8/dist/vue-select.css">
 
     <style>
       .onboard-banner {
@@ -158,15 +157,23 @@
                   </label>
 
                   {% if is_staff %}
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '0'}">
+                      <input type="radio" name="bounty_chain" id="0_chain" value="0" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/bitcoin.svg' %}" alt="" width="20"> BTC
+                    </label>
+
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
                       <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="16"> PayPal
                     </label>
-                  {% endif %}
-                  {% if 'polkadot_testers' in user_groups or is_staff %}
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 58}">
-                      <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> Polkadot
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1000'}">
+                      <input type="radio" name="bounty_chain" id="1000_chain" value="1000" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="16"> Harmony
                     </label>
                   {% endif %}
+
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 58}">
+                    <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> Polkadot
+                  </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
                     <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="16"> ETC
@@ -174,6 +181,10 @@
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
                     <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="16"> Zilliqa
+                  </label>
+
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '600'}">
+                    <input type="radio" name="bounty_chain" id="600_chain" value="600" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/filecoin.svg' %}" alt="" width="20"> Filecoin
                   </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
@@ -496,7 +507,6 @@
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8/dist/vue-select.min.js"></script>
 
     <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
     <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>

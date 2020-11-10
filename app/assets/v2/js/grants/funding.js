@@ -1,5 +1,13 @@
 
 // DOCUMENT
+let allTokens;
+const fetchTokens = async() => {
+  const tokensResponse = await fetch('/api/v1/tokens');
+
+  allTokens = await tokensResponse.json();
+};
+
+fetchTokens();
 
 $(document).ready(function() {
 
@@ -7,6 +15,8 @@ $(document).ready(function() {
   const shouldShowAlert = Boolean(localStorage.getItem('contributions_were_successful'));
 
   if (shouldShowAlert) {
+    // This alert currently shows after Ethereum checkouts only. As a result, we make sure to
+    // only clear ETH grants from local storage
     const numberOfContributions = Number(localStorage.getItem('contributions_count'));
     const grantWord = numberOfContributions === 1 ? 'grant' : 'grants';
     const message = `You have successfully funded ${numberOfContributions} ${grantWord}. Thank you for your contribution!`;
@@ -15,31 +25,36 @@ $(document).ready(function() {
     localStorage.removeItem('contributions_were_successful');
     localStorage.removeItem('contributions_count');
     $('#tweetModal').modal('show');
-    let donations = CartData.loadCart();
 
-    if (donations.length) {
+    const allDonations = CartData.loadCart();
+    const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
+    const otherDonations = allDonations.filter((grant) => grant.tenants[0] !== 'ETH');
+    
+    if (allDonations.length) {
       let cart_html = 'You just funded: ';
       let bulk_add_cart = CartData.share_url();
 
-      for (let i = 0; i < donations.length; i += 1) {
-        const donation = donations[i];
+      for (let i = 0; i < allDonations.length; i += 1) {
+        const donation = allDonations[i];
 
         cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'] + ' (+' + donation['grant_donation_clr_match'] + ' DAI match)</li>';
       }
       cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';
       $("<span class='mt-2 mb-2 w-100'>" + cart_html + '</span>').insertBefore($('#tweetModal span.copy'));
-      $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + donations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
+      $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + allDonations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
       $('#tweetModal a.button').text('Tweet about it');
     }
-    CartData.setCart([]);
+    CartData.setCart(otherDonations);
   }
 
   $('#js-addToCart-form').submit(function(event) {
     event.preventDefault();
 
-    const formData = objectifySerialized($(this).serializeArray());
+    // const formData = objectifySerialized($(this).serializeArray());
+    // const formData = objectifySerialized($(this).serializeArray());
 
-    CartData.addToCart(formData);
+
+    CartData.addToCart(grantDetails);
 
     showSideCart();
   });
@@ -118,7 +133,7 @@ function sideCartRowForGrant(grant, index) {
             <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
           </div>
           <div class="col-5">
-            <select id="side-cart-currency-${grant.grant_id}" class="form-control">
+            <select id="side-cart-currency-${grant.grant_id}" class="form-control" style="width:100%;">
     `;
 
   cartRow += tokenOptionsForGrant(grant);
@@ -127,37 +142,45 @@ function sideCartRowForGrant(grant, index) {
             </select>
           </div>
         </div>
-        <div class="form-row">
-          <div class="col-2"></div>
-          <div class="col-auto font-smaller-3 pt-1 text-highlight-gc-blue" style="cursor:pointer;" data-id="${index}" id="apply-to-all">
-            Apply to all
-          </div>
-        </div>
+
       </div>
   `;
 
   return cartRow;
 }
 
+
 function tokenOptionsForGrant(grant) {
+
   var network = document.web3network;
 
   if (!network) {
     network = 'mainnet';
   }
 
-  let tokenDataList = tokens(network);
-  const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000');
+  // let tokenDataList = tokens(network);
+  let tokenDataList = allTokens.filter((token) => token.network === networkName || 'mainnet');
+  let tokenDefault = 'ETH';
+
+  if (grant.tenants && grant.tenants.includes('ZCASH')) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
+    tokenDefault = 'ZEC';
+  } else {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
+  }
+
+  const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000' ||
+  grant.grant_token_address === '0x0');
 
   let options = '';
 
   if (!acceptsAllTokens) {
     options += `
-            <option value="ETH">ETH</option>
+            <option value="${tokenDefault}">${tokenDefault}</option>
         `;
 
     tokenDataList = tokenDataList.filter(tokenData => {
-      return (tokenData.addr === grant.grant_token_address);
+      return (tokenData.address === grant.grant_token_address);
     });
   }
 
@@ -170,7 +193,7 @@ function tokenOptionsForGrant(grant) {
             `;
     } else {
       options += `
-                <option value="${tokenData.name}">${tokenData.name}</option>
+                <option value="${tokenData.symbol}">${tokenData.symbol}</option>
             `;
     }
   }
@@ -212,6 +235,8 @@ function showSideCart() {
     $(`#side-cart-currency-${grant.grant_id}`).change(function() {
       CartData.updateCartItem(grant.grant_id, 'grant_donation_currency', $(this).val());
     });
+
+    $(`#side-cart-currency-${grant.grant_id}`).select2();
   });
 
   const isShowing = $('#side-cart').hasClass('col-12');
@@ -239,7 +264,7 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
-  $('#grants-details > div').toggleClass('col-12 col-md-8 col-lg-9 d-none d-md-block');
+  $('#grants-details > div').toggleClass('col-12 col-md-8 col-lg-9 d-none d-md-inline-flex');
 
   $('#side-cart').toggle();
   $('#side-cart').toggleClass('col-12 col-md-4 col-lg-3');
