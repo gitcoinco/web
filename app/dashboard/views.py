@@ -3031,7 +3031,7 @@ def verify_user_twitter(request, handle):
     })
 
 @login_required
-async def verify_user_duniter(request, handle):
+def verify_user_duniter(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
         return JsonResponse({
@@ -3056,9 +3056,7 @@ async def verify_user_duniter(request, handle):
         })
 
     try:
-        clientWOT = Client(duniter_wot)
-        wot = await clientWOT.get("wot/certified-by/{0}".format(publickey_duniter.strip(" \n")))
-
+        wot = 'https://g1.duniter.org/wot/certified-by/{0}'.format(publickey_duniter.strip(" \n")
         response = requests.get(wot)
         response_data = response.json()
         isVerified = response_data.get('isMember', {})
@@ -3068,8 +3066,8 @@ async def verify_user_duniter(request, handle):
                 'ok': True,
             })
 
-        clientUser = Client(duniter_user)
-        user = await clientUser.get("user/profile/{0}/_source_exclude=avatar._content".format(pubkey.strip(" \n")))
+
+        user = 'https://g1.duniter.org/user/profile/{0}'.format(publickey_duniter.strip(" \n")
         userCheck = handle.lower() == response_data['uid']
 
         # Verify  if duniter user == gitcoinuser
