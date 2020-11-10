@@ -71,7 +71,7 @@ const projectModal = (bountyId, projectId, callback) => {
       e.preventDefault();
       const url = $('#videodemo-url').val();
       const metadata = getVideoMetadata(url);
-      
+
       let logo = $(this)[0]['logo'].files[0];
       let data = $(this).serializeArray();
 
@@ -80,15 +80,6 @@ const projectModal = (bountyId, projectId, callback) => {
       }
 
       submitProject(logo, data, callback);
-    });
-
-    $('#videodemo-url').keyup(function(event) {
-      const url = $('#videodemo-url').val();
-      const metadata = getVideoMetadata(url);
-
-      if (metadata) {
-        $('#videodemo-provider').val(metadata.provider);
-      }
     });
   });
 
