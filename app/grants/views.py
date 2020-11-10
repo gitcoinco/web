@@ -67,7 +67,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
-    PhantomFunding, Subscription,
+    PhantomFunding, Subscription, GrantBrandingRoutingPolicy
 )
 from grants.tasks import update_grant_metadata
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout
@@ -913,6 +913,16 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
+    grant_bg = None
+    all_poilcies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
+    for policy in all_poilcies:
+        if re.search(policy.url_pattern, request.get_full_path()):
+            grant_bg = {
+                "banner_image": request.build_absolute_uri(policy.banner_image.url),
+                "background_image": request.build_absolute_uri(policy.background_image.url)
+            }
+            break
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -952,6 +962,7 @@ def grants_by_grant_type(request, grant_type):
             'bg_color': bg_color
         },
         'bg': bg,
+        'grant_bg': grant_bg,
         'announcement': Announcement.objects.filter(key='grants', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('-rank').first(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
