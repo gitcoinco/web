@@ -47,7 +47,11 @@
                 {%  if handle %}
                 <a href="/profile/{{handle}}" data-usercard="{{handle}}">
                 {% endif %}
+                 {% if fname %}
                   <img class="avatar {{fname}} mx-auto" src="/static/v2/images/team/{{fname}}.png">
+                  {% else %}
+                  <img class="avatar alt_avatar mx-auto" src="/dynamic/avatar/{{handle}}">
+                  {% endif %}
                 {%  if handle %}
                 </a>
                 {% endif %}
@@ -102,214 +106,13 @@
           </div>
       </div>
     </div>
-    <div class="container problem">
-      <div class="row pb-1 pt-5 justify-content-center">
-        <div class="col-12 pb-4 text-center">
-          <h2 >{% trans "The Problem is" %}</h2>
-          <h6>{% trans "Incentive alignment in Open Source Software." %}</h6>
-        </div>
-        <div class="col-12 pb-4">
-          <div class="align-items-center">
-            <div class="row align-items-center justify-content-center">
-              <div class="col-auto">
-                <img class="  ing-fluid" height="300" src="{% static "v2/images/avatar_sample/42.png" %}">
-              </div>
-              <div class="col-lg-6 col-sm-12 text-lg-left text-center">
-                <h2>{% trans "Open Source Software Developers" %}</h2>
-                <p class="mb-0">{% trans "- Create a lot of economic value." %}</p>
-                <p>{% trans "-  Are not properly incentivized." %}</p>
-              </div>
-                <div class="w-100 d-none d-md-block my-3"></div>
-              <div class="col-auto">
-                <img class=" " height="150" src="{% static "v2/images/avatar_sample/1.png" %}">
-              </div>
-              <div class="col">
-                <h3>{% trans "OSS Maintainer" %}</h3>
-                <p>{% trans "Problem: Finding Funding" %}</p>
-              </div>
-              <div class="col-auto">
-                <img class=" " height="150" src="{% static "v2/images/avatar_sample/2.png" %}">
-              </div>
-              <div class="col">
-                <h3>{% trans "OSS Contributor" %}</h3>
-                <p>{% trans "Problem: Finding Funding" %}</p>
-              </div>
-              <div class="col-auto">
-                <img class=" " height="150" src="{% static "v2/images/avatar_sample/3.png" %}">
-              </div>
-              <div class="col">
-                <h3>{% trans "Job Hunter" %}</h3>
-                <p>{% trans "Problem: Finding Funding" %}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row pb-5 pt-1 justify-content-center">
-        <div class="col-12 pb-4">
-          <div class="align-items-center">
-            <div class="row align-items-center justify-content-center">
-                <div class="w-100 d-none d-md-block my-3"></div>
-              <div class="col-auto">
-                <img class=" " height="150" src="{% static "v2/images/avatar_sample/4.png" %}">
-              </div>
-              <div class="col">
-                <h3>{% trans "Coder" %}</h3>
-                <p>{% trans "Problem: Finding Funding" %}</p>
-              </div>
-              <div class="col-auto">
-                <img class=" " height="150" src="{% static "v2/images/avatar_sample/12.png" %}">
-              </div>
-              <div class="col">
-                <h3>{% trans "Designer" %}</h3>
-                <p>{% trans "Problem: Finding Funding" %}</p>
-              </div>
-              <div class="col-auto">
-                <img class=" " height="150" src="{% static "v2/images/avatar_sample/72.png" %}">
-              </div>
-              <div class="col">
-                <h3>{% trans "Data Scientist" %}</h3>
-                <p>{% trans "Problem: Finding Funding" %}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div>
-    <div class="container-fluid " style="background: white;">
-      <div class="row pb-5 pt-5">
-        <div class="col pb-4">
-          <h4>{% trans "We think the Solution is" %}</h4>
-          <h6 class="text-center"><a href=/mission>{% trans "A community united by a mission," %}</a></h6>
-          <h6 class="text-center"><a href=/mission>{% trans "and a vision." %}</a></h6>
-          <h6 class="text-center"><a href=/explorer>{% trans "A double sided market that connects coders to funding." %}</a></h6>
-          <h6 class="text-center"><a href=/product>{% trans "and multiple matching mechanisms" %}</a></h6>
-          <h6 class="text-center"><a href=/users>{% trans "that connects coders" %}</a></h6>
-          <h6 class="text-center"><a href=/leaderboard>{% trans "to funders" %}</a></h6>
-          <h6 class="text-center"><a href=/results>{% trans "and creates results..." %}</a></h6>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col pb-4">
-          <div class="align-items-center justify-content-center text-center">
-            <a href="{% url 'products' %}">
-              <img src="{% static "v2/images/about/flywheel_2019.gif" %}" style="width: 100%;  max-width: 700px;">
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+
     <div class="container-fluid p-5 whatisit_container">
       {% include 'shared/what_is_gitcoin.html' with title="What is Gitcoin?" video='DJartWzDn0E' %}
     </div>
-    <div class="container-fluid white-light-bg font-body"  id="origin_story">
-      <div class="row">
-        <div class="col pb-4">
-          <h4>{% trans "The Origin Story" %} </h4>
-          <p class="font-subheader caption">{% trans "Who, what, when, where, and most importantly, why." %}</p>
-        </div>
-      </div>
-      <div class="row col-12 offset-lg-1 col-lg-10">
-        <div class="col d-flex flex-column align-items-center">
-          <img class="img-fluid" src="{% static "v2/images/why-different/boulder.png" %}" style="margin-top:50px;" />
-          <h4 class="caption font-title">{% trans "Built with &lt;3 in Boulder Colorado USA" %}</h4>
-          <p>
-            {% blocktrans %}<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community.{% endblocktrans %}
-          </p>
-        </div>
-        <div class="col d-flex flex-column align-items-center">
-          {% include 'shared/tree.html' %}
-          <h4 class="caption font-title">{% trans "Mission: Grow Open Source" %}</h4>
-          <p>
-            {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
-            <a href={% url "mission" %}>{% trans "Read about the Mission." %}</a>
-          </p>
-        </div>
-      </div>
-      <div class="row col-12 offset-lg-1 col-lg-10">
-        <div class="col d-flex flex-column align-items-center">
-          <img class="img-fluid" src="{% static "v2/images/why-different/lock.png" %}" style="margin-top:100px;" />
-          <h4 class="caption font-title">{% trans "Cryptocurrencies provide new p2p job opportunities" %}</h4>
-          <p>
-            {% blocktrans %}<strong>Gitcoin</strong> is built upon the Ethereum network, and the solidity smart contract programming language. Ethereum provides opportunities to align incentives across actors in the ecosystem. By programming rights of stakeholders directly into smart contracts, actors are incentivized to provide value, and edge cases are handled _without_ having to involve legacy legal enforcement mechanisms.{% endblocktrans %}
-            <a href=https://gitcoin.co/blog/how-to-buidl-a-mesh-network-of-human-beings/>{% trans "Read about our p2p coding jobs network." %}</a>
-          </p>
-        </div>
-        <div class="col d-flex flex-column align-items-center">
-          <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
-          <h4 class="caption font-title">Goal: To grow the community</h4>
-          <p>
-          {% blocktrans %}The founder of Gitcoin,
-            <a href="http://linkedin.com/in/owocki/" target="_blank" rel="noopener noreferrer">Kevin Owocki</a> has experience as an organizer of
-            <a href="http://boulderstartupweek.com" target="_blank" rel="noopener noreferrer">Boulder Startup Week</a>,
-            <a href="http://igniteboulder.com" target="_blank" rel="noopener noreferrer">Ignite Boulder</a>,
-            <a href="https://startupcto.io" target="_blank" rel="noopener noreferrer">StartupCTO.io</a>,
-            <a href="https://www.meetup.com/Boulder-Blockchain/" target="_blank" rel="noopener noreferrer">Boulder Blockchain Meetup</a> and the open source projects
-            <a href="https://github.com/owocki/pytrader" target="_blank" rel="noopener noreferrer">pytrader</a>,
-            <a href="https://github.com/owocki/adblock-to-bitcoin" target="_blank" rel="noopener noreferrer">adblock-to-bitcoin</a>,
-            <a href="https://github.com/youvegoteth/youvegoteth.github.io/" target="_blank" rel="noopener noreferrer">YouveGotETH</a>, &
-            <a href="https://github.com/owocki/coloradocoin" target="_blank" rel="noopener noreferrer">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.
-          {% endblocktrans %}
-            <a href=https://gitcoin.co/blog/open-source-financial-freedom/>{% trans "Read our roadmap to open source financial freedom." %}</a>
 
-
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="container-fluid text-center white-light-bg" id="community">
-      {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
-      {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (that we know of!)" community_members=alumni %}
-    </div>
-
-    <div class="container-fluid text-center white-light-bg" id="features">
-      <div class="row pb-1 pt-4">
-        <div class="col text-center">
-          <h4 class="">{% trans "Features of Gitcoin" %}</h4>
-        </div>
-      </div>
-      <div class="row pt-5 mb-3">
-        <div class="col d-flex flex-column align-items-center">
-          <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-            <img src="{% static "v2/images/getgitcoin/spaceship.png" %}" />
-          </div>
-          <div class="pl-5 pr-5 w-75">
-            <div class="font-bigger-1">{% trans "Fund Issues" %}</div>
-            <div class="font-smaller-3">{% trans "Fund a feature, bug, or security issue that you care about, &amp; get results." %}</div>
-          </div>
-        </div>
-        <div class="col d-flex flex-column align-items-center">
-          <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-            <img src="{% static "v2/images/getgitcoin/tip-dev.png" %}" />
-          </div>
-          <div class="pl-5 pr-5 w-75">
-            <div class="font-bigger-1">{% trans "Tip Developers" %}</div>
-            <div class="font-smaller-3">{% trans "Reward contributors who have added value to your repository with a tip." %}</div>
-          </div>
-        </div>
-      </div>
-      <div class="row pt-5 mb-3">
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <img src="{% static "v2/images/getgitcoin/find-work.png" %}" />
-            </div>
-            <div class="pl-5 pr-5 w-75">
-              <div class="font-bigger-1">{% trans "Find Work" %}</div>
-              <div class="font-smaller-3">{% trans "Find interesting projects to work on, interesting people to work with. Try projects before you fully commit to them. Add value wherever you go." %}</div>
-            </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <img src="{% static "v2/images/getgitcoin/github.png" %}" />
-            </div>
-            <div class="pl-5 pr-5 w-75">
-              <div class="font-bigger-1">{% trans "Integrates with Github" %}</div>
-              <div class="font-smaller-3">{% trans "The best thing about Gitcoin is that it works where you do your work; on Github." %}</div>
-            </div>
-          </div>
-      </div>
-    </div>
     <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
       <div class="row">
         <div class="col pb-4">

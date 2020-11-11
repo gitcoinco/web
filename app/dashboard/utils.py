@@ -41,6 +41,8 @@ from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.filecoin import sync_filecoin_payout
+from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
@@ -303,6 +305,8 @@ def get_web3(network, sockets=False):
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         return w3
+    elif network == 'xdai':
+        return Web3(HTTPProvider(f'https://dai.poa.network/'))
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
@@ -380,6 +384,45 @@ def getBountyContract(network):
     bounty_abi = json.loads(standardbounties_abi)
     getBountyContract = web3.eth.contract(standardbounties_addr, abi=bounty_abi)
     return getBountyContract
+
+def get_poap_contract_addresss(network):
+    if network == 'mainnet':
+        return to_checksum_address('0x22C1f6050E56d2876009903609a2cC3fEf83B415')
+    elif network == 'ropsten':
+        return to_checksum_address('0x50C5CA3e7f5566dA3Aa64eC687D283fdBEC2A2F2')
+    raise UnsupportedNetworkException(network)
+
+
+def get_poap_contract(network):
+    web3 = get_web3(network)
+    poap_abi = '[{"constant":true,"inputs":[{"name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"}],"name":"renounceEventMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"account","type":"address"}],"name":"removeEventMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"account","type":"address"}],"name":"isAdmin","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"eventId","type":"uint256"},{"name":"account","type":"address"}],"name":"isEventMinter","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"unpause","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"paused","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"account","type":"address"}],"name":"addAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"pause","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"renounceAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"account","type":"address"}],"name":"addEventMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"eventId","type":"uint256"},{"indexed":false,"name":"tokenId","type":"uint256"}],"name":"EventToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"account","type":"address"}],"name":"AdminAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"account","type":"address"}],"name":"AdminRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"eventId","type":"uint256"},{"indexed":true,"name":"account","type":"address"}],"name":"EventMinterAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"eventId","type":"uint256"},{"indexed":true,"name":"account","type":"address"}],"name":"EventMinterRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"approved","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"operator","type":"address"},{"indexed":false,"name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenEvent","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"index","type":"uint256"}],"name":"tokenDetailsOfOwnerByIndex","outputs":[{"name":"tokenId","type":"uint256"},{"name":"eventId","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"baseURI","type":"string"}],"name":"setBaseURI","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"to","type":"address"}],"name":"mintToken","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"to","type":"address[]"}],"name":"mintEventToManyUsers","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"eventIds","type":"uint256[]"},{"name":"to","type":"address"}],"name":"mintUserToManyEvents","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"__name","type":"string"},{"name":"__symbol","type":"string"},{"name":"__baseURI","type":"string"},{"name":"admins","type":"address[]"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"sender","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]'
+    poap_addr = get_poap_contract_addresss(network)
+    poap_abi = json.loads(poap_abi)
+    poap_contract = web3.eth.contract(poap_addr, abi=poap_abi)
+    return poap_contract
+
+def get_poap_earliest_owned_token_timestamp(network, address):
+    poap_contract = get_poap_contract(network)
+    from_block = 7844308
+    if network == "ropsten":
+        from_block = 5592255 
+    # Filter the contract events by owner address
+    transfer_filter = poap_contract.events.Transfer.createFilter(argument_filters={'to': address}, fromBlock=from_block, toBlock='latest')
+    log_entries = transfer_filter.get_all_entries()
+    if len(log_entries) == 0:
+        # We find no event for this address
+        return None
+    else:
+        # get block number of the earliest tokenId that still owned by owner
+        for entry in log_entries:
+            token_id = entry.args.tokenId
+            block_number = entry.blockNumber
+            owner = poap_contract.functions.ownerOf(token_id).call()
+            if address.lower() == owner.lower():
+                # Gotcha
+                web3 = get_web3(network)
+                return web3.eth.getBlock(block_number).timestamp
+
 
 
 def get_bounty(bounty_enum, network):
@@ -506,9 +549,14 @@ def sync_payout(fulfillment):
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
+        elif token_name == 'FIL':
+            sync_filecoin_payout(fulfillment)
 
     elif fulfillment.payout_type == 'polkadot_ext':
          sync_polkadot_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'harmony_ext':
+        sync_harmony_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -806,10 +854,17 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+
 def is_valid_eth_address(eth_address):
     return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
+
 def get_tx_status(txid, network, created_on):
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on)
+    return status, timestamp
+
+
+def get_tx_status_and_details(txid, network, created_on):
     from django.utils import timezone
     from dashboard.utils import get_web3
     import pytz
@@ -817,6 +872,7 @@ def get_tx_status(txid, network, created_on):
     DROPPED_DAYS = 4
 
     # get status
+    tx = {}
     status = None
     if txid == 'override':
         return 'success', None #overridden by admin
@@ -853,7 +909,7 @@ def get_tx_status(txid, network, created_on):
             timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
     except:
         pass
-    return status, timestamp
+    return status, timestamp, tx
 
 
 def is_blocked(handle):

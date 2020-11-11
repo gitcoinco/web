@@ -462,6 +462,15 @@ def send_tip_2(request):
             user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
             user['preferred_payout_address'] = profile.preferred_payout_address
 
+    recent_tips = Tip.objects.filter(sender_profile=request.user.profile).order_by('-created_on')
+    recent_tips_profiles = []
+
+    for tip in recent_tips:
+        if len(recent_tips_profiles) == 7:
+            break
+        if tip.recipient_profile not in recent_tips_profiles:
+            recent_tips_profiles.append(tip.recipient_profile)
+
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'send2',
@@ -470,7 +479,8 @@ def send_tip_2(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
-        'fund_request': fund_request
+        'fund_request': fund_request,
+        'recent_tips_profiles': recent_tips_profiles
     }
 
     if user:

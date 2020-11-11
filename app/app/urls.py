@@ -155,6 +155,11 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'
+    ),    
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap',
+        dashboard.views.verify_user_poap,
+        name='verify_user_poap'
     ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
@@ -280,6 +285,11 @@ urlpatterns = [
         'modal/new_project/<int:bounty_id>/<int:project_id>/',
         dashboard.views.hackathon_get_project,
         name='hackathon_edit_project'
+    ),
+    path(
+        'hackathon/<str:hackathon>/projects/<int:project_id>',
+        dashboard.views.hackathon_project_page,
+        name='hackathon_project_page'
     ),
     path(
         'hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>',
@@ -503,7 +513,8 @@ urlpatterns = [
     re_path(r'^schwag/?', retail.views.schwag, name='schwag'),
     re_path(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     re_path(r'^reddit/?', retail.views.reddit, name='reddit'),
-    re_path(r'^livestream/?', retail.views.livestream, name='livestream'),
+    re_path(r'^calendar/?', retail.views.calendar, name='calendar'),
+    re_path(r'^livestream/?', retail.views.calendar, name='livestream'),
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
@@ -634,7 +645,11 @@ urlpatterns = [
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/share_bounty', retail.emails.share_bounty, name='share_bounty'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
-    path('_administration/email/tribe_hackathon_prizes', retail.emails.tribe_hackathon_prizes, name='tribe_hackathon_prizes'),
+    path(
+        '_administration/email/tribe_hackathon_prizes',
+        retail.emails.tribe_hackathon_prizes,
+        name='tribe_hackathon_prizes'
+    ),
     path(
         '_administration/email/day_email_campaign/<int:day>',
         marketing.views.day_email_campaign,
@@ -651,6 +666,7 @@ urlpatterns = [
         name='process_faucet_request'
     ),
     re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
+    re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),

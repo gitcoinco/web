@@ -1128,7 +1128,9 @@ The txid of this test transaction is {match.test_payout_tx}.
 
 We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
 
-If you're looking to kill time before your payout is administered.... {coupon}
+If you're looking to kill time before your payout is administered.... 
+1. Please fill out this 2 min Gitcoin Grants survey [https://gitcoin.typeform.com/to/fWNIwxSR]. We'd love to hear how the round went for you.
+2. {coupon}
 
 Thanks,
 Kevin, Scott, Vivek & the Gitcoin Community
@@ -1171,7 +1173,8 @@ Congratulations on a successful Gitcoin Grants Round {match.round_number}.
 What now?
 1. Send a thank you tweet to the public goods justice league (who funded this round) on twitter: @balancerlabs @synthetix_io @iearnfinance @optimismpbc @chainlink @defiancecapital . Here is a handy one click link: https://twitter.com/intent/tweet?text=@balancerlabs+@synthetix_io+@iearnfinance+@optimismpbc+@chainlink+@defiancecapital+thank+you+for+funding+gitcoin+grants!
 2. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
-3. Celebrate 🎉 and then get back to BUIDLing something great. 🛠
+3. Celebrate 🎉 and consider joining us for KERNEL 2 ( https://gitcoin.co/blog/announcing-kernel-block-2/ ) as you continue growing your project. 🛠🛠
+4. Please fill out this 2 min Gitcoin Grants survey [https://gitcoin.typeform.com/to/fWNIwxSR]. We'd love to hear how the round went for you.
 
 Thanks,
 Kevin, Scott, Vivek & the Gitcoin Community
@@ -1318,9 +1321,6 @@ def new_bounty_daily(es):
             notifications = f"💬 {notifications} Notification{plural}"
         else:
             notifications = ''
-        has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
-        if has_offer:
-            offers = f"⚡️ 1 New Action"
 
         new_bounties = ""
         if bounties:

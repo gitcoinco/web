@@ -78,7 +78,7 @@ from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    profile_helper,
+    profile_helper, get_poap_earliest_owned_token_timestamp
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -86,6 +86,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
+from grants.models import Grant
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
@@ -134,12 +135,15 @@ from .utils import (
     re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
+from eth_account.messages import defunct_hash_message
+
 logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
 
 
 @protected_resource()
@@ -2817,12 +2821,16 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_org:
             context['team'] = profile.team_or_none_if_timeout
     elif tab == 'hackathons':
-        context['projects'] = HackathonProject.objects.filter( profiles__id=profile.id)
+        context['projects'] = HackathonProject.objects.filter(profiles__id=profile.id)
     elif tab == 'quests':
         context['quest_wins'] = profile.quest_attempts.filter(success=True)
     elif tab == 'grants':
         from grants.models import Contribution
         contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
+        if request.user.is_authenticated and request.user.username.lower() == profile.handle.lower():
+            pass # dont do anything; its your profile
+        else:
+            contributions = contributions.filter(anonymous=False)
         history = []
         for ele in contributions:
             history.append(ele.normalized_data)
@@ -2909,6 +2917,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['upcoming_calls'] = []
 
         context['is_sms_verified'] = profile.sms_verification
+        context['is_poap_verified'] = profile.is_poap_verified
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
         context['is_google_verified'] = profile.is_google_verified
@@ -4381,6 +4390,12 @@ def hackathon_projects(request, hackathon='', specify_project=''):
         projects = projects.filter(
             Q(badge__isnull=False)
         )
+
+    if filters == 'grants':
+        projects = projects.filter(
+            Q(grant_obj__isnull=False)
+        )
+
     if specify_project:
         projects = projects.filter(name__iexact=specify_project.replace('-', ' '))
         if projects.exists():
@@ -4454,6 +4469,10 @@ def hackathon_save_project(request):
     message = request.POST.get('looking-members-message', '')[:150]
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
+    video_provider = request.POST.get('videodemo-provider', '')
+    video_url = request.POST.get('videodemo-url', '')
+    categories = request.POST.getlist('categories[]')
+    tech_stack = request.POST.getlist('tech-stack[]')
 
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
@@ -4482,17 +4501,28 @@ def hackathon_save_project(request):
         }
     }
 
+    if video_url and video_provider:
+        kwargs['extra']['video_provider'] = video_provider
+        kwargs['extra']['video_url'] = video_url
+
+    if categories:
+        kwargs['categories'] = categories
+
+    if tech_stack:
+        kwargs['tech_stack'] = tech_stack
+
     if looking_members:
         has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
         has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
         other_contact_method = request.POST.get('other_contact_method', '')[:150]
         kwargs['message'] = message
-        kwargs['extra'] = {
+
+        kwargs['extra'].update({
             'has_gitcoin_chat': has_gitcoin_chat,
             'has_other_contact_method': has_other_contact_method,
             'other_contact_method': other_contact_method,
             'message': message,
-        }
+        })
 
     try:
 
@@ -4546,15 +4576,22 @@ def hackathon_save_project(request):
         })
 
 
-@login_required
 def get_project(request, project_id):
-    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
-    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    if not project:
+    params = project_data(project_id)
+    if not params:
         raise Http404("The project doesnt exists.")
 
+    return JsonResponse(params)
+
+
+def project_data(project_id):
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        return None
+
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
+
     params = {
         'project': {
             'name': project.name,
@@ -4565,6 +4602,10 @@ def get_project(request, project_id):
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'demo': {
+                'url': project.extra.get('video_url', None),
+                'provider': project.extra.get('video_provider', None),
+            },
             'logo_url': project.logo.url if project.logo else staticfiles_storage.url(
                 f'v2/images/projects/logos/${project.id}.png'),
             'prize': {
@@ -4575,22 +4616,26 @@ def get_project(request, project_id):
                 'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
+            'categories': project.categories,
+            'stack': project.tech_stack,
             'team_members': [{
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
         },
+        'comments': comments,
         'hackathon': hackathon_obj[0],
     }
 
-    return JsonResponse(params)
+    return params
 
 
-def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
+def hackathon_project_page(request, hackathon, project_id, project_name='', tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+
     if not project:
         raise Http404("No Hackathon Project matches the given query.")
 
@@ -4605,6 +4650,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     desc = project.summary
     avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
     what = f'project:{project_id}'
     params = {
         'title': title,
@@ -4625,6 +4671,10 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'logo_url': project.logo.url if project.logo else '',
+            'demo': {
+                'url': project.extra.get('video_url', None),
+                'provider': project.extra.get('video_provider', None),
+            },
             'prize': {
                 'id': project.bounty.id,
                 'title': project.bounty.title,
@@ -4633,11 +4683,15 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
+            'comments': comments,
+            'categories': project.categories,
+            'stack': project.tech_stack,
             'team_members': [{
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'grant_url': project.grant_obj.url if project.grant_obj else False
         },
         'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
@@ -5481,7 +5535,6 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-    print('### GITCOIN BOT A0')
     maybe_market_to_github(bounty, event_name)
 
     response = {
@@ -5593,7 +5646,7 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     try:
-       bounty = Bounty.objects.get(github_url=request.POST.get('issueURL'))
+        bounty = Bounty.objects.get(pk=request.POST.get('bountyPk'))
     except Bounty.DoesNotExist:
         response['message'] = 'error: bounty not found'
         return JsonResponse(response)
@@ -5602,6 +5655,11 @@ def fulfill_bounty_v1(request):
     if bounty.event:
         try:
             project = HackathonProject.objects.get(pk=request.POST.get('projectId'))
+            demo_provider = request.POST.get('videoDemoProvider')
+            demo_link = request.POST.get('videoDemoLink')
+            if demo_link:
+                project.extra['video_url'] = demo_link
+                project.extra['video_provider'] = demo_provider if demo_provider in ('loom', 'youtube', 'vimeo') else 'generic'
         except HackathonProject.DoesNotExist:
             response['message'] = 'error: Project not found'
             return JsonResponse(response)
@@ -5615,7 +5673,7 @@ def fulfill_bounty_v1(request):
         return JsonResponse(response)
 
     hours_worked = request.POST.get('hoursWorked')
-    if not hours_worked or not hours_worked.isdigit():
+    if not hours_worked:
         response['message'] = 'error: missing hoursWorked'
         return JsonResponse(response)
 
@@ -5635,7 +5693,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif (payout_type == 'qr' or payout_type == 'polkadot-ext') and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -5680,6 +5738,9 @@ def fulfill_bounty_v1(request):
     fulfillment.fulfiller_metadata = json.loads(fulfiller_metadata)
 
     fulfillment.save()
+
+    if project:
+        project.save()
 
     response = {
         'status': 204,
@@ -5749,8 +5810,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -5816,7 +5877,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -5901,6 +5962,37 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+
+@staff_member_required
+def bulkemail(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+    subject = request.POST.get('subject', '')
+    from_name = request.POST.get('from_name', '')
+    from_email = request.POST.get('from_email', '')
+
+    if handles and message and subject:
+        from marketing.mails import send_mail
+        _handles = list(set(handles.split(',')))
+        for handle in _handles:
+            handle = handle.strip()
+            profile = Profile.objects.filter(handle=handle).first()
+            if profile:
+                to_email = profile.email
+                body = message
+                send_mail(from_email, to_email, subject, body, False, from_name)
+
+            messages.success(request, 'sent')
+
+    context = {
+        'message': message,
+        'subject': subject,
+        'handles': handles,
+    }
+
+    return TemplateResponse(request, 'bulk_email.html', context)
 
 
 @staff_member_required
@@ -6253,3 +6345,60 @@ def events(request, hackathon):
     return JsonResponse({
         'events': events,
     })
+
+
+@login_required
+@require_POST
+def verify_user_poap(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_poap_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    signature = request_data.get('signature', '')
+    eth_address = request_data.get('eth_address', '')
+    if eth_address == '' or signature == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Empty signature or Ethereum address',
+        })
+
+    message_hash = defunct_hash_message(text="verify_poap_badges")
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    if eth_address != signer:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid signature',
+        })
+
+    # commented out because network = get_default_network() results in dashboard.utils.UnsupportedNetworkException: rinkeby
+    # network = get_default_network()
+    network = "mainnet"
+    fifteen_days_ago = datetime.now()-timedelta(days=15)
+
+    timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
+    if timestamp is None or timestamp > fifteen_days_ago.timestamp():
+        # We couldn't find any POAP badge for this ethereum address
+        return JsonResponse({
+            'ok': False,
+            'msg': 'No POAP badges(ERC721 NFTs) has been sitting in this wallet for more than 15 days!',
+        })
+
+    profile = profile_helper(handle, True)
+    profile.is_poap_verified = True
+    profile.save()
+    return JsonResponse({
+                'ok': True,
+                'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+            }
+    )

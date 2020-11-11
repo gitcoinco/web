@@ -33,7 +33,8 @@ fulfillBounty = data => {
     },
     'accepted': false,
     'fulfiller': data.payoutAddress,
-    'fulfiller_identifier': data.fulfiller_identifier
+    'fulfiller_identifier': data.fulfiller_identifier,
+    'bountyPk': data.bountyPk
   };
 
   const params = {
@@ -44,8 +45,16 @@ fulfillBounty = data => {
     'fulfiller_address': data.payoutAddress,
     'fulfiller_identifier': data.fulfiller_identifier,
     'payout_type': web3_type,
-    'projectId': data.projectId
+    'projectId': data.projectId,
+    'bountyPk': data.bountyPk
   };
+
+  if (data.videoDemoLink) {
+    const metadata = getVideoMetadata(data.videoDemoLink);
+
+    params['videoDemoLink'] = data.videoDemoLink;
+    params['videoDemoProvider'] = metadata ? metadata['provider'] : null;
+  }
 
   $.post(url, params, function(response) {
     if (200 <= response.status && response.status <= 204) {
