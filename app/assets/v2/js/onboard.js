@@ -3,18 +3,9 @@
 let step = 1;
 let orgs = document.contxt.orgs;
 let tasks = document.contxt.onboard_tasks;
+let optoutOnboard = sessionStorage.optoutOnboard
 
 Vue.component('v-select', VueSelect.VueSelect);
-
-Vue.mixin({
-  methods: {
-  },
-  computed: {
-
-  }
-
-});
-
 
 if (document.getElementById('gc-onboard')) {
   var appOnboard = new Vue({
@@ -28,6 +19,7 @@ if (document.getElementById('gc-onboard')) {
         step: step,
         isOrg: false,
         orgs: orgs,
+        optoutOnboard: optoutOnboard,
         data: {
           bio: '',
           skillsSelected: [],
@@ -138,8 +130,6 @@ if (document.getElementById('gc-onboard')) {
             vm.data.jobSelected = response.jobSelected;
             vm.data.interestsSelected = response.interestsSelected;
             vm.data.userOptions = response.userOptions;
-
-
           }
 
         }).catch((err) => {
@@ -184,6 +174,8 @@ if (document.getElementById('gc-onboard')) {
           }).then(res => {
             res.json().then(json => {
               vm.skills = json;
+              loading(false);
+
               resolve();
             });
             if (loading) {
@@ -243,10 +235,15 @@ if (document.getElementById('gc-onboard')) {
       if (
         document.contxt.github_handle &&
         !document.contxt.persona_is_funder &&
-        !document.contxt.persona_is_hunter
+        !document.contxt.persona_is_hunter &&
+        !optoutOnboard
       ) {
         // show_persona_modal();
         this.$refs['onboard-modal'].openModal();
+        this.$refs['onboard-modal'].jqEl.on('hidden.bs.modal', function (e) {
+          console.log('hidden')
+          sessionStorage.optoutOnboard = true;
+        })
       }
       this.fetchOnboardData();
     }
