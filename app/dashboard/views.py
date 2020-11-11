@@ -53,9 +53,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-import asyncio
-from duniterpy.api.client import Client, RESPONSE_AIOHTTP
-from duniterpy.api import bma
 
 import dateutil.parser
 import magic
@@ -144,8 +141,6 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-duniter_wot = (settings.BMAS_ENDPOINT)
-duniter_user = (settings.ES_USER_ENDPOINT)
 
 
 @protected_resource()
@@ -3032,6 +3027,13 @@ def verify_user_twitter(request, handle):
 
 @login_required
 def verify_user_duniter(request, handle):
+    """This function searches the database for the gitcoin link, from a verified duniter account.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
         return JsonResponse({
@@ -3047,37 +3049,68 @@ def verify_user_duniter(request, handle):
         })
 
     request_data = json.loads(request.body.decode('utf-8'))
-    publickey_duniter = request_data.get('publickey_duniter', '')
+    gitcoin_handle = request_data.get('gitcoin_handle', '')
 
-    if publickey_duniter == '':
+    if gitcoin_handle == '':
         return JsonResponse({
             'ok': False,
             'msg': f'Request must include a Public Key Duniter'
         })
 
     try:
-        wot = 'https://g1.duniter.org/wot/certified-by/{0}'.format(publickey_duniter.strip(" \n")
-        response = requests.get(wot)
-        response_data = response.json()
-        isVerified = response_data.get('isMember', {})
 
-        if isVerified:
-            return JsonResponse({
-                'ok': True,
-            })
+        # verify if there is account with same username on duniter
+        search_user_duniter_url = "https://g1.data.duniter.fr/user/profile/_search?q=" + "'gitcoin.co/" + gitcoin_handle + "'"
+        duniter_user_response = requests.get(search_user_duniter_url)
+
+        # search the user for their gitcoin link, if the search is successful I save the private key in the variable public_key_duniter
+        if duniter_user_response.status_code == 200:
+            duniter_user_json = duniter_user_response.json()
+            position = duniter_user_json.get('hits', {}).get('hits', {})
+            # I assume here that the most relevant account has the highest score
+            public_key_duniter = next(iter(position)).get('_id', {})
+
+            # checks uid equals gitcoin-username
+            same_uid_url = "https://g1.duniter.org/g1.duniter.org/wot/lookup/" + public_key_duniter
+            res_uid = requests.get(same_uid_url)
+            uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
+
+            if uid_duniter != gitcoin_handle:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'Seu gitcoin username precisa ser o mesmo do duniter'
+                })
+
+            if not res_uid.status_code == 200:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'Seu gitcoin username precisa ser o mesmo do duniter'
+                })
+
+            # checks if the user has valid certificates and is a member
+            wot = 'https://g1.duniter.org/wot/certified-by/' + public_key_duniter
+            res_wot = requests.get(wot)
+            if not res_wot.status_code == 200:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'You must be a certified duniter member'
+                })
+
+            elif res_wot.status_code == 200:
+                member_data = res_wot.json()
+                isVerified = member_data.get('isMember', {})
+                if not isVerified:
+                    return JsonResponse({
+                        'ok': False,
+                        'msg': f'You need 6 certificates to have your account valid'
+                    })
 
 
-        user = 'https://g1.duniter.org/user/profile/{0}'.format(publickey_duniter.strip(" \n")
-        userCheck = handle.lower() == response_data['uid']
-
-        # Verify  if duniter user == gitcoinuser
-        if userCheck != True:
+        elif duniter_user_response.status_code != 200:
             return JsonResponse({
                 'ok': False,
-                'msg': f'You nead a same user on Duniter and Gitcoin'
+                'msg': f'You need to add your gitcoin link to your duniter social links'
             })
-
-
 
     except IndexError:
         return JsonResponse({
@@ -3090,6 +3123,7 @@ def verify_user_duniter(request, handle):
 
     return JsonResponse({
         'ok': True,
+        'msg': 'Your Duniter Qualified User Check was successful!'
     })
 
 def profile_filter_activities(activities, activity_name, activity_tabs):

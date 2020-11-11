@@ -310,22 +310,32 @@ Vue.component('duniter-verify-modal', {
                 <template v-slot:default="{ hide }">
                   <div class="mx-5 mt-5 mb-4 text-center">
                     <div class="mb-3">
-                      <h1 class="font-bigger-4 font-weight-bold">Verify your Twitter account</h1>
+                      <h1 class="font-bigger-4 font-weight-bold">Verify your Duniter account</h1>
+                      <p>
+                        <p>Duniter is a <em>cryptocurrency software</em>, which means it is a <strong>software</strong> providing the ability to <strong>create currencies</strong>. Duniter is different from other cryptocurrency softwares you may know (Bitcoin, Litecoin, Peercoin, ...) for 2 main reasons : its <strong>currency code</strong> includes the concepts of a <a href="https://en.wikipedia.org/wiki/Social_credit">Universal Dividend</a> and <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of Trust</a>; but also its <strong>Blockchain code</strong>, which is far more energy efficient, getting rid of the massive waste of energy introduced by Bitcoin.</p>
+                      </p>
+                      <div>
+                        <h2 class="font-bigger-4 font-weight-bold"> You need to have these requirements:</h2>
+                        <ol>
+                          <li>let's check if there is already a record with your account.</li>
+                          <li>if there is a link to your gitcoin account in your Duniter record </li>
+                          <li>if you are is a qualified member</li>
+                        </ol>
+                         <p>read more about Web of <a href="https://en.wikipedia.org/wiki/Web_of_trust">trust</a></p>
+                      </div>
                     </div>
                     <div v-if="validationStep === 'validate-duniter' || validationStep == 'perform-validation'">
                       <p class="mb-4">
-                        Now we'll validate your duniter public key. Enter your public key duniter and press validate.
+                        You fulfill all the requirements, if you just need to click on validate to confirm that your duniter account is valid
                       </p>
-                      <div class="input-group">
-                        <input type="text" class="form-control" placeholder="public key duniter" aria-label="public key duniter" aria-describedby="basic-addon1" required maxlength="45" v-model="duniterPublicKey">
-                      </div>
-                      <div v-if="validationError !== ''" style="color: red">
-                        <small>[[validationError]]</small>
-                      </div>
+
                       <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
                       <br />
                       <a href="" v-if="validationError !== ''" @click="clickedGoBack">
                         Go Back
@@ -350,15 +360,6 @@ Vue.component('duniter-verify-modal', {
     clickedValidate(event) {
       event.preventDefault();
 
-      // Validate duniter Public Key is 45 word characters
-      const isValidPubKey = null !== this.duniterPublicKey.match(/^(\w){0,45}$/);
-
-      if (!isValidPubKey) {
-        this.validationError = 'Please enter a valid Duniter PublicKey';
-        return;
-      }
-
-      // Reset after a prior error
       this.validationError = '';
 
       this.validationStep = 'perform-validation';
@@ -367,10 +368,10 @@ Vue.component('duniter-verify-modal', {
     },
     verifyDuniter() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const payload = JSON.stringify({
-        'publickey_duniter': this.duniterPublicKey
-      });
       const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+      const payload = JSON.stringify({
+        'gitcoin_handle': this.trustHandle
+      });
 
       const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_duniter`, 'POST', payload, headers);
 
