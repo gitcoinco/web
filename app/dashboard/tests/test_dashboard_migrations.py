@@ -218,7 +218,7 @@ def test_update_grant(updated_grant):
     assert len(activities) == 0
     grants.generate_activities(None, None)
     activities = Activity.objects.filter(grant = updated_grant)
-    assert len(activities) == 2
+    assert len(activities) == 1
     assert 'update_grant' in [a.activity_type for a in activities]
 
 def test_killed_grant(killed_grant):
@@ -226,7 +226,7 @@ def test_killed_grant(killed_grant):
     assert len(activities) == 0
     grants.generate_activities(None, None)
     activities = Activity.objects.filter(grant = killed_grant)
-    assert len(activities) == 2 # impossible to know if/when a killed grant was updated
+    assert len(activities) == 1 # impossible to know if/when a killed grant was updated
     assert 'killed_grant' in [a.activity_type for a in activities]
 
 def test_new_contribution(new_contribution):
