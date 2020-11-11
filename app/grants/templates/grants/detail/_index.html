@@ -34,6 +34,12 @@
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
     <style>
+
+      .grant-description {
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
       .grid {
         display: grid;
         margin: auto;
@@ -130,7 +136,7 @@
                 </a>
               </div>
             </template>
-            <div>
+            <div class="grant-description">
               [[grant.description]]
             </div>
 
@@ -305,12 +311,15 @@
             </button>
           </div>
 
-          <div class="grant-cat d-flex rounded shadow-sm bg-white p-3 border">
-            <span v-for="item in grant.grant_type" class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.name]]</span>
-            <span v-for="item in grant.categories" class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.category]]</span>
+          <div class="grant-cat rounded shadow-sm bg-white p-3 border">
+            CATEGORY
+            <div class="d-flex">
+              <span v-for="item in grant.grant_type" class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.name]]</span>
+              <span v-for="item in grant.categories" class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.category]]</span>
+            </div>
           </div>
 
-          <div class="grant-wall bg-white p-4 rounded border">
+          <div class="grant-wall bg-white p-4 rounded shadow-sm border">
             <div class="font-smaller-1 font-weight-bold mb-3 text-black-70">WALL OF LOVE</div>
             <div class="d-flex justify-content-between">
               <!-- [[Object.keys(grant?.metadata).length > 0]] -->
