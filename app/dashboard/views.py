@@ -4448,12 +4448,13 @@ def hackathon_save_project(request):
         has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
         other_contact_method = request.POST.get('other_contact_method', '')[:150]
         kwargs['message'] = message
-        kwargs['extra'] = {
+
+        kwargs['extra'].update({
             'has_gitcoin_chat': has_gitcoin_chat,
             'has_other_contact_method': has_other_contact_method,
             'other_contact_method': other_contact_method,
             'message': message,
-        }
+        })
 
     try:
 
