@@ -91,12 +91,17 @@ function updateInterface(status){
 	{
 		receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
 		receiveAdress.classList.remove("hide");
+		//receiveAdress.innerHTML = shortenAdress(selectedAccount);
 		receiveAdress.innerHTML = selectedAccount;
 		buttonContinue.classList.remove("hide");
 		console.log("INTERFACE:CONTINUE");
 	}
 
 }
+
+
+
+
 
 
 </script>

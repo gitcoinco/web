@@ -87,6 +87,14 @@ function flashMessage(text, duration=8000){
 
 
 
+// shorten ETH adress
+// to  0xFFFF…FFFF
+
+function shortenAdress(adress){
+	return adress.substring(0,6) + "…" + adress.substr(-4);
+}
+
+
 
 
 
