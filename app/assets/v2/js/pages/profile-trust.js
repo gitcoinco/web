@@ -288,6 +288,168 @@ Vue.component('twitter-verify-modal', {
   }
 });
 
+Vue.component('poap-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      showValidation: false,
+      validationStep: 'validate-address',
+      ethAddress: '',
+      signature: '',
+      validationError: ''
+    };
+  },
+  mounted: function() {
+    
+    $(document).on('click', '#verify-poap-link', function(event) {
+      event.preventDefault();
+      this.showValidation = true;
+    }.bind(this));
+  },
+  template: `<b-modal id="poap-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+                <template v-slot:default="{ hide }">
+                  <div class="mx-5 mt-5 mb-4 text-center">
+                    <div class="mb-3">
+                      <img src="/static/v2/images/project_logos/poap.svg" alt="POAP Logo" width="100">
+                      <h1 class="font-bigger-4 font-weight-bold">Verify your POAP badges</h1>
+                    </div>
+                    <div v-if="validationStep === 'validate-address'">
+                      <p class="mb-4 font-subheader text-left">
+                        POAP is a software system that allows humans to collect badges (in the form of non fungible tokens) every time they participate in an activity, in person or remotely. <a href="https://www.poap.xyz/#faqs" target="_blank">Learn more.</a>
+                      </p>
+                      <p class="mb-4 font-subheader text-left">
+                        We want to verify your POAP badges. To do so, you must first connect with your preferred web3 account that holds at least one POAP badge that transfered to your account at least 15 days ago, then we'll validate it's here.
+                      </p>
+
+                      <div class="mt-2 mb-2">
+                        <a @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
+                          Pull from Wallet
+                        </a>
+                      </div>
+                    </div>
+                    <div v-if="validationStep === 'validate-poap' || validationStep == 'perform-validation'">
+                      <p class="mb-4">
+                        Now we'll validate that you have the poap badges. Press validate. 
+                      </p>
+                      <p class="mb-4">
+                        You can change your wallet by pressing change wallet.
+                      </p>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text form-control" id="basic-addon1">@</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="eth-address" aria-label="handle" aria-describedby="basic-addon1" required maxlength="255" v-model="ethAddress">
+                      </div>
+                      <b-button @click="clickedChangeWallet" :disabled="validationStep === 'perform-validation'" class="btn-gc-green mt-3 mb-2" size="lg">
+                        Change Wallet
+                      </b-button>
+                      <br />
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                        Validate
+                      </b-button>
+                      <br />
+                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
+                        Go Back
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'validation-complete'">
+                      Your POAP verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                    </div>
+                  </div>
+                </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.showValidation = false;
+    },
+    clickedGoBack(event) {
+      event.preventDefault();
+      this.validationStep = 'validate-address';
+      this.ethAddress = '';
+      this.validationError = '';
+    },
+    getEthAddress(){
+      const accounts = web3.eth.getAccounts();
+      $.when(accounts).then((result) => { 
+          const ethAddress = result[0];
+          this.ethAddress = ethAddress;
+          this.validationStep = 'validate-poap';
+          this.showValidation = true;
+      }).catch((_error) => {
+          this.validationError = 'Error getting ethereum accounts';
+          this.validationStep = 'validate-address';
+          this.showValidation = true;
+      });
+
+    },
+    generateSignature(){
+      // Create a signature using the provided web3 account
+      web3.eth.personal.sign('verify_poap_badges', this.ethAddress)
+         .then(signature => {
+            this.signature = signature;
+            this.verifyPOAP();
+         });
+    },
+    connectWeb3Wallet(){
+      this.showValidation = false;
+      onConnect().then((result) => {
+          this.getEthAddress();
+      }).catch((_error) => {
+          this.validationError = 'Error connecting ethereum accounts';
+          this.validationStep = 'validate-address';
+          this.showValidation = true;
+      });
+    },
+    clickedPullEthAddress(event) {
+      // Prompt web3 login if not connected
+      event.preventDefault();
+      if (!provider) {
+         this.connectWeb3Wallet();
+      }else{
+         this.getEthAddress();
+      }
+    },
+    clickedChangeWallet(event){
+      event.preventDefault();
+      this.connectWeb3Wallet();
+    },
+    clickedValidate(event) {
+      event.preventDefault();
+      this.validationError = '';
+      this.validationStep = 'perform-validation';
+      this.generateSignature();
+    },
+    verifyPOAP() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const payload = JSON.stringify({
+        'eth_address': this.ethAddress,
+        'signature': this.signature 
+      });
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+
+      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_poap`, 'POST', payload, headers);
+
+      $.when(verificationRequest).then(response => {
+        if (response.ok) {
+          this.validationStep = 'validation-complete';
+        } else {
+          this.validationError = response.msg;
+          this.validationStep = 'validate-poap';
+        }
+
+      }).catch((_error) => {
+        console.log(_error);
+        this.validationError = 'There was an error; please try again later';
+        this.validationStep = 'validate-poap';
+      });
+    }
+  }
+});
 // TODO: This component consists primarily of code taken from the SMS verification flow in the cart.
 // This approach is not DRY, and after Grants Round 7 completes, the cart should be refactored to include
 // this as a shared component, rather than duplicating the code.

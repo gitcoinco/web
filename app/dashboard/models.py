@@ -2908,6 +2908,7 @@ class Profile(SuperModel):
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
+    is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -5615,6 +5616,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
         if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'POAP Verified: {instance.is_poap_verified}')
+        if instance.is_poap_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 
