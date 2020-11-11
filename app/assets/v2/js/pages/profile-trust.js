@@ -373,48 +373,50 @@ Vue.component('poap-verify-modal', {
       this.ethAddress = '';
       this.validationError = '';
     },
-    getEthAddress(){
+    getEthAddress() {
       const accounts = web3.eth.getAccounts();
-      $.when(accounts).then((result) => { 
-          const ethAddress = result[0];
-          this.ethAddress = ethAddress;
-          this.validationStep = 'validate-poap';
-          this.showValidation = true;
+
+      $.when(accounts).then((result) => {
+        const ethAddress = result[0];
+
+        this.ethAddress = ethAddress;
+        this.validationStep = 'validate-poap';
+        this.showValidation = true;
       }).catch((_error) => {
-          this.validationError = 'Error getting ethereum accounts';
-          this.validationStep = 'validate-address';
-          this.showValidation = true;
+        this.validationError = 'Error getting ethereum accounts';
+        this.validationStep = 'validate-address';
+        this.showValidation = true;
       });
 
     },
-    generateSignature(){
+    generateSignature() {
       // Create a signature using the provided web3 account
       web3.eth.personal.sign('verify_poap_badges', this.ethAddress)
-         .then(signature => {
-            this.signature = signature;
-            this.verifyPOAP();
-         });
+        .then(signature => {
+          this.signature = signature;
+          this.verifyPOAP();
+        });
     },
-    connectWeb3Wallet(){
+    connectWeb3Wallet() {
       this.showValidation = false;
       onConnect().then((result) => {
-          this.getEthAddress();
+        this.getEthAddress();
       }).catch((_error) => {
-          this.validationError = 'Error connecting ethereum accounts';
-          this.validationStep = 'validate-address';
-          this.showValidation = true;
+        this.validationError = 'Error connecting ethereum accounts';
+        this.validationStep = 'validate-address';
+        this.showValidation = true;
       });
     },
     clickedPullEthAddress(event) {
       // Prompt web3 login if not connected
       event.preventDefault();
       if (!provider) {
-         this.connectWeb3Wallet();
-      }else{
-         this.getEthAddress();
+        this.connectWeb3Wallet();
+      } else {
+        this.getEthAddress();
       }
     },
-    clickedChangeWallet(event){
+    clickedChangeWallet(event) {
       event.preventDefault();
       this.connectWeb3Wallet();
     },
@@ -428,7 +430,7 @@ Vue.component('poap-verify-modal', {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const payload = JSON.stringify({
         'eth_address': this.ethAddress,
-        'signature': this.signature 
+        'signature': this.signature
       });
       const headers = {'X-CSRFToken': csrfmiddlewaretoken};
 
