@@ -348,7 +348,10 @@ if (document.getElementById('gc-new-grant')) {
           delete this.queryParams[key];
         }
       }
-      this.form = {...this.form, ...this.queryParams};
+      this.form = {
+        ...this.form,
+        ...this.queryParams
+      };
     }
   });
 }
