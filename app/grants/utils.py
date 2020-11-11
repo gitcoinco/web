@@ -175,15 +175,17 @@ def add_grant_to_active_clrs(grant):
 
 
 def generate_collection_thumbnail(collection, width, heigth):
-    MARGIN = int(width / 20)
-    MID_MARGIN = int(width / 70)
+    MARGIN = int(width / 30)
+    MID_MARGIN = int(width / 90)
     BG = (13, 2, 59)
     DISPLAY_GRANTS_LIMIT = 4
-    PROFILE_WIDTH = PROFILE_HEIGHT = int(width / 6)
+    PROFILE_WIDTH = PROFILE_HEIGHT = int(width / 3.5)
     GRANT_WIDTH = int(width / 2) - MARGIN - MID_MARGIN
     GRANT_HEIGHT = int(heigth / 2) - MARGIN - MID_MARGIN
     IMAGE_BOX = (width, heigth)
-    PROFILE_BOX = (PROFILE_WIDTH, PROFILE_HEIGHT)
+    LOGO_SIZE_DIFF = int(GRANT_WIDTH / 5)
+    HALF_LOGO_SIZE_DIFF = int(LOGO_SIZE_DIFF / 2)
+    PROFILE_BOX = (PROFILE_WIDTH - LOGO_SIZE_DIFF, PROFILE_HEIGHT - LOGO_SIZE_DIFF)
     GRANT_BOX = (GRANT_WIDTH, GRANT_HEIGHT)
 
     grants = collection.grants.all()
@@ -203,10 +205,11 @@ def generate_collection_thumbnail(collection, width, heigth):
     # Make rounder profile avatar img
     mask = Image.new('L', PROFILE_BOX, 0)
     draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0) + PROFILE_BOX, fill=255)
+    draw.ellipse((0, 0) + PROFILE_BOX, fill=0)
     profile_thumbnail = Image.open(fd)
     profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
     profile_circle = ImageOps.fit(profile_thumbnail, mask.size, centering=(0.5, 0.5))
+
 
     CORNERS = [
         [MARGIN, MARGIN],  # Top left grant
@@ -233,11 +236,17 @@ def generate_collection_thumbnail(collection, width, heigth):
                                             int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)))
         thumbail.paste(grant_bg, CORNERS[index], grant_bg)
 
+    draw_on_thumbnail = ImageDraw.Draw(thumbail)
+    draw_on_thumbnail.ellipse([
+        (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)),
+        (int(width / 2 + PROFILE_WIDTH / 2), int(heigth / 2 + PROFILE_HEIGHT / 2))
+    ], fill="#0D013B")
+
     if profile_circle.mode in ('P', 'RGBA'):
-        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)),
+        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF),
                        profile_circle)
     else:
-        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)))
+        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF))
 
     return thumbail
 
