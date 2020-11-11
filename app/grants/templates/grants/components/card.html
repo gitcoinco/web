@@ -48,7 +48,7 @@
             </p>
             <div class="grant-item__owner">
               <div class="d-flex">
-                <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
+                <a :href="grant.admin_profile.url"  :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
                   <div class="d-flex align-center">
                     <div class="grant-item__owner-image ml-2 position-relative" style="top: -4px;">
                       <img :src="grant.admin_profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
@@ -65,7 +65,13 @@
                 <div class="match__round--inline mr-3">
                   <template v-if="grant.clr_round_num">
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
+                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]
+                      <template v-if="grant.tenants.indexOf('ETH') > -1">
+                        DAI
+                      </template>
+                      <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
+                        USD
+                      </template>
                     </span>
                     <span class="amount mb-2 font-smaller-3">
                       CLR Match
@@ -76,7 +82,13 @@
                 </div>
                 <div v-if="grant.clr_round_num">
                   <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
+                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]]
+                    <template v-if="grant.tenants.indexOf('ETH') > -1">
+                      DAI
+                    </template>
+                    <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
+                      USD
+                    </template>
                   </span>
                   <span class="amount mb-2 font-smaller-3">
                     raised from
@@ -126,7 +138,7 @@
       </div>
       <div class="grant-item__content px-3">
         <h2 class="grant-item__title font-subheader">
-          <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+          <a :href="grant.details_url" target="_blank">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
           <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
@@ -185,7 +197,9 @@
             </div>
             <div class="col-6 float-right px-0" v-if="grant.clr_round_num">
               <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
+                [[ grant.amount_received_in_round || 0 | round | formatNumber ]]
+                <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
+                <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">USD</template>
               </h2>
               <p class="amount mb-2 font-caption font-weight-semibold">
                 raised from [[ grant.positive_round_contributor_count ]] contributors
@@ -195,7 +209,9 @@
 
               <template v-if="grant.is_clr_eligible">
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
+                  [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]
+                  <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
+                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">USD</template>
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">
                   Estimated CLR Match
@@ -203,7 +219,9 @@
               </template>
               <template v-else>
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  [[ grant.amount_received || 0 | round | formatNumber ]] DAI
+                  [[ grant.amount_received || 0 | round | formatNumber ]]
+                  <template v-if="grant.tenants.indexOf('ETH') > -1 ">DAI</template>
+                  <template v-else-if="grant.tenants.indexOf('ZCASH') > -1 ">USD</template>
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">All Time Funding</p>
               </template>
@@ -211,7 +229,12 @@
           </div>
 
           <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
-            {% include 'grants/components/clr_estimate.html' %}
+            <template v-if="grant.tenants.indexOf('ETH') > -1">
+              {% include 'grants/components/clr_estimate.html' with token='DAI' %}
+            </template>
+            <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
+              {% include 'grants/components/clr_estimate.html' with token='ZEC' %}
+            </template>
           </div>
           <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
             <template v-slot:button-content>

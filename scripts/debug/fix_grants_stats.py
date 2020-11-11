@@ -26,7 +26,6 @@ for key in keys:
         item = f"{grants_key}{key}"
         key_list.append(item)
 
-print(len(key_list), stats.count())
 
 _from = timezone.now() - timezone.timedelta(days=30)
 stats = Stat.objects.filter(key__in=key_list, pk__lt=lt_pk, created_on__gt=_from).order_by('-pk')
@@ -36,3 +35,5 @@ for stat in stats:
     stat.created_on -= timezone.timedelta(minutes=int(stat.created_on.strftime('%M')))
     stat.save()
     print(stat.pk)
+
+print(len(key_list), stats.count())

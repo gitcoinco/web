@@ -47,22 +47,28 @@ from retail.views import get_contributor_landing_page_context, get_specific_acti
 from townsquare.views import tags
 
 
+def create_email_inventory_cache():
+    print('create_email_inventory_cache')
+    from marketing.models import EmailEvent, EmailInventory
+    for ei in EmailInventory.objects.all().exclude(email_tag=''):
+        stats = {}
+        for i in [1, 7, 30]:
+            key = f'{i}d'
+            stats[key] = {}
+            after = timezone.now() - timezone.timedelta(days=i)
+            for what in ['delivered', 'open', 'click']:
+                num = EmailEvent.objects.filter(created_on__gt=after, event=what, category__contains=ei.email_tag).count()
+                stats[key][what] = num
+        ei.stats = stats
+        ei.save()
+
+
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
     pks = Grant.objects.values_list('pk', flat=True)
     for pk in pks:
         grant = Grant.objects.get(pk=pk)
-        clr_round = None
-
-        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
-            clr_round = grant.in_active_clrs.first()
-
-        if clr_round:
-            grant.is_clr_active = True
-            grant.clr_round_num = clr_round.round_num
-        else:
-            grant.is_clr_active = False
-            grant.clr_round_num = ''
+        grant.calc_clr_round()
         grant.save()
 
 def create_grant_type_cache():
@@ -395,3 +401,7 @@ class Command(BaseCommand):
             create_contributor_landing_page_context()
             create_hackathon_cache()
             create_hackathon_list_page_cache()
+            hour = int(timezone.now().strftime('%H'))
+            if hour < 4:
+                # do dailyi updates
+                create_email_inventory_cache()

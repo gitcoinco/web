@@ -31,6 +31,7 @@ from app import settings
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.zcash import sync_zcash_payout
 from perftools.models import JSONStore
 
 logger = logging.getLogger(__name__)
@@ -239,3 +240,16 @@ def generate_collection_thumbnail(collection, width, heigth):
         thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)))
 
     return thumbail
+
+
+def sync_payout(contribution):
+    if not contribution:
+        return None
+
+    subscription = contribution.subscription
+
+    if not subscription:
+        return None
+
+    if subscription.tenant == 'ZCASH':
+        sync_zcash_payout(contribution)

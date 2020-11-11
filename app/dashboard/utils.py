@@ -41,6 +41,8 @@ from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.filecoin import sync_filecoin_payout
+from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
@@ -303,6 +305,8 @@ def get_web3(network, sockets=False):
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         return w3
+    elif network == 'xdai':
+        return Web3(HTTPProvider(f'https://dai.poa.network/'))
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
@@ -506,9 +510,14 @@ def sync_payout(fulfillment):
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
+        elif token_name == 'FIL':
+            sync_filecoin_payout(fulfillment)
 
     elif fulfillment.payout_type == 'polkadot_ext':
          sync_polkadot_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'harmony_ext':
+        sync_harmony_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -806,10 +815,17 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+
 def is_valid_eth_address(eth_address):
     return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
+
 def get_tx_status(txid, network, created_on):
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on)
+    return status, timestamp
+
+
+def get_tx_status_and_details(txid, network, created_on):
     from django.utils import timezone
     from dashboard.utils import get_web3
     import pytz
@@ -817,6 +833,7 @@ def get_tx_status(txid, network, created_on):
     DROPPED_DAYS = 4
 
     # get status
+    tx = {}
     status = None
     if txid == 'override':
         return 'success', None #overridden by admin
@@ -853,7 +870,7 @@ def get_tx_status(txid, network, created_on):
             timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
     except:
         pass
-    return status, timestamp
+    return status, timestamp, tx
 
 
 def is_blocked(handle):

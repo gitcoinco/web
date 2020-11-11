@@ -18,10 +18,10 @@
 
 {% load humanize i18n static grants_extra %}
 <div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
-  <div class="activity_main row bg_{{ row.activity_type }}">
+  <div class="activity_main pl-2 row bg_{{ row.activity_type }}">
     <div class="col-2 p-0">
       <div class="activity-avatar">
-        <a id="profile-avatar-link" style="display:flex; width: 6.1rem; height: 6.1rem; margin-left: auto; margin-right: auto;" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
+        <a id="profile-avatar-link" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
           <img class="avatar rounded-circle" src="https://gitcoin.co/dynamic/avatar/{{row.profile.handle}}"/>
         </a>
         <div class="position-relative">
@@ -56,7 +56,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
+    <div class="col-10 col-sm-8 pl-3 activity_detail">
       <div>
         {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
@@ -75,7 +75,11 @@
             <br>
           {% endif %}
           {% if row.project %}
-            <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            {% if row.project.name %}
+              <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            {% else %}
+              <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id %}" class="tag"   data-toggle="tooltip" title="Go to project {{ row.project.id }}">via project {{ row.project.id }}</a>
+            {% endif %}
           {% endif %}
 
           {% if row.hackathonevent %}
@@ -207,7 +211,11 @@
             {{ row.grant.title }}
           </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
-          {% trans "contributed to" %}
+          {% if row.metadata.anonymize %}
+            {% trans "observed an anonymous contribution to" %}
+          {% else %}
+            {% trans "contributed to" %}
+          {% endif %}
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
@@ -454,7 +462,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="d-none d-sm-inline col-sm-2 pl-0 position-relative">
+    <div class="d-none pt-4 d-sm-inline col-sm-2 pl-0 position-relative">
       {% if row.activity_type == 'new_bounty' %}
         <div class="bg-gc-blue card-ribbon px-2 text-center">
           <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
@@ -526,7 +534,7 @@
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
         {% endif %}
       </div>
-      <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
             {{ row.metadata.description }}
@@ -555,7 +563,7 @@
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
         {% endif %}
       </div>
-      <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
             {{ row.bounty.title }}

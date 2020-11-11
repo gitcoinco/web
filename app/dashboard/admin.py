@@ -30,8 +30,8 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription,
-    UserAction, UserVerificationModel,
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
+    TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -53,6 +53,15 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class TransactionHistoryAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', 'status', '__str__']
+    raw_id_fields = ['earning']
+    search_fields = [
+        'payload', 'txid', 'status'
+    ]
 
 
 class ObjectViewAdmin(admin.ModelAdmin):
@@ -365,6 +374,7 @@ class HackathonSponsorAdmin(admin.ModelAdmin):
     """The admin object for the HackathonSponsor model."""
 
     list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
+    raw_id_fields = ['hackathon', 'sponsor']
 
 
 class HackathonWorkshopAdmin(admin.ModelAdmin):
@@ -378,6 +388,7 @@ class SponsorAdmin(admin.ModelAdmin):
     """The admin object for the Sponsor model."""
 
     list_display = ['pk', 'name', 'img']
+    raw_id_fields = ['tribe']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
@@ -453,7 +464,7 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 class HackathonProjectAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
-    raw_id_fields = ['profiles', 'bounty', 'hackathon']
+    raw_id_fields = ['profiles', 'bounty', 'hackathon', 'grant_obj']
     search_fields = ['name', 'summary', 'status']
 
     def hackathon_link(self, instance):
@@ -604,6 +615,7 @@ admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
+admin.site.register(TransactionHistory, TransactionHistoryAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
 admin.site.register(TribesSubscription, TribesSubscriptionAdmin)
