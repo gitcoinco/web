@@ -30,7 +30,7 @@
       {% if kudos_transfer.tx_status == 'not_subed' %}
       to your Gitcoin profile.  The web3 transaction will be submitted when gas fees are below 10 gWei.
       {% elif kudos_transfer.receive_txid != 'pending_celery' %}
-        via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>
+        via transaction <a href="{{kudos_transfer.receive_tx_blockexplorer_link}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>
       {% else %}
       {% endif %}
 

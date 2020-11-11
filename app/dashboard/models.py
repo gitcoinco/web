@@ -1637,6 +1637,14 @@ class SendCryptoAsset(SuperModel):
         return self.get_natural_value()
 
     @property
+    def receive_tx_blockexplorer_link(self): 
+        if self.network == 'xdai':
+            return f"https://explorer.anyblock.tools/ethereum/poa/xdai/transaction/{self.receive_txid}"
+        if self.network == 'mainnet':
+            return f"https://etherscan.io/tx/{self.receive_txid}"
+        return f"https://{self.network}.etherscan.io/tx/{self.receive_txid}"
+
+    @property
     def amount_in_wei(self):
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals'] if token else 18
