@@ -6,6 +6,7 @@
       <sms-verify-modal></sms-verify-modal>
       <twitter-verify-modal></twitter-verify-modal>
       <duniter-verify-modal></duniter-verify-modal>
+      <poap-verify-modal></poap-verify-modal>
     </div>
     <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
     The higher the Trust
@@ -138,6 +139,42 @@
           {% endif %}
         </div>
       </div>
+      
+      <!-- GOOGLE ROW -->
+      <div class="row mt-2 mb-4">
+        <div class="col-12 col-md-1 mx-auto text-center pt-1">
+          <span>
+            <img src="/static/v2/images/project_logos/google.png" alt="Google Logo" class="img-fluid">
+          </span>
+        </div>
+        <div class="col-12 col-md-7 mb-3 mb-md-0">
+          <div class="font-weight-bold">
+            Verify With Google
+          </div>
+          <div>
+            Verify your Google account.
+          </div>
+        </div>
+        <div class="col-6 col-md-2 text-center">
+          <div class="font-weight-bold">
+            +5%
+          </div>
+          <div style="color:grey">
+            <small>Grants CLR Match</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-2">
+
+          {% if is_google_verified %}
+            <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
+          {% else %}
+            <form method="post" action={% url 'request_verify_google' profile.handle.lower %}>
+              {% csrf_token %}
+              <input type="submit" value="Verify" class="button button--primary text-nowrap"/>
+            </form>
+          {% endif %}
+        </div>
+      </div>
 
       <!-- DUNITE ROW -->
       <div class="row mt-2 mb-4">
@@ -168,17 +205,46 @@
             <a href="" role="button" id="verify-duniter-link" class="button button--primary text-nowrap">Verify</a>
           {% endif %}
         </div>
-      </div>
 
       <h5>Coming Soon ™️</h5>
       <a href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
       {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" %}
       {% include "profiles/trust_soon_row.html" with service="Idena Network" %}
-      {% include "profiles/trust_soon_row.html" with service="POAP" %}
+      <!-- POAP ROW -->
+      <div class="row mt-2 mb-4">
+        <div class="col-12 col-md-1 mx-auto text-center pt-1">
+          <span>
+            <img src="/static/v2/images/project_logos/poap.svg" alt="POAP Logo" class="img-fluid">
+          </span>
+        </div>
+        <div class="col-12 col-md-7 mb-3 mb-md-0">
+          <div class="font-weight-bold">
+            Verify With POAP
+          </div>
+          <div>
+            Verify your POAP badges.
+          </div>
+        </div>
+        <div class="col-6 col-md-2 text-center">
+          <div class="font-weight-bold">
+            +5%
+          </div>
+          <div style="color:grey">
+            <small>Grants CLR Match</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-2">
+          {% if is_poap_verified %}
+            <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
+          {% else %}
+            <a href="" role="button" id="verify-poap-link" class="button button--primary text-nowrap">Verify</a>
+          {% endif %}
+        </div>
+      </div>
       {% include "profiles/trust_soon_row.html" with service="Upala" %}
       {% include "profiles/trust_soon_row.html" with service="Equality Protocol" %}
-      {% include "profiles/trust_soon_row.html" with service="Google and/or Facebook" %}
+      {% include "profiles/trust_soon_row.html" with service="Facebook" %}
       {% include "profiles/trust_soon_row.html" with service="KYC" %}
       {% include "profiles/trust_soon_row.html" with service="PASS" %}
       {% include "profiles/trust_soon_row.html" with service="ENS Reverse Lookup" %}

@@ -1637,6 +1637,14 @@ class SendCryptoAsset(SuperModel):
         return self.get_natural_value()
 
     @property
+    def receive_tx_blockexplorer_link(self): 
+        if self.network == 'xdai':
+            return f"https://explorer.anyblock.tools/ethereum/poa/xdai/transaction/{self.receive_txid}"
+        if self.network == 'mainnet':
+            return f"https://etherscan.io/tx/{self.receive_txid}"
+        return f"https://{self.network}.etherscan.io/tx/{self.receive_txid}"
+
+    @property
     def amount_in_wei(self):
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals'] if token else 18
@@ -2908,7 +2916,10 @@ class Profile(SuperModel):
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
+    is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
+    is_google_verified=models.BooleanField(default=False)
+    identity_data_google = JSONField(default=dict)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -5139,6 +5150,8 @@ class HackathonProject(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     winner = models.BooleanField(default=False, db_index=True)
     extra = JSONField(default=dict, blank=True, null=True)
+    categories = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    tech_stack = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     grant_obj = models.ForeignKey(
         'grants.Grant',
         null=True,
@@ -5613,6 +5626,16 @@ class Investigation(SuperModel):
 
         htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
         if instance.is_twitter_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'Google Verified: {instance.is_google_verified}')
+        if instance.is_google_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'POAP Verified: {instance.is_poap_verified}')
+        if instance.is_poap_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 

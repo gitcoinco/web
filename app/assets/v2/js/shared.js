@@ -1341,3 +1341,74 @@ const get_UUID = () => {
 
   return uuid;
 };
+
+const isVimeoProvider = (videoURL) => {
+  let vimeoId = null;
+
+  $.ajax({
+    url: `https://vimeo.com/api/oembed.json?url=${videoURL}`,
+    async: false,
+    success: function(response) {
+      if (response.video_id) {
+        vimeoId = response.video_id;
+      }
+    }
+  });
+
+  return vimeoId;
+};
+
+function isValidUrl(string) {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return true;
+}
+
+const getVideoMetadata = (videoURL) => {
+  const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
+  const loom_re = /(?:https?:\/\/|\/\/)?(?:www\.)?(?:loom\.com\/share\/)([\w]{32})/;
+
+  if (!videoURL || !isValidUrl(videoURL)) {
+    return null;
+  }
+
+  const youtube_match = videoURL.match(youtube_re);
+  const loom_match = videoURL.match(loom_re);
+
+  if (youtube_match !== null && youtube_match[1].length === 11) {
+    return {
+      'provider': 'youtube',
+      'id': youtube_match[1],
+      'url': videoURL
+    };
+  }
+
+  if (loom_match !== null) {
+    return {
+      'provider': 'loom',
+      'id': loom_match[1],
+      'url': videoURL
+    };
+  }
+
+  const vimeoId = isVimeoProvider(videoURL);
+
+  if (vimeoId) {
+    return {
+      'provider': 'vimeo',
+      'id': vimeoId,
+      'url': videoURL
+    };
+  }
+
+  return {
+    'provider': 'generic',
+    'id': null,
+    'url': videoURL
+  };
+};
