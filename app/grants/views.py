@@ -69,7 +69,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
-from grants.tasks import update_grant_metadata
+from grants.tasks import update_grant_metadata, process_grant_creation_email
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -1292,6 +1292,7 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
+            grant.github_project_url = request.POST.get('edit-github_project_url')
             grant.reference_url = request.POST.get('edit-reference_url')
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
@@ -1552,9 +1553,7 @@ def grant_new(request):
             'grant_type': GrantType.objects.get(name=grant_type),
         }
 
-
         grant = Grant.objects.create(**grant_kwargs)
-        new_grant_admin(grant)
 
         team_members = (team_members[0].split(','))
         team_members.append(profile.id)
@@ -1583,7 +1582,7 @@ def grant_new(request):
         )
 
         record_grant_activity_helper('new_grant', grant, profile)
-        new_grant(grant, profile)
+        process_grant_creation_email.delay(grant.pk, profile.pk)
 
         response = {
             'status': 200,
@@ -1609,12 +1608,17 @@ def grant_new(request):
                 'id': g_category.pk,
                 'name': g_category.category
             })
-        grant_types.append({
+
+        grant_type_temp = {
             'id': g_type.pk,
             'name': g_type.name,
             'label': g_type.label,
             'categories': grant_categories
-        })
+        }
+        if g_type.logo:
+            grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
+
+        grant_types.append(grant_type_temp)
 
     project = None
     # project_id = request.GET.get('project_id', None)
@@ -2193,40 +2197,136 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     Activity.objects.create(**kwargs)
 
 
+@login_required
 def new_matching_partner(request):
 
-    profile = get_profile(request)
+    grant_collections = []
+    for g_collection in GrantCollection.objects.filter(hidden=False):
+        grant_collections.append({
+            'id': g_collection.pk,
+            'name': g_collection.title,
+        })
+
+    grant_types = []
+    for g_type in GrantType.objects.filter(is_active=True):
+        grant_types.append({
+            'id': g_type.pk,
+            'name': g_type.label,
+        })
+
+    grant_categories = []
+    for g_category in GrantCategory.objects.all():
+        grant_categories.append({
+            'id': g_category.pk,
+            'name': g_category.category
+        })
+
     params = {
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants7.png')),
         'title': 'Pledge your support.',
         'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
-        'data': request.POST.dict(),
-        'grant_types': basic_grant_types() + basic_grant_categories(None),
+        'grant_types': grant_types,
+        'grant_categories': grant_categories,
+        'grant_collections': grant_collections
     }
 
-    if not request.user.is_authenticated:
-        messages.info(
-                request,
-                _('Please login to submit this form.')
-            )
-    elif request.POST:
-        end_date = timezone.now() + timezone.timedelta(days=7*3)
-        network = 'mainnet'
-        match_pledge = MatchPledge.objects.create(
-            profile=profile,
-            active=False,
-            end_date=end_date,
-            amount=0,
-            data=json.dumps(request.POST.dict())
-        )
-        match_pledge.save()
-        new_grant_match_pledge(match_pledge)
-        messages.info(
-                request,
-                _("""Thank you for your inquiry. We will respond within 1-2 business days.  """)
-            )
+    return TemplateResponse(request, 'grants/new_match.html', params)
 
-    return TemplateResponse(request, 'grants/newmatch.html', params)
+
+
+def create_matching_pledge_v1(request):
+
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to create pledge'
+    }
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to create a pledge'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: pledge creation is a POST operation'
+        return JsonResponse(response)
+
+
+    grant_types = request.POST.get('grant_types[]', None)
+    grant_categories = request.POST.get('grant_categories[]', None)
+    grant_collections = request.POST.get('grant_collections[]', None)
+
+    if grant_types:
+        grant_types = grant_types.split(',')
+    if grant_categories:
+        grant_categories = grant_categories.split(',')
+    if grant_collections:
+        grant_collections = grant_collections.split(',')
+
+    if not grant_types and not grant_collections:
+        response['message'] = 'error:  grant_types / grant_collections is parameter'
+        return JsonResponse(response)
+
+
+    matching_pledge_stage = request.POST.get('matching_pledge_stage', None)
+    tx_id = request.POST.get('tx_id', None)
+    if matching_pledge_stage == 'ready' and not tx_id:
+        response['message'] = 'error: tx_id is a mandatory parameter'
+        return JsonResponse(response)
+
+    amount = request.POST.get('amount', False)
+
+    if tx_id:
+        # TODO
+        collection_filters = None
+        grant_filters = None
+
+        if grant_types:
+            grant_filters = {
+                'grant_type__in': grant_types
+            }
+            if grant_categories:
+                grant_filters['categories__in'] = grant_categories
+
+        if grant_collections:
+            collection_filters = {
+                'pk__in': grant_collections
+            }
+
+        clr_round = GrantCLR.objects.create(
+            round_num='pledge',
+            start_date=timezone.now(),
+            end_date=timezone.now(),
+            total_pot=amount,
+            grant_filters=grant_filters if grant_filters else {},
+            collection_filters=collection_filters if collection_filters else {}
+        )
+        clr_round.save()
+
+
+    end_date = timezone.now() + timezone.timedelta(days=7*3)
+    match_pledge = MatchPledge.objects.create(
+        profile=profile,
+        active=False,
+        end_date=end_date,
+        amount=amount,
+        data=json.dumps(request.POST.dict()),
+        clr_round_num= clr_round if tx_id else None
+    )
+
+    match_pledge.save()
+    new_grant_match_pledge(match_pledge)
+
+    response = {
+        'status': 200,
+        'message': 'success: match pledge created'
+    }
+    return JsonResponse(response)
 
 
 def invoice(request, contribution_pk):

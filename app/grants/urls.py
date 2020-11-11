@@ -22,11 +22,11 @@ from django.urls import path, re_path
 from grants.views import (
     add_grant_from_collection, bulk_fund, bulk_grants_for_cart, clr_grants, contribute_to_grants_v1,
     contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
-    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, flag, get_collection,
-    get_collections_list, get_grant_payload, get_grants, get_interrupted_contributions, get_replaced_tx, grant_activity,
-    grant_categories, grant_details, grant_details_api, grant_fund, grant_new, grant_new_whitelabel, grants,
-    grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view,
-    grants_zksync_recovery_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
+    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
+    flag, get_collection, get_collections_list, get_grant_payload, get_grants, get_interrupted_contributions,
+    get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_fund, grant_new, grant_new_whitelabel,
+    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info,
+    grants_stats_view, grants_zksync_recovery_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
     remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
     zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
@@ -63,6 +63,7 @@ urlpatterns = [
     re_path(r'^quickstart', quickstart, name='quickstart'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
     re_path(r'^matching-partners/new', new_matching_partner, name='new_matching_partner'),
+    re_path(r'^v1/api/matching-pledge/create', create_matching_pledge_v1, name='create_matching_pledge_v1'),
     path(
         'invoice/contribution/<int:contribution_pk>',
         invoice,
