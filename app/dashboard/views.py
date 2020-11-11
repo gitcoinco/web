@@ -78,9 +78,10 @@ from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    profile_helper,
+    get_poap_earliest_owned_token_timestamp, profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from eth_account.messages import defunct_hash_message
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -140,6 +141,7 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
 
 
 @protected_resource()
@@ -2913,6 +2915,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['upcoming_calls'] = []
 
         context['is_sms_verified'] = profile.sms_verification
+        context['is_poap_verified'] = profile.is_poap_verified
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
     else:
@@ -4401,6 +4404,10 @@ def hackathon_save_project(request):
     message = request.POST.get('looking-members-message', '')[:150]
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
+    video_provider = request.POST.get('videodemo-provider', '')
+    video_url = request.POST.get('videodemo-url', '')
+    categories = request.POST.getlist('categories[]')
+    tech_stack = request.POST.getlist('tech-stack[]')
 
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
@@ -4429,17 +4436,28 @@ def hackathon_save_project(request):
         }
     }
 
+    if video_url and video_provider:
+        kwargs['extra']['video_provider'] = video_provider
+        kwargs['extra']['video_url'] = video_url
+
+    if categories:
+        kwargs['categories'] = categories
+
+    if tech_stack:
+        kwargs['tech_stack'] = tech_stack
+
     if looking_members:
         has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
         has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
         other_contact_method = request.POST.get('other_contact_method', '')[:150]
         kwargs['message'] = message
-        kwargs['extra'] = {
+
+        kwargs['extra'].update({
             'has_gitcoin_chat': has_gitcoin_chat,
             'has_other_contact_method': has_other_contact_method,
             'other_contact_method': other_contact_method,
             'message': message,
-        }
+        })
 
     try:
 
@@ -4493,15 +4511,13 @@ def hackathon_save_project(request):
         })
 
 
-@login_required
 def get_project(request, project_id):
-    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
     params = project_data(project_id)
     if not params:
         raise Http404("The project doesnt exists.")
 
     return JsonResponse(params)
+
 
 def project_data(project_id):
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
@@ -4509,6 +4525,8 @@ def project_data(project_id):
         return None
 
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
+
     params = {
         'project': {
             'name': project.name,
@@ -4519,6 +4537,10 @@ def project_data(project_id):
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'demo': {
+                'url': project.extra.get('video_url', None),
+                'provider': project.extra.get('video_provider', None),
+            },
             'logo_url': project.logo.url if project.logo else staticfiles_storage.url(
                 f'v2/images/projects/logos/${project.id}.png'),
             'prize': {
@@ -4529,15 +4551,18 @@ def project_data(project_id):
                 'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
+            'categories': project.categories,
+            'stack': project.tech_stack,
             'team_members': [{
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
             } for member_profile in project.profiles.all()],
-            'team_members_profile': project.profiles.all()
         },
+        'comments': comments,
         'hackathon': hackathon_obj[0],
     }
+
     return params
 
 
@@ -4560,6 +4585,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
     desc = project.summary
     avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
     what = f'project:{project_id}'
     params = {
         'title': title,
@@ -4580,6 +4606,10 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'logo_url': project.logo.url if project.logo else '',
+            'demo': {
+                'url': project.extra.get('video_url', None),
+                'provider': project.extra.get('video_provider', None),
+            },
             'prize': {
                 'id': project.bounty.id,
                 'title': project.bounty.title,
@@ -4588,6 +4618,9 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
                 'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
+            'comments': comments,
+            'categories': project.categories,
+            'stack': project.tech_stack,
             'team_members': [{
                 'url': member_profile.url,
                 'handle': member_profile.handle,
@@ -5557,6 +5590,11 @@ def fulfill_bounty_v1(request):
     if bounty.event:
         try:
             project = HackathonProject.objects.get(pk=request.POST.get('projectId'))
+            demo_provider = request.POST.get('videoDemoProvider')
+            demo_link = request.POST.get('videoDemoLink')
+            if demo_link:
+                project.extra['video_url'] = demo_link
+                project.extra['video_provider'] = demo_provider if demo_provider in ('loom', 'youtube', 'vimeo') else 'generic'
         except HackathonProject.DoesNotExist:
             response['message'] = 'error: Project not found'
             return JsonResponse(response)
@@ -5635,6 +5673,9 @@ def fulfill_bounty_v1(request):
     fulfillment.fulfiller_metadata = json.loads(fulfiller_metadata)
 
     fulfillment.save()
+
+    if project:
+        project.save()
 
     response = {
         'status': 204,
@@ -6239,3 +6280,60 @@ def events(request, hackathon):
     return JsonResponse({
         'events': events,
     })
+
+
+@login_required
+@require_POST
+def verify_user_poap(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_poap_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    signature = request_data.get('signature', '')
+    eth_address = request_data.get('eth_address', '')
+    if eth_address == '' or signature == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Empty signature or Ethereum address',
+        })
+
+    message_hash = defunct_hash_message(text="verify_poap_badges")
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    if eth_address != signer:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid signature',
+        })
+
+    # commented out because network = get_default_network() results in dashboard.utils.UnsupportedNetworkException: rinkeby
+    # network = get_default_network()
+    network = "mainnet"
+    fifteen_days_ago = datetime.now()-timedelta(days=15)
+
+    timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
+    if timestamp is None or timestamp > fifteen_days_ago.timestamp():
+        # We couldn't find any POAP badge for this ethereum address
+        return JsonResponse({
+            'ok': False,
+            'msg': 'No POAP badges(ERC721 NFTs) has been sitting in this wallet for more than 15 days!',
+        })
+
+    profile = profile_helper(handle, True)
+    profile.is_poap_verified = True
+    profile.save()
+    return JsonResponse({
+                'ok': True,
+                'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+            }
+    )

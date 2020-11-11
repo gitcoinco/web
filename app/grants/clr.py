@@ -29,7 +29,7 @@ from django.utils import timezone
 
 import numpy as np
 import pytz
-from grants.models import Contribution, Grant, PhantomFunding
+from grants.models import Contribution, Grant, GrantCollection
 from marketing.models import Stat
 from perftools.models import JSONStore
 
@@ -163,7 +163,7 @@ def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold
 
     bigtot = 0
     totals = []
-    
+
     for proj, contribz in aggregated_contributions.items():
         tot = 0
         _num = 0
@@ -282,7 +282,6 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
     Returns:
         contributions               : contributions data object
         grants                      : list of grants based on clr_type
-        phantom_funding_profiles    : phantom funding data object
 
 '''
 def fetch_data(clr_round, network='mainnet'):
@@ -291,17 +290,23 @@ def fetch_data(clr_round, network='mainnet'):
     clr_end_date = clr_round.end_date
     grant_filters = clr_round.grant_filters
     subscription_filters = clr_round.subscription_filters
+    collection_filters = clr_round.collection_filters
 
     contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 
     grants = Grant.objects.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
-    grants = grants.filter(**grant_filters)
 
-    phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+    if grant_filters:
+        # Grant Filters (grant_type, category)
+        grants = grants.filter(**grant_filters)
+    elif collection_filters:
+        # Collection Filters
+        grant_ids = GrantCollection.objects.filter(**collection_filters).values_list('grants', flat=True)
+        grants = grants.filter(pk__in=grant_ids)
 
-    return grants, contributions, phantom_funding_profiles
+    return grants, contributions
 
 
 
@@ -311,7 +316,6 @@ def fetch_data(clr_round, network='mainnet'):
     Args:
         grants                  : grants list
         contributions           : contributions list for thoe grants
-        phantom_funding_profiles: phantom funding for those grants
         clr_round               : GrantCLR
 
     Returns:
@@ -321,7 +325,7 @@ def fetch_data(clr_round, network='mainnet'):
         }
 
 '''
-def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round):
+def populate_data_for_clr(grants, contributions, clr_round):
 
     contrib_data_list = []
 
@@ -377,13 +381,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
-    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+    grants, contributions = fetch_data(clr_round, network)
 
     if contributions.count() == 0:
         print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
         return
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
 
     if only_grant_pk:
         grants = grants.filter(pk=only_grant_pk)

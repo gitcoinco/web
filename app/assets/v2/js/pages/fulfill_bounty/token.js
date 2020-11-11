@@ -49,6 +49,13 @@ fulfillBounty = data => {
     'bountyPk': data.bountyPk
   };
 
+  if (data.videoDemoLink) {
+    const metadata = getVideoMetadata(data.videoDemoLink);
+
+    params['videoDemoLink'] = data.videoDemoLink;
+    params['videoDemoProvider'] = metadata ? metadata['provider'] : null;
+  }
+
   $.post(url, params, function(response) {
     if (200 <= response.status && response.status <= 204) {
       // redirect to bounty page

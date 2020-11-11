@@ -40,15 +40,15 @@ third case, pure zkSync donations, is not yet supported because none of the miss
 """
 
 # ============================== Set the variables for this run here ===============================
-network = "rinkeby"
-handle = "mds1"
-txid = "0xdc85d562b0c0caf25e03e692d0ccc696ebcf5046cb36d12d4fdf88ceb7cac0e1"
-token = "USDT"
-to_address = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF"
-from_address = "0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD"
-do_write = True
-created_on = datetime.datetime(2020, 10, 5, 17, 22, tzinfo=pytz.UTC)
-gitcoin_zksync_addr = "0x5b4e39e6649a9c0afd39f068f7076f0ea3125e8a"  # required for zkSync cases
+network = "rinkeby" # "mainnet" or "rinkeby"
+handle = "mds1" # Gitcoin username of user who made the contributions
+txid = "0xdc85d562b0c0caf25e03e692d0ccc696ebcf5046cb36d12d4fdf88ceb7cac0e1" # L1 transaction hash
+token = "USDT" # token contributions were made in
+to_address = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF" # recipient of the L1 transaction
+from_address = "0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD" # from address for hash given by txid 
+do_write = True # Use True to save contributions to Database
+created_on = datetime.datetime(2020, 10, 5, 17, 22, tzinfo=pytz.UTC) # UTC timestamp oftxid 
+gitcoin_zksync_addr = "0x5b4e39e6649a9c0afd39f068f7076f0ea3125e8a" # user's Gitcoin zkSync address, only used for zkSync cases
 
 
 class Command(BaseCommand):
@@ -175,7 +175,7 @@ class Command(BaseCommand):
         zksync_contract = w3.eth.contract(address=zksync_address, abi=zksync_abi)
 
         # Main Execution ===================================================================================
-        if to_address == bulk_checkout_address:
+        if w3.toChecksumAddress(to_address) == w3.toChecksumAddress(bulk_checkout_address):
             # BulkCheckout
             # Make sure tx was successful
             receipt = w3.eth.getTransactionReceipt(txid)
@@ -236,7 +236,7 @@ class Command(BaseCommand):
 
                 # Skip if we are sending back to the user
                 to = w3.toChecksumAddress(transaction["tx"]["to"])
-                if to == gitcoin_zksync_addr or to == from_address:
+                if to == w3.toChecksumAddress(gitcoin_zksync_addr) or to == w3.toChecksumAddress(from_address):
                     continue
 
                 # Extract contribution parameters from the JSON
