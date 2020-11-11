@@ -155,6 +155,11 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'
+    ),    
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap',
+        dashboard.views.verify_user_poap,
+        name='verify_user_poap'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
