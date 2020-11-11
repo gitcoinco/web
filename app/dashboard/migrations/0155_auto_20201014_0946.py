@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0154_profile_override_dict'),
+        ('dashboard', '0154_auto_20201012_1044'),
     ]
 
     operations = [
