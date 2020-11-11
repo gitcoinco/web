@@ -3,7 +3,7 @@
 let step = 1;
 let orgs = document.contxt.orgs;
 let tasks = document.contxt.onboard_tasks;
-let optoutOnboard = sessionStorage.optoutOnboard
+let optoutOnboard = sessionStorage.optoutOnboard;
 
 Vue.component('v-select', VueSelect.VueSelect);
 
@@ -240,10 +240,9 @@ if (document.getElementById('gc-onboard')) {
       ) {
         // show_persona_modal();
         this.$refs['onboard-modal'].openModal();
-        this.$refs['onboard-modal'].jqEl.on('hidden.bs.modal', function (e) {
-          console.log('hidden')
+        this.$refs['onboard-modal'].jqEl.on('hidden.bs.modal', function(e) {
           sessionStorage.optoutOnboard = true;
-        })
+        });
       }
       this.fetchOnboardData();
     }
