@@ -39,13 +39,14 @@ Vue.mixin({
       let vm = this;
       let ids;
 
-      if (!vm.grant.metadata.related[0].length || vm.relatedGrants.length) {
+      if (!vm.grant.metadata.related.length || vm.relatedGrants.length) {
         return;
       }
 
-      ids = String(vm.grant.metadata.related[0]);
+      ids = vm.grant.metadata.related.map(arr => {return arr[0];});
+      idsString = String(ids);
 
-      let url = `http://localhost:8000/grants/v1/api/grants?pks=${ids}`
+      let url = `http://localhost:8000/grants/v1/api/grants?pks=${idsString}`
       fetch(url).then(function(res)  {
         return res.json();
       }).then(function(json) {
@@ -74,6 +75,20 @@ Vue.mixin({
       console.log('removeFromCart')
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
+    },
+    toggleFollowingGrant: async function(grantId) {
+      let vm = this;
+
+      const favoriteUrl = `/grants/${grantId}/favorite`;
+      let response = await fetchData(favoriteUrl, 'POST');
+
+      if (response.action === 'follow') {
+        vm.grant.favorite = true;
+      } else {
+        vm.grant.favorite = false;
+      }
+
+      return true;
     },
     flag: function() {
       let vm = this;
@@ -109,6 +124,34 @@ Vue.mixin({
     }
   },
   computed: {
+    filteredMsg: function() {
+      let msgs = [
+        '💪 keep up the great work',
+        '👍 i appreciate you',
+        '🙌 Great Job',
+        '😍 love the mission of your project'
+      ]
+      if (!this.grant?.metadata?.wall_of_love) {
+        return;
+      }
+      console.log(Object.keys(this.grant.metadata).length > 0 )
+      console.log(msgs)
+      return this.grant?.metadata?.wall_of_love.filter((msg) => {
+        if(msgs.includes(msg[0])) {
+          return msg;
+        }
+      });
+    },
+    itemsForList() {
+      if (this.grant.metadata && !Object.keys(this.grant.metadata).length) {
+        return
+      }
+      this.rows = this.grant?.metadata?.wall_of_love.length || 0;
+      return this.grant?.metadata?.wall_of_love.slice(
+        (this.currentPage - 1) * this.perPage,
+        this.currentPage * this.perPage,
+      );
+    }
 
   },
 
@@ -125,7 +168,10 @@ if (document.getElementById('gc-grant-detail')) {
     data() {
       return {
         grant: {},
-        relatedGrants: []
+        relatedGrants: [],
+        rows: 0,
+        perPage: 4,
+        currentPage: 1
 
       };
     },
