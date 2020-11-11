@@ -1269,6 +1269,7 @@ def grant_details(request, grant_id, grant_slug):
             record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
+            grant.github_project_url = request.POST.get('edit-github_project_url')
             grant.reference_url = request.POST.get('edit-reference_url')
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
@@ -1585,12 +1586,17 @@ def grant_new(request):
                 'id': g_category.pk,
                 'name': g_category.category
             })
-        grant_types.append({
+
+        grant_type_temp = {
             'id': g_type.pk,
             'name': g_type.name,
             'label': g_type.label,
             'categories': grant_categories
-        })
+        }
+        if g_type.logo:
+            grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
+
+        grant_types.append(grant_type_temp)
 
     project = None
     # project_id = request.GET.get('project_id', None)
