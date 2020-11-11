@@ -102,10 +102,16 @@ Vue.component('grant-sidebar', {
 
         document.location.href = `/grants/collections?${$.param(collections_query)}`;
       } else {
-        document.location.href = this.round_num ?
-          `/grants/clr/${this.round_num}?type=${params.type}` :
-          `/grants/${params.type}`
-        ; // TODO
+        let target = target = `/grants/${params.type}`;
+
+        if (this.round_num) {
+          target = `/grants/clr/${this.round_num}?type=${params.type}`;
+          if (this.category) {
+            target = `/grants/clr/${this.round_num}/${this.category}?type=${params.type}`;
+          }
+        }
+
+        document.location.href = target;
       }
     },
     searchKeyword: function() {
@@ -185,7 +191,11 @@ if (document.getElementById('grants-showcase')) {
         const q = vm.getQueryParams();
 
         if (vm.round_num) {
-          let uri = `/grants/clr/${vm.round_num}/`; // TODO
+          let uri = `/grants/clr/${vm.round_num}/`;
+
+          if (vm.category) {
+            uri = `/grants/clr/${vm.round_num}/${vm.category}/`;
+          }
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
