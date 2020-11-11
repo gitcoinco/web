@@ -119,12 +119,12 @@ class GrantType(SuperModel):
 
 class GrantCLR(SuperModel):
     
-    customer_name = models.PositiveIntegerField(help_text="CLR Round Number")
+    customer_name = models.PositiveIntegerField(help_text="CLR Customer Name")
     round_num = models.PositiveIntegerField(help_text="CLR Round Number")
     sub_round_slug = models.CharField(max_length=255, help_text="Sub Round Slug", default='all')
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
-    end_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round End Date")
     grant_filters = JSONField(
         default=dict,
         null=True, blank=True,
