@@ -894,6 +894,3 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
-BMAS_ENDPOINT = env('BMAS_ENDPOINT', default='wrong-private-key')
-ES_CORE_ENDPOINT = env('ES_CORE_ENDPOINT', default='wrong-private-key')
-ES_USER_ENDPOINT = env('ES_USER_ENDPOINT', default='wrong-private-key')
