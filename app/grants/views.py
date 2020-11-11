@@ -332,7 +332,7 @@ def bulk_grants_for_cart(request):
     return JsonResponse({'grants': grants})
 
 
-def clr_grants(request, round_num, sub_round_slug=''):
+def clr_grants(request, round_num, sub_round_slug='all'):
     """CLR grants explorer."""
 
     try:
