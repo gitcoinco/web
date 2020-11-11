@@ -650,13 +650,11 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
-        'show_action': True,
         'quest_of_the_day': quest_of_the_day,
         'upcoming_events': upcoming_events,
         'activities': latest_activities,
         'notifications_count': notifications_count,
         'chats_count': chats_count,
-        'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
