@@ -1,9 +1,10 @@
+import logging
+
 from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
 from oogway import Net, validate
-import logging
 
 logger = logging.getLogger(__name__)
 

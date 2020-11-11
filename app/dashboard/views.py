@@ -78,9 +78,10 @@ from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    profile_helper, get_poap_earliest_owned_token_timestamp
+    get_poap_earliest_owned_token_timestamp, profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from eth_account.messages import defunct_hash_message
 from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -134,8 +135,6 @@ from .utils import (
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
     re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
-
-from eth_account.messages import defunct_hash_message
 
 logger = logging.getLogger(__name__)
 

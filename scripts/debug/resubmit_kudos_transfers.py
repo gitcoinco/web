@@ -1,14 +1,13 @@
 import time
 
 from django.conf import settings
+from django.db.models import Q
 
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from dashboard.utils import has_tx_mined
+from kudos.models import KudosTransfer
 from kudos.utils import kudos_abi
 from web3 import Web3
-from kudos.models import KudosTransfer
-from django.db.models import Q
 
 #setup
 network = 'mainnet'
