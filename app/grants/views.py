@@ -69,7 +69,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
-from grants.tasks import update_grant_metadata
+from grants.tasks import update_grant_metadata, process_grant_creation_email
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -1529,9 +1529,7 @@ def grant_new(request):
             'grant_type': GrantType.objects.get(name=grant_type),
         }
 
-
         grant = Grant.objects.create(**grant_kwargs)
-        new_grant_admin(grant)
 
         team_members = (team_members[0].split(','))
         team_members.append(profile.id)
@@ -1560,7 +1558,7 @@ def grant_new(request):
         )
 
         record_grant_activity_helper('new_grant', grant, profile)
-        new_grant(grant, profile)
+        process_grant_creation_email.delay(grant.pk, profile.pk)
 
         response = {
             'status': 200,
