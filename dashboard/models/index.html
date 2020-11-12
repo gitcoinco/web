@@ -4378,8 +4378,13 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     - Posts that the user likes (even a comment)
     - Posts tipped by that user (even a comment)
     - Posts the user commented on</p>
-<h2 id="dashboard.models.Activity">Activity</h2>
+<h2 id="dashboard.models.ActivityManager">ActivityManager</h2>
 
+<pre><code class="python">ActivityManager(self)
+</code></pre>
+
+<p>Enables changing the default queryset function for Activities.
+<h2 id="dashboard.models.Activity">Activity</h2></p>
 <pre><code class="python">Activity(self, *args, **kwargs)
 </code></pre>
 
@@ -5824,6 +5829,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.identity_data_google">identity_data_google</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.ignore">ignore</h3>
 
 <p>Accessor to the related objects manager on the forward and reverse sides of
@@ -5883,12 +5892,20 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.is_google_verified">is_google_verified</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.is_moderator">is_moderator</h3>
 
 <p>Determine whether or not the user is a moderator.</p>
 <p>Returns:
     bool: Whether or not the user is a moderator.</p>
 <h3 id="dashboard.models.Profile.is_org">is_org</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.is_poap_verified">is_poap_verified</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -8300,7 +8317,7 @@ The argument must be an iterable if specified.
 <pre><code class="python">HackathonProject(self, *args, **kwargs)
 </code></pre>
 
-<p>HackathonProject(id, created_on, modified_on, name, hackathon, logo, work_url, summary, bounty, badge, status, message, looking_members, chat_channel_id, winner, extra, grant_obj)
+<p>HackathonProject(id, created_on, modified_on, name, hackathon, logo, work_url, summary, bounty, badge, status, message, looking_members, chat_channel_id, winner, extra, categories, tech_stack, grant_obj)
 <h3 id="dashboard.models.HackathonProject.badge">badge</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -8314,6 +8331,10 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="dashboard.models.HackathonProject.bounty_id">bounty_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonProject.categories">categories</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -8439,6 +8460,10 @@ many-to-one relation.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.HackathonProject.summary">summary</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonProject.tech_stack">tech_stack</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>

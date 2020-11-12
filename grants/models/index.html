@@ -2272,7 +2272,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">GrantType(self, *args, **kwargs)
 </code></pre>
 
-<p>GrantType(id, created_on, modified_on, name, label)
+<p>GrantType(id, created_on, modified_on, name, label, is_active, logo)
 <h3 id="grants.models.GrantType.categories">categories</h3></p>
 <p>Accessor to the related objects manager on the forward and reverse sides of
 a many-to-many relation.</p>
@@ -2319,10 +2319,18 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantType.is_active">is_active</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.GrantType.label">label</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantType.logo">logo</h3>
+
+<p>Just like the FileDescriptor, but for ImageFields. The only difference is
+assigning the width/height to the width_field/height_field, if appropriate.</p>
 <h3 id="grants.models.GrantType.name">name</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2332,8 +2340,12 @@ object the first time, the query is executed.</p>
 <pre><code class="python">GrantCLR(self, *args, **kwargs)
 </code></pre>
 
-<p>GrantCLR(id, created_on, modified_on, round_num, is_active, start_date, end_date, grant_filters, subscription_filters, verified_threshold, unverified_threshold, total_pot, contribution_multiplier, logo)
-<h3 id="grants.models.GrantCLR.contribution_multiplier">contribution_multiplier</h3></p>
+<p>GrantCLR(id, created_on, modified_on, round_num, is_active, start_date, end_date, grant_filters, subscription_filters, collection_filters, verified_threshold, unverified_threshold, total_pot, contribution_multiplier, logo)
+<h3 id="grants.models.GrantCLR.collection_filters">collection_filters</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLR.contribution_multiplier">contribution_multiplier</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.GrantCLR.end_date">end_date</h3>
@@ -2928,6 +2940,11 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>updates the active subscriptions list
+<h3 id="grants.models.Grant.save">save</h3></p>
+<pre><code class="python">Grant.save(self, update=True, *args, **kwargs)
+</code></pre>
+
+<p>Override the Grant save to optionally handle modified_on logic.
 <h2 id="grants.models.SubscriptionQuerySet">SubscriptionQuerySet</h2></p>
 <pre><code class="python">SubscriptionQuerySet(self, model=None, query=None, using=None, hints=None)
 </code></pre>
