@@ -3033,8 +3033,8 @@ def connect_google():
     import urllib.parse
 
     return OAuth2Session(
-        settings.GOOGLE_CLIENT_ID, 
-        scope=settings.GOOGLE_SCOPE, 
+        settings.GOOGLE_CLIENT_ID,
+        scope=settings.GOOGLE_SCOPE,
         redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_google)),
     )
 
@@ -3068,8 +3068,8 @@ def verify_user_google(request):
     try:
         google = connect_google()
         google.fetch_token(
-            settings.GOOGLE_TOKEN_URL, 
-            client_secret=settings.GOOGLE_CLIENT_SECRET, 
+            settings.GOOGLE_TOKEN_URL,
+            client_secret=settings.GOOGLE_CLIENT_SECRET,
             code=request.GET['code'],
         )
         r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
@@ -3083,7 +3083,7 @@ def verify_user_google(request):
             'ok': False,
             'message': 'Invalid code',
         })
-        
+
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
     profile.identity_data_google = r.json()
