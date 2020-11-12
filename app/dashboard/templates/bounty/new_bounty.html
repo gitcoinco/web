@@ -418,7 +418,7 @@
               <div class="funder-address-container mt-4" v-show="chainId !== '1'">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funderAddress">Funder Address</label>
                 <input name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out" v-model="form.funderAddress">
-                <div class="text-danger" v-if="errors.funderAddress && !form.funderAddress">
+                <div class="text-danger" v-if="errors.funderAddress && (!form.funderAddress || chainId === '0')">
                   [[errors.funderAddress]]
                 </div>
               </div>
