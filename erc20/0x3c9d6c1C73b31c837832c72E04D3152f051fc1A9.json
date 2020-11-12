@@ -1,6 +1,6 @@
 {
     "symbol": "BOR",
-    "address": "0x3c9d6c1c73b31c837832c72e04d3152f051fc1a9",
+    "address": "0x3c9d6c1C73b31c837832c72E04D3152f051fc1A9",
     "overview": {
         "en": "BoringDAO is a decentralized bridge that connects all blockchain assets, we offer users a safe way to maximize their utilization rate of crypto assets.",
         "zh": "BoringDAO 是一个去中心化的资产桥，它使用隧道机制来进行代币跨链,并提供一个安全的途径来最大化加密资产的收益。"
