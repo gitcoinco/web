@@ -3060,7 +3060,7 @@ def verify_user_duniter(request, handle):
     if gitcoin_handle == '':
         return JsonResponse({
             'ok': False,
-            'msg': f'Request must include a Public Key Duniter'
+            'msg': f'Request must include gitcoin_handle'
         })
 
     try:
@@ -3084,13 +3084,13 @@ def verify_user_duniter(request, handle):
             if uid_duniter != gitcoin_handle:
                 return JsonResponse({
                     'ok': False,
-                    'msg': f'Seu gitcoin username precisa ser o mesmo do duniter'
+                    'msg': f'Your gitcoin username must be the same as the duniter'
                 })
 
             if not res_uid.status_code == 200:
                 return JsonResponse({
                     'ok': False,
-                    'msg': f'Seu gitcoin username precisa ser o mesmo do duniter'
+                    'msg': f'Your gitcoin username must be the same as the duniter'
                 })
 
             # checks if the user has valid certificates and is a member

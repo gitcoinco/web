@@ -299,7 +299,7 @@ Vue.component('poap-verify-modal', {
     };
   },
   mounted: function() {
-    
+
     $(document).on('click', '#verify-poap-link', function(event) {
       event.preventDefault();
       this.showValidation = true;
@@ -327,7 +327,7 @@ Vue.component('poap-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validate-poap' || validationStep == 'perform-validation'">
                       <p class="mb-4">
-                        Now we'll validate that you have the poap badges. Press validate. 
+                        Now we'll validate that you have the poap badges. Press validate.
                       </p>
                       <p class="mb-4">
                         You can change your wallet by pressing change wallet.
@@ -373,7 +373,7 @@ Vue.component('poap-verify-modal', {
     },
     getEthAddress(){
       const accounts = web3.eth.getAccounts();
-      $.when(accounts).then((result) => { 
+      $.when(accounts).then((result) => {
           const ethAddress = result[0];
           this.ethAddress = ethAddress;
           this.validationStep = 'validate-poap';
@@ -426,7 +426,7 @@ Vue.component('poap-verify-modal', {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const payload = JSON.stringify({
         'eth_address': this.ethAddress,
-        'signature': this.signature 
+        'signature': this.signature
       });
       const headers = {'X-CSRFToken': csrfmiddlewaretoken};
 
@@ -455,7 +455,7 @@ Vue.component('duniter-verify-modal', {
     return {
       showValidation: false,
       validationStep: 'validate-duniter',
-      duniterPublicKey: '',
+      githubHandle: '',
       validationError: ''
     };
   },
@@ -463,17 +463,21 @@ Vue.component('duniter-verify-modal', {
   },
   mounted: function() {
     $(document).on('click', '#verify-duniter-link', function(event) {
+      this.getUserHandle();
       event.preventDefault();
       this.showValidation = true;
     }.bind(this));
   },
-  template: `<b-modal id="twitter-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+  template: `<b-modal id="duniter-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
                 <template v-slot:default="{ hide }">
                   <div class="mx-5 mt-5 mb-4 text-center">
                     <div class="mb-3">
                       <h1 class="font-bigger-4 font-weight-bold">Verify your Duniter account</h1>
                       <p>
-                        <p>Duniter is a <em>cryptocurrency software</em>, which means it is a <strong>software</strong> providing the ability to <strong>create currencies</strong>. Duniter is different from other cryptocurrency softwares you may know (Bitcoin, Litecoin, Peercoin, ...) for 2 main reasons : its <strong>currency code</strong> includes the concepts of a <a href="https://en.wikipedia.org/wiki/Social_credit">Universal Dividend</a> and <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of Trust</a>; but also its <strong>Blockchain code</strong>, which is far more energy efficient, getting rid of the massive waste of energy introduced by Bitcoin.</p>
+                        Duniter is a free software for free currencies: a P2P, <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of Trust</a> & <a href="https://en.wikipedia.org/wiki/Social_credit">Universal Dividend system.</a>
+                        <p class="mb-4">
+                          <a href="https://duniter.org/en/introduction/">Learn more.</a>
+                        </p>
                       </p>
                       <div>
                         <h2 class="font-bigger-4 font-weight-bold"> You need to have these requirements:</h2>
@@ -526,13 +530,15 @@ Vue.component('duniter-verify-modal', {
 
       this.verifyDuniter();
     },
+    getUserHandle() {
+      this.githubHandle = trustHandle;
+    },
     verifyDuniter() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const headers = {'X-CSRFToken': csrfmiddlewaretoken};
       const payload = JSON.stringify({
-        'gitcoin_handle': this.trustHandle
+        'gitcoin_handle': this.githubHandle
       });
-
       const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_duniter`, 'POST', payload, headers);
 
       $.when(verificationRequest).then(response => {
