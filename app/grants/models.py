@@ -736,6 +736,9 @@ class Grant(SuperModel):
     def save(self, update=True, *args, **kwargs):
         """Override the Grant save to optionally handle modified_on logic."""
 
+        self.clr_prediction_curve = self.calc_clr_prediction_curve
+        self.clr_round_num = self.calc_clr_round_nums
+
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
             update_grant_metadata.delay(self.pk)
