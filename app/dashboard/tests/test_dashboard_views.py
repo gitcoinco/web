@@ -38,7 +38,7 @@ class VerifyUserDuniterTests(TestCase):
         url = 'https://g1.data.duniter.fr/user/profile/_search?q=' + gitcoin_handle
 
         response = requests.get(url)
-        self.assert_true(response.ok)
+        self.assertEqual(response.ok, 200)
 
     def test_get_public_key_duniter(self):
         gitcoin_handle = "developerfred"
@@ -70,4 +70,4 @@ class VerifyUserDuniterTests(TestCase):
         member_data = response.json()
         is_verified = member_data.get('isMember', {})
 
-        self.assert_true(is_verified)
+        self.assertEqual(is_verified, True)
