@@ -1451,65 +1451,89 @@ section.mission {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   margin: 0em 1.5em;
-  grid-column-gap: 1em;
+  grid-column-gap: 2em;
 }
-section.mission article figure img, section.mission article figure svg {
+section.mission a {
+  text-decoration: none;
+}
+
+section.mission .card {
+  margin-bottom: 2em;
+}
+section.mission .card .card-image img, section.mission .card .card-image svg {
   width: 100%;
 }
-section.mission article .caption {
+section.mission .card .card-body {
   display: flex;
   justify-content: space-between;
   margin-top: 1em;
 }
-section.mission article .caption .title a {
-  text-decoration: none;
+section.mission .card .card-body .card-text .card-title {
+  font-weight: 500;
+  color: var(--purple_light);
 }
-section.mission article .caption .title h3 {
-  margin: initial;
-}
-section.mission article .caption span {
+section.mission .card .card-body .card-text .card-subtitle {
+  font-weight: 400;
+  color: var(--stone);
   font-size: 80%;
 }
-section.mission article .caption .badges {
+section.mission .card .card-body .card-text .card-subtitle.active {
+  color: var(--pink_light);
+}
+section.mission .card .card-body .card-badges {
   display: flex;
   align-items: center;
+  align-self: flex-start;
 }
-section.mission article .caption .badges .kudos {
+section.mission .card .card-body .card-badges .card-badge {
   display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--space_pink);
   padding: 0.5em;
   margin-left: 0.5em;
 }
-section.mission article .caption .badges .kudos svg {
+section.mission .card .card-body .card-badges .card-badge svg {
   width: 32px;
   height: 32px;
   fill: var(--space);
 }
-section.mission article .caption .badges .kudos span {
+section.mission .card .card-body .card-badges .card-badge span {
   font-size: 80%;
   line-height: initial;
   font-family: "Space Mono", monospace;
-}
-section.mission article .caption .badges .gtc {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--aqua_light);
-  padding: 0.5em;
-  margin-left: 0.5em;
-}
-section.mission article .caption .badges .gtc svg {
-  width: 32px;
-  height: 32px;
-}
-section.mission article .caption .badges .gtc span {
-  font-size: 80%;
-  line-height: initial;
-  font-family: "Space Mono", monospace;
-  color: var(--space);
+  color: var(--white);
   font-weight: 700;
 }
+section.mission .card .card-body .card-badges .card-badge.gtc-token {
+  background-color: var(--aqua_light);
+  animation: colorcycle-shadow 3s ease-in-out infinite;
+}
+section.mission .card .card-body .card-badges .card-badge.gtc-token span {
+  color: var(--space);
+}
+section.mission .card:hover .card-image {
+  opacity: 0.9;
+}
+section.mission .card:hover .card-body .card-text .card-title {
+  color: var(--white);
+}
 
+@media (max-width: 1312px) {
+  section.mission {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 992px) {
+  section.mission {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 688px) {
+  section.mission {
+    grid-template-columns: 1fr;
+  }
+}
 section.background {
   position: fixed;
   height: 100vh;
