@@ -118,10 +118,13 @@ class GrantType(SuperModel):
 
 
 class GrantCLR(SuperModel):
+
+    class Meta:
+        unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
     
-    customer_name = models.PositiveIntegerField(help_text="CLR Customer Name")
+    customer_name = models.CharField(max_length=15, default='', blank=True, help_text="CLR Customer Name")
     round_num = models.PositiveIntegerField(help_text="CLR Round Number")
-    sub_round_slug = models.CharField(max_length=255, help_text="Sub Round Slug", default='all')
+    sub_round_slug = models.CharField(max_length=25, default='', blank=True, help_text="Sub Round Slug")
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round End Date")
