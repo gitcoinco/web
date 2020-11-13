@@ -3077,7 +3077,7 @@ def verify_user_duniter(request, handle):
             public_key_duniter = next(iter(position)).get('_id', {})
 
             # checks uid equals gitcoin-username
-            same_uid_url = "https://g1.duniter.org/g1.duniter.org/wot/lookup/" + public_key_duniter
+            same_uid_url = "https://g1.duniter.org/wot/lookup/" + public_key_duniter
             res_uid = requests.get(same_uid_url)
             uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
 
