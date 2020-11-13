@@ -103,6 +103,7 @@ from perftools.models import JSONStore
 from ptokens.models import PersonalToken, PurchasePToken, RedemptionToken
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from requests_oauthlib import OAuth2Session
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
@@ -2918,6 +2919,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_poap_verified'] = profile.is_poap_verified
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
+        context['is_google_verified'] = profile.is_google_verified
     else:
         raise Http404
     return context
@@ -3026,6 +3028,68 @@ def verify_user_twitter(request, handle):
         'found': tweet_split,
         'expected': expected_split
     })
+
+def connect_google():
+    import urllib.parse
+
+    return OAuth2Session(
+        settings.GOOGLE_CLIENT_ID,
+        scope=settings.GOOGLE_SCOPE,
+        redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_google)),
+    )
+
+@login_required
+@require_POST
+def request_verify_google(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_google_verified:
+        return redirect('profile_by_tab', 'trust')
+
+    google = connect_google()
+    authorization_url, state = google.authorization_url(
+        settings.GOOGLE_AUTH_BASE_URL,
+        access_type='offline',
+        prompt="select_account"
+    )
+    return redirect(authorization_url)
+
+@login_required
+@require_GET
+def verify_user_google(request):
+    from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
+
+    try:
+        google = connect_google()
+        google.fetch_token(
+            settings.GOOGLE_TOKEN_URL,
+            client_secret=settings.GOOGLE_CLIENT_SECRET,
+            code=request.GET['code'],
+        )
+        r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
+        if r.status_code != 200:
+            return JsonResponse({
+                'ok': False,
+                'message': 'Invalid code',
+            })
+    except (ConnectionError, InvalidGrantError):
+        return JsonResponse({
+            'ok': False,
+            'message': 'Invalid code',
+        })
+
+    profile = profile_helper(request.user.username, True)
+    profile.is_google_verified = True
+    profile.identity_data_google = r.json()
+    profile.save()
+
+    return redirect('profile_by_tab', 'trust')
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
