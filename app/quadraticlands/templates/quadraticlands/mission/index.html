@@ -16,20 +16,125 @@
 
 
 <!--regular-->
-<section class="column">
+<section class="mission">
+
+
+
+
+	<!-- proof of knowledge -->
+
+	<article>
+
+
+		<figure>
+			<a href="">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</a>
+		</figure>
+
+
+		<div class="caption">
+
+			<div class="title">
+				<a href="">
+					<h3>Proof of Knowledge</h3>
+				</a>
+				<span class="done">unrepeatable</span>		
+			</div>
+
+		</div>
+
+	</article>
+
+
+
+
+	<!-- proof of receive -->
+
+	<article>
+
+		<figure>
+			<a href="">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</a>
+		</figure>
+
+		<div class="caption">
+			<div class="title">
+				<a href="">
+					<h3>Proof of Receive</h3>
+				</a>
+				<span class="active">available</span>		
+			</div>
+
+			<div class="badges">
+				<div class="gtc">
+					{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+					<span>+50</span>
+				</div>
+			</div>
+
+		</div>
+
+	</article>
+
+
+
+
+
+	<!-- proof of use -->
+
+	<article>
+
+		<figure>
+			<a href="">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</a>
+		</figure>
+
+		<div class="caption">
+			<div class="title">
+				<a href="">
+					<h3>Proof of Use</h3>
+				</a>
+				<span class="active">available</span>		
+			</div>
+
+			<div class="badges">
+				<div class="kudos">
+					{% include "quadraticlands/_inlinesvg/kudos.svg" %}
+				</div>
+				<div class="gtc">
+					{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+					<span>+50</span>
+				</div>
+			</div>
+
+		</div>
+
+	</article>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
 
 	<h3>demo</h3>
 
-	<!--<p>this page will not be there. users will automatical redirect to there current mission. so this view is just here for nowto reach all 3 experiences.</p>-->
 	
 	<h1>
 		<a href="/quadraticlands/mission/knowledge">knowledge</a><br/>
 		<a href="/quadraticlands/mission/receive">receive</a><br/>
 		<a href="/quadraticlands/mission/use">use</a><br/>
 	</h1>
-
-
-</section>
 
 
 
@@ -48,7 +153,20 @@
 	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
 
-	
+
+
+<script>
+
+// pops up web3 wallet if no wallet detected on load
+document.addEventListener("DOMContentLoaded",function(){
+	if(!selectedAccount) { needWalletConnection(); }
+});
+
+</script>
+
+
+
+
 {% endblock %}
 
 

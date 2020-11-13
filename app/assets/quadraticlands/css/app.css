@@ -1254,7 +1254,7 @@ section.hero h1 {
   animation: inherit;
 }
 section.hero h1 span {
-  background-color: rgba(106, 67, 179, 0.66);
+  background-color: var(--space_pink);
 }
 section.hero.widescreen {
   height: 70vh;
@@ -1447,6 +1447,69 @@ section.quest nav a {
     height: 56.25vw;
   }
 }
+section.mission {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 0em 1.5em;
+  grid-column-gap: 1em;
+}
+section.mission article figure img, section.mission article figure svg {
+  width: 100%;
+}
+section.mission article .caption {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+section.mission article .caption .title a {
+  text-decoration: none;
+}
+section.mission article .caption .title h3 {
+  margin: initial;
+}
+section.mission article .caption span {
+  font-size: 80%;
+}
+section.mission article .caption .badges {
+  display: flex;
+  align-items: center;
+}
+section.mission article .caption .badges .kudos {
+  display: flex;
+  background-color: var(--space_pink);
+  padding: 0.5em;
+  margin-left: 0.5em;
+}
+section.mission article .caption .badges .kudos svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--space);
+}
+section.mission article .caption .badges .kudos span {
+  font-size: 80%;
+  line-height: initial;
+  font-family: "Space Mono", monospace;
+}
+section.mission article .caption .badges .gtc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--aqua_light);
+  padding: 0.5em;
+  margin-left: 0.5em;
+}
+section.mission article .caption .badges .gtc svg {
+  width: 32px;
+  height: 32px;
+}
+section.mission article .caption .badges .gtc span {
+  font-size: 80%;
+  line-height: initial;
+  font-family: "Space Mono", monospace;
+  color: var(--space);
+  font-weight: 700;
+}
+
 section.background {
   position: fixed;
   height: 100vh;
@@ -1548,4 +1611,14 @@ section#footer a:hover {
   text-align: center;
   margin-bottom: 2em;
   word-break: break-all;
+}
+
+::-moz-selection {
+  background: var(--aqua_light);
+  color: var(--space);
+}
+
+::selection {
+  background: var(--aqua_light);
+  color: var(--space);
 }

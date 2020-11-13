@@ -1,62 +1,75 @@
-
-// BURGER MENU
-//
-// open & close burger menu
-const nav = document.querySelector('#nav-links ul');
-const burger = document.getElementById("burger");
-
-burger.addEventListener("click", () => {
-  nav.classList.toggle("active");
-});
+document.addEventListener("DOMContentLoaded",function(){
 
 
+	// BURGER MENU
+	//
+	// open & close burger menu
 
-// WALLET MENU
-//
-// open & close wallet menu.
-// this is JUST to SHOW AND HIDE the div "#wallet-provider"
-// nothing more nothing less !!!!
-const navWallet = document.getElementById("nav-wallet");
-const walletProvider = document.getElementById("wallet-provider");
-const closeWalletProvider = document.getElementById("close-wallet-provider");
+	const nav = document.querySelector('#nav-links ul');
+	const burger = document.getElementById("burger");
 
-navWallet.addEventListener("click", () => {
-  walletProvider.classList.toggle("active");
-});
-
-closeWalletProvider.addEventListener("click", () => {
-  walletProvider.classList.toggle("active");
-});
-
-
-// as we do not have a provider select anymore in the menu i build
-// but use the modal ...  we not have .provider  anymore for all providers...
-// but we reuse this class for other menu options...
-// on CLICK we wana CLOSE ( toggle ) the menu to not be "active"
-// what means its invisible again ...
-const navWalletCloseOnClick = document.querySelectorAll(".provider");
-navWalletCloseOnClick.forEach(item => {
-  item.addEventListener("click", () => {
-    walletProvider.classList.toggle("active");
-  });
-});
-
-
-
-// COLLAPSE
-//
-// find all classes .collapse 
-// 
-// click div.question
-// toggle visibility on div.awnser
-
-const collapse = document.querySelectorAll(".collapse");
-
-collapse.forEach(item => {
-	item.addEventListener("click", () => {
-		item.classList.toggle("visible");
+	burger.addEventListener("click", () => {
+	  nav.classList.toggle("active");
 	});
+
+
+
+	// WALLET MENU
+	//
+	// open & close wallet menu.
+	// this is JUST to SHOW AND HIDE the div "#wallet-provider"
+	// nothing more nothing less !!!!
+
+	const navWallet = document.getElementById("nav-wallet");
+	const walletProvider = document.getElementById("wallet-provider");
+	const closeWalletProvider = document.getElementById("close-wallet-provider");
+
+	navWallet.addEventListener("click", () => {
+	  walletProvider.classList.toggle("active");
+	});
+
+	closeWalletProvider.addEventListener("click", () => {
+	  walletProvider.classList.toggle("active");
+	});
+
+
+	// inside the wallet menu i reused the .provider class
+	// what was initial there to display all providers
+	// now with other functions like "change wallet, pick wallet, disconnect"
+	// on click of one of these options of the menu
+	// the menu itself will disapear by this code.
+
+	const navWalletCloseOnClick = document.querySelectorAll(".provider");
+
+	navWalletCloseOnClick.forEach(item => {
+	  item.addEventListener("click", () => {
+	    walletProvider.classList.toggle("active");
+	  });
+	});
+
+
+
+	// COLLAPSE
+	//
+	// find all classes .collapse 
+	// 
+	// click div.question
+	// toggle visibility on div.awnser
+
+	const collapse = document.querySelectorAll(".collapse");
+
+	collapse.forEach(item => {
+		item.addEventListener("click", () => {
+			item.classList.toggle("visible");
+		});
+	});
+
+
+
 });
+
+
+
 
 
 
@@ -87,8 +100,11 @@ function flashMessage(text, duration=8000){
 
 
 
-// shorten ETH adress
-// to  0xFFFF…FFFF
+
+
+// SHORTEN ADRESS
+//
+// shortens an ETH adress to something like this 0xFFFF…FFFF
 
 function shortenAdress(adress){
 	return adress.substring(0,6) + "…" + adress.substr(-4);
