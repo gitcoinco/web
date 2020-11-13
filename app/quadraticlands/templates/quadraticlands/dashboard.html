@@ -1,19 +1,62 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
 
 {% block 'content' %}
 
 <!--dashboard-->
 
-<section class="column">
 
-	<h1>dashboard</h1>
+<section class="dashboard">
 
-	<a class="btn" href="{% url "logout" %}?next={{ request.get_full_path }}">logout</a>
+	<article>
+		1 Lorem ipsum dolor sit amet consectetur adipisicing elit. Est, modi. Nulla ullam, officiis commodi aut cum aperiam illum, cumque facere fuga vel ab consectetur perferendis vero cupiditate neque labore qui.
+	</article>
 
+	<article>
+		2 Lorem, ipsum dolor sit <br>
+	</article>	
+
+	<article>
+		3 Lorem, ipsum dolor sit <br>
+	</article>	
+
+	<article>
+		4 Lorem ipsum dolor, sit amet consectetur adipisicing, elit. Quo laudantium, est? Earum reiciendis explicabo, dolorem nihil, non nemo magnam. Dignissimos in veniam asperiores sapiente qui aut placeat, recusandae, nostrum quas itaque dolores cupiditate provident maxime. Deserunt iure amet eius dolorem sapiente eligendi neque, nulla porro quos velit corrupti consequatur voluptatem quisquam quia
+	</article>
+
+	<article>
+		5 Lorem, ipsum dolor sit <br>
+	</article>	
+
+	<article>
+		6 Lorem, ipsum dolor sit <br>
+	</article>	
 
 </section>
+
+
+
+
+
+
+<section class="column centered" style="margin-top:3em;">
+	<a class="btn" href="{% url "logout" %}?next={{ request.get_full_path }}">logout</a>
+</section>
+
+
+
+
 
 {% endblock %}
 

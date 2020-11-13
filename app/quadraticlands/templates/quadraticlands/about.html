@@ -1,6 +1,16 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
 
 {% block 'content' %}
 
@@ -13,7 +23,7 @@
 	</div>
 
 	<div class="content">
-		<h1>Optional Text</h1>
+		<h1><span>Optional Text</span></h1>
 	</div>
 	
 </section>

@@ -1,25 +1,124 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
 
 {% block 'content' %}
 
 
 <!--regular-->
-<section class="column">
+<section class="mission">
 
-	<h3>demo</h3>
 
-	<!--<p>this page will not be there. users will automatical redirect to there current mission. so this view is just here for nowto reach all 3 experiences.</p>-->
-	
-	<h1>
-		<a href="/quadraticlands/mission/knowledge">knowledge</a><br/>
-		<a href="/quadraticlands/mission/receive">receive</a><br/>
-		<a href="/quadraticlands/mission/use">use</a><br/>
-	</h1>
+
+
+	<!-- proof of knowledge -->
+
+	<a href="/quadraticlands/mission/knowledge">
+		<div class="card">
+			<div class="card-image">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</div>
+			<div class="card-body">
+				<div class="card-text">
+					<div class="card-title">Proof of Knowledge</div>
+					<div class="card-subtitle">unrepeatable</div>
+				</div>
+			</div>
+		</div>
+	</a>
+
+
+
+	<!-- proof of receive -->
+
+	<a href="/quadraticlands/mission/receive">
+		<div class="card">
+			<div class="card-image">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</div>
+			<div class="card-body">
+				<div class="card-text">
+					<div class="card-title">Proof of Receive</div>
+					<div class="card-subtitle active">available</div>
+				</div>
+				<div class="card-badges">
+					<div class="card-badge gtc-token">
+						{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+						<span>+1000</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</a>
+
+
+
+	<!-- proof of use -->
+
+	<a href="/quadraticlands/mission/use">
+		<div class="card">
+			<div class="card-image">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</div>
+			<div class="card-body">
+				<div class="card-text">
+					<div class="card-title">Proof of Receive</div>
+					<div class="card-subtitle active">available</div>
+				</div>
+				<div class="card-badges">
+					<div class="card-badge">
+						{% include "quadraticlands/_inlinesvg/kudos.svg" %}
+					</div>
+					<div class="card-badge gtc-token">
+						{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+						<span>+100</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</a>
+
+
+
+	<!-- dummy -->
+
+	<a href="#">
+		<div class="card">
+			<div class="card-image">
+				<img src="/static/quadraticlands/images/mission/dummy.svg">
+			</div>
+			<div class="card-body">
+				<div class="card-text">
+					<div class="card-title">SybilHunt</div>
+					<div class="card-subtitle active">available</div>
+				</div>
+				<div class="card-badges">
+					<div class="card-badge gtc-token">
+						{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+						<span>+100</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</a>
+
+
+
 
 
 </section>
+
 
 
 
@@ -38,7 +137,20 @@
 	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
 
-	
+
+
+<script>
+
+// pops up web3 wallet if no wallet detected on load
+document.addEventListener("DOMContentLoaded",function(){
+	if(!selectedAccount) { needWalletConnection(); }
+});
+
+</script>
+
+
+
+
 {% endblock %}
 
 

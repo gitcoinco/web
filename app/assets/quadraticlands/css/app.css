@@ -35,6 +35,8 @@
   --white: #FFF;
   --space: #0E0333;
   --space_glass: #0E033322;
+  --space_pink: #2D1041;
+  --space_light: #180D3B;
   --stone: #6E6885;
   --smoke: #3E355C;
 }
@@ -89,8 +91,8 @@ h2 span {
 h3 {
   font-family: "Poppins", sans-serif;
   font-size: 100%;
-  font-weight: 600;
-  color: var(--purple);
+  font-weight: 500;
+  color: var(--purple_light);
   margin-bottom: 2rem;
 }
 h3 span {
@@ -1213,6 +1215,17 @@ section.grid.reverse figure.floating {
     margin: 0em 1.5em;
   }
 }
+section.dashboard {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin: auto;
+  margin: 0em 30px;
+}
+section.dashboard article {
+  background-color: #180D3B;
+  margin: 0.5em;
+}
+
 section.hero {
   width: 100%;
   height: 100vh;
@@ -1239,6 +1252,9 @@ section.hero img, section.hero svg {
 section.hero h1 {
   color: var(--white);
   animation: inherit;
+}
+section.hero h1 span {
+  background-color: var(--space_pink);
 }
 section.hero.widescreen {
   height: 70vh;
@@ -1356,7 +1372,6 @@ section.quest main div.video iframe, section.quest main div.video object, sectio
   border: 0;
 }
 section.quest div.seperator {
-  background-color: var(--smoke);
   height: 2px;
 }
 section.quest div.seperator div#progressbar {
@@ -1377,6 +1392,8 @@ section.quest nav {
   grid-gap: 1em;
   font-weight: 600;
   color: var(--white);
+  background-color: var(--space_glass);
+  backdrop-filter: blur(18px);
 }
 section.quest nav div {
   align-self: center;
@@ -1428,6 +1445,93 @@ section.quest nav a {
   section.quest main div.video {
     width: 100vw;
     height: 56.25vw;
+  }
+}
+section.mission {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 0em 1.5em;
+  grid-column-gap: 2em;
+}
+section.mission a {
+  text-decoration: none;
+}
+
+section.mission .card {
+  margin-bottom: 2em;
+}
+section.mission .card .card-image img, section.mission .card .card-image svg {
+  width: 100%;
+}
+section.mission .card .card-body {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+section.mission .card .card-body .card-text .card-title {
+  font-weight: 500;
+  color: var(--purple_light);
+}
+section.mission .card .card-body .card-text .card-subtitle {
+  font-weight: 400;
+  color: var(--stone);
+  font-size: 80%;
+}
+section.mission .card .card-body .card-text .card-subtitle.active {
+  color: var(--pink_light);
+}
+section.mission .card .card-body .card-badges {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+}
+section.mission .card .card-body .card-badges .card-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--space_pink);
+  padding: 0.5em;
+  margin-left: 0.5em;
+}
+section.mission .card .card-body .card-badges .card-badge svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--space);
+}
+section.mission .card .card-body .card-badges .card-badge span {
+  font-size: 80%;
+  line-height: initial;
+  font-family: "Space Mono", monospace;
+  color: var(--white);
+  font-weight: 700;
+}
+section.mission .card .card-body .card-badges .card-badge.gtc-token {
+  background-color: var(--aqua_light);
+  animation: colorcycle-shadow 3s ease-in-out infinite;
+}
+section.mission .card .card-body .card-badges .card-badge.gtc-token span {
+  color: var(--space);
+}
+section.mission .card:hover .card-image {
+  opacity: 0.9;
+}
+section.mission .card:hover .card-body .card-text .card-title {
+  color: var(--white);
+}
+
+@media (max-width: 1312px) {
+  section.mission {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 992px) {
+  section.mission {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 688px) {
+  section.mission {
+    grid-template-columns: 1fr;
   }
 }
 section.background {
@@ -1526,9 +1630,19 @@ section#footer a:hover {
   padding: 0.5em 1em;
   color: var(--aqua_light);
   font-family: "Space Mono", monospace;
-  background-color: var(--smoke);
+  background-color: var(--space_pink);
   font-size: 100%;
   text-align: center;
   margin-bottom: 2em;
   word-break: break-all;
+}
+
+::-moz-selection {
+  background: var(--aqua_light);
+  color: var(--space);
+}
+
+::selection {
+  background: var(--aqua_light);
+  color: var(--space);
 }

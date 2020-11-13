@@ -1,6 +1,17 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -30,7 +41,7 @@
 		</div>
 
 		<div class="content">
-			<h1>Gitcoin becomes even more democratic. Quadratic Lands the land of the everybody.</h1>
+			<h1><span>Gitcoin becomes even more democratic. Quadratic Lands the land of the everybody.</span></h1>
 			<a href="/quadraticlands/mission" class="btn">Get started</a>
 		</div>
 		

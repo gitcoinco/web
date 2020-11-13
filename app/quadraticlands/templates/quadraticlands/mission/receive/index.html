@@ -1,6 +1,17 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
 {% block 'content' %}
 
 <!--PROOF OF KNOWLEDGE -->
@@ -80,12 +91,17 @@ function updateInterface(status){
 	{
 		receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
 		receiveAdress.classList.remove("hide");
+		//receiveAdress.innerHTML = shortenAdress(selectedAccount);
 		receiveAdress.innerHTML = selectedAccount;
 		buttonContinue.classList.remove("hide");
 		console.log("INTERFACE:CONTINUE");
 	}
 
 }
+
+
+
+
 
 
 </script>
