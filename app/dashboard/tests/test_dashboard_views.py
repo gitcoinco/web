@@ -42,14 +42,15 @@ class VerifyUserDuniterTests(TestCase):
 
     def test_get_public_key_duniter(self):
              gitcoin_handle = "developerfred"
-             url =  "https://g1.data.duniter.fr/user/profile/_search?q=" + "'gitcoin.co/" + gitcoin_handle + "'""
+             url =  "https://g1.data.duniter.fr/user/profile/_search?q=" + "'gitcoin.co/" + gitcoin_handle + "'"
+             pub_res = "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr"
 
              response = response.get(url)
              duniter_user_response = response.json()
              position = duniter_user_json.get('hits', {}).get('hits', {})
              public_key_duniter = next(iter(position)).get('_id', {})
 
-        assert_true(public_key_duniter == "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr")
+        assert public_key_duniter == pub_res
 
 
     def test_same_uid_duniter(self):
@@ -62,7 +63,7 @@ class VerifyUserDuniterTests(TestCase):
 
 
        assert_true(response.ok)
-       assert_true(duniter_lockup_response == gitcoin_handle)
+       assert duniter_lockup_response == gitcoin_handle
 
     def test_is_duniter_member(self):
              gitcoin_handle = "leomatteudi"
