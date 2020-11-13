@@ -35,16 +35,14 @@ from dashboard.views import verify_user_duniter
 class VerifyUserDuniterTests(TestCase):
     def test_get_search_user_duniter(self):
         gitcoin_handle = "developerfred"
-        url = "https://g1.data.duniter.fr/user/profile/_search?q=" + \
-              "'gitcoin.co/" + gitcoin_handle + "'"
+        url = 'https://g1.data.duniter.fr/user/profile/_search?q=' + gitcoin_handle
 
         response = requests.get(url)
         self.assert_true(response.ok)
 
     def test_get_public_key_duniter(self):
         gitcoin_handle = "developerfred"
-        url = "https://g1.data.duniter.fr/user/profile/_search?q=" + \
-              "'gitcoin.co/" + gitcoin_handle + "'"
+        url = "https://g1.duniter.org/user/profile/_search?q=" + gitcoin_handle
         pub_res = "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr"
 
         response = requests.get(url)

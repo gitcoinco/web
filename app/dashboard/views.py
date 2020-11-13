@@ -3066,7 +3066,7 @@ def verify_user_duniter(request, handle):
     try:
 
         # verify if there is account with same username on duniter
-        search_user_duniter_url = "https://g1.data.duniter.fr/user/profile/_search?q=" + "'gitcoin.co/" + gitcoin_handle + "'"
+        search_user_duniter_url = "https://g1.data.duniter.fr/user/profile/_search?q=" + gitcoin_handle
         duniter_user_response = requests.get(search_user_duniter_url)
 
         # search the user for their gitcoin link, if the search is successful I save the private key in the variable public_key_duniter
