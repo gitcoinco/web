@@ -22,8 +22,7 @@ import random
 
 from django.core.management.base import BaseCommand
 
-from grants.models import Grant
-from grants.views import clr_active
+from grants.models import Grant, GrantCLR
 
 # VB 2019/09/27
 # > To prevent a winner-takes-all effect from grants with already the most funding being shown at the top, how about a randomized sort, where your probability of being first is equal to (your expected CLR match) / (total expected CLR match) and then you just do that recursively to position everyone?
@@ -56,8 +55,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if not clr_active:
+        active_clr_rounds =  GrantCLR.objects.filter(is_active=True)
+        if active_clr_rounds.count() == 0:
             return
+
+        # TODO-SELF-SERVICE: Check if it's alright to shuffle all grants even if 1 CLR round is active
 
         # set default, for when no CLR match enabled
         for grant in Grant.objects.all():
@@ -65,7 +67,7 @@ class Command(BaseCommand):
             grant.save()
 
         # get grants, and apply weighted shuffle rank to them
-        grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False).order_by('pk')
+        grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False, is_clr_active=True).order_by('pk')
         weighted_list = [(grant, int(max(1, grant.clr_prediction_curve[0][1]))) for grant in grants]
         og_weighted_list = weighted_list.copy()
         ws = weighted_shuffle(weighted_list)

@@ -6,6 +6,7 @@ html {
   --gc-purple-hover: #0b0d9d;
   --gc-green: #0FCE7C;
   --gc-green-hover: #25E899;
+  --gc-light-green: rgb(211, 250, 235);
   --gc-pink: #f9006c;
   --gc-pink-hover: #f167a3;
   --gc-yellow: #F5A623;
@@ -52,6 +53,8 @@ html.dark-mode {
   --gc-purple-hover: #0b0d9d;
   --gc-green: #0FCE7C;
   --gc-green-hover: #25E899;
+  --gc-light-green: transparent;
+
   --gc-pink: #f9006c;
   --gc-pink-hover: #f167a3;
   --gc-yellow: #F5A623;

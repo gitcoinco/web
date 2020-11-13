@@ -251,6 +251,17 @@ p.single-stat__fineprint {
   border-radius: 10px;
   padding: 19px;
 }
+#leaderboard_nav a:first-child{
+  margin-left: auto;
+}
+#leaderboard_nav a:last-child{
+  margin-right: auto;
+}
+#general_leaderboard img{
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+}
 
 @media screen and (max-width: 768px) {
   #gmv .chart_container__content{
@@ -300,6 +311,14 @@ p.single-stat__fineprint {
   .mega-founder {
     height: 140px;
   }
+  #general_leaderboard .col-6{
+    max-width: 50%;
+    overflow-y: scroll;
+  }
+  #general_leaderboard .col-2:first-child{
+    max-width: 10%;
+  }
+
 }
 
 @media screen and (max-width: 475px) {
@@ -346,6 +365,11 @@ p.single-stat__fineprint {
     position: relative;
     top: 2px;
   }
+  #general_leaderboard .col-6{
+    max-width: 30%;
+    overflow-y: scroll;
+  }
+
 }
 
 @media screen and (max-width: 375px) {

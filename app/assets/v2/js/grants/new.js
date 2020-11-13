@@ -12,60 +12,8 @@ function changeTokens() {
 window.addEventListener('tokensReady', function(e) {
   changeTokens();
 }, false);
+needWalletConnection();
 
-$(document).ready(function() {
-
-  $('.select2-selection__choice').removeAttr('title');
-
-  if (web3 && web3.eth) {
-    web3.eth.net.isListening((error, connectionStatus) => {
-      if (connectionStatus)
-        init();
-      document.init = true;
-    });
-  }
-  // fix for triage bug https://gitcoincore.slack.com/archives/CAXQ7PT60/p1551220641086800
-  setTimeout(function() {
-    if (!document.init) {
-      show_error_banner();
-    }
-  }, 1000);
-});
-
-function saveGrant(grantData, isFinal) {
-  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
-
-  $.ajax({
-    type: 'post',
-    url: '/grants/new',
-    processData: false,
-    contentType: false,
-    data: grantData,
-    headers: {'X-CSRFToken': csrftoken},
-    success: json => {
-      if (isFinal) {
-        if (json.url) {
-          document.suppress_loading_leave_code = true;
-          window.location = json.url;
-        } else {
-          console.error('Grant failed to save');
-        }
-      }
-    },
-    error: () => {
-      console.error('Grant failed to save');
-      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
-    }
-  });
-}
-
-
-$('#new_button').on('click', function(e) {
-  if (!provider) {
-    e.preventDefault();
-    return onConnect().then(() => init());
-  }
-});
 
 const init = () => {
   /*
@@ -75,15 +23,12 @@ const init = () => {
   }
   */
 
-  if (localStorage['grants_quickstart_disable'] !== 'true') {
+  if (localStorage['grants_quickstart_disable'] !== 'true' && window.location.pathname.includes('matic') == false) {
     window.location = document.location.origin + '/grants/quickstart';
   }
 
-  web3.eth.getAccounts(function(err, accounts) {
-    $('#input-admin_address').val(accounts[0]);
-    $('#contract_owner_address').val(accounts[0]);
-  });
-
+  $('#input-admin_address').val(selectedAccount);
+  $('#contract_owner_address').val(selectedAccount);
   userSearch('.team_members', false, undefined, false, false, true);
 
   addGrantLogo();
@@ -96,6 +41,30 @@ const init = () => {
     ignore: ":hidden, [contenteditable='true']:not([name])"
   });
 
+  $('#input-admin_address').on('input', function() {
+    $('.alert').remove();
+    const address = $(this).val();
+    const isNumber = !isNaN(parseInt(address));
+
+    if (isNumber) {
+      return;
+    }
+
+    const isENSName = address.trim().endsWith('.eth');
+
+    if (!isENSName) {
+      return;
+    }
+
+    web3.eth.ens.getAddress(address).then(function(result) {
+      $('#input-admin_address').val(result);
+      return result;
+    }).catch(function(_error) {
+      _alert({ message: gettext('Please check your address and try again.') }, 'error');
+      return false;
+    });
+  });
+
   $('#input-admin_address').on('change', function() {
     $('.alert').remove();
     const validator = $('#create-grant').validate();
@@ -105,7 +74,7 @@ const init = () => {
       web3.eth.ens.getAddress(address).then(function(result) {
         $('#input-admin_address').val(result);
         return result;
-      }).catch(function() {
+      }).catch(function(_error) {
         validator.showErrors({
           'admin_address': 'Please check your address!'
         });
@@ -122,6 +91,11 @@ const init = () => {
       let data = {};
 
       var recipient_addr = $('#input-admin_address').val();
+
+      if (isNaN(parseInt(recipient_addr))) {
+        alert(`The address ${recipient_addr} is not valid`);
+        return false;
+      }
       var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
 
       if (!confirm(msg)) {
@@ -134,8 +108,10 @@ const init = () => {
         data[this.name] = this.value;
       });
 
-      $('#token_symbol').val($('#js-token option:selected').text());
-      $('#token_address').val($('#js-token option:selected').val());
+      if ($('#token_address').length) {
+        $('#token_symbol').val($('#js-token option:selected').text());
+        $('#token_address').val($('#js-token option:selected').val());
+      }
 
       if (document.web3network) {
         $('#network').val(document.web3network);
@@ -173,13 +149,24 @@ const init = () => {
       formData.append('description', description.getText());
       formData.append('description_rich', JSON.stringify(description.getContents()));
       formData.append('reference_url', $('#input-url').val());
+      formData.append('github_project_url', $('#github_project_url').val());
       formData.append('admin_address', $('#input-admin_address').val());
       formData.append('contract_owner_address', $('#contract_owner_address').val());
-      formData.append('token_address', $('#token_address').val());
-      formData.append('token_symbol', $('#token_symbol').val());
+      if ($('#token_address').length) {
+        formData.append('token_address', $('#token_address').val());
+        formData.append('token_symbol', $('#token_symbol').val());
+      } else {
+        formData.append('token_address', '0x0000000000000000000000000000000000000000');
+        formData.append('token_symbol', 'Any Token');
+      }
       formData.append('contract_version', $('#contract_version').val());
       formData.append('transaction_hash', $('#transaction_hash').val());
-      formData.append('network', $('#network').val());
+      formData.append('project_pk', $('#project_pk').val());
+      if ($('#network').val()) {
+        formData.append('network', $('#network').val());
+      } else {
+        formData.append('network', 'mainnet');
+      }
       formData.append('team_members[]', $('#input-team_members').val());
       formData.append('categories[]', $('#input-categories').val());
       formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
@@ -206,14 +193,48 @@ const init = () => {
   });
 };
 
-window.addEventListener('load', async() => {
-  if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
-    onConnect().then(() => {
-      init();
-    });
-  } else {
-    web3Modal.on('connect', async(data) => {
-      init();
-    });
+$(document).ready(function() {
+
+  $('.select2-selection__choice').removeAttr('title');
+  init();
+  changeTokens();
+});
+
+function saveGrant(grantData, isFinal) {
+  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
+
+  $('#new_button').attr('disabled', 'disabled');
+
+  $.ajax({
+    type: 'post',
+    url: '/grants/new',
+    processData: false,
+    contentType: false,
+    data: grantData,
+    headers: {'X-CSRFToken': csrftoken},
+    success: json => {
+      if (isFinal) {
+        if (json.url) {
+          document.suppress_loading_leave_code = true;
+          window.location = json.url;
+        } else {
+          console.error('Grant failed to save');
+          $('#new_button').attr('disabled', false);
+        }
+      }
+    },
+    error: () => {
+      console.error('Grant failed to save');
+      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+      $('#new_button').attr('disabled', false);
+    }
+  });
+}
+
+
+$('#new_button').on('click', function(e) {
+  if (!provider && $('#token_address').length != 0) {
+    e.preventDefault();
+    return onConnect().then(() => init());
   }
 });

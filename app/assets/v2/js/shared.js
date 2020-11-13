@@ -206,6 +206,10 @@ var add_interest = function(bounty_pk, data) {
     fbq('trackCustom', 'Start Work');
   }
 
+  if (typeof ga !== 'undefined') {
+    ga('send', 'event', 'Start Work', 'click', 'Bounty Hunter');
+  }
+
   return mutate_interest(bounty_pk, 'new', data);
 };
 
@@ -512,7 +516,8 @@ var retrieveAmount = function() {
   }
 
   // if not, use remote one
-  $.get(request_url, function(result) {
+  $.get(request_url, function(results) {
+    const result = results[0];
 
     // update UI
     var usd_amount = result['usdt'];
@@ -853,6 +858,10 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
+    if (result.metadata.hypercharge_mode) {
+      result['url'] = `${result['url']}?utm_source=hypercharge-auto-hack-explorer&utm_medium=gitcoin&utm_campaign=${result['title']}`;
+    }
+
     result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
@@ -1001,6 +1010,75 @@ function shuffleArray(array) {
   return array;
 }
 
+
+const getAllUrlParams = () => {
+
+  // get query string from url (optional) or window
+  var queryString = window.location.search.slice(1);
+
+  // we'll store the parameters here
+  var obj = {};
+
+  // if query string exists
+  if (queryString) {
+
+    // stuff after # is not part of query string, so get rid of it
+    queryString = queryString.split('#')[0];
+
+    // split our query string into its component parts
+    var arr = queryString.split('&');
+
+    for (var i = 0; i < arr.length; i++) {
+      // separate the keys and the values
+      var a = arr[i].split('=');
+
+      // set parameter name and value (use 'true' if empty)
+      var paramName = a[0];
+      var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+      // (optional) keep case consistent
+      paramName = paramName.toLowerCase();
+      if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+
+      // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+      if (paramName.match(/\[(\d+)?\]$/)) {
+
+        // create key if it doesn't exist
+        var key = paramName.replace(/\[(\d+)?\]/, '');
+
+        if (!obj[key]) obj[key] = [];
+
+        // if it's an indexed array e.g. colors[2]
+        if (paramName.match(/\[\d+\]$/)) {
+          // get the index value and add the entry at the appropriate position
+          var index = (/\[(\d+)\]/).exec(paramName)[1];
+
+          obj[key][index] = paramValue;
+        } else {
+          // otherwise add the value to the end of the array
+          obj[key].push(paramValue);
+        }
+      } else {
+        // we're dealing with a string
+        // eslint-disable-next-line no-lonely-if
+        if (!obj[paramName]) {
+          // if it doesn't exist, create property
+          obj[paramName] = paramValue;
+        } else if (obj[paramName] && typeof obj[paramName] === 'string') {
+          // if property does exist and it's a string, convert it to an array
+          obj[paramName] = [obj[paramName]];
+          obj[paramName].push(paramValue);
+        } else {
+          // otherwise add the property
+          obj[paramName].push(paramValue);
+        }
+      }
+    }
+  }
+
+  return obj;
+};
+
 const getURLParams = (k) => {
   var p = {};
 
@@ -1014,29 +1092,36 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-  if (key != 'category') {
-    params.set('category', '');
+
+  let path = '/';
+
+  if (params.get('type', '')) {
+    path = '/' + params.get('type', '');
   }
-  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
+  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
 };
 
-const updateMultipleParams = (newParams) => {
+const updateMultipleParams = (_newParams) => {
   params = new URLSearchParams(window.location.search);
-  newParams = Object.entries(newParams);
+  newParams = Object.entries(_newParams);
   for (const [ key, value ] of newParams) {
     params.set(key, value);
   }
-  let category_str = '';
+  let path = '/';
+
+  if (params.get('type', '')) {
+    path = '/' + params.get('type', '');
+  }
 
   if (params.get('type')) {
-    category_str = params.get('type') + '/';
     params.delete('type');
   }
   if (!params.get('category')) {
     params.delete('category');
   }
+  params.delete('keyword');
 
-  window.location.href = '/grants/' + category_str + '?' + decodeURIComponent(params.toString());
+  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
 };
 
 
@@ -1243,4 +1328,87 @@ const fetchIssueDetailsFromGithub = issue_url => {
       reject(error);
     });
   });
+};
+
+const get_UUID = () => {
+  var dt = new Date().getTime();
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (dt + Math.random() * 16) % 16 | 0;
+
+    dt = Math.floor(dt / 16);
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+
+  return uuid;
+};
+
+const isVimeoProvider = (videoURL) => {
+  let vimeoId = null;
+
+  $.ajax({
+    url: `https://vimeo.com/api/oembed.json?url=${videoURL}`,
+    async: false,
+    success: function(response) {
+      if (response.video_id) {
+        vimeoId = response.video_id;
+      }
+    }
+  });
+
+  return vimeoId;
+};
+
+function isValidUrl(string) {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return true;
+}
+
+const getVideoMetadata = (videoURL) => {
+  const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
+  const loom_re = /(?:https?:\/\/|\/\/)?(?:www\.)?(?:loom\.com\/share\/)([\w]{32})/;
+
+  if (!videoURL || !isValidUrl(videoURL)) {
+    return null;
+  }
+
+  const youtube_match = videoURL.match(youtube_re);
+  const loom_match = videoURL.match(loom_re);
+
+  if (youtube_match !== null && youtube_match[1].length === 11) {
+    return {
+      'provider': 'youtube',
+      'id': youtube_match[1],
+      'url': videoURL
+    };
+  }
+
+  if (loom_match !== null) {
+    return {
+      'provider': 'loom',
+      'id': loom_match[1],
+      'url': videoURL
+    };
+  }
+
+  const vimeoId = isVimeoProvider(videoURL);
+
+  if (vimeoId) {
+    return {
+      'provider': 'vimeo',
+      'id': vimeoId,
+      'url': videoURL
+    };
+  }
+
+  return {
+    'provider': 'generic',
+    'id': null,
+    'url': videoURL
+  };
 };

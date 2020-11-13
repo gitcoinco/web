@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import time
 from datetime import datetime
+from functools import reduce
 
 from django.db.models import Count, F, Q
 
@@ -32,7 +33,7 @@ from retail.helpers import get_ip
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
-    ProfileSerializer, SearchHistory, TribeMember,
+    ProfileSerializer, SearchHistory, TribeMember, UserDirectory,
 )
 from .tasks import increment_view_count
 
@@ -59,6 +60,14 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
 class HackathonEventSerializer(serializers.ModelSerializer):
     """Handle serializing the hackathon object."""
     sponsor_profiles = ProfileSerializer(many=True)
+    prizes = serializers.SerializerMethodField()
+    winners = serializers.SerializerMethodField()
+
+    def get_prizes(self, obj):
+        return obj.get_total_prizes()
+
+    def get_winners(self, obj):
+        return obj.get_total_winners()
 
     class Meta:
         """Define the hackathon serializer metadata."""
@@ -200,15 +209,28 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_obj', 'admin_url', 'comments',)
         depth = 1
 
+    def get_comments(self, obj):
+        return Activity.objects.filter(activity_type='wall_post', project=obj).count()
 
 class HackathonProjectsPagination(PageNumberPagination):
-    page_size = 100
+    page_size = 10
+
+class UserDirectorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserDirectory
+        fields = '__all__'
+        depth = 1
+
+class UserDirectoryPagination(PageNumberPagination):
+    page_size = 20
 
 
 class HackathonProjectsViewSet(viewsets.ModelViewSet):
@@ -233,16 +255,25 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 hackathon_event = HackathonEvent.objects.last()
 
             queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             if sponsor:
                 queryset = queryset.filter(
                     Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
-            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
+            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
+
+            projects = []
+            for project in queryset:
+                bounty = project.bounty
+                org_name = bounty.org_name
+                if org_name != sponsor:
+                    projects.append(project.pk)
+
+            queryset = queryset.exclude(pk__in=projects)
 
         if q:
             queryset = queryset.filter(
@@ -255,7 +286,6 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 Q(profiles__keywords__icontains=skills)
             )
-
         if rating:
             queryset = queryset.filter(
                 Q(rating__gte=rating)
@@ -264,6 +294,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         if 'winners' in filters:
             queryset = queryset.filter(
                 Q(winner=True)
+            )
+        if 'grants' in filters:
+            queryset = queryset.filter(
+                Q(grant_obj__isnull=False)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(
@@ -288,7 +322,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'metadata'
         )
 
 
@@ -464,6 +498,11 @@ class BountiesViewSet(viewsets.ModelViewSet):
             if self.request.query_params.get('misc') == 'hiring':
                 queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
 
+        if 'event' in param_keys:
+            queryset = queryset.filter(
+                repo_type=self.request.query_params.get('event'),
+            )
+
         # Keyword search to search all comma separated keywords
         queryset_original = queryset
         if 'keywords' in param_keys:
@@ -483,7 +522,6 @@ class BountiesViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 repo_type=self.request.query_params.get('repo_type'),
             )
-
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':

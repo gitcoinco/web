@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 def txn_already_used(txn, token_name):
     return BountyFulfillment.objects.filter(
         payout_tx_id = txn,
-        token_name=token_name
+        token_name=token_name,
+        accepted=True
     ).exists()
 
 
@@ -37,4 +38,4 @@ def record_payout_activity(fulfillment):
         Activity.objects.create(**kwargs)
 
     except Exception as e:
-        logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
+        logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty}")

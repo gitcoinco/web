@@ -1,13 +1,3 @@
-@media only screen and (max-width: 320px) {
-  .chatWrapper {
-    height: 76vh !important;
-  }
-
-  .chatWrapper iframe {
-    height: 92vh !important;
-  }
-}
-
 .ribbon {
   width: 150px;
   height: 150px;
@@ -28,7 +18,7 @@
   position: absolute;
   display: block;
   width: 225px;
-  padding: 15px 0;
+  padding: 8px 0;
   background-color: #25E899;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
   color: #000;
@@ -155,10 +145,6 @@
   background-color: var(--gc-blue-hover) !important;
 }
 
-.chatWrapper iframe {
-  width: 100%;
-  height: 50vh;
-}
 
 .card-bg {
   background-color: #0C1A27;
@@ -181,6 +167,10 @@
 .tribes-logo img {
   height: 100%;
   width: 100%;
+}
+
+.tribes-logo.badge-secondary {
+  background-color: #fff;
 }
 
 #sponsor_sidebar {

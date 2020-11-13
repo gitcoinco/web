@@ -223,13 +223,8 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
 
     created = False
     try:
-        already_exists = EmailSubscriber.objects.filter(email__iexact=email)
-        if already_exists.exists():
-            es = already_exists.first()
-        else:
-            es = EmailSubscriber.objects.create(**defaults)
-            created = True
-        #print("EmailSubscriber:", es, "- created" if created else "- updated")
+        es, created = EmailSubscriber.objects.update_or_create(email__iexact=email, defaults=defaults)
+        # print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
         email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
             .values_list('id', flat=True) \
@@ -241,14 +236,12 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         es = EmailSubscriber.objects.create(**defaults)
         created = True
     except Exception as e:
-        #print(f'Failed to update or create email subscriber: ({email}) - {e}')
+        # print(f'Failed to update or create email subscriber: ({email}) - {e}')
         return ''
 
     if created or not es.priv:
         es.set_priv()
         es.save()
-        if send_slack_invite:
-            invite_to_slack(email)
 
     return es
 
@@ -355,6 +348,14 @@ def handle_marketing_callback(_input, request):
             else:
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
 
+def generate_hackathon_email_intro(sponsors_prizes):
+    sponsor_names = [sponsor['sponsor'].name for sponsor in sponsors_prizes]
+    if (len(sponsors_prizes) > 2):
+        return  f"{', '.join(sponsor_names)} are"
+    elif (len(sponsors_prizes) == 2):
+        return  f"{' and '.join(sponsor_names)} are"
+    else:
+        return f"{sponsors_prizes[0]['sponsor'].name} is"
 
 def func_name():
     """Determine the calling function's name.

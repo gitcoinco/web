@@ -44,8 +44,8 @@ class Command(BaseCommand):
                     hackathon_chat_sync.delay(hackathon.id)
                     logger.info(f'Queued Hackathon Chat Sync Job for ID: {hackathon.id}')
                 except Exception as e:
-                    logger.error(str(e))
+                    logger.info(str(e))
                     continue
 
         except Exception as e:
-            logger.error(str(e))
+            logger.info(str(e))

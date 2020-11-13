@@ -28,9 +28,10 @@ from adminsortable2.admin import SortableInlineAdminMixin
 from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory,
-    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
+    Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
+    TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -40,9 +41,9 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
-    raw_id_fields = ['bounty', 'profile']
+    raw_id_fields = ['bounty', 'profile', 'funder_profile', 'project']
     readonly_fields = ['fulfiller_github_username']
-    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url', 'payout_status']
     search_fields = [
         'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
@@ -52,6 +53,15 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class TransactionHistoryAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', 'status', '__str__']
+    raw_id_fields = ['earning']
+    search_fields = [
+        'payload', 'txid', 'status'
+    ]
 
 
 class ObjectViewAdmin(admin.ModelAdmin):
@@ -93,7 +103,12 @@ class EarningAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['from_profile', 'to_profile', 'org_profile']
     search_fields = ['from_profile__handle', 'to_profile__handle']
+    readonly_fields = [ 'source_link']
 
+    def source_link(self, instance):
+        url = instance.source.admin_url
+        html = f"<a href={url}>{instance.source}</a>"
+        return format_html(html)
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -168,12 +183,15 @@ def recalculate_profile(modeladmin, request, queryset):
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
+    list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk', 'ignore_tribes']
     ordering = ['-id']
     search_fields = ['email', 'data']
-    list_display = ['handle', 'created_on']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
+
+    def user_sybil_score(self, obj):
+        return f"{obj.sybil_score} ({obj.sybil_score_str})"
 
     def active_bounties_list(self, instance):
         interests = instance.active_bounties
@@ -194,6 +212,24 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_unsquelch_sybil" in request.POST:
+            from townsquare.models import SquelchProfile
+            obj.squelches.delete()
+            self.message_user(request, "Unsquelch done")
+            return redirect(obj.admin_url)
+        if "_squelch_sybil" in request.POST:
+            from townsquare.models import SquelchProfile
+            SquelchProfile.objects.create(
+                profile=obj,
+                comments=f"squelched by {request.user.username}"
+                )
+            self.message_user(request, "Squelch done")
+            return redirect(obj.admin_url)
+        if "_recalc_sybil" in request.POST:
+            Investigation.investigate_sybil(obj)
+            obj.save()
+            self.message_user(request, "Recalc done")
+            return redirect(obj.admin_url)
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
@@ -218,7 +254,7 @@ class TipAdmin(admin.ModelAdmin):
     list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
-    readonly_fields = ['resend', 'claim']
+    readonly_fields = ['resend', 'claim', 'activity_link']
     search_fields = [
         'tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url',
         'emails', 'from_address', 'receive_address', 'ip', 'metadata', 'txid', 'receive_txid'
@@ -242,6 +278,19 @@ class TipAdmin(admin.ModelAdmin):
                 html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
         except Exception:
             html = 'n/a'
+        return html
+
+    def activity_link(self, instance):
+        htmls = []
+        for activity in instance.activities.all():
+            html = (f"<a href={activity.url}>{activity}</a>")
+            htmls.append(html)
+        if 'activity:' in instance.comments_priv:
+            _id = int(instance.comments_priv.split(':')[1])
+            activity = Activity.objects.get(pk=_id)
+            html = (f"<a href={activity.url}>TIPPED_POST: {activity}</a>")
+            htmls.append(html)
+        html = format_html("<BR>".join(htmls))
         return html
 
     def response_change(self, request, obj):
@@ -325,12 +374,21 @@ class HackathonSponsorAdmin(admin.ModelAdmin):
     """The admin object for the HackathonSponsor model."""
 
     list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
+    raw_id_fields = ['hackathon', 'sponsor']
+
+
+class HackathonWorkshopAdmin(admin.ModelAdmin):
+    """The admin object for the HackathonWorkshop model."""
+
+    raw_id_fields = ['speaker']
+    list_display = ['pk', 'start_date', 'hackathon', 'speaker', 'url']
 
 
 class SponsorAdmin(admin.ModelAdmin):
     """The admin object for the Sponsor model."""
 
     list_display = ['pk', 'name', 'img']
+    raw_id_fields = ['tribe']
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
@@ -352,6 +410,14 @@ class HackathonEventAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
     list_filter = ('sponsor_profiles', )
     readonly_fields = ['img', 'explorer_link', 'stats', 'view_count']
+    actions = ['calculate_winners']
+
+    def calculate_winners(self, request, queryset):
+        for hackathon in queryset:
+            hackathon.get_total_prizes(force=True)
+            hackathon.get_total_winners(force=True)
+
+    calculate_winners.short_description = "Showcase - Update winners and bounties"
 
     def view_count(self, instance):
         return instance.get_view_count
@@ -392,12 +458,13 @@ class CouponAdmin(admin.ModelAdmin):
 
 class HackathonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'referer', 'registrant']
+    search_fields = ['name', 'registrant__handle']
     raw_id_fields = ['registrant']
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
-    raw_id_fields = ['profiles', 'bounty', 'hackathon']
+    raw_id_fields = ['profiles', 'bounty', 'hackathon', 'grant_obj']
     search_fields = ['name', 'summary', 'status']
 
     def hackathon_link(self, instance):
@@ -436,6 +503,11 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class TribesSubscriptionAdmin(admin.ModelAdmin):
+    raw_id_fields = ['tribe']
+    list_display = ['id', 'plan_type', 'tribe', 'hackathon_tokens', 'expires_on']
+
+
 class FundRequestAdmin(admin.ModelAdmin):
     list_display = ['id', 'profile', 'requester', 'network', 'token_name', 'amount',
                     'comments', 'address', 'tip', 'created_on']
@@ -445,7 +517,7 @@ class FundRequestAdmin(admin.ModelAdmin):
 
 
 class QuestionInline(SortableInlineAdminMixin, admin.TabularInline):
-    fields = ['id', 'poll', 'question_type', 'text']
+    fields = ['id', 'poll', 'question_type', 'text', 'hook']
     readonly_fields = ['id']
     raw_id_fields = ['poll']
     show_change_link = True
@@ -470,10 +542,18 @@ class PollsAdmin(admin.ModelAdmin):
 
 
 class QuestionsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'poll', 'question_type', 'text']
-    raw_id_fields = ['poll']
+    list_display = ['id', 'poll', 'question_type', 'text', 'img']
+    raw_id_fields = ['poll', 'header']
     search_fields = ['question_type', 'text']
     inlines = [OptionsInline]
+
+    def img(self, instance):
+        header = instance.header
+        if not header or not header.image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(header.image.url))
+        return img_html
+
 
 
 class OptionsAdmin(admin.ModelAdmin):
@@ -486,6 +566,17 @@ class AnswersAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
     raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
+
+
+class PollMediaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'img']
+
+    def img(self, instance):
+        image = instance.image
+        if not image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(image.url))
+        return img_html
 
 
 class ProfileVerificationAdmin(admin.ModelAdmin):
@@ -517,18 +608,22 @@ admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
+admin.site.register(HackathonWorkshop, HackathonWorkshopAdmin)
 admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
 admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
+admin.site.register(TransactionHistory, TransactionHistoryAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(TribesSubscription, TribesSubscriptionAdmin)
 admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)

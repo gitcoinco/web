@@ -55,10 +55,10 @@ class Command(BaseCommand):
                     logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Complete')
                 except Exception as e:
                     logger.info(f'Failed to associate chat to profile for: {profile.handle}')
-                    logger.error(str(e))
+                    logger.info(str(e))
 
         except ConnectionError as exec:
-            logger.error(str(exec))
+            logger.info(str(exec))
             self.retry(countdown=30)
         except Exception as e:
-            logger.error(str(e))
+            logger.info(str(e))

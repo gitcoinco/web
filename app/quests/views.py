@@ -29,7 +29,7 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-current_round_number = 5
+current_round_number = 6
 
 
 def next_quest(request):
@@ -284,7 +284,7 @@ def index(request):
 
         print(f" phase1.4 at {round(time.time(),2)} ")
         # popular quests
-        popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:5]
+        popular = Quest.objects.filter(visible=True).order_by('-ui_data__attempts_count')[0:15]
         if popular.exists():
             quests.append(('Popular', get_package_helper(popular, request)))
 

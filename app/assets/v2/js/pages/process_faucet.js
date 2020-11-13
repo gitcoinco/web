@@ -12,8 +12,9 @@ $(document).ready(function() {
 
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
-    if (!web3Modal.cachedProvider) {
-      return onConnect();
+    if (web3Modal && !web3Modal.cachedProvider) {
+      onConnect();
+      return false;
     }
     $('.js-submit').attr('disabled', 'disabled');
     $('#loadingImg').show();

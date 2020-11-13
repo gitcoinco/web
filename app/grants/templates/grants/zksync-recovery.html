@@ -1,0 +1,229 @@
+{% comment %}
+Copyright (C) 2020 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomment %} {% load static i18n %} <!DOCTYPE
+  html>
+  <html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.bubble.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "v2/css/grants/cart.css" %}">
+  </head>
+
+  <body class="interior {{ active }} grant grant-detail g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+
+    {% include 'grants/shared/waiting_state.html' %}
+
+    <div>
+      <div id="gc-grants-cart" v-cloak>
+        <grants-cart ref="cart" inline-template>
+          <div>
+
+            <a id="cart_backgrants" class="font-caption ml-2" href="/grants">
+              <i class="fas fa-chevron-left mr-1"></i>
+              Back to Grants
+            </a>
+
+            {% comment %} Heading section {% endcomment %}
+            <div class="container" style="margin:3rem auto 1rem;">
+              <div class="row align-items-center justify-content-between">
+                <div class="col-auto" style="margin:0 auto">
+                  <img src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="150">
+                </div>
+              </div>
+
+              <div class="row align-items-end justify-content-between" style="margin-top:2rem; width:100%">
+                <h1 class="col-auto text-left font-bigger-2 black" style="font-weight: bold; margin-bottom: 0">
+                  zkSync Funds Recovery
+                </h1>
+              </div>
+            </div>
+
+            {% comment %} Divider {% endcomment %}
+            <div>
+              <div class="separator" />
+            </div>
+
+
+            {% comment %} Main container {% endcomment %}
+            <div class="text-left" style="justify-content: center; margin: 5rem auto; max-width: 600px">
+              {% comment %} Step 1 {% endcomment %}
+              <div class="row align-items-center justify-content-between mb-4 text-left" style="width: 100%">
+                <div class="col-8">
+                  <div class="font-weight-bold">
+                    Step 1
+                  </div>
+                  <div>
+                    Sign in to zkSync via Gitcoin
+                  </div>
+                </div>
+                <div class="col-4">
+                  <button v-if="zkSyncCheckoutStep1Status === 'not-started'"
+                    class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlowRecovery"
+                  >
+                    Sign in
+                  </button>
+                  <div v-else-if="zkSyncCheckoutStep1Status === 'pending'">
+                    <span class="text-medium-dark-grey">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Processing
+                    </span>
+                  </div>
+                  <div v-else-if="zkSyncCheckoutStep1Status === 'complete'">
+                    <span class="text-highlight-green">
+                      <i class="fas fa-check"></i>
+                      Completed
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {% comment %} Step 2 {% endcomment %}
+              <div class="row align-items-center justify-content-between my-4 text-left" style="width: 100%">
+                <div class="col-8">
+                  <div class="font-weight-bold">
+                    Step 2
+                  </div>
+                  <div>
+                    That's it! Hang tight while we do the rest
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div v-if="zkSyncCheckoutStep3Status === 'pending'">
+                    <span class="text-medium-dark-grey">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Processing
+                    </span>
+                  </div>
+                  <div v-else-if="zkSyncCheckoutStep3Status === 'complete'">
+                    <span class="text-highlight-green">
+                      <i class="fas fa-check"></i>
+                      Completed
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% comment %} What is this? {% endcomment %}
+            <div class="text-left" style="justify-content: center; margin: 5rem auto; max-width: 600px">
+
+              <div class="mb-3 faq-item">
+                <h5>What is this?</h5>
+                  <p>
+                    Due to bugs during the checkout process, occasionally zkSync contributions
+                    did not make it to the grant receipients and instead were left in your 
+                    <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Gitcoin zkSync wallet</a>.
+                    Use this tool to send the stuck funds to the grant recipients, and any
+                    leftover funds will be accessible to you
+                    <a href="https://wallet.zksync.io" target="_blank">https://wallet.zksync.io</a>.
+                  </p>
+              </div>
+
+            </div>
+          </div>
+        </grants-cart>
+      </div>
+    </div>
+
+
+    <script type="text/x-template" id="select2-template">
+      <select>
+        <slot></slot>
+      </select>
+    </script>
+
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
+    {% include 'shared/footer.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+
+    {% comment %} ================================================================= {% endcomment %}
+    {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
+    {% comment %} ================================================================= {% endcomment %}
+
+    <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/zksync@0.6.4/dist/main.js"></script>
+    <script type="text/javascript">
+    (async () => {
+        // Loads and compiles wasm library
+        await zksync.crypto.loadZkSyncCrypto();
+        console.log('zkSync library is ready');
+        // Now we are ready to use zkSync with ethers, both are attached to the window
+    })();
+    </script>
+
+    {% comment %} ================================================================= {% endcomment %}
+    {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
+    {% comment %} ================================================================= {% endcomment %}
+
+    <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
+    <script>
+      // MOVE VERIFIED STATUS INTO JS
+      document.verified = {{ verified | yesno:"true,false" }};
+      document.authenticated = {{ authenticated | yesno:"true,false" }};
+      document.brightid_uuid = "{{ brightid_uuid }}";
+    </script>
+    <script src="{% static "v2/js/cart.js" %}"></script>
+  </body>
+
+  {% include 'shared/activity_scripts.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+  <script src="{% static "v2/js/status.js" %}"></script>
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script>
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+
+  </script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
+  <script src="{% static "v2/js/grants/detail.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <script>
+    $('#wallet-address').attr(
+      'href',
+      get_etherscan_url(
+        $('#wallet-address').text().trim(),
+        '{{ grant.network }}',
+        'address'
+      )
+    );
+
+  </script>
+
+  </html>

@@ -142,7 +142,7 @@ If you run `docker-compose restart web` after doing these things, you should fin
 
 ## Integration Setup (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
+If you plan on using the Github or Google integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 
@@ -321,11 +321,11 @@ Alternatively, you can use the local `ganache-cli` test rpc network that ships w
 
 This error can occur when you are already running a local instance of PostgreSQL or another service on any of the ports specified in the `docker-compose.yml`.  You can identify which process is currently bound to the port with: `lsof -i :<port_number> | grep LISTEN` - for example: `lsof -i :8000 | grep LISTEN` and simply `sudo kill <pid>`, substituting the PID returned from `lsof`.
 
-#### Github Login
+#### Github Login and Google Verification
 
-`Q: How can I enable the Github Login functionality on my local docker instance?`
+`Q: How can I enable the Github Login and/or Google verification functionality on my local docker instance?`
 
-If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
+If you plan on using the Github and/or Google integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 #### ipdb
 
@@ -337,7 +337,7 @@ Add `import ipdb;ipdb.set_trace()` to the method you want to inspect, you then r
 
 `Q: How can I access the Django shell, similar to: python manage.py shell ?`
 
-Simply run: `make get_django_shell` or `docker-compose exec web python app/manage.py shell`
+Simply run: `make get_django_shell` or `docker-compose exec web python3 app/manage.py shell`
 
 #### Access BASH
 

@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+needWalletConnection();
 window.onload = function() {
 
   const rateUser = () => {
@@ -162,6 +163,11 @@ window.onload = function() {
       sessionStorage['bountyId'] = getURLParams('pk');
 
       var isError = false;
+
+      if (!provider) {
+        onConnect();
+        return false;
+      }
 
       if ($('#terms:checked').length == 0) {
         _alert({ message: gettext('Please accept the terms of service.') }, 'warning');

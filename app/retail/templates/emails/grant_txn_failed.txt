@@ -1,0 +1,7 @@
+Grants transaction failed, try again?
+
+    Your contribution to {{ grant_title }} failed due to a technical issue.
+
+    Transaction ID: {{ tx_id }}
+
+  View on Etherscan

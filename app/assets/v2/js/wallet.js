@@ -1,6 +1,9 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
+const eventWalletReady = new Event('walletReady', {bubbles: true});
+const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
+let web3;
 let web3Modal;
 let provider;
 let selectedAccount;
@@ -34,6 +37,12 @@ function initWallet() {
       options: {
         infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
+    },
+    portis: {
+      'package': Portis,
+      options: {
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
+      }
     }
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
@@ -43,6 +52,7 @@ function initWallet() {
     cacheProvider: true,
     providerOptions
   });
+  document.dispatchEvent(eventWalletReady);
 }
 
 function walletStateChanges() {
@@ -52,15 +62,25 @@ function walletStateChanges() {
 }
 
 const needWalletConnection = async() => {
-  if (!web3Modal.cachedProvider) {
-    return await onConnect();
-  }
+  window.addEventListener('walletReady', async function(e) {
+    if (!web3Modal || !web3Modal.cachedProvider) {
+      return await onConnect().then(console.log);
+    } else if (web3Modal.cachedProvider === 'injected' && window.Web3Modal.getInjectedProviderName() === 'MetaMask') {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+      if (!accounts.length) {
+        return await onConnect().then(console.log);
+      }
+
+    }
+  }, false);
 };
 
 async function fetchAccountData(provider) {
 
   // Get a Web3 instance for the wallet
-  web3 = new Web3(provider);
+  // web3 = new Web3(provider);
+  web3 = Web3 ? new Web3(provider || 'ws://localhost:8546') : null;
 
   console.log('Web3 instance is', web3);
 
@@ -165,6 +185,7 @@ async function fetchAccountData(provider) {
   // document.querySelector("#connected").style.display = "block";
   walletStateChanges();
   $('.wallet-option').on('click', changeWallet);
+  document.dispatchEvent(eventDataWalletReady);
 }
 
 function changeWallet(e) {
@@ -211,7 +232,8 @@ async function onConnect() {
   // regardless if we play around with a cacheProvider settings
   // in our localhost.
   // TODO: A clean API needed here
-  web3Modal.providerController.cachedProvider = null;
+  // web3Modal.providerController.cachedProvider = null;
+  web3Modal.clearCachedProvider();
   // web3Modal.clearCachedProvider();
 
   console.log('Opening a dialog', web3Modal);
@@ -313,8 +335,19 @@ window.addEventListener('load', async() => {
   }
 
   initWallet();
+  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
+  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
+
   if (web3Modal.cachedProvider) {
     try {
+      if (web3Modal.cachedProvider === 'injected' && window.Web3Modal.getInjectedProviderName() === 'MetaMask') {
+        // hack for metamask
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+        if (!accounts.length) {
+          throw new Error('Metamask is not enabled');
+        }
+      }
       provider = await web3Modal.connect();
     } catch (e) {
       console.log('Could not get a wallet connection', e);
@@ -338,8 +371,6 @@ window.addEventListener('load', async() => {
       });
     }
   }
-  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
-  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
 });
 
 

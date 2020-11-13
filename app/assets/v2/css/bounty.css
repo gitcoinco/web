@@ -49,12 +49,17 @@ body {
   height: 50px;
   margin: 0px auto;
   border-radius: 50px;
-  margin-top: 0px;
 }
 
 .invite-user .avatar {
   width: 5.5rem;
   height: 5.5rem;
+}
+
+#avatar_url .avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
 }
 
 .quote-container {

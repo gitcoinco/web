@@ -1,4 +1,22 @@
 /* eslint-disable no-console */
+if (bountyChainId !== '58') {
+  needWalletConnection();
+
+  const fetchFromWeb3Wallet = () => {
+    if (!provider) {
+      onConnect();
+    }
+    $('#payoutAddress').val(selectedAccount);
+    $('#payoutAddress').attr('readonly', true);
+  }
+
+  window.addEventListener('dataWalletReady', function(e) {
+    if (is_bounties_network || web3_type === 'web3_modal') {
+      fetchFromWeb3Wallet();
+    }
+  }, false);
+}
+
 window.onload = function() {
 
   $('.rating input:radio').attr('checked', false);
@@ -7,10 +25,6 @@ window.onload = function() {
     $('.rating span').removeClass('checked');
     $(this).parent().addClass('checked');
   });
-
-  if (is_bounties_network) {
-    fetchFromWeb3Wallet();
-  }
 
   if (typeof localStorage['githubUsername'] != 'undefined') {
     if (!$('input[name=githubUsername]').val()) {
@@ -23,12 +37,20 @@ window.onload = function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
-
+      loading_button($('.js-submit'));
       let data = {};
 
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter')
+      }
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
+      if (eventTag && !data.projectId) {
+        unloading_button($('.js-submit'));
+        return _alert('Please add a project first', 'error');
+      }
 
       if (is_bounties_network) {
         ethFulfillBounty(data);
@@ -39,9 +61,3 @@ window.onload = function() {
   });
 };
 
-const fetchFromWeb3Wallet = () => {
-  web3.eth.getAccounts(function(_, accounts) {
-    $('#payoutAddress').val(accounts[0]);
-    $('#payoutAddress').attr('readonly', true);
-  });
-}

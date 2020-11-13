@@ -41,14 +41,20 @@ from django.utils.timezone import localtime
 
 import pytz
 from app.services import RedisService
+from hexbytes import HexBytes
+from web3.utils.datastructures import AttributeDict
 
 
 class EncodeAnything(DjangoJSONEncoder):
     def default(self, obj):
+        if isinstance(obj, AttributeDict):
+            return dict(obj)
         if isinstance(obj, Promise):
             return force_text(obj)
         elif isinstance(obj, FieldFile):
             return bool(obj)
+        elif isinstance(obj, HexBytes):
+            return str(obj)
         elif isinstance(obj, SuperModel):
             return (obj.to_standard_dict())
         elif isinstance(obj, models.Model):
@@ -167,18 +173,25 @@ class SuperModel(models.Model):
 
 class ConversionRate(SuperModel):
     """Define the conversion rate model."""
-
+    SOURCE_TYPES = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+        ('coingecko', 'coingecko'),
+    ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
     timestamp = models.DateTimeField(null=False, default=get_time, db_index=True)
-    source = models.CharField(max_length=30, db_index=True)
+    source = models.CharField(max_length=30, db_index=True, choices=SOURCE_TYPES)
     from_currency = models.CharField(max_length=30, db_index=True)
     to_currency = models.CharField(max_length=30, db_index=True)
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.from_amount} {self.from_currency} => {self.to_amount} " \
-               f"{self.to_currency} ({self.timestamp}, {self.source}) {naturaltime(self.created_on)}"
+        decimals = 3
+        return f"{round(self.from_amount, decimals)} {self.from_currency} => {round(self.to_amount, decimals)} " \
+               f"{self.to_currency} ({self.timestamp.strftime('%m/%d/%Y')} {naturaltime(self.timestamp)}, from {self.source})"
 
 
 # method for updating
@@ -202,16 +215,55 @@ def reverse_conversion_rate(sender, instance, **kwargs):
         )
 
 
+class TXUpdate(SuperModel):
+    """Define the TXUpdate model."""
+
+    body = JSONField(null=True, default=dict, blank=True)
+    processed = models.BooleanField(default=False)
+
+    def __str__(self):
+        """Define the string representation of this object."""
+        return f"{self.body['hash']}"
+
+    def process_callbacks(self):
+        tx_id = self.body['hash']
+        status = self.body.get('status')
+        replaceHash = self.body.get('replaceHash')
+        if status:
+            # https://docs.blocknative.com/webhook-api#transaction-events-state-changes
+            # TODO: move processing of failed, dropped, txns from update_tx_status to here
+            pass
+        if replaceHash:
+            # TODO: find/replace any txids that are wrong here
+            # example replacement payload
+            # {"r": "0x667f3b3c35715598bc244a8fef7ca432eb725806571c99c4dca00454d08ee4ce", "s": "0x67de52717d0eef915a33250c5a849458f44215e79f7df1ea0867035c0359c5e3", "v": "0x25", "to": "0x00De4B13153673BCAE2616b67bf822500d325Fc3", "gas": 21000, "from": "0x00De4B13153673BCAE2616b67bf822500d325Fc3", "hash": "0x797a61f94f7fb20528fdbedb9d28ebdedd721ad5a2b0f4d4ac991f2ca1dcfc9b", "asset": "ETH", "input": "0x", "nonce": 4154, "value": "0", "apiKey": "d1ff5891-98f0-4324-9541-e56f54252149", "status": "speedup", "system": "ethereum", "network": "main", "gasPrice": "60000000000", "blockHash": null, "monitorId": "GETH_1_C_PROD", "timeStamp": "2020-09-21T20:27:33.924Z", "blockNumber": null, "replaceHash": "0x16903550083ee036077e67539f5da0c3bea44d874845083007cdd934e152e015", "timePending": "46956", "serverVersion": "0.64.3", "monitorVersion": "0.69.1"}
+            pass
+        self.processed = True
+        return
+
 class Token(SuperModel):
     """Define the Token model."""
+
+    CONVERSION_RATE_SOURCE = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+        ('coingecko', 'coingecko'),
+    ]
 
     address = models.CharField(max_length=255, db_index=True)
     symbol = models.CharField(max_length=10, db_index=True)
     network = models.CharField(max_length=25, db_index=True)
     decimals = models.IntegerField(default=18)
     priority = models.IntegerField(default=1)
+    chain_id = models.IntegerField(default=1)
+    network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
+    conversion_rate_id = models.CharField(max_length=25, blank=True, null=True, help_text="unique identifier used by conversion_rate_source")
+    conversion_rate_source = models.CharField(max_length=25, blank=True, null=True, help_text="API source", choices=CONVERSION_RATE_SOURCE)
+
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
@@ -219,7 +271,7 @@ class Token(SuperModel):
 
     @property
     def to_dict(self):
-        return {'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+        return {'id': self.id, 'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
 
     @property
     def to_json(self):

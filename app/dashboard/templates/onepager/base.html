@@ -55,6 +55,11 @@
       .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 32px;
       }
+
+      img.hackathon-card-logo {
+        max-height: 12rem;
+        max-width: 9rem;
+      }
     </style>
 
     <script>
@@ -90,6 +95,7 @@
     {% block 'scripts' %}{% endblock %}
 
     <script>
+      needWalletConnection();
       if ('addEventListener' in window) {
         window.addEventListener('load', function () {
           document.body.className = document.body.className.replace(/\bis-loading\b/, '');
@@ -107,6 +113,6 @@
         root: "{{ ipfs_config.root }}"
       };
     </script>
-    <script src="{% static "v2/js/metamask-approval.js" %}"></script>
+    <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </body>
 </html>

@@ -27,9 +27,9 @@
       {% include 'shared/cards.html' %}
     {% endif %}
     <!-- Include stylesheet -->
-    <link href="https://cdn.quilljs.com/1.3.4/quill.core.css" rel="stylesheet">
-    <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet">
-    <link href="https://cdn.quilljs.com/1.3.4/quill.bubble.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.core.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/profile.css" %}' />
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}' />
@@ -273,7 +273,7 @@
 
       @media (min-width: 1200px) {
         .project-grid {
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
         }
       }
 
@@ -438,7 +438,7 @@
         <div class="row">
           <div :id="tribe.handle" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 header profile-header dash" v-bind:style="[{backgroundImage: `url(${tribe.profile_wallpaper})`}, {backgroundImage: `url(${headerFilePreview || tribe.tribes_cover_image})`}]">
             {% csrf_token %}
-            <div class="mt-5 mt-sm-0 position-relative" v-if="is_my_org" style="height: 100%; width:100%;">
+            <div class="mt-5 mt-sm-0 position-relative" v-if="is_my_org || is_staff" style="height: 100%; width:100%;">
               <div style="position:absolute;bottom:1rem;right:0;">
                 <b-button v-b-modal.change-tribe-header variant="info" class="btn profile-banner-cta text-center">
                   <i class="fa fa-camera"></i>
@@ -470,8 +470,8 @@
                 <div class="ml-md-4 mt-4 townsquare_header">
                   <div class="row">
                     <div class="col-12 col-md-4 col-lg-3">
-                      <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1">[[ tribe.name ]] {% trans "Team" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
-                      <suggested-profiles v-show="showCoreTeam" :profiles="tribe.team_or_none_if_timeout" class="ml-4"></suggested-profiles>
+                      <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1"> {% trans "Top Tribe Members" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
+                      <suggested-profiles v-show="showCoreTeam" :id="tribe.handle" class="ml-4"></suggested-profiles>
                     </div>
                     <div class="feed_container col-12 col-md-7 col-lg-8">
                       <div class="feed_container_child container-fluid">
@@ -518,6 +518,14 @@
                             <span class="font-weight-bold">[[ numProjects ]] projects </span> found
                           </p>
                         </div>
+                        <div class="pb-4 border-bottom form-group">
+                          <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
+                            Winners
+                          </b-form-checkbox>
+                          <b-form-checkbox value="grants" v-model="params.filters" name="grants" switch>
+                            Grants
+                          </b-form-checkbox>
+                        </div>
                         <div v-if="!tribe" class="pb-4 border-bottom form-group d-md-inline-block">
                           <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                           <div id="project_sponsors" class="form__select2">
@@ -549,58 +557,7 @@
                             <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                           </div>
                           <div class="project-grid ml-2">
-                            <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key=`project-${project.pk}`>
-                              <div class="card card-project">
-                                <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
-
-                                <div class="card-bg rounded-top" style="">
-                                  <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
-                                  <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
-                                </div>
-                                <div class="card-body">
-                                <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
-                                <div class="my-2">
-                                  <p class="text-left text-muted font-smaller-1">
-                                    [[ project.summary | truncate(500) ]]
-                                  </p>
-                                  <div class="text-left">
-                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                    <b-dropdown varitant="outline-gc-blue" toggle-class="btn-sm btn" split-class="btn-sm btn btn-gc-blue">
-                                     <template v-slot:button-content>
-                                       <i class='fas fa-comment-dots'></i>
-                                     </template>
-                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" :key=`"team-member-chat-${profile.handle}"` aria-describedby="dropdown-header-label">
-                                       @ [[ profile.handle ]]
-                                     </b-dropdown-item-button>
-                                    </b-dropdown>
-                                  </div>
-                                </div>
-
-                                <div class="my-3 mb-2 text-left">
-                                  <b class="font-weight-bold font-smaller-3">Team Members</b>
-                                  <div class="mt-1">
-                                      <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` :key=`"team-member-${profile.handle}"`>
-                                        <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
-                                      </a>
-                                  </div>
-                                </div>
-
-                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                                  <p v-if="project.message" class="info-card-desc">
-                                    [[ project.message ]]
-                                  </p>
-                                </div>
-
-                                <div class="font-smaller-2 mt-4">
-                                  <b class="font-weight-bold">Sponsored by</b>
-                                  <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                                  <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
-                                </div>
-                                </div>
-                              </div>
-                            </div>
+                            <project-card {% if is_staff %} v-bind:is_staff="true" {% endif %} v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
                           </div>
                           <loading-screen v-if="isLoading"></loading-screen>
                         </div>
@@ -747,7 +704,7 @@
                                     <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                       <i class="fab fa-linkedin-in"></i>
                                     </a>
-                                    <a @click="chatWindow(user.handle, true);" href="#" v-if="user.chat_id">
+                                    <a @click="chatWindow('@' + user.handle);" href="#" v-if="user.chat_id">
                                       <i class="fas fa-comment-dots"></i>
                                     </a>
                                   </div>
@@ -869,7 +826,7 @@
                     </div>
                 </user-directory>
               </b-tab>
-              <b-tab v-if="is_on_tribe" class="col-12" title-item-class="navigation" lazy>
+              <b-tab class="col-12" title-item-class="navigation" lazy>
                 <template v-slot:title>
                   <div class="mt-3">
                     {% trans "Bounties" %}
@@ -1188,7 +1145,7 @@
                   </div>
                 </bounty-explorer>
               </b-tab>
-              <b-tab v-if="is_my_org" class="col-12" title-item-class="navigation">
+              <b-tab v-if="is_my_org || is_staff" class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-3">
                     {% trans "Manage" %}
@@ -1449,7 +1406,7 @@
             </div>
           </div>
         </div>
-        <b-modal v-if="is_my_org" @hide="resetPreview" @close="resetPreview" @cancel="resetPreview"  hide-backdrop content-class="shadow" id="change-tribe-header" tabindex="-1" role="dialog" aria-labelledby="changeProfileHeaderLabel" aria-hidden="true">
+        <b-modal v-if="is_my_org || is_staff" @hide="resetPreview" @close="resetPreview" @cancel="resetPreview"  hide-backdrop content-class="shadow" id="change-tribe-header" tabindex="-1" role="dialog" aria-labelledby="changeProfileHeaderLabel" aria-hidden="true">
           <template v-slot:modal-title>
             {% trans "Update Tribe Header"%}
           </template>
@@ -1533,7 +1490,7 @@
     {% include 'shared/result.html' %}
     {% include 'shared/featured_bounty_cards.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/current_profile.html' %}
     <script type="text/x-template" id="select2-template">
@@ -1541,8 +1498,7 @@
         <slot></slot>
       </select>
     </script>
-    <script src='{% static "v2/js/vue-components.js" %}'></script>
-    <script defer src='https://cdn.quilljs.com/1.3.6/quill.js'></script>
+    <script defer src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
     <script defer src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
     {{currentProfile|json_script:"current-profile"}}
     <script src='{% static "v2/js/pages/profile-tribes.js" %}'></script>
@@ -1551,7 +1507,6 @@
     {% include 'shared/tip_dependancies.html' %}
     <script src='{% static "v2/js/status.js" %}'></script>
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
-    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'

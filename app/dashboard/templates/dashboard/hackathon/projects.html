@@ -169,7 +169,12 @@
                 </div>
                 <div class="card-body">
                   <h5 class="card-title text-uppercase">{{ project.name }}</h5>
-                  <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">Project Home</a>
+                  <a href="
+                   {% if project.name %}
+                      {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+                   {% else %}
+                      {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
+                   {% endif %}" class="font-weight-bold card-subtitle">Project Home</a>
                   <div class="my-2">
                     <b class="text-muted">Project Summary</b>
                     <p>

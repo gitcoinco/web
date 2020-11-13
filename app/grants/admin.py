@@ -17,12 +17,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
+import twitter
+from grants.models import (
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantStat, GrantType,
+    MatchPledge, PhantomFunding, Subscription,
+)
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -38,13 +45,10 @@ class FlagAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'grant']
 
     def response_change(self, request, obj):
-        from django.shortcuts import redirect
         if "_post_flag" in request.POST:
             obj.post_flag()
             self.message_user(request, "posted flag to activity feed")
         if "_tweet" in request.POST:
-            import twitter
-            from django.conf import settings
             # TODO : get @gicoindisputes out of twitter jail
             api = twitter.Api(
                 consumer_key=settings.DISPUTES_TWITTER_CONSUMER_KEY,
@@ -83,23 +87,25 @@ class GrantAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = [
         'migrated_to',
-        'title', 'description', 'reference_url', 'admin_address', 'active',
+        'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
         'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count'
+        'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
+        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
+        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
+        'zcash_payout_address'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
-        'team_member_list',
+        'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
-        'migrated_to', 'view_count'
+        'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
-    raw_id_fields = ['admin_profile']
+    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
+    raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
 
 
@@ -112,6 +118,12 @@ class GrantAdmin(GeneralAdmin):
 
     def view_count(self, instance):
         return instance.get_view_count
+
+    def match_amount(self, instance):
+        try:
+            return round(instance.clr_prediction_curve[0][1])
+        except:
+            return '-'
 
     def team_member_list(self, instance):
         items = []
@@ -138,6 +150,9 @@ class GrantAdmin(GeneralAdmin):
     def subscriptions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
+        # todo: figure out how to set request
+        # if not self.request.GET('expand'):
+        #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for ele in instance.subscriptions.all().order_by('pk'):
             html = f"<a href='{ele.admin_url}'>{ele}</a>"
@@ -145,9 +160,20 @@ class GrantAdmin(GeneralAdmin):
 
         return mark_safe("<BR>".join(eles))
 
+    def response_change(self, request, obj):
+        if "_calc_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            recalc_clr.delay(obj.pk)
+            self.message_user(request, "recaclulation of clr queued")
+        return redirect(obj.admin_url)
+
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
-        eles = []   
+        eles = []
+
+        # todo: figure out how to set request
+        #if not self.request.GET('expand'):
+        #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
@@ -162,6 +188,24 @@ class GrantAdmin(GeneralAdmin):
         if instance.link_to_new_grant:
             html = f"<a href='{instance.link_to_new_grant.pk}'>{instance.link_to_new_grant.pk}</a>"
             return mark_safe(html)
+
+    def stats_history(self, instance):
+        html = "<table>"
+        html += "<tr><td>Date</td><td>Impressions</td><td>Cart Additions</td><td>Contributions</td></tr>"
+        for ele in instance.stats.filter(snapshot_type='increment').order_by('-created_on'):
+            html += f'''<tr>
+<td>
+{ele.created_on.strftime("%m/%d/%Y")}
+</td><td>
+{ele.data.get('impressions')}
+</td><td>
+{ele.data.get('in_cart')}
+</td><td>
+{ele.data.get('contributions')}
+</td>
+            </tr>'''
+        html += "</table>"
+        return mark_safe(html)
 
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
@@ -232,31 +276,47 @@ kevin (team gitcoin)
 
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
-    raw_id_fields = ['subscription']
-    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'txn_url', 'amount', 'token', 'tx_cleared', 'success']
+    raw_id_fields = ['subscription', 'profile_for_clr']
+    list_display = ['pk', 'created_on_nt', 'created_on', 'id', 'user_sybil_score', 'etherscan_links', 'amount_str', 'profile', 'grant', 'tx_cleared', 'success', 'validator_comment']
     readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
+    search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
     def txn_url(self, obj):
-        tx_id = obj.tx_id
-        if not tx_id:
-            tx_id = obj.split_tx_id
-        tx_url = 'https://etherscan.io/tx/' + tx_id
+
+        if obj.subscription.tenant == 'ZCASH':
+            tx_id = obj.tx_id
+            tx_url = 'https://sochain.com/tx/ZEC/' + tx_id
+
+        elif obj.subscription.tenant == 'ETH':
+            tx_id = obj.tx_id
+            if not tx_id:
+                tx_id = obj.split_tx_id
+            tx_url = 'https://etherscan.io/tx/' + tx_id
+
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
         return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
 
+    def created_on_nt(self, obj):
+        return naturaltime(obj.created_on)
+
+    def amount_str(self, obj):
+        return f"{round(obj.subscription.amount_per_period, 2)} {obj.subscription.token_symbol} (${round(obj.subscription.amount_per_period_usdt,2)})"
+
     def token(self, obj):
         return obj.subscription.token_symbol
 
+    def user_sybil_score(self, obj):
+        return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+
     def grant(self, obj):
-        return obj.subscription.grant.title
+        return mark_safe(f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>")
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
 
     def github_created_on(self, instance):
-        from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.subscription.contributor_profile.github_created_on)
 
     def from_ip_address(self, instance):
@@ -267,8 +327,8 @@ class ContributionAdmin(GeneralAdmin):
         return " , ".join(visits)
 
     def etherscan_links(self, instance):
-        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
-        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
+        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id[0:25]}...</a><BR>"
+        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id[0:25]}...</a>"
         return mark_safe(html)
 
     def amount_per_period(self, instance):
@@ -281,7 +341,12 @@ class ContributionAdmin(GeneralAdmin):
         return instance.subscription.amount_per_period_minus_gas_price
 
     def response_change(self, request, obj):
-        from django.shortcuts import redirect
+        if "_notify_contribution_failure" in request.POST:
+            from marketing.mails import grant_txn_failed
+            grant_txn_failed(obj)
+            obj.validator_comment += f"User Notified {timezone.now()}"
+            obj.save()
+            self.message_user(request, "notified user of failure")
         if "_update_tx_status" in request.POST:
             obj.update_tx_status()
             obj.save()
@@ -297,7 +362,6 @@ class PhantomFundingAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'grant']
 
     def github_created_on(self, instance):
-        from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.profile.github_created_on)
 
     def from_ip_address(self, instance):
@@ -308,6 +372,40 @@ class PhantomFundingAdmin(admin.ModelAdmin):
         return " , ".join(visits)
 
 
+class CartActivityAdmin(admin.ModelAdmin):
+    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'latest', 'created_on']
+    raw_id_fields = ['grant', 'profile']
+    search_fields = ['bulk', 'action', 'grant']
+
+
+class GrantTypeAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name']
+    readonly_fields = ['pk']
+
+
+class GrantCategoryAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'category']
+    readonly_fields = ['pk']
+
+
+class GrantCLRAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active', 'link']
+
+
+    def link(self, instance):
+        try:
+            url = f'/_administration/mesh?type=grant&year={instance.start_date.strftime("%Y")}&month={instance.start_date.strftime("%m")}&day={instance.start_date.strftime("%d")}&to_year={instance.end_date.strftime("%Y")}&to_month={instance.end_date.strftime("%m")}&to_day={instance.end_date.strftime("%d")}&submit=Go'
+            html = f"<a href={url}>mesh link</a>"
+
+            return mark_safe(html)
+        except:
+            return "N/A"
+
+class GrantCollectionAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
+    raw_id_fields = ['profile', 'grants', 'curators']
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -315,3 +413,9 @@ admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
+admin.site.register(CartActivity, CartActivityAdmin)
+admin.site.register(GrantType, GrantTypeAdmin)
+admin.site.register(GrantCategory, GrantCategoryAdmin)
+admin.site.register(GrantCLR, GrantCLRAdmin)
+admin.site.register(GrantCollection, GrantCollectionAdmin)
+admin.site.register(GrantStat, GeneralAdmin)

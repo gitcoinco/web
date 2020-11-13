@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from datetime import datetime
 from secrets import token_hex
 
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -396,11 +397,18 @@ class RoundupEmail(SuperModel):
     from_email = models.EmailField(max_length=255)
     from_name = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)
-    body = models.TextField(max_length=5000, blank=True)
+    body = models.TextField(max_length=15000, blank=True)
     kudos_ids = models.CharField(max_length=255, help_text="kudosid1,kudosid2,kudosid3")
     highlights = JSONField(default=dict, blank=True)
     sponsor = JSONField(default=dict, blank=True)
     bounties_spec = JSONField(default=dict, blank=True)
+    kudos = JSONField(default=dict, blank=True)
+    news = JSONField(default=dict, blank=True)
+    updates = JSONField(default=dict, blank=True)
+    videos = models.TextField(max_length=15000, blank=True)
+    issue = models.SmallIntegerField(default=0)
+    release_date = models.DateField(default=datetime.now)
+    hide_dynamic = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return '/_administration/email/roundup'
@@ -410,12 +418,18 @@ class RoundupEmail(SuperModel):
 
 class UpcomingDate(SuperModel):
     """Define the upcoming date model"""
+    # These fields are meant to use for update UpcomingDate based on the icalendar updates
+    uid = models.CharField(max_length=255, null=True, blank=True)
+    last_modified = models.DateTimeField(db_index=True)
+    sequence = models.SmallIntegerField(default=0)
 
     title = models.CharField(max_length=255)
     date = models.DateTimeField(db_index=True)
+
     img_url = models.URLField(db_index=True, blank=True)
     url = models.URLField(db_index=True)
     comment = models.TextField(max_length=255, default='', blank=True)
+    context_tag = models.TextField(max_length=255, default='', blank=True)
 
     @property
     def naturaltime(self):
@@ -425,3 +439,19 @@ class UpcomingDate(SuperModel):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class EmailInventory(SuperModel):
+
+    path = models.CharField(max_length=255)
+    email_tag = models.CharField(max_length=255, blank=True)
+    type = models.CharField(max_length=255, blank=True)
+    reason = models.CharField(max_length=255, blank=True)
+    product = models.CharField(max_length=255, blank=True)
+    era = models.CharField(max_length=255, blank=True)
+    comment = models.TextField(max_length=255, default='', blank=True)
+    url = models.URLField(db_index=True, blank=True)
+    stats = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.path}"

@@ -123,7 +123,7 @@ life easier for you if you are the kind who enjoys multiple things parallely.
 These should also be created directly off of the `master` branch.
 
 ```shell
-git checkout -b my-branch -t upstream/master
+git checkout -b my-branch
 ```
 
 ### Step 3: Code
@@ -141,7 +141,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
 
 ### Step 4: Commit
 
-1. Ensure your code changes adhere to our styling and linting standards: `make fix` (or `npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .; yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/enssubdomain/ app/ethos/ app/github/`)
+1. Ensure your code changes adhere to our styling and linting standards: `make fix` (or `npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .; yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/github/`)
 2. List all your changes as a list if needed else simply give a brief description on what the changes are.
 3. All lines at 100 columns.
 4. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL. For other references use `Refs:`.

@@ -18,18 +18,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 import ccxt
 import cryptocompare as cc
 import requests
 from dashboard.models import Bounty, Tip
-from economy.models import ConversionRate
+from economy.models import ConversionRate, Token
 from grants.models import Contribution
 from kudos.models import KudosTransfer
+from perftools.models import JSONStore
 from websocket import create_connection
+
+logger = logging.getLogger(__name__)
+
+
+def get_config(view, key):
+    try:
+        pt = JSONStore.objects.get(view=view, key=key)
+        return pt.data
+    except:
+        return []
 
 
 def stablecoins():
@@ -91,15 +104,23 @@ def etherdelta():
                 to_currency=to_currency)
             print(f'Etherdelta: {from_currency}=>{to_currency}:{to_amount}')
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
 
 def polo():
+
+    polo_blacklist = get_config('polo', 'blacklist')
+
     """Handle pulling market data from Poloneix."""
     tickers = ccxt.poloniex().load_markets()
     for pair, result in tickers.items():
         from_currency = pair.split('/')[0]
         to_currency = pair.split('/')[1]
+
+        if from_currency in polo_blacklist:
+            return
+        if to_currency in polo_blacklist:
+            return
 
         from_amount = 1
         try:
@@ -114,6 +135,52 @@ def polo():
         except Exception as e:
             print(e)
 
+
+def coingecko(source, tokens):
+
+    """Handle pulling market data from Coingecko."""
+
+    now = timezone.now()
+
+    token_str = ''
+    for token in tokens:
+        token_str += (token.conversion_rate_id + ',')
+
+    url =  f'https://api.coingecko.com/api/v3/simple/price?ids={token_str}&vs_currencies=usd,eth'
+
+    response = requests.get(url).json()
+
+    for token in tokens:
+        from_currency = token.symbol
+        conversion_rate_id = token.conversion_rate_id
+        conversion_rates = response.get(conversion_rate_id)
+
+        token.conversion_rate_id
+
+        # token -> ETH
+        to_amount = conversion_rates.get('eth')
+        ConversionRate.objects.create(
+            from_amount=1,
+            to_amount=to_amount,
+            source=source,
+            from_currency=from_currency,
+            to_currency='ETH'
+        )
+        print(f'Coingecko: {from_currency} => ETH : {to_amount}')
+
+        # token -> USDT
+        to_amount = conversion_rates.get('usd')
+        ConversionRate.objects.create(
+            from_amount=1,
+            to_amount=to_amount,
+            source=source,
+            from_currency=from_currency,
+            to_currency='USDT'
+        )
+        print(f'Coingecko: {from_currency} => USD : {to_amount}')
+
+    # ConversionRate.objects.filter(source=source, created_on__lt=now).delete()
+    # print(f'Deleted old coingecko conversion rates')
 
 def refresh_bounties():
     for bounty in Bounty.objects.all():
@@ -152,7 +219,7 @@ def refresh_conv_rate(when, token_name):
             )
             print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
 
 def cryptocompare():
@@ -161,26 +228,39 @@ def cryptocompare():
     Updates ConversionRates only if data not available.
 
     """
+
+    cryptocompare_pulllist = get_config('cryptocompare', 'always_pull_list')
+    cryptocompare_blacklist = get_config('cryptocompare', 'blacklist')
+
+    pull_cryptocompare_tokens_only = cryptocompare_pulllist
+    for token_name in pull_cryptocompare_tokens_only:
+        refresh_conv_rate(timezone.now(), token_name)
+
     for bounty in Bounty.objects.current():
         print(f'CryptoCompare Bounty {bounty.pk}')
-        refresh_conv_rate(bounty.web3_created, bounty.token_name)
+        if bounty.token_name not in cryptocompare_blacklist:
+            refresh_conv_rate(bounty.web3_created, bounty.token_name)
 
     for tip in Tip.objects.all():
         print(f'CryptoCompare Tip {tip.pk}')
-        refresh_conv_rate(tip.created_on, tip.tokenName)
+        if tip.tokenName not in cryptocompare_blacklist:
+            refresh_conv_rate(tip.created_on, tip.tokenName)
 
     for obj in KudosTransfer.objects.all():
         print(f'CryptoCompare KT {obj.pk}')
-        refresh_conv_rate(obj.created_on, obj.tokenName)
+        if obj.tokenName not in cryptocompare_blacklist:
+            refresh_conv_rate(obj.created_on, obj.tokenName)
 
     for obj in Contribution.objects.all():
         print(f'CryptoCompare GrantContrib {obj.pk}')
-        refresh_conv_rate(obj.created_on, obj.subscription.token_symbol)
+        if obj.subscription.token_symbol not in cryptocompare_blacklist:
+            refresh_conv_rate(obj.created_on, obj.subscription.token_symbol)
 
 
 def uniswap():
     """Hangle pulling market data from Uniswap using its subgraph node on mainnet."""
-    pull_uniswap_tokens_only = ['PAN']
+    uniswap_whitelist = get_config('uniswap', 'whitelist')
+    uniswap_blacklist = get_config('uniswap', 'blacklist')
     endpoint = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
     query_limit = 100
     skip = 0
@@ -212,7 +292,9 @@ def uniswap():
                 for exchange in json_data['data']['exchanges']:
                     try:
                         token_name = exchange['tokenSymbol']
-                        if token_name not in pull_uniswap_tokens_only:
+                        if token_name not in uniswap_whitelist:
+                            continue
+                        if token_name in uniswap_blacklist:
                             continue
                         if float(exchange['price']) == 0.: # Skip exchange pairs with zero value
                             continue
@@ -256,6 +338,8 @@ class Command(BaseCommand):
         """Get the latest currency rates."""
         stablecoins()
 
+        approved_tokens = Token.objects.filter(approved=True)
+
         try:
             print('ED')
             etherdelta()
@@ -267,7 +351,6 @@ class Command(BaseCommand):
             polo()
         except Exception as e:
             print(e)
-
 
         try:
             print('uniswap')
@@ -281,6 +364,15 @@ class Command(BaseCommand):
         try:
             print('cryptocompare')
             cryptocompare()
+        except Exception as e:
+            print(e)
+
+        try:
+            source = 'coingecko'
+            coingecko_tokens = approved_tokens.filter(conversion_rate_source=source)
+            if coingecko_tokens.count() > 0:
+                print(source)
+                coingecko(source, coingecko_tokens)
         except Exception as e:
             print(e)
 

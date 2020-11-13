@@ -42,7 +42,7 @@
   <div>
     <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
     <h3>
-        {{request.requester.handle}} {% blocktrans %} request funds worth {{amount}} {{tokenName}}{% endblocktrans %}
+        {{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
         {% if address %}
         Recipient Address: {{ address }}
         {% endif %}
@@ -64,6 +64,51 @@
     {% if not already_redeemed %}
       <div style="margin-bottom: 1.5em;">
         <a class="button" href="{{link}}">{% trans "Fund this Request" %}</a>
+        <br>
+        <br>
+        - or -
+        <br>
+        <a class="" href="https://gitcoin.co/{{request.requester.handle}}">{% trans "Write them a message" %}</a>
+        <br>
+        <br>
+        {% if request.other_earnings|length %}
+          <hr>
+          <h4>
+            {{request.other_earnings|length}} Other transactions between {{request.requester.handle}} &lt;&gt; {{request.profile.handle}}
+          </h4>
+        {% endif %}
+        <table style="margin: 0px auto; text-align: left;">
+          <tr style="font-weight:bold;">
+            <td>
+              When
+            </td>
+            <td>
+              What
+            </td>
+            <td>
+              Amount
+            </td>
+            <td>
+              To/From
+            </td>
+          </tr>
+        {% for earning in request.other_earnings %}
+            <tr>
+              <td>
+              {{earning.created_on}} ({{earning.created_on|naturaltime}})
+              </td>
+              <td>
+              {{earning.source_type}}
+              </td>
+              <td>
+                ${{earning.value_usd}} {% if earning.token_name %} in {% endif %} {{earning.token_name}}
+              </td>
+              <td>
+                 {{earning.from_profile.handle}} => {{earning.to_profile.handle}}
+              </td>
+            </tr>
+        {% endfor %}
+        </table>
       </div>
     {% endif %}
   </div>

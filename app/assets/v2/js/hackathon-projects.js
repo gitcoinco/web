@@ -1,5 +1,5 @@
 // document.result.pk
-const submitProject = (logo, data) => {
+const submitProject = (logo, data, callback) => {
   let formData = new FormData();
 
   formData.append('logo', logo);
@@ -19,18 +19,33 @@ const submitProject = (logo, data) => {
 
   $.ajax(sendConfig).done(function(response) {
     if (!response.success) {
+      if (callback) {
+        callback(response);
+      }
       return _alert(response.msg, 'error');
     }
     delete localStorage['pendingProject'];
     $('#modalProject').bootstrapModal('hide');
+    if (callback) {
+      callback(response);
+    }
+    if (document.location.pathname.includes('fulfill')) {
+      document.location.reload();
+    }
     return _alert({message: response.msg}, 'info');
+
 
   }).fail(function(data) {
     _alert(data.responseJSON['error'], 'error');
+
+    if (callback) {
+      callback(data);
+    }
+    return true;
   });
 };
 
-const projectModal = (bountyId, projectId) => {
+const projectModal = (bountyId, projectId, callback) => {
   $('#modalProject').bootstrapModal('hide');
   const modalUrl = projectId ? `/modal/new_project/${bountyId}/${projectId}/` : `/modal/new_project/${bountyId}/`;
 
@@ -43,16 +58,28 @@ const projectModal = (bountyId, projectId) => {
     let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
 
     userSearch('.team-users', false, '', data, true, false);
+    $('.project__tags').select2({
+      tags: true,
+      tokenSeparators: [ ',', ' ' ]
+    });
     $('#modalProject').bootstrapModal('show');
     $('[data-toggle="tooltip"]').bootstrapTooltip();
     $('#looking-members').on('click', function() {
       $('.looking-members').toggle();
     });
     $('#projectForm').on('submit', function(e) {
+      e.preventDefault();
+      const url = $('#videodemo-url').val();
+      const metadata = getVideoMetadata(url);
+
       let logo = $(this)[0]['logo'].files[0];
       let data = $(this).serializeArray();
 
-      submitProject(logo, data);
+      if (metadata) {
+        data.push({name: 'videodemo-provider', value: metadata.provider});
+      }
+
+      submitProject(logo, data, callback);
     });
   });
 

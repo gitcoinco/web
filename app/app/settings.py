@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import os
 import socket
 
@@ -53,15 +54,18 @@ BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='YOUR-ETHERSCAN-KEY')
 VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
-PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='YOUR-SupEr-SecRet-TeSt-PYPL-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
+FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
 RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
+BLOCKNATIVE_API = env('BLOCKNATIVE_API', default='')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
@@ -103,13 +107,13 @@ INSTALLED_APPS = [
     'app',
     'avatar',
     'retail',
+    'ptokens',
     'rest_framework',
     'marketing',
     'economy',
     'dashboard',
     'chat',
     'quests',
-    'enssubdomain',
     'faucet',
     'tdi',
     'gas',
@@ -146,6 +150,7 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -178,7 +183,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -512,6 +517,22 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
+# https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
+CELERY_ROUTES = [
+    ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
+    ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
+    ('marketing.tasks.*', {'queue': 'marketing'}),
+    ('grants.tasks.*', {'queue': 'default'}),
+    ('chat.tasks.*', {'queue': 'default'}),
+    ('dashboard.tasks.*', {'queue': 'default'}),
+    ('townsquare.tasks.*', {'queue': 'default'}),
+    ('kudos.tasks.*', {'queue': 'default'}),
+    ]
+if DEBUG:
+    CELERY_ROUTES = [
+        ('*', {'queue': 'default'}),
+        ]
+
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -554,14 +575,6 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
-# ENS Subdomain Settings
-# The value of ENS_LIMIT_RESET_DAYS should be higher since only one transaction is allowed per user.
-# The only reason for a user to make more than one request is when he looses access to the wallet.
-ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
-ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30)
-ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
-ENS_PRIVATE_KEY = env('ENS_PRIVATE_KEY', default=None)
-
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
@@ -585,8 +598,15 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
-# Etherscan API
-ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='')
+# Google
+GOOGLE_AUTH_BASE_URL = env('GOOGLE_AUTH_BASE_URL', default='https://accounts.google.com/o/oauth2/auth')
+GOOGLE_TOKEN_URL = env('GOOGLE_TOKEN_URL', default='https://oauth2.googleapis.com/token')
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET', default='')
+GOOGLE_SCOPE = env('GOOGLE_SCOPE', default='https://www.googleapis.com/auth/userinfo.profile')
+
+# OATHLIB
+OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
 
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
@@ -663,6 +683,7 @@ OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
 KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
 KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf38b63d09a75de1a7b94aa24163')
+KUDOS_CONTRACT_XDAI = env('KUDOS_CONTRACT_XDAI', default='0x74e596525C63393f42C76987b6A66F4e52733efa')
 KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
@@ -762,7 +783,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -833,6 +854,31 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
+PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
+PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x75589C2e56095c80f63EC773509f033aC595c34e')
+PTOKEN_ABI = ''
+PTOKEN_FACTORY_ABI = ''
+
+if PTOKEN_ABI_PATH:
+    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
+        PTOKEN_ABI = json.load(f)
+
+if PTOKEN_FACTORY_ABI_PATH:
+    with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
+        PTOKEN_FACTORY_ABI = json.load(f)
+
+HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
+        'INDEX_NAME': 'haystack',
+    },
+}
+# Update Search index in realtime (using models.db.signals)
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
@@ -842,3 +888,9 @@ SMS_MAX_VERIFICATION_ATTEMPTS = env('SMS_MAX_VERIFICATION_ATTEMPTS', default=4)
 SMS_COOLDOWN_IN_MINUTES = env('SMS_COOLDOWN_IN_MINUTES', default=1)
 EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
 PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
+
+HYPERCHARGE_BOUNTIES_PROFILE_HANDLE = env('HYPERCHARGE_BOUNTIES_PROFILE', default='gitcoinbot')
+ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
+ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
+
+BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')

@@ -38,6 +38,8 @@ Vue.mixin({
           projectModal(vm.bounty.pk);
         }
         vm.staffOptions();
+        vm.fetchIfPendingFulfillments();
+        vm.initChain();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
@@ -47,17 +49,37 @@ Vue.mixin({
       let url;
 
       switch (token_name) {
+        case 'BTC':
+          url = `https://blockstream.info/tx/${txn}`;
+          break;
+
         case 'ETC':
           url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
           break;
 
+        case 'CELO':
         case 'cUSD':
-        case 'cGLD':
-          url = `https://alfajores-blockscout.celo-testnet.org/tx/${txn}`;
+          url = `https://explorer.celo.org/tx/${txn}`;
           break;
 
         case 'ZIL':
           url = `https://viewblock.io/zilliqa/tx/${txn}`;
+          break;
+
+        case 'DOT':
+          url = `https://polkadot.subscan.io/extrinsic/${txn}`;
+          break;
+
+        case 'KSM':
+          url = `https://kusama.subscan.io/extrinsic/${txn}`;
+          break;
+
+        case 'FIL':
+          url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
+          break;
+
+        case 'ONE':
+          url = `https://explorer.harmony.one/#/tx/${txn}`;
           break;
 
         default:
@@ -70,17 +92,37 @@ Vue.mixin({
       let url;
 
       switch (token_name) {
+        case 'BTC':
+          url = `https://blockstream.info/address/${address}`;
+          break;
+
         case 'ETC':
           url = `https://blockscout.com/etc/mainnet/address/${address}`;
           break;
 
+        case 'CELO':
         case 'cUSD':
-        case 'cGLD':
-          url = `https://alfajores-blockscout.celo-testnet.org/address/${address}`;
+          url = `https://explorer.celo.org/address/${address}`;
           break;
 
         case 'ZIL':
           url = `https://viewblock.io/zilliqa/address/${address}`;
+          break;
+
+        case 'DOT':
+          url = `https://polkadot.subscan.io/account/${address}`;
+          break;
+
+        case 'KSM':
+          url = `https://kusama.subscan.io/account/${address}`;
+          break;
+
+        case 'FIL':
+          url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
+          break;
+
+        case 'ONE':
+          url = `https://explorer.harmony.one/#/address/${address}`;
           break;
 
         default:
@@ -94,36 +136,41 @@ Vue.mixin({
       let qr_string;
 
       switch (token_name) {
+        case 'BTC':
+          qr_string = value ?
+            `bitcoin:${address}?amount=${value}` :
+            `bitcoin:${address}`;
+          break;
+
         case 'ETC':
           qr_string = value ?
             `ethereum:${address}?value=${value}` :
             `ethereum:${address}`;
           break;
 
+        case 'CELO':
         case 'cUSD':
           qr_string = value ?
-            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
-            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
-          break;
-
-        case 'cGLD':
-          qr_string = value ?
-            `celo:${address}?value=${value}` :
-            `celo:${address}`;
+            `celo://wallet/pay?address=${address}&amount=${value}&token=${token_name}` :
+            `celo://wallet/pay?address=${address}&token=${token_name}`;
           break;
 
         case 'ZIL':
           qr_string = value ?
-            `zilliqa://${address}?amount=${value}e12` :
+            `zilliqa://${address}?amount=${value}` :
             `zilliqa://${address}`;
+          break;
+
+        case 'FIL':
+          qr_string = value ?
+            `filecoin://${address}?amount=${value}` :
+            `filecoin://${address}`;
           break;
       }
 
       return qr_string;
     },
     syncBounty: function() {
-      // NOT USED FOR NOW UNTIL MIGRATION OF ETH BOUNTIES TO VUE
-      // ALSO THEN NO SENSE TO MIGRATE BECAUSE STANDARD BOUNTIES REMOVAL
       let vm = this;
 
       if (!localStorage[document.issueURL]) {
@@ -248,8 +295,13 @@ Vue.mixin({
         });
       }
     },
-    getTenant: function(token_name) {
+    getTenant: function(token_name, web3_type) {
       let tenant;
+
+      if (web3_type == 'manual') {
+        tenant = 'OTHERS';
+        return tenant;
+      }
 
       switch (token_name) {
 
@@ -257,13 +309,30 @@ Vue.mixin({
           tenant = 'ETC';
           break;
 
+        case 'BTC':
+          tenant = 'BTC';
+          break;
+
+        case 'CELO':
         case 'cUSD':
-        case 'cGLD':
           tenant = 'CELO';
           break;
 
         case 'ZIL':
           tenant = 'ZIL';
+          break;
+
+        case 'DOT':
+        case 'KSM':
+          tenant = 'POLKADOT';
+          break;
+
+        case 'FIL':
+          tenant = 'FILECOIN';
+          break;
+
+        case 'ONE':
+          tenant = 'HARMONY';
           break;
 
         default:
@@ -272,22 +341,22 @@ Vue.mixin({
 
       return tenant;
     },
-    fulfillmentComplete: function(fulfillment_id, event) {
+    fulfillmentComplete: function(payout_type, fulfillment_id, event) {
       let vm = this;
 
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
-      const bounty_owner_address = vm.bounty.bounty_owner_address;
-      const tenant = vm.getTenant(token_name);
+      const funder_address = vm.bounty.bounty_owner_address;
+      const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
 
       const payload = {
-        payout_type: 'qr',
+        payout_type: payout_type,
         tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: bounty_owner_address,
+        funder_address: funder_address,
         payout_tx_id: payout_tx_id
       };
 
@@ -328,6 +397,25 @@ Vue.mixin({
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
+    payWithExtension: function(fulfillment_id, fulfiller_address, payout_type) {
+      let vm = this;
+      const modal = this.$refs['payout-modal'][0];
+
+      switch (payout_type) {
+        case 'web3_modal':
+          payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'polkadot_ext':
+          payWithPolkadotExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'harmony_ext':
+          payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+      }
+
+    },
     closeBounty: function() {
 
       let vm = this;
@@ -357,7 +445,7 @@ Vue.mixin({
         return;
       }
 
-      if (vm.contxt.is_staff) {
+      if (vm.contxt.is_staff && !vm.quickLinks.length) {
         vm.quickLinks.push({
           label: 'View in Admin',
           href: `/_administrationdashboard/bounty/${vm.bounty.pk}/change/`,
@@ -416,6 +504,23 @@ Vue.mixin({
       );
 
     },
+    fetchIfPendingFulfillments: function() {
+      let vm = this;
+
+      const pendingFulfillments = vm.bounty.fulfillments.filter(fulfillment =>
+        fulfillment.payout_status == 'pending'
+      );
+
+      if (pendingFulfillments.length > 0) {
+        if (!vm.pollInterval) {
+          vm.pollInterval = setInterval(vm.fetchBounty, 60000);
+        }
+      } else {
+        clearInterval(vm.pollInterval);
+        vm.pollInterval = null;
+      }
+      return;
+    },
     stopWork: function(isOwner) {
       let text = isOwner ?
         'Are you sure you would like to stop this user from working on this bounty ?' :
@@ -437,8 +542,8 @@ Vue.mixin({
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
           let text = isOwner ?
-            "'You\'ve stopped the user from working on this bounty ?" :
-            "'You\'ve stopped work on this bounty";
+            "You\'ve stopped the user from working on this bounty ?" :
+            "You\'ve stopped work on this bounty";
 
           _alert(text, 'success');
         } else {
@@ -474,10 +579,52 @@ Vue.mixin({
     initFulfillmentContext: function(fulfillment) {
       let vm = this;
 
-      if (fulfillment.payout_type == 'fiat') {
-        vm.fulfillment_context.active_step = 'payout_amount';
-      } else if (fulfillment.payout_type == 'qr') {
-        vm.fulfillment_context.active_step = 'check_wallet_owner';
+      switch (fulfillment.payout_type) {
+        case 'fiat':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
+
+        case 'qr':
+        case 'manual':
+          vm.fulfillment_context.active_step = 'check_wallet_owner';
+          break;
+
+        case 'web3_modal':
+        case 'polkadot_ext':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
+      }
+    },
+    initChain: function() {
+
+      let vm = this;
+      const token = vm.bounty.token_name;
+
+      switch (vm.bounty.web3_type) {
+        case 'polkadot_ext': {
+          let polkadot_endpoint;
+
+          if (token == 'KSM') {
+            polkadot_endpoint = KUSAMA_ENDPOINT;
+          } else if (token == 'DOT') {
+            polkadot_endpoint = POLKADOT_ENDPOINT;
+          }
+
+          polkadot_utils.connect(polkadot_endpoint).then(res =>{
+            console.log(res);
+            polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
+              vm.fulfillment_context.active_step = 'payout_amount';
+            }).catch(err => {
+              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+              console.log(err);
+            });
+          });
+          break;
+        }
+
+        case 'harmony_ext':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
       }
     }
   },
@@ -528,7 +675,8 @@ if (document.getElementById('gc-bounty-detail')) {
         decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
-        quickLinks: []
+        quickLinks: [],
+        pollInterval: null
       };
     },
     mounted() {

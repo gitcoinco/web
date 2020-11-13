@@ -55,6 +55,7 @@
                 </div>
 
                 <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                  <input type="hidden" name="bountyPk" id="bountyPk" value="{{bounty.pk}}">
                   <div>
                     <p class="font-caption font-weight-semibold">
                       <a class="link" href="{{ bounty.url }}">
@@ -83,6 +84,29 @@
                     />
                   </div>
 
+                  {% if prize_projects %}
+                    <div class="mt-2">
+                      <label class="form__label" for="projectId">{% trans "Select the submitting project" %}</label>
+                      <select name='projectId' id='projectId' class="form__input w-100 js-select2 font-body" required>
+                        {% for project in prize_projects %}
+                          <option value="{{ project.id }}">{{ project.id }} - {{ project.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="mt-2">
+                      <label class="form__label" for="videoDemoLink">{% trans "Video demo Link" %}</label>
+                      <input name='videoDemoLink' id='videoDemoLink' class="form__input font-body" type="text"
+                        placeholder="https://youtu.be/DJartWzDn0E" value=""
+                      />
+                    </div>
+
+                  {% elif bounty.event %}
+                    <div class="mt-2">
+                      <label class="form__label" for="projectId">{% trans "Please create your project:" %}</label>
+                      <button type="button" onclick="projectModal({{bounty.pk}})" class="btn btn-sm btn-gc-green d-block">Add project</button>
+                    </div>
+                  {% endif %}
+
                   {% if bounty.web3_type == 'fiat' %}
                     <div class="mt-2">
                       <label class="form__label" for="fulfiller_identifier">{% trans "Paypal Account" %}</label>
@@ -95,7 +119,7 @@
 
                     <div class="mt-2">
                       <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
-                      {% if is_bounties_network %}
+                      {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
                         <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
                           [ sync with web3 wallet ]
                         </span>
@@ -103,16 +127,18 @@
                       <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
                         title="Address to which bounty will be sent upon being accepted">
                       </i>
-                      <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="0x0000000000000"/>
+                      {% if bounty.metadata.chain_id == '58' %}
+                        <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Polkadot Wallet Address" data-rule-pattern="^(([0-9a-zA-Z]{47})|([0-9a-zA-Z]{48}))"/>
+                      {% else %}
+                        <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="0x0000000000000"/>
+                      {% endif %}
                     </div>
                   {% endif %}
 
                   <div class="mt-2 row">
                     <div class="col-12">
                       <label class="form__label" for="hoursWorked">{% trans "Hours Worked" %}</label>
-                      <input name='hoursWorked' id='hoursWorked' class="form__input font-body" type="number" placeholder="1 (feel free to approximate)"
-                        value="" min="0" step="0.1"
-                      />
+                      <input name='hoursWorked' id='hoursWorked' class="form__input font-body" type="number" placeholder="1 (feel free to approximate)" value="" min="0" step="0.1" required/>
                     </div>
 
                     <div class="col-12">
@@ -155,7 +181,7 @@
                   {% endif %}
 
                   <div class="my-2 pb-5 text-center">
-                    <button class="mb-3 w-100 button button--primary js-submit" role="button">{% trans "Submit Work" %}</button>
+                    <button type="submit" class="mb-3 w-100 button button--primary js-submit" role="button">{% trans "Submit Work" %}</button>
                   </div>
                 </form>
               </div>
@@ -174,18 +200,30 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
-  </body>
+  {% include 'shared/current_profile.html' %}
 
   <script>
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();
+    let bountyChainId;
     let eventTag;
     let standardBountyId;
     {% if bounty.event %}
       standardBountyId = {{bounty.standard_bounties_id}};
       eventTag = '{{ bounty.event.slug }}';
     {% endif %}
+    bountyChainId = '{{bounty.metadata.chain_id}}'
+
+    $(document).ready(function() {
+      $('.js-select2').each(function() {
+        $(this).select2({
+          minimumResultsForSearch: Infinity
+        });
+      });
+    })
   </script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
 
   {% if is_bounties_network %}
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -200,5 +238,6 @@
   {% endif %}
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty/index.js" %}"></script>
+</body>
 
 </html>

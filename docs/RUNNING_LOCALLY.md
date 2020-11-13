@@ -15,7 +15,7 @@ You will need to edit the `app/.env` file with your local environment variables.
 
 ## Configure Integrations (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
+If you plan on using the Github and/or Google integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 
@@ -90,7 +90,7 @@ Alternatively, if any installation errors occur:
 
 ```shell
 
-~/web$ awk '!/^(-r)/' requirements/base.txt requirements/test.txt | xargs -n 1 pip3 install
+~/web$ awk '!/^(-r)/' requirements/prod.txt requirements/test.txt | xargs -n 1 pip3 install
 
 ```
 

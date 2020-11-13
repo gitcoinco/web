@@ -35,11 +35,32 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        timeout_period = timezone.now() - timedelta(minutes=6)
+        # web3 modal
+        web3_modal_pending_fulfillments = pending_fulfillments.filter(payout_type='web3_modal')
+        if web3_modal_pending_fulfillments:
+            for fulfillment in web3_modal_pending_fulfillments.all():
+                sync_payout(fulfillment)
 
-        pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+        # polkadot extension
+        polkadot_pending_fulfillments = pending_fulfillments.filter(payout_type='polkadot_ext')
+        if polkadot_pending_fulfillments:
+            for fulfillment in polkadot_pending_fulfillments.all():
+                sync_payout(fulfillment)
 
-        fulfillments = pending_fulfillments.filter(payout_status='pending')
+        # harmony extension
+        harmony_pending_fulfillments = pending_fulfillments.filter(payout_type='harmony_ext')
+        if harmony_pending_fulfillments:
+            for fulfillment in harmony_pending_fulfillments.all():
+                sync_payout(fulfillment)
 
-        for fulfillment in fulfillments.all():
-            sync_payout(fulfillment)
+
+        # QR
+        qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')
+        if qr_pending_fulfillments:
+            # Auto expire pending transactions
+            timeout_period = timezone.now() - timedelta(minutes=20)
+            qr_pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+
+            fulfillments = qr_pending_fulfillments.filter(payout_status='pending')
+            for fulfillment in fulfillments.all():
+                sync_payout(fulfillment)

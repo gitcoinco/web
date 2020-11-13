@@ -5,7 +5,7 @@
 
 {% for grant in grants %}
   <form class="js-addDetailToCart-form">
-        {% include 'grants/shared/hidden_inputs.html' %}
+     {% include 'grants/shared/hidden_inputs.html' with amount=grant.amount token=grant.token grant=grant.obj %}
   </form>
 {% endfor %}
 

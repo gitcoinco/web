@@ -6,16 +6,14 @@ from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
     token_name = fulfillment.token_name
-    if token_name != 'cGLD' and token_name != 'cUSD':
+    if token_name != 'cUSD' and token_name != 'CELO':
         return None
 
     funderAddress = fulfillment.bounty.bounty_owner_address
     amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
 
-    # TODO: UPDATE WITH MAINNET URL. Using alfajores until then
-    blockscout_url = f'https://alfajores-blockscout.celo-testnet.org/api?module=account&action=tokentx&address={funderAddress}'
-
+    blockscout_url = f'https://explorer.celo.org/api?module=account&action=tokentx&address={funderAddress}'
     blockscout_response = requests.get(blockscout_url).json()
     if blockscout_response['message'] and blockscout_response['result']:
         for txn in blockscout_response['result']:
@@ -33,8 +31,7 @@ def get_celo_txn_status(txnid, network='mainnet'):
     if not txnid:
         return None
 
-    # TODO: UPDATE WITH MAINNET URL. Using alfajores until then
-    blockscout_url = f'https://alfajores-blockscout.celo-testnet.org/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    blockscout_url = f'https://explorer.celo.org/api?module=transaction&action=gettxinfo&txhash={txnid}'
 
     blockscout_response = requests.get(blockscout_url).json()
 

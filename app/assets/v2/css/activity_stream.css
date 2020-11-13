@@ -1,14 +1,9 @@
 #reflink {
   cursor: pointer;
-  font-size: 12px;
   padding: 3px;
-  background-color: #ecf0f4;
   border: 0px solid;
-}
-
-.dark-mode #reflink {
-  background-color: var(--gc-blue);
-  color: #ecf0f4;
+  color: var(--link-color);
+  background: var(--bg-shade-0);
 }
 
 .click_here_to_join_video{
@@ -33,12 +28,12 @@
 }
 #new_activity_notifier {
   text-align: center;
-  background-color: #f5f5f9;
-  border-bottom: 1px solid #eee;
+  color: var(--link-color);
+  background: var(--bg-shade-0);
+  border-bottom: 1px solid var(--text-color);
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 12px;
   border-radius: 3px;
-  color: black;
   font-size: 0.8rem;
   font-weight: bold;
 }

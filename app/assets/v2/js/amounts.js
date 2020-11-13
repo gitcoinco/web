@@ -86,7 +86,9 @@ var getUSDEstimate = function(amount, denomination, callback) {
   }
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
-  jQuery.get(request_url, function(result) {
+  jQuery.get(request_url, function(results) {
+    const result = results[0];
+
     amount_usdt = result['usdt'];
     eth_amount = parseFloat(result['eth']);
     conv_rate = amount_usdt / amount;
@@ -137,7 +139,9 @@ var getAmountEstimate = function(usd_amount, denomination, callback) {
   }
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
-  jQuery.get(request_url, function(result) {
+  jQuery.get(request_url, function(results) {
+    const result = results[0];
+
     amount_usdt = result['usdt'];
     eth_amount = parseFloat(result['eth']);
     conv_rate = amount_usdt / amount;

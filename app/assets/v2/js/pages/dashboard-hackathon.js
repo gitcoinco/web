@@ -104,12 +104,10 @@
     }
     let _filters = filters.slice();
 
-    _filters.push('keywords', 'order_by', 'org', 'tab');
-    if (document.hackathon) {
-      resetFilters(true);
-      filters.push('org', 'tab');
+    resetFilters(true);
+    filters.push('org', 'tab', 'filter');
 
-    }
+
     _filters.forEach(filter => {
       if (getParam(filter)) {
         localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -776,8 +774,8 @@
     });
 
     $(`
-    #sidebar_container input[type=radio], #sidebar_container input[type=checkbox],
-    #sidebar_container .js-select2, #orgs`).on('change', function(e) {
+      #sidebar_container input[type=radio], #sidebar_container input[type=checkbox],
+      #sidebar_container .js-select2, #orgs`).on('change', function(e) {
       reset_offset();
       refreshBounties(null, 0, false);
       e.preventDefault();
@@ -861,13 +859,15 @@
           });
         }
       },
-      data: () => ({
-        csrf: $("input[name='csrfmiddlewaretoken']").val(),
-        tribesData: {},
-        hackathonSponsors: document.hackathonSponsors
-      })
+      data: function() {
+        return {
+          csrf: $("input[name='csrfmiddlewaretoken']").val(),
+          tribesData: {},
+          hackathonSponsors: document.hackathonSponsors
+        };
+      }
     });
-    var app = new Vue({
+    window.hackathonApp = new Vue({
       delimiters: [ '[[', ']]' ],
       el: '#dashboard-vue-app',
       updated: () => {
@@ -897,7 +897,6 @@
 
           addPopover();
 
-
           switch (input) {
             default:
             case 0:
@@ -910,12 +909,17 @@
               newPathName = 'projects';
               break;
             case 3:
-              newPathName = 'chat';
-              break;
-            case 4:
               newPathName = 'participants';
               break;
+            case 4:
+              newPathName = 'events';
+              break;
+            case 5:
+              newPathName = 'showcase';
+              break;
+
           }
+
           let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;
 
           history.pushState({}, `${vm.hackathonObj['slug']} - ${newPathName}`, newUrl);
@@ -927,8 +931,11 @@
         activePanel: document.activePanel,
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
+        prizeFounders: document.prizeFounders,
         hackathonProjects: [],
-        chatURL: document.chatURL
+        chatURL: document.chatURL,
+        hackHasEnded: document.displayShowcase,
+        isSponsor: document.is_sponsor
       })
     });
   });

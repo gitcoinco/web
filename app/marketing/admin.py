@@ -22,15 +22,34 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import (
-    AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
+    AccountDeletionRequest, Alumni, EmailEvent, EmailInventory, EmailSubscriber, EmailSupressionList, GithubEvent,
     GithubOrgToTwitterHandleMapping, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, RoundupEmail,
     SlackPresence, SlackUser, Stat, UpcomingDate,
 )
 
 
+class RoundupEmailAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+
+    def response_change(self, request, obj):
+        if "_send_roundup_email_myself" in request.POST:
+            from marketing.tasks import weekly_roundup
+            weekly_roundup.delay(request.user.profile.email)
+            self.message_user(request, "Roundup Email Queued!")
+        if "_send_roundup_email_everyone" in request.POST:
+            from marketing.tasks import send_all_weekly_roundup
+            send_all_weekly_roundup.delay()
+            self.message_user(request, "Roundup Email Queued!")
+        return super().response_change(request, obj)
+
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+class UpcomingDateAdmin(admin.ModelAdmin):
+    ordering = ['-date']
+    list_display = ['created_on', 'date', '__str__']
 
 
 class LeaderboardRankAdmin(admin.ModelAdmin):
@@ -118,12 +137,13 @@ class SlackUserAdmin(admin.ModelAdmin):
 admin.site.register(MarketingCallback, GeneralAdmin)
 admin.site.register(AccountDeletionRequest, GeneralAdmin)
 admin.site.register(EmailSupressionList, GeneralAdmin)
+admin.site.register(EmailInventory, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Job, GeneralAdmin)
 admin.site.register(ManualStat, GeneralAdmin)
-admin.site.register(UpcomingDate, GeneralAdmin)
+admin.site.register(UpcomingDate, UpcomingDateAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(Keyword, GeneralAdmin)
 admin.site.register(EmailEvent, EmailEventAdmin)
@@ -132,4 +152,4 @@ admin.site.register(LeaderboardRank, LeaderboardRankAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)
 admin.site.register(SlackPresence, SlackPresenceAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)
-admin.site.register(RoundupEmail, GeneralAdmin)
+admin.site.register(RoundupEmail, RoundupEmailAdmin)
