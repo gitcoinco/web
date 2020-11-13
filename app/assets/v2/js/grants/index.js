@@ -390,6 +390,14 @@ if (document.getElementById('grants-showcase')) {
           base_params['round_num'] = vm.round_num;
         }
 
+        if (vm.sub_round_slug) {
+          base_params['sub_round_slug'] = vm.sub_round_slug;
+        }
+
+        if (vm.customer_name) {
+          base_params['customer_name'] = vm.customer_name;
+        }
+
         const params = new URLSearchParams(base_params).toString();
         const getGrants = await fetchData(`/grants/cards_info?${params}`);
 
