@@ -979,7 +979,8 @@ def grants_by_grant_type(request, grant_type):
         'only_contributions': only_contributions,
         'collection_id': collection_id,
         'collections': collections,
-        'featured': featured
+        'featured': featured,
+        'active_rounds': active_rounds
     }
 
     # log this search, it might be useful for matching purposes down the line
