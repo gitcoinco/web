@@ -1,7 +1,7 @@
  <div class="container-fluid grants-container">
     <div class="container">
         {% for active_round in active_rounds %}
-        <div  class="position-relative my-3 text-white" style="background: url('{% if active_round.logo %} {{ active_round.logo.url }} {% endif %}') no-repeat center ">
+        <a  href="{% url "grants:clr_grants" round_num=active_round.round_num %}"  class="d-block text-decoration-none position-relative my-3 text-white" style="background: url('{% if active_round.logo %} {{ active_round.logo.url }} {% endif %}') no-repeat center ">
             <div class="position-absolute" style="top: 0; right: 0; width: 100%; height: 100%; background: #0044e088; z-index: 5;"></div>
             <div class="d-flex px-4 py-3 justify-content-between position-relative" style="z-index: 10">
                 <div class="d-flex">
@@ -15,7 +15,7 @@
                 <p>${{ active_round.total_pot }}</p>
                 
             </div>
-        </div>
+        </a>
 
         {% endfor %}
     </div>
