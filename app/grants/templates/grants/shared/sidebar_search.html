@@ -40,6 +40,20 @@
     <form id="filters" :class="{hide_filters: !show_filters }">
       <div class="col border-top-0">
         <div class="subheading">
+          {% trans "CLR Rounds" as filts %}{{ filts|upper }}
+        </div>
+
+        <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+          {% for active_round in active_rounds%}
+            <li>
+              <a href="{% url "grants:clr_grants" round_num=active_round.round_num%}" :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+                {{ active_round.display_text |default:active_round.round_num }}
+              </span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="subheading">
           {% trans "Filters" as filts %}{{ filts|upper }}
         </div>
 
