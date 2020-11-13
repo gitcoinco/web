@@ -35,14 +35,16 @@ from unittest import TestCase
 class VerifyUserDuniterTests(TestCase):
     def test_get_search_user_duniter(self):
         gitcoin_handle = "developerfred"
-        url =  "https://g1.data.duniter.fr/user/profile/_search?q=" + "'gitcoin.co/" + gitcoin_handle + "'"
+        url = "https://g1.data.duniter.fr/user/profile/_search?q=" + \
+            "'gitcoin.co/" + gitcoin_handle + "'"
 
         response = response.get(url)
         assert_true(response.ok)
 
     def test_get_public_key_duniter(self):
              gitcoin_handle = "developerfred"
-             url =  "https://g1.data.duniter.fr/user/profile/_search?q=" + "'gitcoin.co/" + gitcoin_handle + "'"
+             url = "https://g1.data.duniter.fr/user/profile/_search?q=" + \
+                 "'gitcoin.co/" + gitcoin_handle + "'"
              pub_res = "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr"
 
              response = response.get(url)
@@ -50,7 +52,7 @@ class VerifyUserDuniterTests(TestCase):
              position = duniter_user_json.get('hits', {}).get('hits', {})
              public_key_duniter = next(iter(position)).get('_id', {})
 
-        assert public_key_duniter == pub_res
+        self.assertEqual(public_key_duniter,pub_res)
 
 
     def test_same_uid_duniter(self):
@@ -62,8 +64,7 @@ class VerifyUserDuniterTests(TestCase):
              duniter_lockup_response = response.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
 
 
-       assert_true(response.ok)
-       assert duniter_lockup_response == gitcoin_handle
+       self.assertEqual(duniter_lockup_response,gitcoin_handle)
 
     def test_is_duniter_member(self):
              gitcoin_handle = "leomatteudi"
@@ -73,6 +74,5 @@ class VerifyUserDuniterTests(TestCase):
              response = response.get(url)
              member_data = response.json()
              isVerified = member_data.get('isMember', {})
-
 
        assert_true(isVerified)
