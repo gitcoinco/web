@@ -1,0 +1,28 @@
+{
+  "symbol": "ALPA",
+  "address": "0x7cA4408137eb639570F8E647d9bD7B7E8717514A",
+  "overview": {
+    "en": "A miracle city where DeFi meets Alpaca NFTs. - Alpaca City is endeavoring to create a more accessible DeFi ecosystem by combining the power of yield farming and NFT.",
+    "zh": "DeFi遇见羊驼NFT的奇迹之城 - 羊驼之城结合NFT和DeFi在以太坊区块链上打造了一个开放的去中心化游戏金融平台。"
+  },
+  "email": "hello@alpaca.city",
+  "website": "https://alpaca.city/",
+  "whitepaper": "https://guide.alpaca.city/",
+  "state": "NORMAL",
+  "published_on": "2020-10-25",
+  "initial_price": {
+    "ETH": "0.0005555 ETH",
+    "USD": "0.2273 USD"
+  },
+  "links": {
+    "homepage": "https://alpaca.city/",
+    "twitter": "https://twitter.com/CityAlpaca",
+    "telegram": "https://t.me/AlpacaCity",
+    "github": "https://github.com/AlpacaCity",
+    "blog": "https://medium.com/AlpacaCity",
+    "discord": "https://discord.io/AlpacaCity",
+    "medium": "https://medium.com/AlpacaCity",
+    "newsletter": "https://alpaca.substack.com",
+    "instagram": "https://instagram.com/CityAlpaca"
+  }
+}
