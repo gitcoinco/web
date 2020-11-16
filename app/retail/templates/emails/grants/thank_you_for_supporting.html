@@ -20,6 +20,10 @@
 {% block content %}
 
 <style>
+  #footer {
+    background-color: #15003E !important;
+  }
+
   hr {
     width: 80%;
     height: 2px;
@@ -46,6 +50,10 @@
     line-height: 1.5em;
   }
 
+  p {
+    margin-top: 0;
+  }
+
   .grant-info {
     padding-top: 30px;
     padding-bottom: 1%;
@@ -57,7 +65,7 @@
   }
 
   .grant-info-name {
-    font-size: 20px;
+    font-size: 18px;
     color: #0D0764;
   }
 
@@ -77,19 +85,22 @@
   }
 
   #grow-oss {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    display: none !important;
   }
 
   #grant-logo {
     max-width: 25rem;
-    width: 100%;
+    width: 90px;
   }
 
   @media (min-width : 1386px) {
     .left-grant-header > img {
       transform: translateY(13.5%);
     }
+  }
+
+  .robot {
+    height: 150px;
   }
 
   @media screen and (min-width: 598px) {
@@ -112,42 +123,33 @@
     </h2>
   </div>
 </div>
-
 <hr>
 <br>
+{% for sub in subscriptions %}
 <div class="grant-info">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
+    <img id="grant-logo" src="{% if sub.grant.logo and sub.grant.logo.url %}{{ sub.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
   </a>
   <br>
-  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
-    {{ grant.title }}
+  <a class="grant-info-name" href="{% url 'grants:details' sub.grant.id sub.grant.slug %}">
+    {{ sub.grant.title }}
   </a>
   <p class="grant-description">
-    {{ grant.description|truncatechars:300 }}
+    {{ sub.grant.description|truncatechars:300 }}
   </p>
   <p>
     {% trans "You have agreed to give" %}
   </p>
   <p>
-    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
-      {% if subscription.num_tx_approved > 1 %}
-        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+    <strong>{{ sub.amount_per_period|floatformat:4|intcomma }} {{ sub.token_symbol }} </strong>
+      {% if sub.num_tx_approved > 1 %}
+        {% trans "every" %} {{ sub.frequency }} {{ sub.frequency_unit }}
       {% endif %}
-    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
-
-  </p>
-  <p>{% trans "You can see all the grants you support and your transaction history " %}
-      <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+    <strong> {{sub.num_tx_approved|floatformat}} time{{ sub.num_tx_approved|pluralize }}</strong>
+    <a class="grant-button" href="{% url 'grants:details' sub.grant.id sub.grant.slug %}">{% trans "View on Gitcoin.co" %}</a>
   </p>
 </div>
-
-<br>
-<a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
 <br>
 <br>
-<p>{% trans "If you ever need to, you can cancel your support" %}
-  <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
-</p>
-<hr>
+{% endfor %}
 {% endblock %}
