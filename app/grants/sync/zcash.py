@@ -36,8 +36,8 @@ def find_txn_on_zcash_explorer(contribution):
                         if txn['txid'] == contribution.tx_id:
                             if (
                                 output['address'] == to_address and
-                                float(output['value']) == float(amount)
-                                and is_txn_done_recently(txn['time']
+                                float(output['value']) == float(amount) and
+                                is_txn_done_recently(txn['time'])
                             ):
                                 return txn['txid']
                     else:
