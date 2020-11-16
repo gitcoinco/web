@@ -34,7 +34,7 @@ from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged, render_bounty_request,
-    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_faucet_rejected,
+    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_convert_project_grant, render_faucet_rejected,
     render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale,
     render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute,
     render_grant_txn_failed, render_grant_update, render_kudos_email, render_match_distribution, render_match_email,
@@ -2052,6 +2052,23 @@ def tribe_hackathon_prizes(hackathon):
 
         try:
             setup_lang(to_email)
+            send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+        finally:
+            translation.activate(cur_language)
+
+def convert_project_grant(hackathons):
+    from dashboard.models import HackathonProject
+
+    for profile in [profile for project in HackathonProject.objects.filter(hackathon__in=hackathons) for profile in project.profiles.all()]:
+        to_email = profile.email
+        from_email = settings.CONTACT_EMAIL
+
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            subject = f"Get funding for your project by converting to Grant!"
+            html, text = render_convert_project_grant(profile)
+
             send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
         finally:
             translation.activate(cur_language)
