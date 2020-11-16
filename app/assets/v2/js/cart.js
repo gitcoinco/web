@@ -37,6 +37,11 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       // Checkout, shared
+      selectedZcashPayment: 'taddress',
+      optionsZcashPayment: [
+        { text: 'Wallet t-address', value: 'taddress' },
+        { text: 'Transaction Hash', value: 'txid' }
+      ],
       chainId: '',
       network: 'mainnet',
       tabSelected: 'ETH',
