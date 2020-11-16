@@ -8,7 +8,12 @@ Vue.component('grantsCartEthereumZksync', {
   },
 
   template: `
-    <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="checkoutWithZksync">
+    <button 
+      @click="checkoutWithZksync"
+      class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
+      :disabled="zksync.unsupportedTokens.length > 0"
+      id='js-zkSyncfundGrants-button'
+    >
       Checkout with zkSync
     </button>
   `,
@@ -18,30 +23,18 @@ Vue.component('grantsCartEthereumZksync', {
       zksync: {
         checkoutManager: undefined, // zkSync API CheckoutManager class
         feeTokenName: undefined, // token name, e.g. ETH
-        feeTokenAmount: undefined // fee amount denominated in feeTokenName
+        feeTokenAmount: undefined, // fee amount denominated in feeTokenName
+        unsupportedTokens: [] // tokens in cart which are not supported by zkSync
       },
 
-      // User web3 info
       user: {
         address: undefined, // connected web3 wallet address
         zkSyncState: undefined // contains account balances of zkSync wallet
-      },
-
-      // zkSync checkout fee parameters
-      fee: {
-        tokenName: undefined, // token name, e.g. ETH
-        amount: undefined // denominated in the token name
       }
     };
   },
 
   computed: {
-    // Returns an array of token symbols based on the items in the cart. If the user has two DAI
-    // grants and one ETH grant, this returns ['DAI', 'ETH']
-    selectedTokens() {
-      return [...new Set(this.donationInputs.map((donation) => donation.name))];
-    },
-
     /**
      * @dev List of tokens supported by zkSync + Gitcoin. To add a token to this list:
      *   1. Make sure the token is supported by zkSync
@@ -56,13 +49,6 @@ Vue.component('grantsCartEthereumZksync', {
       const rinkebyTokens = [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ];
 
       return this.network === 'rinkeby' ? rinkebyTokens : mainnetTokens;
-    },
-
-    // Returns true if all tokens in the cart support zkSync, false otherwise
-    canUseZksync() {
-      const unsupportedTokens = this.selectedTokens.filter((token) => !this.supportedTokens.includes(token));
-
-      return unsupportedTokens.length === 0; // if there are no unsupported tokens, zksync checkout is supported
     },
 
     // Array of transfer objects in the format zkSync needs
@@ -80,6 +66,32 @@ Vue.component('grantsCartEthereumZksync', {
     }
   },
 
+  watch: {
+    // Watch donationInputs prop so we can update cart.js as needed on changes
+    donationInputs: {
+      immediate: true,
+      async handler(donations) {
+        // Setup zkSync if necessary (e.g. when mounted)
+        if (!this.zksync.checkoutManager) {
+          await this.setupZkSync();
+        }
+
+        // Get array of token symbols based on cart data. For example, if the user has two
+        // DAI grants and one ETH grant in their cart, this returns `[ 'DAI', 'ETH' ]`
+        const cartTokens = [...new Set(donations.map((donation) => donation.name))];
+
+        // Get list of tokens in cart not supported by zkSync
+        this.zksync.unsupportedTokens = cartTokens.filter((token) => !this.supportedTokens.includes(token));
+        
+        // Set the cart.js state accordingly so it can show this to the user
+        appCart.$refs.cart.zkSyncUnsupportedTokens = this.zksync.unsupportedTokens;
+
+        // Update the fee estimate based on new selections
+        await this.getFeeEstimate();
+      }
+    }
+  },
+
   methods: {
     // Error handler used by cart.js
     handleError(e) {
@@ -89,33 +101,40 @@ Vue.component('grantsCartEthereumZksync', {
     // Called on page load to initialize zkSync
     async setupZkSync() {
       this.user.address = (await web3.eth.getAccounts())[0];
-      this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(this.network);
+      this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(this.network || 'mainnet');
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
     },
 
-
     // Returns fee estimate for the items in their cart, as a string, in units of feeToken
-    async getFeeEstimate() {
-      // TODO for now just use the token of the first one as the fee token
-      this.zksync.feeTokenName = this.transfers[0].token;
+    async getFeeEstimate(tokenSymbol = undefined) {
+      // If tokens in the cart are unsupported, set values to undefined
+      if (this.zksync.unsupportedTokens.length > 0) {
+        this.zksync.feeTokenName = undefined;
+        this.zksync.feeTokenAmount = undefined;
+        return;
+      }
+
+      // If no token symbol is provided, use the first one in the cart
+      if (!tokenSymbol) {
+        this.zksync.feeTokenName = this.transfers[0].token;
+      }
+
+      // Now we can get and set the fee estimate
       this.zksync.feeTokenAmount = await this.zksync.checkoutManager.estimateBatchFee(
         this.transfers,
         this.zksync.feeTokenName
       );
     },
 
-    /**
-     * @notice Send a batch transfer based on donation inputs
-     */
+    // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
       try {
-        // Get fee estimate and send user to zkSync to complete checkout
-        await this.getFeeEstimate();
+        // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
           this.transfers,
           this.zksync.feeTokenName
         );
-        
+
         // Save contributors to database and redirect to success modal
         _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
         // TODO save contributions to database ------------------------
@@ -140,11 +159,5 @@ Vue.component('grantsCartEthereumZksync', {
         }
       }
     }
-  },
-
-  async mounted() {
-    console.log('mounted hook started');
-    await this.setupZkSync();
-    console.log('mounted hook done');
   }
 });

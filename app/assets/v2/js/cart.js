@@ -61,7 +61,9 @@ Vue.component('grants-cart', {
       AnonymizeGrantsContribution: false,
       windowWidth: window.innerWidth,
       userAddress: undefined,
-      // Checkout, zkSync
+      // Checkout, zkSync NEW
+      zkSyncUnsupportedTokens: [],
+      // Checkout, zkSync OLD
       zkSyncContractAddress: undefined,
       depositContractToUse: undefined, // what address to deposit through, batch contract or regular zkSync contract
       ethersProvider: undefined,
@@ -456,22 +458,6 @@ Vue.component('grants-cart', {
           // Too many tokens, zkSync does not support them all
           return '10000000';
       }
-    },
-
-    /**
-     * @notice Returns a list of tokens in the users cart that do not support zkSync
-     */
-    zkSyncUnsupportedTokens() {
-      let unsupported = [];
-      const donationCurrencies = this.donationInputs.map(donation => donation.name);
-
-      for (let i = 0; i < donationCurrencies.length; i += 1) {
-        if (!this.zkSyncSupportedTokens.includes(donationCurrencies[i])) {
-          // Include that token is not supported
-          unsupported.push(donationCurrencies[i]);
-        }
-      }
-      return Array.from(new Set(unsupported));
     },
 
     /**
@@ -2511,7 +2497,7 @@ Vue.component('grants-cart', {
           await needWalletConnection();
           this.selectedNetwork = document.web3network;
           this.userAddress = (await web3.eth.getAccounts())[0];
-          await this.setupZkSync();
+          // await this.setupZkSync();
 
           // Get list of grants with the expected validator comment
           const response = await fetch('get-interrupted-contributions');
