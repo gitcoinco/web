@@ -132,26 +132,29 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grant Subscription to be allowed in this CLR round"
     )
-    verified_threshold = models.DecimalField(help_text="Verfied CLR Threshold",
+    verified_threshold = models.DecimalField(
+        help_text="This is the verfied CLR threshold. You can generally increase the saturation of the round / increase the CLR match by increasing this value, as it has a proportional relationship. However, depending on the pair totals by grant, it may reduce certain matches. In any case, please use the contribution multiplier first.",
         default=25.0,
         decimal_places=2,
         max_digits=5
     )
-    unverified_threshold = models.DecimalField(help_text="Unverified CLR Threshold",
+    unverified_threshold = models.DecimalField(
+        help_text="This is the unverified CLR threshold. The relationship with the CLR match is the same as the verified threshold. If you would like to increase the saturation of round / increase the CLR match, increase this value, but please use the contribution multiplier first.",
         default=5.0,
         decimal_places=2,
         max_digits=5
     )
-    total_pot = models.DecimalField(help_text="CLR Pot",
+    total_pot = models.DecimalField(
+        help_text="Total CLR Pot",
         default=0,
         decimal_places=2,
         max_digits=10
     )
     contribution_multiplier = models.DecimalField(
-        help_text="A contribution multipler to be applied to each contribution",
+        help_text="This contribution multipler is applied to each contribution before running CLR calculations. In order to increase the saturation, please increase this value first, before modifying the thresholds.",
         default=1.0,
         decimal_places=4,
-        max_digits=10,
+        max_digits=10
     )
 
     logo = models.ImageField(
