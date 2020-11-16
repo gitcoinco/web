@@ -363,9 +363,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <div v-if="zkSyncUnsupportedTokens.length > 0">
                                 zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
                               </div>
-                              <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
-                                zkSync checkout not supported
-                              </div>
                               <div v-else>
                                 Save
                                 <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
@@ -375,6 +372,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <div class="row align-items-center justify-content-between">
                               <div class="col-auto">
                                 <grants-cart-ethereum-zksync 
+                                  @zksync-data-updated="onZkSyncUpdate"
                                   :current-tokens="currentTokens"
                                   :donation-inputs="donationInputs"
                                   :network="network"

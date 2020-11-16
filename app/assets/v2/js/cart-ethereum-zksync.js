@@ -1,5 +1,12 @@
 const { getAddress } = ethers.utils;
 
+// Wrapper around ethers.js BigNumber which converts undefined values to zero
+const toBigNumber = (value) => {
+  if (!value)
+    return BigNumber.from('0');
+  return BigNumber.from(value);
+};
+
 Vue.component('grantsCartEthereumZksync', {
   props: {
     currentTokens: { type: Array, required: true }, // Array of available tokens for the selected web3 network
@@ -11,7 +18,7 @@ Vue.component('grantsCartEthereumZksync', {
     <button 
       @click="checkoutWithZksync"
       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
-      :disabled="zksync.unsupportedTokens.length > 0"
+      :disabled="cart.unsupportedTokens.length > 0"
       id='js-zkSyncfundGrants-button'
     >
       Checkout with zkSync
@@ -21,9 +28,11 @@ Vue.component('grantsCartEthereumZksync', {
   data: function() {
     return {
       zksync: {
-        checkoutManager: undefined, // zkSync API CheckoutManager class
-        feeTokenName: undefined, // token name, e.g. ETH
-        feeTokenAmount: undefined, // fee amount denominated in feeTokenName
+        checkoutManager: undefined // zkSync API CheckoutManager class
+      },
+
+      cart: {
+        tokenList: [], // array of tokens in the cart
         unsupportedTokens: [] // tokens in cart which are not supported by zkSync
       },
 
@@ -78,22 +87,27 @@ Vue.component('grantsCartEthereumZksync', {
 
         // Get array of token symbols based on cart data. For example, if the user has two
         // DAI grants and one ETH grant in their cart, this returns `[ 'DAI', 'ETH' ]`
-        const cartTokens = [...new Set(donations.map((donation) => donation.name))];
+        this.cart.tokenList = [...new Set(donations.map((donation) => donation.name))];
 
         // Get list of tokens in cart not supported by zkSync
-        this.zksync.unsupportedTokens = cartTokens.filter((token) => !this.supportedTokens.includes(token));
+        this.cart.unsupportedTokens = this.cart.tokenList.filter(
+          (token) => !this.supportedTokens.includes(token)
+        );
         
-        // Set the cart.js state accordingly so it can show this to the user
-        appCart.$refs.cart.zkSyncUnsupportedTokens = this.zksync.unsupportedTokens;
+        // Update the fee estimate and gas cost based on changes
+        const estimatedGasCost = this.estimateGasCost();
 
-        // Update the fee estimate based on new selections
-        await this.getFeeEstimate();
+        // Emit event so cart.js can update state accordingly to display info to user
+        this.$emit('zksync-data-updated', {
+          zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
+          zkSyncEstimatedGasCost: estimatedGasCost
+        });
       }
     }
   },
 
   methods: {
-    // Error handler used by cart.js
+    // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
     },
@@ -105,34 +119,17 @@ Vue.component('grantsCartEthereumZksync', {
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
     },
 
-    // Returns fee estimate for the items in their cart, as a string, in units of feeToken
-    async getFeeEstimate(tokenSymbol = undefined) {
-      // If tokens in the cart are unsupported, set values to undefined
-      if (this.zksync.unsupportedTokens.length > 0) {
-        this.zksync.feeTokenName = undefined;
-        this.zksync.feeTokenAmount = undefined;
-        return;
-      }
-
-      // If no token symbol is provided, use the first one in the cart
-      if (!tokenSymbol) {
-        this.zksync.feeTokenName = this.transfers[0].token;
-      }
-
-      // Now we can get and set the fee estimate
-      this.zksync.feeTokenAmount = await this.zksync.checkoutManager.estimateBatchFee(
-        this.transfers,
-        this.zksync.feeTokenName
-      );
-    },
-
     // Send a batch transfer based on donation inputs
-    async checkoutWithZksync() {
+    async checkoutWithZksync(feeTokenSymbol = undefined) {
       try {
+        // Set fee token
+        if (!feeTokenSymbol)
+          feeTokenSymbol = this.transfers[0].token;
+
         // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
           this.transfers,
-          this.zksync.feeTokenName
+          feeTokenSymbol
         );
 
         // Save contributors to database and redirect to success modal
@@ -158,6 +155,76 @@ Vue.component('grantsCartEthereumZksync', {
             this.handleError(e);
         }
       }
+    },
+
+    // Estimates the total gas cost of a zkSync checkout and sends it to cart.js
+    estimateGasCost() {
+      // Estimate minimum gas cost based on 400 gas per transfer
+      const gasPerTransfer = toBigNumber('400');
+      const numberOfTransfers = String(this.donationInputs.length);
+      const minimumCost = gasPerTransfer.mul(numberOfTransfers);
+      let totalCost = minimumCost;
+      
+      // If user has enough balance within zkSync, cost equals the minimum amount
+      const { isBalanceSufficient, requiredAmounts } = this.hasEnoughBalance();
+
+      if (isBalanceSufficient) {
+        return totalCost.toString();
+      }
+
+      // If we're here, user needs at least one L1 deposit, so let's calculate the total cost
+      this.cart.tokenList.forEach((tokenSymbol) => {
+        const zksyncBalance = toBigNumber(this.user.zksyncState.committed.balances[tokenSymbol]);
+        
+        if (requiredAmounts[tokenSymbol].gt(zksyncBalance)) {
+          if (tokenSymbol === 'ETH') {
+            totalCost = totalCost.add('200000'); // add 200k gas for ETH deposits
+          } else {
+            totalCost = totalCost.add('250000'); // add 250k gas for token deposits
+          }
+        }
+      });
+      return totalCost.toString();
+    },
+
+    // Returns true if user has enough balance within zkSync to avoid L1 deposit, false otherwise
+    hasEnoughBalance() {
+      // Get object where keys are token symbols and values are token balances
+      const zksyncBalances = this.user.zksyncState.committed.balances;
+      const zksyncTokens = Object.keys(zksyncBalances);
+
+      // Get total amount needed for eack token by summing over donation inputs
+      const requiredAmounts = {}; // keys are token symbols, values are BigNumber
+
+      this.donationInputs.forEach((donation) => {
+        const tokenSymbol = donation.name;
+        const amount = toBigNumber(donation.amount);
+
+        if (!requiredAmounts[tokenSymbol]) {
+          // First time seeing this token, set the field and initial value
+          requiredAmounts[tokenSymbol] = amount;
+        } else {
+          // We've seen this token, so just update the total
+          requiredAmounts[tokenSymbol] = requiredAmounts[tokenSymbol].add(amount);
+        }
+      });
+
+      // Compare amounts needed to balance
+      let isBalanceSufficient = true; // initialize output
+
+      this.cart.tokenList.forEach((tokenSymbol) => {
+        const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
+        const requiredAmount = requiredAmounts[tokenSymbol];
+        
+        if (requiredAmount.gt(userAmount))
+          isBalanceSufficient = false;
+      });
+
+      // Return result and required amounts
+      return {
+        isBalanceSufficient,
+        requiredAmounts
+      };
     }
   }
 });
