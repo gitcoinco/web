@@ -2619,22 +2619,14 @@ def contribute_to_grants_v1(request):
             continue
 
         contributor_address = contribution.get('contributor_address', None)
-        tx_id = contribution.get('tx_id')
+        tx_id = contribution.get('tx_id', None)
 
-        if contributor_address is None and tx_id is None:
+        if not contributor_address and not tx_id:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: either contributor_address or tx_id must be supplied'
             })
             continue
-
-        # tx_id = contribution.get('tx_id', None)
-        # if not tx_id:
-        #     invalid_contributions.append({
-        #         'grant_id': grant_id,
-        #         'message': 'error: tx_id is mandatory param'
-        #     })
-        #     continue
 
         token_symbol = contribution.get('token_symbol', None)
         if not token_symbol:
