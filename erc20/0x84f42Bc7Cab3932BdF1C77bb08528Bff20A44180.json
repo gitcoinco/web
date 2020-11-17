@@ -1,0 +1,22 @@
+{
+  "symbol": "DFIN",
+  "address": "0x84f42Bc7Cab3932BdF1C77bb08528Bff20A44180",
+  "overview":{
+        "en": "Definance (DFIN) is a protocol that automatically converts legal currency and digital assets on the chain. It mainly uses local payment methods to buy and sell digital assets for users by absorbing liquidity providers. With the support of smart contracts on-chain, users no longer need to use centralized transactions or over-the-counter transactions (OTC) to realize the free conversion between digital currency and legal currency, in a secure and compliant manner. ",
+        "zh": "Definance 是一个链上自动化撮合法币和数字资产相互转换的协议。通过吸纳流动性提供商，为用户提供用当地支付方式买卖数字资产的服务。在智能合约的支持下，用户不再需要通过中心化的交易，或者场外交易（OTC）就能够实现数字货币和法币之前的自由转换。"
+  },
+  "email": "info@defitech.io",
+  "website": "https://defitech.io/defi",
+  "whitepaper": "https://docsend.com/view/dghmpzh7a8f4ibwc",
+  "state": "NORMAL",
+  "published_on": "2020-07-24",
+  "initial_price":{
+        "USD":"0.3 USD",
+  },
+  "links": {
+    "medium": "https://medium.com/definance",
+    "twitter": "https://twitter.com/DefinanceTech",
+    "telegram": "https://t.me/definanceANN",
+    "github": "https://github.com/DefinanceTECH",
+  }
+}
