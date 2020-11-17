@@ -32,7 +32,7 @@ def find_txn_on_zcash_explorer(contribution):
         for txn in txns:
             if txn.get('outgoing') and txn['outgoing']['outputs']:
                 for output in txn['outgoing']['outputs']:
-                    if contribution.tx_id and contribution.tx_id != '0X0':
+                    if contribution.tx_id and contribution.tx_id != '0x0':
                         if txn['txid'] == contribution.tx_id:
                             if (
                                 output['address'] == to_address and
@@ -139,7 +139,7 @@ def is_valid_zcash_txn(contribution):
 def sync_zcash_payout(contribution):
     is_sucessfull_txn = False
 
-    if not contribution.tx_id or contribution.tx_id == '0X0':
+    if not contribution.tx_id or contribution.tx_id == '0x0':
         # user entered t-addr.
         txn = find_txn_on_zcash_explorer(contribution)
         if txn:
