@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from quadraticlands.views import (
-    about, claim, claim2, dashboard, demo2, faq, index, mission, mission_end, mission_knowledge_index,
+    about, claim, claim2, dashboard, demo2, faq, index, leaderboard, mission, mission_end, mission_knowledge_index,
     mission_knowledge_intro, mission_knowledge_outro, mission_knowledge_question_1, mission_knowledge_question_1_right,
     mission_knowledge_question_1_timeout, mission_knowledge_question_1_wrong, mission_knowledge_question_2,
     mission_knowledge_question_2_right, mission_knowledge_question_2_timeout, mission_knowledge_question_2_wrong,
@@ -49,6 +49,8 @@ urlpatterns = [
     path('dashboard', dashboard, name='dashboard'),
     path('claim2', claim2, name='claim2_json'), # initial trigger for token claim requests 
     path('demo2', demo2, name='demo2'),
+
+    path('leaderboard', leaderboard, name='leaderboard'),
 
     path('mission', mission, name='mission'),
 

@@ -984,6 +984,17 @@ section#particles svg {
     filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink));
   }
 }
+@keyframes colorcycle-shadow-pink-purple {
+  0% {
+    filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink));
+  }
+  50% {
+    filter: drop-shadow(0px 0px 44px var(--purple)) drop-shadow(0px 0px 6px var(--purple));
+  }
+  100% {
+    filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink));
+  }
+}
 @keyframes menu-background {
   0% {
     box-shadow: 0px 0px 100px 0px var(--pink_half);
@@ -1460,6 +1471,9 @@ section.mission a {
 section.mission .card {
   margin-bottom: 2em;
 }
+section.mission .card .card-image {
+  border: 1px solid var(--pink_light);
+}
 section.mission .card .card-image img, section.mission .card .card-image svg {
   width: 100%;
 }
@@ -1512,9 +1526,6 @@ section.mission .card .card-body .card-badges .card-badge.gtc-token {
 section.mission .card .card-body .card-badges .card-badge.gtc-token span {
   color: var(--space);
 }
-section.mission .card:hover .card-image {
-  opacity: 0.9;
-}
 section.mission .card:hover .card-body .card-text .card-title {
   color: var(--white);
 }
@@ -1532,6 +1543,55 @@ section.mission .card:hover .card-body .card-text .card-title {
 @media (max-width: 688px) {
   section.mission {
     grid-template-columns: 1fr;
+  }
+}
+section.leaderboard {
+  margin: 0em 1.5em;
+}
+section.leaderboard .wrapper {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+}
+section.leaderboard .wrapper div {
+  border-bottom: 1px solid var(--smoke);
+  white-space: nowrap;
+  text-align: center;
+  padding: 1em 1em;
+}
+section.leaderboard .wrapper div a {
+  text-decoration: none;
+  color: var(--white);
+}
+section.leaderboard .wrapper .head {
+  background-color: var(--space_pink);
+  color: var(--purple_light);
+  font-weight: 500;
+  border-bottom: initial;
+  position: sticky;
+  top: 0;
+}
+section.leaderboard .wrapper .head a {
+  text-decoration: none;
+  color: var(--purple_light);
+  font-size: 80%;
+}
+section.leaderboard .wrapper .head a.active {
+  color: var(--white);
+}
+section.leaderboard .wrapper .head a:hover {
+  color: var(--white);
+}
+
+@media (max-width: 992px) {
+  section.leaderboard {
+    margin: 0em 0em;
+    overflow: hidden;
+  }
+  section.leaderboard .wrapper {
+    overflow-x: auto;
+  }
+  section.leaderboard .wrapper div {
+    padding: 1em 0.5em;
   }
 }
 section.background {
