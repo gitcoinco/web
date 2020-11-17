@@ -1,5 +1,6 @@
 f = open("output.csv", "w")
 import time
+
 from marketing.models import EmailSubscriber
 from marketing.utils import func_name, get_or_save_email_subscriber, should_suppress_notification_email
 
@@ -25,5 +26,3 @@ for email in queryset:
             print(f"{pct_done}% - {counter}/{count} ({round(speed, 1)}/s, eta:{round(eta,1)}s)")
         f.write(f"\"{f_name}\", \",\", \"{to_email}\"\n")
 f.close()
-
-
