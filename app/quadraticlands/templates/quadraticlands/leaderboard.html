@@ -1,0 +1,144 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!--LEADERBOARD -->
+
+
+<section class="leaderboard">
+
+	<!-- header -->
+	<!-- please set class="active" on a href for {{ request.GET.orderBy }} link -->
+	<!-- please set orderDirection=asc on a href when {{ request.GET.orderBy }} AND {{ request.GET.orderDirection }} = desc -->
+
+	<div class="wrapper">
+
+		<div class="head"><a class="active" href="?orderBy=Position&orderDirection=desc">Pos</a></div>	
+		<div class="head"><a href="?orderBy=Adress&orderDirection=desc">Adress</a></div>
+		<div class="head"><a href="?orderBy=GTC&orderDirection=desc">GTC</a></div>
+		<div class="head"><a href="?orderBy=Power&orderDirection=desc">Power</a></div>
+		<div class="head"><a href="?orderBy=Votes&orderDirection=desc">Votes</a></div>
+		<div class="head"><a href="?orderBy=Delegates&orderDirection=desc">Delegates</a></div>
+		<div class="head"><a href="?orderBy=DelegatedGTC&orderDirection=desc">Del. GTC</a></div>
+
+		<div>1</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>	
+
+		<div>2</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>	
+
+		<div>3</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>
+
+		<div>4</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>	
+
+		<div>5</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>
+
+		<div>6</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>	
+
+		<div>7</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>
+
+		<div>8</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>	
+
+		<div>9</div>
+		<div><a href="/quadraticlands/profile/0x11B221E556c478583087Ae5af5346B485B83E814">0x11B2…3E814</a></div>
+		<div>32.126.143</div>
+		<div>3,1%</div>
+		<div>32</div>
+		<div>431</div>
+		<div>5.126.143</div>	
+
+	</div>
+	
+
+</section>
+
+
+
+
+<!-- richards little noob test with GET parameters please delete any time -->
+<section class="column" style="margin-top:3em;">
+	orderBy: {{ request.GET.orderBy }}<br>
+	orderDirection: {{ request.GET.orderDirection }}
+</section>
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+	
+
+{% endblock %}
+
+

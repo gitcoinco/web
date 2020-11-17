@@ -70,6 +70,9 @@ def privacy(request):
 def faq(request):
     return TemplateResponse(request, 'quadraticlands/faq.html')
 
+def leaderboard(request):
+    return TemplateResponse(request, 'quadraticlands/leaderboard.html')
+
 @login_required
 def dashboard(request):
     return TemplateResponse(request, 'quadraticlands/dashboard.html')
