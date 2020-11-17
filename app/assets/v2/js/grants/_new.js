@@ -92,6 +92,12 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
+      if (vm.form.twitter_handle_1 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_1)) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
+      }
+      if (vm.form.twitter_handle_2 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
+        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
+      }
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
       } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
