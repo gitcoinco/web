@@ -533,22 +533,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                   </div>
                                 </div>
                                 <div class="bg-white rounded col ml-2 py-3 d-flex flex-column mt-4">
-                                  <p class="font-body"><span class="underline">Step 2</span>: Copy and paste your <b>Contributor Address</b> below, and press the confirm button.</p>
-                                  <div class="form-row align-items-end">
-                                    <!-- <div class="col">
+                                  <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>t-address</b> or <b>transaction hash</b> and press the confirm button.</p>
+
+                                  <b-form-radio-group id="radio-slots" v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots">
+                                  </b-form-radio-group>
+
+                                  <div class="form-row align-items-center mt-3">
+                                    <div class="col" v-show="selectedZcashPayment === 'txid'">
                                       <div class="">
                                         <label :for="`payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
-                                        <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$">
-                                      </div>
-                                    </div> -->
-                                    <div class="col">
-                                      <div class="">
-                                        <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Contributor Address:</label>
-                                        <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$">
+                                        <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
+                                        <small class="form-text text-muted">Paste the transaction id</small>
                                       </div>
                                     </div>
-                                    <div class="">
-                                      <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="!grant.contributor_address || grant.loading || grant.success">Confirm</button>
+                                    <div class="col" v-show="selectedZcashPayment === 'taddress'">
+                                      <div class="">
+                                        <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Your T-address:</label>
+                                        <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
+                                        <small class="form-text text-muted">Only t-address are allowed (no z-address support)</small>
+                                      </div>
+                                    </div>
+                                    <div class="mt-2">
+                                      <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="(selectedZcashPayment === 'taddress' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
                                     </div>
                                   </div>
                                   <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>

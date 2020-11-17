@@ -2719,20 +2719,14 @@ def contribute_to_grants_v1(request):
             continue
 
         contributor_address = contribution.get('contributor_address', None)
-        if not contributor_address:
+        tx_id = contribution.get('tx_id', None)
+
+        if not contributor_address and not tx_id:
             invalid_contributions.append({
                 'grant_id': grant_id,
-                'message': 'error: contributor_address is mandatory param'
+                'message': 'error: either contributor_address or tx_id must be supplied'
             })
             continue
-
-        # tx_id = contribution.get('tx_id', None)
-        # if not tx_id:
-        #     invalid_contributions.append({
-        #         'grant_id': grant_id,
-        #         'message': 'error: tx_id is mandatory param'
-        #     })
-        #     continue
 
         token_symbol = contribution.get('token_symbol', None)
         if not token_symbol:
@@ -2765,7 +2759,6 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        tx_id = contribution.get('tx_id', None)
         comment = contribution.get('comment', '')
         network = grant.network
         hide_wallet_address = contribution.get('hide_wallet_address', None)
