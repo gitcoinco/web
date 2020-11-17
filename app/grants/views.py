@@ -69,7 +69,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
-from grants.tasks import update_grant_metadata, process_grant_creation_email
+from grants.tasks import process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -1501,6 +1501,12 @@ def grant_new(request):
         network = request.POST.get('network', 'mainnet')
         twitter_handle_1 = request.POST.get('handle1', '')
         twitter_handle_2 = request.POST.get('handle2', '')
+
+        if twitter_handle_1 and not re.search(r'^@[a-zA-Z0-9_]{1,15}$', twitter_handle_1):
+            response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'
+
+        if twitter_handle_2 and not re.search(r'^@[a-zA-Z0-9_]{1,15}$', twitter_handle_2):
+            response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
 
 
         # TODO: REMOVE
