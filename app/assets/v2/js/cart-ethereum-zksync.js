@@ -14,21 +14,14 @@ Vue.component('grantsCartEthereumZksync', {
     network: { type: String, required: true } // web3 network to use
   },
 
-  template: `
-    <button 
-      @click="checkoutWithZksync"
-      class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
-      :disabled="cart.unsupportedTokens.length > 0"
-      id='js-zkSyncfundGrants-button'
-    >
-      Checkout with zkSync
-    </button>
-  `,
-
   data: function() {
     return {
       zksync: {
-        checkoutManager: undefined // zkSync API CheckoutManager class
+        checkoutManager: undefined, // zkSync API CheckoutManager class
+        feeTokenSymbol: undefined, // token symbol to pay zksync fee with, e.g. 'DAI'
+        showChangeToken: false, // true to show dropdown to let user select feeTokenSymbol
+        showModal: false, // true to show modal to user, false to hide
+        checkoutStatus: 'not-started' // options are 'not-started', 'pending'. When complete we redirect the user
       },
 
       cart: {
@@ -93,7 +86,13 @@ Vue.component('grantsCartEthereumZksync', {
         this.cart.unsupportedTokens = this.cart.tokenList.filter(
           (token) => !this.supportedTokens.includes(token)
         );
-        
+
+        // If currently selected fee token is still in the cart, don't change it. Otherwise, set
+        // fee token to the token used for the first item in the cart
+        if (!this.cart.tokenList.includes(this.zksync.feeTokenSymbol)) {
+          this.zksync.feeTokenSymbol = donations[0].name;
+        }
+
         // Update the fee estimate and gas cost based on changes
         const estimatedGasCost = this.estimateGasCost();
 
@@ -112,6 +111,11 @@ Vue.component('grantsCartEthereumZksync', {
       appCart.$refs.cart.handleError(e);
     },
 
+    // Reset zkSync modal status after a checkout failure
+    resetZkSyncModal() {
+      this.zksync.checkoutStatus = 'not-started';
+    },
+
     // Called on page load to initialize zkSync
     async setupZkSync() {
       this.user.address = (await web3.eth.getAccounts())[0];
@@ -120,17 +124,16 @@ Vue.component('grantsCartEthereumZksync', {
     },
 
     // Send a batch transfer based on donation inputs
-    async checkoutWithZksync(feeTokenSymbol = undefined) {
+    async checkoutWithZksync() {
       try {
-        // Set fee token
-        if (!feeTokenSymbol)
-          feeTokenSymbol = this.transfers[0].token;
-
         // Send user to zkSync to complete checkout
+        this.zksync.checkoutStatus = 'pending';
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
           this.transfers,
-          feeTokenSymbol
+          this.zksync.feeTokenSymbol
         );
+
+        console.log('txHashes: ', txHashes);
 
         // Save contributors to database and redirect to success modal
         _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
@@ -140,15 +143,18 @@ Vue.component('grantsCartEthereumZksync', {
       } catch (e) {
         switch (e) {
           case 'User closed zkSync':
-            _alert('Checkout not complete: User closed the zkSync page', 'error');
+            _alert('Checkout not complete: User closed the zkSync page. Please try again', 'error');
+            this.resetZkSyncModal();
             throw e;
 
           case 'Failed to open zkSync page':
-            _alert('Unable to open the zkSync page. Please try again', 'error');
+            _alert('Checkout not complete: Unable to open the zkSync page. Please try again', 'error');
+            this.resetZkSyncModal();
             throw e;
 
           case 'Took too long for the zkSync page to open':
-            _alert('Took too long to open the zkSync page. Please try again', 'error');
+            _alert('Checkout not complete: Took too long to open the zkSync page. Please try again', 'error');
+            this.resetZkSyncModal();
             throw e;
 
           default:
