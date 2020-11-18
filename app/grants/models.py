@@ -24,6 +24,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core import serializers
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
@@ -34,6 +35,7 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
+import json
 import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField
@@ -650,12 +652,21 @@ class Grant(SuperModel):
         }
 
     def repr(self, user, build_absolute_uri):
+        team_members = serializers.serialize('json', self.team_members.all(),
+                            fields=['handle', 'url', 'profile__avatar_url']
+                        )
+        grant_type = serializers.serialize('json', [self.grant_type],
+                            fields=['name', 'label']
+                        )
+        categories = serializers.serialize('json', self.categories.all(),
+                            fields=['category'])
         return {
                 'id': self.id,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
                 'description': self.description,
+                'description_rich': self.description_rich,
                 'last_update': self.last_update,
                 'last_update_natural': naturaltime(self.last_update),
                 'sybil_score': self.sybil_score,
@@ -673,6 +684,7 @@ class Grant(SuperModel):
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
                 'safe_next_clr_calc_date': naturaltime(self.safe_next_clr_calc_date) if self.safe_next_clr_calc_date else None,
                 'amount_received_in_round': self.amount_received_in_round,
+                'amount_received': self.amount_received,
                 'positive_round_contributor_count': self.positive_round_contributor_count,
                 'monthly_amount_subscribed': self.monthly_amount_subscribed,
                 'is_clr_eligible': self.is_clr_eligible,
@@ -687,6 +699,15 @@ class Grant(SuperModel):
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
+                'team_members': json.loads(team_members),
+                'metadata': self.metadata,
+                'grant_type': json.loads(grant_type),
+                'categories': json.loads(categories),
+                'twitter_handle_1': self.twitter_handle_1,
+                'reference_url': self.reference_url,
+                'github_project_url': self.github_project_url,
+                'funding_info': self.funding_info,
+                'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
             }
 
     def favorite(self, user):

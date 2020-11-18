@@ -1193,6 +1193,29 @@ def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, inde
 
     return [rows, sybil_avg]
 
+
+@csrf_exempt
+def grant_details_api(request, grant_id):
+    """Json the Grant details."""
+    grant = None
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        grant_json = grant.repr(request.user, request.build_absolute_uri)
+    except Exception as e:
+        print(e)
+        response = {
+            'status': 500,
+            'message': 'error: something went wrong while fetching grants clr'
+        }
+        return JsonResponse(response)
+
+    response = {
+        'status': 200,
+        'grants': grant_json
+    }
+    return JsonResponse(response)
+
+
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
@@ -1384,8 +1407,223 @@ def grant_details(request, grant_id, grant_slug):
         for key, value in add_in_params.items():
             params[key] = value
 
-    return TemplateResponse(request, 'grants/detail/index.html', params)
+    # return TemplateResponse(request, 'grants/detail/index.html', params)
+    return TemplateResponse(request, 'grants/detail/_index.html', params)
 
+
+@csrf_exempt
+def grant_edit(request, grant_id):
+
+    profile = get_profile(request)
+    grant = None
+
+    try:
+        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+            pk=grant_id
+        )
+
+    except Grant.DoesNotExist:
+        raise Http404
+
+    is_team_member = is_grant_team_member(grant, profile)
+    if request.method == 'POST' and (is_team_member or request.user.is_staff):
+
+        from grants.utils import add_grant_to_active_clrs
+
+        response = {
+            'status': 400,
+            'message': 'error: Bad Request. Unable to create grant'
+        }
+
+        # step 1: validate input
+
+        user = request.user if request.user.is_authenticated else None
+        if not user:
+            response['message'] = 'error: user needs to be authenticated to create grant'
+            return JsonResponse(response)
+
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            response['message'] = 'error: no matching profile found'
+            return JsonResponse(response)
+
+        # grant_type = request.POST.get('grant_type', None)
+        # if not grant_type:
+        #     response['message'] = 'error: grant_type is a mandatory parameter'
+        #     return JsonResponse(response)
+
+        title = request.POST.get('title', None)
+        if not title:
+            response['message'] = 'error: title is a mandatory parameter'
+            return JsonResponse(response)
+
+        description = request.POST.get('description', None)
+        if not description:
+            response['message'] = 'error: description is a mandatory parameter'
+            return JsonResponse(response)
+
+        description_rich = request.POST.get('description_rich', None)
+        if not description_rich:
+            description_rich = description
+
+        eth_payout_address = request.POST.get('eth_payout_address',
+            request.POST.get('admin_address'))
+        zcash_payout_address = request.POST.get('zcash_payout_address', None)
+        if not eth_payout_address and not zcash_payout_address:
+            response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
+            return JsonResponse(response)
+
+        if zcash_payout_address and not zcash_payout_address.startswith('t'):
+            response['message'] = 'error: zcash_payout_address must be a transparent address'
+            return JsonResponse(response)
+
+        # token_symbol = request.POST.get('token_symbol', 'Any Token')
+        logo = request.FILES.get('logo', None)
+        # metdata = json.loads(request.POST.get('receipt', '{}'))
+        team_members = request.POST.getlist('team_members[]')
+        reference_url = request.POST.get('reference_url', '')
+        github_project_url = request.POST.get('github_project_url', None)
+        twitter_handle_1 = request.POST.get('handle1', '')
+        twitter_handle_2 = request.POST.get('handle2', '')
+
+        grant_kwargs = {
+            'title': title,
+            'description': description,
+            'description_rich': description_rich,
+            'reference_url': reference_url,
+            'github_project_url': github_project_url,
+            'admin_address': eth_payout_address,
+            'zcash_payout_address': zcash_payout_address,
+            # 'token_symbol': token_symbol,
+            # 'contract_version': contract_version,
+            # 'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
+            # 'network': network,
+            'twitter_handle_1': twitter_handle_1,
+            'twitter_handle_2': twitter_handle_2,
+            # 'metadata': metdata,
+            'last_update': timezone.now(),
+            'admin_profile': profile,
+            # 'logo': logo,
+            'hidden': False,
+            # 'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
+            # 'grant_type': GrantType.objects.get(name=grant_type),
+        }
+
+        grantEdit = Grant.objects.filter(pk=grant.pk).update(**grant_kwargs)
+
+        # team_members = (team_members[0].split(','))
+        # print(team_members)
+        # team_members.append(profile.id)
+        # print(team_members)
+        # team_members = list(set(team_members))
+        # print(team_members)
+        save_team_members = []
+        for member in team_members[0]:
+            print(member)
+            save_team_members.append(member.id)
+
+        save_team_members.append(profile.id)
+        print(save_team_members)
+        team_members = save_team_members
+
+
+
+        # team_members = [int(i.id) for i.id in team_members if i.id != '']
+
+        grant.team_members.add(*team_members)
+
+
+        grant.save()
+
+        messages.info(
+            request,
+            _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+        )
+
+        record_grant_activity_helper('update_grant', grant, profile)
+        # process_grant_creation_email.delay(grant.pk, profile.pk)
+
+        response = {
+            'status': 200,
+            'success': True,
+            'message': 'grant updated',
+            'url': grant.url,
+        }
+
+        return JsonResponse(response)
+
+
+
+
+    # if request.method == 'POST' and (is_team_member or request.user.is_staff):
+    #     response = {
+    #             'status': 400,
+    #             'message': 'error: Bad Request. Unable to create grant'
+    #         }
+
+    #     request_body = json.loads(request.body.decode("utf-8"))
+
+    #     print(request_body)
+    #     grant.last_update = timezone.now()
+    #     if request.FILES.get('logo'):
+    #         logo = request.FILES.get('logo', None)
+    #         grant.logo = logo
+    #         grant.save()
+    #         record_grant_activity_helper('update_grant', grant, profile)
+    #         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
+    #     if 'grant_cancel_tx_id' in request.POST:
+    #         grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
+    #         grant.active = False
+    #         grant.save()
+    #         grant_cancellation(grant, user_subscription)
+    #         for sub in subscriptions:
+    #             subscription_terminated(grant, sub)
+    #         record_grant_activity_helper('killed_grant', grant, profile)
+
+    #     title = request_body.get('title', None)
+    #     github_project_url = request_body.get('github_project_url', None)
+    #     reference_url = request_body.get('reference_url', None)
+    #     # grant_members = request_body.getlist('grant_members[]')
+
+    #     if not title:
+    #         response['message'] = 'error: title is a mandatory parameter'
+    #         return JsonResponse(response)
+    #     else:
+    #         grant.title = title
+    #         grant.github_project_url = github_project_url
+    #         grant.reference_url = reference_url
+    #         # team_members = grant_members
+    #         # team_members.append(str(grant.admin_profile.id))
+    #         # grant.team_members.set(team_members)
+    #     # if 'twitter_account' in request.POST and request.POST.get('twitter_account') != grant.twitter_handle_1:
+    #     #     grant.twitter_verified = False
+    #     #     grant.twitter_verified_at = None
+    #     #     grant.twitter_verified_by = None
+    #     #     grant.twitter_handle_1 = request.POST.get('twitter_account')
+
+    #     # if 'description' in request.POST:
+    #     #     grant.description = request.POST.get('description')
+    #     #     grant.description_rich = request.POST.get('description_rich')
+    #     grant.save()
+
+        # form_category_ids = request.POST.getlist('categories[]')
+
+        '''Overwrite the existing categories and then add the new ones'''
+        # grant.categories.clear()
+        # add_form_categories_to_grant(form_category_ids, grant, grant.grant_type)
+
+        # record_grant_activity_helper('update_grant', grant, profile)
+
+            # response['message'] = 'error: grant_type is a mandatory parameter'
+
+        # response = {
+        #     'status': 200,
+        #     'success': True,
+        #     'message': 'grant edited',
+        #     'url': grant.url,
+        # }
+
+        # return JsonResponse(response)
 
 @login_required
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
