@@ -41,6 +41,7 @@
       <div class="col border-top-0">
       
       <!-- CLR rounds-->
+      {% if active_rounds %}
         <div class="subheading font-weight-bold">
           {% trans "CLR Rounds" as filts %}{{ filts|upper }}
         </div>
@@ -55,7 +56,7 @@
             </li>
           {% endfor %}
         </ul>
-
+      {% endif %}
         
         <!-- CATEGORIES -->
         <div class="subheading">
