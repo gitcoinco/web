@@ -2718,10 +2718,10 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        contributor_address = contribution.get('contributor_address', None)
-        tx_id = contribution.get('tx_id', None)
+        contributor_address = contribution.get('contributor_address', '0x0')
+        tx_id = contribution.get('tx_id', '0x0')
 
-        if not contributor_address and not tx_id:
+        if contributor_address == '0x0' and tx_id == '0x0':
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: either contributor_address or tx_id must be supplied'
