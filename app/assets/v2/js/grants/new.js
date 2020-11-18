@@ -145,7 +145,8 @@ const init = () => {
       formData.append('logo', file);
       formData.append('title', $('#input_title').val());
       formData.append('handle1', $('#input-handle1').val());
-      formData.append('handle2', $('#input-handle2').val());
+      formData.append('handle1', $('#input-handle1').val());
+      formData.append('telegram_id', $('#telegram_id').val());
       formData.append('description', description.getText());
       formData.append('description_rich', JSON.stringify(description.getContents()));
       formData.append('reference_url', $('#input-url').val());
