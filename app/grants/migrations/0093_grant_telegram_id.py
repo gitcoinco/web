@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('grants', '0091_contribution_anonymous'),
+        ('grants', '0092_auto_20201111_1301'),
     ]
 
     operations = [
