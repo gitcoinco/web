@@ -4502,6 +4502,13 @@ def hackathon_save_project(request):
     if video_url and video_provider:
         kwargs['extra']['video_provider'] = video_provider
         kwargs['extra']['video_url'] = video_url
+    elif video_url:
+        # fallback to remove later when JS spaghetti is fixed
+        kwargs['extra']['video_url'] = video_url
+        for p in ['loom', 'youtube', 'vimeo']:
+            if p in video_url:
+                kwargs['extra']['video_provider'] = p
+
 
     if categories:
         kwargs['categories'] = categories
