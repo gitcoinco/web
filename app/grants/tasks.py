@@ -211,5 +211,4 @@ def process_grant_creation_email(self, grant_id, profile_id):
     grant = Grant.objects.get(pk=grant_id)
     profile = Profile.objects.get(pk=profile_id)
 
-    new_grant_admin(grant)
     new_grant(grant, profile)
