@@ -1,4 +1,5 @@
 Vue.component('v-select', VueSelect.VueSelect);
+Vue.use(VueQuillEditor);
 
 Vue.mixin({
   methods: {
@@ -22,8 +23,27 @@ Vue.mixin({
 
 
         }).then(function(json) {
+          json.grants.team_members = vm.formatTeam(json.grants.team_members);
           vm.grant = json.grants
           vm.grantInCart();
+
+          // vm.grant.description_rich_copy = JSON.parse(vm.grant.description_rich)
+          // vm.grant.description_rich_copy = vm.editor.getContents(vm.grant.description_rich)
+          vm.grant.description_rich_edited = vm.grant.description_rich
+          // vm.grant.description_rich_copy = vm.editor.container.innerHTML
+          console.log(vm.editor)
+          // let html = vm.editor.updateContents(JSON.parse(vm.grant.description_rich_copy))
+      // console.log(vm.editor.setContents(html))
+
+        vm.editor.updateContents(JSON.parse(vm.grant.description_rich))
+          // var contents = quill.getContents();
+          // vm.grant.description_rich = vm.editor.updateContents(JSON.parse(vm.grant.description_rich))
+
+    //       var tempCont = document.createElement("div");
+    // (new Quill(tempCont)).setContents(vm.grant.description_rich);
+    // console.log(tempCont)
+    // return tempCont.getElementsByClassName("ql-editor")[0].innerHTML;
+          // console.log(vm.editor.getContents(JSON.parse(vm.grant.description_rich))  )
 
           // if (vm.grant.metadata.related[0].length) {
           //   vm.fetchRelated(String(vm.grant.metadata.related[0]))
@@ -33,6 +53,16 @@ Vue.mixin({
         }).catch(console.error)
       })
 
+
+    },
+    formatTeam: function(teamMembers) {
+      return teamMembers.map((user)=> {
+        let newTeam = {};
+        newTeam["id"] = user.pk;
+        newTeam["avatar_url"] = `/dynamic/avatar/${user.fields.handle}`;
+        newTeam["text"] = user.fields.handle;
+        return newTeam;
+      });
 
     },
     fetchRelated: function() {
@@ -76,6 +106,68 @@ Vue.mixin({
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
     },
+    editGrantModal: function() {
+      let vm = this;
+      vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop')
+    },
+    saveGrant: function(event) {
+      event.preventDefault();
+      let vm = this;
+
+      vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop')
+
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Edit Grant', 'click', 'Grant Editor');
+      }
+
+      const headers = {
+        'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
+      };
+
+      const apiUrlGrant = `/grants/v1/api/grant/edit/${vm.grant.id}/`;
+      let data = {
+        'title': vm.grant.title,
+        'reference_url': vm.grant.reference_url,
+        // 'logo': vm.logo,
+        'description': vm.$refs.myQuillEditor.quill.getText(),
+        'description_rich': JSON.stringify(vm.$refs.myQuillEditor.quill.getContents()),
+        'team_members[]': JSON.stringify(vm.grant.team_members),
+        'handle1': vm.grant.twitter_handle_1,
+        'handle2': vm.grant.twitter_handle_2,
+        'github_project_url': vm.grant.github_project_url,
+        'eth_payout_address': vm.grant.eth_payout_address,
+        'zcash_payout_address': vm.grant.zcash_payout_address,
+
+
+      };
+
+      vm.grant.description_rich=JSON.stringify(vm.$refs.myQuillEditor.quill.getContents())
+      vm.grant.description=vm.$refs.myQuillEditor.quill.getText()
+
+      $.ajax({
+        type: 'post',
+        url: apiUrlGrant,
+        processData: false,
+        contentType: false,
+        data: getFormData(data),
+        headers: headers,
+        success: response => {
+          if (response.status == 200) {
+          } else {
+            // vm.submitted = false;
+            _alert('Unable to create grant. Please try again', 'error');
+            console.error(`error: grant creation failed with status: ${response.status} and message: ${response.message}`);
+          }
+        },
+        error: err => {
+          // vm.submitted = false;
+          _alert('Unable to create grant. Please try again', 'error');
+          console.error(`error: grant creation failed with msg ${err}`);
+        }
+      });
+
+    },
+    checkGrantData: function() {},
     toggleFollowingGrant: async function(grantId) {
       let vm = this;
 
@@ -121,9 +213,88 @@ Vue.mixin({
           _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
         }
       });
-    }
+    },
+    onEditorBlur(quill) {
+      console.log('editor blur!', quill)
+    },
+    onEditorFocus(quill) {
+      console.log('editor focus!', quill)
+    },
+    onEditorReady(quill, html, text) {
+      console.log('editor ready!', quill, html, text)
+
+      // this.grant.description_rich = html
+    },
+    onEditorChange({ quill, html, text }) {
+      console.log('editor change!', quill, html, text)
+      this.content = html
+    },
+    userSearch(search, loading) {
+      let vm = this;
+
+      if (search.length < 3) {
+        return;
+      }
+      loading(true);
+      vm.getUser(loading, search);
+
+    },
+    getUser: async function(loading, search, selected) {
+      let vm = this;
+      let myHeaders = new Headers();
+      let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}&suppress_non_gitcoiners=true`;
+
+      myHeaders.append('X-Requested-With', 'XMLHttpRequest');
+      return new Promise(resolve => {
+
+        fetch(url, {
+          credentials: 'include',
+          headers: myHeaders
+        }).then(res => {
+          res.json().then(json => {
+            vm.$set(vm, 'usersOptions', json);
+            if (selected) {
+              // TODO: BUG -> Make append
+              vm.$set(vm.form, 'team_members', vm.usersOptions[0].text);
+            }
+            resolve();
+          });
+          if (loading) {
+            loading(false);
+          }
+        });
+      });
+    },
   },
   computed: {
+    // teamUsers: function() {
+
+    //   let vm = this;
+
+    //   if (!vm.grant.team_members) {
+    //     return;
+    //   }
+
+
+    //   team_members_id = vm.grant.team_members.map((user)=> {
+    //     console.log(user)
+    //     let newTeam = {};
+    //     newTeam["id"] = user.pk;
+    //     newTeam["avatar_url"] = `/dynamic/avatar/${user.fields.handle}`;
+    //     newTeam["text"] = user.fields.handle;
+
+
+
+    //     return newTeam;
+    //   });
+    //   console.log(team_members_id)
+    //   return this.$set(this.grant, 'team_members', team_members_id);
+    //   // return team_members_id;
+
+    // },
+    editor() {
+      return this.$refs.myQuillEditor.quill
+    },
     filteredMsg: function() {
       let msgs = [
         '💪 keep up the great work',
@@ -171,13 +342,28 @@ if (document.getElementById('gc-grant-detail')) {
         relatedGrants: [],
         rows: 0,
         perPage: 4,
-        currentPage: 1
-
+        currentPage: 1,
+        openEdit: false,
+        errors: {},
+        usersOptions: [],
+        editorOptionPrio: {
+          modules: {
+            toolbar: [
+              [ 'bold', 'italic', 'underline' ],
+              [{ 'align': [] }],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [ 'link', 'code-block', 'image', 'video' ],
+              ['clean']
+            ]
+          },
+          theme: 'snow',
+          placeholder: 'Give a detailed desciription about your Grant'
+        }
       };
     },
     mounted: function() {
       console.log('mount')
-
+      console.log('this is Quill instance:', this.editor)
      this.fetchGrantDetails();
 
     },
@@ -185,3 +371,9 @@ if (document.getElementById('gc-grant-detail')) {
 }
 
 
+const getFormData = object => {
+  const formData = new FormData();
+
+  Object.keys(object).forEach(key => formData.append(key, object[key]));
+  return formData;
+};

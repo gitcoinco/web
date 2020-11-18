@@ -666,6 +666,7 @@ class Grant(SuperModel):
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
                 'description': self.description,
+                'description_rich': self.description_rich,
                 'last_update': self.last_update,
                 'last_update_natural': naturaltime(self.last_update),
                 'sybil_score': self.sybil_score,
