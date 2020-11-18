@@ -1997,6 +1997,9 @@ class GrantStat(SuperModel):
 
 
 class GrantBrandingRoutingPolicy(SuperModel):
+    """
+    This manages the background that would be put on a grant page (or grant CLR based on a regex matching in the URL)
+    """
     url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
     banner_image = models.ImageField(
         upload_to=get_upload_filename,
