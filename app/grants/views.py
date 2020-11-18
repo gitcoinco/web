@@ -914,8 +914,8 @@ def grants_by_grant_type(request, grant_type):
             grant_label = _type.get("label")
 
     grant_bg = None
-    all_poilcies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
-    for policy in all_poilcies:
+    all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
+    for policy in all_policies:
         if re.search(policy.url_pattern, request.get_full_path()):
             grant_bg = {
                 "banner_image": request.build_absolute_uri(policy.banner_image.url),
