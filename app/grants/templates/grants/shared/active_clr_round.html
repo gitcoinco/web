@@ -6,7 +6,7 @@
         <div class="d-flex px-4 py-3 justify-content-between position-relative" style="z-index: 10">
           <div class="d-flex">
             <div class="bg-white mr-3 p-2 overflow-hidden" style="width: 56px; height: 56px; border-radius: 100px;">
-              <img class="img-responsive" style="width: 100%; height: 100%;" src="/dynamic/avatar/{{ active_round.owner.handle}}" />
+              <img class="img-responsive" style="width: 100%; height: 100%;" src="/dynamic/avatar/{{ active_round.owner.handle | default:'gitcoinco'}}" />
             </div>
             <h5 class="font-weight-bold mb-0"> {{ active_round.display_text |default:active_round.round_num }} <br/>
             <small>{{active_round.start_date | date:'m/Y'}} - {{active_round.end_date | date:'m/Y'}}</small>
