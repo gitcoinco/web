@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <style>
       .infinite-more-link {
-        display: block;
+        display: inline-block;
         text-align: center;
         border: 1px solid;
         border-radius: 5px;
-        width: 20%;
+        width: 10%;
       }
       .infinite-more-link:hover {
         color: white;
@@ -90,7 +90,7 @@
         }
       </script>
 
-      <div class="infinite-container">
+      <div class="infinite-container text-center">
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
@@ -116,8 +116,11 @@
     {% if not hide_loading %}
       <img class="loading hidden" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
     {% endif %}
+    {% if not is_first_page %}
+      <a class="infinite-more-link py-2 mt-3 mx-1" href="{% if prev_target %}{{prev_target}}{% else %}?page={{prev_page}}{% endif %}">Prev</a>
+    {% endif %}
     {% if not suppress_more_link %}
-      <a class="infinite-more-link mx-auto px-2 py-2 mt-3" href="{% if target %}{{target}}{% else %}?page={{next_page}}{% endif %}">Show More</a>
+      <a class="infinite-more-link py-2 mt-3 mx-1" href="{% if next_target %}{{next_target}}{% else %}?page={{next_page}}{% endif %}">Next</a>
     {% endif %}
       </div>
     </section>
