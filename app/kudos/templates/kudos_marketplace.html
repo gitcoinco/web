@@ -149,10 +149,8 @@
           e.preventDefault();
           return;
         }
-        $(this).addClass('hidden');
         var url = $(this).attr('href');
 
-        $('.infinite-container').find('.loading').removeClass('hidden');
         $.get(url, function (response) {
           $('.infinite-container').find('.infinite-more-link').remove();
           $('.infinite-container').find('.loading').remove();
