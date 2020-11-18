@@ -11,7 +11,6 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from grants.views import record_subscription_activity_helper
 from marketing.mails import new_supporter, thank_you_for_supporting
 from townsquare.models import Comment
 
@@ -104,7 +103,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                 related[key] = 0
             related[key] += 1
     instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
-
+    instance.calc_clr_round()
     instance.save()
 
 
@@ -118,6 +117,8 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
     :param package:
     :return:
     """
+    from grants.views import record_subscription_activity_helper
+
     grant = Grant.objects.get(pk=grant_id)
     profile = Profile.objects.get(pk=profile_id)
 
@@ -157,23 +158,31 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.error = True #cancel subs so it doesnt try to bill again
         subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
         subscription.save()
-        activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
+
+
+        if 'hide_wallet_address' in package:
+            profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
+            profile.save()
+
+        if 'anonymize_gitcoin_grants_contributions' in package:
+            profile.anonymize_gitcoin_grants_contributions = bool(package.get('anonymize_gitcoin_grants_contributions', False))
+            profile.save()
+
+        activity_profile = profile if not profile.anonymize_gitcoin_grants_contributions else Profile.objects.get(handle='gitcoinbot')
+
+        activity = record_subscription_activity_helper('new_grant_contribution', subscription, activity_profile)
 
         if 'comment' in package:
             _profile = profile
             comment = package.get('comment')
             if comment and activity:
-                if subscription and subscription.negative:
+                if profile.anonymize_gitcoin_grants_contributions:
                     _profile = Profile.objects.filter(handle='gitcoinbot').first()
                     comment = f"Comment from contributor: {comment}"
                 comment = Comment.objects.create(
                     profile=_profile,
                     activity=activity,
                     comment=comment)
-
-        if 'hide_wallet_address' in package:
-            profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
-            profile.save()
 
         # emails to grant owner
         new_supporter(grant, subscription)

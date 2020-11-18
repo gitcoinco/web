@@ -1321,9 +1321,6 @@ def new_bounty_daily(es):
             notifications = f"💬 {notifications} Notification{plural}"
         else:
             notifications = ''
-        has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
-        if has_offer:
-            offers = f"⚡️ 1 New Action"
 
         new_bounties = ""
         if bounties:

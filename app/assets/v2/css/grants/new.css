@@ -75,3 +75,11 @@
 .select2-selection__rendered .select2-selection__choice {
   font-size: 14px;
 }
+
+.vs__open-indicator {
+  transform: scale(0.8);
+}
+
+.ql-editor{
+  min-height: 7rem;
+}

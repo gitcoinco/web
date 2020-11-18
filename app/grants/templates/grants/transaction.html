@@ -10,7 +10,7 @@
     {% endif %}      
     </div>
     <div class="col-3 col-sm-2 col-md-1 justify-content-center special_tag">
-      {% if not anonymous %}
+      {% if not transaction.anonymous %}
         <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
           <img class="avatar rounded-circle" data-src="/dynamic/avatar/{{ transaction.subscription.contributor_profile.handle }}">
         </a>
@@ -20,7 +20,7 @@
     </div>
     <div class="col-2 my-auto">
       <div class="font-weight-bold font-body">
-        {% if not anonymous %}
+        {% if not transaction.anonymous %}
           <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
             {{ transaction.subscription.contributor_profile }}
           </a>
@@ -30,8 +30,13 @@
       </div>
     </div>
     <div class="col-1 my-auto tags font-caption">
-        {% if not transaction.tx_cleared %} <BR>(Pending) {% endif %}
-        {% if not transaction.success %} <BR>(Failed) {% endif %}
+        <span>
+          {% if not transaction.success %}
+            ( Failed )
+          {% elif not transaction.tx_cleared %}
+            ( Pending )
+          {% endif %}
+        </span>
     </div>
     {% if not transaction.subscription.contributor_profile.hide_wallet_address %}
       <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">

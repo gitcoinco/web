@@ -40,8 +40,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       {% include 'grants/nav.html' %}
     </div>
 
-    {% include 'grants/shared/waiting_state.html' %}
-
     <div>
       <div id="gc-grants-cart" v-cloak>
         <grants-cart ref="cart" inline-template>
@@ -85,9 +83,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
             {% comment %} Divider {% endcomment %}
             <div>
-              <div class="separator" />
+              <div class="separator"></div>
             </div>
-
 
             {% comment %} Main container {% endcomment %}
             <div v-if="grantData.length === 0" class="flex-container font-bigger-1 text-left grant-header-row"
@@ -116,340 +113,466 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </div>
               {% comment %} Cart header {% endcomment %}
-              <div v-if="!isMobileDevice"
-                class="row align-items-center justify-content-between font-smaller-2 text-left grant-header-row">
-                <div class="col-4">
-                  Grant
-                </div>
-                <div class="col-3">
-                  Amount
-                </div>
-                <div class="col-2">
-                  Total CLR Match Amount
-                </div>
-                <div class="col-1">
-                  &nbsp;
-                </div>
-              </div>
-              {% comment %} Cart Contents: MOBILE {% endcomment %}
-              <div v-if="isMobileDevice">
-                <div v-for="(grant, index) in grantData" :key="grant.grant_id" class="grant-row">
-                  <div class="grant-row-style">
-                    <div class="row align-items-center justify-content-between">
-                      {% comment %} Logo, title, and delete button {% endcomment %}
-                      <div class="col-12">
-                        <div class="row flex-nowrap">
-                          <img class="col-2" style="padding:0 0.5rem" :src="grant.grant_logo" alt="Grant logo"
-                            width="40" height="24">
-                          <div class="col-8 grant-name black" style="padding:0"><a :href="grant.grant_url">[[grant.grant_title]]</a></div>
-                          <div class="col-1" style="opacity: 40%">
-                            <i class="fas fa-trash-alt" style="cursor: pointer"
+
+              <div>
+                <b-tabs @input="tabChange" v-model="tabIndex" content-class="mt-3">
+                  <b-tab :title-link-class="'nav-line'">
+                    <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
+
+                    <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
+                      <div class="flex-fill">
+                        Grant
+                      </div>
+                      <div class="flex-fill text-center">
+                        Amount
+                      </div>
+                      <div class="flex-fill text-center">
+                        Total CLR Match Amount
+                      </div>
+                    </div>
+                    <div v-for="(grant, index) in grantsByTenant" class="grant-row" :key="grant.grant_id">
+                      <div class="grant-row-style">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                          {% comment %} Title and logo {% endcomment %}
+                          <div class="d-flex flex-fill">
+                              <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
+                              <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
+                          </div>
+                          {% comment %} Grant amount and currency {% endcomment %}
+                          <div class="d-flex flex-column order-md-0 order-1">
+                            <div class="d-flex align-items-center">
+                              <input class=" form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
+                                placeholder="Amount" style="margin-right: 1rem">
+                              <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="flex-shrink-0" style="
+                              width: 160px;
+                          ">
+                                <template v-slot:option="option">
+                                  <span class="font-weight-semibold">[[ option.symbol ]]</span>
+                                </template>
+                              </v-select>
+
+                              <!-- <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
+                                placeholder="Select token">
+                                <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                                  <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
+                                  <span v-else>[[ option ]]</span>
+                                </option>
+                              </select2> -->
+                            </div>
+                            <div class="">
+                              <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
+                                Apply to all
+                              </div>
+                            </div>
+                          </div>
+                          {% comment %} CLR Match Amount {% endcomment %}
+
+                          <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
+                            <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
+                              <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
+                              <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+                              width="20">
+                            </div>
+                            <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+                              Not Eligible for CLR
+                            </div>
+                          </div>
+
+                          {% comment %} Delete Icon {% endcomment %}
+                          <div class="d-flex">
+                            <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
                               @click="removeGrantFromCart(grant.grant_id)"></i>
+
                           </div>
                         </div>
-                      </div>
-                      {% comment %} Grant amount and curency {% endcomment %}
-                      <div class="col-12" style="margin-top:1rem;">
-                        <div class="row flex-nowrap justify-content-between">
-                          <input class="col-5 form-control" style="margin-left:0.5rem" min="0" step="any"
-                            v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
-                          <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
-                            style="margin-right:0.5rem" placeholder="Select token">
-                            <option v-for="(option, index) in currencies[index]" v-bind:value="option" :disabled="!option" :key="`currency-${index}`">
-                              <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
-                              <span v-else>[[ option ]]</span>
-                            </option>
-                          </select2>
-                        </div>
-                        <div class="font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant, index)">
-                          Apply to all
-                        </div>
-                      </div>
-                      {% comment %} Add comment {% endcomment %}
-                      <div class="col-12 font-smaller-3" style="margin-top:1rem">
-                        <div class="row">
-                          <div class="comment-option col-auto" @click="addComment(index)">
-                            <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`"
+                        <div class="form-row font-smaller-3 mt-3" >
+                          <div class="comment-option col-auto" >
+                            <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
                                    :checked="grant.grant_comments === ''"
                             >
-                            <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
+                            <label :for="`comment-${grant.grant_id}-blank`" class="p-2 px-3 rounded-pill shadow-sm radio-label">+ Add comment to owner</label>
                           </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
-                            <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`"
+                          <div class="comment-option col-auto">
+                            <input v-model="grant.grant_comments" value="🙌 Great Job"  :id="`comment-${grant.grant_id}-job`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
                                    :checked="grant.grant_comments === '🙌 Great Job'"
                             >
-                            <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
+                            <label :for="`comment-${grant.grant_id}-job`" class="p-2 px-3 rounded-pill shadow-sm radio-label">🙌 Great Job</label>
                           </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
-                            <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`"
+                          <div class="comment-option col-auto">
+                            <input v-model="grant.grant_comments" value="👍 i appreciate you" :id="`comment-${grant.grant_id}-appreciate`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
                                    :checked="grant.grant_comments === '👍 i appreciate you'"
                             >
-                            <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
+                            <label :for="`comment-${grant.grant_id}-appreciate`" class="p-2 px-3 rounded-pill shadow-sm radio-label">👍 i appreciate you</label>
                           </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
-                            <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`"
+                          <div class="comment-option col-auto">
+                            <input v-model="grant.grant_comments" value="💪 keep up the great work" :id="`comment-${grant.grant_id}-work`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
                                    :checked="grant.grant_comments === '💪 keep up the great work'"
                             >
-                            <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
+                            <label :for="`comment-${grant.grant_id}-work`" class="p-2 px-3 rounded-pill shadow-sm radio-label">💪 keep up the great work</label>
                           </div>
-                          <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
-                            <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`"
+                          <div class="comment-option col-auto">
+                            <input v-model="grant.grant_comments" value="😍 love the mission of your project" :id="`comment-${grant.grant_id}-love`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
                                    :checked="grant.grant_comments === '😍 love the mission of your project'"
                             >
-                            <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
+                            <label :for="`comment-${grant.grant_id}-love`" class="p-2 px-3 rounded-pill shadow-sm radio-label">😍 love the mission of your project</label>
                           </div>
                         </div>
+                        <input v-if="grant.grant_comments !== undefined"
+                          class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
                       </div>
-                      <div v-if="grant.grant_comments !== undefined" class="col-12" style="margin-top:1rem;">
-                        <div class="row flex-nowrap justify-content-between">
-                          <input class="form-control" style="margin-left:0.5rem" v-model="grant.grant_comments"
-                            type="textarea" placeholder="Enter message">
+                    </div>
+
+                    <div class="flex-container font-bigger-1 text-left grant-header-row black" style="font-weight: bold">
+                      <div style="width: 25%">
+                        <div class="flex-container" style="justify-content: start">
+                          TOTAL
                         </div>
                       </div>
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {% comment %} Cart Contents: NOT MOBILE {% endcomment %}
-              <div v-if="!isMobileDevice" v-for="(grant, index) in grantData" class="grant-row" :key="grant.grant_id">
-                <div class="grant-row-style">
-                  <div class="row align-items-center justify-content-between" style="margin-left:0.5rem">
-                    {% comment %} Title and logo {% endcomment %}
-                    <div class="col-4">
-                      <div class="row">
-                        <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30"
-                          height="24">
-                        <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
-                      </div>
-                    </div>
-                    {% comment %} Grant amount and currency {% endcomment %}
-                    <div class="col-3">
-                      <div class="row flex-nowrap align-items-center justify-content-start">
-                        <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
-                          placeholder="Amount" style="margin-right: 1rem">
-                        <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
-                          placeholder="Select token">
-                          <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
-                            <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
-                            <span v-else>[[ option ]]</span>
-                          </option>
-                        </select2>
-                      </div>
-                      <div class="row flex-nowrap align-items-center justify-content-start">
-                        <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
-                          Apply to all
+                      <div style="width: 75%">
+                        <div class="flex-container" style="justify-content: start">
+                          [[donationsTotalString]]
                         </div>
                       </div>
                     </div>
-                    {% comment %} CLR Match Amount {% endcomment %}
-                    <div class="col-2">
-                      <div class="row align-items-center justify-content-between clr-match-box">
-                        <template v-if="grant.is_clr_eligible == true">
-                          <div>[[grant.grant_donation_clr_match]] DAI</div>
-                          <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
-                          width="20">
-                        </template>
-                        <div v-else class="font-caption font-weight-semibold">
-                          Not Eligible for CLR
+
+                    {% comment %} Hide wallet option {% endcomment %}
+                    <div class="flex-container text-left grant-header-row black m-1 p-1">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address"
+                            style="margin-right:1rem">
+                          <label class="font-smaller-1 darker-gray mb-0 pb-0"
+                            for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
+                          <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
+                            style="margin-left: 0.5rem;">
+                            {% trans "If this option is chosen, your wallet address will be hidden" %}
+                          </span>
                         </div>
                       </div>
                     </div>
-                    {% comment %} Delete Icon {% endcomment %}
-                    <div class="col-1">
-                      <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
-                        @click="removeGrantFromCart(grant.grant_id)"></i>
 
+                    {% comment %} Anonymize my contribution {% endcomment %}
+                    <div class="flex-container text-left grant-header-row black m-1 p-1">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <input v-model="AnonymizeGrantsContribution" type="checkbox" id="anonymize_gitcoin_grants_contributions"
+                            style="margin-right:1rem">
+                          <label class="font-smaller-1 darker-gray mb-0 pb-0"
+                            for="anonymize_gitcoin_grants_contributions">{% trans "Anonymize my contribution" %}</label>
+                          <span id="hide_wallet_address" class="font-smaller-2 medium-dark-gray"
+                            style="margin-left: 0.5rem;">
+                            {% trans "If this option is chosen, your the contribution will not be attributed to your profile publicly" %}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row font-smaller-3 mt-3"  style="margin-left:0.5rem">
-                    <div class="comment-option col-auto" @click="addComment(index)">
-                      <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`"
-                             :checked="grant.grant_comments === ''"
-                      >
-                      <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
-                    </div>
-                    <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
-                      <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`"
-                             :checked="grant.grant_comments === '🙌 Great Job'"
-                      >
-                      <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
-                    </div>
-                    <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
-                      <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`"
-                             :checked="grant.grant_comments === '👍 i appreciate you'"
-                      >
-                      <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
-                    </div>
-                    <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
-                      <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`"
-                             :checked="grant.grant_comments === '💪 keep up the great work'"
-                      >
-                      <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
-                    </div>
-                    <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
-                      <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`"
-                             :checked="grant.grant_comments === '😍 love the mission of your project'"
-                      >
-                      <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
-                    </div>
-                  </div>
-                  <input v-if="grant.grant_comments !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
-                    class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
-                </div>
-              </div>
 
-              {% comment %} Cart total {% endcomment %}
-              <div class="flex-container font-bigger-1 text-left grant-header-row black" style="font-weight: bold">
-                <div style="width: 25%">
-                  <div class="flex-container" style="justify-content: start">
-                    TOTAL
-                  </div>
-                </div>
-                <div style="width: 75%">
-                  <div class="flex-container" style="justify-content: start">
-                    [[donationsTotalString]]
-                  </div>
-                </div>
-              </div>
-
-              {% comment %} Hide wallet option {% endcomment %}
-              <div class="flex-container text-left grant-header-row black">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address"
-                      style="margin-right:1rem">
-                    <span class="font-smaller-1 darker-gray"
-                      for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
-                    <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
-                      style="margin-left: 0.5rem;">
-                      {% trans "If this option is chosen, your wallet address will be hidden" %}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
-              <div class="flex-container text-left grant-header-row black">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
-                      <div class="row">
-                        <div class="col-12 mb-3">
-                          <p class="font-body">
-                            {% trans "By using this service, you’ll also be contributing" %}
-                            <span class="gitcoin-grant-percent">[[gitcoinFactorRaw]]%</span>
-                            {% trans "of your contribution to the" %} <a
-                              href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
-                              Grants Round 7+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
-                            <div class="font-smaller-1 hyperlink" @click="adjustGitcoinFactor=true">
-                              Adjust &gt;&gt;
+                    {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
+                    <div class="flex-container text-left grant-header-row black">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
+                            <div class="row">
+                              <div class="col-12 mb-3">
+                                <p class="font-body">
+                                  {% trans "By using this service, you’ll also be contributing" %}
+                                  <span class="gitcoin-grant-percent">[[gitcoinFactorRaw]]%</span>
+                                  {% trans "of your contribution to the" %} <a
+                                    href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
+                                    Grants Round 7+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                                  <div class="font-smaller-1 hyperlink" @click="adjustGitcoinFactor=true">
+                                    Adjust &gt;&gt;
+                                  </div>
+                                </p>
+                              </div>
+                              <div v-if="adjustGitcoinFactor" class="col-12 col-xl-8 text-center text-xl-left fee-slider">
+                                {% include './heart.html' %}
+                                <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
+                                  <div class="badge badge-active font-title font-weight-normal"
+                                    :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
+                                    @click="gitcoinFactorRaw=5">
+                                    5%</div>
+                                  <div class="badge badge-active font-title font-weight-normal ml-xl-2"
+                                    :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
+                                    @click="gitcoinFactorRaw=10">
+                                    10%</div>
+                                  <div class="badge badge-active font-title font-weight-normal ml-xl-2"
+                                    :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
+                                    @click="gitcoinFactorRaw=15">
+                                    15%</div>
+                                </div>
+                              </div>
+                              <div v-if="adjustGitcoinFactor"
+                                class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
+                                <div class="text-center custom d-inline-block">
+                                  <input type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
+                                    name="gitcoin-grant-input-amount" class="form__input text-center"
+                                    :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
+                                    v-model="gitcoinFactorRaw">
+                                  <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
+                                </div>
+                              </div>
                             </div>
-                          </p>
-                        </div>
-                        <div v-if="adjustGitcoinFactor" class="col-12 col-xl-8 text-center text-xl-left fee-slider">
-                          {% include './heart.html' %}
-                          <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
-                            <div class="badge badge-active font-title font-weight-normal"
-                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
-                              @click="gitcoinFactorRaw=5">
-                              5%</div>
-                            <div class="badge badge-active font-title font-weight-normal ml-xl-2"
-                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
-                              @click="gitcoinFactorRaw=10">
-                              10%</div>
-                            <div class="badge badge-active font-title font-weight-normal ml-xl-2"
-                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
-                              @click="gitcoinFactorRaw=15">
-                              15%</div>
-                          </div>
-                        </div>
-                        <div v-if="adjustGitcoinFactor"
-                          class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
-                          <div class="text-center custom d-inline-block">
-                            <input type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
-                              name="gitcoin-grant-input-amount" class="form__input text-center"
-                              :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
-                              v-model="gitcoinFactorRaw">
-                            <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
 
-              {% comment %} Summary {% endcomment %}
-              <div class="flex-container font-bigger-1 text-left grant-header-row black"
-                style="font-weight: bold; margin-top: 1rem;">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    SUMMARY
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex-container text-left cart-section black">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <ul>
-                      <li>
-                        You are contributing <span style="font-weight: bold">[[donationsToGrantsString]]</span>
-                      </li>
-                      <li>
-                        You are additionally contributing
-                        <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
-                        to the Gitcoin Mainainter Grant
-                      </li>
-                      <li>
-                        Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
-                        <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
-                          Read how this works</a>.
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex-container" style="margin-top: 3rem;">
-                <div style="width: 100%">
-                  <div class="flex-container" style="justify-content: start">
-                    <button v-if="!isLoggedIn" class="btn btn-gc-blue button--full shadow-none py-3"
-                      id='js-fundGrants-button' @click="loginWithGitHub">
-                      <i class="fab fa-github"></i>
-                      Login with GitHub to Continue
-                    </button>
-                    <div v-else>
-                      <div class="mb-1">
-                        <div v-if="zkSyncUnsupportedTokens.length > 0">
-                          zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
-                        </div>
-                        <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
-                          zkSync checkout not supported
-                        </div>
-                        <div v-else>
-                          Save
-                          <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
-                          on gas costs with [[ checkoutRecommendation.name ]]
-                        </div>
-                      </div>
-                      <div class="row align-items-center justify-content-between">
-                        <div class="col-auto">
-                          <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
-                            Checkout with zkSync
-                          </button>
-                          </div>
-                        <div class="col-auto">
-                          <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
-                            Standard Checkout
-                          </button>
+                    {% comment %} Summary {% endcomment %}
+                    <div class="flex-container font-bigger-1 text-left grant-header-row black"
+                      style="font-weight: bold; margin-top: 1rem;">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          SUMMARY
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+
+                    <div class="flex-container text-left cart-section black">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <ul>
+                            <li>
+                              You are contributing <span style="font-weight: bold">[[donationsToGrantsString]]</span>
+                            </li>
+                            <li>
+                              You are additionally contributing
+                              <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
+                              to the Gitcoin Mainainter Grant
+                            </li>
+                            <li>
+                              Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
+                              <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
+                                Read how this works</a>.
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex-container" style="margin-top: 3rem;">
+                      <div style="width: 100%">
+                        <div class="flex-container" style="justify-content: start">
+                          <button v-if="!isLoggedIn" class="btn btn-gc-blue button--full shadow-none py-3"
+                            id='js-fundGrants-button' @click="loginWithGitHub">
+                            <i class="fab fa-github"></i>
+                            Login with GitHub to Continue
+                          </button>
+                          <div v-else>
+                            <div class="mb-1">
+                              <div v-if="zkSyncUnsupportedTokens.length > 0">
+                                zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+                              </div>
+                              <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
+                                zkSync checkout not supported
+                              </div>
+                              <div v-else>
+                                Save
+                                <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
+                                on gas costs with [[ checkoutRecommendation.name ]]
+                              </div>
+                            </div>
+                            <div class="row align-items-center justify-content-between">
+                              <div class="col-auto">
+                                <button class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
+                                  Checkout with zkSync
+                                </button>
+                                </div>
+                              <div class="col-auto">
+                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="checkout">
+                                  Standard Checkout
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </b-tab>
+                  <b-tab :title-link-class="'nav-line'">
+                    <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
+
+                    <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
+                      <div class="flex-fill">
+                        Grant
+                      </div>
+                      <div class="flex-fill text-center">
+                        Amount
+                      </div>
+                      <div class="flex-fill text-center">
+                        Total CLR Match Amount
+                      </div>
+                    </div>
+                    <div v-for="(grant, index) in grantsByTenant" class="grant-row" :key="grant.grant_id">
+                      <div class="grant-row-style">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                          {% comment %} Title and logo {% endcomment %}
+                          <div class="d-flex flex-fill">
+                              <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
+                              <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
+                          </div>
+                          {% comment %} Grant amount and currency {% endcomment %}
+                          <div class="d-flex flex-column order-md-0 order-1">
+                            <div class="d-flex align-items-center">
+                              <input class=" form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
+                                placeholder="Amount" style="margin-right: 1rem">
+                              <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="flex-shrink-0" style="
+                              width: 160px;
+                          ">
+                                <template v-slot:option="option">
+                                  <span class="font-weight-semibold">[[ option.symbol ]]</span>
+                                </template>
+                              </v-select>
+
+                              <!-- <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
+                                placeholder="Select token">
+                                <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                                  <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
+                                  <span v-else>[[ option ]]</span>
+                                </option>
+                              </select2> -->
+                            </div>
+                            <!-- <div class="">
+                              <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
+                                Apply to all
+                              </div>
+                            </div> -->
+                          </div>
+
+                          {% comment %} CLR Match Amount {% endcomment %}
+
+                          <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
+                            <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
+                              <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
+                              <img src="{% static 'v2/images/chains/zcash.svg' %}" alt="Diamonds high-fiving"
+                              width="20">
+                            </div>
+                            <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+                              Not Eligible for CLR
+                            </div>
+                          </div>
+                          <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
+                            <b-button v-b-toggle="`collapse-${grant.grant_id}`" class="btn-gc-blue" v-if="!grant.success">
+                              Payout
+                              <i class="fa fa-fw fa-chevron-up when-open"></i>
+                              <i class="fa fa-fw fa-chevron-down when-closed"></i>
+                            </b-button>
+                            <b-button v-b-toggle="`collapse-${grant.grant_id}`" class="btn-gc-blue" v-else>
+                              Completed
+                              <i class="fa fa-fw fa-chevron-up when-open"></i>
+                              <i class="fa fa-fw fa-chevron-down when-closed"></i>
+                            </b-button>
+                          </div>
+                          {% comment %} Delete Icon {% endcomment %}
+                          <div class="d-flex">
+                            <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
+                              @click="removeGrantFromCart(grant.grant_id)"></i>
+
+                          </div>
+                        </div>
+                        <div>
+                          <b-collapse :id="`collapse-${grant.grant_id}`">
+                            <form action="" ref="form" @submit="confirmZcashPayment($event, grant)">
+                              <div class="form-row font-smaller-3 mt-3" >
+                                <div class="comment-option col-auto" >
+                                  <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === ''"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-blank`" class="p-2 px-3 rounded-pill shadow-sm radio-label">+ Add comment to owner</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="🙌 Great Job"  :id="`comment-${grant.grant_id}-job`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '🙌 Great Job'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-job`" class="p-2 px-3 rounded-pill shadow-sm radio-label">🙌 Great Job</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="👍 i appreciate you" :id="`comment-${grant.grant_id}-appreciate`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '👍 i appreciate you'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-appreciate`" class="p-2 px-3 rounded-pill shadow-sm radio-label">👍 i appreciate you</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="💪 keep up the great work" :id="`comment-${grant.grant_id}-work`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '💪 keep up the great work'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-work`" class="p-2 px-3 rounded-pill shadow-sm radio-label">💪 keep up the great work</label>
+                                </div>
+                                <div class="comment-option col-auto">
+                                  <input v-model="grant.grant_comments" value="😍 love the mission of your project" :id="`comment-${grant.grant_id}-love`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+                                         :checked="grant.grant_comments === '😍 love the mission of your project'"
+                                  >
+                                  <label :for="`comment-${grant.grant_id}-love`" class="p-2 px-3 rounded-pill shadow-sm radio-label">😍 love the mission of your project</label>
+                                </div>
+                              </div>
+                              <input v-if="grant.grant_comments !== undefined"
+                                class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
+                              <div class="d-flex">
+                                <div class="bg-white rounded col mr-2 py-3 d-flex flex-column mt-4">
+                                  <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
+
+                                  <div class="d-flex align-items-center">
+                                    <qrcode :string="`zcash:${grant.zcash_payout_address}?amount=${grant.grant_donation_amount}&&message=Thank%20you%20for%20your%20contribution`" :size="100"></qrcode>
+                                    <div class="flex-fill font-smaller-1 ml-4">
+                                      <div class="d-flex align-items-center">
+                                        <span class="mr-2">To:</span>
+                                        <div class="">
+                                          <span class="font-weight-bold">[[grant.zcash_payout_address]]</span>
+                                          <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zcash_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+                                        </div>
+                                      </div>
+                                      <div class="d-flex align-items-center">
+                                        <span class="mr-2">Amount:</span>
+                                        <div class="font-weight-bold">
+                                          [[grant.grant_donation_amount]]
+                                        </div>
+                                      </div>
+
+                                      <!-- <div class="">transaction id: [[grant.payoutTxId]]</div> -->
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="bg-white rounded col ml-2 py-3 d-flex flex-column mt-4">
+                                  <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>t-address</b> or <b>transaction hash</b> and press the confirm button.</p>
+
+                                  <b-form-radio-group id="radio-slots" v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots">
+                                  </b-form-radio-group>
+
+                                  <div class="form-row align-items-center mt-3">
+                                    <div class="col" v-show="selectedZcashPayment === 'txid'">
+                                      <div class="">
+                                        <label :for="`payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
+                                        <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
+                                        <small class="form-text text-muted">Paste the transaction id</small>
+                                      </div>
+                                    </div>
+                                    <div class="col" v-show="selectedZcashPayment === 'taddress'">
+                                      <div class="">
+                                        <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Your T-address:</label>
+                                        <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
+                                        <small class="form-text text-muted">Only t-address are allowed (no z-address support)</small>
+                                      </div>
+                                    </div>
+                                    <div class="mt-2">
+                                      <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="(selectedZcashPayment === 'taddress' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
+                                    </div>
+                                  </div>
+                                  <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>
+                                  <div v-if="grant.success" class="font-body text-success">[[grant.success]]</div>
+                                </div>
+                              </div>
+
+                            </form>
+                          </b-collapse>
+                        </div>
+                      </div>
+                    </div>
+                  </b-tab>
+
+                </b-tabs>
               </div>
+              {% comment %} Cart total {% endcomment %}
+
 
             </div>
             {% comment %}
@@ -737,7 +860,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <div class="row justify-content-start align-items-center">
                               {% comment %} User must input amount before {% endcomment %}
                               <input v-model.number="additionalDeposit.amount" class="col-5 form-control"
-                                style="margin-left:0.5rem" min="0" step="any" type="number"
+                               min="0" step="any" type="number"
                                 :disabled="zkSyncCheckoutStep2Status !== 'not-started'"
                               >
                               <div class="col-5">[[ additionalDeposit.tokenSymbol ]]</div>
@@ -859,7 +982,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     <div v-if="!hasSufficientZkSyncBalance" class="row align-items-center justify-content-between mb-4 text-left font-smaller-2">
                       {% comment %}
                       If user has sufficient zkSync balance, fees are shown when signing the message.
-                      If user does not have sufficient zkSync balance, the fees are hidden so 
+                      If user does not have sufficient zkSync balance, the fees are hidden so
                       in that case we display them here.
                       {% endcomment %}
                       <div class="col-12">
@@ -932,22 +1055,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
   </body>
 
   {% include 'shared/activity_scripts.html' %}
-  <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-  <script src="{% static "v2/js/status.js" %}"></script>
-  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <!-- <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}"> -->
+  <!-- <script src="{% static "v2/js/status.js" %}"></script> -->
+  <!-- <script src="{% static "v2/js/pages/tabs.js" %}"></script> -->
   <script src="{% static "v2/js/grants/index.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <!-- <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script> -->
+  <!-- <script src="{% static "v2/js/ipfs.js" %}"></script> -->
+  <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
   <script>
     $('[data-toggle="tooltip"]').bootstrapTooltip();
 
   </script>
-  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <!-- <script src="{% static "v2/js/user-search.js" %}"></script> -->
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
-  <script src="{% static "v2/js/grants/detail.js" %}"></script>
-  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <!-- <script src="{% static "v2/js/grants/detail.js" %}"></script> -->
+  <!-- <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script> -->
   <script>
     $('#wallet-address').attr(
       'href',
