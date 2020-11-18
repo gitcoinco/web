@@ -814,16 +814,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 
-    {% comment %} ================================================================= {% endcomment %}
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
-    {% comment %} ================================================================= {% endcomment %}
-
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.2/dist/main.js"></script>
-
-    {% comment %} ================================================================= {% endcomment %}
+    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.4/dist/main.js"></script>
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
-    {% comment %} ================================================================= {% endcomment %}
 
     <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>

@@ -31,9 +31,26 @@ Vue.component('grantsCartEthereumZksync', {
 
       user: {
         address: undefined, // connected web3 wallet address
-        zkSyncState: undefined // contains account balances of zkSync wallet
+        zkSyncState: undefined, // contains account balances of zkSync wallet
+        hasEnoughBalance: true
       }
     };
+  },
+
+  mounted() {
+    // If user started checking out with zkSync, warn them before closing or reloading page.
+    // Note that beforeunload may sometimes be ignored by browsers, e.g. if users have not
+    // interacted with the page
+    window.addEventListener('beforeunload', (e) => {
+      if (this.zksync.checkoutStatus === 'pending') {
+        // This shows a generic message staying "Leave site? Changes you made may not be saved". This
+        // cannot be changed, as "the ability to do this was removed in Chrome 51. It is widely
+        // considered a security issue, and most vendors have removed support."
+        // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
   },
 
   computed: {
@@ -93,6 +110,22 @@ Vue.component('grantsCartEthereumZksync', {
           this.zksync.feeTokenSymbol = donations[0].name;
         }
 
+        // Check if user has enough balance
+        this.zksync.checkoutManager
+          .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address)
+          .then((hasEnoughBalance) => {
+            this.user.hasEnoughBalance = hasEnoughBalance;
+            // If they have insufficient balance but modal is already visible, alert user.
+            // This happens if the balance check promise resolves after the user opens the modal
+            if (!this.user.hasEnoughBalance && this.zksync.showModal)
+              this.insufficientBalanceAlert();
+          })
+          .catch((e) => {
+            // Assume user has enough balance if there's an error
+            console.warn(e);
+            this.user.hasEnoughBalance = true;
+          });
+
         // Update the fee estimate and gas cost based on changes
         const estimatedGasCost = this.estimateGasCost();
 
@@ -109,6 +142,13 @@ Vue.component('grantsCartEthereumZksync', {
     // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
+    },
+
+    // Alert user they have insufficient balance to complete checkout
+    insufficientBalanceAlert() {
+      this.zksync.showModal = false; // hide checkout modal if visible
+      this.resetZkSyncModal(); // reset modal settings
+      this.handleError(new Error('Insufficient balance to complete checkout')); // throw error and show to user
     },
 
     // Reset zkSync modal status after a checkout failure
@@ -133,11 +173,11 @@ Vue.component('grantsCartEthereumZksync', {
           this.zksync.feeTokenSymbol
         );
 
-        console.log('txHashes: ', txHashes);
 
         // Save contributors to database and redirect to success modal
         _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-        // TODO save contributions to database ------------------------
+        // TODO save contributions
+        console.log('txHashes: ', txHashes);
         await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
 
       } catch (e) {
@@ -172,7 +212,7 @@ Vue.component('grantsCartEthereumZksync', {
       let totalCost = minimumCost;
       
       // If user has enough balance within zkSync, cost equals the minimum amount
-      const { isBalanceSufficient, requiredAmounts } = this.hasEnoughBalance();
+      const { isBalanceSufficient, requiredAmounts } = this.hasEnoughBalanceInZkSync();
 
       if (isBalanceSufficient) {
         return totalCost.toString();
@@ -194,14 +234,11 @@ Vue.component('grantsCartEthereumZksync', {
     },
 
     // Returns true if user has enough balance within zkSync to avoid L1 deposit, false otherwise
-    hasEnoughBalance() {
-      // Get object where keys are token symbols and values are token balances
-      const zksyncBalances = this.user.zksyncState.committed.balances;
-      const zksyncTokens = Object.keys(zksyncBalances);
+    hasEnoughBalanceInZkSync() {
+      const zksyncBalances = this.user.zksyncState.committed.balances; // object, keys are token symbols, values are token balances as string
+      const requiredAmounts = {}; // keys are token symbols, values are required amounts as BigNumber
 
       // Get total amount needed for eack token by summing over donation inputs
-      const requiredAmounts = {}; // keys are token symbols, values are BigNumber
-
       this.donationInputs.forEach((donation) => {
         const tokenSymbol = donation.name;
         const amount = toBigNumber(donation.amount);

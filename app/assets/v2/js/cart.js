@@ -61,16 +61,6 @@ Vue.component('grants-cart', {
       zkSyncEstimatedGasCost: undefined,
       // Checkout, zkSync OLD
       ethersProvider: undefined,
-      signer: undefined, // signer from regular web3 wallet
-      showZkSyncModal: false,
-      zkSyncDepositTxHash: undefined,
-      zkSyncCheckoutStep1Status: 'not-started', // valid values: not-started, pending, complete
-      zkSyncCheckoutStep2Status: 'not-started', // valid values: not-started, pending, complete, not-applicable
-      zkSyncCheckoutStep3Status: 'not-started', // valid values: not-started, pending, complete
-      zkSyncWasInterrupted: undefined, // read from local storage, true if user closes window before deposit is complete
-      isZkSyncModalLoading: false, // modal requires async actions before loading, so show loading spinner to improve UX
-      selectedNetwork: undefined, // used to force computed properties to update when document.web3network changes
-      isZkSyncDown: false, // true if zkSync is having issues with their servers
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -796,9 +786,6 @@ Vue.component('grants-cart', {
 
           if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
             // User ETH balance is too small compared to selected donation amounts
-            this.zkSyncCheckoutStep1Status = 'not-started';
-            this.zkSyncCheckoutStep2Status = 'not-started';
-            this.showZkSyncModal = false;
             throw new Error('Insufficient ETH balance to complete checkout');
           }
           // ETH balance is sufficient, continue to next iteration since no approval check
@@ -821,9 +808,6 @@ Vue.component('grants-cart', {
 
         if (new BN(userTokenBalance, 10).lt(requiredAllowance)) {
           // Balance is too small, exit checkout flow
-          this.zkSyncCheckoutStep1Status = 'not-started';
-          this.zkSyncCheckoutStep2Status = 'not-started';
-          this.showZkSyncModal = false;
           throw new Error(`Insufficient ${tokenName} balance to complete checkout`, 'error');
         }
 
@@ -1268,10 +1252,6 @@ Vue.component('grants-cart', {
         const userAddress = (await web3.eth.getAccounts())[0];
         const result = await this.getInterruptStatus(userAddress);
 
-        this.zkSyncWasInterrupted = Boolean(result);
-        if (this.zkSyncWasInterrupted) {
-          this.zkSyncDepositTxHash = result;
-        }
       } catch (e) {
         this.handleError(e);
       }
@@ -1360,24 +1340,6 @@ Vue.component('grants-cart', {
       });
 
       return amount.add(fee.mul(String(numberOfFees)));
-    },
-
-    // ==================================== Main functionality =====================================
-
-    /**
-     * @notice Step 3, alternate: Used if zkSync checkout is interrupted
-     */
-    async resumeZkSyncDonation() {
-      // By this point, the deposit transaction hash will be known
-      this.zkSyncCheckoutStep3Status = 'pending';
-
-      // Check for updated transaction hash
-      this.zkSyncDepositTxHash = await this.getReplacedTx(this.zkSyncDepositTxHash);
-
-      // Get transaction receipt
-      let receipt = await this.ethersProvider.getTransactionReceipt(this.zkSyncDepositTxHash);
-
-      // TODO the rest / handle interrupts
     },
 
     // =============================================================================================
@@ -1529,37 +1491,6 @@ Vue.component('grants-cart', {
     CartData.setCart(grantData);
     this.grantData = grantData;
 
-    // Overwrite grantData if zksync-recovery page
-    if (window.location.pathname.includes('zksync-recovery')) {
-      window.addEventListener('dataWalletReady', async(e) => {
-        try {
-          // Connect wallet and setup zkSync
-          await needWalletConnection();
-          this.selectedNetwork = document.web3network;
-          this.userAddress = (await web3.eth.getAccounts())[0];
-          // await this.setupZkSync();
-
-          // Get list of grants with the expected validator comment
-          const response = await fetch('get-interrupted-contributions');
-          const incompleteContributions = await response.json();
-
-          // Convert into localStorage format
-          this.grantData = incompleteContributions.contributions.map((grant) => {
-            this.gitcoinFactorRaw = 100 * grant.amount_per_period_to_gitcoin / grant.amount_per_period;
-            return {
-              grant_admin_address: grant.admin_address,
-              grant_clr_prediction_curve: [],
-              grant_donation_amount: grant.amount_per_period,
-              grant_donation_currency: grant.token_symbol
-            };
-          });
-
-        } catch (e) {
-          this.handleError(e);
-        }
-      }, false);
-    }
-
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
 
@@ -1601,49 +1532,8 @@ Vue.component('grants-cart', {
     // Support responsive design
     window.addEventListener('resize', this.onResize);
 
-    // If user started deposit tx (final step of zkSync checkout), warn them before closing or
-    // reloading page. We do not save the signatures here -- we do that immediately after they
-    // are generated -- to increase reliability. This is because the beforeunload may sometimes
-    // be ignored by browsers, e.g. if users have not interacted with the page
-    window.addEventListener('beforeunload', (e) => {
-      if (
-        this.zkSyncCheckoutStep3Status === 'pending' &&
-        this.zkSyncCheckoutStep3Status !== 'complete'
-      ) {
-        // This shows a generic message staying "Leave site? Changes you made may not be saved". This
-        // cannot be changed, as "the ability to do this was removed in Chrome 51. It is widely
-        // considered a security issue, and most vendors have removed support."
-        // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    });
-
-
     // Show user cart now
-    // Check zkSync balance. Used to find which checkout option is cheaper
     this.isLoading = false;
-    window.addEventListener('dataWalletReady', async(e) => {
-      try {
-        await needWalletConnection();
-
-        // Force re-render so computed properties are updated (some are dependent on
-        // document.web3network, and Vue cannot watch document.web3network for an update)
-        this.selectedNetwork = document.web3network;
-
-        // Setup zkSync and check balances
-        this.userAddress = (await web3.eth.getAccounts())[0];
-
-        // See if user was previously interrupted during checkout
-        await this.checkInterruptStatus();
-        if (this.zkSyncWasInterrupted) {
-          this.showZkSyncModal = true;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-    }, false);
 
     const collections_response = await fetchData('/grants/v1/api/collections/');
 
