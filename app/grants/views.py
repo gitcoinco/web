@@ -1738,6 +1738,12 @@ def grant_new(request):
         twitter_handle_1 = request.POST.get('handle1', '')
         twitter_handle_2 = request.POST.get('handle2', '')
 
+        if twitter_handle_1 and not re.search(r'^@[a-zA-Z0-9_]{1,15}$', twitter_handle_1):
+            response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'
+
+        if twitter_handle_2 and not re.search(r'^@[a-zA-Z0-9_]{1,15}$', twitter_handle_2):
+            response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
+
 
         # TODO: REMOVE
         contract_version = request.POST.get('contract_version', '2')
