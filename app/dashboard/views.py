@@ -1292,7 +1292,6 @@ def bounty_mentor(request):
 
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-        print(sponsor)
         is_sponsor_member = profile.organizations_fk.filter(pk=sponsor.pk)
 
         if not is_sponsor_member:
