@@ -156,7 +156,7 @@
         $.get(url, function (response) {
           $('.infinite-container').find('.infinite-more-link').remove();
           $('.infinite-container').find('.loading').remove();
-          $('.infinite-container').append($(response).find('.infinite-container').html());
+          $('.infinite-container').html($(response).find('.infinite-container').html());
           $('.infinite-container').find('.loading').addClass('hidden');
         });
         e.preventDefault();
