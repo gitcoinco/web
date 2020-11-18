@@ -153,10 +153,12 @@ def marketplace(request):
     # For infinite scroll:
     page_size = 12
     page = int(request.GET.get('page', 1))
+    prev_page = page - 1
     next_page = page + 1
     start_index = (page-1) * page_size
     end_index = page * page_size
     suppress_more_link = is_last_page = False
+    is_first_page = page == 1
     try:
         next_first = listings[end_index]
     except IndexError:
@@ -174,9 +176,12 @@ def marketplace(request):
         'network': network,
         'total_count': total_count,
         'suppress_more_link': suppress_more_link,
+        'is_first_page': is_first_page,
         'is_last_page': is_last_page,
+        'prev_page': prev_page,
         'next_page': next_page,
-        'target': f'/kudos/marketplace?page={next_page}'
+        'prev_target': f'/kudos/marketplace?page={prev_page}',
+        'next_target': f'/kudos/marketplace?page={next_page}'
     }
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
