@@ -1344,10 +1344,8 @@ def grant_details(request, grant_id, grant_slug):
 
     if clr_round:
         is_clr_active = True
-        clr_round_num = clr_round.round_num
     else:
         is_clr_active = False
-        clr_round_num = 'LAST'
 
     is_clr_active = True if clr_round else False
     title = grant.title + " | Grants"
@@ -1377,7 +1375,7 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': is_clr_active,
-        'round_num': clr_round_num,
+        'round_num': grant.clr_round_num,
         'is_team_member': is_team_member,
         'is_owner': grant.admin_profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
         'voucher_fundings': voucher_fundings,
