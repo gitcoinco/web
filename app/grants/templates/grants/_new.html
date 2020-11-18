@@ -42,7 +42,7 @@
     <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-new-grant">
       <form action="" @submit="checkForm" v-cloak>
         <div class="container mt-3 mb-3  position-relative col-lg-6 mx-auto">
-          <img :src="grant_type_logo" v-if="grant_type_logo" style="max-width: 100%;">
+          <img :src="grant_type_logo" v-if="grant_type_logo" class="d-block m-auto mw-100">
 
           <div class="bg-white rounded">
             <div class="row p-4 p-md-5">
@@ -189,12 +189,10 @@
                     <input type="radio" name="grant_chain" id="eth_chain" value="eth" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
                   </label>
 
-                  {% if 'zcash_testers' in user_groups or is_staff %}
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
-                    <input type="radio" name="grant_chain" id="zcash_chain" value="zcash" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="20"> Zcash
-                  </label>
-                  {% endif %}
-                </div>
+                <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
+                  <input type="radio" name="grant_chain" id="zcash_chain" value="zcash" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="20"> Zcash
+                </label>
+              </div>
 
                 <div class="text-danger" v-if="errors.chainId">
                   [[errors.chainId]]

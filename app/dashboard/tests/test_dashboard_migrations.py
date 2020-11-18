@@ -201,7 +201,7 @@ def cancelled_subscription_with_activity(cancelled_subscription, profile):
     activity = Activity(**kwargs)
     activity.save(update=False)
     return cancelled_subscription
-    
+
 def test_new_grant(new_grant):
     activities = Activity.objects.filter(grant = new_grant)
     assert len(activities) == 0
@@ -212,22 +212,6 @@ def test_new_grant(new_grant):
     assert activity.activity_type == 'new_grant'
     assert activity.created_on == new_grant.created_on
     assert activity.profile == new_grant.admin_profile
-
-def test_update_grant(updated_grant):
-    activities = Activity.objects.filter(grant = updated_grant)
-    assert len(activities) == 0
-    grants.generate_activities(None, None)
-    activities = Activity.objects.filter(grant = updated_grant)
-    assert len(activities) == 2
-    assert 'update_grant' in [a.activity_type for a in activities]
-
-def test_killed_grant(killed_grant):
-    activities = Activity.objects.filter(grant = killed_grant)
-    assert len(activities) == 0
-    grants.generate_activities(None, None)
-    activities = Activity.objects.filter(grant = killed_grant)
-    assert len(activities) == 2 # impossible to know if/when a killed grant was updated
-    assert 'killed_grant' in [a.activity_type for a in activities]
 
 def test_new_contribution(new_contribution):
     activities = Activity.objects.filter(subscription = new_contribution)

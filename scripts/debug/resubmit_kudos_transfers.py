@@ -1,13 +1,13 @@
 import time
 
 from django.conf import settings
+from django.db.models import Q
 
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from dashboard.utils import has_tx_mined
+from kudos.models import KudosTransfer
 from kudos.utils import kudos_abi
 from web3 import Web3
-from kudos.models import KudosTransfer
 
 #setup
 network = 'mainnet'
@@ -20,11 +20,13 @@ nonce = w3.eth.getTransactionCount(kudos_owner_address)
 min_pk = 1684
 max_pk = 1740
 TIME_SLEEP = 1
-username = 'jdorfman'
+username = 'sgcrypto1983'
 gas_clear_within_mins = 1
+gas_multiplier = 1.9
 
 kts = KudosTransfer.objects.filter(pk__gte=min_pk, pk__lte=max_pk)
-kts = KudosTransfer.objects.filter(username=username, tx_status='dropped')
+kts = KudosTransfer.objects.filter(username=username).filter(Q(tx_status='dropped') | Q(txid='pending_celery'))
+print(kts.count())
 
 for kt in kts:
 
@@ -36,7 +38,7 @@ for kt in kts:
     tx = contract.functions.clone(address, token_id, 1).buildTransaction({
         'nonce': nonce,
         'gas': 500000,
-        'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_clear_within_mins) * 10**9),
+        'gasPrice': int(gas_multiplier * float(recommend_min_gas_price_to_confirm_in_time(gas_clear_within_mins)) * 10**9),
         'value': int(price_finney / 1000.0 * 10**18),
     })
 

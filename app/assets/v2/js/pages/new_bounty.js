@@ -2,12 +2,7 @@ let appFormBounty;
 
 window.addEventListener('dataWalletReady', function(e) {
   appFormBounty.network = networkName;
-  if (appFormBounty.chainId == 0) {
-    appFormBounty.form.funderAddress = '';
-  } else {
-    appFormBounty.form.funderAddress = selectedAccount;
-  }
-  
+  appFormBounty.form.funderAddress = selectedAccount;
 }, false);
 
 Vue.component('v-select', VueSelect.VueSelect);
@@ -144,25 +139,26 @@ Vue.mixin({
 
       vm.form.keywords.push(item);
     },
+    validateBtc: function() {
+      let vm = this;
+
+      const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
+      const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
+      const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
+      const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
+
+      if (valid_legacy || valid_segwit) {
+        return true;
+      }
+
+      return false;
+    },
     checkForm: async function(e) {
       let vm = this;
 
       vm.submitted = true;
       vm.errors = {};
 
-      // validate BTC address
-      if (appFormBounty.chainId == 0) {
-        const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
-        const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
-        const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
-        const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
-
-        if (valid_legacy == true || valid_segwit == true) {
-          // valid
-        } else {
-          vm.$set(vm.errors, 'funderAddress', 'Please enter a valid BTC address');
-        }
-      }
 
       if (!vm.form.keywords.length) {
         vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
@@ -181,6 +177,10 @@ Vue.mixin({
       }
       if (!vm.form.funderAddress) {
         vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
+      }
+      // validate BTC address
+      if (vm.chainId == 0 && !vm.validateBtc()) {
+        vm.$set(vm.errors, 'funderAddress', 'Please enter a valid BTC address');
       }
       if (!vm.form.project_type) {
         vm.$set(vm.errors, 'project_type', 'Select the project type');
