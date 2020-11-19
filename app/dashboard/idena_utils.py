@@ -1,5 +1,4 @@
 from datetime import datetime
-from pytz import UTC
 from uuid import uuid4
 
 from django.conf import settings
@@ -7,11 +6,10 @@ from django.urls import reverse
 from django.utils import timezone
 
 import requests
-
-from eth_account import Account
-from eth_utils import keccak, decode_hex
-
 from app.services import RedisService
+from eth_account import Account
+from eth_utils import decode_hex, keccak
+from pytz import UTC
 
 IDENA_TOKEN_KEY_PREFIX = 'idena_token'
 IDENA_NONCE_KEY_PREFIX = 'idena_nonce'

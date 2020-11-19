@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import logging
 from datetime import timedelta
 from decimal import Decimal
@@ -35,7 +36,6 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
-import json
 import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField

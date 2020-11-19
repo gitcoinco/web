@@ -22,11 +22,11 @@ import base64
 import collections
 import json
 import logging
-from logging import error
 import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
+from logging import error
 from urllib.parse import urlsplit
 
 from django.conf import settings

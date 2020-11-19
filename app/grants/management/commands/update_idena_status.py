@@ -1,9 +1,8 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from requests.exceptions import RequestException
-
 from dashboard.models import Profile
+from requests.exceptions import RequestException
 
 
 class Command(BaseCommand):
@@ -22,5 +21,3 @@ class Command(BaseCommand):
                 print(f'{index + 1}/{total_count} -> Updating {profile.handle}: {prev} -> {profile.idena_status}')
             except RequestException as ex:
                 print(f'{index + 1}/{total_count} -> Error getting {profile.handle}: {ex}')
-                
-

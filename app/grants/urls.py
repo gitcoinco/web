@@ -24,11 +24,11 @@ from grants.views import (
     contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
     contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
     flag, get_collection, get_collections_list, get_grant_payload, get_grants, get_interrupted_contributions,
-    get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_edit, grant_fund, grant_new, grant_new_whitelabel,
-    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info,
-    grants_stats_view, grants_zksync_recovery_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
-    remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
-    zksync_get_interrupt_status, zksync_set_interrupt_status,
+    get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_edit, grant_fund,
+    grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
+    grants_cart_view, grants_info, grants_stats_view, grants_zksync_recovery_view, invoice, leaderboard,
+    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
+    toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
 
 app_name = 'grants'

@@ -33,7 +33,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.exceptions import PermissionDenied, ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q, Sum
@@ -75,7 +75,7 @@ from chat.tasks import (
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
-    idena_callback_url, IdenaNonce, signature_address, next_validation_time, get_handle_by_idena_token
+    IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
@@ -84,7 +84,7 @@ from dashboard.utils import (
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from eth_utils import to_checksum_address, to_normalized_address, is_address, is_same_address
+from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
