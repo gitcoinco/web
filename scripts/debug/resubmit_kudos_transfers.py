@@ -26,7 +26,6 @@ for kt in kts:
     if not kt.kudos_token_cloned_from.is_owned_by_gitcoin:
         print(f'{kt.id} => not owned by gitcoin')
         continue
-    print('made it')
 
     network = kt.network
     if network == 'mainnet':
@@ -46,21 +45,25 @@ for kt in kts:
     address = kt.receive_address
     price_finney = kt.kudos_token_cloned_from.price_finney
 
-    contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
-    tx = contract.functions.clone(address, token_id, 1).buildTransaction({
-        'nonce': nonce,
-        'gas': 500000,
-        'gasPrice': int(gas_multiplier * float(recommend_min_gas_price_to_confirm_in_time(gas_clear_within_mins)) * 10**9),
-        'value': int(price_finney / 1000.0 * 10**18),
-    })
-
-    signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
-
     try:
+
+        contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        gasPrice = int(gas_multiplier * float(recommend_min_gas_price_to_confirm_in_time(gas_clear_within_mins)) * 10**9)
+        if network == 'xdai':
+            gasPrice = 1 * 10**9
+        tx = contract.functions.clone(address, token_id, 1).buildTransaction({
+            'nonce': nonce,
+            'gas': 500000,
+            'gasPrice': gasPrice,
+            'value': int(price_finney / 1000.0 * 10**18),
+        })
+
+        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
         txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
         nonce += 1
-        print(f'sent tx {nonce}')
+        print(f'sent tx nonce:{nonce} for kt:{kt.id} on {network}')
         kt.txid = txid
+        kt.receive_txid = txid
         kt.tx_status = 'pending'
         kt.network = network
         kt.save()
