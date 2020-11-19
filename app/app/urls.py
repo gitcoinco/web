@@ -593,11 +593,6 @@ urlpatterns = [
         retail.emails.featured_funded_bounty,
         name='admin_featured_funded_bounty'
     ),
-    path(
-        '_administration/email/subscription_terminated',
-        retail.emails.subscription_terminated,
-        name='admin_subscription_terminated'
-    ),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(

@@ -50,9 +50,6 @@ class Command(BaseCommand):
             subscription.active = False
             subscription.contributor_address = contributor_address
             subscription.amount_per_period = amount
-            subscription.real_period_seconds = 0
-            subscription.frequency = 1
-            subscription.frequency_unit = 'days'
             subscription.token_address = token_addr
             subscription.token_symbol = token_symbol
             subscription.gas_price = 1

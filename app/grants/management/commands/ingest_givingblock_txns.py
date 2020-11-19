@@ -52,9 +52,6 @@ class Command(BaseCommand):
                     subscription.error = True
                     subscription.contributor_address = '/NA'
                     subscription.amount_per_period = amount
-                    subscription.real_period_seconds = 2592000
-                    subscription.frequency = 30
-                    subscription.frequency_unit = 'N/A'
                     subscription.token_address = '0x0'
                     subscription.token_symbol = currency
                     subscription.gas_price = 0

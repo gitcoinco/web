@@ -262,7 +262,6 @@ Vue.component('grants-cart', {
           grant_donation_currency: token,
           grant_donation_num_rounds: 1,
           grant_id: '86',
-          grant_image_css: '',
           grant_logo: '',
           grant_slug: 'gitcoin-sustainability-fund',
           grant_title: 'Gitcoin Grants Round 7+ Development Fund',
@@ -1182,7 +1181,6 @@ Vue.component('grants-cart', {
         contributor_address: userAddress,
         csrfmiddlewaretoken,
         frequency_count: 1,
-        frequency_unit: 'rounds',
         gas_price: 0,
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,
@@ -1190,7 +1188,6 @@ Vue.component('grants-cart', {
         match_direction: '+',
         network: document.web3network,
         num_periods: 1,
-        real_period_seconds: 0,
         recurring_or_not: 'once',
         signature: 'onetime',
         split_tx_id: txHash, // this txhash is our bulk donation hash

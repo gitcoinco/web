@@ -157,14 +157,6 @@ def render_grant_cancellation_email(grant):
     return response_html, response_txt, subject
 
 
-def render_subscription_terminated_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
-    response_html = premailer_transform(render_to_string("emails/grants/subscription_terminated.html", params))
-    response_txt = render_to_string("emails/grants/subscription_terminated.txt", params)
-    subject = _("Your subscription on Gitcoin Grants has been cancelled by the Grant Creator")
-    return response_html, response_txt, subject
-
-
 def render_successful_contribution_email(grant, subscription, contribution):
     params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
@@ -201,14 +193,6 @@ def successful_contribution(request):
 def pending_contribution(request):
     contribution = Contribution.objects.filter(validator_comment__contains="User may not be aware so send them email reminders").first()
     response_html, __, __ = render_pending_contribution_email(contribution)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def subscription_terminated(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_subscription_terminated_email(grant, subscription)
     return HttpResponse(response_html)
 
 

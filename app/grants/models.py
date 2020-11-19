@@ -322,25 +322,6 @@ class Grant(SuperModel):
         default='',
         help_text=_('The token symbol to be used with the Grant.'),
     )
-    # TODO-GRANTS: remove
-    contract_address = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The contract address of the Grant.'),
-    )
-    # TODO-GRANTS: remove
-    deploy_tx_id = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction id for contract deployment.'),
-    )
-    # TODO-GRANTS: remove
-    cancel_tx_id = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction id for endContract.'),
-        blank=True,
-    )
     contract_version = models.DecimalField(
         default=0,
         decimal_places=0,
@@ -376,7 +357,6 @@ class Grant(SuperModel):
         related_name='grant_teams',
         help_text=_('The team members contributing to this Grant.'),
     )
-    image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
     amount_received_with_phantom_funds = models.DecimalField(
         default=0,
         decimal_places=2,
@@ -557,13 +537,6 @@ class Grant(SuperModel):
             return_me.append([grant, ele[1]])
         return return_me
 
-
-    @property
-    def configured_to_receieve_funding(self):
-        if self.contract_version == 2:
-            return True
-        return self.contract_address != '0x0'
-
     @property
     def clr_match_estimate_this_round(self):
         try:
@@ -699,13 +672,6 @@ class Grant(SuperModel):
     def get_absolute_url(self):
         return self.url
 
-    @property
-    def contract(self):
-        """Return grants contract."""
-        from dashboard.utils import get_web3
-        web3 = get_web3(self.network)
-        grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
-        return grant_contract
 
     def cart_payload(self, build_absolute_uri):
         return {
@@ -714,13 +680,11 @@ class Grant(SuperModel):
             'grant_url': self.url,
             'grant_title': self.title,
             'grant_contract_version': self.contract_version,
-            'grant_contract_address': self.contract_address,
             'grant_token_symbol': self.token_symbol,
             'grant_admin_address': self.admin_address,
             'grant_token_address': self.token_address,
             'grant_logo': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
             'grant_clr_prediction_curve': self.clr_prediction_curve,
-            'grant_image_css': self.image_css,
             'is_clr_eligible': self.is_clr_eligible,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
@@ -766,12 +730,10 @@ class Grant(SuperModel):
                 'slug': self.slug,
                 'url': self.url,
                 'contract_version': self.contract_version,
-                'contract_address': self.contract_address,
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
                 'zcash_payout_address': self.zcash_payout_address,
                 'token_address': self.token_address,
-                'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
                 'team_members': json.loads(team_members),
@@ -841,12 +803,6 @@ class Subscription(SuperModel):
         help_text=_('The contributor\'s Subscription hash.'),
         blank=True,
     )
-    contributor_signature = models.CharField(
-        default='',
-        max_length=255,
-        help_text=_('The contributor\'s signature.'),
-        blank=True,
-        )
     contributor_address = models.CharField(
         default='',
         max_length=255,
@@ -857,25 +813,6 @@ class Subscription(SuperModel):
         decimal_places=18,
         max_digits=64,
         help_text=_('The promised contribution amount per period.'),
-    )
-    real_period_seconds = models.DecimalField(
-        default=2592000,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The real payout frequency of the Subscription in seconds.'),
-    )
-    # TODO: REMOVE
-    frequency_unit = models.CharField(
-        max_length=255,
-        default='',
-        help_text=_('The text version of frequency units e.g. days, months'),
-    )
-    # TODO: REMOVE
-    frequency = models.DecimalField(
-        default=0,
-        decimal_places=0,
-        max_digits=50,
-        help_text=_('The real payout frequency of the Subscription in seconds.'),
     )
     token_address = models.CharField(
         max_length=255,
@@ -898,18 +835,6 @@ class Subscription(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction id for subscription approve().'),
-    )
-    # TODO: REMOVE
-    end_approve_tx_id = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction id for subscription approve().'),
-    )
-    # TODO: REMOVE
-    cancel_tx_id = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction id for cancelSubscription.'),
     )
     # TODO: REMOVE
     num_tx_approved = models.DecimalField(
@@ -943,16 +868,6 @@ class Subscription(SuperModel):
         on_delete=models.CASCADE,
         null=True,
         help_text=_('The Subscription contributor\'s Profile.'),
-    )
-    # TODO: REMOVE
-    last_contribution_date = models.DateTimeField(
-        help_text=_('The last contribution date'),
-        default=timezone.datetime(1990, 1, 1),
-    )
-    # TODO: REMOVE
-    next_contribution_date = models.DateTimeField(
-        help_text=_('The next contribution date'),
-        default=timezone.datetime(1990, 1, 1),
     )
     amount_per_period_usdt = models.DecimalField(
         default=0,
@@ -1001,200 +916,6 @@ class Subscription(SuperModel):
 
         return f"id: {self.pk}; {round(self.amount_per_period,1)} {self.token_symbol} (${round(self.amount_per_period_usdt)}) {int(self.num_tx_approved)} times, created {naturaltime(self.created_on)} by {self.contributor_profile}"
 
-    def get_nonce(self, address):
-        return self.grant.contract.functions.extraNonce(address).call() + 1
-
-    def get_debug_info(self):
-        """Return grants contract."""
-        from dashboard.utils import get_web3
-        from dashboard.abi import erc20_abi
-        from dashboard.tokens import addr_to_token
-        try:
-            web3 = get_web3(self.network)
-            if not self.token_address:
-                return "This subscription has no token_address"
-            token_contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=erc20_abi)
-            balance = token_contract.functions.balanceOf(Web3.toChecksumAddress(self.contributor_address)).call()
-            allowance = token_contract.functions.allowance(Web3.toChecksumAddress(self.contributor_address), Web3.toChecksumAddress(self.grant.contract_address)).call()
-            gasPrice = self.gas_price
-            is_active = self.get_is_active_from_web3()
-            token = addr_to_token(self.token_address, self.network)
-            next_valid_timestamp = self.get_next_valid_timestamp()
-            decimals = token.get('decimals', 0)
-            balance = balance / 10 ** decimals
-            allowance = allowance / 10 ** decimals
-            error_reason = "unknown"
-            if not is_active:
-                error_reason = 'not_active'
-            if timezone.now().timestamp() < next_valid_timestamp:
-                error_reason = 'before_next_valid_timestamp'
-            if (float(balance) + float(gasPrice)) < float(self.amount_per_period):
-                error_reason = "insufficient_balance"
-            if allowance < self.amount_per_period:
-                error_reason = "insufficient_allowance"
-
-            debug_info = f"""
-error_reason: {error_reason}
-==============================
-is_active: {is_active}
-decimals: {decimals}
-balance: {balance}
-allowance: {allowance}
-amount_per_period: {self.amount_per_period}
-next_valid_timestamp: {next_valid_timestamp}
-"""
-        except Exception as e:
-            return str(e)
-        return debug_info
-
-    def get_next_valid_timestamp(self):
-        _hash = self.get_hash_from_web3()
-        return self.grant.contract.functions.nextValidTimestamp(_hash).call()
-
-    def get_is_ready_to_be_processed_from_db(self):
-        """Return true if subscription is ready to be processed according to the DB."""
-        if not self.subscription_contribution.exists():
-            return True
-        return self.next_contribution_date < timezone.now() and self.num_tx_processed < self.num_tx_approved
-
-    def get_are_we_past_next_valid_timestamp(self):
-        return timezone.now().timestamp() > self.get_next_valid_timestamp()
-
-    def get_is_subscription_ready_from_web3(self):
-        """Return true if subscription is ready to be processed according to web3."""
-        args = self.get_subscription_hash_arguments()
-        return self.grant.contract.functions.isSubscriptionReady(
-            args['from'],
-            args['to'],
-            args['tokenAddress'],
-            args['tokenAmount'],
-            args['periodSeconds'],
-            args['gasPrice'],
-            args['nonce'],
-            args['signature'],
-        ).call()
-
-    def get_check_success_web3(self):
-        """Check the return value of the previous function. Returns true if the previous function."""
-        return self.grant.contract.functions.checkSuccess().call()
-
-    def _do_helper_via_web3(self, fn, minutes_to_confirm_within=1):
-        """Call the specified function fn"""
-        from dashboard.utils import get_web3
-        args = self.get_subscription_hash_arguments()
-        tx = fn(
-            args['from'],
-            args['to'],
-            args['tokenAddress'],
-            args['tokenAmount'],
-            args['periodSeconds'],
-            args['gasPrice'],
-            args['nonce'],
-            args['signature'],
-        ).buildTransaction(
-            self.helper_tx_dict(minutes_to_confirm_within)
-        )
-        web3 = get_web3(self.grant.network)
-        signed_txn = web3.eth.account.signTransaction(tx, private_key=settings.GRANTS_PRIVATE_KEY)
-        return web3.eth.sendRawTransaction(signed_txn.rawTransaction).hex()
-
-    def do_cancel_subscription_via_web3(self, minutes_to_confirm_within=1):
-        """.Cancels the subscripion on the blockchain"""
-        return self._do_helper_via_web3(
-            self.grant.contract.functions.cancelSubscription,
-            minutes_to_confirm_within=minutes_to_confirm_within
-        )
-
-    def do_execute_subscription_via_web3(self, minutes_to_confirm_within=1):
-        """.Executes the subscription on the blockchain"""
-        return self._do_helper_via_web3(
-            self.grant.contract.functions.executeSubscription,
-            minutes_to_confirm_within=minutes_to_confirm_within
-        )
-
-    def helper_tx_dict(self, minutes_to_confirm_within=1):
-        """returns a dict like this: {'to': '0xd3cda913deb6f67967b99d67acdfa1712c293601', 'from': web3.eth.coinbase, 'value': 12345}"""
-        from dashboard.utils import get_nonce
-        return {
-            'from': settings.GRANTS_OWNER_ACCOUNT,
-            'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT, True),
-            'value': 0,
-            'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
-            'gas': 204066,
-        }
-
-    def get_is_active_from_web3(self):
-        """Return true if subscription is active according to web3."""
-        _hash = self.get_hash_from_web3()
-        return self.grant.contract.functions.isSubscriptionActive(_hash, 10).call()
-
-    def get_subscription_signer_from_web3(self):
-        """Return subscription signer."""
-        _hash = self.get_hash_from_web3()
-        return self.grant.contract.functions.getSubscriptionSigner(_hash, self.contributor_signature).call()
-
-    def get_subscription_hash_arguments(self):
-        """Get the grant subscription hash from web3.
-
-        Attributes:
-            from (str): Subscription.contributor_address
-            to (str): Grant.admin_address
-            tokenAddress (str): Subscription.token_address
-            tokenAmount (float): Subscription.amount_per_period
-            periodSeconds (int): real_period_seconds in the Subscription model
-            gasPrice (float): Subscription.gas_price
-            nonce (int): The nonce is stored in the Contribution model. its created / managed by sync_geth
-            signature (str): Subscription.contributor_signature
-
-        Returns:
-            str: The Subscription hash.
-
-        """
-        from dashboard.tokens import addr_to_token
-
-        subs = self
-        grant = subs.grant
-
-        _from = subs.contributor_address
-        to = grant.admin_address
-        if grant.token_address != '0x0000000000000000000000000000000000000000':
-            tokenAddress = grant.token_address
-        else:
-            tokenAddress = subs.token_address
-
-        tokenAmount = subs.amount_per_period
-        periodSeconds = subs.real_period_seconds
-        gasPrice = subs.gas_price
-        nonce = subs.get_nonce(_from)
-        signature = subs.contributor_signature
-
-        # TODO - figure out the number of decimals
-        token = addr_to_token(tokenAddress, subs.grant.network)
-        decimals = token.get('decimals', 0)
-
-        return {
-            'from': Web3.toChecksumAddress(_from),
-            'to': Web3.toChecksumAddress(to),
-            'tokenAddress': Web3.toChecksumAddress(tokenAddress),
-            'tokenAmount': int(tokenAmount * 10**decimals),
-            'periodSeconds': int(periodSeconds),
-            'gasPrice': int(gasPrice),
-            'nonce': int(nonce),
-            'signature': signature,
-        }
-
-    def get_hash_from_web3(self):
-        """Returns the grants subscription hash (has to get it from web3)."""
-        args = self.get_subscription_hash_arguments()
-        return self.grant.contract.functions.getSubscriptionHash(
-            Web3.toChecksumAddress(args['from']),
-            Web3.toChecksumAddress(args['to']),
-            Web3.toChecksumAddress(args['tokenAddress']),
-            args['tokenAmount'],
-            args['periodSeconds'],
-            args['gasPrice'],
-            args['nonce'],
-            ).call()
 
     def get_converted_amount(self, ignore_gitcoin_fee=False, only_gitcoin_fee=False):
         if ignore_gitcoin_fee:
@@ -1231,14 +952,7 @@ next_valid_timestamp: {next_valid_timestamp}
     def get_converted_monthly_amount(self, ignore_gitcoin_fee=False):
         converted_amount = self.get_converted_amount(ignore_gitcoin_fee=ignore_gitcoin_fee) or 0
 
-        total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
-
-        if total_sub_seconds < 2592000:
-            result = Decimal(converted_amount * Decimal(self.num_tx_approved))
-        elif total_sub_seconds >= 2592000:
-            result = Decimal(converted_amount * (Decimal(2592000) / Decimal(self.real_period_seconds)))
-
-        return result
+        return Decimal(converted_amount)
 
     def save_split_tx_to_contribution(self):
         sc = self.subscription_contribution.first()
@@ -1248,8 +962,6 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
-        self.last_contribution_date = timezone.now()
-        self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
         self.num_tx_processed += 1
         contribution_kwargs = {
             'tx_id': tx_id,
@@ -1288,10 +1000,6 @@ next_valid_timestamp: {next_valid_timestamp}
     def create_contribution(self, tx_id, is_successful_contribution=True):
         from marketing.mails import successful_contribution
         from grants.tasks import update_grant_metadata
-
-        now = timezone.now()
-        self.last_contribution_date = now
-        self.next_contribution_date = now
 
         self.num_tx_processed += 1
 
@@ -1836,8 +1544,6 @@ def presave_contrib(sender, instance, **kwargs):
         'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
         'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
         'created_on': ele.created_on.strftime('%Y-%m-%d'),
-        'frequency': int(sub.frequency),
-        'frequency_unit': sub.frequency_unit,
         'num_tx_approved': int(sub.num_tx_approved),
         'token_symbol': sub.token_symbol,
         'amount_per_period_usdt': float(sub.amount_per_period_usdt),

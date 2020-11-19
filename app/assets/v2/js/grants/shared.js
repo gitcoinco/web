@@ -57,38 +57,6 @@ var waitingStateActive = function() {
 
 };
 
-/**
- * Disables button and throws alert with message if logged in user match username
- * and a different metamask address.
- * @param {string} username
- * @param {string} address
- * @param {string} button
- * @param {string} message
- */
-const notifyOwnerAddressMismatch = (username, address, button, message) => {
-
-  if (!web3 || !web3.eth || !username || !document.contxt.github_handle || !address) {
-    return;
-  }
-
-  web3.eth.getAccounts((error, accounts) => {
-    if (
-      typeof accounts != 'undefined' &&
-      document.contxt && document.contxt.github_handle == username &&
-      accounts[0] && accounts[0].toLowerCase() != address.toLowerCase()
-    ) {
-      if ($(button).attr('disabled') != 'disabled') {
-        $(button).attr('disabled', 'disabled');
-        _alert({
-          message: message
-        }, 'error');
-      }
-    } else {
-      $(button).removeAttr('disabled');
-      $('.alert.error').remove();
-    }
-  });
-};
 
 const exceedFileSize = (file, size = 4000000) => {
   if (file.size > size)

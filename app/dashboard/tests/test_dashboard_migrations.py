@@ -130,9 +130,6 @@ def new_subscription(new_grant, profile):
         'active': False,
         'contributor_address': '0x8B04e71007A783B4965BaFE068EC062D935E93b5',
         'amount_per_period': 5,
-        'real_period_seconds': 2592000,
-        'frequency': 30,
-        'frequency_unit': 'days',
         'token_address': '0xFc1079D41D56D78e9FA2a857991F41D777104c74',
         'token_symbol': 'E18R',
         'gas_price': 10,
@@ -140,9 +137,7 @@ def new_subscription(new_grant, profile):
         'num_tx_approved': 12,
         'network': 'rinkeby',
         'contributor_profile': profile,
-        'grant': new_grant,
-        'last_contribution_date': datetime(2018, 1, 1, 15, 5, 25, tzinfo=UTC),
-        'next_contribution_date': datetime(2020, 1, 1, 15, 5, 25, tzinfo=UTC),
+        'grant': new_grant
     }
     return Subscription.objects.create(**kwargs)
 
@@ -181,26 +176,6 @@ def new_contribution_with_activity(new_contribution, profile):
     activity.save(update=False)
     return new_contribution
 
-@pytest.fixture
-def cancelled_subscription(new_subscription):
-    new_subscription.end_approve_tx_id = '0xa95d30415427f76c778207e789c78d436b5c4ca4339797cff52ed21de8419554'
-    new_subscription.cancel_tx_id = '0xa95d30415427f76c778207e789c78d436b5c4ca4339797cff52ed21de8419554'
-    new_subscription.active = False
-    new_subscription.modified_on = datetime(2018, 12, 31, 14, 22, 35, tzinfo=UTC)
-    new_subscription.save(update=False)
-    return new_subscription
-
-@pytest.fixture
-def cancelled_subscription_with_activity(cancelled_subscription, profile):
-    kwargs = {
-        'created_on': datetime(2018, 12, 31, 14, 22, 35, tzinfo=UTC),
-        'profile': profile,
-        'subscription': cancelled_subscription,
-        'activity_type': 'killed_grant_contribution',
-    }
-    activity = Activity(**kwargs)
-    activity.save(update=False)
-    return cancelled_subscription
 
 def test_new_grant(new_grant):
     activities = Activity.objects.filter(grant = new_grant)

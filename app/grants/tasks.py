@@ -137,9 +137,6 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.active = False
         subscription.contributor_address = package.get('contributor_address', '')
         subscription.amount_per_period = package.get('amount_per_period', 0)
-        subscription.real_period_seconds = package.get('real_period_seconds', 2592000)
-        subscription.frequency = package.get('frequency', 30)
-        subscription.frequency_unit = package.get('frequency_unit', 'days')
         subscription.token_address = package.get('token_address', '')
         subscription.token_symbol = package.get('token_symbol', '')
         subscription.gas_price = (float(subscription.amount_per_period) * (fee_pct/100))

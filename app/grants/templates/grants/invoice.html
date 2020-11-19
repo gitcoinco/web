@@ -164,15 +164,6 @@
           </td>
         </tr>
 
-        <tr class="details">
-          <td>
-            {% trans "Directly to counterparties via Ethereum Blockchain" %}
-          </td>
-
-          <td>
-            {{subscription.grant.contract_address}}
-          </td>
-        </tr>
 
         <tr class="heading">
           <td>
@@ -187,7 +178,6 @@
           <tr class="item">
             <td>
               {% trans "Contribution from " %}{{subscription.contributor_profile.handle}} {{subscription.contributor_address}}<br>
-              {{subscription.num_tx_approved|floatformat:"0" }} {% trans "period of " %} {{subscription.frequency}} {{subscription.frequency_unit}} ({{subscription.subscription_contribution.count}} / {{subscription.num_tx_approved|floatformat:"0" }})
             </td>
 
             <td>

@@ -33,9 +33,6 @@ const init = () => {
 
   addGrantLogo();
 
-  $('.js-select2, #frequency_unit').each(function() {
-    $(this).select2();
-  });
 
   jQuery.validator.setDefaults({
     ignore: ":hidden, [contenteditable='true']:not([name])"
@@ -117,28 +114,6 @@ const init = () => {
         $('#network').val(document.web3network);
       }
 
-      // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
-      let args;
-
-      if ($('#contract_version').val() == 1) {
-        args = [
-          // admin_address
-          web3.utils.toChecksumAddress(data.admin_address),
-          // required token
-          web3.utils.toChecksumAddress(data.denomination),
-          // required tokenAmount
-          web3.utils.toTwosComplement(0),
-          // data.frequency
-          web3.utils.toTwosComplement(0),
-          // data.gas_price
-          web3.utils.toTwosComplement(0),
-          // contract version
-          web3.utils.toTwosComplement(1),
-          // trusted relayer
-          web3.utils.toChecksumAddress(data.trusted_relayer)
-        ];
-      }
-
       let formData = new FormData();
       let file = $('#img-project')[0].files[0];
 
@@ -170,7 +145,6 @@ const init = () => {
       formData.append('team_members[]', $('#input-team_members').val());
       formData.append('categories[]', $('#input-categories').val());
       formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
-      formData.append('contract_address', '0x0');
       formData.append('transaction_hash', '0x0');
 
       saveGrant(formData, true);

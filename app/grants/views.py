@@ -75,7 +75,7 @@ from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
-    subscription_terminated, support_cancellation, thank_you_for_supporting,
+    support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
@@ -1668,7 +1668,6 @@ def grant_new(request):
             'zcash_payout_address': zcash_payout_address,
             'token_symbol': token_symbol,
             'contract_version': contract_version,
-            'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
             'network': network,
             'twitter_handle_1': twitter_handle_1,
             'twitter_handle_2': twitter_handle_2,
@@ -1761,15 +1760,6 @@ def grant_new(request):
         'title': _('New Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
-        # 'grant': {},
-        # 'keywords': get_keywords(),
-        # 'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        # 'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        # 'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        # 'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        # 'eth_usd_conv_rate': eth_usd_conv_rate(),
-        # 'conf_time_spread': conf_time_spread(),
-        # 'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': grant_types,
         'project_data': project
@@ -1831,13 +1821,6 @@ def grant_fund(request, grant_id, grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
-    if not grant.configured_to_receieve_funding:
-        messages.info(
-            request,
-            _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
-        )
-        logger.error(f"Grant {grant.pk} is not properly configured for funding.  Please set grant.contract_address on this grant")
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
         from grants.tasks import process_grant_contribution
@@ -1983,32 +1966,18 @@ def bulk_fund(request):
             })
             continue
 
-        if not grant.configured_to_receieve_funding:
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Fund - Grant Not Configured'),
-                'grant':grant_id,
-                'text': _('This Grant is not configured to accept funding at this time.'),
-                'subtext': _('Grant is not properly configured for funding.  Please set grant.contract_address on this grant, or contact founders@gitcoin.co if you believe this message is in error!'),
-                'success': False
-            })
-            continue
-
         try:
             from grants.tasks import process_grant_contribution
             payload = {
                 # Values that are constant for all donations
                 'contributor_address': request.POST.get('contributor_address'),
                 'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken'),
-                'frequency_count': request.POST.get('frequency_count'),
-                'frequency_unit': request.POST.get('frequency_unit'),
                 'gas_price': request.POST.get('gas_price'),
                 'gitcoin_donation_address': request.POST.get('gitcoin_donation_address'),
                 'hide_wallet_address': request.POST.get('hide_wallet_address'),
                 'match_direction': request.POST.get('match_direction'),
                 'network': request.POST.get('network'),
                 'num_periods': request.POST.get('num_periods'),
-                'real_period_seconds': request.POST.get('real_period_seconds'),
                 'recurring_or_not': request.POST.get('recurring_or_not'),
                 'signature': request.POST.get('signature'),
                 'split_tx_id': request.POST.get('split_tx_id'),
@@ -2019,7 +1988,6 @@ def bulk_fund(request):
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
                 'comment': request.POST.get('comment').split(',')[index],
                 'confirmed': request.POST.get('confirmed').split(',')[index],
-                'contract_address': request.POST.get('contract_address').split(',')[index],
                 'contract_version': request.POST.get('contract_version').split(',')[index],
                 'denomination': request.POST.get('denomination').split(',')[index],
                 'gitcoin-grant-input-amount': request.POST.get('gitcoin-grant-input-amount').split(',')[index],
@@ -2131,69 +2099,6 @@ def get_replaced_tx(request):
             'success': True,
             'tx_hash': tx_hash
         })
-
-
-@login_required
-def subscription_cancel(request, grant_id, grant_slug, subscription_id):
-    """Handle the cancellation of a grant subscription."""
-    subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
-    grant = getattr(subscription, 'grant', None)
-    now = datetime.datetime.now()
-    profile = get_profile(request)
-
-    if not subscription.active:
-        params = {
-            'active': 'grant_error',
-            'title': _('Grant Subscription Cancelled'),
-            'grant': grant
-        }
-
-        if grant.active:
-            params['text'] = _('This Grant subscription has already been cancelled.')
-        else:
-            params['text'] = _('This Subscription is already cancelled as the grant is not longer active.')
-
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    if request.method == 'POST' and (
-        profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
-    ):
-        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
-        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
-        subscription.active = False
-        subscription.save()
-        record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
-
-        value_usdt = subscription.get_converted_amount()
-        if value_usdt:
-            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
-
-        grant.save()
-        support_cancellation(grant, subscription)
-        messages.info(
-            request,
-            _('Your subscription has been canceled. We hope you continue to support other open source projects!')
-        )
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    params = {
-        'active': 'cancel_grant',
-        'title': _('Cancel Grant Subscription'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'subscription': subscription,
-        'grant': grant,
-        'now': now,
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-    }
-
-    return TemplateResponse(request, 'grants/cancel.html', params)
 
 
 def grants_cart_view(request):
@@ -2981,9 +2886,6 @@ def contribute_to_grants_v1(request):
             subscription.tenant = tenant
             # recurring payments set to none
             subscription.active = False
-            subscription.real_period_seconds = 0
-            subscription.frequency = 1
-            subscription.frequency_unit ='days'
             subscription.token_address = ''
             subscription.gas_price = 0
             subscription.new_approve_tx_id = ''

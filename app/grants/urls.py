@@ -27,8 +27,8 @@ from grants.views import (
     get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_edit, grant_fund,
     grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_info, grants_stats_view, grants_zksync_recovery_view, invoice, leaderboard,
-    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
-    toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
+    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, toggle_grant_favorite,
+    verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
 
 app_name = 'grants'
@@ -56,11 +56,6 @@ urlpatterns = [
     path('zksync-set-interrupt-status', zksync_set_interrupt_status, name='zksync_set_interrupt_status'),
     path('zksync-get-interrupt-status', zksync_get_interrupt_status, name='zksync_get_interrupt_status'),
     path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
-    path(
-        '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',
-        subscription_cancel,
-        name='subscription_cancel'
-    ),
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),

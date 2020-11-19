@@ -885,7 +885,7 @@ Vue.component('render-quill', {
     };
   },
   methods: {
-    transform: function(){
+    transform: function() {
       let vm = this;
 
       if (!vm.delta) {
@@ -906,5 +906,5 @@ Vue.component('render-quill', {
     delta: function() {
       return this.transform()
     }
-  },
+  }
 });

@@ -54,12 +54,3 @@ class Command(BaseCommand):
                     grant.save()
             except Exception as e:
                 print(e)
-
-            try:
-                if not grant.contract_owner_address:
-                    w3 = get_web3('mainnet')
-                    grant.contract_owner_address = w3.eth.getTransaction(grant.deploy_tx_id)['from']
-                    grant.save()
-
-            except Exception as e:
-                print(e)

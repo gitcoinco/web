@@ -196,24 +196,6 @@ $(document).ready(function() {
 
     editableFields.forEach(field => disableEdit(field));
   });
-
-  $('#cancel_grant').on('click', function(e) {
-    $('.modal-cancel-grants').on('click', function(e) {
-      $.ajax({
-        type: 'post',
-        url: '',
-        data: {
-          'grant_cancel_tx_id': '0x0'
-        },
-        success: function(json) {
-          window.location.reload(false);
-        },
-        error: function() {
-          _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
-        }
-      });
-    });
-  });
 });
 
 const makeEditable = (input) => {

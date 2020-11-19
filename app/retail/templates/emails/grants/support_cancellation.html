@@ -113,13 +113,7 @@
 </div>
 
 <br>
-<p>{% trans "You can see your cancellation transaction on etherscan" %}
-  {% if subscription.network == 'mainnet' %}
-    <a href="http://etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
-  {% else %}
-    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ subscription.cancel_tx_id }}">{% trans "here." %}</a>
-  {% endif %}
-</p>
+
 <p class="grant-link">
   <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
