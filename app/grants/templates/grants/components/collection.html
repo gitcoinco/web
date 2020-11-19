@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 <grant-collection inline-template :collection="collection" v-on:collection:show="showSingleCollection($event)">
-  <a @click="$emit('collection:show', collection.id)" v-if="collection">
+  <a @click="$emit('collection:show', collection.id)" v-if="collection" target="_blank  ">
     <template>
       <div class="collection-item">
         <div class="collection-item__img position-relative">

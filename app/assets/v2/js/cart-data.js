@@ -9,6 +9,7 @@ class CartData {
   }
 
   static cartContainsGrantWithId(grantId) {
+    grantId = String(grantId)
     const cart = this.loadCart();
     const idList = cart.map(grant => {
       return grant.grant_id;
@@ -82,8 +83,16 @@ class CartData {
     }
 
     grantData.uuid = get_UUID();
+    console.log(grantData.tenants, grantData.tenants.includes('ZCASH'));
+    if (grantData.tenants.includes('ZCASH')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.01;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ZEC';
+      }
 
-    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
+    } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;
       }
@@ -96,6 +105,7 @@ class CartData {
       }
       grantData.grant_donation_currency = 'ETH';
     }
+
 
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 0;
@@ -114,6 +124,8 @@ class CartData {
   }
 
   static removeIdFromCart(grantId) {
+    grantId = String(grantId)
+
     let cartList = this.loadCart();
 
     const newList = cartList.filter(grant => grant.grant_id !== grantId);

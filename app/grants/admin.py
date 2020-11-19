@@ -86,16 +86,17 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'migrated_to',
+        'migrated_to', 'region',
         'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
-        'amount_received', 'monthly_amount_subscribed',
+        'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
-        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history'
+        'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
+        'zcash_payout_address'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -281,10 +282,17 @@ class ContributionAdmin(GeneralAdmin):
     search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
     def txn_url(self, obj):
-        tx_id = obj.tx_id
-        if not tx_id:
-            tx_id = obj.split_tx_id
-        tx_url = 'https://etherscan.io/tx/' + tx_id
+
+        if obj.subscription.tenant == 'ZCASH':
+            tx_id = obj.tx_id
+            tx_url = 'https://sochain.com/tx/ZEC/' + tx_id
+
+        elif obj.subscription.tenant == 'ETH':
+            tx_id = obj.tx_id
+            if not tx_id:
+                tx_id = obj.split_tx_id
+            tx_url = 'https://etherscan.io/tx/' + tx_id
+
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
@@ -383,6 +391,14 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
 
+    def link(self, instance):
+        try:
+            url = f'/_administration/mesh?type=grant&year={instance.start_date.strftime("%Y")}&month={instance.start_date.strftime("%m")}&day={instance.start_date.strftime("%d")}&to_year={instance.end_date.strftime("%Y")}&to_month={instance.end_date.strftime("%m")}&to_day={instance.end_date.strftime("%d")}&submit=Go'
+            html = f"<a href={url}>mesh link</a>"
+
+            return mark_safe(html)
+        except:
+            return "N/A"
 
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']

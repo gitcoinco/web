@@ -161,6 +161,7 @@ def privacy_settings(request):
             profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.anonymize_gitcoin_grants_contributions = bool(request.POST.get('anonymize_gitcoin_grants_contributions', False))
             profile.pref_do_not_track = bool(request.POST.get('pref_do_not_track', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile.hide_wallet_address_anonymized = bool(request.POST.get('hide_wallet_address_anonymized', False))
@@ -476,6 +477,29 @@ def token_settings(request):
     return TemplateResponse(request, 'settings/tokens.html', context)
 
 
+def export_earnings_csv(earnings, export_type):
+    response = HttpResponse(content_type='text/csv')
+    name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
+    response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'txid', 'token_name', 'token_value', 'url'])
+    for earning in earnings:
+        writer.writerow([earning.pk,
+            earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
+            earning.from_profile.handle if earning.from_profile else '*',
+            earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
+            earning.to_profile.handle if earning.to_profile else '*',
+            earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
+            earning.source_type_human,
+            earning.value_usd,
+            earning.txid,
+            earning.token_name,
+            earning.token_value,
+            earning.url,
+            ])
+
+    return response
+
 def account_settings(request):
     """Display and save user's Account settings.
 
@@ -506,31 +530,10 @@ def account_settings(request):
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
 
-            response = HttpResponse(content_type='text/csv')
-            name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
-            response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
-
-            writer = csv.writer(response)
-            writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'url', 'txid', 'token_name', 'token_value'])
             profile = request.user.profile
             earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
             earnings = earnings.filter(network='mainnet').order_by('-created_on')
-            for earning in earnings:
-                writer.writerow([earning.pk,
-                    earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
-                    earning.from_profile.handle if earning.from_profile else '*',
-                    earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
-                    earning.to_profile.handle if earning.to_profile else '*',
-                    earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
-                    earning.source_type.model_class(),
-                    earning.value_usd,
-                    earning.txid,
-                    earning.token_name,
-                    earning.token_value,
-                    earning.url,
-                    ])
-
-            return response
+            return export_earnings_csv(earnings, export_type)
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')

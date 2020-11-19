@@ -119,6 +119,20 @@
 
     {% if tab == "transactions" %}
       <div id="section-nav-transactions">
+        {% if is_team_member %}
+        <div class="float-right">
+          {% if is_owner %}
+          <a href="/settings/account#financials">
+          Export Transactions (OWNER ONLY)
+          </a> |
+          {% endif %}
+
+          <a href="/grants/contributions/grant{{grant.pk}}.json">
+          All Contributor Addresses for this Grant (TEAM ONLY)
+        </div>
+        <br class="break">
+        {% endif %}
+
         {% if not subscriptions and not cancelled_subscriptions and not contributions %}
           <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
         {% else %}
@@ -319,7 +333,9 @@
     <div id="section-nav-contributors">
       <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributors %}
-          {% if contribution.subscription %}
+          {% if contribution.anonymous %}
+            {% trans  'Anonymous' as handle %}
+          {% elif contribution.subscription %}
             {% trans  contribution.subscription.contributor_profile.handle  as handle %}
           {% else %}
             {% trans  contribution.profile.handle  as handle %}

@@ -87,12 +87,12 @@ def quote():
     ]
     quote = random.choice(quotes)
     quote = f"{quote[0]}\n\n{quote[1]}"
-    pprint(f"Open Source Quote of the Day: {quote}")
+    pprint(f"Open Source Quote of the Week: {quote}")
     do_post(text)
 
 
 def welcome():
-    hours = 6 if not settings.DEBUG else 1000
+    hours = 24 if not settings.DEBUG else 1000
     limit = 30
     prompts = [
         'How is everyone doing today?',
@@ -261,20 +261,24 @@ def grants():
     pprint("")
     pprint("================================")
     pprint(f"== BEEP BOOP BOP ⚡️          ")
-    pprint(f"== Grants Round ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
+    for aclr in active_clr_rounds.order_by('start_date'):
+        pprint(f"== *{aclr.round_num}* Grants Round ({aclr.start_date.strftime('%m/%d/%Y')} ➡️ {aclr.end_date.strftime('%m/%d/%Y')})")
     pprint(f"== Day {day} Stats 💰🌲👇 ")
     pprint("================================")
     pprint("")
 
     must_be_successful = True
+    grants_pks = []
+    for aclr in active_clr_rounds:
+        grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
     total = contributions.count() + pfs.count()
 
-    current_carts = CartActivity.objects.filter(latest=True)
+    current_carts = CartActivity.objects.filter(latest=True, grant__in=grants_pks)
     num_carts = 0
     amount_in_carts = {}
     discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
@@ -407,9 +411,11 @@ def grants():
     pprint("=======================")
     pprint("")
     pprint("Misc Stats:")
+    idena_contributor_count = contributions.filter(subscription__contributor_profile__is_idena_verified=True).distinct('subscription__contributor_profile').count()
     brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
     sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
     contributor_count = contributions.distinct('subscription__contributor_profile').count()
+    idena_contributor_pct = round(100 * idena_contributor_count / contributor_count)
     sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
     brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
 
@@ -419,6 +425,7 @@ def grants():
     sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
 
     pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
+    pprint(f"- {idena_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({idena_contributor_pct}%) ")
     pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
     pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
 

@@ -46,6 +46,6 @@
     {% if tk.github_url %}
       <a href="{{tk.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
     {% endif %}
-    <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
+    <a title="{% trans 'tx in etherscan' %}" href="{{kt.receive_tx_blockexplorer_link}}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
   </div>
 {% endfor %}

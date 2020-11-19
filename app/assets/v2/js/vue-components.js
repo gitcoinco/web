@@ -106,15 +106,21 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength', 'sorter' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
-
-    $(vm.$el).select2({
+    let select2Options = {
       data: vm.options,
       placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
-      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1
+    };
+
+    if (vm.sorter) {
+      select2Options['sorter'] = vm.sorter;
+    }
+
+    $(vm.$el).select2(select2Options)
       .val(vm.value)
       .trigger('change')
       .on('change', function() {
@@ -154,7 +160,7 @@ Vue.component('loading-screen', {
 
 
 Vue.component('qrcode', {
-  props: ['string'],
+  props: [ 'string', 'size' ],
   template: '<div class="qrcode"></div>',
   data() {
     return {
@@ -166,7 +172,17 @@ Vue.component('qrcode', {
     let vm = this;
 
     vm.jqEl = $(this.$el);
-    vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+
+    if (vm.size) {
+      vm.qrcode = new QRCode(vm.jqEl[0], {
+        text: vm.string,
+        width: vm.size,
+        height: vm.size
+      });
+
+    } else {
+      vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+    }
     return vm.qrcode;
 
     // document.getElementsByClassName("qrcode")[0].innerHTML = qr.createImgTag();
@@ -624,7 +640,7 @@ Vue.component('project-card', {
     }
   },
   template: `<div class="card card-user shadow-sm border-0">
-    <div class="card card-project">     
+    <div class="card card-project">
       <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
       <img v-if="project.grant_obj" class="position-absolute" style="left: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
       <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
@@ -831,4 +847,74 @@ Vue.component('date-range-picker', {
     });
   }
 
+});
+
+
+Vue.component('copy-clipboard', {
+  props: ['string'],
+  template: '<button @click="copy()" type="button"><slot>Copy</slot></button>',
+  data() {
+    return {
+
+    };
+  },
+  methods: {
+    copy() {
+      if (!navigator.clipboard) {
+        _alert('Could not copy text to clipboard', 'error', 5000);
+      } else {
+        navigator.clipboard.writeText(this.string).then(function() {
+          _alert('Text copied to clipboard', 'success', 4000);
+        }, function(err) {
+          _alert('Could not copy text to clipboard', 'error', 5000);
+        });
+      }
+    }
+  }
+});
+
+
+Vue.component('render-quill', {
+  props: ['delta'],
+  template: '<div>{{renderHtml}}</div>',
+  data() {
+    return {
+      jqEl: null,
+      renderHtml: ''
+
+    };
+  },
+  methods: {
+    transform: function(){
+      let vm = this;
+      if (!vm.delta) {
+        return;
+      }
+
+      let html
+
+      vm.jqEl = this.$el;
+      var test = new Quill(vm.jqEl);
+      // console.log(vm.delta)
+      html = test.updateContents(JSON.parse(vm.delta))
+      // console.log(test.setContents(html))
+      // (new Quill(vm.jqEl)).setContents(vm.delta);
+      // return vm.jqEl.getElementsByClassName("ql-editor")[0].innerHTML;;
+
+    }
+
+  },
+  mounted() {
+    this.transform()
+
+
+  },
+  watch: {
+    delta: function(delta) {
+      let vm = this;
+      return this.transform()
+
+      // return vm.qrcode.makeCode(string);
+    }
+  },
 });

@@ -125,7 +125,7 @@
                     onclick="dataLayer.push({'event': 'login'});">Join Now</a>
                 {% else %}
                     {% if not is_registered %}
-                        <a class="btn btn-gc-blue col-12" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                        <button type="button" class="btn btn-gc-blue col-12" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</button>
                     {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
                         <a class="btn btn-gc-blue col-12"  href="{% url 'hackathon' hackathon.slug %}">See Prizes</a>
                     {% endif %}
@@ -405,7 +405,7 @@
                       < Previous
                     </a>
                     <div id="poll-empty"></div>
-                    <a id="poll-submit" class="btn btn-lg btn-gc-blue {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</a>
+                    <button id="poll-submit" class="btn btn-lg btn-gc-blue {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</button>
                     <a id="poll-next" class="btn btn-lg btn-gc-blue {% if poll.question_set.count <= 1%}d-none{% endif %}" href="#" role="button" data-slide="next">
                       Next >
                     </a>
@@ -475,12 +475,14 @@
           const data = {'name': name, 'referer': referer};
           const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
-          $('[data-registration]').addClass('disabled');
+          $('[data-registration]').attr('disabled', true);
           $.when(sendRegister).then((response) => {
             _alert('You have now registered for this hackathon.', 'success');
-            console.log(response)
             document.location.href = response.redirect;
-          });
+          })
+            .fail(function() {
+              $('[data-registration]').attr('disabled', false);
+            });
         } else {
           $('#questions-form').modal('show');
           $('#poll-submit').unbind('click')
@@ -493,12 +495,15 @@
             const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)};
             const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
-            $(this).addClass('disabled');
+            $('#poll-submit').attr('disabled', true);
             $.when(sendRegister).then((response) => {
               _alert('You have now registered for this hackathon.', 'success');
               console.log(response)
               document.location.href = response.redirect;
-            });
+            })
+              .fail(function() {
+                $('#poll-submit').attr('disabled', false);
+              });
           });
         }
       }
