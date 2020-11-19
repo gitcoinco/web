@@ -506,7 +506,7 @@ class Grant(SuperModel):
     def calc_clr_prediction_curve(self):
         # [amount_donated, match amount, bonus_from_match_amount ], etc..
         # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
-        _clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+        _clr_prediction_curve = []
         for insert_clr_calc in self.clr_calculations.filter(latest=True).order_by('-created_on'):
             insert_clr_calc = insert_clr_calc.clr_prediction_curve
             if not _clr_prediction_curve:
@@ -516,6 +516,10 @@ class Grant(SuperModel):
                     for i in [0,1,2,3,4,5]:
                         # add the 1 and 2 index of each clr prediction cuve
                         _clr_prediction_curve[i][j] += insert_clr_calc[i][j]
+
+        if not _clr_prediction_curve:
+            _clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+
         return _clr_prediction_curve
 
 
