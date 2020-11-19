@@ -147,7 +147,8 @@ Vue.mixin({
         'zcash_payout_address': form.zcash_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
-        'network': form.network
+        'network': form.network,
+        'region': form.region
         // logoPreview
         // admin_address
         // contract_owner_address
@@ -256,6 +257,18 @@ Vue.mixin({
   }
 });
 
+const grant_regions = [
+    { 'name': 'north_america', 'label': 'North America'},
+    { 'name': 'oceania', 'label': 'Oceania'},
+    { 'name': 'latin_america', 'label': 'Latin America'},
+    { 'name': 'europe', 'label': 'Europe'},
+    { 'name': 'africa', 'label': 'Africa'},
+    { 'name': 'middle_east', 'label': 'Middle East'},
+    { 'name': 'india', 'label': 'India'},
+    { 'name': 'east_asia', 'label': 'East Asia'},
+    { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+];
+
 if (document.getElementById('gc-new-grant')) {
   appFormBounty = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -267,6 +280,7 @@ if (document.getElementById('gc-new-grant')) {
       return {
         chainId: '',
         grant_types: document.grant_types,
+        grant_regions: grant_regions,
         usersOptions: [],
         network: 'mainnet',
         logo: null,
@@ -279,6 +293,7 @@ if (document.getElementById('gc-new-grant')) {
           reference_url: '',
           description_rich: '',
           team_members: [],
+          region: null,
           twitter_handle_1: '',
           twitter_handle_2: '',
           github_project_url: '',

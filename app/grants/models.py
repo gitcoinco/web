@@ -216,6 +216,18 @@ class Grant(SuperModel):
         ordering = ['-created_on']
 
 
+    REGIONS = [
+        ('north_america', 'North America'),
+        ('oceania', 'Oceania'),
+        ('latin_america', 'Latin America'),
+        ('europe', 'Europe'),
+        ('africa', 'Africa'),
+        ('middle_east', 'Middle East'),
+        ('india', 'India'),
+        ('east_asia', 'East Asia'),
+        ('southeast_asia', 'Southeast Asia')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
@@ -225,6 +237,13 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    region = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        choices=REGIONS,
+        help_text="region to which grant belongs to"
+    )
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
         null=True,
@@ -474,8 +493,10 @@ class Grant(SuperModel):
 
     @property
     def calc_clr_round_nums(self):
-        roudn_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
-        return ", ".join(roudn_nums)
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
+            return ", ".join(round_nums)
+        return ''
 
 
     @property
@@ -749,6 +770,7 @@ class Grant(SuperModel):
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
+                'region': self.region
             }
 
     def favorite(self, user):

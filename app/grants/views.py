@@ -1767,6 +1767,7 @@ def grant_new(request):
             'admin_profile': profile,
             'logo': logo,
             'hidden': False,
+            'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
         }
