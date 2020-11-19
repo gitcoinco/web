@@ -1294,7 +1294,6 @@ def bounty_mentor(request):
 
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-        print(sponsor)
         is_sponsor_member = profile.organizations_fk.filter(pk=sponsor.pk)
 
         if not is_sponsor_member:
@@ -3196,8 +3195,8 @@ def connect_google():
     import urllib.parse
 
     return OAuth2Session(
-        settings.GOOGLE_CLIENT_ID, 
-        scope=settings.GOOGLE_SCOPE, 
+        settings.GOOGLE_CLIENT_ID,
+        scope=settings.GOOGLE_SCOPE,
         redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_google)),
     )
 
@@ -3231,8 +3230,8 @@ def verify_user_google(request):
     try:
         google = connect_google()
         google.fetch_token(
-            settings.GOOGLE_TOKEN_URL, 
-            client_secret=settings.GOOGLE_CLIENT_SECRET, 
+            settings.GOOGLE_TOKEN_URL,
+            client_secret=settings.GOOGLE_CLIENT_SECRET,
             code=request.GET['code'],
         )
         r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
@@ -3246,7 +3245,7 @@ def verify_user_google(request):
             'ok': False,
             'message': 'Invalid code',
         })
-        
+
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
     profile.identity_data_google = r.json()
@@ -4666,6 +4665,13 @@ def hackathon_save_project(request):
     if video_url and video_provider:
         kwargs['extra']['video_provider'] = video_provider
         kwargs['extra']['video_url'] = video_url
+    elif video_url:
+        # fallback to remove later when JS spaghetti is fixed
+        kwargs['extra']['video_url'] = video_url
+        for p in ['loom', 'youtube', 'vimeo']:
+            if p in video_url:
+                kwargs['extra']['video_provider'] = p
+
 
     if categories:
         kwargs['categories'] = categories

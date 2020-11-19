@@ -1640,7 +1640,7 @@ class SendCryptoAsset(SuperModel):
         return self.get_natural_value()
 
     @property
-    def receive_tx_blockexplorer_link(self): 
+    def receive_tx_blockexplorer_link(self):
         if self.network == 'xdai':
             return f"https://explorer.anyblock.tools/ethereum/poa/xdai/transaction/{self.receive_txid}"
         if self.network == 'mainnet':
@@ -2932,7 +2932,7 @@ class Profile(SuperModel):
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
     is_google_verified=models.BooleanField(default=False)
-    identity_data_google = JSONField(default=dict)
+    identity_data_google = JSONField(blank=True, default=dict, null=True)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -5186,7 +5186,7 @@ class HackathonProject(SuperModel):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        help_text=_('Link to grant if project is converted to grant') 
+        help_text=_('Link to grant if project is converted to grant')
     )
 
     class Meta:

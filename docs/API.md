@@ -146,7 +146,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
 
 The grants endpoint provides a listing of grants and all it's information. There is one endpoint that access grants:
 
-- `https://gitcoin.co/api/v0.1/grants/` - Returns a list of grants
+- `https://gitcoin.co/api/v0.1/grants/?limit=10` - Returns a list of grants
 
 #### Fields
 
@@ -188,7 +188,7 @@ The grants endpoint provides a listing of grants and all it's information. There
 
 **Filters**
 
-You can filter the data returned from the API by providing these keys as URL parameters `title`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.
+You can filter the data returned from the API by providing these keys as URL parameters `title`, `admin_address`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.  You can also add a `limit` parameter to limit the results (typically for performance reasons).
 
 
 #### Example Request
