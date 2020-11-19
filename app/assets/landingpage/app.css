@@ -133,11 +133,10 @@ a.btn, button.btn {
   border: 0;
   outline: 0;
   font-size: 100%;
-  filter: brightness(95%);
   /* enhance to a 2col grid for icon */
 }
 a.btn:hover, button.btn:hover {
-  filter: brightness(100%);
+  filter: brightness(75%);
 }
 a.btn span, button.btn span {
   margin: auto;
@@ -147,7 +146,7 @@ a.btn.icon, button.btn.icon {
   grid-template-columns: auto auto;
 }
 a.btn.icon img, button.btn.icon img {
-  width: 27px;
+  width: 32px;
   height: 32px;
   margin: auto;
 }
@@ -1074,9 +1073,7 @@ section#footersocial {
   margin-top: 0em;
   margin-left: 3em;
   margin-right: 3em;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  justify-content: end;
+  display: flex;
   padding: 1.5em 0em;
   background-color: var(--vinuspurple);
 }
@@ -1100,37 +1097,16 @@ section#footersocial figure svg:hover {
 
 @media (max-width: 688px) {
   section#footersocial {
-    grid-template-columns: repeat(3, 1fr);
-    grid-row-gap: 3em;
     margin-left: 1.5em;
     margin-right: 1.5em;
+  }
+  section#footersocial figure svg {
+    width: 40px;
+    height: 40px;
   }
 }
 section#footerconsensys figure {
   width: 200px;
   margin: auto;
   padding: 3em 0em;
-}
-
-@keyframes pulse {
-  from { transform: scale(1); }
-  50% { transform: scale(0.9); }
-  to { transform: scale(1); }
-}
-
-.fe-pulse:hover {
-  animation-name: pulse;
-  animation-duration: 3s;
-  animation-iteration-count: infinite;
-}
-
-.hover-logo div{
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 20px;
-  margin-right: 10%;
-  margin-left: 10%;
-}
-.hover-logo div:hover{
-  background: rgba(55, 0, 200, 0.3);
 }
