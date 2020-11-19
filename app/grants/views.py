@@ -1509,28 +1509,11 @@ def grant_edit(request, grant_id):
 
         grantEdit = Grant.objects.filter(pk=grant.pk).update(**grant_kwargs)
 
-        # team_members = (team_members[0].split(','))
-        # print(team_members)
-        # team_members.append(profile.id)
-        # print(team_members)
-        # team_members = list(set(team_members))
-        # print(team_members)
         save_team_members = []
-        for member in team_members[0]:
-            print(member)
-            save_team_members.append(member.id)
-
-        save_team_members.append(profile.id)
+        save_team_members = [d['id'] for d in json.loads(team_members[0])]
         print(save_team_members)
-        team_members = save_team_members
 
-
-
-        # team_members = [int(i.id) for i.id in team_members if i.id != '']
-
-        grant.team_members.add(*team_members)
-
-
+        grant.team_members.add(*save_team_members)
         grant.save()
 
         messages.info(
