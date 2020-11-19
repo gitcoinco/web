@@ -92,6 +92,12 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
+      if (vm.form.twitter_handle_1 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_1)) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
+      }
+      if (vm.form.twitter_handle_2 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
+        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
+      }
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
       } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
@@ -141,7 +147,8 @@ Vue.mixin({
         'zcash_payout_address': form.zcash_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
-        'network': form.network
+        'network': form.network,
+        'region': form.region
         // logoPreview
         // admin_address
         // contract_owner_address
@@ -250,6 +257,18 @@ Vue.mixin({
   }
 });
 
+const grant_regions = [
+    { 'name': 'north_america', 'label': 'North America'},
+    { 'name': 'oceania', 'label': 'Oceania'},
+    { 'name': 'latin_america', 'label': 'Latin America'},
+    { 'name': 'europe', 'label': 'Europe'},
+    { 'name': 'africa', 'label': 'Africa'},
+    { 'name': 'middle_east', 'label': 'Middle East'},
+    { 'name': 'india', 'label': 'India'},
+    { 'name': 'east_asia', 'label': 'East Asia'},
+    { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+];
+
 if (document.getElementById('gc-new-grant')) {
   appFormBounty = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -261,6 +280,7 @@ if (document.getElementById('gc-new-grant')) {
       return {
         chainId: '',
         grant_types: document.grant_types,
+        grant_regions: grant_regions,
         usersOptions: [],
         network: 'mainnet',
         logo: null,
@@ -273,6 +293,7 @@ if (document.getElementById('gc-new-grant')) {
           reference_url: '',
           description_rich: '',
           team_members: [],
+          region: null,
           twitter_handle_1: '',
           twitter_handle_2: '',
           github_project_url: '',
@@ -296,6 +317,62 @@ if (document.getElementById('gc-new-grant')) {
           placeholder: 'Give a detailed desciription about your Grant'
         }
       };
+    },
+    computed: {
+      // queryParams() {
+      //   let query = window.location.search.substr(1);
+
+      //   query = query.split('&');
+      //   let returnVal = {};
+
+      //   query.map(q => {
+      //     const parts = q.split('=');
+      //     const arrayCheckRegex = /\[.+\]/;
+      //     let value = decodeURIComponent(parts[1]);
+
+      //     if ((/<[a-zA-Z\\\/]+>/).test(value)) {
+      //       // if it matches a tag, reset the value to empty
+      //       value = '';
+      //     }
+
+      //     if (arrayCheckRegex.test(value)) {
+      //       // check if array is passed in query params and return it as an array instead of default string.
+      //       // i.e change "[1, 2]" to [1, 2]
+      //       value = value.substr(1, value.length - 2);
+      //       value = value.split(',');
+      //       value = value.map(item => {
+      //         if (!isNaN(item)) {
+      //           return +item;
+      //         }
+      //         return item;
+      //       });
+      //     }
+
+      //     returnVal[parts[0]] = value;
+      //   });
+      // },
+      grant_type_logo() {
+        const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
+
+        if (grant_type) {
+          return grant_type.image_url;
+        }
+        return undefined;
+      }
+    },
+    mounted() {
+      // const writeToRoot = ['chainId'];
+
+      // for (const key of writeToRoot) {
+      //   if (this.queryParams[key]) {
+      //     this[key] = this.queryParams[key];
+      //     delete this.queryParams[key];
+      //   }
+      // }
+      // this.form = {
+      //   ...this.form,
+      //   ...this.queryParams
+      // };
     }
   });
 }

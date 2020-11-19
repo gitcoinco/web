@@ -1,5 +1,6 @@
 const editableFields = [
   '#form--input__title',
+  '#form--input__github-project-url',
   '#form--twitter__account',
   '#form--input__reference-url',
   '#contract_owner_address',
@@ -139,6 +140,7 @@ $(document).ready(function() {
     $('#section-nav-description .ql-container').css('border-color', 'transparent');
 
     let edit_title = $('#form--input__title').val();
+    let edit_github_project_url = $('#form--input__github-project-url').val();
     let edit_reference_url = $('#form--input__reference-url').val();
     let twitter_account = $('#form--twitter__account').val().replace('@', '');
     let edit_grant_members = $('#grant-members').val();
@@ -146,6 +148,7 @@ $(document).ready(function() {
 
     let data = {
       'edit-title': edit_title,
+      'edit-github_project_url': edit_github_project_url,
       'edit-reference_url': edit_reference_url,
       'edit-twitter_account': twitter_account,
       'edit-grant_members[]': edit_grant_members,
@@ -217,12 +220,20 @@ const makeEditable = (input) => {
   $(input).addClass('editable');
   $(input).prop('readonly', false);
   $(input).prop('disabled', false);
+  if (input === '#form--input__github-project-url') {
+    $(input).attr('type', 'text');
+    $('#form--a__github-project-url').hide();
+  }
 };
 
 const disableEdit = (input) => {
   $(input).removeClass('editable');
   $(input).prop('readonly', true);
   $(input).prop('disabled', true);
+  if (input === '#form--input__github-project-url') {
+    $(input).attr('type', 'hidden');
+    $('#form--a__github-project-url').show();
+  }
 };
 
 const copyDuplicateDetails = () => {

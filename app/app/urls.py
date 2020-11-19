@@ -152,9 +152,44 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
     url(
+        r'^api/v0.1/profile/(?P<handle>.*)/start_session_idena',
+        dashboard.views.start_session_idena,
+        name='start_session_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/authenticate_idena',
+        dashboard.views.authenticate_idena,
+        name='authenticate_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
+        dashboard.views.logout_idena,
+        name='logout_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
+        dashboard.views.recheck_idena_status,
+        name='recheck_idena_status'
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'
+    ),    
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap',
+        dashboard.views.verify_user_poap,
+        name='verify_user_poap'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
+        dashboard.views.request_verify_google,
+        name='request_verify_google'
+    ),
+    url(
+        r'^api/v0.1/profile/verify_user_google',
+        dashboard.views.verify_user_google,
+        name='verify_user_google'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),

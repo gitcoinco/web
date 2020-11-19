@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import logging
 from datetime import timedelta
 from decimal import Decimal
@@ -24,6 +25,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core import serializers
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
@@ -95,10 +97,19 @@ class GrantType(SuperModel):
 
     name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
+    is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
     categories  = models.ManyToManyField(
         GrantCategory,
         help_text="Grant Categories associated with Grant Type"
     )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        max_length=500,
+        help_text=_('The default category\'s marketing banner (aspect ratio = 10:3)'),
+    )
+
 
     def __str__(self):
         """Return the string representation."""
@@ -132,6 +143,11 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grant Subscription to be allowed in this CLR round"
     )
+    collection_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grant Collections to be allowed in this CLR round"
+    )
     verified_threshold = models.DecimalField(
         help_text="This is the verfied CLR threshold. You can generally increase the saturation of the round / increase the CLR match by increasing this value, as it has a proportional relationship. However, depending on the pair totals by grant, it may reduce certain matches. In any case, please use the contribution multiplier first.",
         default=25.0,
@@ -156,7 +172,6 @@ class GrantCLR(SuperModel):
         decimal_places=4,
         max_digits=10
     )
-
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -170,7 +185,29 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        return Grant.objects.filter(**self.grant_filters).filter(is_clr_eligible=True)
+        
+        grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.grant_filters:
+            grants = grants.filter(**self.grant_filters)
+        if self.subscription_filters:
+            grants = grants.filter(**self.subscription_filters)
+        if self.collection_filters:
+            grants = grants.filter(**self.collection_filters)
+
+        return grants
+        
+
+    def record_clr_prediction_curve(self, grant, clr_prediction_curve):
+        for obj in self.clr_calculations.filter(grant=grant):
+            obj.latest = False
+            obj.save()
+
+        GrantCLRCalculation.objects.create(
+            grantclr=self,
+            grant=grant,
+            clr_prediction_curve=clr_prediction_curve,
+            latest=True,
+        )
 
 
 class Grant(SuperModel):
@@ -182,6 +219,18 @@ class Grant(SuperModel):
         ordering = ['-created_on']
 
 
+    REGIONS = [
+        ('north_america', 'North America'),
+        ('oceania', 'Oceania'),
+        ('latin_america', 'Latin America'),
+        ('europe', 'Europe'),
+        ('africa', 'Africa'),
+        ('middle_east', 'Middle East'),
+        ('india', 'India'),
+        ('east_asia', 'East Asia'),
+        ('southeast_asia', 'Southeast Asia')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
@@ -191,6 +240,13 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    region = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        choices=REGIONS,
+        help_text="region to which grant belongs to"
+    )
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
         null=True,
@@ -321,18 +377,6 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The fundingamount across all rounds with phantom funding'),
     )
-    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
-    clr_prediction_curve = ArrayField(
-        ArrayField(
-            models.FloatField(),
-            size=2,
-        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
-    # TODO: REMOVE
-    backup_clr_prediction_curve = ArrayField(
-        ArrayField(
-            models.FloatField(),
-            size=2,
-        ), blank=True, default=list, help_text=_('backup 5 point curve to predict CLR donations - used to store a secondary backup of the clr prediction curve, in the case a new identity mechanism is used'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
@@ -382,6 +426,12 @@ class Grant(SuperModel):
 
     funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
 
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
     weighted_risk_score = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -407,6 +457,7 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
+
     def calc_clr_round(self):
         clr_round = None
 
@@ -429,6 +480,7 @@ class Grant(SuperModel):
             self.is_clr_active = False
             self.clr_round_num = ''
 
+
     @property
     def tenants(self):
         """returns list of chains the grant can recieve contributions in"""
@@ -440,6 +492,31 @@ class Grant(SuperModel):
             tenants.append('ZCASH')
 
         return tenants
+
+
+    @property
+    def calc_clr_round_nums(self):
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
+            return ", ".join(round_nums)
+        return ''
+
+
+    @property
+    def calc_clr_prediction_curve(self):
+        # [amount_donated, match amount, bonus_from_match_amount ], etc..
+        # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
+        _clr_prediction_curve = []
+        for insert_clr_calc in self.clr_calculations.filter(latest=True).order_by('-created_on'):
+            insert_clr_calc = insert_clr_calc.clr_prediction_curve
+            if not _clr_prediction_curve:
+                _clr_prediction_curve = insert_clr_calc
+            else:
+                for j in [1,2]:
+                    for i in [0,1,2,3,4,5]:
+                        # add the 1 and 2 index of each clr prediction cuve
+                        _clr_prediction_curve[i][j] += insert_clr_calc[i][j]
+        return _clr_prediction_curve
 
 
     def updateActiveSubscriptions(self):
@@ -640,12 +717,21 @@ class Grant(SuperModel):
         }
 
     def repr(self, user, build_absolute_uri):
+        team_members = serializers.serialize('json', self.team_members.all(),
+                            fields=['handle', 'url', 'profile__avatar_url']
+                        )
+        grant_type = serializers.serialize('json', [self.grant_type],
+                            fields=['name', 'label']
+                        )
+        categories = serializers.serialize('json', self.categories.all(),
+                            fields=['category'])
         return {
                 'id': self.id,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
                 'description': self.description,
+                'description_rich': self.description_rich,
                 'last_update': self.last_update,
                 'last_update_natural': naturaltime(self.last_update),
                 'sybil_score': self.sybil_score,
@@ -663,6 +749,7 @@ class Grant(SuperModel):
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
                 'safe_next_clr_calc_date': naturaltime(self.safe_next_clr_calc_date) if self.safe_next_clr_calc_date else None,
                 'amount_received_in_round': self.amount_received_in_round,
+                'amount_received': self.amount_received,
                 'positive_round_contributor_count': self.positive_round_contributor_count,
                 'monthly_amount_subscribed': self.monthly_amount_subscribed,
                 'is_clr_eligible': self.is_clr_eligible,
@@ -677,6 +764,16 @@ class Grant(SuperModel):
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
+                'team_members': json.loads(team_members),
+                'metadata': self.metadata,
+                'grant_type': json.loads(grant_type),
+                'categories': json.loads(categories),
+                'twitter_handle_1': self.twitter_handle_1,
+                'reference_url': self.reference_url,
+                'github_project_url': self.github_project_url,
+                'funding_info': self.funding_info,
+                'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
+                'region': self.region
             }
 
     def favorite(self, user):
@@ -684,6 +781,10 @@ class Grant(SuperModel):
 
     def save(self, update=True, *args, **kwargs):
         """Override the Grant save to optionally handle modified_on logic."""
+
+        self.clr_prediction_curve = self.calc_clr_prediction_curve
+        self.clr_round_num = self.calc_clr_round_nums
+
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
             update_grant_metadata.delay(self.pk)
@@ -1214,7 +1315,6 @@ next_valid_timestamp: {next_valid_timestamp}
 
         update_grant_metadata.delay(self.pk)
         return contribution
-
 
 
 class DonationQuerySet(models.QuerySet):
@@ -1818,7 +1918,7 @@ class MatchPledge(SuperModel):
         max_digits=50,
         help_text=_('The matching pledge amount in DAI.'),
     )
-    pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
+    pledge_type = models.CharField(max_length=15, null=True, blank=True, choices=PLEDGE_TYPES, help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = JSONField(null=True, blank=True)
@@ -1989,3 +2089,21 @@ class GrantStat(SuperModel):
 
     def __str__(self):
         return f'{self.snapshot_type} {self.created_on} for {self.grant.title}'
+
+
+class GrantCLRCalculation(SuperModel):
+
+    latest = models.BooleanField(default=False, db_index=True, help_text="Is this calc the latest?")
+    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant'))
+    grantclr = models.ForeignKey(GrantCLR, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant CLR Round'))
+
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
+    def __str__(self):
+        return f'{self.created_on} for g:{self.grant.pk} / gclr:{self.grantclr.pk} : {self.clr_prediction_curve}'

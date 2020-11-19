@@ -283,10 +283,6 @@
   font-weight: 500;
 }
 
-.rounded-circle {
-  margin-right: 8px;
-}
-
 #search_form button {
   border: none;
   background: transparent;
@@ -529,7 +525,6 @@
 
 .arrow_box {
 	position: relative;
-	background: #fff;
   border: 1px solid #0FCE7C;
   border-radius: 3px;
 }

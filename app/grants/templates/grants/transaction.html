@@ -30,8 +30,13 @@
       </div>
     </div>
     <div class="col-1 my-auto tags font-caption">
-        {% if not transaction.tx_cleared %} <BR>(Pending) {% endif %}
-        {% if not transaction.success %} <BR>(Failed) {% endif %}
+        <span>
+          {% if not transaction.success %}
+            ( Failed )
+          {% elif not transaction.tx_cleared %}
+            ( Pending )
+          {% endif %}
+        </span>
     </div>
     {% if not transaction.subscription.contributor_profile.hide_wallet_address %}
       <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
