@@ -1639,11 +1639,13 @@ class SendCryptoAsset(SuperModel):
 
     @property
     def receive_tx_blockexplorer_link(self):
-        if self.network == 'xdai':
-            return f"https://explorer.anyblock.tools/ethereum/poa/xdai/tx/{self.receive_txid}"
-        if self.network == 'mainnet':
-            return f"https://etherscan.io/tx/{self.receive_txid}"
-        return f"https://{self.network}.etherscan.io/tx/{self.receive_txid}"
+        from dashboard.utils import tx_id_to_block_explorer_url #circular import
+        return tx_id_to_block_explorer_url(self.receive_txid, self.network)
+
+    @property
+    def send_tx_blockexplorer_link(self):
+        from dashboard.utils import tx_id_to_block_explorer_url #circular import
+        return tx_id_to_block_explorer_url(self.txid, self.network)
 
     @property
     def amount_in_wei(self):
