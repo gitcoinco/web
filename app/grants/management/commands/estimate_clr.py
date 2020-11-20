@@ -49,13 +49,11 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
                 process_predict_clr(
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
-                print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
         else:
             print("No active CLRs found")

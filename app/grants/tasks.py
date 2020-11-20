@@ -217,13 +217,17 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
 def process_predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
     from grants.clr import predict_clr
 
+    print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
+
     debug_output = predict_clr(
-        save_to_db=False,
-        from_date=None,
-        clr_round=None,
-        network='mainnet',
-        only_grant_pk=None
+        save_to_db=save_to_db,
+        from_date=from_date,
+        clr_round=clr_round,
+        network=network,
+        only_grant_pk=only_grant_pk
     )
+
+    print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
 
     # TOTAL GRANT
     # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
