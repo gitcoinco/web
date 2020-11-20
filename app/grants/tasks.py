@@ -216,13 +216,26 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
 @app.shared_task(bind=True, max_retries=1)
 def process_predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
     from grants.clr import predict_clr
-    return predict_clr(
+
+    debug_output = predict_clr(
         save_to_db=False,
         from_date=None,
         clr_round=None,
         network='mainnet',
         only_grant_pk=None
     )
+
+    # TOTAL GRANT
+    # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
+    # grants = grants.filter(**clr_round.grant_filters)
+
+    # total_clr_distributed = 0
+    # for grant in grants:
+    #     total_clr_distributed += grant.clr_prediction_curve[0][1]
+
+    # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
+
+    return debug_output
 
 
 @app.shared_task(bind=True, max_retries=3)
