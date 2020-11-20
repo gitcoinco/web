@@ -12,6 +12,8 @@ from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
 from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
+from marketing.models import Stat
+from perftools.models import JSONStore
 from townsquare.models import Comment
 
 logger = get_task_logger(__name__)
@@ -19,6 +21,7 @@ logger = get_task_logger(__name__)
 redis = RedisService().redis
 
 CLR_START_DATE = dt.datetime(2020, 9, 14, 15, 0) # TODO:SELF-SERVICE
+
 
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
@@ -50,6 +53,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                 instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
     from django.contrib.contenttypes.models import ContentType
+
     from search.models import SearchResult
     if instance.pk:
         SearchResult.objects.update_or_create(
@@ -191,11 +195,13 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         update_grant_metadata.delay(grant_id)
 
+
 @app.shared_task(bind=True, max_retries=1)
 def recalc_clr(self, grant_id, retry: bool = True) -> None:
     obj = Grant.objects.get(pk=grant_id)
-    from grants.clr import predict_clr
     from django.utils import timezone
+
+    from grants.clr import predict_clr
     for clr_round in obj.in_active_clrs.all():
         network = 'mainnet'
         predict_clr(
@@ -205,6 +211,33 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
             network=network,
             only_grant_pk=obj.pk
         )
+
+
+@app.shared_task(bind=True, max_retries=1)
+def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None:
+    from grants.clr import predict_clr
+
+    print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
+
+    predict_clr(
+        save_to_db,
+        from_date,
+        clr_round,
+        network
+    )
+
+    print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
+
+    # TOTAL GRANT
+    # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
+    # grants = grants.filter(**clr_round.grant_filters)
+
+    # total_clr_distributed = 0
+    # for grant in grants:
+    #     total_clr_distributed += grant.clr_prediction_curve[0][1]
+
+    # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
+
 
 @app.shared_task(bind=True, max_retries=3)
 def process_grant_creation_email(self, grant_id, profile_id):
