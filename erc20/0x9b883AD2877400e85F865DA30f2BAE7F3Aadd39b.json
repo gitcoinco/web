@@ -1,0 +1,17 @@
+{
+    "symbol": "BTW",
+    "address": "0x9b883AD2877400e85F865DA30f2BAE7F3Aadd39b",
+    "overview":{
+          "en": "BitWin is a blockchain-based decentralized lottery platform. All bets and results will be disclosed and recorded in the blockchain, and no third party is involved.",
+          "zh": "BitWin 是一个以区块链为基础的去中心化彩票平台，所有投注和结果都将在区块链中公开并记录，当中不涉及第三方参与。"
+    },
+    "email": "bitwin-sd@hotmail.com",
+    "website": "https://www.bitwinfund.com/",
+    "whitepaper": "https://www.bitwinfund.com/pdf/bitwin_whitepeper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-02-21",
+    "links": {
+        "telegram": "https://t.me/Bitwin8",
+        "twitter": "https://twitter.com/bitwin16"
+      }
+}
