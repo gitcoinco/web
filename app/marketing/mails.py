@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 import sendgrid
 from app.utils import get_profiles_from_text
+from grants.models import Subscription
 from marketing.utils import func_name, get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
@@ -302,7 +303,7 @@ def new_supporter(grant, subscription):
 
 def thank_you_for_supporting(grants, contributor):
     subscriptions = []
-    for grant_id in grants:
+    for (grant_id, payload) in grants:
         subscription = Subscription.objects.filter(grant_id=grant_id, contributor_profile=contributor).first()
         if subscription and subscription.negative:
             continue

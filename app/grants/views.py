@@ -1716,7 +1716,8 @@ def bulk_fund(request):
     successes = []
     failures = []
 
-    grant_tasks = []
+    batch_grants_mail = []
+    profile = get_profile(request)
     for (index, grant_id) in enumerate(grant_ids_list):
         try:
             grant = Grant.objects.get(pk=grant_id)
@@ -1730,8 +1731,6 @@ def bulk_fund(request):
                 'success': False
             })
             continue
-
-        profile = get_profile(request)
 
         if not grant.active:
             failures.append({
@@ -1825,7 +1824,7 @@ def bulk_fund(request):
                 'token_address': request.POST.get('token_address').split(',')[index],
                 'token_symbol': request.POST.get('token_symbol').split(',')[index],
             }
-            grant_tasks.append(process_grant_contribution(grant_id, grant.slug, profile.pk, payload))
+            process_grant_contribution.delay(grant_id, grant.slug, profile.pk, payload)
         except Exception as e:
             failures.append({
                 'active': 'grant_error',
@@ -1843,11 +1842,9 @@ def bulk_fund(request):
             'text': _('Funding for this grant was successfully processed and saved.'),
             'success': True
         })
+        batch_grants_mail.append((grant_id, payload))
 
-    try:
-        chord(grant_tasks)(thank_you_for_supporting([success.get('grant') for success in successes], profile))
-    except Exception as e:
-        print(e)
+    thank_you_for_supporting(batch_grants_mail, profile)
 
     return JsonResponse({
         'success': True,
