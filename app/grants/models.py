@@ -773,6 +773,7 @@ class Grant(SuperModel):
                 'grant_type': json.loads(grant_type),
                 'categories': json.loads(categories),
                 'twitter_handle_1': self.twitter_handle_1,
+                'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,

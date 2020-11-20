@@ -411,13 +411,38 @@
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
               <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-
-              <input id="reference_url" v-model="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
-
+              <input v-model="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
               <div class="text-danger" v-if="errors.reference_url">
                 [[errors.reference_url]]
               </div>
             </div>
+
+            <!-- Project twitter -->
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_1">Project Twitter Handle</label>
+              <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+              <input id="twitter_handle_1" v-model="grant.twitter_handle_1" name="twitter_handle_1" class="form__input form__input-lg" maxlength="20" type="text" placeholder="humanfund"/>
+
+              <div class="text-danger" v-if="errors.twitter_handle_1">
+                [[errors.twitter_handle_1]]
+              </div>
+            </div>
+
+            <!-- Owner twitter -->
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
+
+              <input id="twitter_handle_2" v-model="grant.twitter_handle_2" name="twitter_handle_2" class="form__input form__input-lg" maxlength="20" type="text" placeholder="georgecostanza"/>
+            </div>
+
+            <!-- Github -->
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
+              <input v-model="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://github.com/humanfund"/>
+            </div>
+
+
 
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
