@@ -132,7 +132,7 @@ class GrantCLR(SuperModel):
 
     class Meta:
         unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
-    
+
     customer_name = models.CharField(max_length=15, default='', blank=True, help_text="CLR Customer Name")
     round_num = models.PositiveIntegerField(help_text="CLR Round Number")
     sub_round_slug = models.CharField(max_length=25, default='', blank=True, help_text="Sub Round Slug")
@@ -503,7 +503,7 @@ class Grant(SuperModel):
     @property
     def calc_clr_round_nums(self):
         if self.pk:
-            round_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
+            round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -737,6 +737,7 @@ class Grant(SuperModel):
                             fields=['category'])
         return {
                 'id': self.id,
+                'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
@@ -784,7 +785,7 @@ class Grant(SuperModel):
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': {'name':self.region, 'label':self.get_region_display()}
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region else None
             }
 
     def favorite(self, user):
