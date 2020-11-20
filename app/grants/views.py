@@ -1412,7 +1412,8 @@ def grant_details(request, grant_id, grant_slug):
 @csrf_exempt
 def grant_edit(request, grant_id):
 
-    profile = get_profile(request)
+    # profile = get_profile(request)
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
     grant = None
 
     try:
@@ -1440,7 +1441,7 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: user needs to be authenticated to create grant'
             return JsonResponse(response)
 
-        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        # profile = request.user.profile if hasattr(request.user, 'profile') else None
         if not profile:
             response['message'] = 'error: no matching profile found'
             return JsonResponse(response)
@@ -1483,7 +1484,14 @@ def grant_edit(request, grant_id):
         github_project_url = request.POST.get('github_project_url', None)
         twitter_handle_1 = request.POST.get('handle1', '')
         twitter_handle_2 = request.POST.get('handle2', '')
+        region = request.POST.get('region', '')
+        # save_team_members = []
+        # save_team_members = [d['id'] for d in json.loads(team_members[0])]
+        # save_team_members.append(profile.id)
+        # print(set(save_team_members))
 
+        # grant.team_members.add(*save_team_members)
+        print(region)
         grant_kwargs = {
             'title': title,
             'description': description,
@@ -1501,19 +1509,38 @@ def grant_edit(request, grant_id):
             # 'metadata': metdata,
             'last_update': timezone.now(),
             'admin_profile': profile,
+            'region': region,
             # 'logo': logo,
             'hidden': False,
             # 'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             # 'grant_type': GrantType.objects.get(name=grant_type),
         }
 
-        grantEdit = Grant.objects.filter(pk=grant.pk).update(**grant_kwargs)
+        # grant = Grant.objects.filter(pk=grant.pk).update(**grant_kwargs)
 
+        grant.title = title,
+        grant.reference_url = reference_url,
+        grant.description = description,
+        grant.description_rich = description_rich,
+        grant.github_project_url = github_project_url,
+        grant.admin_address = eth_payout_address,
+        grant.zcash_payout_address = zcash_payout_address,
+        grant.last_update = timezone.now(),
+        # grant.admin_profile = profile,
+        grant.twitter_handle_1 = twitter_handle_1,
+        grant.twitter_handle_2 = twitter_handle_2,
+        grant.region = region,
+        # 'logo': logo,
+        grant.hidden = False,
         save_team_members = []
         save_team_members = [d['id'] for d in json.loads(team_members[0])]
+        save_team_members.append(grant.admin_profile.id)
         print(save_team_members)
+        grant.team_members.set(save_team_members)
+        # grant.team_members.add(*save_team_members)
+        # save_team_members.append(str(grant.admin_profile.id))
+        # print(save_team_members)
 
-        grant.team_members.add(*save_team_members)
         grant.save()
 
         messages.info(

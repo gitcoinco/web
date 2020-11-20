@@ -185,7 +185,7 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        
+
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
@@ -195,7 +195,7 @@ class GrantCLR(SuperModel):
             grants = grants.filter(**self.collection_filters)
 
         return grants
-        
+
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
         for obj in self.clr_calculations.filter(grant=grant):
@@ -777,7 +777,7 @@ class Grant(SuperModel):
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': self.region
+                'region': {'name':self.region, 'label':self.get_region_display()}
             }
 
     def favorite(self, user):
