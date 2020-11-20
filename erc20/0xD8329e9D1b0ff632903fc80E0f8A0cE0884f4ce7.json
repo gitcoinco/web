@@ -1,0 +1,19 @@
+{
+    "symbol": "HDS",
+    "address": "0xD8329e9D1b0ff632903fc80E0f8A0cE0884f4ce7",
+    "overview": {
+        "en": "HDS is the governance token in Hades Protocol. HDS allows the owner to delegate voting rights to the address of their choice. The Hades Protocol is one of the dapps on the Ethereum blockchain. Allows users to generate DOL, a decentralized stablecoin soft-pegged to the US Dollar, that is not issued or administered by any centralized actor or trusted intermediary or counterparty.",
+        "zh": "HDS是Hades协议的治理代币。HDS允许用户将投票权委托给他们指定的账户。Hades协议是一个通过以太坊智能合约开发的去中心化稳定币协议，旨在构建一个以去中心化稳定币DOL为核心的多元化DeFi服务平台。Hades通过将货币市场与稳定币发行结合起来，允许用户通过抵押资产发行DOL——一种软锚定美元的多抵押稳定币。协议核心特点包括市场化的协议自主利率、高资产利用率、完善的协议激励、去中心化治理等等。"
+    },
+    "website": "https://hades.finance",
+    "whitepaper": "https://hades.finance/hades-protocol-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-10",
+    "links": {
+        "blog": "https://medium.com/hades-protocol",
+        "twitter": "https://twitter.com/HadesPlatform",
+        "github": "https://github.com/HadesFinance/evm-contracts",
+        "telegram": "https://t.me/Hadestoken"
+    }
+}
+
