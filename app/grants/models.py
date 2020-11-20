@@ -136,7 +136,7 @@ class GrantCLR(SuperModel):
     customer_name = models.CharField(max_length=15, default='', blank=True, help_text="CLR Customer Name")
     round_num = models.PositiveIntegerField(help_text="CLR Round Number")
     sub_round_slug = models.CharField(max_length=25, default='', blank=True, help_text="Sub Round Slug")
-    display_text = models.CharField(max_length=15, null=True, blank=True, help_text="CLR display text, leave blank to adapt as CLR Round Number")
+    display_text = models.CharField(max_length=15, null=True, blank=True, help_text="Custom text to show on the banner in landing")
     owner = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.SET_NULL, help_text='The team that owns the Grant CLR, useful for adding their brand logo')
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
@@ -185,7 +185,7 @@ class GrantCLR(SuperModel):
         null=True,
         blank=True,
         max_length=500,
-        help_text=_('The Grant CLR round image'),
+        help_text=_('GrantCLR Banner image on the landing page'),
     )
 
     def __str__(self):
