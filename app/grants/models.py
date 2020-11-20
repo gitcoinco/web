@@ -528,7 +528,7 @@ class Grant(SuperModel):
     @property
     def calc_clr_round_nums(self):
         if self.pk:
-            round_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
+            round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -755,13 +755,18 @@ class Grant(SuperModel):
         team_members = serializers.serialize('json', self.team_members.all(),
                             fields=['handle', 'url', 'profile__avatar_url']
                         )
-        grant_type = serializers.serialize('json', [self.grant_type],
-                            fields=['name', 'label']
-                        )
+
+        grant_type = None
+        if self.grant_type:
+            grant_type = serializers.serialize('json', [self.grant_type],
+                                fields=['name', 'label']
+                            )
+
         categories = serializers.serialize('json', self.categories.all(),
                             fields=['category'])
         return {
                 'id': self.id,
+                'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
@@ -801,7 +806,7 @@ class Grant(SuperModel):
                 'tenants': self.tenants,
                 'team_members': json.loads(team_members),
                 'metadata': self.metadata,
-                'grant_type': json.loads(grant_type),
+                'grant_type': json.loads(grant_type) if grant_type else None,
                 'categories': json.loads(categories),
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
@@ -809,7 +814,7 @@ class Grant(SuperModel):
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': {'name':self.region, 'label':self.get_region_display()}
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region else None
             }
 
     def favorite(self, user):

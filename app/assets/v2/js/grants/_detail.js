@@ -169,6 +169,30 @@ Vue.mixin({
       });
 
     },
+    cancelGrant: function(event) {
+      event.preventDefault();
+
+      let vm = this;
+
+      let cancel = window.prompt('Please write "CONFIRM" to cancel the grant.');
+
+      if (cancel !== 'CONFIRM') {
+        return;
+      }
+
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Cancel Grant', 'click', 'Grant Cancel');
+      }
+
+      const cancelUrl = `/grants/v1/api/grant/${vm.grant.id}/cancel`;
+
+      var cancelGrant = fetchData(cancelUrl ,'POST')
+      $.when(cancelGrant).then(function(response){
+        vm.grant.active = false;
+        return response
+      })
+
+    },
     checkGrantData: function() {},
     toggleFollowingGrant: async function(grantId) {
       let vm = this;
