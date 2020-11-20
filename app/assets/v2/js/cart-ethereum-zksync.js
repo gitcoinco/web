@@ -205,8 +205,8 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Estimates the total gas cost of a zkSync checkout and sends it to cart.js
     estimateGasCost() {
-      // Estimate minimum gas cost based on 400 gas per transfer
-      const gasPerTransfer = toBigNumber('400');
+      // Estimate minimum gas cost based on 550 gas per transfer
+      const gasPerTransfer = toBigNumber('550'); // may decrease as low as 340 as zkSync gets more traction
       const numberOfTransfers = String(this.donationInputs.length);
       const minimumCost = gasPerTransfer.mul(numberOfTransfers);
       let totalCost = minimumCost;
