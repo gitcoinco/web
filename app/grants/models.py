@@ -129,10 +129,16 @@ class GrantType(SuperModel):
 
 
 class GrantCLR(SuperModel):
-    round_num = models.CharField(max_length=15, help_text="CLR Round Number")
+
+    class Meta:
+        unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
+
+    customer_name = models.CharField(max_length=15, default='', blank=True, help_text="CLR Customer Name")
+    round_num = models.PositiveIntegerField(help_text="CLR Round Number")
+    sub_round_slug = models.CharField(max_length=25, default='', blank=True, help_text="Sub Round Slug")
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
-    end_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round End Date")
     grant_filters = JSONField(
         default=dict,
         null=True, blank=True,
@@ -185,7 +191,7 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        
+
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
@@ -195,7 +201,7 @@ class GrantCLR(SuperModel):
             grants = grants.filter(**self.collection_filters)
 
         return grants
-        
+
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
         for obj in self.clr_calculations.filter(grant=grant):
@@ -497,7 +503,7 @@ class Grant(SuperModel):
     @property
     def calc_clr_round_nums(self):
         if self.pk:
-            round_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
+            round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -731,6 +737,7 @@ class Grant(SuperModel):
                             fields=['category'])
         return {
                 'id': self.id,
+                'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
@@ -773,11 +780,12 @@ class Grant(SuperModel):
                 'grant_type': json.loads(grant_type),
                 'categories': json.loads(categories),
                 'twitter_handle_1': self.twitter_handle_1,
+                'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': self.region
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region else None
             }
 
     def favorite(self, user):
