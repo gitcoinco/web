@@ -491,11 +491,16 @@ def bulk_grants_for_cart(request):
     return JsonResponse({'grants': grants})
 
 
-def clr_grants(request, round_num):
+def clr_grants(request, round_num, sub_round_slug='', customer_name=''):
     """CLR grants explorer."""
 
     try:
-        clr_round = GrantCLR.objects.get(round_num__icontains=round_num)
+        params = {
+            'round_num': round_num,
+            'sub_round_slug': sub_round_slug,
+            'customer_name': customer_name
+        }
+        clr_round = GrantCLR.objects.get(**params)
 
     except GrantCLR.DoesNotExist:
         return redirect('/grants')
@@ -540,11 +545,18 @@ def get_grants(request):
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
     round_num = request.GET.get('round_num', None)
+    sub_round_slug = request.GET.get('sub_round_slug', '')
+    customer_name = request.GET.get('customer_name', '')
 
     clr_round = None
     try:
         if round_num:
-            clr_round = GrantCLR.objects.get(round_num=round_num)
+            params = {
+                'round_num': round_num,
+                'sub_round_slug': sub_round_slug,
+                'customer_name': customer_name
+            }
+            clr_round = GrantCLR.objects.get(**params)
     except GrantCLR.DoesNotExist:
         pass
 
@@ -2291,6 +2303,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile, an
     }
     return Activity.objects.create(**kwargs)
 
+
 def record_grant_activity_helper(activity_type, grant, profile, amount=None, token=None):
     """Registers a new activity concerning a grant
 
@@ -2357,7 +2370,6 @@ def new_matching_partner(request):
     return TemplateResponse(request, 'grants/new_match.html', params)
 
 
-
 def create_matching_pledge_v1(request):
 
     response = {
@@ -2372,7 +2384,6 @@ def create_matching_pledge_v1(request):
 
     profile = request.user.profile if hasattr(request.user, 'profile') else None
 
-
     if not profile:
         response['message'] = 'error: no matching profile found'
         return JsonResponse(response)
@@ -2380,7 +2391,6 @@ def create_matching_pledge_v1(request):
     if not request.method == 'POST':
         response['message'] = 'error: pledge creation is a POST operation'
         return JsonResponse(response)
-
 
     grant_types = request.POST.get('grant_types[]', None)
     grant_categories = request.POST.get('grant_categories[]', None)
@@ -2396,7 +2406,6 @@ def create_matching_pledge_v1(request):
     if not grant_types and not grant_collections:
         response['message'] = 'error:  grant_types / grant_collections is parameter'
         return JsonResponse(response)
-
 
     matching_pledge_stage = request.POST.get('matching_pledge_stage', None)
     tx_id = request.POST.get('tx_id', None)
@@ -2424,7 +2433,8 @@ def create_matching_pledge_v1(request):
             }
 
         clr_round = GrantCLR.objects.create(
-            round_num='pledge',
+            round_num=0,
+            sub_round_slug='pledge',
             start_date=timezone.now(),
             end_date=timezone.now(),
             total_pot=amount,
