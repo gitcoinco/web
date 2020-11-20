@@ -1294,14 +1294,6 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-        if 'grant_cancel_tx_id' in request.POST:
-            grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
-            grant.active = False
-            grant.save()
-            grant_cancellation(grant, user_subscription)
-            for sub in subscriptions:
-                subscription_terminated(grant, sub)
-            record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.github_project_url = request.POST.get('edit-github_project_url')
@@ -1856,6 +1848,59 @@ def grant_fund(request, grant_id, grant_slug):
         })
 
     raise Http404
+
+
+@csrf_exempt
+@require_POST
+def cancel_grant_v1(request, grant_id):
+
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to contribute to grant'
+    }
+
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to cancel grant'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: grant cancellation is a POST operation'
+        return JsonResponse(response)
+
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        response['message'] = 'error: grant cannot be found'
+        return JsonResponse(response)
+
+    if not is_grant_team_member(grant, profile):
+        response['message'] = 'error: grant cancellation can be done only by grant owner'
+        return JsonResponse(response)
+
+    if not grant.active:
+        response['message'] = 'error: grant is already cancelled'
+        return JsonResponse(response)
+
+    grant.active = False
+    grant.save()
+
+    grant_cancellation(grant)
+    record_grant_activity_helper('killed_grant', grant, profile)
+
+    response = {
+        'status': 200,
+        'pk': grant.pk,
+        'message': 'grant cancelled sucessfully'
+    }
+    return JsonResponse(response)
 
 @login_required
 def bulk_fund(request):
