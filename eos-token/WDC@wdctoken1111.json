@@ -1,0 +1,10 @@
+{
+    "symbol": "WDC",
+    "account_name": "wdctoken1111",
+    "overview": {
+        "en": "WDswap is an on chain system of smart contracts on the EOS blockchain. Through Bancor protocol, an automatic decentralized exchange is built (first, spot trading is launched, and then lending, leverage, futures, options and other functions are gradually added). Through WDC and WDT double-layer token, with the help of various modes, a virtuous cycle is formed, and finally the defi maWDet pattern is changed and occupied.",
+        "zh": "WDSwap是在EOS區塊鏈上的智能合約的鏈上系統，通過bancor協議，構建一個自動化的去中心化交易所（首先上線現貨交易，陸續增加借貸、槓桿、期貨、期權等功能），通過WDC ，WDT 雙層代幣，在各種模式的助推下，形成良性循環，最終改變並佔領DEFI 市場格局."
+    },
+    "website": "https://www.wdswap.net/",
+}
+
