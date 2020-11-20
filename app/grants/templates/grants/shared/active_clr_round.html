@@ -12,7 +12,17 @@
               <img class="img-responsive" style="width: 100%; height: 100%;"
                 src="/dynamic/avatar/{{ active_round.owner.handle | default:'gitcoinco'}}" />
             </div>
-            <h5 class="font-weight-bold mb-0"> {{ active_round.display_text |default:active_round.round_num }} <br />
+            <h5 class="font-weight-bold mb-0">
+              {% if active_round.display_text %}
+                {{ active_round.display_text }}
+              {% elif active_round.customer_name %}
+                {{ active_round.customer_name }} - {{ active_round.round_num }}
+              {% elif active_round.sub_round_slug %}
+                {{ active_round.sub_round_slug|title }} - {{ active_round.round_num }}
+              {% else %}
+                {{ active_round.round_num }}
+              {% endif %}
+              <br />
               <small>{{active_round.start_date | date:'m/Y'}} - {{active_round.end_date | date:'m/Y'}}</small>
             </h5>
           </div>
