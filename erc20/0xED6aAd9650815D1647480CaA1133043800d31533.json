@@ -1,0 +1,23 @@
+{
+  "symbol": "TOP",
+  "address": "0xED6aAd9650815D1647480CaA1133043800d31533",
+  "overview":{
+        "en": "TokenSwap is a decentralized Token Auction Platform.",
+        "zh": ""
+  },
+  "email": "contact@tokenswap.finance",
+  "website": "https://tokenswap.finance",
+  "whitepaper": "https://tokenswap.finance",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2020-09-10",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/TokenSwap001",
+    "telegram": "https://t.me/tokenswapen",
+    "medium": "https://medium.com/@tokenswap"
+  }
+}
