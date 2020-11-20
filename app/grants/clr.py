@@ -31,30 +31,32 @@ import numpy as np
 import pytz
 from grants.models import Contribution, Grant, GrantCollection
 from marketing.models import Stat
+from perftools.models import JSONStore
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
 
-'''
-    translates django grant data structure to a list of lists
 
-    args:
-        django grant data structure
-            {
-                'id': (string) ,
-                'contibutions' : [
-                    {
-                        contributor_profile (str) : summed_contributions
-                    }
-                ]
-            }
-
-    returns:
-        list of lists of grant data
-            [[grant_id (str), user_id (str), contribution_amount (float)]]
-        dictionary of profile_ids and trust scores
-            {user_id (str): trust_score (float)}
-'''
 def translate_data(grants_data):
+    '''
+        translates django grant data structure to a list of lists
+
+        args:
+            django grant data structure
+                {
+                    'id': (string) ,
+                    'contibutions' : [
+                        {
+                            contributor_profile (str) : summed_contributions
+                        }
+                    ]
+                }
+
+        returns:
+            list of lists of grant data
+                [[grant_id (str), user_id (str), contribution_amount (float)]]
+            dictionary of profile_ids and trust scores
+                {user_id (str): trust_score (float)}
+    '''
     trust_dict = {}
     grants_list = []
     for g in grants_data:
@@ -70,23 +72,22 @@ def translate_data(grants_data):
     return grants_list, trust_dict
 
 
-
-'''
-    aggregates contributions by contributor, and calculates total contributions by unique pairs
-
-    args:
-        list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (str), trust_bonus (float), contribution_amount (float)]]
-
-    returns:
-        aggregated contributions by pair nested dict
-            {
-                grant_id (str): {
-                    user_id (str): aggregated_amount (float)
-                }
-            }
-'''
 def aggregate_contributions(grant_contributions):
+    '''
+        aggregates contributions by contributor, and calculates total contributions by unique pairs
+
+        args:
+            list of lists of grant data
+                [[grant_id (str), user_id (str), verification_status (str), trust_bonus (float), contribution_amount (float)]]
+
+        returns:
+            aggregated contributions by pair nested dict
+                {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+    '''
     contrib_dict = {}
     for proj, user, amount in grant_contributions:
         if proj not in contrib_dict:
@@ -96,24 +97,23 @@ def aggregate_contributions(grant_contributions):
     return contrib_dict
 
 
-
-'''
-    gets pair totals between current round, current round
-
-    args:
-        aggregated contributions by pair nested dict
-            {
-                grant_id (str): {
-                    user_id (str): aggregated_amount (float)
-                }
-            }
-
-    returns:
-        pair totals between current round
-            {user_id (str): {user_id (str): pair_total (float)}}
-
-'''
 def get_totals_by_pair(contrib_dict):
+    '''
+        gets pair totals between current round, current round
+
+        args:
+            aggregated contributions by pair nested dict
+                {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+
+        returns:
+            pair totals between current round
+                {user_id (str): {user_id (str): pair_total (float)}}
+
+    '''
     tot_overlap = {}
 
     # start pairwise match
@@ -131,34 +131,33 @@ def get_totals_by_pair(contrib_dict):
     return tot_overlap
 
 
-
-'''
-    calculates the clr amount at the given threshold and total pot
-    args:
-        aggregated contributions by pair nested dict
-            {
-                grant_id (str): {
-                    user_id (str): aggregated_amount (float)
-                }
-            }
-        pair_totals
-            {user_id (str): {user_id (str): pair_total (float)}}
-        trust_dict
-            {user_id (str): trust_score (float)}
-        v_threshold 
-            float
-        uv_threshold
-            float
-        total_pot
-            float
-
-    returns:
-        total clr award by grant, analytics, normalized by the normalization factor
-            [{'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}]
-        saturation point
-            boolean
-'''
 def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold, uv_threshold, total_pot):
+    '''
+        calculates the clr amount at the given threshold and total pot
+        args:
+            aggregated contributions by pair nested dict
+                {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+            pair_totals
+                {user_id (str): {user_id (str): pair_total (float)}}
+            trust_dict
+                {user_id (str): trust_score (float)}
+            v_threshold 
+                float
+            uv_threshold
+                float
+            total_pot
+                float
+
+        returns:
+            total clr award by grant, analytics, normalized by the normalization factor
+                [{'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}]
+            saturation point
+                boolean
+    '''
 
     bigtot = 0
     totals = []
@@ -202,27 +201,26 @@ def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold
     return totals
 
 
-
-'''
-    clubbed function that runs all calculation functions
-
-    args:
-        grant_contribs_curr
-            {
-                'id': (string) ,
-                'contibutions' : [
-                    {
-                        contributor_profile (str) : contribution_amount (int)
-                    }
-                ]
-            }
-        threshold   :   float
-        total_pot   :   float
-
-    returns:
-        grants clr award amounts
-'''
 def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
+    '''
+        clubbed function that runs all calculation functions
+
+        args:
+            grant_contribs_curr
+                {
+                    'id': (string) ,
+                    'contibutions' : [
+                        {
+                            contributor_profile (str) : contribution_amount (int)
+                        }
+                    ]
+                }
+            threshold   :   float
+            total_pot   :   float
+
+        returns:
+            grants clr award amounts
+    '''
 
     # get data
     curr_round, trust_dict = translate_data(grant_contribs_curr)
@@ -237,7 +235,6 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     totals = calculate_clr(curr_agg, ptots, trust_dict, v_threshold, uv_threshold, total_pot)
 
     return totals
-
 
 
 def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold):
@@ -271,19 +268,18 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
     return (None, None, None, None)
 
 
-
-'''
-    Populate Data needed to calculate CLR
-
-    Args:
-        network     :   mainnet | rinkeby
-        clr_round   :   GrantCLR
-    Returns:
-        contributions               : contributions data object
-        grants                      : list of grants based on clr_type
-
-'''
 def fetch_data(clr_round, network='mainnet'):
+    '''
+        Populate Data needed to calculate CLR
+
+        Args:
+            network     :   mainnet | rinkeby
+            clr_round   :   GrantCLR
+        Returns:
+            contributions               : contributions data object
+            grants                      : list of grants based on clr_type
+
+    '''
 
     clr_start_date = clr_round.start_date
     clr_end_date = clr_round.end_date
@@ -308,23 +304,22 @@ def fetch_data(clr_round, network='mainnet'):
     return grants, contributions
 
 
-
-'''
-    Populate Data needed to calculate CLR
-
-    Args:
-        grants                  : grants list
-        contributions           : contributions list for thoe grants
-        clr_round               : GrantCLR
-
-    Returns:
-        contrib_data_list: {
-            'id': grant_id,
-            'contributions': summed_contributions
-        }
-
-'''
 def populate_data_for_clr(grants, contributions, clr_round):
+    '''
+        Populate Data needed to calculate CLR
+
+        Args:
+            grants                  : grants list
+            contributions           : contributions list for thoe grants
+            clr_round               : GrantCLR
+
+        Returns:
+            contrib_data_list: {
+                'id': grant_id,
+                'contributions': summed_contributions
+            }
+
+    '''
 
     contrib_data_list = []
 
@@ -367,3 +362,111 @@ def populate_data_for_clr(grants, contributions, clr_round):
             })
 
     return contrib_data_list
+
+
+def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
+    # setup
+    clr_calc_start_time = timezone.now()
+    debug_output = []
+
+    # one-time data call
+    total_pot = float(clr_round.total_pot)
+    v_threshold = float(clr_round.verified_threshold)
+    uv_threshold = float(clr_round.unverified_threshold)
+
+    grants, contributions = fetch_data(clr_round, network)
+
+    if contributions.count() == 0:
+        print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
+        return
+
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
+
+    if only_grant_pk:
+        grants = grants.filter(pk=only_grant_pk)
+
+    # calculate clr given additional donations
+    for grant in grants:
+        # five potential additional donations plus the base case of 0
+        potential_donations = [0, 1, 10, 100, 1000, 10000]
+        potential_clr = []
+
+        for amount in potential_donations:
+            # calculate clr with each additional donation and save to grants model
+            # print(f'using {total_pot_close}')
+            predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
+                grant,
+                amount,
+                grant_contributions_curr,
+                total_pot,
+                v_threshold,
+                uv_threshold
+            )
+            potential_clr.append(predicted_clr)
+
+        if save_to_db:
+            _grant = Grant.objects.get(pk=grant.pk)
+            clr_prediction_curve = list(zip(potential_donations, potential_clr))
+            base = clr_prediction_curve[0][1]
+            _grant.last_clr_calc_date = timezone.now()
+            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=20)
+
+            can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
+
+            if can_estimate :
+                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in clr_prediction_curve ]
+            else:
+                clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+
+            JSONStore.objects.create(
+                created_on=from_date,
+                view='clr_contribution',
+                key=f'{grant.id}',
+                data=clr_prediction_curve,
+            )
+            clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
+            
+            try:
+                if clr_prediction_curve[0][1]:
+                    Stat.objects.create(
+                        created_on=from_date,
+                        key=_grant.title[0:43] + "_match",
+                        val=clr_prediction_curve[0][1],
+                        )
+                    max_twitter_followers = max(_grant.twitter_handle_1_follower_count, _grant.twitter_handle_2_follower_count)
+                    if max_twitter_followers:
+                        Stat.objects.create(
+                            created_on=from_date,
+                            key=_grant.title[0:43] + "_admt1",
+                            val=int(100 * clr_prediction_curve[0][1]/max_twitter_followers),
+                            )
+
+                if _grant.positive_round_contributor_count:
+                    Stat.objects.create(
+                        created_on=from_date,
+                        key=_grant.title[0:43] + "_pctrbs",
+                        val=_grant.positive_round_contributor_count,
+                        )
+                if _grant.amount_received_in_round:
+                    Stat.objects.create(
+                        created_on=from_date,
+                        key=_grant.title[0:43] + "_amt",
+                        val=_grant.amount_received_in_round,
+                        )
+            except:
+                pass
+
+            if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
+                _grant.save()
+
+        debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+
+    try :
+        Stat.objects.create(
+            key= clr_type + '_grants_round_6_saturation',
+            val=int(CLR_PERCENTAGE_DISTRIBUTED),
+        )
+    except:
+        pass
+
+    return debug_output

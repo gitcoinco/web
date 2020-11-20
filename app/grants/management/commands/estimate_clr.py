@@ -24,7 +24,7 @@ from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Contribution, Grant, GrantCLR
-from grants.tasks import predict_clr
+from grants.tasks import process_predict_clr
 from marketing.mails import warn_subscription_failed
 
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
                 print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num}")
-                predict_clr(
+                process_predict_clr(
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
