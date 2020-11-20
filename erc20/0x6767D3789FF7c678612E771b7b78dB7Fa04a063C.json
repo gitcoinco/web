@@ -1,0 +1,23 @@
+{
+  "symbol": "BLW",
+  "address": "0x6767D3789FF7c678612E771b7b78dB7Fa04a063C",
+  "overview":{
+        "en": "BLW (full name blue whale) is a kind of integrated digital asset finance protocol based on blockchain system, decentralized stable currency system protocol, and token based protocol of lending and trading system protocol. BLW is committed to providing users around the world with safe, inclusive, innovative and transparent decentralized integrated digital asset financial services.",
+        "zh": "BLW（全称 Blue Whale）是一种基于区块链系统的融合性数字资产金融协议，去中心化稳定币系统协议，以及借贷和交易系统协议的令牌化协议组成。 BLW 致力于为全世界用户提供安全、包容、创新和透明的去中心化融合性数字资产金融服务。"
+  },
+  "email": "blwbluewhale@gmail.com",
+  "website": "www.blwbluewhale.com",
+  "whitepaper": "https://www.blwbluewhale.com/19BLW_files/BLW-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-10",
+  "initial_price":{
+        "USDT":"2 USDT"
+  },
+  "links": {  
+    "twitter": "https://twitter.com/BlueWha01872997/status/1314863347796340736?s=20",
+    "telegram": "https://t.me/BLWbluewhale",
+    "github": "https://github.com/XMaxPlatform",
+    "reddit": "https://www.reddit.com/user/BuleWhale/comments/j8hnev/bule_whale_finance_defi_project/?utm_source=share&utm_medium=web2x&context=3",
+    "medium": "https://medium.com/@blwbluewhale/the-blw-team-conducted-the-first-decentralized-financial-product-protocol-exploration-on-the-eth-ea65f24b9c42"
+  }
+}
