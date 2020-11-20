@@ -214,7 +214,7 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=1)
-def process_predict_clr(save_to_db, from_date, clr_round, network):
+def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None:
     from grants.clr import predict_clr
 
     print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")

@@ -863,7 +863,6 @@ def grants_by_grant_type(request, grant_type):
     if len(pks):
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
-
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
     current_partners_fund = 0
@@ -886,6 +885,7 @@ def grants_by_grant_type(request, grant_type):
     prev_grants = Grant.objects.none()
     grants_following = Favorite.objects.none()
     collections = []
+
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         # KO 9/10/2020
@@ -898,7 +898,6 @@ def grants_by_grant_type(request, grant_type):
                 'title': collection.title
             } for collection in allowed_collections.distinct()
         ]
-
 
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now())
 
