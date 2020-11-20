@@ -876,7 +876,7 @@ Vue.component('copy-clipboard', {
 
 Vue.component('render-quill', {
   props: ['delta'],
-  template: '<div>{{renderHtml}}</div>',
+  template: '<div>{{this.renderHtml}}</div>',
   data() {
     return {
       jqEl: null,
@@ -887,34 +887,24 @@ Vue.component('render-quill', {
   methods: {
     transform: function(){
       let vm = this;
+
       if (!vm.delta) {
         return;
       }
 
-      let html
-
       vm.jqEl = this.$el;
-      var test = new Quill(vm.jqEl);
-      // console.log(vm.delta)
-      html = test.updateContents(JSON.parse(vm.delta))
-      // console.log(test.setContents(html))
-      // (new Quill(vm.jqEl)).setContents(vm.delta);
-      // return vm.jqEl.getElementsByClassName("ql-editor")[0].innerHTML;;
-
+      const quill = new Quill(vm.jqEl);
+      quill.enable(false);
+      vm.renderHtml = quill.setContents(JSON.parse(vm.delta));
     }
 
   },
   mounted() {
     this.transform()
-
-
   },
   watch: {
-    delta: function(delta) {
-      let vm = this;
+    delta: function() {
       return this.transform()
-
-      // return vm.qrcode.makeCode(string);
     }
   },
 });
