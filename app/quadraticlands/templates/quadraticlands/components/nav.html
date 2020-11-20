@@ -51,7 +51,7 @@
             Mission
             <!-- this span should just be here, if user can claim x GTC tokens AND logged in -->
             {% if user.is_authenticated %}
-            <span>+1000 GTC</span>
+            <span>+{{ total_claimable }} GTC</span>
             {% endif %}
 
           </li>

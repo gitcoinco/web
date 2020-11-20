@@ -40,6 +40,7 @@ from django.utils.translation import gettext_lazy as _
 
 import requests
 from eth_utils import is_address, is_checksum_address, to_checksum_address
+from quadraticlands.helpers import get_initial_dist
 from ratelimit.decorators import ratelimit
 
 from .forms import ClaimForm
@@ -48,15 +49,17 @@ logger = logging.getLogger(__name__)
 
 # TODO - add a new envar for Token Request Siging micro service URL
 # TODO - add a new envar for HMAC or other auth key for communicating with micro service 
-
-
-# @Richard, please feel free to adjust these as necessary. 
-# This is mostly a matter of preference and I don't know what you prefer 
-# it's worth note, these do not denote the URI path for user, but just where the files live in our app 
-# the URIs from a user perspective are defined in urls.py ;) 
+# TODO - add a new envar for CF KV url in helpers.py 
 
 def index(request):
-    return TemplateResponse(request, 'quadraticlands/index.html')
+    '''load the main index page'''
+  
+    if request.user.is_authenticated:
+        context = get_initial_dist(request)
+        return TemplateResponse(request, 'quadraticlands/index.html', context)
+
+    return TemplateResponse(request, 'quadraticlands/index.html') 
+
 
 def about(request):
     return TemplateResponse(request, 'quadraticlands/about.html')
