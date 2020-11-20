@@ -87,8 +87,8 @@ along with this program. If not, see
 
                 <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
                   {% include 'grants/shared/landing_navbar.html' %}
-                  {% include 'grants/shared/landing_clr.html' %}
-
+                  {% include 'grants/shared/landing_clr.html' %}                 
+                  
                   <template v-if="'activity' == current_type">
                     {% include 'grants/shared/landing_activity.html' %}
                   </template>
@@ -106,6 +106,7 @@ along with this program. If not, see
                   </template>
                   <template v-else>
                     {% include 'grants/shared/landing_subnav.html' %}
+                     {% include 'grants/shared/active_clr_round.html'%}
                     {% include 'grants/shared/landing_grants.html' %}
                   </template>
                 </div>
