@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 import pytz
 from app.services import RedisService
@@ -11,6 +12,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
+from grants.utils import is_grant_team_member
 from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
 from townsquare.models import Comment
 
@@ -108,85 +110,90 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=1)
-def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, retry: bool = True) -> None:
+def process_grant_contributions(self, valid_grants, profile_id, retry: bool = True):
     """
     :param self:
-    :param grant_id:
-    :param grant_slug:
+    :param valid_grants:
     :param profile_id:
-    :param package:
     :return:
     """
     from grants.views import record_subscription_activity_helper
-
-    grant = Grant.objects.get(pk=grant_id)
     profile = Profile.objects.get(pk=profile_id)
+    subscriptions = []
 
-    if 'contributor_address' in package:
-        subscription = Subscription()
+    for (grant_id, package) in valid_grants:
+        if 'contributor_address' in package:
+            subscription = Subscription()
+            grant = Grant.objects.get(pk=grant_id)
 
-        if grant.negative_voting_enabled:
-            #is_postive_vote = True if package.get('is_postive_vote', 1) else False
-            is_postive_vote = package.get('match_direction', '+') == '+'
-        else:
-            is_postive_vote = True
-        subscription.is_postive_vote = is_postive_vote
+            if grant.negative_voting_enabled:
+                #is_postive_vote = True if package.get('is_postive_vote', 1) else False
+                is_postive_vote = package.get('match_direction', '+') == '+'
+            else:
+                is_postive_vote = True
+            subscription.is_postive_vote = is_postive_vote
 
-        fee_pct = float(package.get('gitcoin-grant-input-amount', 0))
+            fee_pct = float(package.get('gitcoin-grant-input-amount', 0))
 
-        subscription.active = False
-        subscription.contributor_address = package.get('contributor_address', '')
-        subscription.amount_per_period = package.get('amount_per_period', 0)
-        subscription.real_period_seconds = package.get('real_period_seconds', 2592000)
-        subscription.frequency = package.get('frequency', 30)
-        subscription.frequency_unit = package.get('frequency_unit', 'days')
-        subscription.token_address = package.get('token_address', '')
-        subscription.token_symbol = package.get('token_symbol', '')
-        subscription.gas_price = (float(subscription.amount_per_period) * (fee_pct/100))
-        subscription.new_approve_tx_id = package.get('sub_new_approve_tx_id', '0x0')
-        subscription.split_tx_id = package.get('split_tx_id', '0x0')
-        subscription.num_tx_approved = package.get('num_tx_approved', 1)
-        subscription.network = package.get('network', '')
-        subscription.contributor_profile = profile
-        subscription.grant = grant
-        subscription.comments = package.get('comment', '')
-        subscription.save()
-        subscription.successful_contribution(subscription.new_approve_tx_id);
+            subscription.active = False
+            subscription.contributor_address = package.get('contributor_address', '')
+            subscription.amount_per_period = package.get('amount_per_period', 0)
+            subscription.real_period_seconds = package.get('real_period_seconds', 2592000)
+            subscription.frequency = package.get('frequency', 30)
+            subscription.frequency_unit = package.get('frequency_unit', 'days')
+            subscription.token_address = package.get('token_address', '')
+            subscription.token_symbol = package.get('token_symbol', '')
+            subscription.gas_price = (float(subscription.amount_per_period) * (fee_pct/100))
+            subscription.new_approve_tx_id = package.get('sub_new_approve_tx_id', '0x0')
+            subscription.split_tx_id = package.get('split_tx_id', '0x0')
+            subscription.num_tx_approved = package.get('num_tx_approved', 1)
+            subscription.network = package.get('network', '')
+            subscription.contributor_profile = profile
+            subscription.grant = grant
+            subscription.comments = package.get('comment', '')
+            subscription.save()
+            subscription.successful_contribution(subscription.new_approve_tx_id);
 
-        # one time payments
-        activity = None
-        subscription.error = True #cancel subs so it doesnt try to bill again
-        subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
-        subscription.save()
+            # one time payments
+            activity = None
+            subscription.error = True #cancel subs so it doesnt try to bill again
+            subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
+            subscription.save()
 
 
-        if 'hide_wallet_address' in package:
-            profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
-            profile.save()
+            if 'hide_wallet_address' in package:
+                profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
+                profile.save()
 
-        if 'anonymize_gitcoin_grants_contributions' in package:
-            profile.anonymize_gitcoin_grants_contributions = bool(package.get('anonymize_gitcoin_grants_contributions', False))
-            profile.save()
+            if 'anonymize_gitcoin_grants_contributions' in package:
+                profile.anonymize_gitcoin_grants_contributions = bool(package.get('anonymize_gitcoin_grants_contributions', False))
+                profile.save()
 
-        activity_profile = profile if not profile.anonymize_gitcoin_grants_contributions else Profile.objects.get(handle='gitcoinbot')
+            activity_profile = profile if not profile.anonymize_gitcoin_grants_contributions else Profile.objects.get(handle='gitcoinbot')
 
-        activity = record_subscription_activity_helper('new_grant_contribution', subscription, activity_profile)
+            activity = record_subscription_activity_helper('new_grant_contribution', subscription, activity_profile)
 
-        if 'comment' in package:
-            _profile = profile
-            comment = package.get('comment')
-            if comment and activity:
-                if profile.anonymize_gitcoin_grants_contributions:
-                    _profile = Profile.objects.filter(handle='gitcoinbot').first()
-                    comment = f"Comment from contributor: {comment}"
-                comment = Comment.objects.create(
-                    profile=_profile,
-                    activity=activity,
-                    comment=comment)
+            if 'comment' in package:
+                _profile = profile
+                comment = package.get('comment')
+                if comment and activity:
+                    if profile.anonymize_gitcoin_grants_contributions:
+                        _profile = Profile.objects.filter(handle='gitcoinbot').first()
+                        comment = f"Comment from contributor: {comment}"
+                    comment = Comment.objects.create(
+                        profile=_profile,
+                        activity=activity,
+                        comment=comment)
 
-        # emails to grant owner
-        new_supporter(grant, subscription)
-        update_grant_metadata.delay(grant_id)
+                    subscription.refresh_from_db()
+                    new_supporter(grant, subscription)
+                    update_grant_metadata.delay(grant_id)
+
+            subscriptions.append(subscription)
+
+    # emails to grant owner
+    thank_you_for_supporting(subscriptions, profile)
+
 
 @app.shared_task(bind=True, max_retries=1)
 def recalc_clr(self, grant_id, retry: bool = True) -> None:

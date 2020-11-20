@@ -23,7 +23,6 @@
   #footer {
     background-color: #15003E !important;
   }
-
   hr {
     width: 80%;
     height: 2px;
@@ -80,7 +79,7 @@
     border-radius: 3px;
     font-size: 14px;
     text-decoration: none;
-    background-color: #0D0764;
+    background-color: #3E01FF;
     color: white;
   }
 
@@ -99,10 +98,6 @@
     }
   }
 
-  .robot {
-    height: 150px;
-  }
-
   @media screen and (min-width: 598px) {
     .right-grant-header {
       padding-left: 40px;
@@ -111,45 +106,41 @@
     }
   }
 
+  .robot {
+    height: 150px;
+  }
 </style>
 <div class="grant-header">
-  <div class="left-grant-header">
-    <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
+
+  <div>
+    <h1 style="text-transform: none;">{% trans "Your Grant Contributions are Successful!" %}</h1>
   </div>
-  <div class="right-grant-header">
-    <h1 style="text-transform: none;">{% trans "Thank you for supporting" %} {{ grant.title }}!
-    </h1>
-    <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
-    </h2>
+  <div>
+    <img class="robot" src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
   </div>
 </div>
-<hr>
 <br>
+<br>
+
 {% for sub in subscriptions %}
-<div class="grant-info">
-  <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img id="grant-logo" src="{% if sub.grant.logo and sub.grant.logo.url %}{{ sub.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
-  </a>
-  <br>
-  <a class="grant-info-name" href="{% url 'grants:details' sub.grant.id sub.grant.slug %}">
-    {{ sub.grant.title }}
-  </a>
-  <p class="grant-description">
-    {{ sub.grant.description|truncatechars:300 }}
-  </p>
-  <p>
-    {% trans "You have agreed to give" %}
-  </p>
-  <p>
-    <strong>{{ sub.amount_per_period|floatformat:4|intcomma }} {{ sub.token_symbol }} </strong>
-      {% if sub.num_tx_approved > 1 %}
+  <div class="grant-info">
+    <a href="{% url 'grants:details' sub.grant.id sub.grant.slug %}">
+      <img id="grant-logo" src="{% if sub.grant.logo and sub.grant.logo.url %}{{ sub.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=sub.grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
+    </a>
+    <br>
+    <a class="grant-info-name font-weight-bold" href="{% url 'grants:details' sub.grant.id sub.grant.slug %}">
+      {{ sub.grant.title }}
+    </a>
+    <p>
+      {{ sub.amount_per_period|floatformat:4|intcomma }} {{ sub.token_symbol }}
+      {% if subscription.num_tx_approved > 1 %}
         {% trans "every" %} {{ sub.frequency }} {{ sub.frequency_unit }}
       {% endif %}
-    <strong> {{sub.num_tx_approved|floatformat}} time{{ sub.num_tx_approved|pluralize }}</strong>
+    </p>
     <a class="grant-button" href="{% url 'grants:details' sub.grant.id sub.grant.slug %}">{% trans "View on Gitcoin.co" %}</a>
-  </p>
-</div>
-<br>
-<br>
+  </div>
+  <br>
+  <br>
 {% endfor %}
+
 {% endblock %}

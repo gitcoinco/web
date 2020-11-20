@@ -25,6 +25,7 @@ import logging
 import random
 import re
 import time
+
 from celery import chord
 from decimal import Decimal
 
@@ -1688,8 +1689,8 @@ def grant_fund(request, grant_id, grant_slug):
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
-        from grants.tasks import process_grant_contribution
-        process_grant_contribution.delay(grant_id, grant_slug, profile.pk, request.POST)
+        from grants.tasks import process_grant_contributions
+        process_grant_contributions.delay([(grant_id)], profile.pk)
 
         return JsonResponse({
             'success': True,
@@ -1716,7 +1717,9 @@ def bulk_fund(request):
     successes = []
     failures = []
 
-    grant_tasks = []
+    batch_valid_grants = []
+    profile = get_profile(request)
+
     for (index, grant_id) in enumerate(grant_ids_list):
         try:
             grant = Grant.objects.get(pk=grant_id)
@@ -1730,8 +1733,6 @@ def bulk_fund(request):
                 'success': False
             })
             continue
-
-        profile = get_profile(request)
 
         if not grant.active:
             failures.append({
@@ -1767,7 +1768,7 @@ def bulk_fund(request):
             continue
 
         active_subscription = Subscription.objects.select_related('grant').filter(
-            grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
+            grant=grant_id, active=True, error=False, contributor_profile=profile, is_postive_vote=True
         )
 
         if active_subscription:
@@ -1792,8 +1793,7 @@ def bulk_fund(request):
             continue
 
         try:
-            from grants.tasks import process_grant_contribution
-            payload = {
+            package = {
                 # Values that are constant for all donations
                 'contributor_address': request.POST.get('contributor_address'),
                 'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken'),
@@ -1825,7 +1825,9 @@ def bulk_fund(request):
                 'token_address': request.POST.get('token_address').split(',')[index],
                 'token_symbol': request.POST.get('token_symbol').split(',')[index],
             }
-            grant_tasks.append(process_grant_contribution(grant_id, grant.slug, profile.pk, payload))
+
+            batch_valid_grants.append((grant_id, package))
+
         except Exception as e:
             failures.append({
                 'active': 'grant_error',
@@ -1836,7 +1838,6 @@ def bulk_fund(request):
                 'success': False
             })
             continue
-
         successes.append({
             'title': _('Fund - Grant Funding Processed Successfully'),
             'grant':grant_id,
@@ -1845,7 +1846,8 @@ def bulk_fund(request):
         })
 
     try:
-        chord(grant_tasks)(thank_you_for_supporting([success.get('grant') for success in successes], profile))
+        from grants.tasks import process_grant_contributions
+        process_grant_contributions.delay(batch_valid_grants, profile.pk)
     except Exception as e:
         print(e)
 

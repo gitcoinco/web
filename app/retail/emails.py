@@ -231,8 +231,8 @@ def support_cancellation(request):
 @staff_member_required
 def thank_you_for_supporting(request):
     grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    subscription = Subscription.objects.all()[:5]
+    response_html, __, __ = render_thank_you_for_supporting_email(subscription)
     return HttpResponse(response_html)
 
 
