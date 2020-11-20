@@ -82,14 +82,14 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                print(f"calculating CLR results for round: {clr_round.round_num}")
+                print(f"calculating CLR results for round: {clr_round.round_num} {clr_round.sub_round_slug}")
                 analytics = analytics_clr(
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
                 print(analytics)
-                print(f"finished CLR results for round: {clr_round.round_num}")
+                print(f"finished CLR results for round: {clr_round.round_num} {clr_round.sub_round_slug}")
 
         else:
             print("No active CLRs found")
