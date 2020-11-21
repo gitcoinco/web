@@ -298,6 +298,8 @@ class TipAdmin(admin.ModelAdmin):
         if "halve_tip" in request.POST:
             obj.amount = obj.amount / 2
             obj.metadata['max_redemptions'] = obj.metadata.get("max_redemptions", 1) * 2
+            obj.metadata['override_send_amount'] = True
+            obj.username = ''
             obj.save()
             self.message_user(request, f"Tip has been halved and can now be redeemed {obj.metadata['max_redemptions']} times.")
             return redirect(obj.admin_url)

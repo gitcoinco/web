@@ -26,7 +26,7 @@
             <input type="submit" value="Copy Offer" name="_copy_offer" value="1">
         {% elif 'dashboard/tip/' in request.build_absolute_uri %}
             <input type="submit" value="Reset Tip Redemption Status" name="_reset_tip_redemption" value="1">
-            <input type="submit" value="Halve Tip to {{original.metadata.max_redemptions}}x2 Redemptions" name="halve_tip" onclick='javascript:if(!confirm("are you sure?  this will make the tip be able to redeemed 2x the times as it currently can, and will cut the tip size in half.")){return false};' value="1">
+            <input type="submit" value="Make into MultiTip & Halve Tip to {{original.metadata.max_redemptions}}x2 Redemptions" name="halve_tip" onclick='javascript:if(!confirm("are you sure?  this will make the tip be able to redeemed 2x the times as it currently can, and will cut the tip size in half.")){return false};' value="1">
         {% elif 'economy/token/' in request.build_absolute_uri %}
             <input type="submit" value="Approve Request" name="_approve_token" value="1">
         {% elif 'grants/flag/' in request.build_absolute_uri %}

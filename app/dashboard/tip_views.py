@@ -229,7 +229,7 @@ def receive_tip_v3(request, key, txid, network):
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
         'tip': tip,
         'has_this_user_redeemed': has_this_user_redeemed,
         'key': key,
