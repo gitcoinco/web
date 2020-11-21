@@ -15,11 +15,15 @@
 {% block 'content' %}
 
 
-<!--regular-->
+<!-- headline-->
+<section class="column centered">
+	<h1>Mission</h1>
+</section>
+
+
+
+<!--missions-->
 <section class="mission">
-
-
-
 
 	<!-- proof of knowledge -->
 
@@ -33,6 +37,11 @@
 					<div class="card-title">Proof of Knowledge</div>
 					<div class="card-subtitle">unrepeatable</div>
 				</div>
+				<div class="card-badges">
+					<div class="card-badge">
+						{% include "quadraticlands/_inlinesvg/done.svg" %}
+					</div>
+				</div>				
 			</div>
 		</div>
 	</a>
@@ -189,10 +198,19 @@
 
 <script>
 
+
 // pops up web3 wallet if no wallet detected on load
 document.addEventListener("DOMContentLoaded",function(){
-	if(!selectedAccount) { needWalletConnection(); }
+
+	if(!selectedAccount) { 
+		needWalletConnection()  
+	}
+
+
 });
+
+
+
 
 </script>
 

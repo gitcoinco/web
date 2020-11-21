@@ -178,18 +178,25 @@ function particleStarfield() {
 // particleAttractTrigger
 //
 // by class .particleAttract, section a, section .btn
+// preventable attraction to a link by class "noparticles"
 
 const particleAttractTrigger = document.querySelectorAll(".particleAttract, section a, section .btn");
 
 particleAttractTrigger.forEach(p => {
 
-  p.addEventListener("mouseover", () => {
-    particleAttract();
-  });
+  if ( !p.classList.contains("noparticles") )
+  {
 
-  p.addEventListener("mouseout", () => {
-    particleInit();
-  });   
+    p.addEventListener("mouseover", () => {
+      particleAttract();
+    });
+
+    p.addEventListener("mouseout", () => {
+      particleInit();
+    });  
+
+  }
+
 
 });
 
