@@ -10,11 +10,12 @@ var trim_dots = function(_str, _chars) {
 };
 
 var show_prize = function() {
-  var prize_info = ''
-  if (document.reward_tip['token_amount']){
-    prize_info = "<strong>" + document.reward_tip['token_amount'] + " " + document.reward_tip['token'] + "</strong>";
+  var prize_info = '';
+
+  if (document.reward_tip['token_amount']) {
+    prize_info = '<strong>' + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>';
   } else {
-    prize_info = "<img src=" + document.kudos_reward['img'] + '>';
+    prize_info = '<img src=' + document.kudos_reward['img'] + '>';
   }
 
   var kudos_html = "<div class='tl prize'><span>🏆Quest Prize🏅</span>" + prize_info + '</div>';

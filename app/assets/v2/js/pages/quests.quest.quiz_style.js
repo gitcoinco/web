@@ -180,11 +180,12 @@ var advance_to_state = async function(new_state) {
     await wait_for_typewriter();
 
     var reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
-    if(document.reward_tip['token']){
-      var reward_html = " <BR><BR> If you're successful in this quest, you'll earn <strong>" + document.reward_tip['token_amount'] + " " + document.reward_tip['token'] + "</strong>";
+
+    if (document.reward_tip['token']) {
+      reward_html = " <BR><BR> If you're successful in this quest, you'll earn <strong>" + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>';
     }
-    var new_html = $('#desc').html() + reward_html;
-    $('#desc').html(new_html);
+
+    $('#desc').html($('#desc').html() + reward_html);
 
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(1000);
@@ -237,8 +238,7 @@ var advance_to_state = async function(new_state) {
     typeWriter();
     await $('#desc').removeClass('hidden').fadeIn();
     await wait_for_typewriter();
-    new_html = $('#desc').html() + html;
-    $('#desc').html(new_html);
+    $('#desc').html($('#desc').html() + html);
     await sleep(100);
     await $('#cta_button a').html('Got It 🤙');
     await $('#cta_button').removeClass('hidden').fadeIn();
@@ -298,8 +298,8 @@ var winner = async function(prize_url) {
   var span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
 
   start_music_midi('secret-discovery');
-  if (document.reward_tip['token_amount']){
-    $("#desc").html("<strong>" + document.reward_tip['token_amount'] + " " + document.reward_tip['token'] + "</strong>");    
+  if (document.reward_tip['token_amount']) {
+    $('#desc').html('<strong>' + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>');
   } else {
     $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   }

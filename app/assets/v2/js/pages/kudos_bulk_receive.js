@@ -8,8 +8,8 @@ $(document).ready(function() {
       _alert('Wallet not connected. <button id="metamask_connect" onclick="onConnect()">Click here to connect a wallet</button>', 'error');
     // } else if (document.web3network != document.network) {
       // This is fine, you dont need to be on the same network
-      //_alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-      //$('#receive').attr('disabled', 'disabled');
+      // _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      // $('#receive').attr('disabled', 'disabled');
     } else {
       web3.eth.getCoinbase(function(_, coinbase) {
         $('#forwarding_address').val(coinbase);
