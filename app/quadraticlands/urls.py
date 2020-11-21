@@ -29,6 +29,8 @@ app_name = 'quadraticlands'
 # TODO Zak - quadraticlands VS quadraticlands/ 
 # possible solution - https://stackoverflow.com/questions/1596552/django-urls-without-a-trailing-slash-do-not-redirect
 
+
+# this is better for now but the these should probably be updated to use regex for supported missions and kick 404 for everything else
 urlpatterns = [
     path('', index, name='quadraticlands'),
     path('mission', mission_index, name='mission'),

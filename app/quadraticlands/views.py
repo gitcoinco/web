@@ -44,16 +44,18 @@ logger = logging.getLogger(__name__)
 # TODO - add a new envar for CF KV url in helpers.py 
 
 def index(request):
-    '''load the main index page'''
+    '''render template for base index page'''
     context = get_initial_dist(request) 
     return TemplateResponse(request, f'quadraticlands/index.html', context)
 
 def base(request, base):
+    '''render templates for /quadraticlands/'''
     context = get_initial_dist(request) 
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 @login_required
 def mission_index(request):
+    '''render quadraticlands/mission/index.html'''
     context = get_initial_dist(request)
     return TemplateResponse(request, 'quadraticlands/mission/index.html', context)  
 
