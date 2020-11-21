@@ -22,15 +22,31 @@ import json
 import logging
 
 import requests
+from quadraticlands.models import InitialTokenDistribution
 
+logger = logging.getLogger(__name__)
 
 def get_initial_dist(request):
-    '''hit the CF KV pairs list and return user claim data'''
+    '''retrieve initial dist info from the DB'''
+    if request.user.id == None:
+        return {'total_claimable': 0}
+    # user_id = 0 should be replaced with user_id = request.user.id once the DB has more data 
+    initial_dist = InitialTokenDistribution.objects.get(user_id=0).num_tokens
+    context = {'total_claimable': initial_dist}
+    return context
+
+
+def get_initial_dist_from_CF(request):
+    '''hit the CF KV pairs list and return user claim data. 
+       this has been tabled for now. maybe will be used 
+       as backup to confirm/deny dist amounts are correct 
+    '''
+    if request.user.id == None:
+        return False
 
     # hit the graph and confirm/deny user has made a claim
-    
 
-    # maybe this URL should be an envar? 
+        # maybe this URL should be an envar? 
     url=f'https://js-initial-dist.orbit-360.workers.dev/?user_id={request.user.id}'
     try:
         r = requests.get(url,timeout=3)

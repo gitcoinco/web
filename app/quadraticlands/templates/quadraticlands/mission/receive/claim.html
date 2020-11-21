@@ -161,8 +161,6 @@ document.addEventListener("DOMContentLoaded",function(){
 	$(document).on('click', '#beginClaim', (event) => {
 
 		console.log('BEGIN CLAIM');
-		// console.log('selectedAccount', selectedAccount);
-		// var sendForm = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
 
 	    // confirm we have a working web3 connection if not, return error 
 	    try {
@@ -179,7 +177,7 @@ document.addEventListener("DOMContentLoaded",function(){
     	// ZW TODO - check that eth address is_valid before proceeding? - if not valid, return 
 
 
-    	var getClaimData = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
+    	var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
 
 
 		$.when(getClaimData).then((response, status, statusCode) => {

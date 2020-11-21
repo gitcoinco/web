@@ -27,7 +27,7 @@ $(document).on('click', '#beginClaim', (event) => {
 
     // ZW TODO - check that eth address is_valid before proceeding? - if not valid, return 
 
-    var getClaimData = fetchData('/quadraticlands/claim2', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
+    var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken})
 
     $.when(getClaimData).then((response, status, statusCode) => {
         // for debugging, remove for prod 
