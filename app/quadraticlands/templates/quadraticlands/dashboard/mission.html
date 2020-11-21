@@ -1,0 +1,73 @@
+<div class="section">
+
+	<a href="" class="noparticles">
+		<div class="header">
+			<div class="icon">
+				{% include "quadraticlands/_inlinesvg/missioncontrol.svg" %}
+			</div>
+			<div class="title">
+				Mission</span>
+			</div>
+			<div class="arrow">
+				{% include "quadraticlands/_inlinesvg/arrow.svg" %}
+			</div>
+		</div>
+	</a>
+
+	<div class="content">
+		<div class="content-mission">
+			<div class="wrapper">
+
+				<div class="col">
+					<div class="mission-name">
+						<!-- no a href here as this is "passed not repeatable" -->
+						Proof of Knowledge
+					</div>
+					<!-- set font colors per class : active, disabled -->
+					<div class="mission-status">Passed</div>
+					<!-- set icon colors per class : active, disabled -->
+					<div class="mission-status-icon">
+						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
+					</div>											
+				</div>
+
+				<div class="col">
+					<div class="mission-name">
+						<!-- render a href for active repeatable missions -->
+						<a href="/quadraticlands/mission/receive">Proof of Receive</a>
+					</div>
+					<div class="mission-status active">Active</div>
+					<div class="mission-status-icon active">
+						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
+					</div>											
+				</div>
+
+
+				<div class="col">
+					<div class="mission-name">
+						Proof of Use
+					</div>
+					<div class="mission-status disabled">Upcoming</div>
+					<div class="mission-status-icon disabled">
+						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
+					</div>											
+				</div>
+
+
+				<div class="col">
+					<div class="mission-name">
+						<!-- render a href just on active / repeatable missions -->
+						<a href="/quadraticlands/sybilhunt">SybilHunt</a>
+					</div>
+					<div class="mission-status active">Active</div>
+					<div class="mission-status-icon active">
+						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
+					</div>											
+				</div>
+
+		
+			</div>
+		</div>
+	</div>
+	
+</div>

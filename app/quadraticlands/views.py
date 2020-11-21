@@ -75,7 +75,7 @@ def leaderboard(request):
 
 @login_required
 def dashboard(request):
-    return TemplateResponse(request, 'quadraticlands/dashboard.html')
+    return TemplateResponse(request, 'quadraticlands/dashboard/index.html')
 
 @login_required
 def mission(request):
