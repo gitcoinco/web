@@ -1627,7 +1627,7 @@ class SendCryptoAsset(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
-        if self.tokenAddress == '0x0':
+        if self.tokenAddress in ['0x0', '0x0000000000000000000000000000000000000000']:
             return self.amount
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
