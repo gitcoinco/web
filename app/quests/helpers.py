@@ -179,8 +179,8 @@ def get_or_create_prize_url(quest, profile):
     if quest.reward_tip:
         return f"{quest.reward_tip.receive_url}{add_params}"
     else:
-        btcs = get_existing_prizes_for(quest, profile)
-        btc = BulkTransferCoupon.objects.filter(
+        btc = None
+        btcs = BulkTransferCoupon.objects.filter(
             token=quest.kudos_reward,
             tag='quest',
             metadata__recipient=profile.pk)
