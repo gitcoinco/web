@@ -1,0 +1,23 @@
+{
+      "symbol": "acBTC",
+      "address": "0xeF6e45af9a422c5469928F927ca04ed332322e2e",
+      "overview": {
+            "en": "acBTC is a composite asset backed by a basket of ERC20 BTC. The acBTC ecosystem integrates native BTC and ERC20 BTC, with swap, lending and yield generating applications into one highly secure, efficient and usable standard.",
+            "zh": "acBTC 是由一篮子ERC20 BTC 支持的合成资产。acBTC 生态系统是一组针对原生BTC 与ERC20 BTC 设计，集兑换、稳定币和生息应用于一身的协议。acBTC 是以安全、高效和可用为设计目标。"
+      },
+      "email": "hello@nuts.finance",
+      "website": "https://acbtc.fi/",
+      "whitepaper": "",
+      "state": "NORMAL",
+      "published_on": "2020-10-01",
+      "initial_price": {
+            "BTC": "1 BTC"
+      },
+      "links": {
+            "twitter": "https://twitter.com/NUTSFinance/",
+            "telegram": "https://t.me/NUTS_Finance/",
+            "github": "https://github.com/nutsfinance/acBTC",
+            "discord": "https://discord.com/invite/mvANFYe/",
+            "medium": "https://medium.com/nuts-foundation"
+      }
+}
