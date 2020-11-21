@@ -44,6 +44,7 @@ class Quest(SuperModel):
     unlocked_by_hackathon = models.ForeignKey('dashboard.HackathonEvent', blank=True, null=True, related_name='unblocks_quest', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)
     visible = models.BooleanField(default=True, db_index=True)
+    force_visible = models.BooleanField(default=False, help_text='override such that the re_rank_quests mgmt command does not make the quest invisible due to low feedback.')
     difficulty = models.CharField(max_length=100, default='Beginner', choices=DIFFICULTIES, db_index=True)
     style = models.CharField(max_length=100, default='quiz', choices=STYLES)
     value = models.FloatField(default=1)
