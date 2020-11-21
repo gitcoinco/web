@@ -21,6 +21,8 @@ from quests.helpers import (
 from quests.models import Quest, QuestAttempt, QuestPointAward
 from ratelimit.decorators import ratelimit
 
+logger = logging.getLogger(__name__)
+
 html_escape_table = {
     "&": "&amp;",
     '"': "&quot;",
@@ -92,7 +94,7 @@ def details(request, quest):
             return response
 
     except Exception as e:
-        print(e)
+        logger.exception(e)
         pass
 
     # make sure that cooldown period is respected
