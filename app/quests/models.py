@@ -39,6 +39,7 @@ class Quest(SuperModel):
     game_metadata = JSONField(default=dict, blank=True)
     questions = JSONField(default=dict, blank=True)
     kudos_reward = models.ForeignKey('kudos.Token', blank=True, null=True, related_name='quests_reward', on_delete=models.SET_NULL)
+    reward_tip = models.ForeignKey('dashboard.Tip', blank=True, null=True, related_name='quests_reward_token', on_delete=models.SET_NULL)
     unlocked_by_quest = models.ForeignKey('quests.Quest', blank=True, null=True, related_name='unblocks_quest', on_delete=models.SET_NULL)
     unlocked_by_hackathon = models.ForeignKey('dashboard.HackathonEvent', blank=True, null=True, related_name='unblocks_quest', on_delete=models.SET_NULL)
     cooldown_minutes = models.IntegerField(default=5)

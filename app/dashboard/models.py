@@ -1839,8 +1839,6 @@ class Tip(SendCryptoAsset):
                 comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
 
-
-
     @property
     def receive_url(self):
         if self.web3_type == 'yge':

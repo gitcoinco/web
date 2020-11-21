@@ -295,6 +295,13 @@ class TipAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "halve_tip" in request.POST:
+            obj.amount = obj.amount / 2
+            obj.metadata['max_redemptions'] = obj.metadata.get("max_redemptions", 1) * 2
+            obj.save()
+            self.message_user(request, f"Tip has been halved and can now be redeemed {obj.metadata['max_redemptions']} times.")
+            return redirect(obj.admin_url)
+
         if "_reset_tip_redemption" in request.POST:
             if not obj.receive_txid:
                 self.message_user(request, f"Cannot reset tip! This tip has not been marked as receieved")
