@@ -1,0 +1,18 @@
+{
+  "symbol": "SFR",
+  "address": "0x8ab98C28295Ea3BD2DB6aC8b3CA57A625C054BD1",
+  "overview":{
+        "en": "Sunflower Swap is a NFT decentralized platform developed based on the ETH standard. At the same time, it uses the DeFi protocol to pledge to obtain encrypted assets Sunflower (SFR) through AMM and SLP (providing liquidity proof) that provides liquid mining, and then exchanges with SFR NFT provided on the platform. "
+  },
+  "email": "sunflowerdefi@gmail.com",
+  "website": "http://sunflowerswap.finance/",
+  "whitepaper": "https://help.sfrswap.com/",
+  "state": "NORMAL",
+  "published_on": "2020-11-01",
+  "links": {
+    "twitter": "https://twitter.com/sunflower_swap",
+    "github": "https://github.com/sunflowerswap",
+    "medium": "https://medium.com/@sunflowerswap"
+  }
+}
+
