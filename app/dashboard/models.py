@@ -2929,6 +2929,7 @@ class Profile(SuperModel):
     is_twitter_verified=models.BooleanField(default=False)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
+    is_ens_verified=models.BooleanField(default=False)
     is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))

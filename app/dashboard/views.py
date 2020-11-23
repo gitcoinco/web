@@ -28,6 +28,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
 
+import ens
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -58,6 +59,9 @@ import magic
 import pytz
 import requests
 import tweepy
+from ens.auto import ns
+from ens.utils import name_to_hash
+
 from app.services import RedisService, TwilioService
 from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
@@ -78,11 +82,11 @@ from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    get_poap_earliest_owned_token_timestamp, profile_helper,
+    get_poap_earliest_owned_token_timestamp, profile_helper, get_ens_resolver_contract,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from eth_utils import to_checksum_address, to_normalized_address
+from eth_utils import to_checksum_address, to_normalized_address, is_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
@@ -3090,6 +3094,100 @@ def verify_user_google(request):
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
+
+
+@login_required
+def verify_profile_with_ens(request):
+    profile = request.user.profile
+    user_address = profile.preferred_payout_address
+
+    # 1. Check user has preferred address
+    if not is_address(user_address):
+        return JsonResponse({
+            'error': 'NO_PAYOUT_ADDRESS_ASSOCIATED',
+            'msg': 'You don\'t have one preferred payout address associated to your profile',
+            'data': {
+                'step': 1,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+    # 2. Check Reverse lookup
+    web3 = get_web3('mainnet')
+    ns = ens.ENS.fromWeb3(web3, '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e')
+    node = ns.name(user_address)
+
+    if not node:
+        return JsonResponse({
+            'error': 'NO_ENS_NAME_ASSOCIATED',
+            'msg': f'You don\'t have one ens domain associated to your address {user_address}',
+            'data': {
+                'step': 2,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+    # 3. Check Forward lookup
+    registered_address = ns.address(node)
+    if not is_address(registered_address):
+        return JsonResponse({
+            'error': 'NO_ADDRESS_ASSOCIATED_TO_ENS',
+            'msg': f'You don\'t have associated your address to your domain {node}',
+            'data': {
+                'step': 3,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+    # 4. Implement challenge
+    resolver_contract = get_ens_resolver_contract('mainnet', node)
+    github_handle = resolver_contract.functions.text(name_to_hash(node), 'vnd.github').call()
+
+    if github_handle != profile.handle:
+        return JsonResponse({
+            'error': 'NO_MATCH_GITHUB_PROFILE',
+            'msg': f'Sorry the {github_handle} github handle registered in ENS {node} doesn\'t match your gitcoin handle ${profile.handle}',
+            'data': {
+                'step': 4,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+    # 5. Check if address matches.
+    if registered_address != user_address:
+        return JsonResponse({
+            'error': 'NO_ADDRESS_DOESNT_MATCH',
+            'msg': f'Sorry the registered ENS address differ from your preferred payout address',
+            'data': {
+                'step': 5,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+    if request.method == 'POST':
+        profile.is_ens_verified = True
+        profile.save()
+
+        return JsonResponse({
+            'error': False,
+            'msg': f'Account verified successfully',
+            'data': {
+                'step': 6,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+
+    return JsonResponse({
+        'error': False,
+        'msg': 'Account ready for verification',
+        'data': {
+            'step': 6,
+            'verified': profile.is_ens_verified
+        }
+    })
+
+
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.

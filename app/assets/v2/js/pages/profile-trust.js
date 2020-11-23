@@ -300,7 +300,7 @@ Vue.component('poap-verify-modal', {
     };
   },
   mounted: function() {
-    
+
     $(document).on('click', '#verify-poap-link', function(event) {
       event.preventDefault();
       this.showValidation = true;
@@ -329,7 +329,7 @@ Vue.component('poap-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validate-poap' || validationStep == 'perform-validation'">
                       <p class="mb-4">
-                        Now we'll validate that you have the poap badges. Press validate. 
+                        Now we'll validate that you have the poap badges. Press validate.
                       </p>
                       <p class="mb-4">
                         You can change your wallet by pressing change wallet.
@@ -653,6 +653,104 @@ Vue.component('sms-verify-modal', {
     isValidNumber(validation) {
       console.log(validation);
       this.validNumber = validation.isValid;
+    }
+  }
+});
+
+Vue.component('ens-verify-modal', {
+  data: function() {
+    return {
+      showValidation: false,
+      static_url: document.contxt.STATIC_URL,
+      validationStep: 0,
+      validationError: '',
+      validationErrorMsg: '',
+      validated: false
+    };
+  },
+  mounted: function() {
+    $(document).on('click', '#verify-ens-link', function(event) {
+      event.preventDefault();
+      this.showValidation = true;
+    }.bind(this));
+    this.checkENSValidation();
+  },
+  template: `
+    <b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+      <template v-slot:default="{ hide }">
+        <div class="mx-5 mt-5 mb-4 text-center">
+          <div class="mb-3">
+            <h1 class="font-bigger-4 font-weight-bold">Verify with ENS</h1>
+            <p>
+              ENS is a name service built on Ethereum. It offers a secure and decentralized way to address resources using human-readable names.
+              <p class="mb-4">
+                <a href="https://ens.domains/about">Learn more.</a>
+              </p>
+            </p>
+          <div>
+            <h2 class="font-bigger-4 font-weight-bold">You need to have these requirements:</h2>
+            <ol>
+              <li>You have a preferred payout address in <a href="/settings/account">settings</a>. <span :class="\`mr-2 fas fa-\${ validationStep > 1 ? 'check check gc-text-green' : 'times gc-text-pink' }\`"></span></li>
+              <li>Your preferred payout address has an ENS domain associated, you can get one <a href="https://app.ens.domains/">here</a>. <span :class="\`mr-2 fas fa-\${ validationStep > 2 ? 'check gc-text-green' : 'times gc-text-pink' }\`"></span></li>
+              <li>Your ENS domain has your github handle at the <i>vnd.github</i> txt record like <a target="_blank" href="${static_url}/v2/images/ens-vnd-github.png">this</a>. <span :class="\`mr-2 fas fa-\${ validationStep > 4 ? 'check gc-text-green' : 'times gc-text-pink' }\`"></span></li>
+              <li>Your payout address should match with the address associated to the ENS domain. <span :class="\`mr-2 fas fa-\${ validationStep > 5 ? 'check gc-text-green' : 'times gc-text-pink' }\`"></span> </li>
+            </ol>
+            <p>read more about Web of <a href="https://en.wikipedia.org/wiki/Web_of_trust">trust</a></p>
+          </div>
+        </div>
+        <div v-if="!validated && validationError === false">
+          <p class="mb-4">
+            You fulfill all the requirements, just click on validate to confirm that your ENS account is valid
+          </p>
+          <b-button @click="verifyENS" class="btn-gc-blue mt-3 mb-2" size="lg">
+            Validate
+          </b-button>
+          <div v-if="validationError & validationErrorMsg !== ''" style="color: red">
+            <small>[[validationError]]</small>
+          </div>
+          <br />
+          <a href="" v-if="validationError !== ''" @click="dismissVerification">
+            Go Back
+          </a>
+        </div>
+        <div v-if="validated">
+          Your ENS verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+          <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+        </div>
+      </div>
+    </template>
+  </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.showValidation = false;
+    },
+    verifyENS() {
+      let vm = this;
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_ens', 'POST', {}, headers);
+
+      $.when(verificationRequest).then(response => {
+        vm.validationError = response.error;
+        vm.validationErrorMsg = response.msg;
+        vm.validated = response.data.verified;
+        vm.validationStep = response.data.step;
+      });
+    },
+    checkENSValidation() {
+      let vm = this;
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_ens', 'GET', {}, headers);
+
+      $.when(verificationRequest).then(response => {
+        vm.validationError = response.error;
+        vm.validationErrorMsg = response.msg;
+        vm.validated = response.data.verified;
+        vm.validationStep = response.data.step;
+      });
     }
   }
 });
