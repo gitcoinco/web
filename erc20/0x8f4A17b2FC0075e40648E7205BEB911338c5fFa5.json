@@ -1,0 +1,18 @@
+{
+  "symbol": "BULL",
+  "address": "0x8f4A17b2FC0075e40648E7205BEB911338c5fFa5",
+  "overview":{
+        "en": "BULL is the integration of decentralized finance and e-commerce, a symbiotic Internet for freedom and wealth."
+  },
+  "email": "bulldextoken@gmail.com",
+  "website": "http://bulldex.org/",
+  "whitepaper": "http://bulldex.org/bull.whitepaper.v1.pdf",  
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/bulldextoken",
+    "telegram": "https://t.me/bulldextoken",
+    "github": "https://github.com/bulldex",
+    "facebook": "https://www.facebook.com/groups/726615928008329"
+  }
+}
+
