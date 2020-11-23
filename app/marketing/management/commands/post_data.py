@@ -411,9 +411,11 @@ def grants():
     pprint("=======================")
     pprint("")
     pprint("Misc Stats:")
+    idena_contributor_count = contributions.filter(subscription__contributor_profile__is_idena_verified=True).distinct('subscription__contributor_profile').count()
     brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
     sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
     contributor_count = contributions.distinct('subscription__contributor_profile').count()
+    idena_contributor_pct = round(100 * idena_contributor_count / contributor_count)
     sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
     brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
 
@@ -423,6 +425,7 @@ def grants():
     sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
 
     pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
+    pprint(f"- {idena_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({idena_contributor_pct}%) ")
     pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
     pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
 

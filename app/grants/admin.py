@@ -86,9 +86,9 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'migrated_to',
+        'migrated_to', 'region',
         'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
-        'amount_received', 'monthly_amount_subscribed',
+        'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
@@ -389,8 +389,7 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active', 'link']
-
+    list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
 
     def link(self, instance):
         try:

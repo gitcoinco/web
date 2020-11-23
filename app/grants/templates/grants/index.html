@@ -41,7 +41,7 @@ along with this program. If not, see
   </style>
 </head>
 
-<body class="interior {{type}}_grants {{ active }} grant g-font-muli">
+<body class="interior {{type}}_grants {{ active }} grant g-font-muli" data-instant-whitelist>
   {% include 'shared/tag_manager_2.html' %}
   {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'grants/nav.html' %}
@@ -87,8 +87,8 @@ along with this program. If not, see
 
                 <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
                   {% include 'grants/shared/landing_navbar.html' %}
-                  {% include 'grants/shared/landing_clr.html' %}
-
+                  {% include 'grants/shared/landing_clr.html' %}                 
+                  
                   <template v-if="'activity' == current_type">
                     {% include 'grants/shared/landing_activity.html' %}
                   </template>
@@ -106,6 +106,7 @@ along with this program. If not, see
                   </template>
                   <template v-else>
                     {% include 'grants/shared/landing_subnav.html' %}
+                     {% include 'grants/shared/active_clr_round.html'%}
                     {% include 'grants/shared/landing_grants.html' %}
                   </template>
                 </div>
@@ -141,25 +142,24 @@ along with this program. If not, see
       document.collections = JSON.parse(document.getElementById('collections-object').textContent);
       {% if clr_round %}
         document.round_num = "{{clr_round.round_num}}";
+        document.sub_round_slug = "{{clr_round.sub_round_slug}}";
+        document.customer_name = "{{clr_round.customer_name}}";
       {% endif %}
     </script>
-</body>
-{% include 'shared/activity_scripts.html' %}
-<script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
-<script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-<script src="{% static "v2/js/grants/components.js" %}"></script>
-<script src="{% static "v2/js/grants/index.js" %}"></script>
-<script src="{% static "v2/js/grants/funding.js" %}"></script>
-<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+    {% include 'shared/activity_scripts.html' %}
 
-<script>
-  var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0]
-  });
-</script>
+
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+    <script src="{% static "v2/js/grants/components.js" %}"></script>
+    <script src="{% static "v2/js/grants/index.js" %}"></script>
+    <script src="{% static "v2/js/grants/funding.js" %}"></script>
+    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+
+    <script src="//instant.page/5.1.0" type="module" integrity="sha384-by67kQnR+pyfy8yWP4kPO12fHKRLHZPfEsiSXR8u2IKcTdxD805MGUXBzVPnkLHw"></script>
+</body>
+
 
 
 </html>
