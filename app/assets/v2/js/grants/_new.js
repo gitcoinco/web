@@ -320,21 +320,16 @@ if (document.getElementById('gc-new-grant')) {
     },
     computed: {
       queryParams() {
-        let query = window.location.search.substr(1);
-
-        query = query.split('&');
-        let returnVal = {};
-
-        query.map(q => {
-          const parts = q.split('=');
-          const arrayCheckRegex = /\[.+\]/;
-          let value = decodeURIComponent(parts[1]);
-
+        return new URLSearchParams(window.location.search)
+      },
+      clean () {
+        return value => {
+          value = decodeURIComponent(value);
           if ((/<[a-zA-Z\\\/]+>/).test(value)) {
             // if it matches a tag, reset the value to empty
             value = '';
           }
-
+          const arrayCheckRegex = /\[.+\]/;
           if (arrayCheckRegex.test(value)) {
             // check if array is passed in query params and return it as an array instead of default string.
             // i.e change "[1, 2]" to [1, 2]
@@ -347,9 +342,8 @@ if (document.getElementById('gc-new-grant')) {
               return item;
             });
           }
-
-          returnVal[parts[0]] = value;
-        });
+          return value
+        }
       },
       grant_type_logo() {
         const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
@@ -362,17 +356,19 @@ if (document.getElementById('gc-new-grant')) {
     },
     mounted() {
       const writeToRoot = ['chainId'];
+      const writeToBody = ['title', 'reference_url', 'twitter_handle_1', 'twitter_handle_2',
+       'github_project_url', 'eth_payout_address', 'grant_type', 'grant_categories']
 
       for (const key of writeToRoot) {
-        if (this.queryParams && this.queryParams[key]) {
-          this[key] = this.queryParams[key];
-          delete this.queryParams[key];
+        if (this.queryParams && this.queryParams.has(key)) {
+          this[key] =  this.clean(this.queryParams.get(key));
         }
       }
-      this.form = {
-        ...this.form,
-        ...this.queryParams
-      };
+      for (const key of writeToBody) {
+        if (this.queryParams && this.queryParams.has(key)) {
+          this.form[key] = this.clean(this.queryParams.get(key));
+        }
+      }
     }
   });
 }
