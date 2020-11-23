@@ -88,8 +88,8 @@ along with this program. If not, see
 
                 <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
                   {% include 'grants/shared/landing_navbar.html' %}
-                  {% include 'grants/shared/landing_clr.html' %}
-
+                  {% include 'grants/shared/landing_clr.html' %}                 
+                  
                   <template v-if="'activity' == current_type">
                     {% include 'grants/shared/landing_activity.html' %}
                   </template>
@@ -107,6 +107,7 @@ along with this program. If not, see
                   </template>
                   <template v-else>
                     {% include 'grants/shared/landing_subnav.html' %}
+                     {% include 'grants/shared/active_clr_round.html'%}
                     {% include 'grants/shared/landing_grants.html' %}
                   </template>
                 </div>
@@ -142,6 +143,8 @@ along with this program. If not, see
       document.collections = JSON.parse(document.getElementById('collections-object').textContent);
       {% if clr_round %}
         document.round_num = "{{clr_round.round_num}}";
+        document.sub_round_slug = "{{clr_round.sub_round_slug}}";
+        document.customer_name = "{{clr_round.customer_name}}";
       {% endif %}
     </script>
     {% include 'shared/activity_scripts.html' %}

@@ -39,6 +39,21 @@
         max-height: 600px;
         overflow-y: auto;
       }
+      .ql-editor .ql-video {
+        height: max(170px, 360px);
+        width: clamp(340px, 660px, 100%);
+      }
+
+      .ql-editor img {
+        max-width: 100%;
+      }
+
+      .ql-toolbar.ql-snow {
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+        background: white;
+      }
 
       .grid {
         display: grid;
@@ -324,6 +339,7 @@
             <div class="d-flex">
               <a :href="`/grants/${item.fields.name}`" v-for="item in grant.grant_type" class="btn btn-outline-gc-blue py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.name]]</a>
               <a :href="`/grants/${grant.grant_type[0].fields.name}?category=${item.fields.category}`" v-for="item in grant.categories" class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.category]]</a>
+              <span v-if="grant.region" class="btn btn-outline-gc-blue py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[grant.region.label]]</span>
             </div>
           </div>
 
@@ -410,13 +426,38 @@
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
               <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-
-              <input id="reference_url" v-model="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
-
+              <input v-model="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
               <div class="text-danger" v-if="errors.reference_url">
                 [[errors.reference_url]]
               </div>
             </div>
+
+            <!-- Project twitter -->
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_1">Project Twitter Handle</label>
+              <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+              <input id="twitter_handle_1" v-model="grant.twitter_handle_1" name="twitter_handle_1" class="form__input form__input-lg" maxlength="20" type="text" placeholder="humanfund"/>
+
+              <div class="text-danger" v-if="errors.twitter_handle_1">
+                [[errors.twitter_handle_1]]
+              </div>
+            </div>
+
+            <!-- Owner twitter -->
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
+
+              <input id="twitter_handle_2" v-model="grant.twitter_handle_2" name="twitter_handle_2" class="form__input form__input-lg" maxlength="20" type="text" placeholder="georgecostanza"/>
+            </div>
+
+            <!-- Github -->
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
+              <input v-model="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://github.com/humanfund"/>
+            </div>
+
+
 
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
@@ -441,6 +482,23 @@
                   </div>
                 </template>
               </v-select>
+            </div>
+
+            <div class="col-12 mb-3">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_region">Region</label>
+
+              <v-select placeholder="Pick your region" :options="grantRegions" label="label" v-model="grant.region">
+                <template v-slot:option="option">
+                  <span class="font-weight-semibold">[[ option.label ]]</span>
+                </template>
+              </v-select>
+            </div>
+
+
+            <div>
+              Danger Area
+
+              <button @click="cancelGrant($event)">CANCEL GRANT</button>
             </div>
 
 

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import logging
 from datetime import timedelta
 from decimal import Decimal
@@ -35,7 +36,6 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
-import json
 import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField
@@ -129,10 +129,41 @@ class GrantType(SuperModel):
 
 
 class GrantCLR(SuperModel):
-    round_num = models.CharField(max_length=15, help_text="CLR Round Number")
+
+    class Meta:
+        unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
+    
+    customer_name = models.CharField(
+        max_length=15,
+        default='',
+        blank=True,
+        help_text="used to genrate <customer_name>/round_num/sub_round_slug"
+    )
+    round_num = models.PositiveIntegerField(
+        help_text="CLR Round Number. used to genrate customer_name/<round_num>/sub_round_slug"
+    )
+    sub_round_slug = models.CharField(
+        max_length=25,
+        default='',
+        blank=True,
+        help_text="used to genrate customer_name/round_num/<sub_round_slug>"
+    )
+    display_text = models.CharField(
+        max_length=15,
+        null=True,
+        blank=True,
+        help_text="sets the custom text in CLR banner on the landing page"
+    )
+    owner = models.ForeignKey(
+        'dashboard.Profile',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text='sets the owners profile photo in CLR banner on the landing page'
+    )
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
-    end_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round End Date")
     grant_filters = JSONField(
         default=dict,
         null=True, blank=True,
@@ -148,33 +179,36 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grant Collections to be allowed in this CLR round"
     )
-    verified_threshold = models.DecimalField(help_text="Verfied CLR Threshold",
+    verified_threshold = models.DecimalField(
+        help_text="This is the verfied CLR threshold. You can generally increase the saturation of the round / increase the CLR match by increasing this value, as it has a proportional relationship. However, depending on the pair totals by grant, it may reduce certain matches. In any case, please use the contribution multiplier first.",
         default=25.0,
         decimal_places=2,
         max_digits=5
     )
-    unverified_threshold = models.DecimalField(help_text="Unverified CLR Threshold",
+    unverified_threshold = models.DecimalField(
+        help_text="This is the unverified CLR threshold. The relationship with the CLR match is the same as the verified threshold. If you would like to increase the saturation of round / increase the CLR match, increase this value, but please use the contribution multiplier first.",
         default=5.0,
         decimal_places=2,
         max_digits=5
     )
-    total_pot = models.DecimalField(help_text="CLR Pot",
+    total_pot = models.DecimalField(
+        help_text="Total CLR Pot",
         default=0,
         decimal_places=2,
         max_digits=10
     )
     contribution_multiplier = models.DecimalField(
-        help_text="A contribution multipler to be applied to each contribution",
+        help_text="This contribution multipler is applied to each contribution before running CLR calculations. In order to increase the saturation, please increase this value first, before modifying the thresholds.",
         default=1.0,
         decimal_places=4,
-        max_digits=10,
+        max_digits=10
     )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
         blank=True,
         max_length=500,
-        help_text=_('The Grant CLR round image'),
+        help_text=_('sets the background in CLR banner on the landing page'),
     )
 
     def __str__(self):
@@ -182,7 +216,7 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        
+
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
@@ -192,7 +226,7 @@ class GrantCLR(SuperModel):
             grants = grants.filter(**self.collection_filters)
 
         return grants
-        
+
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
         for obj in self.clr_calculations.filter(grant=grant):
@@ -216,6 +250,18 @@ class Grant(SuperModel):
         ordering = ['-created_on']
 
 
+    REGIONS = [
+        ('north_america', 'North America'),
+        ('oceania', 'Oceania'),
+        ('latin_america', 'Latin America'),
+        ('europe', 'Europe'),
+        ('africa', 'Africa'),
+        ('middle_east', 'Middle East'),
+        ('india', 'India'),
+        ('east_asia', 'East Asia'),
+        ('southeast_asia', 'Southeast Asia')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
@@ -225,6 +271,13 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    region = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        choices=REGIONS,
+        help_text="region to which grant belongs to"
+    )
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
         null=True,
@@ -474,8 +527,10 @@ class Grant(SuperModel):
 
     @property
     def calc_clr_round_nums(self):
-        roudn_nums = [ele for ele in self.in_active_clrs.values_list('round_num', flat=True)]
-        return ", ".join(roudn_nums)
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            return ", ".join(round_nums)
+        return ''
 
 
     @property
@@ -492,6 +547,10 @@ class Grant(SuperModel):
                     for i in [0,1,2,3,4,5]:
                         # add the 1 and 2 index of each clr prediction cuve
                         _clr_prediction_curve[i][j] += insert_clr_calc[i][j]
+
+        if not _clr_prediction_curve:
+            _clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+
         return _clr_prediction_curve
 
 
@@ -696,13 +755,18 @@ class Grant(SuperModel):
         team_members = serializers.serialize('json', self.team_members.all(),
                             fields=['handle', 'url', 'profile__avatar_url']
                         )
-        grant_type = serializers.serialize('json', [self.grant_type],
-                            fields=['name', 'label']
-                        )
+
+        grant_type = None
+        if self.grant_type:
+            grant_type = serializers.serialize('json', [self.grant_type],
+                                fields=['name', 'label']
+                            )
+
         categories = serializers.serialize('json', self.categories.all(),
                             fields=['category'])
         return {
                 'id': self.id,
+                'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
@@ -742,13 +806,15 @@ class Grant(SuperModel):
                 'tenants': self.tenants,
                 'team_members': json.loads(team_members),
                 'metadata': self.metadata,
-                'grant_type': json.loads(grant_type),
+                'grant_type': json.loads(grant_type) if grant_type else None,
                 'categories': json.loads(categories),
                 'twitter_handle_1': self.twitter_handle_1,
+                'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region else None
             }
 
     def favorite(self, user):

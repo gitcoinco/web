@@ -131,12 +131,13 @@ Vue.mixin({
         // 'logo': vm.logo,
         'description': vm.$refs.myQuillEditor.quill.getText(),
         'description_rich': JSON.stringify(vm.$refs.myQuillEditor.quill.getContents()),
+        'github_project_url': vm.grant.github_project_url,
         'team_members[]': JSON.stringify(vm.grant.team_members),
         'handle1': vm.grant.twitter_handle_1,
         'handle2': vm.grant.twitter_handle_2,
-        'github_project_url': vm.grant.github_project_url,
         'eth_payout_address': vm.grant.eth_payout_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
+        'region': vm.grant.region.name,
 
 
       };
@@ -153,6 +154,7 @@ Vue.mixin({
         headers: headers,
         success: response => {
           if (response.status == 200) {
+
           } else {
             // vm.submitted = false;
             _alert('Unable to create grant. Please try again', 'error');
@@ -165,6 +167,30 @@ Vue.mixin({
           console.error(`error: grant creation failed with msg ${err}`);
         }
       });
+
+    },
+    cancelGrant: function(event) {
+      event.preventDefault();
+
+      let vm = this;
+
+      let cancel = window.prompt('Please write "CONFIRM" to cancel the grant.');
+
+      if (cancel !== 'CONFIRM') {
+        return;
+      }
+
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Cancel Grant', 'click', 'Grant Cancel');
+      }
+
+      const cancelUrl = `/grants/v1/api/grant/${vm.grant.id}/cancel`;
+
+      var cancelGrant = fetchData(cancelUrl ,'POST')
+      $.when(cancelGrant).then(function(response){
+        vm.grant.active = false;
+        return response
+      })
 
     },
     checkGrantData: function() {},
@@ -358,7 +384,18 @@ if (document.getElementById('gc-grant-detail')) {
           },
           theme: 'snow',
           placeholder: 'Give a detailed desciription about your Grant'
-        }
+        },
+        grantRegions: [
+          { 'name': 'north_america', 'label': 'North America'},
+          { 'name': 'oceania', 'label': 'Oceania'},
+          { 'name': 'latin_america', 'label': 'Latin America'},
+          { 'name': 'europe', 'label': 'Europe'},
+          { 'name': 'africa', 'label': 'Africa'},
+          { 'name': 'middle_east', 'label': 'Middle East'},
+          { 'name': 'india', 'label': 'India'},
+          { 'name': 'east_asia', 'label': 'East Asia'},
+          { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+        ]
       };
     },
     mounted: function() {

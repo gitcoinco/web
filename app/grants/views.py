@@ -491,11 +491,16 @@ def bulk_grants_for_cart(request):
     return JsonResponse({'grants': grants})
 
 
-def clr_grants(request, round_num):
+def clr_grants(request, round_num, sub_round_slug='', customer_name=''):
     """CLR grants explorer."""
 
     try:
-        clr_round = GrantCLR.objects.get(round_num__icontains=round_num)
+        params = {
+            'round_num': round_num,
+            'sub_round_slug': sub_round_slug,
+            'customer_name': customer_name
+        }
+        clr_round = GrantCLR.objects.get(**params)
 
     except GrantCLR.DoesNotExist:
         return redirect('/grants')
@@ -540,11 +545,18 @@ def get_grants(request):
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
     round_num = request.GET.get('round_num', None)
+    sub_round_slug = request.GET.get('sub_round_slug', '')
+    customer_name = request.GET.get('customer_name', '')
 
     clr_round = None
     try:
         if round_num:
-            clr_round = GrantCLR.objects.get(round_num=round_num)
+            params = {
+                'round_num': round_num,
+                'sub_round_slug': sub_round_slug,
+                'customer_name': customer_name
+            }
+            clr_round = GrantCLR.objects.get(**params)
     except GrantCLR.DoesNotExist:
         pass
 
@@ -746,6 +758,8 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
         _grant_types =  GrantType.objects.filter(pk=grant_filters['grant_type'])
     elif grant_filters.get('grant_type__in'):
         _grant_types = GrantType.objects.filter(pk__in=grant_filters['grant_type__in'])
+    else:
+        return grant_types
 
     for _grant_type in _grant_types:
         count = active_grants.filter(grant_type=_grant_type,network=network).count() if active_grants else 0
@@ -849,7 +863,6 @@ def grants_by_grant_type(request, grant_type):
     if len(pks):
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
-
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
     current_partners_fund = 0
@@ -872,6 +885,7 @@ def grants_by_grant_type(request, grant_type):
     prev_grants = Grant.objects.none()
     grants_following = Favorite.objects.none()
     collections = []
+
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         # KO 9/10/2020
@@ -884,7 +898,6 @@ def grants_by_grant_type(request, grant_type):
                 'title': collection.title
             } for collection in allowed_collections.distinct()
         ]
-
 
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now())
 
@@ -978,7 +991,8 @@ def grants_by_grant_type(request, grant_type):
         'only_contributions': only_contributions,
         'collection_id': collection_id,
         'collections': collections,
-        'featured': featured
+        'featured': featured,
+        'active_rounds': active_rounds
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1293,14 +1307,6 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-        if 'grant_cancel_tx_id' in request.POST:
-            grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
-            grant.active = False
-            grant.save()
-            grant_cancellation(grant, user_subscription)
-            for sub in subscriptions:
-                subscription_terminated(grant, sub)
-            record_grant_activity_helper('killed_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.github_project_url = request.POST.get('edit-github_project_url')
@@ -1423,7 +1429,8 @@ def grant_details(request, grant_id, grant_slug):
 @csrf_exempt
 def grant_edit(request, grant_id):
 
-    profile = get_profile(request)
+    # profile = get_profile(request)
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
     grant = None
 
     try:
@@ -1451,7 +1458,7 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: user needs to be authenticated to create grant'
             return JsonResponse(response)
 
-        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        # profile = request.user.profile if hasattr(request.user, 'profile') else None
         if not profile:
             response['message'] = 'error: no matching profile found'
             return JsonResponse(response)
@@ -1494,54 +1501,31 @@ def grant_edit(request, grant_id):
         github_project_url = request.POST.get('github_project_url', None)
         twitter_handle_1 = request.POST.get('handle1', '')
         twitter_handle_2 = request.POST.get('handle2', '')
+        region = request.POST.get('region', '')
 
-        grant_kwargs = {
-            'title': title,
-            'description': description,
-            'description_rich': description_rich,
-            'reference_url': reference_url,
-            'github_project_url': github_project_url,
-            'admin_address': eth_payout_address,
-            'zcash_payout_address': zcash_payout_address,
-            # 'token_symbol': token_symbol,
-            # 'contract_version': contract_version,
-            # 'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
-            # 'network': network,
-            'twitter_handle_1': twitter_handle_1,
-            'twitter_handle_2': twitter_handle_2,
-            # 'metadata': metdata,
-            'last_update': timezone.now(),
-            'admin_profile': profile,
-            # 'logo': logo,
-            'hidden': False,
-            # 'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
-            # 'grant_type': GrantType.objects.get(name=grant_type),
-        }
-
-        grantEdit = Grant.objects.filter(pk=grant.pk).update(**grant_kwargs)
-
-        # team_members = (team_members[0].split(','))
-        # print(team_members)
-        # team_members.append(profile.id)
-        # print(team_members)
-        # team_members = list(set(team_members))
-        # print(team_members)
+        grant.title = title
+        grant.reference_url = reference_url
+        grant.description = description
+        grant.description_rich = description_rich
+        grant.github_project_url = github_project_url
+        grant.admin_address = eth_payout_address
+        grant.zcash_payout_address = zcash_payout_address
+        grant.last_update = timezone.now()
+        # grant.admin_profile = profile,
+        grant.twitter_handle_1 = twitter_handle_1
+        grant.twitter_handle_2 = twitter_handle_2
+        grant.region = region
+        # 'logo': logo,
+        grant.hidden = False
         save_team_members = []
-        for member in team_members[0]:
-            print(member)
-            save_team_members.append(member.id)
-
-        save_team_members.append(profile.id)
+        save_team_members = [d['id'] for d in json.loads(team_members[0])]
+        save_team_members.append(grant.admin_profile.id)
         print(save_team_members)
-        team_members = save_team_members
-
-
-
-        # team_members = [int(i.id) for i.id in team_members if i.id != '']
-
-        grant.team_members.add(*team_members)
-
-
+        grant.team_members.set(save_team_members)
+        # grant.team_members.add(*save_team_members)
+        # save_team_members.append(str(grant.admin_profile.id))
+        # print(save_team_members)
+        print(grant)
         grant.save()
 
         messages.info(
@@ -1561,78 +1545,6 @@ def grant_edit(request, grant_id):
 
         return JsonResponse(response)
 
-
-
-
-    # if request.method == 'POST' and (is_team_member or request.user.is_staff):
-    #     response = {
-    #             'status': 400,
-    #             'message': 'error: Bad Request. Unable to create grant'
-    #         }
-
-    #     request_body = json.loads(request.body.decode("utf-8"))
-
-    #     print(request_body)
-    #     grant.last_update = timezone.now()
-    #     if request.FILES.get('logo'):
-    #         logo = request.FILES.get('logo', None)
-    #         grant.logo = logo
-    #         grant.save()
-    #         record_grant_activity_helper('update_grant', grant, profile)
-    #         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-    #     if 'grant_cancel_tx_id' in request.POST:
-    #         grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
-    #         grant.active = False
-    #         grant.save()
-    #         grant_cancellation(grant, user_subscription)
-    #         for sub in subscriptions:
-    #             subscription_terminated(grant, sub)
-    #         record_grant_activity_helper('killed_grant', grant, profile)
-
-    #     title = request_body.get('title', None)
-    #     github_project_url = request_body.get('github_project_url', None)
-    #     reference_url = request_body.get('reference_url', None)
-    #     # grant_members = request_body.getlist('grant_members[]')
-
-    #     if not title:
-    #         response['message'] = 'error: title is a mandatory parameter'
-    #         return JsonResponse(response)
-    #     else:
-    #         grant.title = title
-    #         grant.github_project_url = github_project_url
-    #         grant.reference_url = reference_url
-    #         # team_members = grant_members
-    #         # team_members.append(str(grant.admin_profile.id))
-    #         # grant.team_members.set(team_members)
-    #     # if 'twitter_account' in request.POST and request.POST.get('twitter_account') != grant.twitter_handle_1:
-    #     #     grant.twitter_verified = False
-    #     #     grant.twitter_verified_at = None
-    #     #     grant.twitter_verified_by = None
-    #     #     grant.twitter_handle_1 = request.POST.get('twitter_account')
-
-    #     # if 'description' in request.POST:
-    #     #     grant.description = request.POST.get('description')
-    #     #     grant.description_rich = request.POST.get('description_rich')
-    #     grant.save()
-
-        # form_category_ids = request.POST.getlist('categories[]')
-
-        '''Overwrite the existing categories and then add the new ones'''
-        # grant.categories.clear()
-        # add_form_categories_to_grant(form_category_ids, grant, grant.grant_type)
-
-        # record_grant_activity_helper('update_grant', grant, profile)
-
-            # response['message'] = 'error: grant_type is a mandatory parameter'
-
-        # response = {
-        #     'status': 200,
-        #     'success': True,
-        #     'message': 'grant edited',
-        #     'url': grant.url,
-        # }
-
-        # return JsonResponse(response)
 
 @login_required
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
@@ -1778,6 +1690,7 @@ def grant_new(request):
             'admin_profile': profile,
             'logo': logo,
             'hidden': False,
+            'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
         }
@@ -1948,6 +1861,59 @@ def grant_fund(request, grant_id, grant_slug):
         })
 
     raise Http404
+
+
+@csrf_exempt
+@require_POST
+def cancel_grant_v1(request, grant_id):
+
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to contribute to grant'
+    }
+
+
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        response['message'] = 'error: user needs to be authenticated to cancel grant'
+        return JsonResponse(response)
+
+    profile = request.user.profile if hasattr(request.user, 'profile') else None
+
+    if not profile:
+        response['message'] = 'error: no matching profile found'
+        return JsonResponse(response)
+
+    if not request.method == 'POST':
+        response['message'] = 'error: grant cancellation is a POST operation'
+        return JsonResponse(response)
+
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        response['message'] = 'error: grant cannot be found'
+        return JsonResponse(response)
+
+    if not is_grant_team_member(grant, profile):
+        response['message'] = 'error: grant cancellation can be done only by grant owner'
+        return JsonResponse(response)
+
+    if not grant.active:
+        response['message'] = 'error: grant is already cancelled'
+        return JsonResponse(response)
+
+    grant.active = False
+    grant.save()
+
+    grant_cancellation(grant)
+    record_grant_activity_helper('killed_grant', grant, profile)
+
+    response = {
+        'status': 200,
+        'pk': grant.pk,
+        'message': 'grant cancelled sucessfully'
+    }
+    return JsonResponse(response)
 
 @login_required
 def bulk_fund(request):
@@ -2395,6 +2361,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile, an
     }
     return Activity.objects.create(**kwargs)
 
+
 def record_grant_activity_helper(activity_type, grant, profile, amount=None, token=None):
     """Registers a new activity concerning a grant
 
@@ -2461,7 +2428,6 @@ def new_matching_partner(request):
     return TemplateResponse(request, 'grants/new_match.html', params)
 
 
-
 def create_matching_pledge_v1(request):
 
     response = {
@@ -2476,7 +2442,6 @@ def create_matching_pledge_v1(request):
 
     profile = request.user.profile if hasattr(request.user, 'profile') else None
 
-
     if not profile:
         response['message'] = 'error: no matching profile found'
         return JsonResponse(response)
@@ -2484,7 +2449,6 @@ def create_matching_pledge_v1(request):
     if not request.method == 'POST':
         response['message'] = 'error: pledge creation is a POST operation'
         return JsonResponse(response)
-
 
     grant_types = request.POST.get('grant_types[]', None)
     grant_categories = request.POST.get('grant_categories[]', None)
@@ -2500,7 +2464,6 @@ def create_matching_pledge_v1(request):
     if not grant_types and not grant_collections:
         response['message'] = 'error:  grant_types / grant_collections is parameter'
         return JsonResponse(response)
-
 
     matching_pledge_stage = request.POST.get('matching_pledge_stage', None)
     tx_id = request.POST.get('tx_id', None)
@@ -2528,7 +2491,8 @@ def create_matching_pledge_v1(request):
             }
 
         clr_round = GrantCLR.objects.create(
-            round_num='pledge',
+            round_num=0,
+            sub_round_slug='pledge',
             start_date=timezone.now(),
             end_date=timezone.now(),
             total_pot=amount,
