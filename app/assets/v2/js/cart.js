@@ -179,8 +179,9 @@ Vue.component('grants-cart', {
 
     // Array of objects containing all donations and associated data
     donationInputs() {
-      if (!this.grantsByTenant)
+      if (!this.grantsByTenant) {
         return undefined;
+      }
 
       // Generate array of objects containing donation info from cart
       let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
@@ -826,6 +827,10 @@ Vue.component('grants-cart', {
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
 
+      // Save off cart data
+      await this.manageEthereumCartJSONStore(userAddress, 'save');
+
+      // Send transaction
       indicateMetamaskPopup();
       bulkTransaction.methods
         .donate(donationInputsFiltered)
@@ -942,6 +947,9 @@ Vue.component('grants-cart', {
       // Send saveSubscription request
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
+      
+      // Clear JSON Store
+      await this.manageEthereumCartJSONStore(userAddress, 'delete');
     },
 
     /**
@@ -1048,15 +1056,15 @@ Vue.component('grants-cart', {
 
     // ===================================== Helper functions ======================================
 
-    // For the provider address, an action of `save` will backup the user's cart data with a JSON
-    // store before checkout, and validate that it was saved. An action of `delete` will delete that
-    // JSON store
-    async manageCheckoutJSONStore(userAddress, action) {
-      if (action !== 'save' || action !== 'delete') {
+    // For the provider address, an action of `save` will backup the user's Ethereum cart data with
+    // a JSON store before checkout, and validate that it was saved. An action of `delete` will
+    // delete that JSON store
+    async manageEthereumCartJSONStore(userAddress, action) {
+      if (action !== 'save' && action !== 'delete') {
         throw new Error("JSON Store action must be 'save' or 'delete'");
       }
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const url = 'manage-checkout-data';
+      const url = 'manage-ethereum-cart-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
       
       // Send request
@@ -1066,25 +1074,30 @@ Vue.component('grants-cart', {
         body: new URLSearchParams({
           action,
           csrfmiddlewaretoken,
-          donationInputs: this.donationInputs,
+          ethereum_cart_data: action === 'save' ? JSON.stringify(this.grantsByTenant) : null,
           user_address: userAddress
         })
       };
       const postResponse = await fetch(url, payload);
       const json = await postResponse.json();
 
-      // Validate that JSON store was created
-      const validationResponse = await this.getCheckoutJSONStore(userAddress);
-
-      return json;
+      if (action === 'save') {
+        // Validate that JSON store was created successfully
+        const validationResponse = await this.getEthereumCartJSONStore(userAddress);
+        
+        if (!validationResponse) {
+          throw new Error('Something went wrong. Please try again.');
+        }
+      }
+      return true;
     },
 
-    // Returns cart data if found in the JSON store for `userAddress`, and false otherw
-    async getCheckoutJSONStore(userAddress) {
-      const url = `get-checkout-data?user_address=${userAddress}`;
+    // Returns Ethereum cart data if found in the JSON store for `userAddress`, and false otherw
+    async getEthereumCartJSONStore(userAddress) {
+      const url = `get-ethereum-cart-data?user_address=${userAddress}`;
       const res = await fetch(url, { method: 'GET' });
       const json = await res.json();
-      const cartData = json.cart_data;
+      const cartData = json.ethereum_cart_data;
 
       if (cartData && cartData.length > 0) {
         return cartData;

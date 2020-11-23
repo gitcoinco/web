@@ -28,7 +28,7 @@ from grants.views import (
     grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_info, grants_stats_view, grants_zksync_recovery_view, invoice, leaderboard,
     new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
-    toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
+    toggle_grant_favorite, verify_grant, manage_ethereum_cart_data, get_ethereum_cart_data,
 )
 
 app_name = 'grants'
@@ -54,8 +54,8 @@ urlpatterns = [
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
     path('bulk-fund', bulk_fund, name='bulk_fund'),
-    path('zksync-set-interrupt-status', zksync_set_interrupt_status, name='zksync_set_interrupt_status'),
-    path('zksync-get-interrupt-status', zksync_get_interrupt_status, name='zksync_get_interrupt_status'),
+    path('manage-ethereum-cart-data', manage_ethereum_cart_data, name='manage_ethereum_cart_data'),
+    path('get-ethereum-cart-data', get_ethereum_cart_data, name='get_ethereum_cart_data'),
     path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
     path(
         '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',

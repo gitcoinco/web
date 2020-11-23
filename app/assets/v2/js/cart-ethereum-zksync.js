@@ -79,6 +79,7 @@ Vue.component('grantsCartEthereumZksync', {
           to: getAddress(donation.dest), // ensure we use a checksummed address
           token: donation.name, // token symbol
           amount: donation.amount,
+          description: donation.grant.grant_title,
           semanticType: 'Transaction'
         };
       });

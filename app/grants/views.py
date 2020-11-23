@@ -2078,52 +2078,55 @@ def bulk_fund(request):
     })
 
 @login_required
-def zksync_set_interrupt_status(request):
+def manage_ethereum_cart_data(request):
     """
-    For the specified address, save off the deposit hash of the value the tx that was interrupted.
-    If a deposit hash is present, then the user was interrupted and must complete the existing
-    checkout before doing another one
+    For the specified user address:
+      1. `action == save` will save the provided cart data as a JSON Store
+      2. `action == delete` will removed saved cart data from the JSON Store
     """
 
     user_address = request.POST.get('user_address')
-    deposit_tx_hash = request.POST.get('deposit_tx_hash')
+    action = request.POST.get('action')
 
-    try:
-        # Look for existing entry, and if present we overwrite it
-        entry = JSONStore.objects.get(key=user_address, view='zksync_checkout')
-        entry.data = deposit_tx_hash
-        entry.save()
-    except JSONStore.DoesNotExist:
-        # No entry exists for this user, so create a new one
-        JSONStore.objects.create(
-            key=user_address,
-            view='zksync_checkout',
-            data=deposit_tx_hash
-        )
+    if action == 'save':
+        ethereum_cart_data = json.loads(request.POST.get('ethereum_cart_data'))
+        try:
+            # Look for existing entry, and if present we overwrite it. This can occur when a user starts
+            # checkout, does not finish it, then comes back to checkout later
+            entry = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
+            entry.data = ethereum_cart_data
+            entry.save()
+            return JsonResponse({ 'success': True })
+        except JSONStore.DoesNotExist:
+            # No entry exists for this user, so create a new one
+            JSONStore.objects.create(key=user_address, view='ethereum_cart_data', data=ethereum_cart_data)
+            return JsonResponse({ 'success': True })
 
-    return JsonResponse({
-        'success': True,
-        'deposit_tx_hash': deposit_tx_hash
-    })
+    elif action == 'delete':
+        try:
+            # Look for existing entry, and if present we delete it
+            entry = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
+            entry.delete()
+            return JsonResponse({ 'success': True })
+        except JSONStore.DoesNotExist:
+            # No entry exists for this user, so we return false to indicate this
+            return JsonResponse({ 'success': False })
+
+    else:
+        raise Exception('Invalid action specified')
 
 @login_required
-def zksync_get_interrupt_status(request):
+def get_ethereum_cart_data(request):
     """
-    Returns the transaction hash of a deposit into zkSync if user was interrupted before zkSync
-    chekout was complete
+    For the specified user address, returns the saved checkout data if found
     """
-    user_address = request.GET.get('user_address')
     try:
-        result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
-        deposit_tx_hash = result.data
+        user_address = request.GET.get('user_address')
+        result = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
+        return JsonResponse({ 'success': True, 'ethereum_cart_data': result.data })
     except JSONStore.DoesNotExist:
-        # If there's no entry for this user, assume they haven't been interrupted
-        deposit_tx_hash = False
-
-    return JsonResponse({
-        'success': True,
-        'deposit_tx_hash': deposit_tx_hash
-    })
+        # If there's no entry for this user, return false to indicate this
+        return JsonResponse({ 'success': False })
 
 @login_required
 def get_replaced_tx(request):
