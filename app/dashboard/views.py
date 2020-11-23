@@ -22,7 +22,6 @@ import hashlib
 import html
 import json
 import logging
-import os
 import time
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -34,7 +33,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q, Sum
@@ -48,12 +47,12 @@ from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
 from django.utils.text import slugify
+from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-import dateutil.parser
 import magic
 import pytz
 import requests
@@ -75,6 +74,9 @@ from chat.tasks import (
 )
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
+from dashboard.idena_utils import (
+    IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
+)
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
@@ -82,7 +84,7 @@ from dashboard.utils import (
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from eth_utils import to_checksum_address, to_normalized_address
+from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
@@ -1292,7 +1294,6 @@ def bounty_mentor(request):
 
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-        print(sponsor)
         is_sponsor_member = profile.organizations_fk.filter(pk=sponsor.pk)
 
         if not is_sponsor_member:
@@ -2905,6 +2906,18 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
+        context['is_idena_connected'] = profile.is_idena_connected
+        if profile.is_idena_connected:
+            context['idena_address'] = profile.idena_address
+            context['logout_idena_url'] = reverse(logout_idena, args=(profile.handle,))
+            context['recheck_idena_status'] = reverse(recheck_idena_status, args=(profile.handle,))
+            context['is_idena_verified'] = profile.is_idena_verified
+            context['idena_status'] = profile.idena_status
+            if not context['is_idena_verified']:
+                context['idena_next_validation'] = localtime(next_validation_time())
+        else:
+            context['login_idena_url'] = idena_callback_url(request, profile)
+
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
         if settings.DEBUG:
@@ -2923,6 +2936,155 @@ def get_profile_tab(request, profile, tab, prev_context):
     else:
         raise Http404
     return context
+
+def get_profile_by_idena_token(token):
+    handle = get_handle_by_idena_token(token)
+    try:
+        return Profile.objects.get(handle=handle)
+    except ObjectDoesNotExist:
+        return None
+
+def logout_idena(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+   
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+    
+    profile = profile_helper(handle, True)
+    if profile.is_idena_connected:
+        profile.idena_address = None
+        profile.idena_status = None
+        profile.is_idena_verified = False
+        profile.is_idena_connected = False
+        profile.save()
+
+    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+
+# Response model differ from rest of project because idena client excepts this shape:
+# Using {success, error} instead of {ok, msg}
+@csrf_exempt # Call from idena client
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@require_POST
+def start_session_idena(request, handle):
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid json data'
+        })
+
+
+    profile = get_profile_by_idena_token(data.get('token', 'invalid-token'))
+
+    if not profile or profile.handle != handle:
+        return JsonResponse({
+            'success': False,
+            'error': f'Invalid Idena Token'
+        })
+
+    idena_address = data.get('address', None)
+
+    if idena_address is None:
+        return JsonResponse({
+            'success': False,
+            'error': f'Address is required'
+        })
+
+    idena_address = idena_address.lower()
+
+    if not is_address(idena_address):
+        return JsonResponse({
+            'success': False,
+            'error': f'Address is invalid'
+        })
+
+    address_exists = Profile.objects.filter(idena_address=idena_address)\
+        .exclude(handle=profile.handle) \
+        .exists()
+    
+    if address_exists:
+        return JsonResponse({
+            'success': False,
+            'error': f'Address already exists'
+        })
+
+    profile.idena_address = idena_address
+    profile.save()
+
+    return JsonResponse({
+        'success': True,
+        'data': {
+            'nonce': IdenaNonce(profile.handle).generate(),
+        }
+    })
+
+# Response model differ from rest of project because idena client excepts this shape:
+# Using {success, error} instead of {ok, msg}
+@csrf_exempt # Call from idena client
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@require_POST
+def authenticate_idena(request, handle):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid json data'
+        })
+
+    profile = get_profile_by_idena_token(data.get('token', 'invalid-token'))
+
+    if not profile or profile.handle != handle:
+        return JsonResponse({
+            'success': False,
+            'error': f'Invalid Idena Token'
+        })
+    
+    nonce_controller = IdenaNonce(profile.handle)
+
+    sig = data.get('signature', '0x0')
+    sig_addr = signature_address(nonce_controller.get(), sig)
+
+    if not is_same_address(sig_addr, profile.idena_address):
+        profile.idena_address = None
+        profile.save()
+        
+        return JsonResponse({
+            'success': True,
+            'data': {
+                'authenticated': False
+            }
+        })
+
+    profile.is_idena_connected = True
+    profile.update_idena_status()
+    profile.save()
+
+    return JsonResponse({
+        "success": True,
+        "data": {
+            "authenticated": True
+        }
+    })
+
+@login_required
+def recheck_idena_status(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+
+    profile = profile_helper(handle, True)
+    profile.update_idena_status()
+    profile.save()
+    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
@@ -4503,6 +4665,13 @@ def hackathon_save_project(request):
     if video_url and video_provider:
         kwargs['extra']['video_provider'] = video_provider
         kwargs['extra']['video_url'] = video_url
+    elif video_url:
+        # fallback to remove later when JS spaghetti is fixed
+        kwargs['extra']['video_url'] = video_url
+        for p in ['loom', 'youtube', 'vimeo']:
+            if p in video_url:
+                kwargs['extra']['video_provider'] = p
+
 
     if categories:
         kwargs['categories'] = categories

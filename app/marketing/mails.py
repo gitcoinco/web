@@ -336,21 +336,20 @@ def support_cancellation(grant, subscription):
         translation.activate(cur_language)
 
 
-def grant_cancellation(grant, subscription):
-    if subscription and subscription.negative:
-        return
+def grant_cancellation(grant):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_grant_cancellation_email(grant, subscription)
+        html, text, subject = render_grant_cancellation_email(grant)
 
         if not should_suppress_notification_email(to_email, 'grant_cancellation'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
+
 
 def grant_txn_failed(failed_contrib):
     profile, grant, tx_id = failed_contrib.subscription.contributor_profile, failed_contrib.subscription.grant, failed_contrib.tx_id

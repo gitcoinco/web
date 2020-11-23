@@ -17,6 +17,65 @@
     To increase your Trust Bonus, here are some steps you can take:
     <div class="container mt-4">
       <h5>Active Now</h5>
+      <!-- Adena ROW -->
+      <div class="row mb-4">
+        <div class="col-12 col-md-1 mx-auto text-center">
+          {% if is_idena_connected %}
+            <img src="https://robohash.org/{{ idena_address }}" alt="Idena Logo" class="img-fluid">
+          {% else %}
+            <img src="/static/v2/images/project_logos/idena.svg" alt="Idena Logo" class="img-fluid">
+          {% endif %}
+        </div>
+        <div class="col-12 col-md-7 mb-3 mb-md-0">
+          <div class="font-weight-bold">
+            {% if is_idena_connected %}
+              Idena {{ idena_address }}
+            {% else %}
+              Connect with Idena
+            {% endif %}
+          </div>
+          {% if is_idena_connected %}
+            {% if not is_idena_verified %}
+              <div>
+                Take part in the Idena validation ceremony {{ idena_next_validation }} GMT
+              </div>
+            {% endif %}
+            <div>
+              {% if is_idena_verified %}
+                <span style="color:limegreen"><i class="fas fa-circle"></i>
+              {% else %}
+                <span style="color:gray"><i class="fas fa-circle"></i>
+              {% endif %}
+              &nbsp; Status: {{ idena_status }}.
+              <a href={{ recheck_idena_status }} id="recheck-idena-status" class="text-nowrap">Re-Check.</a>
+              <a href={{ logout_idena_url }} id="disconnect-idena-link" class="text-nowrap">Disconnect.</a>
+            </div>
+          {% else %}
+            <div>
+              Install <a href="https://idena.io/?view=download">Idena app</a> to verify your account.
+            </div>
+          {% endif %}
+          
+        </div>
+        <div class="col-6 col-md-2 text-center">
+          <div class="font-weight-bold">
+            +25%
+          </div>
+          <div style="color:grey">
+            <small>Grants CLR Match</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-2">
+          {% if is_idena_verified %}
+            <span style="color:limegreen"><i class="fas fa-check"></i> Verified </span>
+          {% elif is_idena_connected %}
+            <span style="color:orange"><i class="fal fa-exclamation-circle"></i> Pending Validation</span>
+          {% else %}
+            <a href={{ login_idena_url }} role="button" id="connect-idena-link" class="button button--primary text-nowrap">Connect</a>
+          {% endif %}
+        </div>
+      </div>
+
       <!-- SMS ROW -->
       <div class="row mb-4">
         <div class="col-12 col-md-1 mx-auto text-center">
@@ -29,7 +88,6 @@
           <div>
             Verify your phone number through SMS. To protect your privacy, Gitcoin doesn't store your phone number.
             <a href="https://twitter.com/owocki/status/1272149204287160320">Learn more.</a>
-
           </div>
         </div>
         <div class="col-6 col-md-2 text-center">
@@ -178,7 +236,6 @@
       <a href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
       {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" %}
-      {% include "profiles/trust_soon_row.html" with service="Idena Network" %}
       <!-- POAP ROW -->
       <div class="row mt-2 mb-4">
         <div class="col-12 col-md-1 mx-auto text-center pt-1">
@@ -210,6 +267,7 @@
           {% endif %}
         </div>
       </div>
+      {% include "profiles/trust_soon_row.html" with service="POAP" %}
       {% include "profiles/trust_soon_row.html" with service="Upala" %}
       {% include "profiles/trust_soon_row.html" with service="Duniter" %}
       {% include "profiles/trust_soon_row.html" with service="Equality Protocol" %}

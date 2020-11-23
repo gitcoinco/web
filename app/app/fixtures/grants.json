@@ -30,7 +30,8 @@
       "image_css": "",
       "activeSubscriptions": "[]",
       "hidden": false,
-      "team_members": [33]
+      "team_members": [33],
+      "grant_type": 1
     }
   },
   {
@@ -64,7 +65,8 @@
       "image_css": "",
       "activeSubscriptions": "[]",
       "hidden": false,
-      "team_members": [33]
+      "team_members": [33],
+      "grant_type": 1
     }
   },
   {
@@ -98,7 +100,8 @@
       "image_css": "",
       "activeSubscriptions": "[]",
       "hidden": false,
-      "team_members": [33]
+      "team_members": [33],
+      "grant_type": 1
     }
   },
   {
