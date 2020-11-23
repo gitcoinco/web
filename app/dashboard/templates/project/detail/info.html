@@ -50,7 +50,10 @@
           {% endif %}
 
           {% if is_member %}
-            <button @click="$emit('project:edit')" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
+            {% if not project_obj.grant_url %}
+              <b-link href="{% url 'grants:new' %}?project_id={{project_obj.id}}" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Create"> CREATE GRANT</b-link>
+            {% endif %}
+              <button @click="$emit('project:edit')" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
           {% endif %}
         </div>
       </div>
