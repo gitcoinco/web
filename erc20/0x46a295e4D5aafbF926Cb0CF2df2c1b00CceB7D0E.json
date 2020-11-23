@@ -7,20 +7,20 @@
   },
   "email": "odeex@protonmail.com",
   "website": "www.odeex.plus",
-  "whitepaper": "www.odeex.plus",
+  "whitepaper": "www.odeex.plus/ODEEX_WHITEPAPER.pdf",
   "state": "NORMAL",
   "published_on": "2020-08-10",
   "initial_price":{
         "USDT":"1 USDT",  
   },
   "links": {
-    "blog": "www.odeex.plus",
-    "twitter": "www.odeex.plus",
-    "telegram": "www.odeex.plus",
-    "github": "www.odeex.plus",
-    "facebook": "www.odeex.plus",
-    "reddit": "www.odeex.plus",
-    "slack": "www.odeex.plus",
-    "medium": "www.odeex.plus"
+    "blog": "",
+    "twitter": "",
+    "telegram": "",
+    "github": "",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
   }
 }
