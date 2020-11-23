@@ -27,8 +27,8 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantStat, GrantType,
-    MatchPledge, PhantomFunding, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 
 
@@ -405,6 +405,10 @@ class GrantCollectionAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'grants', 'curators']
 
 
+class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'url_pattern', 'priority' ]
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -418,3 +422,4 @@ admin.site.register(GrantCategory, GrantCategoryAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
 admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
+admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
