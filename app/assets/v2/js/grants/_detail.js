@@ -1,3 +1,5 @@
+
+let isStaff = document.contxt.is_staff || false;
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
@@ -137,7 +139,7 @@ Vue.mixin({
         'handle2': vm.grant.twitter_handle_2,
         'eth_payout_address': vm.grant.eth_payout_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
-        'region': vm.grant.region.name,
+        'region': vm.grant.region?.name || undefined,
 
 
       };
@@ -364,6 +366,7 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        isStaff: isStaff,
         grant: {},
         relatedGrants: [],
         rows: 0,

@@ -756,7 +756,6 @@ class Grant(SuperModel):
                             fields=['handle', 'url', 'profile__avatar_url']
                         )
 
-        grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type],
                                 fields=['name', 'label']
@@ -814,7 +813,7 @@ class Grant(SuperModel):
                 'github_project_url': self.github_project_url,
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': {'name':self.region, 'label':self.get_region_display()} if self.region else None
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
             }
 
     def favorite(self, user):

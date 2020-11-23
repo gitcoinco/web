@@ -235,7 +235,7 @@
   background-color: #ffde55;
 }
 
-.clr .label {
+.clr .label, .clr-label {
   background: #0FCE7C;
   color: #fff;
   border-radius: 3px;

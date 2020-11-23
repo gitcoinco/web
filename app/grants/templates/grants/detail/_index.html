@@ -138,33 +138,35 @@
               <h1 class="h3">
                 [[grant.title]]
               </h1>
-              <span class="">Updated: [[grant.last_update]]</span>
+              <span class="font-smaller-3">Updated: [[grant.last_update]]</span>
             </div>
-            <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
-              <i class="fab fa-fw fa-ethereum"></i> [[grant.admin_address]]
+            <div class="font-smaller-3">
+              <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
+                <i class="fab fa-fw fa-ethereum"></i> [[grant.admin_address]]
 
-              <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
-              <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
-            </template>
-            <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
-              <div class="mb-2">
-                <img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
-                <a target="_blank" :href="`https://sochain.com/address/ZEC/${grant.zcash_payout_address}`">
-                  <span id="z-cash-address" class="wallet-address"
-                    target="_blank" data-toggle="tooltip" data-placement="top" title="Project Zcash Funding Address">
-                    [[grant.zcash_payout_address]]
-                  </span>
-                </a>
-              </div>
-            </template>
-            <div class="grant-description">
+                <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
+                <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
+              </template>
+              <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
+                <div class="mb-2">
+                  <img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
+                  <a target="_blank" :href="`https://sochain.com/address/ZEC/${grant.zcash_payout_address}`">
+                    <span id="z-cash-address" class="wallet-address"
+                      target="_blank" data-toggle="tooltip" data-placement="top" title="Project Zcash Funding Address">
+                      [[grant.zcash_payout_address]]
+                    </span>
+                  </a>
+                </div>
+              </template>
+            </div>
+            <div class="grant-description my-5">
               <render-quill :delta="grant.description_rich"></render-quill>
             </div>
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-center font-body">
 
               <span class="flex-fill text-md-left text-center ">
-                <i class="fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
+                <i class="text-black-70 fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
                 <span v-if="grant.verified" class="py-0 position-relative px-0 btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
                   <p class="h6 my-2 text-left">
                     Verified Ownership
@@ -178,13 +180,13 @@
               </span>
 
               <div v-if="grant.github_project_url" class="flex-fill text-md-left text-center ">
-                <i class="fab fa-fw fa-github"></i> <a target="_blank" :href="grant.github_project_url">[[grant.github_project_url]]</a>
+                <i class="text-black-70 fab fa-fw fa-github"></i> <a target="_blank" :href="grant.github_project_url">Project repo</a>
               </div>
               <div class="flex-fill text-md-left text-center ">
-                <i class="fas fa-fw fa-link"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url]]</a>
+                <i class="text-black-70 fas fa-fw fa-link"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url]]</a>
               </div>
               <div v-if="grant.funding_info" class="flex-fill text-md-left text-center ">
-                <i class="fas fa-fw fa-donate"></i> <span>[[grant.funding_info]]</span>
+                <i class="text-black-70 fas fa-fw fa-donate"></i> <span>[[grant.funding_info]]</span>
               </div>
               <div class="flex-fill text-md-left text-center">
                 <button @click="toggleFollowingGrant(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
@@ -209,63 +211,68 @@
           </div>
 
           <div class="grant-managment">
-            <button class="btn btn-block btn-gc-blue" @click="editGrantModal()" >Edit Grant</button>
+            <button class="btn btn-block btn-gc-blue" @click="editGrantModal()" v-if="grant.active && grant.is_on_team || grant.active && isStaff">Edit Grant</button>
           </div>
 
           <div class="grant-checkout rounded shadow-sm bg-white p-3 border">
             <div v-if="grant.clr_round_num && grant.is_clr_eligible" class="">
-              <div class="d-flex justify-content-between">
-                <div class="flex-fill">
-                  <div class="title font-caption g-bold">
+              <div class="d-flex justify-content-between mb-2">
+                <div class="flex-fill mr-2">
+                  <div class="clr-label label font-caption font-weight-semibold mb-1 p-1">
                     [[grant.clr_round_num]] MATCH ROUND
                   </div>
 
-                  <div class="">
+                  <div class="gc-text-green font-weight-bold">
                     [[ grant.clr_prediction_curve[0][1] ]]
                     <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
                     <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
                   </div>
-                  <div class="">
+                  <div class="gc-text-green">
                     Estimated match
                   </div>
 
                 </div>
 
-                <div class="flex-fill">
-                  <div class="">
+                <div class="flex-fill ml-2">
+                  <div class="text-black-70">
                     <div>[[grant.clr_round_num]]</div>
                   </div>
-                  <div class="">
+                  <div class="gc-text-darkblue font-weight-bold">
                     [[grant.amount_received_in_round | round ]]
                     <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
                     <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
                   </div>
-                  <div>
+                  <div class="gc-text-darkblue">
                     [[grant.positive_round_contributor_count]] Contributiors
                   </div>
                 </div>
               </div>
               <!-- [[grant.clr_prediction_curve]] -->
-              <div class="arrow_box">
-
-                <template v-if="grant.tenants.indexOf('ETH') > -1">
+              <div class="arrow_box mb-3">
+                <div v-if="grant.tenants.indexOf('ETH') > -1" class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
                   Your DAI Contribution Goes A Long Way!
-                  <img class="float-right" height="40" src="{% static "v2/images/diamonds_high_fiving.gif" %}">
-                </template>
-                <template v-else-if="grant.tenants.indexOf('ZCASH') > -1">
-                  Your ZEC Contribution Goes A Long Way!
-                  <img class="float-right" height="40" src="{% static "v2/images/chains/zcash.svg" %}">
-                </template>
-
-
-                <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve">
-                  <!-- 1, 10, 100, 1000 usd matching -->
-                  <template v-if="index >= 1 && index <= 4">
-                    [[prediction[0] ]] USD contribution
-                    <i class="fas fa-arrow-circle-right"></i> + [[prediction[2] | round]] USD match
-                  </template>
+                  <img class="" height="24" src="{% static "v2/images/diamonds_high_fiving.gif" %}">
                 </div>
-                <div class="w-100 text-center text-black-70 pb-1">
+                <div v-else-if="grant.tenants.indexOf('ZCASH') > -1" class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
+                  Your ZEC Contribution Goes A Long Way!
+                  <img class="" height="24" src="{% static "v2/images/chains/zcash.svg" %}">
+                </div>
+
+
+                <div class="d-flex d-flex flex-wrap justify-content-between mt-2 px-3 py-2 font-body">
+                  <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && index >= 1 && index <= 4" class="d-flex flex-column flex-shrink-0">
+                    <!-- 1, 10, 100, 1000 usd matching -->
+                    <template v-if="grant.tenants.indexOf('ETH') > -1">
+                      <span>[[prediction[0] ]] DAI contribution</span>
+                      <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] | round]] DAI</b> match</span>
+                    </template>
+                    <template v-else>
+                      <span>[[prediction[0] ]] USD contribution</span>
+                      <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] | round]] USD</b> match</span>
+                    </template>
+                  </div>
+                </div>
+                <div class="w-100 text-center text-black-70 pb-1 font-smaller-5">
                   Next update : [[grant.safe_next_clr_calc_date ]]
                   <span class="mx-1">|</span>
                   Last updated : [[grant.last_clr_calc_date ]]
@@ -322,6 +329,11 @@
             <template v-if="grant.link_to_new_grant">
               <a :href="grant.link_to_new_grant" class="btn btn-block btn-gc-blue">Visit the active grant to fund</a>
             </template>
+            <template v-else-if="!grant.active">
+              <button type="button" class="btn btn-block btn-gc-blue" disabled>
+                {% trans "Grant Has Ended" %}
+              </button>
+            </template>
             <template v-else>
 
               <button class="btn btn-block btn-gc-outline-red" @click="removeFromCart()" v-if="grant.isInCart">Remove From Cart</button>
@@ -329,9 +341,11 @@
             </template>
 
 
-            <button @click="flag" class="btn btn-gc-pink btn-sm font-caption font-weight-semibold px-3">
-              Flag <i class="ml-2 far fa-flag"></i>
-            </button>
+            <div class="text-right mt-2">
+              <button @click="flag" class="btn btn-gc-pink btn-sm font-caption font-weight-semibold px-3">
+                Flag <i class="ml-2 far fa-flag"></i>
+              </button>
+            </div>
           </div>
 
           <div class="grant-cat rounded shadow-sm bg-white p-3 border">
@@ -399,7 +413,7 @@
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">Title</label>
               <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
-              <input id="title" name="title" v-model="grant.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="The Human Fund" required />
+              <input id="title" name="title" v-model.trim="grant.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="The Human Fund" required />
 
               <div class="text-danger" v-if="errors.title">
                 [[errors.title]]
@@ -412,7 +426,7 @@
               <quill-editor
                 ref="myQuillEditor"
                 class="editor"
-                v-model="grant.description_rich_edited"
+                v-model.trim="grant.description_rich_edited"
                 :options="editorOptionPrio"
 
               ></quill-editor>
@@ -426,7 +440,7 @@
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
               <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-              <input v-model="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
+              <input v-model.trim="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
               <div class="text-danger" v-if="errors.reference_url">
                 [[errors.reference_url]]
               </div>
@@ -437,7 +451,7 @@
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_1">Project Twitter Handle</label>
               <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
-              <input id="twitter_handle_1" v-model="grant.twitter_handle_1" name="twitter_handle_1" class="form__input form__input-lg" maxlength="20" type="text" placeholder="humanfund"/>
+              <input id="twitter_handle_1" v-model.trim="grant.twitter_handle_1" name="twitter_handle_1" class="form__input form__input-lg" maxlength="20" type="text" placeholder="humanfund"/>
 
               <div class="text-danger" v-if="errors.twitter_handle_1">
                 [[errors.twitter_handle_1]]
@@ -448,13 +462,13 @@
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
 
-              <input id="twitter_handle_2" v-model="grant.twitter_handle_2" name="twitter_handle_2" class="form__input form__input-lg" maxlength="20" type="text" placeholder="georgecostanza"/>
+              <input id="twitter_handle_2" v-model.trim="grant.twitter_handle_2" name="twitter_handle_2" class="form__input form__input-lg" maxlength="20" type="text" placeholder="georgecostanza"/>
             </div>
 
             <!-- Github -->
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
-              <input v-model="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://github.com/humanfund"/>
+              <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://github.com/humanfund"/>
             </div>
 
 
@@ -494,15 +508,17 @@
               </v-select>
             </div>
 
-
-            <div>
-              Danger Area
-
-              <button @click="cancelGrant($event)">CANCEL GRANT</button>
+            <div class="col-12 mb-3 text-right">
+              <button @click="saveGrant($event)" class="btn btn-gc-blue">SAVE CHANGES</button>
             </div>
-
-
-            <button @click="saveGrant($event)">SAVE</button>
+            <div class="col-12 mb-3 mt-5">
+              <div class="alert bs-alert alert-danger" role="alert">
+                <h4 class="alert-heading pt-0">Danger Area</h4>
+                <p>Once the grant is canceled will not longer receive contributions or participate on CLR matching. If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a> and don't forget to include your username and grant link.</p>
+                <hr>
+                <button @click="cancelGrant($event)" class="btn btn-sm btn-danger">CANCEL GRANT</button>
+              </div>
+            </div>
           </form>
         </b-sidebar>
 
