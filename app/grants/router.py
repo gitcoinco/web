@@ -59,6 +59,10 @@ class GrantViewSet(viewsets.ModelViewSet):
         if 'pk' in param_keys:
             queryset = queryset.filter(pk=self.request.query_params.get('pk'))
 
+        # Filter by admin_address.
+        if 'admin_address' in param_keys:
+            queryset = queryset.filter(admin_address__iexact=self.request.query_params.get('admin_address'))
+
         # Filter by description.
         if 'description' in param_keys:
             queryset = queryset.filter(description__iexact=self.request.query_params.get('description'))

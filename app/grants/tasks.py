@@ -11,7 +11,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from marketing.mails import new_supporter, thank_you_for_supporting, new_grant_admin, new_grant
+from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
 from townsquare.models import Comment
 
 logger = get_task_logger(__name__)
@@ -211,5 +211,4 @@ def process_grant_creation_email(self, grant_id, profile_id):
     grant = Grant.objects.get(pk=grant_id)
     profile = Profile.objects.get(pk=profile_id)
 
-    new_grant_admin(grant)
     new_grant(grant, profile)

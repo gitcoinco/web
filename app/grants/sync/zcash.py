@@ -7,6 +7,7 @@ from grants.sync.helpers import record_contribution_activity, txn_already_used
 
 
 def find_txn_on_zcash_explorer(contribution):
+
     subscription = contribution.subscription
     grant = subscription.grant
     token_symbol = subscription.token_symbol
@@ -27,17 +28,27 @@ def find_txn_on_zcash_explorer(contribution):
     # Check contributors txn history
     if response['status'] == 'success' and response['data'] and response['data']['txs']:
         txns = response['data']['txs']
+
         for txn in txns:
             if txn.get('outgoing') and txn['outgoing']['outputs']:
                 for output in txn['outgoing']['outputs']:
-                    if (
-                        output['address'] == to_address and
-                        response['data']['address'] == from_address and
-                        float(output['value']) == float(amount) and
-                        is_txn_done_recently(txn['time']) and
-                        not txn_already_used(txn['txid'], token_symbol)
-                    ):
-                        return txn['txid']
+                    if contribution.tx_id and contribution.tx_id != '0x0':
+                        if txn['txid'] == contribution.tx_id:
+                            if (
+                                output['address'] == to_address and
+                                float(output['value']) == float(amount) and
+                                is_txn_done_recently(txn['time'])
+                            ):
+                                return txn['txid']
+                    else:
+                        if (
+                            output['address'] == to_address and
+                            response['data']['address'] == from_address and
+                            float(output['value']) == float(amount) and
+                            is_txn_done_recently(txn['time']) and
+                            not txn_already_used(txn['txid'], token_symbol)
+                        ):
+                            return txn['txid']
 
 
     url = f'https://sochain.com/api/v2/address/ZEC/{to_address}'
@@ -59,7 +70,7 @@ def find_txn_on_zcash_explorer(contribution):
     return None
 
 
-def get_zcash_txn_status(txnid):
+def is_zcash_txn_successful(txnid):
     if not txnid:
         return None
 
@@ -90,18 +101,58 @@ def is_txn_done_recently(time_of_txn):
     return False
 
 
-def sync_zcash_payout(contribution):
-#     if not contribution.tx_id:
-    txn = find_txn_on_zcash_explorer(contribution)
-    if txn:
-        contribution.tx_id = txn
-        contribution.save()
+def is_valid_zcash_txn(contribution):
 
-#     if contribution.tx_id:
-        is_sucessfull_txn = get_zcash_txn_status(contribution.tx_id)
-        if is_sucessfull_txn:
-            contribution.success = True
-            contribution.tx_cleared = True
-            contribution.checkout_type = 'zcash_std'
-            record_contribution_activity(contribution)
+    subscription = contribution.subscription
+    grant = subscription.grant
+
+    txn_id = contribution.tx_id
+    to_address = grant.zcash_payout_address
+    amount = subscription.amount_per_period
+    token_symbol = subscription.token_symbol
+
+
+    if not txn_id or txn_id == '0x0':
+        return None
+
+    url = f'https://sochain.com/api/v2/tx/ZEC/{txn_id}'
+
+    response = requests.get(url).json()
+
+    if (
+        response['status'] == 'success' and
+        response['data'] and
+        response['data']['outputs']
+    ):
+        for txn in response['data']['outputs']:
+            if (
+                txn['address'] == to_address and
+                float(txn['value']) == float(amount) and
+                is_txn_done_recently(response['data']['time']) and
+                not txn_already_used(txn_id, token_symbol)
+            ):
+                return True
+
+    return None
+
+
+def sync_zcash_payout(contribution):
+    is_sucessfull_txn = False
+
+    if not contribution.tx_id or contribution.tx_id == '0x0':
+        # user entered t-addr.
+        txn = find_txn_on_zcash_explorer(contribution)
+        if txn:
+            contribution.tx_id = txn
             contribution.save()
+            is_sucessfull_txn = is_zcash_txn_successful(contribution.tx_id)
+    else:
+        # user entered txn-id or txn-id picked up by cron.
+        is_sucessfull_txn = is_valid_zcash_txn(contribution)
+
+    if is_sucessfull_txn:
+        contribution.success = True
+        contribution.tx_cleared = True
+        contribution.checkout_type = 'zcash_std'
+        record_contribution_activity(contribution)
+        contribution.save()
