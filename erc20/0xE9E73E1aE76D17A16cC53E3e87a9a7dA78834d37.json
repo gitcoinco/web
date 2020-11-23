@@ -1,0 +1,24 @@
+{
+  "symbol": "Camp",
+  "address": "0xE9E73E1aE76D17A16cC53E3e87a9a7dA78834d37",
+  "overview": {
+    "en": "The camp's basic business model for the CAMP project is to structure the basic life that humans will enjoy equal, along with the economic circulation system",
+    "zh": "CAMP事业的基本事业模式是，经济循环系统和人类平等享受的基本生活结构化。"
+  },
+  "email": "ccsy0105@naver.com",
+  "website": "https://www.camp-global.com/",
+  "whitepaper": "https://camp-global.com/whitepaper_ver.1.5_Full_kor.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-01",
+  "initial_price":{
+        "ETH":"0.000024 ETH",
+        "USD":"0.011378 USD",
+        "BTC":"0.00000068 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/camp_global?s=09",
+    "telegram": "https://t.me/CAMPKOR",
+    "github": "https://github.com/JoshepJang/CAMP",
+    "facebook": "https://www.facebook.com/CAMP-GLOBAL-107839080680846",
+  }
+}
