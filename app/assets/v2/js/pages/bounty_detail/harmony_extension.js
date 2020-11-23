@@ -34,8 +34,9 @@ const payWithHarmonyExtension = async (fulfillment_id, to_address, vm, modal) =>
   ).then(txn => {
     if (txn) {
       callback(null, from_address, txn);
+    } else {
+      callback('error in signing transaction');
     }
-    callback('error in signing transaction');
   }).catch(err => callback(err))
 
 

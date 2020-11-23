@@ -69,7 +69,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
-from grants.tasks import update_grant_metadata, process_grant_creation_email
+from grants.tasks import process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -2718,10 +2718,10 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        contributor_address = contribution.get('contributor_address', None)
-        tx_id = contribution.get('tx_id', None)
+        contributor_address = contribution.get('contributor_address', '0x0')
+        tx_id = contribution.get('tx_id', '0x0')
 
-        if not contributor_address and not tx_id:
+        if contributor_address == '0x0' and tx_id == '0x0':
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: either contributor_address or tx_id must be supplied'
