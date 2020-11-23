@@ -34,7 +34,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from quadraticlands.helpers import get_initial_dist
+from quadraticlands.helpers import get_initial_dist, get_mission_status
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -45,41 +45,47 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     '''render template for base index page'''
-    context = get_initial_dist(request) 
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/index.html', context)
 
 def base(request, base):
     '''render templates for /quadraticlands/'''
-    context = get_initial_dist(request) 
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 @login_required
 def mission_index(request):
     '''render quadraticlands/mission/index.html'''
-    context = get_initial_dist(request)
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, 'quadraticlands/mission/index.html', context)  
 
 @login_required
 def mission_base(request, mission_name):
     '''used to handle quadraticlands/<mission_name>'''
-    context = get_initial_dist(request)
-    logger.info(f'mission_name: {mission_name}')
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
 
 @login_required
 def mission_state(request, mission_name, mission_state):
     '''quadraticlands/<mission_name>/<mission_state>'''
-    context = get_initial_dist(request)
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
     
 @login_required
-def mission_question(request, mission_name, mission_state, question_num):
+def mission_question(request, mission_name, question_num):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
-    context = get_initial_dist(request)
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}.html', context)
 
 @login_required
-def mission_answer(request, mission_name, mission_state, question_num, answer):
+def mission_answer(request, mission_name, question_num, answer):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>/<answer>'''
-    context = get_initial_dist(request)
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)

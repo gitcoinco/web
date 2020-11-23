@@ -34,30 +34,80 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
+from django.views.decorators.http import require_http_methods
 
 import requests
 from eth_utils import is_address, is_checksum_address, to_checksum_address
-from quadraticlands.models import InitialTokenDistribution
+from quadraticlands.models import InitialTokenDistribution, MissionStatus
 from ratelimit.decorators import ratelimit
 
 # from django.shortcuts import redirect # TODO - implement this for redirect on GET to claim 
 
 logger = logging.getLogger(__name__)
 
+@require_http_methods(["GET"])
+@login_required
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def get_mission_status(request):
+    '''Retrieve mission status/state from the DB'''
+    if request.user.is_authenticated:
+        user = request.user
+        mission_status = MissionStatus.objects.get(profile_id=user.id)
+        game_state = {
+            "id" : mission_status.id,
+            "proof_of_use" : mission_status.proof_of_use,
+            "proof_of_knowledge" : mission_status.proof_of_knowledge,
+            "proof_of_receive" : mission_status.proof_of_receive,
+        }
+        return game_state
+    else:
+        no_game_state = {
+            "id" : 0,
+            "proof_of_use" : False,
+            "proof_of_knowledge" : False,
+            "proof_of_receive" : False
+        }
+        return JsonResponse(no_game_state)
+
+
+@require_http_methods(["POST"])
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def set_mission_status(request):
     '''when a mission is completed, UI will POST here so we can save new game state'''
-    if request.method == 'POST' and request.user.is_authenticated:
+    if request.user.is_authenticated:
         user = request.user if request.user.is_authenticated else None
-        # TODO - sanitize mission input, add some try except  
-        mission_name = request.POST.get('mission')
+        # this could probably be improved, just make sure we're not getting anything sketchy from POST   
+        try: 
+            mission_name = request.POST.get('mission')
+            if type(mission_name) != str:
+                logger.info('QuadLands - Non-string received for mission_name.')
+                HttpResponse(status=404)
+            elif mission_name != 'proof_of_use' or mission_name != 'proof_of_knowledge' or mission_name != 'proof_of_receive':
+                logger.info('QuadLands - Invalid mission_name received.')
+                HttpResponse(status=404)
+        except:
+            logger.info('QuadLands - Failed to parse set_mission_status')
+            return HttpResponse(status=404)
+        
         mission_status = MissionStatus.objects.get(profile_id=user.id)
-        logger.info(f'mission_status: {mission_status}')
-        mission_status.mission_name = True  
-        mission_status.save() 
-    return # maybe needs 200 or something? idk
+        
+        if mission_name == 'proof_of_knowledge':
+            mission_status.proof_of_knowledge = True  
+            mission_status.save() 
+            return HttpResponse(status=200)
+        
+        if mission_name == 'proof_of_use': 
+            mission_status.proof_of_use = True
+            mission_status.save()
+            return HttpResponse(status=200)
+        
+        if mission_name == 'proof_of_receive': 
+            mission_status.proof_of_receive = True
+            mission_status.save()
+            return HttpResponse(status=200)
+        
 
 def get_initial_dist(request):
     '''retrieve initial dist info from the DB'''
@@ -106,6 +156,7 @@ def get_initial_dist_from_CF(request):
 
     return context
 
+@require_http_methods(["POST"])
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def claim(request):
@@ -115,7 +166,7 @@ def claim(request):
     '''
     user = request.user if request.user.is_authenticated else None
       
-    # if POST 
+    # if POST, can be removed nowt hat this view is POSt only
     if request.method == 'POST' and request.user.is_authenticated:
          
         logger.info(f'USER ID: {user.id}')

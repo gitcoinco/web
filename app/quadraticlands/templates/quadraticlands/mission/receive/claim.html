@@ -172,11 +172,7 @@ document.addEventListener("DOMContentLoaded",function(){
 	        return console.log('Please confirm you have a wallet connected!!');
 	    }
 
-
-
-    	// ZW TODO - check that eth address is_valid before proceeding? - if not valid, return 
-
-
+        // POST to claim endpoint 
     	var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
 
 
@@ -192,15 +188,6 @@ document.addEventListener("DOMContentLoaded",function(){
 	       
 	        // setup & send our contract call 
 	        setupGTCTokenClaim(response);
-
-	        // test zachs new ABI
-	        // setupIsSigned(response)
-
-	        // used for debugging if you want to confirm calling function after POST
-	        // will be removed for prod 
-	        // testClaim(response);
-
-
 		});
 
 	});

@@ -1,3 +1,23 @@
+# -*- coding: utf-8 -*-
+"""Define the quadraticlands views.
+
+Copyright (C) 2020 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
@@ -28,30 +48,3 @@ class MissionStatus(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.profile.id}, {self.proof_of_use}, {self.proof_of_receive}, {self.proof_of_knowledge}'
-
-"""
-# receive, use, knowledge 
-class QuadLandsMission(models.Model):
-    '''Establish database structure for QuadLands Missions'''
-    '''
-    Mission
-        - created_on
-        - title (varchar255)
-        - reward (varchar255) # multiple rewards? kudos? tokens, recurring
-        - prereq_mission(nullable fk)
-        - url
-        - re-playable (boolean) 
-        - state (varchar255) # [production, dev, etc]
-    ''' 
-    created_on = models.DateTimeField()
-    mission_title = models.CharField(max_length=100)
-    # mission_reward = models.JSONField(null=True)
-    replayable = models.BooleanField(default=True)
-    state = models.CharField(default="dev", max_length=4) # dev, stag, prod 
-
-class QuadLandsQuestion(models.Model):
-    '''questions for the missions yo'''
-    mission = models.ForeignKey(QuadLandsMission, on_delete=models.CASCADE)
-    created_on = models.DateTimeField()
-    answers = JSONField(default=dict)
-"""
