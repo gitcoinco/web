@@ -216,8 +216,9 @@ def issue_details(request):
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
 
+    url_dict = get_url_dict(clean_bounty_url(url))
+
     try:
-        url_dict = get_url_dict(clean_bounty_url(url))
         if url_dict:
             response = get_gh_issue_details(token=token, **url_dict)
         else:

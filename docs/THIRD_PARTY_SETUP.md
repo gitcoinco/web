@@ -38,6 +38,35 @@ By default, we disable outbound GitHub notifications to any repository that isn'
 
 For example, if `settings.GITHUB_API_USER == gitcoinco` only `github.com/gitcoinco/<repos>` bounties and associated tips will post Github comments.
 
+## Setup Google Verification Integration
+
+Navigate to: [Google - New Project](https://console.developers.google.com/) and enter similar values to:
+
+* Enter Project Name: `MyGitcoinApp`
+
+Navigate to: [Google - OAuth consent screen](https://console.developers.google.com/apis/credentials/consent?) and create an `external` OAuth consent screen:
+
+* Application name: `MyGitcoinApp`
+* Support email: Select your email
+
+Navigate to: [Google - Credentials](https://console.developers.google.com/apis/credentials) and create OAth Client ID:
+
+* Application Type: `Web Application`
+* Name: `MyGitcoinApp`
+* Authorized JavaScript origins: `http://localhost:8000`
+* Authorized redirect URIs: `http://localhost:8000/api/v0.1/profile/verify_user_google`
+
+Update the `web/app/app/.env` file to include the values provided by Google:
+
+```shell
+GOOGLE_CLIENT_ID=xxx
+GOOGLE_CLIENT_SECRET=xxx
+```
+
+Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local Google environment.
+
+Note: Update the `OAUTHLIB_INSECURE_TRANSPORT` in `web/app/app/.env` to `0` for production.
+
 ## Setup SendGrid to Send Emails (Recommended)
 
 1. Create a new SendGrid Account at https://sendgrid.com

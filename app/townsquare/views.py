@@ -384,6 +384,8 @@ def town_square(request):
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     try:
         pinned = PinnedPost.objects.get(what=tab)
+        if settings.ENV == 'prod' and pinned.activity.bounty and pinned.activity.bounty != 'mainnet':
+            pinned = None
     except PinnedPost.DoesNotExist:
         pinned = None
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)

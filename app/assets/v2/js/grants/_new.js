@@ -296,6 +296,62 @@ if (document.getElementById('gc-new-grant')) {
           placeholder: 'Give a detailed desciription about your Grant'
         }
       };
+    },
+    computed: {
+      // queryParams() {
+      //   let query = window.location.search.substr(1);
+
+      //   query = query.split('&');
+      //   let returnVal = {};
+
+      //   query.map(q => {
+      //     const parts = q.split('=');
+      //     const arrayCheckRegex = /\[.+\]/;
+      //     let value = decodeURIComponent(parts[1]);
+
+      //     if ((/<[a-zA-Z\\\/]+>/).test(value)) {
+      //       // if it matches a tag, reset the value to empty
+      //       value = '';
+      //     }
+
+      //     if (arrayCheckRegex.test(value)) {
+      //       // check if array is passed in query params and return it as an array instead of default string.
+      //       // i.e change "[1, 2]" to [1, 2]
+      //       value = value.substr(1, value.length - 2);
+      //       value = value.split(',');
+      //       value = value.map(item => {
+      //         if (!isNaN(item)) {
+      //           return +item;
+      //         }
+      //         return item;
+      //       });
+      //     }
+
+      //     returnVal[parts[0]] = value;
+      //   });
+      // },
+      grant_type_logo() {
+        const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
+
+        if (grant_type) {
+          return grant_type.image_url;
+        }
+        return undefined;
+      }
+    },
+    mounted() {
+      // const writeToRoot = ['chainId'];
+
+      // for (const key of writeToRoot) {
+      //   if (this.queryParams[key]) {
+      //     this[key] = this.queryParams[key];
+      //     delete this.queryParams[key];
+      //   }
+      // }
+      // this.form = {
+      //   ...this.form,
+      //   ...this.queryParams
+      // };
     }
   });
 }
