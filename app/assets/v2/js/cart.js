@@ -326,6 +326,10 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
+    // payload. This component listens for that event and uses the data to show the user details
+    // and suggestions about their checkout (gas cost estimates and why zkSync may not be
+    // supported for their current cart)
     onZkSyncUpdate: function(data) {
       this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
@@ -476,11 +480,12 @@ Vue.component('grants-cart', {
 
         // Add the number to the totals object
         // First time seeing this token, set the field and initial value
-        if (!totals[grant.grant_donation_currency])
+        if (!totals[grant.grant_donation_currency]) {
           totals[grant.grant_donation_currency] = totalDonationAmount;
+        } else {
         // We've seen this token, so just update the total
-        else
           totals[grant.grant_donation_currency].add(totalDonationAmount);
+        }
       });
 
       // Convert from BigNumber back to regular numbers
@@ -587,10 +592,8 @@ Vue.component('grants-cart', {
       });
     },
 
-    /**
-     * @notice Must be called at the beginning of each checkout flow (L1, zkSync, etc.)
-     */
-    async initializeCheckout() {
+    // Must be called at the beginning of each checkout flow (L1, zkSync, etc.)
+    async initializeStandardCheckout() {
       // Prompt web3 login if not connected
       if (!provider) {
         return await onConnect();
@@ -613,9 +616,7 @@ Vue.component('grants-cart', {
       });
 
       // Initialization complete, return address of current user
-      const userAddress = (await web3.eth.getAccounts())[0];
-
-      return userAddress;
+      return (await web3.eth.getAccounts())[0];
     },
 
     /**
@@ -760,19 +761,14 @@ Vue.component('grants-cart', {
       }
     },
 
-    /**
-     * @notice Checkout flow
-     */
-    async checkout() {
+    // Standard L1 checkout flow
+    async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
-        const userAddress = await this.initializeCheckout();
+        const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)
-        const allowanceData = await this.getAllowanceData(
-          userAddress,
-          bulkCheckoutAddress
-        );
+        const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
         // Send donation if no approvals -----------------------------------------------------------
         if (allowanceData.length === 0) {
@@ -806,9 +802,7 @@ Vue.component('grants-cart', {
       });
     },
 
-    /**
-     * Returns donation inputs for a transaction, filtered to remove unused data
-     */
+    // Returns donation inputs for a transaction, filtered to remove unused data
     getDonationInputs() {
       // We use parse and stringify to avoid mutating this.donationInputs since we use it later
       const donationInputs = JSON.parse(JSON.stringify(this.donationInputs)).map(donation => {
@@ -980,14 +974,15 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
+    // Converts `amount` of `tokenSymbol` to equivalent value in DAI, based on data in `tokenPrices`
     valueToDai(amount, tokenSymbol, tokenPrices) {
-      console.log(amount, tokenSymbol, tokenPrices);
       const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
-      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
+      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol in USDT (we treat USDT as equal to DAI)
 
       return Number(amount) * Number(amountOfOne); // convert based on quantity and return
     },
 
+    // Converts `amount` of `tokenSymbol` to equivalent value in ETH
     async valueToEth(amount, tokenSymbol) {
       const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
       const response = await fetch(url);
@@ -1051,169 +1046,51 @@ Vue.component('grants-cart', {
       return predicted_clr;
     },
 
-    // =============================================================================================
-    // =================================== START ZKSYNC METHODS ====================================
-    // =============================================================================================
-
     // ===================================== Helper functions ======================================
 
-    /**
-     * @notice Set flag in database to true if user was interrupted before completing zkSync
-     * checkout
-     * @param {Boolean} deposit_tx_hash Tx hash of the corresponding deposit that was interrupted,
-     * undefined otherwise
-     * @param {String} userAddress Address of user to check status for
-     */
-    async setInterruptStatus(deposit_tx_hash, userAddress) {
+    // For the provider address, an action of `save` will backup the user's cart data with a JSON
+    // store before checkout, and validate that it was saved. An action of `delete` will delete that
+    // JSON store
+    async manageCheckoutJSONStore(userAddress, action) {
+      if (action !== 'save' || action !== 'delete') {
+        throw new Error("JSON Store action must be 'save' or 'delete'");
+      }
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const url = 'zksync-set-interrupt-status';
+      const url = 'manage-checkout-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+      
+      // Send request
       const payload = {
         method: 'POST',
         headers,
-        body: new URLSearchParams({ deposit_tx_hash, user_address: userAddress, csrfmiddlewaretoken })
+        body: new URLSearchParams({
+          action,
+          csrfmiddlewaretoken,
+          donationInputs: this.donationInputs,
+          user_address: userAddress
+        })
       };
+      const postResponse = await fetch(url, payload);
+      const json = await postResponse.json();
 
-      // Send request
-      const res = await fetch(url, payload);
-      const json = await res.json();
+      // Validate that JSON store was created
+      const validationResponse = await this.getCheckoutJSONStore(userAddress);
 
       return json;
     },
 
-    /**
-     * @notice Check interrupt status for the logged in user
-     * @param {String} userAddress Address of user to check status for
-     */
-    async getInterruptStatus(userAddress) {
-      const url = `zksync-get-interrupt-status?user_address=${userAddress}`;
+    // Returns cart data if found in the JSON store for `userAddress`, and false otherw
+    async getCheckoutJSONStore(userAddress) {
+      const url = `get-checkout-data?user_address=${userAddress}`;
       const res = await fetch(url, { method: 'GET' });
       const json = await res.json();
-      const txHash = json.deposit_tx_hash;
+      const cartData = json.cart_data;
 
-      if (txHash.length === 66 && txHash.startsWith('0x')) {
-        // Valid transaction hash. Check if tx failed
-        const receipt = await this.ethersProvider.getTransactionReceipt(txHash);
-
-        if (receipt.status === 0) {
-          // Transaction failed, user must start over so mark them as not interrupted
-          await this.setInterruptStatus(null, this.userAddress);
-          return false;
-        }
-
-        // Transaction was mined, user must complete checkout
-        return txHash;
+      if (cartData && cartData.length > 0) {
+        return cartData;
       }
-
-      // User was not interrupted
       return false;
     },
-
-    /**
-     * @notice Checks the interrupt status for a user, and prompts them to complete their
-     * checkout if they have been interrupted
-     */
-    async checkInterruptStatus() {
-      try {
-        // We manually fetch the address so we can try checking independently of whether the
-        // this.userAddress parameter has been set. This is also why we need a try/catch -- the
-        // user may not have connected their wallet.
-        const userAddress = (await web3.eth.getAccounts())[0];
-        const result = await this.getInterruptStatus(userAddress);
-
-      } catch (e) {
-        this.handleError(e);
-      }
-    },
-
-    /**
-     * @notice For the given transaction hash, looks to see if it's been replaced
-     * @param txHash String, transaction hash to check
-     * @returns New transaction hash if found, original othrwise
-     */
-    async getReplacedTx(txHash) {
-      const url = `get-replaced-tx?tx_hash=${txHash}`;
-      const res = await fetch(url, { method: 'GET' });
-      const json = await res.json();
-      const newTxHash = json.tx_hash;
-
-      return newTxHash;
-    },
-
-    /**
-     * @notice For each token, returns the total amount donated in that token. Used instead of
-     * this.donationsTotal to ensure there's no floating point errors. This is very similar to
-     * getAllowanceData()
-     */
-    zkSyncSummaryData() {
-      const selectedTokens = Object.keys(this.donationsToGrants); // list of tokens being used
-      let summaryData = [];
-
-      // Define function that calculates the total amount for the specified token
-      const calcTotalAllowance = (tokenDetails) => {
-        const initialValue = new BN('0');
-
-        return this.donationInputs.reduce((accumulator, currentValue) => {
-          return currentValue.token === tokenDetails.addr
-            ? accumulator.add(new BN(currentValue.amount)) // token donation
-            : accumulator.add(new BN('0')); // ETH donation
-        }, initialValue);
-      };
-
-      // Loop over each token in the cart and get required allowance (i.e. total donation amount in
-      // that token)
-      for (let i = 0; i < selectedTokens.length; i += 1) {
-        const tokenName = selectedTokens[i];
-        const tokenDetails = this.getTokenByName(tokenName);
-        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-        const requiredAllowance = calcTotalAllowance(tokenDetails);
-
-        // If ETH donation we can skip
-        if (tokenDetails.name === 'ETH') {
-          continue;
-        }
-
-        // If we do need to set the allowance, save off the required info to request it later
-        summaryData.push({
-          allowance: requiredAllowance.toString(),
-          contract: tokenContract,
-          tokenName
-        });
-      }
-
-      return summaryData;
-    },
-
-    /**
-     * @notice For a given token and amount, determines how many total transfers are needed
-     * and the corresponding total amount, after fees, that is needed to cover them.
-     */
-    async getTotalAmountToTransfer(tokenSymbol, initialAmount) {
-      // Number of transfers that will take place is:
-      //   number of donations + 1 initial transfer + 1 final transfer + 1 for margin
-      //
-      // We are intentionally conservative here because we'd rather a user deposit too much
-      // and be successful than too little and fail. The downside to being conservative is that
-      // users are required to have enough margin in their accound balance to accomodate this, but
-      //  that is ok because it's similar to be required to have enough ETH for excess L1 gas limit
-      const numberOfFees = 3 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
-
-      // Transfers to an address that has never used zkSync are more expensive, which is why we
-      // use a random address as the recipient -- this gives us a conservative estimate. We also
-      // do this to avoid hitting the zkSync servers with dozens of rapid fee requests when users
-      // have a large number of items in their cart
-      const { fee, amount } = await this.getZkSyncFeeAndAmount({
-        dest: ethers.Wallet.createRandom().address, // gives an address that has never been used on zkSync
-        name: tokenSymbol,
-        amount: initialAmount
-      });
-
-      return amount.add(fee.mul(String(numberOfFees)));
-    },
-
-    // =============================================================================================
-    // ==================================== END ZKSYNC METHODS =====================================
-    // =============================================================================================
 
     // ================== Start collection logic ==================
     createCollection: async function() {
