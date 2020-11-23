@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.urls import path, re_path
 
-from quadraticlands.helpers import claim
+from quadraticlands.helpers import claim, set_mission_status
 from quadraticlands.views import (
     base, index, mission_answer, mission_base, mission_index, mission_question, mission_state,
 )
@@ -34,7 +34,8 @@ app_name = 'quadraticlands'
 urlpatterns = [
     path('', index, name='quadraticlands'),
     path('mission', mission_index, name='mission'),
-    path('claim', claim, name='claim_json'), 
+    path('claim', claim, name='claim_json'),
+    path('set_mission_status', set_mission_status, name='set_mission_status'),  
     path('<str:base>', base, name='quadraticlands'),
     path('mission/<str:mission_name>', mission_base, name='mission'),
     path('mission/<str:mission_name>/<str:mission_state>', mission_state, name='mission_state'),

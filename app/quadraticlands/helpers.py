@@ -43,8 +43,21 @@ from ratelimit.decorators import ratelimit
 
 # from django.shortcuts import redirect # TODO - implement this for redirect on GET to claim 
 
-
 logger = logging.getLogger(__name__)
+
+@login_required
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def set_mission_status(request):
+    '''when a mission is completed, UI will POST here so we can save new game state'''
+    if request.method == 'POST' and request.user.is_authenticated:
+        user = request.user if request.user.is_authenticated else None
+        # TODO - sanitize mission input, add some try except  
+        mission_name = request.POST.get('mission')
+        mission_status = MissionStatus.objects.get(profile_id=user.id)
+        logger.info(f'mission_status: {mission_status}')
+        mission_status.mission_name = True  
+        mission_status.save() 
+    return # maybe needs 200 or something? idk
 
 def get_initial_dist(request):
     '''retrieve initial dist info from the DB'''
@@ -54,7 +67,6 @@ def get_initial_dist(request):
     initial_dist = InitialTokenDistribution.objects.get(user_id=0).num_tokens
     context = {'total_claimable': initial_dist}
     return context
-
 
 def get_initial_dist_from_CF(request):
     '''hit the CF KV pairs list and return user claim data. currently unused 
@@ -106,11 +118,8 @@ def claim(request):
     # if POST 
     if request.method == 'POST' and request.user.is_authenticated:
          
-        blah = request.POST.get('address')
         logger.info(f'USER ID: {user.id}')
-        logger.info(f'USER ADDRESS: ')
-        logger.info(f'REQUEST: {blah}')
-        
+                    
         post_data_to_emss = {}
         post_data_to_emss['user_id'] = user.id
        
@@ -175,6 +184,7 @@ def claim(request):
     else:
         # TODO Make this redirect to token claim page I think 
         logger.info('Non authenticated or non-POST requested sent to claim/ - request ignored!')
+        # raise Http404
         return JsonResponse({'UNDERGROUND':'QUAD LANDS 4-0-4'})   
 
 
