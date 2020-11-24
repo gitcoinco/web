@@ -24,17 +24,16 @@ from django.db import models
 
 class InitialTokenDistribution(models.Model):
     '''Table for storing the initial gitcoin retroactive token distribution details''' 
-    # manually set, no fk needed I don't think
-    user_id = models.PositiveIntegerField(null=True)
-    # need to confirm WEI is best stored in BigInt with django/pg 
-    num_tokens = models.BigIntegerField()
-    # do we need blank=True? This model will not interact with a form client side
-    created_on = models.DateTimeField(null=True, blank=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='initial_distribution', on_delete=models.CASCADE
+    ) 
+    num_tokens = models.DecimalField(default=0, decimal_places=2, max_digits=50) #in WEI 
+    created_on = models.DateTimeField(auto_now=True, null=True, blank=True)
     distribution = JSONField(default=dict)
     
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.user_id}, {self.num_tokens}, {self.distribution}'
+        return f'{self.profile.user}, {self.num_tokens}, {self.distribution}'
 
 class MissionStatus(models.Model):
     ''' Track which missions a given user has completed'''

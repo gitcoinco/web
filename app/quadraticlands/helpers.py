@@ -68,7 +68,7 @@ def get_mission_status(request):
             "proof_of_knowledge" : False,
             "proof_of_receive" : False
         }
-        return JsonResponse(no_game_state)
+        return no_game_state
 
 
 @require_http_methods(["POST"])
@@ -114,7 +114,7 @@ def get_initial_dist(request):
     if request.user.id == None:
         return {'total_claimable': 0}
     # user_id = 0 should be replaced with user_id = request.user.id once the DB has more data 
-    initial_dist = InitialTokenDistribution.objects.get(user_id=0).num_tokens
+    initial_dist = InitialTokenDistribution.objects.get(profile_id=request.user.id).num_tokens
     context = {'total_claimable': initial_dist}
     return context
 
@@ -123,7 +123,7 @@ def get_initial_dist_from_CF(request):
        TODO compare with InitialClaim results as a 2fa check, if error, block claim 
     '''
     if request.user.id == None:
-        return {'total_claimable': 0}
+        return {"total_claimable": 0}
 
     # hit the graph and confirm/deny user has made a claim
 
@@ -187,13 +187,15 @@ def claim(request):
             logger.error('QuadLands: There was an issue validating user wallet address.')
             return JsonResponse({'error': 'Token claim address failed validation'})
           
-        # will pull token claim data from the user, this is hard coded for now 
-        post_data_to_emss['user_amount'] = 1000000000000000000000 # 1000 ETH - need to use big number in units WEI 
-
+        claim = get_initial_dist(request)
+        logger.info(f"debug claim amount - claim.total_claimable: {claim['total_claimable']}")
+        post_data_to_emss['user_amount'] = claim['total_claimable']
+        # post_data_to_emss['user_amount'] = 1000000000000000000000 # 1000 ETH - need to use big number in units WEI
+         
         # create a hash of post data                
         sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
-        logger.info(f'POST data: {json.dumps(post_data_to_emss)}')
-        logger.info(f'Server side hash: { sig }')
+        # logger.debug(f'POST data: {json.dumps(post_data_to_emss)}')
+        # logger.debug(f'Server side hash: { sig }')
         
         header = { 
             "X-GITCOIN-SIG" : sig,
@@ -215,13 +217,13 @@ def claim(request):
         except requests.exceptions.RequestException as e:
             # catastrophic error. bail.
             logger.error(f'GTC Distributor:  Error posting to EMSS - {e}')
-            there_is_a_problem = True 
+            there_is_a_problem = True # TODO - fix this
 
         # check response status, maybe better to use .raise_for_status()? 
         # need to streamline error response for this whole function 
         # TODO - sounds like we'll use custom quadlands 500 https://github.com/nopslip/gitcoin-web-ql/issues/23
-        if emss_response.status_code == 500:
-            logger.info(f'GTC Distributor: 500 received from ESMS! - This probably means there was a problem with token claim!')
+        if emss_response.status_code != 200:
+            logger.info(f'GTC Distributor: non-200 received from ESMS! - This probably means there was a problem with token claim!')
             resp = {'error': 'TRUE'}
             return JsonResponse(resp)
         
