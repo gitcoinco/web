@@ -54,6 +54,7 @@ Vue.component('grants-cart', {
       comments: undefined,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
+      include_for_clr: true,
       windowWidth: window.innerWidth,
       userAddress: undefined,
       // Checkout, zkSync NEW
@@ -1001,6 +1002,7 @@ Vue.component('grants-cart', {
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,
         anonymize_gitcoin_grants_contributions: this.AnonymizeGrantsContribution,
+        include_for_clr: this.include_for_clr,
         match_direction: '+',
         network: document.web3network,
         num_periods: 1,

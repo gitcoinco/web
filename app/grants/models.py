@@ -1276,7 +1276,7 @@ next_valid_timestamp: {next_valid_timestamp}
         sc.split_tx_confirmed = self.split_tx_confirmed
         sc.save()
 
-    def successful_contribution(self, tx_id):
+    def successful_contribution(self, tx_id, include_for_clr=True):
         """Create a contribution object."""
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
@@ -1308,8 +1308,10 @@ next_valid_timestamp: {next_valid_timestamp}
             # CLR matching, as it gives gitcoin an unfair advantage
             is_automatic = bool(contribution.subscription.amount_per_period == contribution.subscription.gas_price)
             from dashboard.models import Profile
-            contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
-            contribution.match = False
+
+            if not include_for_clr:
+                contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
+                contribution.match = False
             contribution.save()
 
         return contribution

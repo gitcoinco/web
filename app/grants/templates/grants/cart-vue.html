@@ -282,7 +282,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="flex-container" style="justify-content: start">
                           <div id="gitcoin-grant-section" class="form__group-horizontal mt-2">
                             <div class="row">
-                              <div class="col-12 mb-3">
+                              <div class="col-12">
                                 <p class="font-body">
                                   {% trans "Contribute to" %} <a
                                     href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
@@ -292,36 +292,45 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <!-- changed here -->
                               <div  class="">
                                 <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
-                                  <div class="btn btn-sm btn-gc-blue font-title font-weight-normal"
+                                  <div class="btn btn-sm btn-gc-blue font-title font-weight-normal px-4"
                                     :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
                                     @click="gitcoinFactorRaw=5">
                                     5%</div>
-                                  <div class="btn btn-sm btn-gc-blue font-title font-weight-normal ml-xl-2"
+                                  <div class="btn btn-sm btn-gc-blue font-title font-weight-normal ml-xl-2 px-4"
                                     :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
                                     @click="gitcoinFactorRaw=10">
                                     10%</div>
-                                  <div class="btn btn-sm btn-gc-blue font-title font-weight-normal ml-xl-2"
+                                  <div class="btn btn-sm btn-gc-blue font-title font-weight-normal ml-xl-2 px-4"
                                     :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
                                     @click="gitcoinFactorRaw=15">
                                     15%</div>
-                                  <div class="btn btn-sm mx-3 btn-gc-blue font-title font-weight-normal ml-xl-2"
+                                  <div class="btn btn-sm mx-3 btn-gc-blue font-title font-weight-normal ml-xl-2 px-4"
                                     :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 0}"
                                     @click="gitcoinFactorRaw=0">
                                     0%</div>
                                   <div class="d-inline-block">
                                     <span class="font-caption md:pl-3">Custom %</span>
-                                  <input style="width: 75px;" class="border btn font-title font-weight-normal ml-xl-2 pl-0"
-                                  type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
-                                  name="gitcoin-grant-input-amount" class="form__input text-center"
-                                  :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
-                                  v-model="gitcoinFactorRaw">
-                                {% include './heart.html' %}
-                                </div>
+                                    <input style="width: 75px;" class="border btn font-title font-weight-normal ml-xl-2 pl-0 text-center mr-2"
+                                      type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
+                                      name="gitcoin-grant-input-amount" class="form__input text-center"
+                                      :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
+                                      v-model="gitcoinFactorRaw"
+                                    >
+                                    {% include './heart.html' %}
+                                  </div>
                                 </div>
                                 <br/>
-                                <div class="container">
-                                <input type="checkbox" name="" id="clr-matching"> <label for="clr-matching">Include this contribution to CLR matching</label>
-                              </div>
+
+                                <div class="flex-container text-left grant-header-row black m-1 p-1">
+                                  <div class="w-100">
+                                    <div class="flex-container" style="justify-content: start">
+                                      <input type="checkbox" name="include_for_clr" v-model="include_for_clr" checked style="margin-right:1rem">
+                                      <label class="font-smaller-1 darker-gray mb-0 pb-0" for="include_for_clr">
+                                        Include this contribution to CLR matching
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                               <!-- changed here -->
                             </div>
@@ -384,7 +393,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <div class="row align-items-center justify-content-between">
                               <div class="col-auto">
                                 {% comment %} HTML Template for cart-ethereum-zksync.js {% endcomment %}
-                                <grants-cart-ethereum-zksync 
+                                <grants-cart-ethereum-zksync
                                   inline-template
                                   @zksync-data-updated="onZkSyncUpdate"
                                   :current-tokens="currentTokens"
@@ -393,7 +402,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 >
                                   <div>
                                   {% comment %} Checkout with zkSync button {% endcomment %}
-                                    <button 
+                                    <button
                                       @click="zksync.showModal = true"
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
                                       :disabled="cart.unsupportedTokens.length > 0"
@@ -430,7 +439,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                             <img src="{% static 'v2/images/grants/zksync.svg' %}" alt="zkSync Logo" width="150">
                                             <h1 class="font-bigger-4 font-weight-bold mt-2">Pay with zkSync</h1>
                                           </div>
-                                          
+
                                           {% comment %} If checkout not started {% endcomment %}
                                           <div v-if="zksync.checkoutStatus === 'not-started'">
                                             <p>
