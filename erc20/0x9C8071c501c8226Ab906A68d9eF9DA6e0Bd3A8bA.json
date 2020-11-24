@@ -1,0 +1,21 @@
+{
+    "symbol": "ECX",
+    "address": "0x9C8071c501c8226Ab906A68d9eF9DA6e0Bd3A8bA",
+    "overview":{
+          "en": "ECX Token enables cryptocurrencies to be widely used to serve the enterprises for business development project and making real assets tradable in crypto",
+          "zh": "ECX Token使加密货币能够广泛用于企业的业务开发项目，并使实体业务和资产可以在加密中进行交易"
+    },
+    "email": "support@ecxtoken.io",
+    "website": "https://ecxtoken.io/",
+    "whitepaper": "https://ecxtoken.io/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-06-28",
+    "initial_price":{
+          "USD":"0.16 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/ecxtoken",
+      "telegram": "https://t.me/ecxtoken",
+      "github": "https://github.com/ecxtoken",
+    }
+  } 
