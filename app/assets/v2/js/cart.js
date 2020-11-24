@@ -60,8 +60,8 @@ Vue.component('grants-cart', {
       zkSyncEstimatedGasCost: undefined,
       // Checkout, zkSync OLD
       ethersProvider: undefined,
-      // BrightID
-      isBrightIDVerified: false,
+      // verification
+      isFullyVerified: false,
       // Collection
       showCreateCollection: false,
       collectionTitle: '',
@@ -413,17 +413,6 @@ Vue.component('grants-cart', {
     },
     loginWithGitHub() {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
-    },
-    // BRIGHTID
-    async fetchBrightIDStatus() {
-      if (!document.brightid_uuid) {
-        return;
-      }
-
-      const url = `https://app.brightid.org/node/v5/verifications/Gitcoin/${document.brightid_uuid}`;
-      const response = await fetch(url);
-
-      this.isBrightIDVerified = (response.status === 200);
     },
     confirmClearCart() {
       if (confirm('are you sure')) {
@@ -1335,7 +1324,7 @@ Vue.component('grants-cart', {
   },
 
   async mounted() {
-    this.fetchBrightIDStatus();
+    this.isFullyVerified = document.isFullyVerified;
 
     // Show loading dialog
     this.isLoading = true;
