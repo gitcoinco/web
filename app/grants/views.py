@@ -2216,8 +2216,6 @@ def grants_cart_view(request):
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
     }
     if request.user.is_authenticated:
-        # GET THE SMS STATUS FROM PROFILE
-        context['verified'] = request.user.profile.sms_verification
         context['brightid_uuid'] = request.user.profile.brightid_uuid
         context['username'] = request.user.profile.username
     else:
