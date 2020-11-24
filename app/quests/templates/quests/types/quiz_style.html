@@ -117,6 +117,10 @@
     document.num_questions = parseInt('{{quest.questions|length}}');
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
+    document.reward_tip = {
+      'token': '{{quest.reward_tip.tokenName}}',
+      'token_amount': '{{quest.reward_tip.value_true}}'
+    };
     document.quest = {{quest_json|safe}};
     document.quest_url = '{{quest.url}}';
     document.quest_feedback_url = '{{quest.feedback_url}}';

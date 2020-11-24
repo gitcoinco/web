@@ -13,7 +13,7 @@
             <input type="submit" value="Recalculate Sybil Investigation" name="_recalc_sybil" value="1">
             <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
         {% elif 'kudostransfer' in request.build_absolute_uri %}
-            {% if original.txid == 'pending_celery' %}
+            {% if original.txid == 'pending_celery' or original.tx_status == 'dropped' or original.tx_status == 'pending' %}
                 <input type="submit" value="Broadcast Txn" name="_broadcast_txn" value="1">
             {% endif %}
         {% elif 'dashboard/activity' in request.build_absolute_uri %}
@@ -26,6 +26,7 @@
             <input type="submit" value="Copy Offer" name="_copy_offer" value="1">
         {% elif 'dashboard/tip/' in request.build_absolute_uri %}
             <input type="submit" value="Reset Tip Redemption Status" name="_reset_tip_redemption" value="1">
+            <input type="submit" value="Make into MultiTip & Halve Tip to {{original.metadata.max_redemptions}}x2 Redemptions" name="halve_tip" onclick='javascript:if(!confirm("are you sure?  this will make the tip be able to redeemed 2x the times as it currently can, and will cut the tip size in half.")){return false};' value="1">
         {% elif 'economy/token/' in request.build_absolute_uri %}
             <input type="submit" value="Approve Request" name="_approve_token" value="1">
         {% elif 'grants/flag/' in request.build_absolute_uri %}

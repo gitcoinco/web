@@ -119,9 +119,9 @@
 }
 
 .comment-option .radio-label {
-  border: 1px solid #9a96ac;
   color: #9a96ac;
-  padding: 4px 9px;
+  font-weight: 600;
+  background: white;
 }
 
 .comment-option .radio-input:checked + .radio-label,
@@ -129,7 +129,6 @@
   cursor: pointer;
   background-color: #9a96ac;
   color: white !important;
-  font-weight: 600;
 }
 
 .middle-line {

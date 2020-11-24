@@ -225,11 +225,12 @@ def receive_tip_v3(request, key, txid, network):
             messages.error(request, str(e))
             logger.exception(e)
 
+    gas_price_sanity_multiplier = 1.3
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
+        'gas_price': round(float(gas_price_sanity_multiplier) * float(recommend_min_gas_price_to_confirm_in_time(1)), 1),
         'tip': tip,
         'has_this_user_redeemed': has_this_user_redeemed,
         'key': key,
@@ -462,6 +463,15 @@ def send_tip_2(request):
             user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
             user['preferred_payout_address'] = profile.preferred_payout_address
 
+    recent_tips = Tip.objects.filter(sender_profile=request.user.profile).order_by('-created_on')
+    recent_tips_profiles = []
+
+    for tip in recent_tips:
+        if len(recent_tips_profiles) == 7:
+            break
+        if tip.recipient_profile not in recent_tips_profiles:
+            recent_tips_profiles.append(tip.recipient_profile)
+
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'send2',
@@ -470,7 +480,8 @@ def send_tip_2(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
-        'fund_request': fund_request
+        'fund_request': fund_request,
+        'recent_tips_profiles': recent_tips_profiles
     }
 
     if user:

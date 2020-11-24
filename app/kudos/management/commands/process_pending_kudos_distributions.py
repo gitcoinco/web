@@ -77,5 +77,7 @@ class Command(BaseCommand):
                     func = redeem_bulk_kudos.delay if _async else redeem_bulk_kudos
                     try:
                         func(kt.id, delay_if_gas_prices_gt_redeem=delay_if_gas_prices_gt_redeem, override_gas_price=override_gas_price, send_notif_email=send_notif_email, override_lock_timeout=1)
+                        kt.update_tx_status()
+                        kt.save()
                     except Exception as e:
                         print(e)

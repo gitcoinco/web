@@ -718,8 +718,8 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
         'value': int(coupon.token.price_finney / 1000.0 * 10**18),
     })
 
-    if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
-        error = f'Your github profile is too new.  Cannot receive kudos.'
+    if not profile.is_brightid_verified and not profile.is_twitter_verified and not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        error = f'Your github profile is too new, so you cannot receive kudos.  Please verifiy your profile on BrightID and/or Twitter to proceed.'
         return None, error, None
     else:
 
@@ -739,7 +739,8 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
             try:
                 # TODO - in the future, override this if the user pays for expediated processing
                 if recommend_min_gas_price_to_confirm_in_time(1) > max_gas_price_we_are_willing_to_pay_gwei:
-                    raise Exception("gas price is too high.  try again when its not pls")
+                    if coupon.token.contract.network == 'mainnet':
+                        raise Exception("gas price is too high.  try again when its not pls")
 
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
             except Exception as e:

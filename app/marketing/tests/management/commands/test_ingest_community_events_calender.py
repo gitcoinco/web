@@ -47,11 +47,10 @@ class CalenderTestLoader:
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), fname)) as f:
             return Calendar.from_ical(f.read())
 
-
+# These Tests don't actually work - DL
 class TestIngestCommunityEvents(TestCase):
     """Define tests for ingest community events. """
 
-    
     def test_handle_create(self):
         """Test ingest_community_events_calender command for creating new events ."""
 
