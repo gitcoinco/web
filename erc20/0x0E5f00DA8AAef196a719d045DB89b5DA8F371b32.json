@@ -1,0 +1,22 @@
+{
+"symbol": "CNTM",
+"address": "0x0E5f00DA8AAef196a719d045DB89b5DA8F371b32",
+"overview":{
+"en": "CNTM token is issued based on ERC20, Connectome is a DeFi Artificial Intelligence Robo-Advisor platform developed based on the core technology of the blockchain. It supports on-chain transactions and AI evaluation of decentralized financial (DeFi) derivatives, liquidity mining, one-click Robo-Advisor, smart customer service, etc. Through big data multi-dimensional analysis and AI model deduction, it provides users with one-click, customized Robo-Advisor services, and a full range of blockchain solutions for issuers of financial derivatives and investors.",
+"zh": "CNTM代币是基于ERC20发行的代币，Connectome是一个基于区块链核心技术开发的DeFi人工智能投顾平台，支持DeFi产品上链交易、理财产品去中心化AI测评、流动性挖矿、一键式智能投顾、智能客服等。通过大数据多维分析、AI模型演练，为用户提供接近一站式的、定制化人工智能投资顾问服务，为理财产品发行人、投资用户提供全方位的区块链解决方案。"
+},
+"email": "cntmbusiness@gmail.com",
+"website": "https://www.connectome.one/",
+"whitepaper": "https://www.connectome.one/uploads/file/201108-0432.pdf",
+"state": "NORMAL",
+"published_on": "2019-12-02",
+"initial_price":{
+"USD":"0.14 USD"
+},
+"links": {
+"twitter": "https://twitter.com/Connectome_CNTM",
+"telegram": "https://t.me/connectomegroup",
+"github": "https://github.com/cntm-dev/connectome",
+"facebook": "https://www.facebook.com/connectome.cntm.7"
+  }
+}
