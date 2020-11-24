@@ -839,7 +839,7 @@ Vue.component('grants-cart', {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-          await this.postToDatabase(txHash, bulkCheckoutAddress, userAddress); // Save contributions to database
+          await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
         })
         .on('error', (error, receipt) => {
@@ -848,14 +848,19 @@ Vue.component('grants-cart', {
         });
     },
 
-    /**
-     * @notice POSTs donation data to database
-     */
+    // POSTs donation data to database
     async postToDatabase(txHash, contractAddress, userAddress) {
-      // this.donationInputs is the array used for bulk donations
-      // We loop through each donation and POST the required data
+      // this.grantsByTenant is the array used for donations
+      // We loop through each donation to configure the payload then POST the required data
       const donations = this.donationInputs;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      
+      // If txHash has a length of one, stretch it so there's one hash for each donation
+      let txHashes = txHash;
+
+      if (txHash.length === 1) {
+        txHashes = new Array(donations.length).fill(txHash[0]);
+      }
 
       // Configure template payload
       const saveSubscriptionPayload = {
@@ -875,7 +880,6 @@ Vue.component('grants-cart', {
         real_period_seconds: 0,
         recurring_or_not: 'once',
         signature: 'onetime',
-        split_tx_id: txHash, // this txhash is our bulk donation hash
         splitter_contract_address: contractAddress,
         subscription_hash: 'onetime',
         // Values that vary by donation
@@ -888,6 +892,7 @@ Vue.component('grants-cart', {
         contract_version: [],
         denomination: [],
         grant_id: [],
+        split_tx_id: [], // Bulk donation hash for L1, or specific hash for L2
         sub_new_approve_tx_id: [],
         token_address: [],
         token_symbol: []
@@ -927,11 +932,11 @@ Vue.component('grants-cart', {
         saveSubscriptionPayload.denomination.push(tokenAddress);
         saveSubscriptionPayload['gitcoin-grant-input-amount'].push(gitcoinGrantInputAmt);
         saveSubscriptionPayload.grant_id.push(grantId);
+        saveSubscriptionPayload.split_tx_id.push(txHashes[i]);
         saveSubscriptionPayload.sub_new_approve_tx_id.push(donation.tokenApprovalTxHash);
         saveSubscriptionPayload.token_address.push(tokenAddress);
         saveSubscriptionPayload.token_symbol.push(tokenName);
       } // end for each donation
-
 
       // Configure request parameters
       const url = '/grants/bulk-fund';
@@ -947,6 +952,11 @@ Vue.component('grants-cart', {
       // Send saveSubscription request
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
+
+      if (json.failures.length > 0) {
+        // Something went wrong, so we create a backup of the users cart
+        await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
+      }
       
       // Clear JSON Store
       await this.manageEthereumCartJSONStore(userAddress, 'delete');

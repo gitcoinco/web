@@ -21,7 +21,8 @@ Vue.component('grantsCartEthereumZksync', {
         feeTokenSymbol: undefined, // token symbol to pay zksync fee with, e.g. 'DAI'
         showChangeToken: false, // true to show dropdown to let user select feeTokenSymbol
         showModal: false, // true to show modal to user, false to hide
-        checkoutStatus: 'not-started' // options are 'not-started', 'pending'. When complete we redirect the user
+        checkoutStatus: 'not-started', // options are 'not-started', 'pending'. When complete we redirect the user
+        contractAddres: '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet contract address
       },
 
       cart: {
@@ -167,18 +168,24 @@ Vue.component('grantsCartEthereumZksync', {
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
       try {
-        // Send user to zkSync to complete checkout
+        // Save off cart data
         this.zksync.checkoutStatus = 'pending';
+        await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');
+
+        // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
           this.transfers,
           this.zksync.feeTokenSymbol
         );
 
-
         // Save contributors to database and redirect to success modal
+        console.log('zkSync transaction hashes: ', txHashes);
         _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-        // TODO save contributions
-        console.log('txHashes: ', txHashes);
+        await appCart.$refs.cart.postToDatabase(
+          txHashes, // array of transaction hashes for each contribution
+          this.zksync.contractAddres, // we use the zkSync mainnet contract address to represent zkSync deposits
+          this.user.address
+        );
         await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
 
       } catch (e) {

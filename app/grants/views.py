@@ -1925,13 +1925,6 @@ def bulk_fund(request):
     if request.method != 'POST':
         raise Http404
 
-    # Save off payload data
-    JSONStore.objects.create(
-        key=request.POST.get('split_tx_id'), # use bulk data tx hash as key
-        view='bulk_fund_post_payload',
-        data=request.POST
-    )
-
     # Get list of grant IDs
     grant_ids_list = [int(pk) for pk in request.POST.get('grant_id').split(',')]
 
@@ -2084,6 +2077,8 @@ def manage_ethereum_cart_data(request):
       1. `action == save` will save the provided cart data as a JSON Store
       2. `action == delete` will removed saved cart data from the JSON Store
     """
+    if request.method != 'POST':
+        raise Http404
 
     user_address = request.POST.get('user_address')
     action = request.POST.get('action')
@@ -2120,6 +2115,9 @@ def get_ethereum_cart_data(request):
     """
     For the specified user address, returns the saved checkout data if found
     """
+    if request.method != 'GET':
+        raise Http404
+
     try:
         user_address = request.GET.get('user_address')
         result = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
