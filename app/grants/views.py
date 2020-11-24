@@ -2040,6 +2040,7 @@ def bulk_fund(request):
                 'sub_new_approve_tx_id': request.POST.get('sub_new_approve_tx_id').split(',')[index],
                 'token_address': request.POST.get('token_address').split(',')[index],
                 'token_symbol': request.POST.get('token_symbol').split(',')[index],
+                'include_for_clr': json.loads(request.POST.get('include_for_clr', 'true'))
             }
             process_grant_contribution.delay(grant_id, grant.slug, profile.pk, payload)
         except Exception as e:

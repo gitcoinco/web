@@ -155,7 +155,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.grant = grant
         subscription.comments = package.get('comment', '')
         subscription.save()
-        subscription.successful_contribution(subscription.new_approve_tx_id);
+
+        include_for_clr = package.get('include_for_clr')
+
+        subscription.successful_contribution(subscription.new_approve_tx_id, include_for_clr)
 
         # one time payments
         activity = None

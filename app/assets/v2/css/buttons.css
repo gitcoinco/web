@@ -100,16 +100,19 @@ button:focus {
 
 .btn-gc-blue,
 .btn-gc-green,
+.btn-gc-dark-green,
 .btn-gc-purple,
 .btn-gc-pink {
   color: white;
 }
 
-.btn-outline-gc-blue,
-.btn-outline-gc-purple,
-.btn-outline-gc-green,
-.btn-outline-white {
-  /* padding: .75rem 1.5rem; */
+
+.btn-gc-dark-green {
+  background-color: var(--gc-dark-green);
+}
+
+.btn-gc-dark-green:hover {
+  background-color: var(--gc-green);
 }
 
 .btn-gc-blue {

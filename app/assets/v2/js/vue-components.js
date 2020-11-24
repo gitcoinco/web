@@ -885,7 +885,7 @@ Vue.component('render-quill', {
     };
   },
   methods: {
-    transform: function(){
+    transform: function() {
       let vm = this;
 
       if (!vm.delta) {
@@ -894,17 +894,18 @@ Vue.component('render-quill', {
 
       vm.jqEl = this.$el;
       const quill = new Quill(vm.jqEl);
+
       quill.enable(false);
       vm.renderHtml = quill.setContents(JSON.parse(vm.delta));
     }
 
   },
   mounted() {
-    this.transform()
+    this.transform();
   },
   watch: {
     delta: function() {
-      return this.transform()
+      return this.transform();
     }
-  },
+  }
 });

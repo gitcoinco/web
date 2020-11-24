@@ -258,15 +258,15 @@ Vue.mixin({
 });
 
 const grant_regions = [
-    { 'name': 'north_america', 'label': 'North America'},
-    { 'name': 'oceania', 'label': 'Oceania'},
-    { 'name': 'latin_america', 'label': 'Latin America'},
-    { 'name': 'europe', 'label': 'Europe'},
-    { 'name': 'africa', 'label': 'Africa'},
-    { 'name': 'middle_east', 'label': 'Middle East'},
-    { 'name': 'india', 'label': 'India'},
-    { 'name': 'east_asia', 'label': 'East Asia'},
-    { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+  { 'name': 'north_america', 'label': 'North America'},
+  { 'name': 'oceania', 'label': 'Oceania'},
+  { 'name': 'latin_america', 'label': 'Latin America'},
+  { 'name': 'europe', 'label': 'Europe'},
+  { 'name': 'africa', 'label': 'Africa'},
+  { 'name': 'middle_east', 'label': 'Middle East'},
+  { 'name': 'india', 'label': 'India'},
+  { 'name': 'east_asia', 'label': 'East Asia'},
+  { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
 ];
 
 if (document.getElementById('gc-new-grant')) {
