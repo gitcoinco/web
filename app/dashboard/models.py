@@ -3143,6 +3143,13 @@ class Profile(SuperModel):
         return Token.objects.filter(artist=self.handle, num_clones_allowed__gt=1, hidden=False)
 
     @property
+    def get_failed_kudos(self):
+        from kudos.models import KudosTransfer
+        pks = list(self.get_my_kudos.values_list('pk', flat=True)) + list(self.get_sent_kudos.values_list('pk', flat=True))
+        qs = KudosTransfer.objects.filter(pk__in=pks)
+        return qs.filter(Q(txid='pending_celery') | Q(tx_status__in=['dropped', 'unknown']))
+
+    @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
         kt_owner_address = KudosTransfer.objects.filter(
