@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 const joinTribe = () => {
   $('[data-jointribe]').each(function(index, elem) {
 

@@ -22,7 +22,7 @@
   </div>
   <input type="hidden" name="keywords" value="{{keywords}}">
   <div class="my-2">
-    <select name="{{name}}" filter_by_address="{{filter_by_address}}" class="kudos-search custom-select gc-border-blue">
+    <select name="{{name}}" filter_by_address="{{filter_by_address}}" filter_by_network="{% if kudos_network %}{{kudos_network}}{% else %}mainnet{%endif%}" class="kudos-search custom-select gc-border-blue">
       <option></option>
     </select>
   </div>

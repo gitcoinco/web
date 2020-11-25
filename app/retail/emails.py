@@ -132,8 +132,8 @@ def render_new_supporter_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_thank_you_for_supporting_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_thank_you_for_supporting_email(subscriptions):
+    params = {'subscriptions': subscriptions}
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
     subject = _("Thank you for supporting Grants on Gitcoin!")
@@ -149,8 +149,8 @@ def render_support_cancellation_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_grant_cancellation_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_grant_cancellation_email(grant):
+    params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
     response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
     subject = _("Your Grant on Gitcoin Grants has been cancelled")
@@ -215,8 +215,7 @@ def subscription_terminated(request):
 @staff_member_required
 def grant_cancellation(request):
     grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    response_html, __, __ = render_grant_cancellation_email(grant)
     return HttpResponse(response_html)
 
 
@@ -231,8 +230,8 @@ def support_cancellation(request):
 @staff_member_required
 def thank_you_for_supporting(request):
     grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    subscription = Subscription.objects.all()[:5]
+    response_html, __, __ = render_thank_you_for_supporting_email(subscription)
     return HttpResponse(response_html)
 
 

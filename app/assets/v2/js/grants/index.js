@@ -54,8 +54,10 @@ $(document).ready(() => {
 });
 
 Vue.component('grant-sidebar', {
-  props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'featured'
+  props: [
+    'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
+    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
+    'featured'
   ],
   data: function() {
     return {
@@ -102,10 +104,25 @@ Vue.component('grant-sidebar', {
 
         document.location.href = `/grants/collections?${$.param(collections_query)}`;
       } else {
-        document.location.href = this.round_num ?
-          `/grants/clr/${this.round_num}?type=${params.type}` :
-          `/grants/${params.type}`
-        ;
+        let target = `/grants/${params.type}`;
+
+        if (this.round_num) {
+          target = `/grants/clr/${this.round_num}?type=${params.type}`;
+
+          if (this.sub_round_slug && !this.customer_name) {
+            target = `/grants/clr/${this.round_num}/${this.sub_round_slug}?type=${params.type}`;
+          }
+
+          if (!this.sub_round_slug && this.customer_name) {
+            target = `/grants/clr/${this.customer_name}/${this.round_num}?type=${params.type}`;
+          }
+
+          if (this.sub_round_slug && this.customer_name) {
+            target = `/grants/clr/${this.customer_name}/${this.round_num}/${this.sub_round_slug}?type=${params.type}`;
+          }
+        }
+
+        document.location.href = target;
       }
     },
     searchKeyword: function() {
@@ -160,6 +177,8 @@ if (document.getElementById('grants-showcase')) {
       cart_lock: false,
       collection_id: document.collection_id,
       round_num: document.round_num,
+      sub_round_slug: document.sub_round_slug,
+      customer_name: document.customer_name,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
@@ -186,6 +205,18 @@ if (document.getElementById('grants-showcase')) {
 
         if (vm.round_num) {
           let uri = `/grants/clr/${vm.round_num}/`;
+
+          if (vm.sub_round_slug && !vm.customer_name) {
+            uri = `/grants/clr/${vm.round_num}/${vm.sub_round_slug}/`;
+          }
+
+          if (!vm.sub_round_slug && vm.customer_name) {
+            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/`;
+          }
+
+          if (vm.sub_round_slug && vm.customer_name) {
+            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/${vm.sub_round_slug}/`;
+          }
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
@@ -357,6 +388,14 @@ if (document.getElementById('grants-showcase')) {
 
         if (vm.round_num) {
           base_params['round_num'] = vm.round_num;
+        }
+
+        if (vm.sub_round_slug) {
+          base_params['sub_round_slug'] = vm.sub_round_slug;
+        }
+
+        if (vm.customer_name) {
+          base_params['customer_name'] = vm.customer_name;
         }
 
         const params = new URLSearchParams(base_params).toString();

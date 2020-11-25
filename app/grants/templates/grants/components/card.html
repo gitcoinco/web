@@ -27,7 +27,7 @@
         </div>
         <div :class="`grant-item__content ${ collection && isCurator ? 'col-md-7' : 'col-md-8'} px-3`">
           <h2 class="grant-item__title font-subheader">
-            <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+            <a :href="grant.details_url">[[ grant.title | truncate(60) ]]</a>
             <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="click" data-content='
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
@@ -107,7 +107,7 @@
                   <template v-slot:button-content>
                     <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
                   </template>
-                  <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+                  <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections" :key="collection.id">[[collection.title]]</b-dropdown-item>
                 </b-dropdown>
               </template>
             </div>
@@ -138,7 +138,7 @@
       </div>
       <div class="grant-item__content px-3">
         <h2 class="grant-item__title font-subheader">
-          <a :href="grant.details_url" target="_blank">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+          <a :href="grant.details_url" target="_blank">[[ grant.title | truncate(60) ]]</a>
           <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
@@ -146,7 +146,7 @@
             ><img width="13" clas="position-relative" style="top: -2px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
           </button>
         </h2>
-        <p class="grant-item__pitch font-caption mb-2">[[ grant.description.slice(0, 145) ]][[ grant.description.length > 145 ? '...' : '']]</p>
+        <p class="grant-item__pitch font-caption mb-2">[[ grant.description | truncate(145) ]]</p>
         <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
           <span class="font-smaller-5">
             <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
@@ -240,7 +240,7 @@
             <template v-slot:button-content>
               <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
             </template>
-            <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+            <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections" :key="collection.id">[[collection.title]]</b-dropdown-item>
           </b-dropdown>
 
           <div class="col-12 pb-4">

@@ -168,8 +168,7 @@ def add_grant_to_active_clrs(grant):
 
     active_clr_rounds = GrantCLR.objects.filter(is_active=True)
     for clr_round in active_clr_rounds:
-        grants_in_clr = Grant.objects.filter(**clr_round.grant_filters)
-        if grants_in_clr.filter(pk=grant.pk).count():
+        if clr_round.grants.filter(pk=grant.pk).exists():
             grant.in_active_clrs.add(clr_round)
             grant.save()
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-loop-func */
+/* eslint-disable no-loop-func, no-prototype-builtins */
 (function($) {
 
   $('body').on('click', '.btn', function(e) {

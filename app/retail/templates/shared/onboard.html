@@ -44,13 +44,13 @@
           Tell us a little about you:
         </p>
         <div class="form-group">
-          <label for="">Skills <span class="badge badge-greylight">Required</span></label>
+          <label for="">Skills</label>
           <v-select class="vs-blue" @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
-            <template slot="no-options">
-              Type to search skills..
-            </template>
-            <template v-slot:option="option">
-              <span class="font-weight-semibold">[[ option.label ]]</span>
+            <template v-slot:no-options="{ search, searching }">
+              <template v-if="searching">
+                No results found for <em>[[search]]</em>.
+              </template>
+              <em style="opacity: 0.5;" v-else>Type to search skills..</em>
             </template>
           </v-select>
         </div>
@@ -78,7 +78,7 @@
           </v-select>
         </div>
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-gc-blue" @click="goStep(2)" :disabled="!data.skillsSelected.length || !data.interestsSelected.length || !data.bio">Next</button>
+          <button class="btn btn-gc-blue" @click="goStep(2)" :disabled="!data.interestsSelected.length || !data.bio">Next</button>
         </div>
       </div>
     </template>

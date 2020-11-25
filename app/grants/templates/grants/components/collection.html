@@ -14,10 +14,48 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-<grant-collection inline-template :collection="collection" v-on:collection:show="showSingleCollection($event)">
+<grant-collection inline-template :collection="collection" v-on:collection:show="showSingleCollection($event)" :small="current_type !== 'collections' ">
   <a @click="$emit('collection:show', collection.id)" v-if="collection" target="_blank  ">
     <template>
-      <div class="collection-item">
+      <div class="collection-item" v-if="small">
+        <div class="collection-item__img position-relative">
+          <div class="collection-item__img--small-grid">
+            <div class="collection-item__img__cover--small">
+              <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
+            </div>
+            <div class="collection-item__img__cover--small">
+              <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2">
+            </div>
+            <div class="collection-item__img__cover--small">
+              <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3">
+            </div>
+          </div>
+        </div>
+        <div class="collection-item__content px-3">
+          <div class="d-flex mb-1">
+              <div class="d-flex w-100">
+                <div class="collection-item__owner-image--large position-relative mr-2" style="top: 5px; ">
+                  <a :href="collection.owner.url" target="_blank" rel="noopener noreferrer">
+                    <img :src="collection.owner.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+                  </a>
+                </div>
+                <div class="w-100">
+                  <h2 class="collection-item__title mb-1 font-subheader">
+                    <a href="#">[[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]</a>
+                  </h2>
+                  <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex">
+                      <a :href="collection.owner.url" class="collection-item__owner-handle font-smaller-1 mr-2 text-capitalize" target="_blank" rel="noopener noreferrer">[[ collection.owner.handle || 'anonymous' ]]</a>
+                      <p class="text-muted font-smaller-1 mb-0">[[ collection.count ]] grant[[collection.count > 1 ? 's' : '']]</p>
+                    </div>
+                    <a :href="`/grants/collections?collection_id=${collection.id}`" v-on:click.stop="app/grants/views.py" target="_blank" v-if="collection">VIEW <i class="fas fa-arrow-right"></i></a>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="collection-item" v-else>
         <div class="collection-item__img position-relative" :style="collection.cover ? 'padding: 0' : ''">
           <div class="collection-item__img--grid" v-if="!collection.cover">
             <div class="collection-item__img__cover">

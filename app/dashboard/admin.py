@@ -29,9 +29,9 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
-    Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
-    TribesSubscription, UserAction, UserVerificationModel,
+    Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -585,6 +585,10 @@ class ProfileVerificationAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
 
 
+class MediaFileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'file', 'filename']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -627,3 +631,4 @@ admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
 admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)
+admin.site.register(MediaFile, MediaFileAdmin)

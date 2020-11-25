@@ -121,10 +121,10 @@
               <input name=enemy type="hidden" value={{package.enemy}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='enemy2' %}
+                {% include 'shared/add_kudos.html' with name='enemy2' kudos_network='xdai' %}
               </div>
             {% else %}
-              {% include 'shared/add_kudos.html' with name='enemy' %}
+              {% include 'shared/add_kudos.html' with name='enemy' kudos_network='xdai' %}
             {% endif %}
           </div>
           <div class="form-group">

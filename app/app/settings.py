@@ -598,6 +598,16 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Google
+GOOGLE_AUTH_BASE_URL = env('GOOGLE_AUTH_BASE_URL', default='https://accounts.google.com/o/oauth2/auth')
+GOOGLE_TOKEN_URL = env('GOOGLE_TOKEN_URL', default='https://oauth2.googleapis.com/token')
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET', default='')
+GOOGLE_SCOPE = env('GOOGLE_SCOPE', default='https://www.googleapis.com/auth/userinfo.profile')
+
+# OATHLIB
+OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
+
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
 
@@ -884,3 +894,7 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+
+# Idena
+IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
+IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min

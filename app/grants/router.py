@@ -53,11 +53,19 @@ class GrantViewSet(viewsets.ModelViewSet):
 
         # Filter by title.
         if 'title' in param_keys:
-            queryset = queryset.filter(title_iexact=self.request.query_params.get('title'))
+            queryset = queryset.filter(title__iexact=self.request.query_params.get('title'))
+
+        # Filter by pk.
+        if 'pk' in param_keys:
+            queryset = queryset.filter(pk=self.request.query_params.get('pk'))
+
+        # Filter by admin_address.
+        if 'admin_address' in param_keys:
+            queryset = queryset.filter(admin_address__iexact=self.request.query_params.get('admin_address'))
 
         # Filter by description.
         if 'description' in param_keys:
-            queryset = queryset.filter(description_iexact=self.request.query_params.get('description'))
+            queryset = queryset.filter(description__iexact=self.request.query_params.get('description'))
 
         # Filter by keyword.
         if 'keyword' in param_keys:
@@ -65,7 +73,13 @@ class GrantViewSet(viewsets.ModelViewSet):
 
         # Filter by grant_type.
         if 'grant_type' in param_keys:
-            queryset = queryset.filter(grant_type=self.request.query_params.get('grant_type'))
+            queryset = queryset.filter(grant_type__name=self.request.query_params.get('grant_type'))
+
+        # adds a limit
+        if 'limit' in param_keys:
+            limit = int(self.request.query_params.get('limit'))
+            queryset = queryset[0:limit]
+
 
         return queryset
 
