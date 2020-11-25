@@ -436,7 +436,7 @@ Vue.mixin({
       show_extend_deadline_modal();
     },
     show_interest_modal: function() {
-      show_interest_modal();
+      show_interest_modal(this.checkApproved());
     },
     staffOptions: function() {
       let vm = this;
@@ -558,7 +558,7 @@ Vue.mixin({
       if (!handle) {
         return false;
       }
-
+      console.log(vm.bounty);
       if (vm.bounty.fulfillments.filter(fulfillment =>
         fulfillment.fulfiller_github_username != handle).length
       ) {
@@ -790,7 +790,7 @@ const submitInterest = (bounty, msg, self, onSuccess) => {
   });
 };
 
-var show_interest_modal = function() {
+var show_interest_modal = function(only_submit_project) {
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
@@ -817,6 +817,12 @@ var show_interest_modal = function() {
           const logo = elements['logo'].files[0];
           const summary = elements['summary'].value;
           const data = $(this).serializeArray();
+
+          if (only_submit_project) {
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+            return;
+          }
 
           submitInterest(document.result['pk'], summary, self, () => {
             appBounty.fetchBounty();

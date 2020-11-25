@@ -22,9 +22,13 @@ import time
 from datetime import datetime
 from functools import reduce
 
-from django.db.models import Count, F, Q
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.db.models import Count, F, Q, Subquery
 
 import django_filters.rest_framework
+from django.template.defaultfilters import slugify
+from django.urls import reverse
+
 from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
@@ -124,11 +128,49 @@ class InterestSerializer(serializers.ModelSerializer):
     """Handle serializing the Interest object."""
 
     profile = ProfileSerializer()
+    projects = serializers.SerializerMethodField()
+
+    def get_projects(self, interest):
+        bounty = Bounty.objects.filter(interested=interest).values('pk')
+        projects = HackathonProject.objects.filter(profiles=interest.profile, bounty__in=Subquery(bounty))
+
+        projects_dict = [{
+            'id': project.pk,
+            'status': project.status,
+            'badge': project.badge,
+            'name': project.name,
+            'summary': project.summary,
+            'work_url': project.work_url,
+            'bounty': {
+              'id': project.bounty.id
+            },
+            'profiles': [
+                {
+                    'url': reverse('profile', args=[profile]),
+                    'handle': profile.handle,
+                    'avatar_url': profile.avatar_url
+                } for profile in project.profiles.all()
+            ],
+            'logo': project.logo.url, # TODO: add default avatar for project
+            'message': project.message,
+            'looking_members': project.looking_members,
+            'winner': project.winner,
+            'natural_time': naturaltime(project.created_on),
+            'url': (
+                reverse('hackathon_project_page', kwargs={'hackathon': project.hackathon.slug, 'project_id': project.id, 'project_name': slugify(project.name)})
+                if project.name else
+                reverse('hackathon_project_page', kwargs={'hackathon': project.hackathon.slug, 'project_id': project.id})
+            )
+        } for project in projects]
+        print(projects_dict)
+        return projects_dict
 
     class Meta:
         """Define the Interest serializer metadata."""
         model = Interest
-        fields = ('pk', 'profile', 'created', 'pending', 'issue_message')
+        fields = ('pk', 'profile', 'created', 'pending', 'issue_message', 'projects')
+
+
 
 
 # Serializers define the API representation.

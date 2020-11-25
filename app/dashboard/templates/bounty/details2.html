@@ -167,6 +167,9 @@
                 <button v-if="canStopWork(contxt.github_handle)" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
                   Stop Work
                 </button>
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="checkApproved()">
+                  Add another project
+                </button>
               </template>
               <template v-else-if="bounty.is_open && !isOwner">
                 <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
@@ -825,12 +828,12 @@
               <div class="border my-5 px-4 pt-4">
                 <h5 class="font-body font-weight-semibold">APPLICANTS</h5>
                 <div v-for="interest in bounty.interested" :key="interest.pk" class="my-4 row font-body">
-                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                  <div class="mx-3 text-center text-md-left">
                     <a :href="`/profile/${interest.profile.handle}`" v-show="interest.profile.avatar_url">
-                      <img class="avatar" :src="[[interest.profile.avatar_url]]">
+                      <img class="rounded-circle" height="35" width="35"  :src="[[interest.profile.avatar_url]]">
                     </a>
                   </div>
-                  <div class="col-md-4 my-auto text-center text-md-left">
+                  <div class="col-md-4 my-auto text-center text-md-left pl-0">
                     <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-usercard="[[ interest.profile.handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
@@ -863,7 +866,7 @@
                       </button>
                     </template>
                   </div>
-                  <div class="col-md-12 my-auto text-center text-md-left">
+                  <div class="col-md-12 my-auto text-center text-md-left" v-if="!interest.projects || !interest.projects.length">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
                       <p class="font-weight-bold mb-2">Work Plan</p>
                       <p class="mb-0">
@@ -871,7 +874,42 @@
                       </p>
                     </div>
                   </div>
-                </div>
+                  <div class="w-100" v-else>
+                      <div class="py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
+                        <div class="d-flex" v-for="project in interest.projects">
+                          <div class="col-12 col-md-8 ml-md-4">
+                            <div class="d-flex pt-4 ml-0">
+                              <h4 class="font-subheader pt-0" style="width: 55%">Project summary</h4>
+                              <p class="text-center text-muted">[[project.natural_time]]</p>
+                            </div>
+                            <p class="mb-0">
+                              [[project.summary]]
+                            </p>
+                          </div>
+                          <div class="col-12 col-md-4">
+                            <div class="card m-3 p-1">
+                              <div class="d-flex">
+                                <img class="card-project-logo mx-2 mt-2 mw-100 rounded border" height="35" width="35" :src="`${project.logo}`" alt="Hackathon logo" v-if="project.logo">
+                                <img class="card-project-logo mx-2 mt-2 mw-100 rounded border" height="35" width="35" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" v-else />
+                                <a :href="project.url" target="_blank" class="font-weight-bold card-subtitle pt-0" style="margin-top: 13px; color: black; text-decoration: none;">[[project.name]]</a>
+                              </div>
+
+                              <div class="ml-2 mt-2">
+                                <a href="profile.url" v-for="profile in project.profiles">
+                                  <img :src="profile.avatar_url" alt="{{profile.handle}}" title="@{{profile.handle}}" width="25" height="25" class="rounded-circle">
+                                </a>
+                              </div>
+                              <div class="ml-2 mt-2 d-flex justify-content-between">
+                                <a href="#" :onclick="`projectModal(${project.bounty.id}, ${project.id})`" style="margin-left: 0 !important" class="btn btn-outline-gc-blue btn-sm m-2 mx-0" v-if="">Edit details</a>
+                                <a :href="project.url" class="btn btn-outline-gc-blue btn-sm m-2">View Project</a>
+                              </div>
+                            </div>
+                          </div>
+                          <hr>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
               </div>
             </div>
           </div>
@@ -961,53 +999,6 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            {% if prize_projects %}
-              <div class="col-12">
-                <h5 class="bounty-heading">Projects</h5>
-                <div class="row">
-                  {% for project in prize_projects %}
-                    <div class="col-12 col-md-4">
-
-                      <div class="card m-3 p-1">
-                        {% for profile in project.profiles.all %}
-                          {% if profile_id == profile.id and project.status == '' %}
-                            <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
-                          {% endif %}
-                        {% endfor %}
-                        {% if project.logo %}
-                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
-                        {% else %}
-                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
-                        {% endif %}
-
-                        <div class="text-center mt-2">
-                          <a href="{%if project.name %}
-                            {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
-                          {% else %}
-                            {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
-                          {% endif %}
-
-                          " target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
-                          <div class="mb-2">
-                            <b class="text-muted font-smaller-2">Team Members</b>
-                            <div class="mt-1">
-                              {% for profile in project.profiles.all %}
-                                <a href="{% url 'profile' profile %}" class="">
-                                  <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
-                                </a>
-                              {% endfor %}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-            {% endif %}
-          </div>
-
         </div>
         <div v-if="loadingState == 'empty'">
           empty waiting

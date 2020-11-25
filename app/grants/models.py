@@ -883,8 +883,6 @@ class Subscription(SuperModel):
 
         # gas prices no longer take this amount times 10**18 decimals
         import pytz
-        if self.created_on > timezone.datetime(2020, 6, 16, 15, 0).replace(tzinfo=pytz.utc):
-            return self.gas_price
 
         try:
             decimals = token.get('decimals', 0)
@@ -1748,7 +1746,7 @@ def presave_contrib(sender, instance, **kwargs):
 
 def next_month():
     """Get the next month time."""
-    return localtime(timezone.now() + timedelta(days=30))
+    return (timezone.now() + timedelta(days=30))
 
 
 class CLRMatch(SuperModel):
