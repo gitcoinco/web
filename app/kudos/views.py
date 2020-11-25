@@ -96,8 +96,8 @@ def sync(request):
                     authd = authd and (kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped' or kt.receive_tx_status == 'unknown')
                     if authd:
                         from kudos.helpers import re_send_kudos_transfer
-                        from dashboard.utils import tx_id_to_block_explorer_url
                         response['txid'] = re_send_kudos_transfer(kt, True)
+        from dashboard.utils import tx_id_to_block_explorer_url
         response['url'] = tx_id_to_block_explorer_url(kt.txid, kt.network)
         response['success'] = 1
     except Exception as e:
