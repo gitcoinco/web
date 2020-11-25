@@ -11,10 +11,12 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
-from django.core.management.base import BaseCommand
-from dashboard.models import Activity
-from django.utils import timezone
 import time
+
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from dashboard.models import Activity
 
 
 class Command(BaseCommand):

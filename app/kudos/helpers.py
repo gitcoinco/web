@@ -165,4 +165,3 @@ def re_send_kudos_transfer(kt, override_with_xdai_okay):
         print(e)
         error = "Could not redeem your kudos.  Please try again soon."
     return None
-
