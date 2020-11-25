@@ -59,7 +59,7 @@ def record_contribution_activity(contribution):
         # successful_contribution(grant, subscription, contribution)
         # update_grant_metadata.delay(grant.pk)
         new_supporter(grant, subscription)
-        thank_you_for_supporting(grant, subscription)
+        thank_you_for_supporting([grant.pk], subscription.contributor_profile)
 
     except Exception as e:
         logger.error(f"error in record_contribution_activity: {e} - {contribution}")

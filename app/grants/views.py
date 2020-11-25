@@ -76,7 +76,7 @@ from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
-    subscription_terminated, support_cancellation, thank_you_for_supporting,
+    thank_you_for_supporting, subscription_terminated, support_cancellation
 )
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
@@ -1934,6 +1934,9 @@ def bulk_fund(request):
     # For each grant, we validate the data. If it fails, save it off and throw error at the end
     successes = []
     failures = []
+
+    batch_grants_mail = []
+    profile = get_profile(request)
     for (index, grant_id) in enumerate(grant_ids_list):
         try:
             grant = Grant.objects.get(pk=grant_id)
@@ -1947,8 +1950,6 @@ def bulk_fund(request):
                 'success': False
             })
             continue
-
-        profile = get_profile(request)
 
         if not grant.active:
             failures.append({
@@ -2061,6 +2062,9 @@ def bulk_fund(request):
             'text': _('Funding for this grant was successfully processed and saved.'),
             'success': True
         })
+        batch_grants_mail.append(grant_id)
+
+    thank_you_for_supporting(batch_grants_mail, profile)
 
     return JsonResponse({
         'success': True,
