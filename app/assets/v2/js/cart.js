@@ -27,8 +27,6 @@ const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
 let grantData = []; // data for grants in cart, initialized in mounted hook
 
-Vue.use(VueTelInput);
-
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
 
@@ -62,21 +60,8 @@ Vue.component('grants-cart', {
       zkSyncEstimatedGasCost: undefined,
       // Checkout, zkSync OLD
       ethersProvider: undefined,
-      // SMS validation
-      csrf: $("input[name='csrfmiddlewaretoken']").val(),
-      validationStep: 'intro',
-      showValidation: false,
-      phone: '',
-      validNumber: false,
-      errorMessage: '',
-      verified: document.verified,
-      code: '',
-      timePassed: 0,
-      timeInterval: 0,
-      display_email_option: false,
-      countDownActive: false,
-      // BrightID
-      isBrightIDVerified: false,
+      // verification
+      isFullyVerified: false,
       // Collection
       showCreateCollection: false,
       collectionTitle: '',
@@ -426,126 +411,8 @@ Vue.component('grants-cart', {
         vm.$set(grant, 'loading', false);
       });
     },
-    // TODO: SMS related methos and state should be removed and refactored into the component that
-    // should be shared between the cart and the Trust Bonus tab
-    dismissVerification() {
-      localStorage.setItem('dismiss-sms-validation', true);
-      this.showValidation = false;
-    },
-    showSMSValidationModal() {
-      if (!this.verified) {
-        this.showValidation = true;
-      } else {
-        _alert('You have been verified previously');
-      }
-    },
-    // VALIDATE
-    validateCode() {
-      const vm = this;
-
-      if (vm.code) {
-        const verificationRequest = fetchData('/sms/validate/', 'POST', {
-          code: vm.code,
-          phone: vm.phone
-        }, {'X-CSRFToken': vm.csrf});
-
-        $.when(verificationRequest).then(response => {
-          vm.verificationEnabled = false;
-          vm.verified = true;
-          vm.validationStep = 'verifyNumber';
-          vm.showValidation = false;
-          _alert('You have been verified', 'success');
-        }).catch((e) => {
-          vm.errorMessage = e.responseJSON.msg;
-        });
-      }
-    },
-    startVerification() {
-      this.phone = '';
-      this.validationStep = 'requestVerification';
-      this.validNumber = false;
-      this.errorMessage = '';
-      this.code = '';
-      this.timePassed = 0;
-      this.timeInterval = 0;
-      this.display_email_option = false;
-    },
-    countdown() {
-      const vm = this;
-
-      if (!vm.countDownActive) {
-        vm.countDownActive = true;
-
-        setInterval(() => {
-          vm.timePassed += 1;
-        }, 1000);
-      }
-    },
-    resendCode(delivery_method) {
-      const e164 = this.phone.replace(/\s/g, '');
-      const vm = this;
-
-      vm.errorMessage = '';
-
-      if (vm.validNumber) {
-        const verificationRequest = fetchData('/sms/request', 'POST', {
-          phone: e164,
-          delivery_method: delivery_method || 'sms'
-        }, {'X-CSRFToken': vm.csrf});
-
-        vm.errorMessage = '';
-
-        $.when(verificationRequest).then(response => {
-          // set the cooldown time to one minute
-          this.timePassed = 0;
-          this.timeInterval = 60;
-          this.countdown();
-          this.display_email_option = response.allow_email;
-        }).catch((e) => {
-          vm.errorMessage = e.responseJSON.msg;
-        });
-      }
-    },
-    // REQUEST VERIFICATION
-    requestVerification(event) {
-      const e164 = this.phone.replace(/\s/g, '');
-      const vm = this;
-
-      if (vm.validNumber) {
-        const verificationRequest = fetchData('/sms/request', 'POST', {
-          phone: e164
-        }, {'X-CSRFToken': vm.csrf});
-
-        vm.errorMessage = '';
-
-        $.when(verificationRequest).then(response => {
-          vm.validationStep = 'verifyNumber';
-          this.timePassed = 0;
-          this.timeInterval = 60;
-          this.countdown();
-          this.display_email_option = response.allow_email;
-        }).catch((e) => {
-          vm.errorMessage = e.responseJSON.msg;
-        });
-      }
-    },
-    isValidNumber(validation) {
-      console.log(validation);
-      this.validNumber = validation.isValid;
-    },
     loginWithGitHub() {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
-    },
-    // BRIGHTID
-    async fetchBrightIDStatus() {
-      if (!document.brightid_uuid) {
-        return;
-      }
-
-      const url = `https://app.brightid.org/node/v5/verifications/Gitcoin/${document.brightid_uuid}`;
-      const response = await fetch(url);
-
-      this.isBrightIDVerified = (response.status === 200);
     },
     confirmClearCart() {
       if (confirm('are you sure')) {
@@ -1457,12 +1324,7 @@ Vue.component('grants-cart', {
   },
 
   async mounted() {
-    this.fetchBrightIDStatus();
-    const urlParams = new URLSearchParams(window.location.search);
-
-    if (urlParams.has('verify') && urlParams.get('verify').toLowerCase() === 'true') {
-      this.showSMSValidationModal();
-    }
+    this.isFullyVerified = document.isFullyVerified;
 
     // Show loading dialog
     this.isLoading = true;
@@ -1557,21 +1419,6 @@ var update_cart_title = function() {
 };
 
 $(document).ready(function() {
-  $(document).on('keyup', 'input[name=telephone]', function(e) {
-    var number = $(this).val();
-
-    if (number[0] != '+') {
-      number = '+' + number;
-      $(this).val(number);
-    }
-  });
-
-
-  $(document).on('click', '#verify_offline', function(e) {
-    $(this).remove();
-    $('#verify_offline_target').css('display', 'block');
-  });
-
   update_cart_title();
 });
 
@@ -1585,8 +1432,4 @@ if (document.getElementById('gc-grants-cart')) {
       grantData
     }
   });
-
-  if (document.contxt.github_handle && !document.verified && localStorage.getItem('dismiss-sms-validation') !== 'true') {
-    appCart.$refs.cart.showSMSValidationModal();
-  }
 }

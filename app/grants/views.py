@@ -62,6 +62,7 @@ from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
+from dashboard.brightid_utils import get_brightid_status
 from economy.models import Token as FTokens
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -2216,10 +2217,14 @@ def grants_cart_view(request):
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
     }
     if request.user.is_authenticated:
-        # GET THE SMS STATUS FROM PROFILE
-        context['verified'] = request.user.profile.sms_verification
-        context['brightid_uuid'] = request.user.profile.brightid_uuid
-        context['username'] = request.user.profile.username
+        profile = request.user.profile
+        context['username'] = profile.username
+
+        is_brightid_verified = ( 'verified' == get_brightid_status(profile.brightid_uuid) )
+
+        context['is_fully_verified'] = (is_brightid_verified and profile.is_idena_verified and \
+                                            profile.sms_verification and profile.is_poap_verified and \
+                                            profile.is_twitter_verified and profile.is_google_verified)
     else:
         return redirect('/login/github?next=' + request.get_full_path())
 

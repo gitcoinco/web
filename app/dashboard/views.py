@@ -6559,7 +6559,7 @@ def verify_user_poap(request, handle):
         # We couldn't find any POAP badge for this ethereum address
         return JsonResponse({
             'ok': False,
-            'msg': 'No POAP badges(ERC721 NFTs) has been sitting in this wallet for more than 15 days!',
+            'msg': 'No qualifying POAP badges (ERC721 NFTs held for at least 15 days) found for this account.',
         })
 
     profile = profile_helper(handle, True)
