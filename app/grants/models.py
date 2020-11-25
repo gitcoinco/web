@@ -1278,8 +1278,11 @@ next_valid_timestamp: {next_valid_timestamp}
         sc.split_tx_confirmed = self.split_tx_confirmed
         sc.save()
 
-    def successful_contribution(self, tx_id, include_for_clr=True):
-        """Create a contribution object."""
+    def successful_contribution(self, tx_id, include_for_clr=True, **kwargs):
+        """
+        Create a contribution object. Only expected keyword argument is checkout_type, which was
+        added as a keyword argument to avoid breaking existing calls to this function
+        """
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
         self.num_tx_processed += 1
@@ -1287,7 +1290,8 @@ next_valid_timestamp: {next_valid_timestamp}
             'tx_id': tx_id,
             'subscription': self,
             'split_tx_id': self.split_tx_id,
-            'split_tx_confirmed': self.split_tx_confirmed
+            'split_tx_confirmed': self.split_tx_confirmed,
+            'checkout_type': kwargs['checkout_type'] if 'checkout_type' in kwargs else None
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant

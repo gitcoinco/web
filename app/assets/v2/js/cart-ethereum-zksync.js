@@ -21,7 +21,7 @@ Vue.component('grantsCartEthereumZksync', {
         feeTokenSymbol: undefined, // token symbol to pay zksync fee with, e.g. 'DAI'
         showChangeToken: false, // true to show dropdown to let user select feeTokenSymbol
         showModal: false, // true to show modal to user, false to hide
-        checkoutStatus: 'not-started', // options are 'not-started', 'pending'. When complete we redirect the user
+        checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
         contractAddres: '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet contract address
       },
 
@@ -39,10 +39,17 @@ Vue.component('grantsCartEthereumZksync', {
   },
 
   mounted() {
-    // If user started checking out with zkSync, warn them before closing or reloading page.
-    // Note that beforeunload may sometimes be ignored by browsers, e.g. if users have not
-    // interacted with the page
-    window.addEventListener('beforeunload', (e) => this.beforeUnloadHandler(e));
+    // If user started checking out with zkSync, warn them before closing or reloading page. Note
+    // that beforeunload may sometimes be ignored by browsers, e.g. if users have not interacted
+    // with the page. This shows a generic message staying "Leave site? Changes you made may not be
+    // saved". The ability to change this message was removed by browsers as it's widely considered
+    // a security issue. Source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
+    window.addEventListener('beforeunload', (e) => {
+      if (this.zksync.checkoutStatus === 'pending') {
+        // The below message will likely be ignored as explaned above, but we include it just in case
+        e.returnValue = 'zkSync checkout in progress. Are you sure you want to leave?'; 
+      }
+    });
   },
 
   computed: {
@@ -138,18 +145,6 @@ Vue.component('grantsCartEthereumZksync', {
       appCart.$refs.cart.handleError(e);
     },
 
-    // We attach this to the beforeunload event
-    beforeUnloadHandler(e) {
-      if (this.zksync.checkoutStatus === 'pending') {
-        // This shows a generic message staying "Leave site? Changes you made may not be saved". This
-        // cannot be changed, as "the ability to do this was removed in Chrome 51. It is widely
-        // considered a security issue, and most vendors have removed support."
-        // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    },
-
     // Alert user they have insufficient balance to complete checkout
     insufficientBalanceAlert() {
       this.zksync.showModal = false; // hide checkout modal if visible
@@ -190,7 +185,7 @@ Vue.component('grantsCartEthereumZksync', {
           this.zksync.contractAddres, // we use the zkSync mainnet contract address to represent zkSync deposits
           this.user.address
         );
-        window.removeEventListener('beforeunload', (e) => this.beforeUnloadHandler(e));
+        this.zksync.checkoutStatus = 'complete'; // allows user to freely close tab now
         await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
 
       } catch (e) {
