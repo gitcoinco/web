@@ -3,8 +3,7 @@ python: 3.7
 dist: xenial
 sudo: true
 
-node_js:
-  - "14"
+node_js: 14
 
 os:
   - linux
