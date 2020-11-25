@@ -10,19 +10,8 @@
   "whitepaper": "https://fompound.com/Fompound.pdf",
   "state": "LOCKED | NORMAL",
   "published_on": "2020-10-15",
-  "initial_price":{
-        "ETH":"0.00166666 ETH",
-        "USD":"0.7 USD",
-        "BTC":"0.00004137 BTC"
-  },
   "links": {
-    "blog": "https://your-awesome-project.com/blog",
     "twitter": "https://twitter.com/Fompound1",
-    "telegram": "https://t.me/joinchat/your-awesome-project",
-    "github": "https://github.com/Fompound/token-profile",
-    "facebook": "https://www.facebook.com/your-awesome-project",
-    "reddit": "https://www.reddit.com/r/your-awesome-project/",
-    "slack": "https://your-awesome-project.slack.com",
-    "medium": "https://medium.com/your-awesome-project"
+    "github": "https://github.com/Fompound"
   }
 }
