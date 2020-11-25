@@ -551,9 +551,9 @@
                       <img :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title">
                       <div class="card-body">
                         <h5 class="card-title">[[relgrant.title]]</h5>
-                        <p class="card-text">[[relgrant.description]]</p>
+                        <p class="card-text">[[relgrant.description | truncate(150)]]</p>
                         <div class="d-flex">
-                          <div v-for="member in grant.team_members" :key="member.pk">
+                          <div v-for="member in relgrant.team_members" :key="member.pk">
                             <b-img-lazy class="rounded-circle bg-white" width="40" height="40" :src="`/dynamic/avatar/${member.fields.handle}`" alt="member.fields.handle"></b-img-lazy>
                           </div>
                         </div>
@@ -726,6 +726,7 @@
     {% include 'shared/footer_scripts.html' with vue=True ignore_inject_web3=1 %}
     <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+    <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
 
     <script>
       var grantDetails = {

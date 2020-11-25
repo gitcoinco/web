@@ -2946,12 +2946,12 @@ class Profile(SuperModel):
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
-        
+
         if self.idena_status in ['Newbie', 'Verified', 'Human']:
             self.is_idena_verified = True
         else:
             self.is_idena_verified = False
-        
+
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
@@ -5652,7 +5652,7 @@ class Investigation(SuperModel):
         if instance.is_brightid_verified:
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
-            
+
         htmls.append(f'Idena Verified: {instance.is_idena_verified}')
         if instance.is_idena_verified:
             total_sybil_score -= 4
@@ -5839,3 +5839,11 @@ class TransactionHistory(SuperModel):
 
     def __str__(self):
         return f"{self.status} <> {self.earning.pk} at {self.captured_at}"
+
+
+class MediaFile(SuperModel):
+    filename = models.CharField(max_length=350, blank=True, null=True)
+    file = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The file.'), )
+
+    def __str__(self):
+        return f'{self.id} - {self.filename}'

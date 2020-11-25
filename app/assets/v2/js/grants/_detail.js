@@ -2,6 +2,8 @@
 let isStaff = document.contxt.is_staff || false;
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
+Quill.register('modules/ImageExtend', ImageExtend)
+
 
 Vue.mixin({
   methods: {
@@ -29,23 +31,8 @@ Vue.mixin({
           vm.grant = json.grants
           vm.grantInCart();
 
-          // vm.grant.description_rich_copy = JSON.parse(vm.grant.description_rich)
-          // vm.grant.description_rich_copy = vm.editor.getContents(vm.grant.description_rich)
           vm.grant.description_rich_edited = vm.grant.description_rich
-          // vm.grant.description_rich_copy = vm.editor.container.innerHTML
-          console.log(vm.editor)
-          // let html = vm.editor.updateContents(JSON.parse(vm.grant.description_rich_copy))
-      // console.log(vm.editor.setContents(html))
-
-        vm.editor.updateContents(JSON.parse(vm.grant.description_rich))
-          // var contents = quill.getContents();
-          // vm.grant.description_rich = vm.editor.updateContents(JSON.parse(vm.grant.description_rich))
-
-    //       var tempCont = document.createElement("div");
-    // (new Quill(tempCont)).setContents(vm.grant.description_rich);
-    // console.log(tempCont)
-    // return tempCont.getElementsByClassName("ql-editor")[0].innerHTML;
-          // console.log(vm.editor.getContents(JSON.parse(vm.grant.description_rich))  )
+          vm.editor.updateContents(JSON.parse(vm.grant.description_rich))
 
           // if (vm.grant.metadata.related[0].length) {
           //   vm.fetchRelated(String(vm.grant.metadata.related[0]))
@@ -377,13 +364,32 @@ if (document.getElementById('gc-grant-detail')) {
         usersOptions: [],
         editorOptionPrio: {
           modules: {
-            toolbar: [
-              [ 'bold', 'italic', 'underline' ],
-              [{ 'align': [] }],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              [ 'link', 'code-block', 'image', 'video' ],
-              ['clean']
-            ]
+            toolbar: {
+              container: [
+                [ 'bold', 'italic', 'underline' ],
+                [{ 'align': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [ 'link', 'code-block', 'image', 'video' ],
+                ['clean']
+              ],
+              handlers: {
+                'image': function () {
+                  QuillWatch.emit(this.quill.id)
+                }
+              }
+          },
+            ImageExtend: {
+              loading: true,
+              name: 'img',
+              headers: (xhr) => {
+                xhr.setRequestHeader('X-CSRFToken',$("input[name='csrfmiddlewaretoken']").val())
+              },
+
+              action: '/api/v1/file_upload/',
+              response: (res) => {
+                return res.url
+              }
+            }
           },
           theme: 'snow',
           placeholder: 'Give a detailed desciription about your Grant'

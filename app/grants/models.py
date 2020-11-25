@@ -132,7 +132,7 @@ class GrantCLR(SuperModel):
 
     class Meta:
         unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
-    
+
     customer_name = models.CharField(
         max_length=15,
         default='',
@@ -755,7 +755,7 @@ class Grant(SuperModel):
         team_members = serializers.serialize('json', self.team_members.all(),
                             fields=['handle', 'url', 'profile__avatar_url']
                         )
-
+        grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type],
                                 fields=['name', 'label']

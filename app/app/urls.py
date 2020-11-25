@@ -175,7 +175,7 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'
-    ),    
+    ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap',
         dashboard.views.verify_user_poap,
@@ -224,6 +224,7 @@ urlpatterns = [
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
     url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
+    url(r'^api/v1/file_upload/', dashboard.views.file_upload, name='file_upload'),
 
     # chat
     url(r'^chat/login/', chat.views.chat_login, name='chat_login'),

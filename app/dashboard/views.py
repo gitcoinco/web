@@ -50,7 +50,7 @@ from django.utils.text import slugify
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
 import magic
@@ -123,7 +123,7 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile,
+    HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile,
     ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
     TribeMember, UserAction, UserDirectory, UserVerificationModel,
 )
@@ -2946,13 +2946,13 @@ def get_profile_by_idena_token(token):
 
 def logout_idena(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-   
+
     if not is_logged_in_user:
         return JsonResponse({
             'ok': False,
             'msg': f'Request must be for the logged in user'
         })
-    
+
     profile = profile_helper(handle, True)
     if profile.is_idena_connected:
         profile.idena_address = None
@@ -3006,7 +3006,7 @@ def start_session_idena(request, handle):
     address_exists = Profile.objects.filter(idena_address=idena_address)\
         .exclude(handle=profile.handle) \
         .exists()
-    
+
     if address_exists:
         return JsonResponse({
             'success': False,
@@ -3044,7 +3044,7 @@ def authenticate_idena(request, handle):
             'success': False,
             'error': f'Invalid Idena Token'
         })
-    
+
     nonce_controller = IdenaNonce(profile.handle)
 
     sig = data.get('signature', '0x0')
@@ -3053,7 +3053,7 @@ def authenticate_idena(request, handle):
     if not is_same_address(sig_addr, profile.idena_address):
         profile.idena_address = None
         profile.save()
-        
+
         return JsonResponse({
             'success': True,
             'data': {
@@ -6570,3 +6570,30 @@ def verify_user_poap(request, handle):
                 'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
             }
     )
+
+
+@csrf_protect
+def file_upload(request):
+
+    uploaded_file = request.FILES.get('img')
+    print(uploaded_file)
+    error_response = invalid_file_response(uploaded_file, supported=['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'])
+    if error_response and error_response['status'] != 400:
+        return JsonResponse(error_response)
+    try:
+        media_file = MediaFile.objects.create(file=uploaded_file)
+        media_file.filename = uploaded_file.name
+        media_file.save()
+        print(media_file.filename)
+        print(media_file.file)
+        print(media_file.file.url)
+        data = {'is_valid': True, 'name': f'{media_file.filename}', 'url': f'{media_file.file.url}'}
+    except Exception as e:
+        # TODO: sync_profile?
+        logger.error(f"error in record_action: {e} ")
+        data = {'is_valid': False}
+
+    return JsonResponse(data)
+
+
+
