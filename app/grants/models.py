@@ -21,10 +21,13 @@ import json
 import logging
 from datetime import timedelta
 from decimal import Decimal
+from io import BytesIO
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core import serializers
 from django.db import models
 from django.db.models import Q
@@ -42,7 +45,7 @@ from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from grants.utils import get_upload_filename, is_grant_team_member
+from grants.utils import get_upload_filename, is_grant_team_member, generate_collection_thumbnail
 from townsquare.models import Favorite
 from web3 import Web3
 
@@ -2085,6 +2088,17 @@ class GrantCollection(SuperModel):
             } for grant in grants]
         }
 
+        try:
+            cover = generate_collection_thumbnail(self, 348, 175)
+            filename = f'thumbnail_{self.id}.png'
+            buffer = BytesIO()
+            cover.save(fp=buffer, format='PNG')
+            tempfile = ContentFile(buffer.getvalue())
+            image_file = InMemoryUploadedFile(tempfile, None, filename, 'image/png', tempfile.tell, None)
+            self.cover.save(filename, image_file)
+        except Exception:
+            print('ERROR: failed build thumbnail')
+        print(self.cover)
         self.cache = cache
         self.save()
 
@@ -2106,8 +2120,8 @@ class GrantCollection(SuperModel):
             'title': self.title,
             'description': self.description,
             'cover': self.cover.url if self.cover else '',
-            'count': self.cache['count'],
-            'grants': self.cache['grants'],
+            'count': self.cache.get('count', 0),
+            'grants': self.cache.get('grants', 0),
             'curators': curators + [owner]
         }
 

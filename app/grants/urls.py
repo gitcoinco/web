@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, clr_grants, contribute_to_grants_v1,
-    contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
+    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, clr_grants, collection_thumbnail,
+    contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
     contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
     flag, get_collection, get_collections_list, get_grant_payload, get_grants, get_interrupted_contributions,
     get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_edit, grant_fund,
@@ -48,6 +48,7 @@ urlpatterns = [
     path('activity', grant_activity, name='log_activity'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
+    path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
     re_path(r'^matic/new', grant_new_whitelabel, name='new_whitelabel'),
     re_path(r'^new/?$', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
