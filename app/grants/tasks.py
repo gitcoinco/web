@@ -158,12 +158,11 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         include_for_clr = package.get('include_for_clr')
 
-        subscription.successful_contribution(subscription.new_approve_tx_id, include_for_clr)
-        # subscription.successful_contribution(
-        #     subscription.new_approve_tx_id,
-        #     include_for_clr,
-        #     checkout_type=package.get('checkout_type', None)
-        # )
+        subscription.successful_contribution(
+            subscription.new_approve_tx_id,
+            include_for_clr,
+            checkout_type=package.get('checkout_type', None)
+        )
 
         # one time payments
         activity = None
