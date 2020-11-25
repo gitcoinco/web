@@ -72,7 +72,7 @@ from grants.models import (
     GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.tasks import process_grant_creation_email, update_grant_metadata
-from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member, sync_payout, generate_collection_thumbnail
+from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
 
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
