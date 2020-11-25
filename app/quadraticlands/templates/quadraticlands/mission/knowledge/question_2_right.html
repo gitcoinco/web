@@ -38,7 +38,6 @@
 	<nav>
 
 		<div class="left">
-			{% csrf_token %}
 			<a href="/quadraticlands/">Exit</a>
 		</div>
 
@@ -56,24 +55,6 @@
 </section>
 {% endblock %}
 
-{% block 'scripts' %}
-<script>
-	const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	document.addEventListener("DOMContentLoaded",function(){
-		// update user state
-		var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_knowledge'}, {'X-CSRFToken': csrftoken});
-		$.when(setMissionStatus).then((response, status, statusCode) => {
-			//for debugging, remove for prod 
-			console.log('POST RETURNED!', statusCode, response, status);
 
-	        // if we don't get from set_mission_status console log the response (maybe remove for prod) 
-	        if (statusCode.status != 200) {
-	            console.log('getClaimData response: ', statusCode.status )
-	            return 
-	        }
-       });
-	});
-</script>
-{% endblock %}
 
 

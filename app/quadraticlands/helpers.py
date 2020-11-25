@@ -38,6 +38,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 
 import requests
+from dashboard.models import Profile
 from eth_utils import is_address, is_checksum_address, to_checksum_address
 from quadraticlands.models import InitialTokenDistribution, MissionStatus
 from ratelimit.decorators import ratelimit
@@ -46,29 +47,42 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
+def get_profile_from_username(request):
+    '''Return profile object for a given request'''
+    try:  
+        profile = Profile.objects.get(handle=request.user.username)
+    except Exception as e:
+        logger.info(f'QuadLands - There was an issue getting user profile object!')
+        profile = False 
+    return profile 
+
 @require_http_methods(["GET"])
-@login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def get_mission_status(request):
     '''Retrieve mission status/state from the DB'''
-    if request.user.is_authenticated:
-        user = request.user
-        mission_status = MissionStatus.objects.get(profile_id=user.id)
-        game_state = {
-            "id" : mission_status.id,
-            "proof_of_use" : mission_status.proof_of_use,
-            "proof_of_knowledge" : mission_status.proof_of_knowledge,
-            "proof_of_receive" : mission_status.proof_of_receive,
-        }
-        return game_state
-    else:
-        no_game_state = {
-            "id" : 0,
-            "proof_of_use" : False,
-            "proof_of_knowledge" : False,
-            "proof_of_receive" : False
-        }
-        return no_game_state
+    if request.user.is_authenticated:        
+        profile = get_profile_from_username(request)
+        # TODO - probably want to wrap this in try/except just in case
+        try: 
+            mission_status = MissionStatus.objects.get(profile=profile)
+            game_state = {
+                "id" : mission_status.id,
+                "proof_of_use" : mission_status.proof_of_use,
+                "proof_of_knowledge" : mission_status.proof_of_knowledge,
+                "proof_of_receive" : mission_status.proof_of_receive,
+            }
+            return game_state
+        except MissionStatus.DoesNotExist:
+            pass
+
+    # if state doesn't exist yet or user is not logged in
+    no_game_state = {
+        "id" : False,
+        "proof_of_use" : False,
+        "proof_of_knowledge" : False,
+        "proof_of_receive" : False
+    }
+    return no_game_state
 
 
 @require_http_methods(["POST"])
@@ -76,23 +90,26 @@ def get_mission_status(request):
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def set_mission_status(request):
     '''when a mission is completed, UI will POST here so we can save new game state'''
+
     if request.user.is_authenticated:
-        user = request.user if request.user.is_authenticated else None
-        # this could probably be improved, just make sure we're not getting anything sketchy from POST   
         try: 
             mission_name = request.POST.get('mission')
             if type(mission_name) != str:
                 logger.info('QuadLands - Non-string received for mission_name.')
                 HttpResponse(status=404)
-            elif mission_name != 'proof_of_use' or mission_name != 'proof_of_knowledge' or mission_name != 'proof_of_receive':
-                logger.info('QuadLands - Invalid mission_name received.')
+            elif mission_name not in ('proof_of_use', 'proof_of_knowledge','proof_of_receive'):
+                logger.info(f'QuadLands - Invalid mission_name received - {mission_name}')
                 HttpResponse(status=404)
         except:
             logger.info('QuadLands - Failed to parse set_mission_status')
             return HttpResponse(status=404)
         
-        mission_status = MissionStatus.objects.get(profile_id=user.id)
-        
+        profile = get_profile_from_username(request)
+
+        # fix this. it's working but not ideal 
+        mission = MissionStatus.objects.get_or_create(profile=profile)
+        mission_status = MissionStatus.objects.get(profile=profile)
+     
         if mission_name == 'proof_of_knowledge':
             mission_status.proof_of_knowledge = True  
             mission_status.save() 
@@ -111,19 +128,31 @@ def set_mission_status(request):
 
 def get_initial_dist(request):
     '''retrieve initial dist info from the DB'''
-    if request.user.id == None:
-        return {'total_claimable': 0}
-    # user_id = 0 should be replaced with user_id = request.user.id once the DB has more data 
-    initial_dist = InitialTokenDistribution.objects.get(profile_id=request.user.id).num_tokens
-    context = {'total_claimable': initial_dist}
+    if not request.user.is_authenticated:
+        return {"total_claimable_gtc": False, "total_claimable_wei": False}
+    profile = get_profile_from_username(request)
+    try:   
+        initial_dist_wei = InitialTokenDistribution.objects.get(profile=profile).claim_total
+        initial_dist_gtc = initial_dist_wei / 10**18
+        context = {
+            'total_claimable_gtc': initial_dist_gtc, 
+            'total_claimable_wei': initial_dist_wei
+        }
+    except InitialTokenDistribution.DoesNotExist: # if user doesn't have a token claim record in DB 
+        context = {
+            'total_claimable_gtc': 0, 
+            'total_claimable_wei': 0
+        }
+
     return context
 
 def get_initial_dist_from_CF(request):
-    '''hit the CF KV pairs list and return user claim data. currently unused 
+    '''hit the CF KV pairs list and return user claim data. currently unused
+       TODO needs to be updated with new total_claimable_gtc formats before use  
        TODO compare with InitialClaim results as a 2fa check, if error, block claim 
     '''
-    if request.user.id == None:
-        return {"total_claimable": 0}
+    if not request.user.is_authenticated:
+        return {"total_claimable_gtc": 0, "total_claimable_wei": 0}
 
     # hit the graph and confirm/deny user has made a claim
 
@@ -145,7 +174,7 @@ def get_initial_dist_from_CF(request):
     res = json.loads(r.text)
     
     context = {
-        'total_claimable': res[0],
+        'total_claimable_wei': res[0],
         'bucket_0': res[2][0],
         'bucket_1': res[2][1],
         'bucket_2': res[2][2],
@@ -156,6 +185,16 @@ def get_initial_dist_from_CF(request):
 
     return context
 
+def wake_the_ESMS(request):
+    '''
+    In dev mode the Heroku server sleeps when not being used on the free plan
+    while I recently switch to a paid plan, it seems like it's sleeping still
+    this GET request will be kicked off in the background when /claim page is loaded
+    to wake up the ESMS so that when the actual claim is placed, there wont be a delay 
+    '''
+    wake_up_ESMS = requests.get('https://gtc-request-signer.herokuapp.com/')
+    return True    
+
 @require_http_methods(["POST"])
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
@@ -164,15 +203,14 @@ def claim(request):
     Receives AJAX post from CLAIM button 
     Returns JSON response from Ethereum Message Signing Service (emss)
     '''
-    user = request.user if request.user.is_authenticated else None
-      
-    # if POST, can be removed nowt hat this view is POSt only
-    if request.method == 'POST' and request.user.is_authenticated:
+
+    if request.user.is_authenticated:
          
-        logger.info(f'USER ID: {user.id}')
-                    
+        profile = get_profile_from_username(request)
+        logger.info(f'claim profile id: {profile.id}')  
+
         post_data_to_emss = {}
-        post_data_to_emss['user_id'] = user.id
+        post_data_to_emss['user_id'] = profile.id
        
         # confirm we received a valid, checksummed address for the token claim 
         try:
@@ -188,14 +226,11 @@ def claim(request):
             return JsonResponse({'error': 'Token claim address failed validation'})
           
         claim = get_initial_dist(request)
-        logger.info(f"debug claim amount - claim.total_claimable: {claim['total_claimable']}")
-        post_data_to_emss['user_amount'] = claim['total_claimable']
-        # post_data_to_emss['user_amount'] = 1000000000000000000000 # 1000 ETH - need to use big number in units WEI
-         
-        # create a hash of post data                
+        # logger.info(f"debug claim amount - total_claimable_gtc: {claim['total_claimable_gtc']} - total_claimable_wei: {claim['total_claimable_wei']}")
+        post_data_to_emss['user_amount'] = claim['total_claimable_wei'] 
+             
+        # create a hash of post data TODO- wrap in try/except                
         sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
-        # logger.debug(f'POST data: {json.dumps(post_data_to_emss)}')
-        # logger.debug(f'Server side hash: { sig }')
         
         header = { 
             "X-GITCOIN-SIG" : sig,

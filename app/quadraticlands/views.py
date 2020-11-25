@@ -34,7 +34,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from quadraticlands.helpers import get_initial_dist, get_mission_status
+from quadraticlands.helpers import get_initial_dist, get_mission_status, wake_the_ESMS
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ def index(request):
     '''render template for base index page'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
-    return TemplateResponse(request, f'quadraticlands/index.html', context)
+    return TemplateResponse(request, 'quadraticlands/index.html', context)
 
 def base(request, base):
     '''render templates for /quadraticlands/'''
@@ -74,6 +74,7 @@ def mission_state(request, mission_name, mission_state):
     '''quadraticlands/<mission_name>/<mission_state>'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
+    wake_the_ESMS(request) # hack to wake up ESMS so there isn't a delay on token claim (remove for prod or upgrade Heroku dyno)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
     
 @login_required

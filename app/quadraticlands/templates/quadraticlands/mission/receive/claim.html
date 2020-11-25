@@ -54,11 +54,11 @@
 
 				<!-- sum of this X tokens -->
 				<div id="claimListingTotal" class="grid total">
-					<span class="description">Total</span><span class="token">+1000 GTC</span>
+					<span class="description">Total</span><span class="token">+{{ total_claimable_gtc }} GTC</span>
 				</div>
 
 				<!-- just the x Tokens you get -->
-				<h1 id="claimTokenAmount" class="hide">+1000 GTC</h1>
+				<h1 id="claimTokenAmount" class="hide">+{{ total_claimable_gtc }}GTC</h1>
 
 				<!-- a status message  -->
 				<p id="claimStatusMessage" class="hide"></p>
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded",function(){
 		});
 
 	});
-
+    
 	// run other functions on load here
 
 });
@@ -217,7 +217,6 @@ async function setupGTCTokenClaim(emss_response) {
 		[user] = await web3.eth.getAccounts();
 
 		// ZW TODO - move token contract addy to env or standard abi.js file, added new Rinkeby tokendist contract 10/29/2020
-      	// also, we will want to update the contract ABI at some point. it's old but still works as the function name is the same :) 
 		const tokenDistributor = await new web3.eth.Contract(
 			token_distributor_abi,
 			'0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
@@ -273,8 +272,7 @@ async function setupGTCTokenClaim(emss_response) {
 		};
 
 		// now we run the function.
-		//indicateMetamaskPopup();
-		claimGTCtokens();
+	    claimGTCtokens();
 
 	} 
 
@@ -287,89 +285,6 @@ async function setupGTCTokenClaim(emss_response) {
 
 
 }
-
-
-
-
-
-
-
-//setupIsSigned
-// zachs new ABI thing
-//
-
-async function setupIsSigned(emss_response) {
-    
-  const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, ''); // strip quotes 
-  const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, ''); // strip quotes 
-  
-  try {
-    // who will send the transaction? (active user wallet account)
-    [user] = await web3.eth.getAccounts();
-    // notes, this function calls the actual tokendist v2 ABI 
-    const tokenDistributor_v2 = await new web3.eth.Contract(
-      token_distributor_v2_abi,
-      '0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
-    );
-        
-    const isSigned = () => {
-
-        tokenDistributor_v2.methods
-        .isSigned(eth_signed_message_hash_hex, eth_signed_signature_hex)
-        .send({ from: user, gasLimit: '300000' })
-        .on('transactionHash', async function(transactionHash) {})
-        .on('receipt', receipt => {
-              console.log('receipt:', receipt);
-        })
-        .on('confirmation', (confirmationNumber, receipt) => {
-              if (confirmationNumber <= 5 ) {
-                console.log('confirmations:', confirmationNumber, receipt);
-              }
-        })
-        .on('error', (error) => { 
-          const errorMsg = 'Oops, something went wrong with token claim. Please check transaction for more info, try again, and/or contact support@gitcoin.co';
-          console.log('errorMsg',errorMsg);
-        });
-
-       
-    };
-    // make our contract call 
-    isSigned();  
-         
-
-  } catch (error) {
-    console.log('error on isClaimed: ', error)
-    // handleError(error);
-  }
-
-}
-
-
-
-
-
-
-
-// pushTXID2DB
-//
-function pushTXID2DB(transactionHash) {
-    
-    // check csrf token settings for second api fetch 
-    var sendForm = fetchData('/quadraticlands/write-claim-TXID', 'POST', {'txid':transactionHash}, {'X-CSRFToken': csrftoken})
-    $.when(sendForm).then((response, status, statusCode) => {
-        // for debugging, remove for prod 
-        console.log('POST RETURNED!', statusCode, response, status)
-        
-        // if we don't get a 200 from the database api then we return the error 
-        if (statusCode.status != 200) {
-            console.log('statusCode on pushTXID2DB: ', statusCode)
-            return //_alert(response.msg, 'error');
-        }
-   });  
-
-}
-
-
 
 
 // checkNetwork
@@ -422,32 +337,6 @@ function handleError(err) {
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
-
-// testClaim
-//
-async function testClaim(response) {
-    try {
-        console.log('testclaim: trigger successfully!');
-        console.log('testClaim-response: ', response)
-        console.log('user_id', response.user_id)
-        const network = checkWeb3();
-        
-        // get current active wallet account 
-        [user_active_account] = await web3.eth.getAccounts();
-        console.log('user_active_account', user_active_account);
-
-        //if response['user_address']
-
-    } catch(error) { 
-        console.log(error);
-        handleError(error);
-    }
-
-}
-
-
-
 
 
 // DYNAMIC USER INTERFACE 
