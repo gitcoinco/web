@@ -83,6 +83,27 @@ def get_profile(handle):
     return to_profile
 
 
+def sync(request):
+    response = {}
+    try:
+        kt_id = request.GET.get('pk')
+        kt = KudosTransfer.objects.get(pk=kt_id)
+        response['txid'] = kt.txid
+        if kt.kudos_token_cloned_from.is_owned_by_gitcoin:
+            if request.user.is_authenticated:
+                if request.user.profile.handle in [kt.username, kt.from_username] or settings.DEBUG:
+                    if not kt.tx_time or kt.tx_time < (timezone.now() - timezone.timedelta(minutes=30)):
+                        from kudos.helpers import re_send_kudos_transfer
+                        from dashboard.utils import tx_id_to_block_explorer_url
+                        response['txid'] = re_send_kudos_transfer(kt, True)
+        response['url'] = tx_id_to_block_explorer_url(kt.txid, kt.network)
+        response['success'] = 1
+    except Exception as e:
+        response['error'] = str(e)
+
+    return JsonResponse(response)
+
+
 def about(request):
     """Render the Kudos 'about' page."""
     activity_limit = 5
