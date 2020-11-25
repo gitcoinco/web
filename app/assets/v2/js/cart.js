@@ -862,9 +862,14 @@ Vue.component('grants-cart', {
         txHashes = new Array(donations.length).fill(txHash[0]);
       }
 
+      // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
+      // a zkSync checkout
+      const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
+
       // Configure template payload
       const saveSubscriptionPayload = {
         // Values that are constant for all donations
+        checkout_type,
         contributor_address: userAddress,
         csrfmiddlewaretoken,
         frequency_count: 1,

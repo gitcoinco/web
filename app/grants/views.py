@@ -2010,6 +2010,7 @@ def bulk_fund(request):
             from grants.tasks import process_grant_contribution
             payload = {
                 # Values that are constant for all donations
+                'checkout_type': request.POST.get('checkout_type'),
                 'contributor_address': request.POST.get('contributor_address'),
                 'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken'),
                 'frequency_count': request.POST.get('frequency_count'),
@@ -2023,7 +2024,6 @@ def bulk_fund(request):
                 'real_period_seconds': request.POST.get('real_period_seconds'),
                 'recurring_or_not': request.POST.get('recurring_or_not'),
                 'signature': request.POST.get('signature'),
-                'split_tx_id': request.POST.get('split_tx_id'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
                 # Values that vary by donation
@@ -2036,6 +2036,7 @@ def bulk_fund(request):
                 'denomination': request.POST.get('denomination').split(',')[index],
                 'gitcoin-grant-input-amount': request.POST.get('gitcoin-grant-input-amount').split(',')[index],
                 'grant_id': request.POST.get('grant_id').split(',')[index],
+                'split_tx_id': request.POST.get('split_tx_id').split(',')[index],
                 'sub_new_approve_tx_id': request.POST.get('sub_new_approve_tx_id').split(',')[index],
                 'token_address': request.POST.get('token_address').split(',')[index],
                 'token_symbol': request.POST.get('token_symbol').split(',')[index],

@@ -143,18 +143,18 @@ def is_bulk_checkout_tx(receipt):
     is_bulk_checkout = to_address == bulk_checkout_address.lower()
     return is_bulk_checkout
 
-def grants_transaction_validator_v2(contribution, w3):
+def grants_transaction_validator(contribution, w3):
     """
     This function is used to validate contributions sent on L1 through the BulkCheckout contract.
     This contract can be found here:
       - On GitHub: https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol
-      - On mainnet: https://rinkeby.etherscan.io/address/0x7d655c57f71464b6f83811c55d84009cd9f5221c#code
+      - On mainnet: https://etherscan.io/address/0x7d655c57f71464b6f83811c55d84009cd9f5221c
 
     To facilitate testing on Rinkeby, we pass in a web3 instance instead of using the mainnet
     instance defined at the top of this file
     """
 
-    # Get bulk checkout contract instance
+    # Get bulk checkout contract instancer
     bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=bulk_checkout_abi)
 
     # Get specific info about this contribution that we use later
@@ -171,8 +171,9 @@ def grants_transaction_validator_v2(contribution, w3):
         },
         # Array of addresses where funds were intially sourced from. This is used to detect someone
         # funding many addresses from a single address. This functionality is currently not
-        # implemented in grants_transaction_validator_v2 so for now we assume the originator is
-        # msg.sender
+        # implemented in grants_transaction_validator so for now we assume the originator is
+        # msg.sender. If this needs to be implemented, take a look at this function in older
+        # commits to find the logic used
         'originator': [ '' ],
         # Once tx_cleared is true, the validator is not run again for this contribution
         'tx_cleared': False,
@@ -285,136 +286,6 @@ def grants_transaction_validator_v2(contribution, w3):
         return response
 
     raise Exception('Unknown transaction validation flow 2')
-
-
-def grants_transaction_validator(contribution, w3):
-    # To facilitate testing on Rinkeby, we pass in a web3 instance instead of using the mainnet
-    # instance defined at the top of this file
-
-    tx_list = [contribution.tx_id, contribution.split_tx_id]
-    network = contribution.subscription.network
-
-    token_transfer = {}
-    txns = []
-    validation = {
-        'passed': False,
-        'comment': 'Default'
-    }
-    token_originators = []
-    amounts = [contribution.subscription.amount_per_period_minus_gas_price, contribution.subscription.amount_per_period]
-
-    for tx in tx_list:
-
-        if not tx:
-            continue
-
-        # check for dropped and replaced txn
-        status, timestamp = get_tx_status(tx, network, timezone.now())
-        maybeprint(120, round(time.time(),2))
-        if status in ['pending', 'dropped', 'unknown', '']:
-            new_tx = getReplacedTX(tx)
-            if new_tx:
-                tx = new_tx
-                status, timestamp = get_tx_status(tx, network, timezone.now())
-
-        maybeprint(127, round(time.time(),2))
-        # check for txfrs
-        if status == 'success':
-
-            # check if it was an ETH transaction
-            maybeprint(132, round(time.time(),2))
-            transaction_receipt = w3.eth.getTransactionReceipt(tx)
-            from_address = transaction_receipt['from']
-            # todo save back to the txn if needed?
-            if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
-                maybeprint(138, round(time.time(),2))
-                transaction_hash = transaction_receipt.transactionHash.hex()
-                transaction = w3.eth.getTransaction(transaction_hash)
-                if transaction.value > 0.001:
-                    recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
-                    transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
-                    if not transfer:
-                        transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
-                    if transfer:
-                        token_transfer = transfer
-                maybeprint(148, round(time.time(),2))
-                if not token_originators:
-
-                    token_originators = get_token_originators(from_address, '0x0', from_address=None, return_what='originators')
-
-            maybeprint(150, round(time.time(),2))
-            # check if it was an ERC20 transaction
-            if contribution.subscription.contributor_address and \
-                contribution.subscription.grant.admin_address and \
-                contribution.subscription.token_address:
-
-                from_address = Web3.toChecksumAddress(contribution.subscription.contributor_address)
-                recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
-                token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
-
-                maybeprint(160, round(time.time(),2))
-                # get token transfers
-                if not token_transfer:
-                    transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
-                    if transfers:
-                        token_transfer = transfers
-                maybeprint(169, round(time.time(),2))
-                if not token_originators:
-                    token_originators = get_token_originators(from_address, token_address, from_address=None, return_what='originators')
-                maybeprint(170, round(time.time(),2))
-
-
-        # log transaction and and any xfr
-        txns.append({
-            'id': tx,
-            'status': status,
-            })
-
-    if not token_transfer:
-        transaction_receipt = w3.eth.getTransactionReceipt(tx)
-        is_bulk_checkout = transaction_receipt['to'].lower() == "0x7d655c57f71464B6f83811C55D84009Cd9f5221C".lower()
-        if is_bulk_checkout:
-            validation['comment'] = "Bulk checkout"
-            validation['passed'] = transaction_receipt['status'] == 1
-        else:
-            validation['comment'] = "No Transfers Occured"
-            validation['passed'] = False
-    else:
-        if token_transfer['token_name'] != contribution.subscription.token_symbol:
-            validation['comment'] = f"Tokens do not match, {token_transfer['token_name']} != {contribution.subscription.token_symbol}"
-            validation['passed'] = False
-
-            from_address = Web3.toChecksumAddress(contribution.subscription.contributor_address)
-            recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
-            token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
-            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
-            failsafe = _transfers['token_name'] == contribution.subscription.token_symbol
-            if failsafe:
-                validation['comment'] = f"Token Transfer Passed on the second try"
-                validation['passed'] = True
-                token_transfer = _transfers
-
-        else:
-            delta1 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period_minus_gas_price)
-            delta2 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period)
-            threshold = float(float(abs(contribution.subscription.amount_per_period_minus_gas_price)) * float(validation_threshold_pct))
-            validation['passed'] = (abs(delta1) <= threshold or abs(delta2) <= threshold) or (abs(delta1) <= validation_threshold_total or abs(delta2) <= validation_threshold_total)
-            validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
-
-
-    return {
-        'contribution': {
-            'pk': contribution.pk,
-            'amount_per_period_to_gitcoin': contribution.subscription.amount_per_period_to_gitcoin,
-            'amount_per_period_to_grantee': contribution.subscription.amount_per_period_minus_gas_price,
-            'from': contribution.subscription.contributor_address,
-            'to': contribution.subscription.grant.admin_address,
-        },
-        'validation': validation,
-        'transfers': token_transfer,
-        'originator': token_originators,
-        'txns': txns,
-    }
 
 
 def trim_null_address(address):

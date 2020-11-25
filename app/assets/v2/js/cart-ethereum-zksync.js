@@ -42,16 +42,7 @@ Vue.component('grantsCartEthereumZksync', {
     // If user started checking out with zkSync, warn them before closing or reloading page.
     // Note that beforeunload may sometimes be ignored by browsers, e.g. if users have not
     // interacted with the page
-    window.addEventListener('beforeunload', (e) => {
-      if (this.zksync.checkoutStatus === 'pending') {
-        // This shows a generic message staying "Leave site? Changes you made may not be saved". This
-        // cannot be changed, as "the ability to do this was removed in Chrome 51. It is widely
-        // considered a security issue, and most vendors have removed support."
-        // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    });
+    window.addEventListener('beforeunload', (e) => this.beforeUnloadHandler(e));
   },
 
   computed: {
@@ -77,6 +68,7 @@ Vue.component('grantsCartEthereumZksync', {
       // then zkSync will append one more zero-value transfer that covers the full fee
       return this.donationInputs.map((donation) => {
         return {
+          from: this.user.address, // if user connects to zkSync with a different address, it will notify them
           to: getAddress(donation.dest), // ensure we use a checksummed address
           token: donation.name, // token symbol
           amount: donation.amount,
@@ -146,6 +138,18 @@ Vue.component('grantsCartEthereumZksync', {
       appCart.$refs.cart.handleError(e);
     },
 
+    // We attach this to the beforeunload event
+    beforeUnloadHandler(e) {
+      if (this.zksync.checkoutStatus === 'pending') {
+        // This shows a generic message staying "Leave site? Changes you made may not be saved". This
+        // cannot be changed, as "the ability to do this was removed in Chrome 51. It is widely
+        // considered a security issue, and most vendors have removed support."
+        // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    },
+
     // Alert user they have insufficient balance to complete checkout
     insufficientBalanceAlert() {
       this.zksync.showModal = false; // hide checkout modal if visible
@@ -186,6 +190,7 @@ Vue.component('grantsCartEthereumZksync', {
           this.zksync.contractAddres, // we use the zkSync mainnet contract address to represent zkSync deposits
           this.user.address
         );
+        window.removeEventListener('beforeunload', (e) => this.beforeUnloadHandler(e));
         await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
 
       } catch (e) {
