@@ -55,11 +55,9 @@ Vue.component('grants-cart', {
       include_for_clr: true,
       windowWidth: window.innerWidth,
       userAddress: undefined,
-      // Checkout, zkSync NEW
-      zkSyncUnsupportedTokens: [],
-      zkSyncEstimatedGasCost: undefined,
-      // Checkout, zkSync OLD
-      ethersProvider: undefined,
+      // Checkout, zkSync
+      zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       // verification
       isFullyVerified: false,
       // Collection
@@ -593,7 +591,7 @@ Vue.component('grants-cart', {
       });
     },
 
-    // Must be called at the beginning of each checkout flow (L1, zkSync, etc.)
+    // Must be called at the beginning of the standard L1 bulk checkout flow
     async initializeStandardCheckout() {
       // Prompt web3 login if not connected
       if (!provider) {
@@ -624,8 +622,8 @@ Vue.component('grants-cart', {
      * @notice For each token, checks if an approval is needed against the specified contract, and
      * returns the data
      * @param userAddress User's web3 address
-     * @param targetContract Address of the contract to check allowance against (e.g. the
-     * regular BulkCheckout contract, the zkSync contract, etc.)
+     * @param targetContract Address of the contract to check allowance against. Currently this
+     * should only be the bulkCheckout contract address
      */
     async getAllowanceData(userAddress, targetContract) {
       // Get list of tokens user is donating with
@@ -701,8 +699,8 @@ Vue.component('grants-cart', {
      * @notice Requests all allowances and executes checkout once all allowance transactions
      * have been sent
      * @param allowanceData Output from getAllowanceData() function
-     * @param targetContract Address of the contract to check allowance against (e.g. the
-     * regular BulkCheckout contract, the zkSync contract, etc.)
+     * @param targetContract Address of the contract to check allowance against. Currently this
+     * should only be the bulkCheckout contract address
      * @param callback Function to after allowance approval transactions are sent
      * @param callbackParams Array of input arguments to pass to the callback function
      */
@@ -1307,8 +1305,6 @@ Vue.component('grants-cart', {
     const collections_response = await fetchData('/grants/v1/api/collections/');
 
     this.collections = collections_response.collections;
-    // Cart is now ready
-    // this.isLoading = false;
   },
 
   beforeDestroy() {

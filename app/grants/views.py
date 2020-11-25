@@ -1922,6 +1922,7 @@ def cancel_grant_v1(request, grant_id):
 
 @login_required
 def bulk_fund(request):
+    """Called when checking out with an Ethereum cart"""
     if request.method != 'POST':
         raise Http404
 
@@ -1938,6 +1939,7 @@ def bulk_fund(request):
         try:
             grant = Grant.objects.get(pk=grant_id)
         except Grant.DoesNotExist:
+            # Commonly occurs when testing on Rinkeby, as the Gitcoin development fund does not exist there by default
             failures.append({
                 'active': 'grant_error',
                 'title': _('Fund - Grant Does Not Exist'),
@@ -1949,6 +1951,7 @@ def bulk_fund(request):
             continue
 
         if not grant.active:
+            # This means a grant has been cancelled, which happens occasionally
             failures.append({
                 'active': 'grant_error',
                 'title': _('Fund - Grant Ended'),
@@ -1959,18 +1962,8 @@ def bulk_fund(request):
             })
             continue
 
-        if is_grant_team_member(grant, profile):
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Fund - Grant funding blocked'),
-                'grant':grant_id,
-                'text': _('This Grant cannot be funded'),
-                'subtext': _('Grant team members cannot contribute to their own grant.'),
-                'success': False
-            })
-            continue
-
         if grant.link_to_new_grant:
+            # Occurs if users have duplicate grants and one is merged into the other
             failures.append({
                 'active': 'grant_error',
                 'title': _('Fund - Grant Migrated'),
@@ -1984,27 +1977,6 @@ def bulk_fund(request):
         active_subscription = Subscription.objects.select_related('grant').filter(
             grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
         )
-
-        if active_subscription:
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Subscription Exists'),
-                'grant':grant_id,
-                'text': _('You already have an active subscription for this grant.'),
-                'success': False
-            })
-            continue
-
-        if not grant.configured_to_receieve_funding:
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Fund - Grant Not Configured'),
-                'grant':grant_id,
-                'text': _('This Grant is not configured to accept funding at this time.'),
-                'subtext': _('Grant is not properly configured for funding.  Please set grant.contract_address on this grant, or contact founders@gitcoin.co if you believe this message is in error!'),
-                'success': False
-            })
-            continue
 
         try:
             from grants.tasks import process_grant_contribution
@@ -2242,17 +2214,6 @@ def grants_cart_view(request):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
-def grants_zksync_recovery_view(request):
-    context = {
-        'title': 'Recover Funds',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
-    }
-    if not request.user.is_authenticated:
-        return redirect('/login/github?next=' + request.get_full_path())
-
-    response = TemplateResponse(request, 'grants/zksync-recovery.html', context=context)
-    response['X-Frame-Options'] = 'SAMEORIGIN'
-    return response
 
 def get_category_size(category):
     key = f"grant_category_{category}"
