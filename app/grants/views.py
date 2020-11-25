@@ -538,6 +538,9 @@ def get_grants(request):
     page = request.GET.get('page', 1)
     collections_page = request.GET.get('collections_page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
+    if request.user.is_authenticated and request.user.profile.pk % 2 == 1:
+            if sort == 'weighted_shuffle':
+                sort = 'random_shuffle'
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')

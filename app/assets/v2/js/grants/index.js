@@ -148,6 +148,10 @@ Vue.component('grant-sidebar', {
 });
 if (document.getElementById('grants-showcase')) {
 
+  let sort = getParam('sort');
+  if(!sort){
+    sort = 'weighted_shuffle';
+  }
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
@@ -156,7 +160,7 @@ if (document.getElementById('grants-showcase')) {
       page: 1,
       collectionsPage: 1,
       limit: 6,
-      sort: 'weighted_shuffle',
+      sort: sort,
       network: document.network,
       keyword: document.keyword,
       current_type: document.current_type,
