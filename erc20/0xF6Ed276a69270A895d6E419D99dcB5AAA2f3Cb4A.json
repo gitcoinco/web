@@ -1,0 +1,19 @@
+{
+    "symbol": "SAP",
+    "address": "0xF6Ed276a69270A895d6E419D99dcB5AAA2f3Cb4A",
+    "overview": {
+        "en": "SwapAll is a one-step investment tool that can be connected to blockchain. SwapAll is designed to be a user-friendly DeFi transaction platform with zero gas fees. It is currently the first integrated exchange application with combining multiple functions like stake pool mining, liquidity pool mining, NFT mining pool, and exchange service.",
+        "zh": "SwapAll是由来自加拿大的区块链预言机克拉猫旗下诞生的革命性跨链swap平台。SwapAll旨在为所有AMM (Automated Market Maker) 类型Dex的基础上提供一层将无常损失优化至最低点，交易无拥堵的解决方案。SwapAll中内置三个交易池：空投一号池；流动性矿池二号池；NFT矿池三号池，支持币种除ETH、USDT外，还包括ETP等币种。"
+    },
+    "email": "support@swapall.io",
+    "website": "https://swapall.io/",
+    "whitepaper": "https://swapall.io/public/Swapall_Whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-01",
+    "links": {
+        "twitter": "https://twitter.com/SwapAll_",
+        "telegram": "https://t.me/joinchat/OsCYkRsT6MFI0wkNxijDLQ",
+        "facebook": "https://www.facebook.com/SwapAllAPP",
+        "weibo": "https://weibo.com/u/7512530849?is_all=1"
+    }
+}
