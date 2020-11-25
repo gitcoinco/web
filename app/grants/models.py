@@ -1597,30 +1597,35 @@ class Contribution(SuperModel):
             from economy.tx import grants_transaction_validator
             from dashboard.utils import get_tx_status
             from economy.tx import getReplacedTX
+
+            # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
                 return
 
             # Execute transaction validator based on checkout type
             network = self.subscription.network
             if self.checkout_type == 'eth_zksync':
+                # zkSync checkout using their zksync-checkout library
+
                 # Get the tx hash
-                #   check that first part of self.split_tx_id is `synx-tx:`
-                #   if not, throw
-                #   remove the synx-tx: prefix
-                tx_hash = '0'
+                if not self.split_tx_id.startswith('sync-tx:') or len(self.split_tx_id) != 72:
+                    # Tx hash should start with `sync-tx:` and have a 64 character hash (no 0x prefix)
+                    raise Exception('Unsupported zkSync transaction hash format')
+                tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
                 
-                # Validate the tx status
-                # TODO
+                # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
                 base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
                 r = requests.get(f"{base_url}/transactions_all/{tx_hash}")
                 r.raise_for_status()
-                transactions = r.json() # zkSync transaction data
+                tx_data = r.json() # zkSync transaction data
 
-                self.tx_cleared = True
-                self.success = True
+                # Update contribution values based on transaction data
+                self.originated_address = tx_data['from'] # assumes sender is originator
+                self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
                 self.validator_passed = True
                 self.split_tx_confirmed = True
-                self.validator_comment = f"zkSync checkout"
+                self.tx_cleared = True
+                self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
 
             elif self.checkout_type == 'eth_std':
                 # Standard L1 checkout using the BulkCheckout contract
@@ -1650,7 +1655,7 @@ class Contribution(SuperModel):
                 self.success = self.validator_passed
 
             else:
-                # This validator is only for eth_std and eth_zksync, so exit if anything else
+                # This validator is only for eth_std and eth_zksync, so exit for other contribution types
                 return
 
             # Validator complete!

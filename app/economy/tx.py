@@ -154,28 +154,28 @@ def grants_transaction_validator(contribution, w3):
     instance defined at the top of this file
     """
 
-    # Get bulk checkout contract instancer
+    # Get bulk checkout contract instance
     bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=bulk_checkout_abi)
 
     # Get specific info about this contribution that we use later
     tx_hash = contribution.split_tx_id
     network = contribution.subscription.network
 
-    # Response that calling function uses to set fields on Contribution
+    # Response that calling function uses to set fields on Contribution. Set the defaults here
     response = {
-        # Set passed to True if matching transfer is found for this contribution. The comment
-        # field is used to provide details when false
+        # We set `passed` to `True` if matching transfer is found for this contribution. The
+        # `comment` field is used to provide details when false
         'validation': {
             'passed': False,
             'comment': 'Default'
         },
         # Array of addresses where funds were intially sourced from. This is used to detect someone
         # funding many addresses from a single address. This functionality is currently not
-        # implemented in grants_transaction_validator so for now we assume the originator is
+        # implemented in `grants_transaction_validator()` so for now we assume the originator is
         # msg.sender. If this needs to be implemented, take a look at this function in older
         # commits to find the logic used
         'originator': [ '' ],
-        # Once tx_cleared is true, the validator is not run again for this contribution
+        # Once `tx_cleared` is true, the validator is not run again for this contribution
         'tx_cleared': False,
         # True if the checkout transaction was mined
         'split_tx_confirmed': False
@@ -183,7 +183,7 @@ def grants_transaction_validator(contribution, w3):
 
     # Return if tx_hash is not valid
     if not tx_hash or len(tx_hash) != 66:
-        # Set to true so this doesn't run again, since there's no transaction hash to check
+        # Set to True so this doesn't run again, since there's no transaction hash to check
         response['tx_cleared'] = True
         response['validation']['comment'] = 'Invalid transaction hash in split_tx_id'
         return response
@@ -200,7 +200,7 @@ def grants_transaction_validator(contribution, w3):
         # Get the receipt to parse parameters
         receipt = w3.eth.getTransactionReceipt(tx_hash)
 
-        # Validator currently assumes msg.sender == originator
+        # Validator currently assumes msg.sender == originator as described above
         response['originator'] = [ receipt['from'] ]
 
         # Return if recipient is not the BulkCheckout contract
@@ -210,8 +210,9 @@ def grants_transaction_validator(contribution, w3):
             response['validation']['comment'] = f'This function only validates transactions through the BulkCheckout contract, but this transaction was sent to {to_address}'
             return response
 
-        # Parse receipt logs to look for expected transfer info. We don't need to look at any other
-        # receipt parameters because all contributions are emitted as an event
+        # Parse receipt logs to look for expected transfer info. We don't need to distinguish
+        # between ETH and token transfers, and don't need to look at any other receipt parameters,
+        # because all contributions are emitted as an event
         receipt = w3.eth.getTransactionReceipt(tx_hash)
         parsed_logs = bulk_checkout_contract.events.DonationSent().processReceipt(receipt)
 
@@ -225,7 +226,7 @@ def grants_transaction_validator(contribution, w3):
         expected_recipient = contribution.normalized_data['admin_address'].lower()
         expected_token = get_token(token_symbol, network)['addr'].lower() # we compare by token address
 
-        # If amount_per_period_minus_gas_price is basically zero, this is an automatic Gitcoin
+        # If amount_per_period_minus_gas_price is very close to zero, this is an automatic Gitcoin
         # contribution so we use a different field to get the expected value
         if contribution.subscription.amount_per_period_minus_gas_price < 0.000000001:
             amount_to_use = contribution.subscription.amount_per_period 
@@ -266,25 +267,26 @@ def grants_transaction_validator(contribution, w3):
         return response
 
     try:
-        # Get receipt and set originator to msg.sender
+        # Get receipt and set originator to msg.sender for reasons described above
         receipt = w3.eth.getTransactionReceipt(tx_hash)
         response['originator'] = [ receipt['from'] ]
 
         if receipt.status == 0:
-            # Transaction was minded, but 
+            # Transaction was mined but it failed
             response['tx_cleared'] = True
             response['split_tx_confirmed'] = True
             response['validation']['comment'] = 'Transaction failed. See Etherscan for more details'
             return response
 
-        # If here, transaction was successful. This code block should never execute, but it means
-        # the transaction was successful but for some reason not parsed above
+        # If here, transaction was successful. This code block should never execute because it means
+        # the transaction was successful but for some unknown reason it was not parsed above
         raise Exception('Unknown transaction validation flow 1')
 
     except w3.exceptions.TransactionNotFound:
         response['validation']['comment'] = 'Transaction receipt not found. Transaction may still be pending or was dropped'
         return response
 
+    # We should always return before getting here. If we don't, above parsing logic should be fixed
     raise Exception('Unknown transaction validation flow 2')
 
 
