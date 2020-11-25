@@ -1841,7 +1841,7 @@ def bulk_fund(request):
             'text': _('Funding for this grant was successfully processed and saved.'),
             'success': True
         })
-        batch_grants_mail.append((grant_id, payload))
+        batch_grants_mail.append(grant_id)
 
     thank_you_for_supporting(batch_grants_mail, profile)
 

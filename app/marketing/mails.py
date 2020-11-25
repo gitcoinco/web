@@ -303,7 +303,7 @@ def new_supporter(grant, subscription):
 
 def thank_you_for_supporting(grants, contributor):
     subscriptions = []
-    for (grant_id, payload) in grants:
+    for grant_id in grants:
         subscription = Subscription.objects.filter(grant_id=grant_id, contributor_profile=contributor).first()
         if subscription and subscription.negative:
             continue
