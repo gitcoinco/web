@@ -12,6 +12,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
 from django.contrib.auth.models import Group, Permission, User
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
@@ -22,7 +23,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         pToken_group_name = "pToken-Seed-Round"
         pToken_group = Group.objects.get_or_create(name=pToken_group_name)[0]
-        add_pToken_auth = Permission.objects.get(codename="add_pToken_auth")
+        ct = ContentType.objects.get_for_model(model=User)
+        add_pToken_auth = Permission.objects.get_or_create(name="Add pToken", codename="add_pToken_auth", content_type=ct)[0]
         pToken_group.permissions.add(add_pToken_auth)
 
         print('Adding seeded users to pToken Group')

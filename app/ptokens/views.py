@@ -204,6 +204,12 @@ def ptoken(request, token_id='me'):
             return JsonResponse(
                 {'error': _('You must be authenticated via github to use this feature!')},
                 status=401)
+
+        if not user.has_perm('user.add_pToken_auth'):
+            return JsonResponse(
+                {'error': _('You are not allowed to use this feature!')},
+                status=403)
+
         event_name = request.POST.get('event_name')
         if user.profile != ptoken.token_owner_profile:
             return JsonResponse(
