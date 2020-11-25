@@ -6576,20 +6576,16 @@ def verify_user_poap(request, handle):
 def file_upload(request):
 
     uploaded_file = request.FILES.get('img')
-    print(uploaded_file)
     error_response = invalid_file_response(uploaded_file, supported=['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'])
+
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
     try:
         media_file = MediaFile.objects.create(file=uploaded_file)
         media_file.filename = uploaded_file.name
         media_file.save()
-        print(media_file.filename)
-        print(media_file.file)
-        print(media_file.file.url)
         data = {'is_valid': True, 'name': f'{media_file.filename}', 'url': f'{media_file.file.url}'}
     except Exception as e:
-        # TODO: sync_profile?
         logger.error(f"error in record_action: {e} ")
         data = {'is_valid': False}
 
