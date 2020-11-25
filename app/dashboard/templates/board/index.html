@@ -64,6 +64,7 @@
     {% endif %}
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script>
+      document.has_ptoken_auth = {{ has_ptoken_auth|yesno:"true,false"}};
       document.user_has_token = {{ ptoken|yesno:"true,false" }};
       {% if ptoken %}
       document.ptoken = {
