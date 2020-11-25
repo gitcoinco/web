@@ -91,7 +91,7 @@ def sync(request):
         response['txid'] = kt.txid
         if kt.kudos_token_cloned_from.is_owned_by_gitcoin:
             if request.user.is_authenticated:
-                if request.user.profile.handle in [kt.username, kt.from_username] or settings.DEBUG:
+                if request.user.profile.handle in [kt.username.replace('@',''), kt.from_username.replace('@','')] or settings.DEBUG:
                     authd = not kt.tx_time or kt.tx_time < (timezone.now() - timezone.timedelta(minutes=30))
                     authd = authd and (kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped' or kt.receive_tx_status == 'unknown')
                     if authd:
