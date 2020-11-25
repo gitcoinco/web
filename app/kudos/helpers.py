@@ -132,6 +132,10 @@ def re_send_kudos_transfer(kt, override_with_xdai_okay):
 
     token_id = kt.kudos_token_cloned_from.token_id
     address = kt.receive_address
+    if not address:
+        address = kt.recipient_profile.preferred_payout_address
+    if not address:
+        address = kt.recipient_profile.last_observed_payout_address
     price_finney = kt.kudos_token_cloned_from.price_finney
 
     try:
