@@ -140,7 +140,7 @@ def re_send_kudos_transfer(kt, override_with_xdai_okay):
         gasPrice = int(gas_multiplier * float(recommend_min_gas_price_to_confirm_in_time(gas_clear_within_mins)) * 10**9)
         if network == 'xdai':
             gasPrice = 1 * 10**9
-        tx = contract.functions.clone(address, token_id, 1).buildTransaction({
+        tx = contract.functions.clone(Web3.toChecksumAddress(address), token_id, 1).buildTransaction({
             'nonce': nonce,
             'gas': 500000,
             'gasPrice': gasPrice,
