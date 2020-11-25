@@ -320,9 +320,9 @@ if (document.getElementById('gc-new-grant')) {
     },
     computed: {
       queryParams() {
-        return new URLSearchParams(window.location.search)
+        return new URLSearchParams(window.location.search);
       },
-      clean () {
+      clean() {
         return value => {
           value = decodeURIComponent(value);
           if ((/<[a-zA-Z\\\/]+>/).test(value)) {
@@ -330,6 +330,7 @@ if (document.getElementById('gc-new-grant')) {
             value = '';
           }
           const arrayCheckRegex = /\[.+\]/;
+
           if (arrayCheckRegex.test(value)) {
             // check if array is passed in query params and return it as an array instead of default string.
             // i.e change "[1, 2]" to [1, 2]
@@ -342,8 +343,8 @@ if (document.getElementById('gc-new-grant')) {
               return item;
             });
           }
-          return value
-        }
+          return value;
+        };
       },
       grant_type_logo() {
         const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
@@ -356,12 +357,12 @@ if (document.getElementById('gc-new-grant')) {
     },
     mounted() {
       const writeToRoot = ['chainId'];
-      const writeToBody = ['title', 'reference_url', 'twitter_handle_1', 'twitter_handle_2',
-       'github_project_url', 'eth_payout_address', 'grant_type', 'grant_categories']
+      const writeToBody = [ 'title', 'reference_url', 'twitter_handle_1', 'twitter_handle_2',
+        'github_project_url', 'eth_payout_address', 'grant_type', 'grant_categories' ];
 
       for (const key of writeToRoot) {
         if (this.queryParams && this.queryParams.has(key)) {
-          this[key] =  this.clean(this.queryParams.get(key));
+          this[key] = this.clean(this.queryParams.get(key));
         }
       }
       for (const key of writeToBody) {

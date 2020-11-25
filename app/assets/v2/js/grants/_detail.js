@@ -1,8 +1,9 @@
 
 let isStaff = document.contxt.is_staff || false;
+
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
-Quill.register('modules/ImageExtend', ImageExtend)
+Quill.register('modules/ImageExtend', ImageExtend);
 
 
 Vue.mixin({
@@ -22,34 +23,33 @@ Vue.mixin({
       // })
       return new Promise(resolve => {
 
-        fetch(url).then(function(res)  {
+        fetch(url).then(function(res) {
           return res.json();
-
-
         }).then(function(json) {
           json.grants.team_members = vm.formatTeam(json.grants.team_members);
-          vm.grant = json.grants
+          vm.grant = json.grants;
           vm.grantInCart();
 
-          vm.grant.description_rich_edited = vm.grant.description_rich
-          vm.editor.updateContents(JSON.parse(vm.grant.description_rich))
+          vm.grant.description_rich_edited = vm.grant.description_rich;
+          vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
 
           // if (vm.grant.metadata.related[0].length) {
           //   vm.fetchRelated(String(vm.grant.metadata.related[0]))
           // }
 
-          resolve()
-        }).catch(console.error)
-      })
+          resolve();
+        }).catch(console.error);
+      });
 
 
     },
     formatTeam: function(teamMembers) {
       return teamMembers.map((user)=> {
         let newTeam = {};
-        newTeam["id"] = user.pk;
-        newTeam["avatar_url"] = `/dynamic/avatar/${user.fields.handle}`;
-        newTeam["text"] = user.fields.handle;
+
+        newTeam['id'] = user.pk;
+        newTeam['avatar_url'] = `/dynamic/avatar/${user.fields.handle}`;
+        newTeam['text'] = user.fields.handle;
         return newTeam;
       });
 
@@ -62,21 +62,23 @@ Vue.mixin({
         return;
       }
 
-      ids = vm.grant.metadata.related.map(arr => {return arr[0];});
+      ids = vm.grant.metadata.related.map(arr => {
+        return arr[0];
+      });
       idsString = String(ids);
 
-      let url = `http://localhost:8000/grants/v1/api/grants?pks=${idsString}`
-      fetch(url).then(function(res)  {
+      let url = `http://localhost:8000/grants/v1/api/grants?pks=${idsString}`;
+
+      fetch(url).then(function(res) {
         return res.json();
       }).then(function(json) {
         vm.relatedGrants = json.grants;
 
-      }).catch(console.error)
+      }).catch(console.error);
     },
     grantInCart: function() {
       let vm = this;
       let inCart = CartData.cartContainsGrantWithId(vm.grant.id);
-      console.log(inCart, vm.grant.id)
 
       vm.$set(vm.grant, 'isInCart', inCart);
       return vm.grant.isInCart;
@@ -91,19 +93,20 @@ Vue.mixin({
     },
     removeFromCart: function() {
       let vm = this;
-      console.log('removeFromCart')
+
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
     },
     editGrantModal: function() {
       let vm = this;
-      vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop')
+
+      vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop');
     },
     saveGrant: function(event) {
       event.preventDefault();
       let vm = this;
 
-      vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop')
+      vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop');
 
       if (typeof ga !== 'undefined') {
         ga('send', 'event', 'Edit Grant', 'click', 'Grant Editor');
@@ -126,13 +129,11 @@ Vue.mixin({
         'handle2': vm.grant.twitter_handle_2,
         'eth_payout_address': vm.grant.eth_payout_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
-        'region': vm.grant.region?.name || undefined,
-
-
+        'region': vm.grant.region?.name || undefined
       };
 
-      vm.grant.description_rich=JSON.stringify(vm.$refs.myQuillEditor.quill.getContents())
-      vm.grant.description=vm.$refs.myQuillEditor.quill.getText()
+      vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
+      vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
 
       $.ajax({
         type: 'post',
@@ -143,7 +144,7 @@ Vue.mixin({
         headers: headers,
         success: response => {
           if (response.status == 200) {
-
+            _alert('Updated grant.', 'success');
           } else {
             // vm.submitted = false;
             _alert('Unable to create grant. Please try again', 'error');
@@ -174,15 +175,17 @@ Vue.mixin({
       }
 
       const cancelUrl = `/grants/v1/api/grant/${vm.grant.id}/cancel`;
+      var cancelGrant = fetchData(cancelUrl, 'POST');
 
-      var cancelGrant = fetchData(cancelUrl ,'POST')
-      $.when(cancelGrant).then(function(response){
+      $.when(cancelGrant).then(function(response) {
         vm.grant.active = false;
-        return response
-      })
+        return response;
+      });
 
     },
-    checkGrantData: function() {},
+    checkGrantData: function() {
+      return;
+    },
     toggleFollowingGrant: async function(grantId) {
       let vm = this;
 
@@ -230,19 +233,17 @@ Vue.mixin({
       });
     },
     onEditorBlur(quill) {
-      console.log('editor blur!', quill)
+      console.log('editor blur!', quill);
     },
     onEditorFocus(quill) {
-      console.log('editor focus!', quill)
+      console.log('editor focus!', quill);
     },
     onEditorReady(quill, html, text) {
-      console.log('editor ready!', quill, html, text)
-
-      // this.grant.description_rich = html
+      console.log('editor ready!', quill, html, text);
     },
     onEditorChange({ quill, html, text }) {
-      console.log('editor change!', quill, html, text)
-      this.content = html
+      console.log('editor change!', quill, html, text);
+      this.content = html;
     },
     userSearch(search, loading) {
       let vm = this;
@@ -279,36 +280,11 @@ Vue.mixin({
           }
         });
       });
-    },
+    }
   },
   computed: {
-    // teamUsers: function() {
-
-    //   let vm = this;
-
-    //   if (!vm.grant.team_members) {
-    //     return;
-    //   }
-
-
-    //   team_members_id = vm.grant.team_members.map((user)=> {
-    //     console.log(user)
-    //     let newTeam = {};
-    //     newTeam["id"] = user.pk;
-    //     newTeam["avatar_url"] = `/dynamic/avatar/${user.fields.handle}`;
-    //     newTeam["text"] = user.fields.handle;
-
-
-
-    //     return newTeam;
-    //   });
-    //   console.log(team_members_id)
-    //   return this.$set(this.grant, 'team_members', team_members_id);
-    //   // return team_members_id;
-
-    // },
     editor() {
-      return this.$refs.myQuillEditor.quill
+      return this.$refs.myQuillEditor.quill;
     },
     filteredMsg: function() {
       let msgs = [
@@ -316,30 +292,30 @@ Vue.mixin({
         '👍 i appreciate you',
         '🙌 Great Job',
         '😍 love the mission of your project'
-      ]
+      ];
+
       if (!this.grant?.metadata?.wall_of_love) {
         return;
       }
-      console.log(Object.keys(this.grant.metadata).length > 0 )
-      console.log(msgs)
+
       return this.grant?.metadata?.wall_of_love.filter((msg) => {
-        if(msgs.includes(msg[0])) {
+        if (msgs.includes(msg[0])) {
           return msg;
         }
       });
     },
     itemsForList() {
       if (this.grant.metadata && !Object.keys(this.grant.metadata).length) {
-        return
+        return;
       }
       this.rows = this.grant?.metadata?.wall_of_love.length || 0;
       return this.grant?.metadata?.wall_of_love.slice(
         (this.currentPage - 1) * this.perPage,
-        this.currentPage * this.perPage,
+        this.currentPage * this.perPage
       );
     }
 
-  },
+  }
 
 });
 
@@ -373,21 +349,21 @@ if (document.getElementById('gc-grant-detail')) {
                 ['clean']
               ],
               handlers: {
-                'image': function () {
-                  QuillWatch.emit(this.quill.id)
+                'image': function() {
+                  QuillWatch.emit(this.quill.id);
                 }
               }
-          },
+            },
             ImageExtend: {
               loading: true,
               name: 'img',
               headers: (xhr) => {
-                xhr.setRequestHeader('X-CSRFToken',$("input[name='csrfmiddlewaretoken']").val())
+                xhr.setRequestHeader('X-CSRFToken', $("input[name='csrfmiddlewaretoken']").val());
               },
 
               action: '/api/v1/file_upload/',
               response: (res) => {
-                return res.url
+                return res.url;
               }
             }
           },
@@ -408,11 +384,8 @@ if (document.getElementById('gc-grant-detail')) {
       };
     },
     mounted: function() {
-      console.log('mount')
-      console.log('this is Quill instance:', this.editor)
-     this.fetchGrantDetails();
-
-    },
+      this.fetchGrantDetails();
+    }
   });
 }
 
