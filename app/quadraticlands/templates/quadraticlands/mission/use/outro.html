@@ -19,6 +19,7 @@
 	<figure><img src="/static/quadraticlands/images/portrait-proof-of-use-end.svg"></figure>
 
 	<div>
+		{% csrf_token %}
 		<h3><span>#</span>Chapter 3 of 3</h3>
 		<h1>Congratulations, you are real blockchain democrat.</h1>
 		<a href="/quadraticlands/mission/end" class="btn">Continue</a>	
@@ -39,5 +40,24 @@
 
 	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
+   
+	<script>
+		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		document.addEventListener("DOMContentLoaded",function(){
+			// update user state
+			var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_use'}, {'X-CSRFToken': csrftoken});
+			$.when(setMissionStatus).then((response, status, statusCode) => {
+				//for debugging, remove for prod 
+				console.log('POST RETURNED!', statusCode, response, status);
+	
+				// if we don't get from set_mission_status console log the response (maybe remove for prod) 
+				if (statusCode.status != 200) {
+					console.log('getClaimData response: ', statusCode.status )
+					return 
+				}
+		   });
+		});
+	</script>
+
 
 {% endblock %}

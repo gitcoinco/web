@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from quadraticlands.models import InitialTokenDistribution, MissionStatus
+
+admin.site.register(InitialTokenDistribution)
+admin.site.register(MissionStatus)
