@@ -39,6 +39,19 @@
         max-height: 600px;
         overflow-y: auto;
       }
+
+      .blur-img {
+        filter: blur(9px);
+        transition: 0.5s all linear;
+      }
+
+      .img-edit {
+        width: 100%;
+        height: 300px;
+        object-fit: contain;
+        background: black;
+      }
+
       .ql-editor .ql-video {
         height: max(170px, 360px);
         width: clamp(340px, 660px, 100%);
@@ -134,32 +147,32 @@
       <div class="pt-4" v-if="grant">
         <div class="container grid grid-template-sidebar">
           <div class="grant-data">
-            <div class="d-flex">
+            <div class="d-flex align-items-baseline">
               <h1 class="h3">
                 [[grant.title]]
               </h1>
-              <span class="font-smaller-3">Updated: [[grant.last_update]]</span>
+              <time :datetime="grant.last_update" v-b-tooltip.hover.top="grant.last_update" class="font-smaller-3 ml-3">Updated: [[grant.last_update | moment-fromnow]]</time>
             </div>
             <div class="font-smaller-3">
               <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
-                <i class="fab fa-fw fa-ethereum"></i> [[grant.admin_address]]
+                <span class="" v-b-tooltip.hover.top="grant.admin_address"><i class="fab fa-fw fa-ethereum"></i> [[grant.admin_address | truncateHash]] <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.admin_address"><i class="far fa-copy"></i></copy-clipboard></span>
 
                 <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
                 <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
               </template>
               <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
-                <div class="mb-2">
-                  <img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
+                <div class="d-flex align-items-center">
+                  <img class="mr-1" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
                   <a target="_blank" :href="`https://sochain.com/address/ZEC/${grant.zcash_payout_address}`">
-                    <span id="z-cash-address" class="wallet-address"
-                      target="_blank" data-toggle="tooltip" data-placement="top" title="Project Zcash Funding Address">
-                      [[grant.zcash_payout_address]]
+                    <span id="z-cash-address" class="wallet-address" v-b-tooltip.hover.top="grant.zcash_payout_address">
+                      [[grant.zcash_payout_address | truncateHash]]
                     </span>
                   </a>
+                  <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zcash_payout_address"><i class="far fa-copy"></i></copy-clipboard>
                 </div>
               </template>
             </div>
-            <div class="grant-description my-5">
+            <div class="grant-description my-4">
               <render-quill :delta="grant.description_rich"></render-quill>
             </div>
 
@@ -402,12 +415,11 @@
                 Project Logo
               </label>
 
-              <!-- <div class="form__drop mt-0" id="js-drop">
-                <span>Drag & Drop or Browse</span>
-                <b-form-file id="img-project" v-model="grant.logo_url" :state="Boolean(grant.logo_url)" plain accept="image/*"></b-form-file>
-                <b-img-lazy v-if="grant.logo_url" id="preview" style="width:100%;" :src="grant.logo_url"></b-img-lazy>
-              </div> -->
-
+              <div class="form__drop mt-0" id="js-drop">
+                <span v-if="!logoPreview">Drag & Drop or Browse</span>
+                <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
+                <b-form-file @change="onFileChange($event)" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+              </div>
             </div>
             <div class="col-12 mb-3">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">Title</label>
@@ -756,6 +768,7 @@
 
     <script src="{% static "v2/js/grants/_detail.js" %}"></script>
     {% if is_team_member %}
+      <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script src="{% static "v2/js/grants/stats.js" %}"></script>
       <script>
