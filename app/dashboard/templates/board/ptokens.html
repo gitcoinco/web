@@ -57,8 +57,7 @@
       </div>
     </div>
   </header>
-  { % if has_ptoken_auth % }
-  <section class="container">
+  <section v-if="has_ptoken_auth" class="container">
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
@@ -96,7 +95,6 @@
       </div>
     </div>
   </section>
-  { % endif % }
 
     <section class="container">
       <div class="row">
