@@ -77,7 +77,7 @@ def mission_state(request, mission_name, mission_state):
     if not request.user.is_authenticated and mission_state == 'claim': # probably can remove this but leaving in case we want/need it
          return redirect('quadraticlands/mission/index.html')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
-    
+
 @login_required
 def mission_question(request, mission_name, question_num):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''

@@ -30,14 +30,14 @@
 {% endcomment %}
 
 
-
 {% block 'content' %}
 
 	<!-- HERO IMAGE -->
 
 	<section class="hero">
 		<div class="background">
-			<img src="/static/quadraticlands/images/town.svg" alt="">
+			<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+			{% include "quadraticlands/_inlinesvg/town_experiment.svg" %}
 		</div>
 
 		<div class="content">
@@ -81,7 +81,7 @@
 	<section class="grid reverse">
 		
 		<figure>
-			<img src="/static/quadraticlands/images/portal.png">
+			<img src="/static/quadraticlands/images/tunnel.svg">
 		</figure>
 
 		<div>
@@ -139,6 +139,31 @@
 
 	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
+
+
+	<script>
+
+	// random floor polygones color up
+
+	document.addEventListener("DOMContentLoaded",function(){
+
+		const polygones = document.querySelectorAll("svg #floor polygon")
+
+		setInterval(() => {
+			fillFloorRandom(polygones)
+		}, 200);
+
+	});	
+
+	function fillFloorRandom(polygones){
+		sample = polygones[Math.floor(Math.random() * polygones.length)]
+		sample.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+			{ duration: 500, delay: 0, iterations: 1
+		});
+	}
+
+	</script>
+
 
 	
 {% endblock %}

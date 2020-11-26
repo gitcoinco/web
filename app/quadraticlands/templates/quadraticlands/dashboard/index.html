@@ -1,0 +1,63 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+<!-- headline-->
+<section class="column centered">
+	<h1>Dashboard</h1>
+</section>
+
+
+<!--dashboard 2 column grid that include sub templates-->
+<section class="dashboard">
+
+	<!-- Wallet -->
+	{% include 'quadraticlands/dashboard/wallet.html' %}
+
+	<!-- Delegation -->
+	{% include 'quadraticlands/dashboard/delegation.html' %}
+
+	<!-- Mission -->
+	{% include 'quadraticlands/dashboard/mission.html' %}
+
+	<!-- Leaderboard -->
+	{% include 'quadraticlands/dashboard/leaderboard.html' %}
+
+	<!-- Active Proposals -->
+	{% include 'quadraticlands/dashboard/proposals.html' %}
+
+</section>
+
+
+<!-- logout button-->
+<section class="column centered" style="margin-top:3em;">
+	<a class="btn" href="{% url "logout" %}?next={{ request.get_full_path }}">logout</a>
+</section>
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+	<script src="/static/quadraticlands/js/app.js"></script>
+	
+{% endblock %}
+
+
