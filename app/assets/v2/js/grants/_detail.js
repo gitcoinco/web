@@ -100,6 +100,8 @@ Vue.mixin({
     editGrantModal: function() {
       let vm = this;
 
+      vm.logoPreview = vm.grant.logo_url;
+
       vm.$root.$emit('bv::toggle::collapse', 'sidebar-backdrop');
     },
     saveGrant: function(event) {
@@ -120,7 +122,6 @@ Vue.mixin({
       let data = {
         'title': vm.grant.title,
         'reference_url': vm.grant.reference_url,
-        // 'logo': vm.logo,
         'description': vm.$refs.myQuillEditor.quill.getText(),
         'description_rich': JSON.stringify(vm.$refs.myQuillEditor.quill.getContents()),
         'github_project_url': vm.grant.github_project_url,
@@ -131,6 +132,10 @@ Vue.mixin({
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'region': vm.grant.region?.name || undefined
       };
+      if (vm.logo) {
+        data.logo = vm.logo;
+        vm.grant.logo_url = vm.logoPreview;
+      }
 
       vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
       vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
@@ -280,6 +285,32 @@ Vue.mixin({
           }
         });
       });
+    },
+    onFileChange(e) {
+      console.log(e)
+      let vm = this;
+
+      if (!e.target) return;
+      const file = e.target.files[0];
+      console.log(file)
+
+      if (!file) {
+        return;
+      }
+      vm.imgTransition = true;
+      new Compressor(file, {
+        quality: 0.6,
+        maxWidth: 2000,
+        success(result) {
+          vm.logoPreview = URL.createObjectURL(result);
+          vm.logo = new File([result], result.name, { lastModified: result.lastModified })
+          vm.imgTransition = false;
+        },
+        error(err) {
+          vm.imgTransition = false;
+          console.log(err.message);
+        },
+      });
     }
   },
   computed: {
@@ -329,7 +360,10 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        imgTransition: false,
         isStaff: isStaff,
+        logo: null,
+        logoPreview: null,
         grant: {},
         relatedGrants: [],
         rows: 0,

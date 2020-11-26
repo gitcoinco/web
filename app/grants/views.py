@@ -1500,6 +1500,7 @@ def grant_edit(request, grant_id):
 
         # token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
+
         # metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
         reference_url = request.POST.get('reference_url', '')
@@ -1508,6 +1509,8 @@ def grant_edit(request, grant_id):
         twitter_handle_2 = request.POST.get('handle2', '')
         region = request.POST.get('region', '')
 
+        if logo:
+            grant.logo = logo
         grant.title = title
         grant.reference_url = reference_url
         grant.description = description

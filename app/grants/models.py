@@ -801,7 +801,7 @@ class Grant(SuperModel):
                 'contract_address': self.contract_address,
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
-                'zcash_payout_address': self.zcash_payout_address,
+                'zcash_payout_address': self.zcash_payout_address or '',
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
