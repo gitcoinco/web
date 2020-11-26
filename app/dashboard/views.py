@@ -2931,6 +2931,8 @@ def verify_text_for_tweet(handle):
 
     return full_text
 
+
+
 @login_required
 def verify_user_twitter(request, handle):
     MIN_FOLLOWER_COUNT = 100
@@ -3090,6 +3092,32 @@ def verify_user_google(request):
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
+
+@login_required
+def verify_user_idx(request, handle):
+
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_idx_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    gitcoin_handle = request_data.get('gitcoin_handle', '')
+
+    if gitcoin_handle == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must include gitcoin_handle'
+        })
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.

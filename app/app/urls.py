@@ -164,6 +164,7 @@ urlpatterns = [
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_idx', dashboard.views.verify_user_idx, name='verify_user_idx'),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
