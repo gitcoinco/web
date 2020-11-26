@@ -1,0 +1,19 @@
+{
+    "symbol": "Segi",
+    "address": "0xf5bfAcEa2f425f6a69Fd5a43A35A45c334697723",
+    "overview": {
+        "en": "SEGI is a comprehensive technology based on decentralized, social, fully open source, computing power and Internet infrastructure. The open source software designed and released is a branch application on the chain network and a kind of information storage system based on the chain.",
+        "zh": "SEGI是一个基于去中心化、社交性的、全开源的、算力与互联网基础建设集合为一的综合性技术。设计发布的开源软件是链上网络上的一个分支应用，是一种基于链上的信息存储系统。"
+    },
+    "email": "email@segi.vip",
+    "website": "http://segi.top/",
+    "whitepaper": "http://segi.top/segicoin.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-26",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/segicoin"
+    }
+}
