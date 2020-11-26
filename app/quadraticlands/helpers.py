@@ -43,8 +43,6 @@ from eth_utils import is_address, is_checksum_address, to_checksum_address
 from quadraticlands.models import InitialTokenDistribution, MissionStatus
 from ratelimit.decorators import ratelimit
 
-# from django.shortcuts import redirect # TODO - implement this for redirect on GET to claim 
-
 logger = logging.getLogger(__name__)
 
 def get_profile_from_username(request):
@@ -89,7 +87,9 @@ def get_mission_status(request):
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def set_mission_status(request):
-    '''when a mission is completed, UI will POST here so we can save new game state'''
+    '''
+    When a mission is completed, the UI will POST here to flip game state completed True for a given mission
+    '''
 
     if request.user.is_authenticated:
         try: 
@@ -106,8 +106,10 @@ def set_mission_status(request):
         
         profile = get_profile_from_username(request)
 
-        # fix this. it's working but not ideal 
+        # fix this - it's working but not ideal 
+        # if doesn't exist creates record 
         mission = MissionStatus.objects.get_or_create(profile=profile)
+        # then get the record 
         mission_status = MissionStatus.objects.get(profile=profile)
      
         if mission_name == 'proof_of_knowledge':
@@ -127,9 +129,13 @@ def set_mission_status(request):
         
 
 def get_initial_dist(request):
-    '''retrieve initial dist info from the DB'''
+    '''
+    Accpets request, returns initial dist info from the DB in units WEI & GTC 
+    '''
+    no_claim = {"total_claimable_gtc": 0, "total_claimable_wei": 0}
     if not request.user.is_authenticated:
-        return {"total_claimable_gtc": False, "total_claimable_wei": False}
+        return no_claim
+
     profile = get_profile_from_username(request)
     try:   
         initial_dist_wei = InitialTokenDistribution.objects.get(profile=profile).claim_total
@@ -139,71 +145,31 @@ def get_initial_dist(request):
             'total_claimable_wei': initial_dist_wei
         }
     except InitialTokenDistribution.DoesNotExist: # if user doesn't have a token claim record in DB 
-        context = {
-            'total_claimable_gtc': 0, 
-            'total_claimable_wei': 0
-        }
-
-    return context
-
-def get_initial_dist_from_CF(request):
-    '''hit the CF KV pairs list and return user claim data. currently unused
-       TODO needs to be updated with new total_claimable_gtc formats before use  
-       TODO compare with InitialClaim results as a 2fa check, if error, block claim 
-    '''
-    if not request.user.is_authenticated:
-        return {"total_claimable_gtc": 0, "total_claimable_wei": 0}
-
-    # hit the graph and confirm/deny user has made a claim
-
-    # maybe this URL should be an envar? 
-    url=f'https://js-initial-dist.orbit-360.workers.dev/?user_id={request.user.id}'
-    try:
-        r = requests.get(url,timeout=3)
-        r.raise_for_status()
-
-    except requests.exceptions.HTTPError as errh:
-        logger.error("Quadratic Lands - Error on request:",errh)
-    except requests.exceptions.ConnectionError as errc:
-        logger.error("Quadratic Lands - Error on request:",errc)
-    except requests.exceptions.Timeout as errt:
-        logger.error("Quadratic Lands - Error on request:",errt)
-    except requests.exceptions.RequestException as err:
-        logger.error("Quadratic Lands - Error on request:",err)
-
-    res = json.loads(r.text)
-    
-    context = {
-        'total_claimable_wei': res[0],
-        'bucket_0': res[2][0],
-        'bucket_1': res[2][1],
-        'bucket_2': res[2][2],
-        'bucket_3': res[2][3],
-        'bucket_4': res[2][4],
-        'bucket_5': res[2][5]
-    }
+        context = no_claim
 
     return context
 
 def wake_the_ESMS(request):
     '''
     In dev mode the Heroku server sleeps when not being used on the free plan
-    while I recently switch to a paid plan, it seems like it's sleeping still
-    this GET request will be kicked off in the background when /claim page is loaded
+    while I recently switch to a paid plan, it seems like it's sleeping still.
+    This GET request will be kicked off in the background when /claim page is loaded
     to wake up the ESMS so that when the actual claim is placed, there wont be a delay 
     '''
-    wake_up_ESMS = requests.get('https://gtc-request-signer.herokuapp.com/')
+    try: 
+        wake_up_ESMS = requests.get('https://gtc-request-signer.herokuapp.com/')
+    except Exception as e:
+        logger.info(f'QuadLands - Issue Pinging ESMS - {e}')
+        pass
     return True    
 
 @require_http_methods(["POST"])
-@login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def claim(request):
     '''
     Receives AJAX post from CLAIM button 
-    Returns JSON response from Ethereum Message Signing Service (emss)
+    Returns JSON response (signed token claim!) from Eth Signed Message Service
     '''
-
     if request.user.is_authenticated:
          
         profile = get_profile_from_username(request)
@@ -212,7 +178,8 @@ def claim(request):
         post_data_to_emss = {}
         post_data_to_emss['user_id'] = profile.id
        
-        # confirm we received a valid, checksummed address for the token claim 
+        # confirm we received a valid, checksummed address for the token claim
+        # then add address to post_data_to_emss dict 
         try:
             if is_checksum_address(request.POST.get('address')):
                 post_data_to_emss['user_address'] = request.POST.get('address')
@@ -226,7 +193,7 @@ def claim(request):
             return JsonResponse({'error': 'Token claim address failed validation'})
           
         claim = get_initial_dist(request)
-        # logger.info(f"debug claim amount - total_claimable_gtc: {claim['total_claimable_gtc']} - total_claimable_wei: {claim['total_claimable_wei']}")
+
         post_data_to_emss['user_amount'] = claim['total_claimable_wei'] 
              
         # create a hash of post data TODO- wrap in try/except                
@@ -271,12 +238,9 @@ def claim(request):
         return JsonResponse(esms_response)
     else:
         # TODO Make this redirect to token claim page I think 
-        logger.info('Non authenticated or non-POST requested sent to claim/ - request ignored!')
-        # raise Http404
-        return JsonResponse({'UNDERGROUND':'QUAD LANDS 4-0-4'})   
+        logger.info('Non authenticated request sent to claim - highly sus - request ignored.')
+        raise Http404
 
-
-# HMAC sig function 
 def create_sha256_signature(key, message):
     '''
     Given key & message, returns HMAC digest of the message 
@@ -288,3 +252,41 @@ def create_sha256_signature(key, message):
     except Exception as e:
         logger.error(f'GTC Distributor - Error Hashing Message: {e}')
         return False 
+
+def get_initial_dist_from_CF(request):
+    '''hit the CF KV pairs list and return user claim data. currently unused
+       TODO needs to be updated with new total_claimable_gtc formats before use  
+       TODO compare with InitialClaim results as a 2fa check, if error, block claim 
+    '''
+    if not request.user.is_authenticated:
+        return {"total_claimable_gtc": 0, "total_claimable_wei": 0}
+
+    # hit the graph and confirm/deny user has made a claim
+
+    # maybe this URL should be an envar? 
+    url=f'https://js-initial-dist.orbit-360.workers.dev/?user_id={request.user.id}'
+    try:
+        r = requests.get(url,timeout=3)
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as errh:
+        logger.error("Quadratic Lands - Error on request:",errh)
+    except requests.exceptions.ConnectionError as errc:
+        logger.error("Quadratic Lands - Error on request:",errc)
+    except requests.exceptions.Timeout as errt:
+        logger.error("Quadratic Lands - Error on request:",errt)
+    except requests.exceptions.RequestException as err:
+        logger.error("Quadratic Lands - Error on request:",err)
+
+    res = json.loads(r.text)
+    
+    context = {
+        'total_claimable_wei': res[0],
+        'bucket_0': res[2][0],
+        'bucket_1': res[2][1],
+        'bucket_2': res[2][2],
+        'bucket_3': res[2][3],
+        'bucket_4': res[2][4],
+        'bucket_5': res[2][5]
+    }
+
+    return context

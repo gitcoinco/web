@@ -53,7 +53,9 @@
 				<div class="card-badges">
 					<div class="card-badge gtc-token">
 						{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+						{% if not proof_of_receive %}
 						<span>+{{ total_claimable_gtc }}</span>
+						{% endif %}
 					</div>
 				</div>
 

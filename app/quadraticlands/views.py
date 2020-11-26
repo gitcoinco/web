@@ -25,10 +25,9 @@ import os
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.humanize.templatetags.humanize import intword
 from django.db import connection
 from django.http import Http404, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
@@ -55,18 +54,18 @@ def base(request, base):
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
-@login_required
 def mission_index(request):
     '''render quadraticlands/mission/index.html'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, 'quadraticlands/mission/index.html', context)  
 
-@login_required
 def mission_base(request, mission_name):
     '''used to handle quadraticlands/<mission_name>'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
+    if not request.user.is_authenticated and mission_name == 'receive': 
+        return redirect('/quadraticlands/mission', context)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
 
 @login_required
@@ -75,6 +74,8 @@ def mission_state(request, mission_name, mission_state):
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     wake_the_ESMS(request) # hack to wake up ESMS so there isn't a delay on token claim (remove for prod or upgrade Heroku dyno)
+    if not request.user.is_authenticated and mission_state == 'claim': # probably can remove this but leaving in case we want/need it
+         return redirect('quadraticlands/mission/index.html')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
     
 @login_required
