@@ -82,7 +82,7 @@ from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    get_poap_earliest_owned_token_timestamp, profile_helper, get_ens_resolver_contract,
+    get_poap_earliest_owned_token_timestamp, profile_helper, get_ens_resolver_contract, get_ens_contract_addresss,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
@@ -2924,6 +2924,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
         context['is_google_verified'] = profile.is_google_verified
+        context['is_ens_verified'] = profile.is_ens_verified
     else:
         raise Http404
     return context
@@ -3099,7 +3100,11 @@ def verify_user_google(request):
 @login_required
 def verify_profile_with_ens(request):
     profile = request.user.profile
-    user_address = profile.preferred_payout_address
+    default_address = profile.ens_verification_address or profile.preferred_payout_address
+    if request.method == 'GET':
+        user_address = request.GET.get('verification_address', default_address)
+    else:
+        user_address = request.POST.get('verification_address', default_address)
 
     # 1. Check user has preferred address
     if not is_address(user_address):
@@ -3114,58 +3119,50 @@ def verify_profile_with_ens(request):
 
     # 2. Check Reverse lookup
     web3 = get_web3('mainnet')
-    ns = ens.ENS.fromWeb3(web3, '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e')
-    node = ns.name(user_address)
+    ens_registry_address = get_ens_contract_addresss('mainnet')
+    ens_registry = ens.ENS.fromWeb3(web3, ens_registry_address)
+    node = ens_registry.name(user_address)
 
     if not node:
         return JsonResponse({
             'error': 'NO_ENS_NAME_ASSOCIATED',
-            'msg': f'You don\'t have one ens domain associated to your address {user_address}',
+            'msg': f'You haven\'t set reverse record yet. Please read ENS FAQ page at https://app.ens.domains/faq/#what-is-a-reverse-record',
             'data': {
                 'step': 2,
-                'verified': profile.is_ens_verified
+                'verified': profile.is_ens_verified,
+                'address': user_address
             }
         })
 
     # 3. Check Forward lookup
-    registered_address = ns.address(node)
+    registered_address = ens_registry.address(node)
     if not is_address(registered_address):
         return JsonResponse({
             'error': 'NO_ADDRESS_ASSOCIATED_TO_ENS',
-            'msg': f'You don\'t have associated your address to your domain {node}',
+            'msg': f'You don\'t have associated your address to your domain {node}. Please add your ETH address at https://app.ens.domains/name/{node}',
             'data': {
                 'step': 3,
-                'verified': profile.is_ens_verified
+                'verified': profile.is_ens_verified,
+                'address': user_address
             }
         })
 
-    # 4. Implement challenge
-    resolver_contract = get_ens_resolver_contract('mainnet', node)
-    github_handle = resolver_contract.functions.text(name_to_hash(node), 'vnd.github').call()
-
-    if github_handle != profile.handle:
-        return JsonResponse({
-            'error': 'NO_MATCH_GITHUB_PROFILE',
-            'msg': f'Sorry the {github_handle} github handle registered in ENS {node} doesn\'t match your gitcoin handle ${profile.handle}',
-            'data': {
-                'step': 4,
-                'verified': profile.is_ens_verified
-            }
-        })
 
     # 5. Check if address matches.
     if registered_address != user_address:
         return JsonResponse({
             'error': 'NO_ADDRESS_DOESNT_MATCH',
-            'msg': f'Sorry the registered ENS address differ from your preferred payout address',
+            'msg': f'{node} has {registered_address[0:5]}... set as ETH address which is different from your preferred payout address ({user_address[0:5]}...). Please set your correct ETH address at https://app.ens.domains/name/{node}',
             'data': {
                 'step': 5,
-                'verified': profile.is_ens_verified
+                'verified': profile.is_ens_verified,
+                'address': user_address
             }
         })
 
     if request.method == 'POST':
         profile.is_ens_verified = True
+        profile.ens_verification_address = user_address
         profile.save()
 
         return JsonResponse({
@@ -3173,7 +3170,8 @@ def verify_profile_with_ens(request):
             'msg': f'Account verified successfully',
             'data': {
                 'step': 6,
-                'verified': profile.is_ens_verified
+                'verified': profile.is_ens_verified,
+                'address': user_address
             }
         })
 
@@ -3183,7 +3181,8 @@ def verify_profile_with_ens(request):
         'msg': 'Account ready for verification',
         'data': {
             'step': 6,
-            'verified': profile.is_ens_verified
+            'verified': profile.is_ens_verified,
+            'address': user_address
         }
     })
 
