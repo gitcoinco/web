@@ -157,20 +157,14 @@ urlpatterns = [
         name='verify_user_twitter'
     ),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap',
-        dashboard.views.verify_user_poap,
-        name='verify_user_poap'
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
-    url(
-        r'^api/v0.1/profile/verify_user_google',
-        dashboard.views.verify_user_google,
-        name='verify_user_google'
-    ),
+    url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
     url(
         r'^api/v0.1/profile/verify_ens',
         dashboard.views.verify_profile_with_ens,

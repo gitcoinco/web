@@ -1209,3 +1209,11 @@ def set_hackathon_event(type, event):
         'display_showcase': event.display_showcase,
         'show_results': event.show_results,
     }
+
+
+def tx_id_to_block_explorer_url(txid, network):
+    if network == 'xdai':
+        return f"https://explorer.anyblock.tools/ethereum/poa/xdai/tx/{txid}"
+    if network == 'mainnet':
+        return f"https://etherscan.io/tx/{txid}"
+    return f"https://{network}.etherscan.io/tx/{txid}"

@@ -62,12 +62,13 @@ def get_harmony_txn_status(fulfillment):
         tx = response['tx']
 
         if 'err' in tx:
-            return 'expired'
+            # txn hasn't been published to chain yet
+            return None
 
         if (
             tx['from'] == funderAddress.lower() and
             tx['to'] == payeeAddress.lower() and
-            tx['value'] == float(amount) * 10 ** 18 and
+            tx['value']== float(amount) * 10 ** 18 and
             not txn_already_used(tx['hash'], token_name)
         ):
             if tx['status'] == 'SUCCESS':
@@ -83,7 +84,7 @@ def sync_harmony_payout(fulfillment):
             fulfillment.payout_tx_id = txn['hash']
             fulfillment.save()
 
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_harmony_txn_status(fulfillment)
 
         if txn_status == 'success':

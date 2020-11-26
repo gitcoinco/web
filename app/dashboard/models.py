@@ -1627,7 +1627,7 @@ class SendCryptoAsset(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
-        if self.tokenAddress == '0x0':
+        if self.tokenAddress in ['0x0', '0x0000000000000000000000000000000000000000']:
             return self.amount
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
@@ -1639,11 +1639,13 @@ class SendCryptoAsset(SuperModel):
 
     @property
     def receive_tx_blockexplorer_link(self):
-        if self.network == 'xdai':
-            return f"https://explorer.anyblock.tools/ethereum/poa/xdai/transaction/{self.receive_txid}"
-        if self.network == 'mainnet':
-            return f"https://etherscan.io/tx/{self.receive_txid}"
-        return f"https://{self.network}.etherscan.io/tx/{self.receive_txid}"
+        from dashboard.utils import tx_id_to_block_explorer_url #circular import
+        return tx_id_to_block_explorer_url(self.receive_txid, self.network)
+
+    @property
+    def send_tx_blockexplorer_link(self):
+        from dashboard.utils import tx_id_to_block_explorer_url #circular import
+        return tx_id_to_block_explorer_url(self.txid, self.network)
 
     @property
     def amount_in_wei(self):
@@ -1836,8 +1838,6 @@ class Tip(SendCryptoAsset):
                 _comment.save()
                 comment = f"Just sent a tip of {instance.amount} {network} ETH to @{instance.username}"
                 comment = Comment.objects.create(profile=instance.sender_profile, activity=_comment.activity, comment=comment)
-
-
 
     @property
     def receive_url(self):
