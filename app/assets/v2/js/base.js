@@ -289,7 +289,7 @@ const _alert = function(msg, _class, remove_after_ms) {
       'message': msg
     };
   }
-  var numAlertsAlready = $('.alert:visible').length;
+  var numAlertsAlready = $('body > .alert:visible').length;
   var top = numAlertsAlready * 44;
   var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 

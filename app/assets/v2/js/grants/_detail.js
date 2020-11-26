@@ -311,6 +311,43 @@ Vue.mixin({
           console.log(err.message);
         },
       });
+    },
+    async twitterVerification() {
+      let vm = this;
+
+      if (!vm.grant.twitter_handle_1 || vm.grant.twitter_handle_1 == ''){
+        _alert('Please add a twitter account to your grant!', 'error', 5000);
+        return;
+      }
+
+      const response = await fetchData(`/grants/v1/api/${vm.grant.id}/verify`);
+
+      if (!response.ok) {
+        _alert(response.msg, 'error');
+        return;
+      }
+      if (response.verified) {
+        _alert('Congratulations, your grant is now verified!', 'success', 5000)
+        vm.grant.verified = true
+        vm.$refs['twitterVerification'].hide()
+      }
+
+      if (!response.has_text) {
+        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'error', 5000)
+        return;
+      }
+
+      if (!response.has_code) {
+        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'error', 5000)
+        return;
+      }
+
+
+    },
+    tweetVerification() {
+      let vm = this;
+      const tweetContent =`https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`
+      window.open(tweetContent, '_blank')
     }
   },
   computed: {
@@ -360,6 +397,8 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        user_code,
+        verification_tweet,
         imgTransition: false,
         isStaff: isStaff,
         logo: null,

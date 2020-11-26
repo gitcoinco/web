@@ -180,14 +180,14 @@
 
               <span class="flex-fill text-md-left text-center ">
                 <i class="text-black-70 fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
-                <span v-if="grant.verified" class="py-0 position-relative px-0 btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
-                  <p class="h6 my-2 text-left">
-                    Verified Ownership
-                    <img width="18" src="{% static "v2/images/badge-verify.svg" %}">
-                  </p>
-                  <p>Grant owner has verified ownership of their twitter account.</p>
-                  <a href="#">Learn more.</p>'
-                >
+                <span v-if="grant.verified" class="py-0 position-relative px-0 btn btn-sm animate-verify" id="tooltip-verify">
+                  <b-tooltip target="tooltip-verify" triggers="hover" variant="light">
+                    <p class="h6 my-2 text-left">
+                      Verified Ownership
+                      <img width="18" src="{% static "v2/images/badge-verify.svg" %}">
+                    </p>
+                    <p class="text-left">Grant owner has verified ownership of their twitter account.</p>
+                  </b-tooltip>
                   <img width="13" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
                 </span>
               </span>
@@ -224,6 +224,26 @@
           </div>
 
           <div class="grant-managment">
+            <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
+              <div class="bs-alert alert alert-warning pt-0 pb-0 pr-2 pl-2 d-flex">
+                <div class="font-body">
+                  <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
+                  <div class="uppercase font-weight-semibold d-inline">
+                    Warning: This grant has not verified their ownership of the twitter account listed.
+                  </div>
+                  <template v-if="grant.is_on_team">
+                    <div class="my-2 d-inline-block font-weight-semibold text-center w-100">
+                      <b-button v-b-modal.modal-start-twitter-verification size="sm" variant="twitter" class="font-weight-semibold font-caption">
+                        <i class="fab fa-twitter mr-2"></i>
+                        VERIFY GRANT
+                      </b-button>
+                      <span class="mx-2">OR</span>
+                      <a class="font-caption" target="_blank" href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md&title=Verify%20Grant%20Issue">SUBMIT SUPPORT REQUEST</a>.
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
             <button class="btn btn-block btn-gc-blue" @click="editGrantModal()" v-if="grant.active && grant.is_on_team || grant.active && isStaff">Edit Grant</button>
           </div>
 
@@ -401,6 +421,30 @@
           </div>
 
         </div>
+
+        <b-modal ref="startTwitterVerification" id="modal-start-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
+          <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+          <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
+          <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
+          <b-button v-b-modal.modal-twitter-verification size="lg" variant="gc-blue">Verify with twitter</b-button>
+        </b-modal>
+
+        <b-modal ref="twitterVerification" id="modal-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
+          <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+          <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
+          <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
+            <i class="fas fa-check text-highlight-green" v-if="grant.twitter_handle_1"></i>
+            <i class="fas fa-exclamation-triangle" style="color: #b88b16" v-else></i>
+          </p>
+          <p class="mb-4 text-left"><b>Step 2:</b> Click to send the verification tweet from the grant account (<b>[[grant.twitter_handle_1]]</b>)
+          </p>
+          <b-button size="sm" variant="outline-gc-blue" @click="tweetVerification" :disabled="!grant.twitter_handle_1"><i class="fab fa-twitter"></i> Send Verification Tweet</b-button>
+          <p class="mb-4 mt-3 text-left mt-2"><b>Step 3:</b> Click the "Verify" button below</p>
+          <button class="btn btn-lg btn-gc-blue mt-2 mb-4" @click="twitterVerification" :disabled="!grant.twitter_handle_1">Verify</button>
+          <br>
+          <span class="error" id="validation-errors"></span>
+        </b-modal>
+
         <b-sidebar
           id="sidebar-backdrop"
           title="Edit Grant"
@@ -761,6 +805,8 @@
                  grant_donation_currency: "{{ token.symbol }}",
                  token_local_id: "{{ token.id }}"
                };
+      var user_code = '{{user_code}}'
+      var verification_tweet = '{{verification_tweet}}'
 
    </script>
     {% include 'shared/activity_scripts.html' %}
