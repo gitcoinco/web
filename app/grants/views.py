@@ -35,7 +35,7 @@ from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q, Subquery
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -55,15 +55,14 @@ from app.settings import (
     TWITTER_CONSUMER_SECRET,
 )
 from app.utils import get_profile
+from avatar.utils import convert_img
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-
-from avatar.utils import convert_img
+from dashboard.brightid_utils import get_brightid_status
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
-from dashboard.brightid_utils import get_brightid_status
 from economy.models import Token as FTokens
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -73,12 +72,11 @@ from grants.models import (
 )
 from grants.tasks import process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
-
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
-    thank_you_for_supporting, subscription_terminated, support_cancellation
+    subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
@@ -537,10 +535,6 @@ def get_grants(request):
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     collections_page = request.GET.get('collections_page', 1)
-    sort = request.GET.get('sort_option', 'weighted_shuffle')
-    if request.user.is_authenticated and request.user.profile.pk % 2 == 1:
-            if sort == 'weighted_shuffle':
-                sort = 'random_shuffle'
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -553,6 +547,14 @@ def get_grants(request):
     round_num = request.GET.get('round_num', None)
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
+
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
+    if (
+        request.user.is_authenticated and
+        request.user.profile.pk % 2 == 1 and
+        sort == 'weighted_shuffle'
+    ):
+        sort = 'random_shuffle'
 
     clr_round = None
     try:

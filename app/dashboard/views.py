@@ -6590,6 +6590,3 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
-
-
-

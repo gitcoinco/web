@@ -25,14 +25,13 @@ from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
-from PIL import Image, ImageDraw, ImageOps
-
 from app import settings
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
 from grants.sync.zcash import sync_zcash_payout
 from perftools.models import JSONStore
+from PIL import Image, ImageDraw, ImageOps
 
 logger = logging.getLogger(__name__)
 
