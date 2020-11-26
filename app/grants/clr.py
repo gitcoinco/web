@@ -29,7 +29,7 @@ from django.utils import timezone
 
 import numpy as np
 import pytz
-from grants.models import Contribution, Grant, PhantomFunding
+from grants.models import Contribution, Grant, GrantCollection
 from marketing.models import Stat
 from perftools.models import JSONStore
 
@@ -44,59 +44,31 @@ CLR_PERCENTAGE_DISTRIBUTED = 0
                 'id': (string) ,
                 'contibutions' : [
                     {
-                        contributor_profile (str) : contribution_amount (int)
+                        contributor_profile (str) : summed_contributions
                     }
                 ]
             }
 
     returns:
         list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), contribution_amount (float)]]
+        dictionary of profile_ids and trust scores
+            {user_id (str): trust_score (float)}
 '''
 def translate_data(grants_data):
+    trust_dict = {}
     grants_list = []
     for g in grants_data:
         grant_id = g.get('id')
         for c in g.get('contributions'):
             profile_id = c.get('id')
-            verification_status = None
-            if c.get('is_sms_verified'):
-                verification_status = 'sms'
-            elif c.get('is_brightid_verified'):
-                verification_status = 'brightid'
+            trust_bonus = c.get('profile_trust_bonus')
             if profile_id:
-                val = [grant_id] + [c.get('id')] + [verification_status] + [c.get('sum_of_each_profiles_contributions')]
+                val = [grant_id] + [c.get('id')] + [c.get('sum_of_each_profiles_contributions')]
                 grants_list.append(val)
+                trust_dict[profile_id] = trust_bonus
 
-    return grants_list
-
-
-
-'''
-    gets list of verified profile ids
-
-    args:
-        list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
-
-    returns:
-        set list of sms verified user_ids
-            [user_id (str)]
-        set list of bright verified user_ids
-            [user_id (str)]
-
-
-'''
-def get_verified_list(grant_contributions):
-    sms_verified_list = []
-    bright_verified_list = []
-    for _, user, ver_stat, _ in grant_contributions:
-        if ver_stat == 'sms' and user not in sms_verified_list:
-            sms_verified_list.append(user)
-        elif ver_stat == 'brightid' and user not in bright_verified_list:
-            bright_verified_list.append(user)
-
-    return sms_verified_list, bright_verified_list
+    return grants_list, trust_dict
 
 
 
@@ -105,7 +77,7 @@ def get_verified_list(grant_contributions):
 
     args:
         list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), verification_status (str), trust_bonus (float), contribution_amount (float)]]
 
     returns:
         aggregated contributions by pair nested dict
@@ -117,7 +89,7 @@ def get_verified_list(grant_contributions):
 '''
 def aggregate_contributions(grant_contributions):
     contrib_dict = {}
-    for proj, user, _, amount in grant_contributions:
+    for proj, user, amount in grant_contributions:
         if proj not in contrib_dict:
             contrib_dict[proj] = {}
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
@@ -172,10 +144,8 @@ def get_totals_by_pair(contrib_dict):
             }
         pair_totals
             {user_id (str): {user_id (str): pair_total (float)}}
-        sms_verified_list
-            [user_id (str)] 
-        bright_verified_list
-            [user_id (str)]
+        trust_dict
+            {user_id (str): trust_score (float)}
         v_threshold 
             float
         uv_threshold
@@ -189,10 +159,11 @@ def get_totals_by_pair(contrib_dict):
         saturation point
             boolean
 '''
-def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, bright_verified_list, v_threshold, uv_threshold, total_pot):
+def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold, uv_threshold, total_pot):
+
     bigtot = 0
     totals = []
-    
+
     for proj, contribz in aggregated_contributions.items():
         tot = 0
         _num = 0
@@ -205,21 +176,8 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                # both sms
-                if k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
-                # both bright
-                elif k2 > k1 and all(i in bright_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.2) + 1)
-                # both none
-                elif k2 > k1 and not any(i in sms_verified_list + bright_verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
-                # one bright or sms, one none
-                elif k2 > k1 and (((k2 in sms_verified_list + bright_verified_list) and (k1 not in sms_verified_list + bright_verified_list)) or ((k1 in sms_verified_list + bright_verified_list) and (k2 not in sms_verified_list + bright_verified_list))):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
-                # one bright, one sms
-                elif k2 > k1:
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.125) + 1)
+                if k2 > k1:
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * max(trust_dict[k2], trust_dict[k1])) + 1)
 
         if type(tot) == complex:
             tot = float(tot.real)
@@ -268,9 +226,7 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
 
     # get data
-    curr_round = translate_data(grant_contribs_curr)
-
-    sms_list, bright_list = get_verified_list(curr_round)
+    curr_round, trust_dict = translate_data(grant_contribs_curr)
 
     # aggregate data
     curr_agg = aggregate_contributions(curr_round)
@@ -279,7 +235,7 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     ptots = get_totals_by_pair(curr_agg)
 
     # clr calcluation
-    totals = calculate_clr(curr_agg, ptots, sms_list, bright_list, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(curr_agg, ptots, trust_dict, v_threshold, uv_threshold, total_pot)
 
     return totals
 
@@ -297,8 +253,7 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
                 grant_contribution['contributions'].append({
                     'id': '999999999999',
                     'sum_of_each_profiles_contributions': amount,
-                    'is_sms_verified': True,
-                    'is_brightid_verified': True
+                    'profile_trust_bonus': 1
                 })
 
     grants_clr = run_clr_calcs(_grant_contributions_curr, v_threshold, uv_threshold, total_pot)
@@ -327,7 +282,6 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
     Returns:
         contributions               : contributions data object
         grants                      : list of grants based on clr_type
-        phantom_funding_profiles    : phantom funding data object
 
 '''
 def fetch_data(clr_round, network='mainnet'):
@@ -336,17 +290,23 @@ def fetch_data(clr_round, network='mainnet'):
     clr_end_date = clr_round.end_date
     grant_filters = clr_round.grant_filters
     subscription_filters = clr_round.subscription_filters
+    collection_filters = clr_round.collection_filters
 
-    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
+    contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 
     grants = Grant.objects.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
-    grants = grants.filter(**grant_filters)
 
-    phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+    if grant_filters:
+        # Grant Filters (grant_type, category)
+        grants = grants.filter(**grant_filters)
+    elif collection_filters:
+        # Collection Filters
+        grant_ids = GrantCollection.objects.filter(**collection_filters).values_list('grants', flat=True)
+        grants = grants.filter(pk__in=grant_ids)
 
-    return grants, contributions, phantom_funding_profiles
+    return grants, contributions
 
 
 
@@ -356,7 +316,6 @@ def fetch_data(clr_round, network='mainnet'):
     Args:
         grants                  : grants list
         contributions           : contributions list for thoe grants
-        phantom_funding_profiles: phantom funding for those grants
         clr_round               : GrantCLR
 
     Returns:
@@ -366,7 +325,7 @@ def fetch_data(clr_round, network='mainnet'):
         }
 
 '''
-def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round):
+def populate_data_for_clr(grants, contributions, clr_round):
 
     contrib_data_list = []
 
@@ -386,38 +345,21 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         # contributions
         contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # phantom funding
-        grant_phantom_funding_contributions = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
-
-        # SMS verified contributions
-        sms_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
-        sms_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.sms_verification]
-        sms_verified_profile = list(set(sms_verified_contribution_ids + sms_verified_phantom_funding_contribution_ids))
-
-        # BrightID verified contributions
-        brightid_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_brightid_verified]
-        brightid_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.is_brightid_verified]
-        brightid_verified_profile = list(set(brightid_verified_contribution_ids + brightid_verified_phantom_funding_contribution_ids))
-
         # combine
-        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_contributions]))
+        contributing_profile_ids = list(set([(c.identity_identifier(mechanism), c.profile_for_clr.trust_bonus) for c in contribs]))
 
         summed_contributions = []
 
         # contributions
         if len(contributing_profile_ids) > 0:
-            for profile_id in contributing_profile_ids:
+            for profile_id, trust_bonus in contributing_profile_ids:
                 profile_contributions = contribs.filter(profile_for_clr__id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt * clr_round.contribution_multiplier for c in profile_contributions if c.subscription.amount_per_period_usdt]))
-                phantom_funding = grant_phantom_funding_contributions.filter(profile_id=profile_id)
-                if phantom_funding.exists():
-                    sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
                 summed_contributions.append({
                     'id': str(profile_id),
                     'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
-                    'is_sms_verified': True if profile_id in sms_verified_profile else False,
-                    'is_brightid_verified': True if profile_id in brightid_verified_profile else False
+                    'profile_trust_bonus': trust_bonus
                 })
 
             contrib_data_list.append({
@@ -439,13 +381,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
-    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+    grants, contributions = fetch_data(clr_round, network)
 
     if contributions.count() == 0:
         print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
         return
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
 
     if only_grant_pk:
         grants = grants.filter(pk=only_grant_pk)

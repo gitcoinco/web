@@ -75,7 +75,11 @@
             <br>
           {% endif %}
           {% if row.project %}
-            <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            {% if row.project.name %}
+              <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            {% else %}
+              <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id %}" class="tag"   data-toggle="tooltip" title="Go to project {{ row.project.id }}">via project {{ row.project.id }}</a>
+            {% endif %}
           {% endif %}
 
           {% if row.hackathonevent %}
@@ -207,7 +211,11 @@
             {{ row.grant.title }}
           </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
-          {% trans "contributed to" %}
+          {% if row.metadata.anonymize %}
+            {% trans "observed an anonymous contribution to" %}
+          {% else %}
+            {% trans "contributed to" %}
+          {% endif %}
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>

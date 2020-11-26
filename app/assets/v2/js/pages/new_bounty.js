@@ -140,11 +140,26 @@ Vue.mixin({
 
       vm.form.keywords.push(item);
     },
+    validateBtc: function() {
+      let vm = this;
+
+      const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
+      const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
+      const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
+      const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
+
+      if (valid_legacy || valid_segwit) {
+        return true;
+      }
+
+      return false;
+    },
     checkForm: async function(e) {
       let vm = this;
 
       vm.submitted = true;
       vm.errors = {};
+
 
       if (!vm.form.keywords.length) {
         vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
@@ -163,6 +178,10 @@ Vue.mixin({
       }
       if (!vm.form.funderAddress) {
         vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
+      }
+      // validate BTC address
+      if (vm.chainId == 0 && !vm.validateBtc()) {
+        vm.$set(vm.errors, 'funderAddress', 'Please enter a valid BTC address');
       }
       if (!vm.form.project_type) {
         vm.$set(vm.errors, 'project_type', 'Select the project type');
@@ -190,11 +209,16 @@ Vue.mixin({
           type = 'web3_modal';
           break;
         case '58':
+          // polkadot
           type = 'polkadot_ext';
           break;
         case '56':
           // binance
           type = 'binance_ext';
+          break;
+        case '1000':
+          // harmony
+          type = 'harmony_ext';
           break;
         case '666':
           // paypal

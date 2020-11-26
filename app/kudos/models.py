@@ -144,6 +144,46 @@ class Token(SuperModel):
     # Token QuerySet Manager
     objects = TokenQuerySet.as_manager()
 
+    @property
+    def is_owned_by_gitcoin(self):
+        return self.owner_address.lower() == settings.KUDOS_OWNER_ACCOUNT.lower()
+
+    @property
+    def on_xdai(self):
+        # returns a kudos token object thats on the xdai network; a mirro
+        # a mirror of the mainnet with 1000x better costs ( https://github.com/gitcoinco/web/pull/7702/ )
+        return self.on_network('xdai')
+
+    @property
+    def on_mainnet(self):
+        return self.on_network('mainnet')
+
+    @property
+    def on_rinkeby(self):
+        return self.on_network('rinkeby')
+
+    @property
+    def on_networks(self):
+        return_me = []
+        for network in ['xdai', 'rinkeby', 'mainnet']:
+            ref = self.on_network(network)
+            if ref:
+                return_me.append((network, ref))
+        return return_me
+
+
+    def on_network(self, network):
+        if self.contract.network == network:
+            return self
+        target = self
+        if self.gen > 1:
+            target = self.kudos_token_cloned_from
+        for token in Token.objects.filter(contract__network=network, num_clones_allowed__gt=1, name=target.name, owner_address=self.owner_address):
+            if token.gen == 1:
+                return token
+        return None
+
+
     def save(self, *args, **kwargs):
         if self.owner_address:
             self.owner_address = to_checksum_address(self.owner_address)
@@ -514,6 +554,8 @@ class KudosTransfer(SendCryptoAsset):
         status = 'funded' if self.txid else 'not funded'
         if self.receive_txid:
             status = 'received'
+        if self.txid == "pending_celery":
+            status = 'pending broadcast'
         to = self.username if self.username else self.receive_address
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {to} on {self.network}"
 

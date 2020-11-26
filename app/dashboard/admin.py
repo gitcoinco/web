@@ -295,6 +295,15 @@ class TipAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "halve_tip" in request.POST:
+            obj.amount = obj.amount / 2
+            obj.metadata['max_redemptions'] = obj.metadata.get("max_redemptions", 1) * 2
+            obj.metadata['override_send_amount'] = True
+            obj.username = ''
+            obj.save()
+            self.message_user(request, f"Tip has been halved and can now be redeemed {obj.metadata['max_redemptions']} times.")
+            return redirect(obj.admin_url)
+
         if "_reset_tip_redemption" in request.POST:
             if not obj.receive_txid:
                 self.message_user(request, f"Cannot reset tip! This tip has not been marked as receieved")
@@ -465,7 +474,7 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 class HackathonProjectAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
     raw_id_fields = ['profiles', 'bounty', 'hackathon', 'grant_obj']
-    search_fields = ['name', 'summary', 'status', 'grant_obj']
+    search_fields = ['name', 'summary', 'status']
 
     def hackathon_link(self, instance):
         """Returns a formatted HTML <a> node.

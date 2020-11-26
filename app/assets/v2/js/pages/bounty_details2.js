@@ -82,6 +82,10 @@ Vue.mixin({
           url = `https://bscscan.com/tx/${txn}`;
           break;
 
+        case 'ONE':
+          url = `https://explorer.harmony.one/#/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -125,6 +129,10 @@ Vue.mixin({
           url = `https://bscscan.com/address/${address}`;
           break;
 
+        case 'ONE':
+          url = `https://explorer.harmony.one/#/address/${address}`;
+          break;
+
         default:
           url = `https://etherscan.io/address/${address}`;
       }
@@ -148,11 +156,11 @@ Vue.mixin({
             `ethereum:${address}`;
           break;
 
-        case 'CELO': // waiting : pending
+        case 'CELO':
         case 'cUSD':
           qr_string = value ?
-            `celo://wallet/pay?address=${address}&amount=${value}` :
-            `celo://wallet/pay?address=${address}`;
+            `celo://wallet/pay?address=${address}&amount=${value}&token=${token_name}` :
+            `celo://wallet/pay?address=${address}&token=${token_name}`;
           break;
 
         case 'ZIL':
@@ -308,7 +316,7 @@ Vue.mixin({
         case 'ETC':
           tenant = 'ETC';
           break;
-        
+
         case 'BTC':
           tenant = 'BTC';
           break;
@@ -333,6 +341,10 @@ Vue.mixin({
 
         case 'BNB':
           tenant = 'BINANCE';
+          break;
+
+        case 'ONE':
+          tenant = 'HARMONY';
           break;
 
         default:
@@ -412,6 +424,10 @@ Vue.mixin({
 
         case 'binance_ext':
           payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+          
+        case 'harmony_ext':
+          payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -541,8 +557,8 @@ Vue.mixin({
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
           let text = isOwner ?
-            "'You\'ve stopped the user from working on this bounty ?" :
-            "'You\'ve stopped work on this bounty";
+            "You\'ve stopped the user from working on this bounty ?" :
+            "You\'ve stopped work on this bounty";
 
           _alert(text, 'success');
         } else {
@@ -620,10 +636,15 @@ Vue.mixin({
           });
           break;
         }
+
         case 'binance_ext': {
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
         }
+
+        case 'harmony_ext':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
       }
     }
   },

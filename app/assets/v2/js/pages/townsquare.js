@@ -148,7 +148,7 @@ $(document).ready(function() {
 
       if (document.contxt.github_handle) {
         appOnboard.profileWidget();
-      } else {
+      } else if (document.getElementById('profile-completion')) {
         document.getElementById('profile-completion').parentElement.remove();
       }
 

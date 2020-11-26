@@ -200,26 +200,6 @@
 <br>
 <hr>
 
-{% if show_action %}
-
-<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "1 New Daily Action" %}</h3>
-
-<a href={{base_url}}>
-<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
-</a>
-<BR>
-<a href={{base_url}}>
-This action expires at end of day, so act soon!
-</a>
-
-<HR>
-{% else %}
-<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "0 New Daily Action" %}</h3>
-<a href={{base_url}}>
-<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
-</a>
-{% endif %}
-
 {% if bounties %}
   <div style="margin-bottom: 5em;">
     <h3 class="no-subtitle">{% trans "Start Earning!" %}</h3>

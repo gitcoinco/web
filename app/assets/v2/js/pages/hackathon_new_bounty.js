@@ -187,6 +187,10 @@ Vue.mixin({
           // binance
           type = 'binance_ext';
           break;
+        case '1000':
+          // harmony
+          type = 'harmony_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
