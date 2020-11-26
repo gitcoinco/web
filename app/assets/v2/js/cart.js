@@ -55,11 +55,9 @@ Vue.component('grants-cart', {
       include_for_clr: true,
       windowWidth: window.innerWidth,
       userAddress: undefined,
-      // Checkout, zkSync NEW
-      zkSyncUnsupportedTokens: [],
-      zkSyncEstimatedGasCost: undefined,
-      // Checkout, zkSync OLD
-      ethersProvider: undefined,
+      // Checkout, zkSync
+      zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       // verification
       isFullyVerified: false,
       // Collection
@@ -179,8 +177,9 @@ Vue.component('grants-cart', {
 
     // Array of objects containing all donations and associated data
     donationInputs() {
-      if (!this.grantsByTenant)
+      if (!this.grantsByTenant) {
         return undefined;
+      }
 
       // Generate array of objects containing donation info from cart
       let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
@@ -326,6 +325,10 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
+    // payload. This component listens for that event and uses the data to show the user details
+    // and suggestions about their checkout (gas cost estimates and why zkSync may not be
+    // supported for their current cart)
     onZkSyncUpdate: function(data) {
       this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
@@ -476,11 +479,12 @@ Vue.component('grants-cart', {
 
         // Add the number to the totals object
         // First time seeing this token, set the field and initial value
-        if (!totals[grant.grant_donation_currency])
+        if (!totals[grant.grant_donation_currency]) {
           totals[grant.grant_donation_currency] = totalDonationAmount;
+        } else {
         // We've seen this token, so just update the total
-        else
           totals[grant.grant_donation_currency].add(totalDonationAmount);
+        }
       });
 
       // Convert from BigNumber back to regular numbers
@@ -587,10 +591,8 @@ Vue.component('grants-cart', {
       });
     },
 
-    /**
-     * @notice Must be called at the beginning of each checkout flow (L1, zkSync, etc.)
-     */
-    async initializeCheckout() {
+    // Must be called at the beginning of the standard L1 bulk checkout flow
+    async initializeStandardCheckout() {
       // Prompt web3 login if not connected
       if (!provider) {
         return await onConnect();
@@ -613,17 +615,15 @@ Vue.component('grants-cart', {
       });
 
       // Initialization complete, return address of current user
-      const userAddress = (await web3.eth.getAccounts())[0];
-
-      return userAddress;
+      return (await web3.eth.getAccounts())[0];
     },
 
     /**
      * @notice For each token, checks if an approval is needed against the specified contract, and
      * returns the data
      * @param userAddress User's web3 address
-     * @param targetContract Address of the contract to check allowance against (e.g. the
-     * regular BulkCheckout contract, the zkSync contract, etc.)
+     * @param targetContract Address of the contract to check allowance against. Currently this
+     * should only be the bulkCheckout contract address
      */
     async getAllowanceData(userAddress, targetContract) {
       // Get list of tokens user is donating with
@@ -699,8 +699,8 @@ Vue.component('grants-cart', {
      * @notice Requests all allowances and executes checkout once all allowance transactions
      * have been sent
      * @param allowanceData Output from getAllowanceData() function
-     * @param targetContract Address of the contract to check allowance against (e.g. the
-     * regular BulkCheckout contract, the zkSync contract, etc.)
+     * @param targetContract Address of the contract to check allowance against. Currently this
+     * should only be the bulkCheckout contract address
      * @param callback Function to after allowance approval transactions are sent
      * @param callbackParams Array of input arguments to pass to the callback function
      */
@@ -760,19 +760,14 @@ Vue.component('grants-cart', {
       }
     },
 
-    /**
-     * @notice Checkout flow
-     */
-    async checkout() {
+    // Standard L1 checkout flow
+    async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
-        const userAddress = await this.initializeCheckout();
+        const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)
-        const allowanceData = await this.getAllowanceData(
-          userAddress,
-          bulkCheckoutAddress
-        );
+        const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
         // Send donation if no approvals -----------------------------------------------------------
         if (allowanceData.length === 0) {
@@ -806,9 +801,7 @@ Vue.component('grants-cart', {
       });
     },
 
-    /**
-     * Returns donation inputs for a transaction, filtered to remove unused data
-     */
+    // Returns donation inputs for a transaction, filtered to remove unused data
     getDonationInputs() {
       // We use parse and stringify to avoid mutating this.donationInputs since we use it later
       const donationInputs = JSON.parse(JSON.stringify(this.donationInputs)).map(donation => {
@@ -832,6 +825,10 @@ Vue.component('grants-cart', {
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
 
+      // Save off cart data
+      await this.manageEthereumCartJSONStore(userAddress, 'save');
+
+      // Send transaction
       indicateMetamaskPopup();
       bulkTransaction.methods
         .donate(donationInputsFiltered)
@@ -840,7 +837,7 @@ Vue.component('grants-cart', {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-          await this.postToDatabase(txHash, bulkCheckoutAddress, userAddress); // Save contributions to database
+          await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
         })
         .on('error', (error, receipt) => {
@@ -849,18 +846,28 @@ Vue.component('grants-cart', {
         });
     },
 
-    /**
-     * @notice POSTs donation data to database
-     */
+    // POSTs donation data to database
     async postToDatabase(txHash, contractAddress, userAddress) {
-      // this.donationInputs is the array used for bulk donations
-      // We loop through each donation and POST the required data
+      // this.grantsByTenant is the array used for donations
+      // We loop through each donation to configure the payload then POST the required data
       const donations = this.donationInputs;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      
+      // If txHash has a length of one, stretch it so there's one hash for each donation
+      let txHashes = txHash;
+
+      if (txHash.length === 1) {
+        txHashes = new Array(donations.length).fill(txHash[0]);
+      }
+
+      // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
+      // a zkSync checkout
+      const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
 
       // Configure template payload
       const saveSubscriptionPayload = {
         // Values that are constant for all donations
+        checkout_type,
         contributor_address: userAddress,
         csrfmiddlewaretoken,
         frequency_count: 1,
@@ -876,7 +883,6 @@ Vue.component('grants-cart', {
         real_period_seconds: 0,
         recurring_or_not: 'once',
         signature: 'onetime',
-        split_tx_id: txHash, // this txhash is our bulk donation hash
         splitter_contract_address: contractAddress,
         subscription_hash: 'onetime',
         // Values that vary by donation
@@ -889,6 +895,7 @@ Vue.component('grants-cart', {
         contract_version: [],
         denomination: [],
         grant_id: [],
+        split_tx_id: [], // Bulk donation hash for L1, or specific hash for L2
         sub_new_approve_tx_id: [],
         token_address: [],
         token_symbol: []
@@ -928,11 +935,11 @@ Vue.component('grants-cart', {
         saveSubscriptionPayload.denomination.push(tokenAddress);
         saveSubscriptionPayload['gitcoin-grant-input-amount'].push(gitcoinGrantInputAmt);
         saveSubscriptionPayload.grant_id.push(grantId);
+        saveSubscriptionPayload.split_tx_id.push(txHashes[i]);
         saveSubscriptionPayload.sub_new_approve_tx_id.push(donation.tokenApprovalTxHash);
         saveSubscriptionPayload.token_address.push(tokenAddress);
         saveSubscriptionPayload.token_symbol.push(tokenName);
       } // end for each donation
-
 
       // Configure request parameters
       const url = '/grants/bulk-fund';
@@ -948,6 +955,14 @@ Vue.component('grants-cart', {
       // Send saveSubscription request
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
+
+      if (json.failures.length > 0) {
+        // Something went wrong, so we create a backup of the users cart
+        await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
+      }
+      
+      // Clear JSON Store
+      await this.manageEthereumCartJSONStore(userAddress, 'delete');
     },
 
     /**
@@ -980,14 +995,15 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
+    // Converts `amount` of `tokenSymbol` to equivalent value in DAI, based on data in `tokenPrices`
     valueToDai(amount, tokenSymbol, tokenPrices) {
-      console.log(amount, tokenSymbol, tokenPrices);
       const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
-      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
+      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol in USDT (we treat USDT as equal to DAI)
 
       return Number(amount) * Number(amountOfOne); // convert based on quantity and return
     },
 
+    // Converts `amount` of `tokenSymbol` to equivalent value in ETH
     async valueToEth(amount, tokenSymbol) {
       const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
       const response = await fetch(url);
@@ -1051,169 +1067,56 @@ Vue.component('grants-cart', {
       return predicted_clr;
     },
 
-    // =============================================================================================
-    // =================================== START ZKSYNC METHODS ====================================
-    // =============================================================================================
-
     // ===================================== Helper functions ======================================
 
-    /**
-     * @notice Set flag in database to true if user was interrupted before completing zkSync
-     * checkout
-     * @param {Boolean} deposit_tx_hash Tx hash of the corresponding deposit that was interrupted,
-     * undefined otherwise
-     * @param {String} userAddress Address of user to check status for
-     */
-    async setInterruptStatus(deposit_tx_hash, userAddress) {
+    // For the provider address, an action of `save` will backup the user's Ethereum cart data with
+    // a JSON store before checkout, and validate that it was saved. An action of `delete` will
+    // delete that JSON store
+    async manageEthereumCartJSONStore(userAddress, action) {
+      if (action !== 'save' && action !== 'delete') {
+        throw new Error("JSON Store action must be 'save' or 'delete'");
+      }
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const url = 'zksync-set-interrupt-status';
+      const url = 'manage-ethereum-cart-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+      
+      // Send request
       const payload = {
         method: 'POST',
         headers,
-        body: new URLSearchParams({ deposit_tx_hash, user_address: userAddress, csrfmiddlewaretoken })
+        body: new URLSearchParams({
+          action,
+          csrfmiddlewaretoken,
+          ethereum_cart_data: action === 'save' ? JSON.stringify(this.grantsByTenant) : null,
+          user_address: userAddress
+        })
       };
+      const postResponse = await fetch(url, payload);
+      const json = await postResponse.json();
 
-      // Send request
-      const res = await fetch(url, payload);
-      const json = await res.json();
-
-      return json;
+      if (action === 'save') {
+        // Validate that JSON store was created successfully
+        const validationResponse = await this.getEthereumCartJSONStore(userAddress);
+        
+        if (!validationResponse) {
+          throw new Error('Something went wrong. Please try again.');
+        }
+      }
+      return true;
     },
 
-    /**
-     * @notice Check interrupt status for the logged in user
-     * @param {String} userAddress Address of user to check status for
-     */
-    async getInterruptStatus(userAddress) {
-      const url = `zksync-get-interrupt-status?user_address=${userAddress}`;
+    // Returns Ethereum cart data if found in the JSON store for `userAddress`, and false otherw
+    async getEthereumCartJSONStore(userAddress) {
+      const url = `get-ethereum-cart-data?user_address=${userAddress}`;
       const res = await fetch(url, { method: 'GET' });
       const json = await res.json();
-      const txHash = json.deposit_tx_hash;
+      const cartData = json.ethereum_cart_data;
 
-      if (txHash.length === 66 && txHash.startsWith('0x')) {
-        // Valid transaction hash. Check if tx failed
-        const receipt = await this.ethersProvider.getTransactionReceipt(txHash);
-
-        if (receipt.status === 0) {
-          // Transaction failed, user must start over so mark them as not interrupted
-          await this.setInterruptStatus(null, this.userAddress);
-          return false;
-        }
-
-        // Transaction was mined, user must complete checkout
-        return txHash;
+      if (cartData && cartData.length > 0) {
+        return cartData;
       }
-
-      // User was not interrupted
       return false;
     },
-
-    /**
-     * @notice Checks the interrupt status for a user, and prompts them to complete their
-     * checkout if they have been interrupted
-     */
-    async checkInterruptStatus() {
-      try {
-        // We manually fetch the address so we can try checking independently of whether the
-        // this.userAddress parameter has been set. This is also why we need a try/catch -- the
-        // user may not have connected their wallet.
-        const userAddress = (await web3.eth.getAccounts())[0];
-        const result = await this.getInterruptStatus(userAddress);
-
-      } catch (e) {
-        this.handleError(e);
-      }
-    },
-
-    /**
-     * @notice For the given transaction hash, looks to see if it's been replaced
-     * @param txHash String, transaction hash to check
-     * @returns New transaction hash if found, original othrwise
-     */
-    async getReplacedTx(txHash) {
-      const url = `get-replaced-tx?tx_hash=${txHash}`;
-      const res = await fetch(url, { method: 'GET' });
-      const json = await res.json();
-      const newTxHash = json.tx_hash;
-
-      return newTxHash;
-    },
-
-    /**
-     * @notice For each token, returns the total amount donated in that token. Used instead of
-     * this.donationsTotal to ensure there's no floating point errors. This is very similar to
-     * getAllowanceData()
-     */
-    zkSyncSummaryData() {
-      const selectedTokens = Object.keys(this.donationsToGrants); // list of tokens being used
-      let summaryData = [];
-
-      // Define function that calculates the total amount for the specified token
-      const calcTotalAllowance = (tokenDetails) => {
-        const initialValue = new BN('0');
-
-        return this.donationInputs.reduce((accumulator, currentValue) => {
-          return currentValue.token === tokenDetails.addr
-            ? accumulator.add(new BN(currentValue.amount)) // token donation
-            : accumulator.add(new BN('0')); // ETH donation
-        }, initialValue);
-      };
-
-      // Loop over each token in the cart and get required allowance (i.e. total donation amount in
-      // that token)
-      for (let i = 0; i < selectedTokens.length; i += 1) {
-        const tokenName = selectedTokens[i];
-        const tokenDetails = this.getTokenByName(tokenName);
-        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-        const requiredAllowance = calcTotalAllowance(tokenDetails);
-
-        // If ETH donation we can skip
-        if (tokenDetails.name === 'ETH') {
-          continue;
-        }
-
-        // If we do need to set the allowance, save off the required info to request it later
-        summaryData.push({
-          allowance: requiredAllowance.toString(),
-          contract: tokenContract,
-          tokenName
-        });
-      }
-
-      return summaryData;
-    },
-
-    /**
-     * @notice For a given token and amount, determines how many total transfers are needed
-     * and the corresponding total amount, after fees, that is needed to cover them.
-     */
-    async getTotalAmountToTransfer(tokenSymbol, initialAmount) {
-      // Number of transfers that will take place is:
-      //   number of donations + 1 initial transfer + 1 final transfer + 1 for margin
-      //
-      // We are intentionally conservative here because we'd rather a user deposit too much
-      // and be successful than too little and fail. The downside to being conservative is that
-      // users are required to have enough margin in their accound balance to accomodate this, but
-      //  that is ok because it's similar to be required to have enough ETH for excess L1 gas limit
-      const numberOfFees = 3 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
-
-      // Transfers to an address that has never used zkSync are more expensive, which is why we
-      // use a random address as the recipient -- this gives us a conservative estimate. We also
-      // do this to avoid hitting the zkSync servers with dozens of rapid fee requests when users
-      // have a large number of items in their cart
-      const { fee, amount } = await this.getZkSyncFeeAndAmount({
-        dest: ethers.Wallet.createRandom().address, // gives an address that has never been used on zkSync
-        name: tokenSymbol,
-        amount: initialAmount
-      });
-
-      return amount.add(fee.mul(String(numberOfFees)));
-    },
-
-    // =============================================================================================
-    // ==================================== END ZKSYNC METHODS =====================================
-    // =============================================================================================
 
     // ================== Start collection logic ==================
     createCollection: async function() {
@@ -1402,8 +1305,6 @@ Vue.component('grants-cart', {
     const collections_response = await fetchData('/grants/v1/api/collections/');
 
     this.collections = collections_response.collections;
-    // Cart is now ready
-    // this.isLoading = false;
   },
 
   beforeDestroy() {

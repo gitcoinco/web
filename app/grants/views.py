@@ -1925,15 +1925,9 @@ def cancel_grant_v1(request, grant_id):
 
 @login_required
 def bulk_fund(request):
+    """Called when checking out with an Ethereum cart"""
     if request.method != 'POST':
         raise Http404
-
-    # Save off payload data
-    JSONStore.objects.create(
-        key=request.POST.get('split_tx_id'), # use bulk data tx hash as key
-        view='bulk_fund_post_payload',
-        data=request.POST
-    )
 
     # Get list of grant IDs
     grant_ids_list = [int(pk) for pk in request.POST.get('grant_id').split(',')]
@@ -1948,6 +1942,7 @@ def bulk_fund(request):
         try:
             grant = Grant.objects.get(pk=grant_id)
         except Grant.DoesNotExist:
+            # Commonly occurs when testing on Rinkeby, as the Gitcoin development fund does not exist there by default
             failures.append({
                 'active': 'grant_error',
                 'title': _('Fund - Grant Does Not Exist'),
@@ -1959,6 +1954,7 @@ def bulk_fund(request):
             continue
 
         if not grant.active:
+            # This means a grant has been cancelled, which happens occasionally
             failures.append({
                 'active': 'grant_error',
                 'title': _('Fund - Grant Ended'),
@@ -1969,18 +1965,8 @@ def bulk_fund(request):
             })
             continue
 
-        if is_grant_team_member(grant, profile):
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Fund - Grant funding blocked'),
-                'grant':grant_id,
-                'text': _('This Grant cannot be funded'),
-                'subtext': _('Grant team members cannot contribute to their own grant.'),
-                'success': False
-            })
-            continue
-
         if grant.link_to_new_grant:
+            # Occurs if users have duplicate grants and one is merged into the other
             failures.append({
                 'active': 'grant_error',
                 'title': _('Fund - Grant Migrated'),
@@ -1995,31 +1981,11 @@ def bulk_fund(request):
             grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
         )
 
-        if active_subscription:
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Subscription Exists'),
-                'grant':grant_id,
-                'text': _('You already have an active subscription for this grant.'),
-                'success': False
-            })
-            continue
-
-        if not grant.configured_to_receieve_funding:
-            failures.append({
-                'active': 'grant_error',
-                'title': _('Fund - Grant Not Configured'),
-                'grant':grant_id,
-                'text': _('This Grant is not configured to accept funding at this time.'),
-                'subtext': _('Grant is not properly configured for funding.  Please set grant.contract_address on this grant, or contact founders@gitcoin.co if you believe this message is in error!'),
-                'success': False
-            })
-            continue
-
         try:
             from grants.tasks import process_grant_contribution
             payload = {
                 # Values that are constant for all donations
+                'checkout_type': request.POST.get('checkout_type'),
                 'contributor_address': request.POST.get('contributor_address'),
                 'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken'),
                 'frequency_count': request.POST.get('frequency_count'),
@@ -2033,7 +1999,6 @@ def bulk_fund(request):
                 'real_period_seconds': request.POST.get('real_period_seconds'),
                 'recurring_or_not': request.POST.get('recurring_or_not'),
                 'signature': request.POST.get('signature'),
-                'split_tx_id': request.POST.get('split_tx_id'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
                 # Values that vary by donation
@@ -2046,6 +2011,7 @@ def bulk_fund(request):
                 'denomination': request.POST.get('denomination').split(',')[index],
                 'gitcoin-grant-input-amount': request.POST.get('gitcoin-grant-input-amount').split(',')[index],
                 'grant_id': request.POST.get('grant_id').split(',')[index],
+                'split_tx_id': request.POST.get('split_tx_id').split(',')[index],
                 'sub_new_approve_tx_id': request.POST.get('sub_new_approve_tx_id').split(',')[index],
                 'token_address': request.POST.get('token_address').split(',')[index],
                 'token_symbol': request.POST.get('token_symbol').split(',')[index],
@@ -2081,52 +2047,60 @@ def bulk_fund(request):
     })
 
 @login_required
-def zksync_set_interrupt_status(request):
+def manage_ethereum_cart_data(request):
     """
-    For the specified address, save off the deposit hash of the value the tx that was interrupted.
-    If a deposit hash is present, then the user was interrupted and must complete the existing
-    checkout before doing another one
+    For the specified user address:
+      1. `action == save` will save the provided cart data as a JSON Store
+      2. `action == delete` will removed saved cart data from the JSON Store
     """
+    if request.method != 'POST':
+        raise Http404
 
     user_address = request.POST.get('user_address')
-    deposit_tx_hash = request.POST.get('deposit_tx_hash')
+    action = request.POST.get('action')
 
-    try:
-        # Look for existing entry, and if present we overwrite it
-        entry = JSONStore.objects.get(key=user_address, view='zksync_checkout')
-        entry.data = deposit_tx_hash
-        entry.save()
-    except JSONStore.DoesNotExist:
-        # No entry exists for this user, so create a new one
-        JSONStore.objects.create(
-            key=user_address,
-            view='zksync_checkout',
-            data=deposit_tx_hash
-        )
+    if action == 'save':
+        ethereum_cart_data = json.loads(request.POST.get('ethereum_cart_data'))
+        try:
+            # Look for existing entry, and if present we overwrite it. This can occur when a user starts
+            # checkout, does not finish it, then comes back to checkout later
+            entry = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
+            entry.data = ethereum_cart_data
+            entry.save()
+            return JsonResponse({ 'success': True })
+        except JSONStore.DoesNotExist:
+            # No entry exists for this user, so create a new one
+            JSONStore.objects.create(key=user_address, view='ethereum_cart_data', data=ethereum_cart_data)
+            return JsonResponse({ 'success': True })
 
-    return JsonResponse({
-        'success': True,
-        'deposit_tx_hash': deposit_tx_hash
-    })
+    elif action == 'delete':
+        try:
+            # Look for existing entry, and if present we delete it
+            entry = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
+            entry.delete()
+            return JsonResponse({ 'success': True })
+        except JSONStore.DoesNotExist:
+            # No entry exists for this user, so we return false to indicate this
+            return JsonResponse({ 'success': False })
+
+    else:
+        raise Exception('Invalid action specified')
 
 @login_required
-def zksync_get_interrupt_status(request):
+def get_ethereum_cart_data(request):
     """
-    Returns the transaction hash of a deposit into zkSync if user was interrupted before zkSync
-    chekout was complete
+    For the specified user address, returns the saved checkout data if found
     """
-    user_address = request.GET.get('user_address')
-    try:
-        result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
-        deposit_tx_hash = result.data
-    except JSONStore.DoesNotExist:
-        # If there's no entry for this user, assume they haven't been interrupted
-        deposit_tx_hash = False
+    if request.method != 'GET':
+        raise Http404
 
-    return JsonResponse({
-        'success': True,
-        'deposit_tx_hash': deposit_tx_hash
-    })
+    try:
+        user_address = request.GET.get('user_address')
+        result = JSONStore.objects.get(key=user_address, view='ethereum_cart_data')
+        return JsonResponse({ 'success': True, 'ethereum_cart_data': result.data })
+    except JSONStore.DoesNotExist:
+        # If there's no entry for this user, return false to indicate this
+        return JsonResponse({ 'success': False })
 
 @login_required
 def get_replaced_tx(request):
@@ -2243,17 +2217,6 @@ def grants_cart_view(request):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
-def grants_zksync_recovery_view(request):
-    context = {
-        'title': 'Recover Funds',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
-    }
-    if not request.user.is_authenticated:
-        return redirect('/login/github?next=' + request.get_full_path())
-
-    response = TemplateResponse(request, 'grants/zksync-recovery.html', context=context)
-    response['X-Frame-Options'] = 'SAMEORIGIN'
-    return response
 
 def get_category_size(category):
     key = f"grant_category_{category}"
