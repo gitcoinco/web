@@ -894,3 +894,5 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+CERAMIC_URL = env('CERAMIC_URL', default='https://ceramic.3boxlabs.com')
