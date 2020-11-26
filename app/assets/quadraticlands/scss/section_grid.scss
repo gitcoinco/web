@@ -1,0 +1,113 @@
+section.grid{
+
+	display: grid;
+	grid-template-columns: 50% 50%;
+	margin-bottom: 6em;
+
+	// theoretisch max width möglich. 
+	max-width: 1600px;
+	margin: auto;
+
+
+	div{
+		align-self: center;
+		text-align: right;
+		margin: 0em 3em;
+	}
+
+	figure{
+		user-select: none;
+		img, svg{
+  			object-fit: cover;
+  			height: 100%;
+  			padding: 3em;
+		}
+
+		&.floating{
+			animation: floating 3s ease-in-out infinite;
+		}
+	}
+
+	&.reverse{
+		grid-template-columns: 50% 50%;
+
+			div{
+				grid-column: 1;
+				grid-row: 1;
+				text-align: left;
+			}
+			figure{
+				grid-column: 2;
+				grid-row: 1;
+				
+
+				&.floating{
+					animation: floating-reverse 3s ease-in-out infinite;
+				}
+
+			}
+
+	}
+
+
+}
+
+
+
+@media #{$laptop} { 
+	section.grid{
+		figure{
+			img, svg{
+				padding: 1em;
+			}	
+		}
+	}
+}
+
+
+
+
+@media #{$tablet} { 
+	section.grid{
+		display: block;
+
+		figure{
+			img, svg{
+	  			object-fit: contain;
+	  			height: 700px;
+	  			padding: initial;
+			}	
+		}
+
+		div{
+			padding: 3em 0em;
+			text-align: left;
+		}
+
+	}	
+}
+
+
+
+
+
+@media #{$phone} { 
+	section.grid{
+		figure{
+			img, svg{
+				object-fit: contain;
+	  			height: 500px;
+	  			padding: inherit;
+			}	
+		}
+
+		div{
+			margin: 0em 1.5em;
+		}
+	}
+}
+
+
+
+
+

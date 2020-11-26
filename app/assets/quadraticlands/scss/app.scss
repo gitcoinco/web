@@ -1,0 +1,106 @@
+/* core */
+@import "breakpoints";
+@import "core";
+@import "typography";
+
+
+
+/* nav */
+@import "nav.scss";
+@import "nav/user.scss";
+@import "nav/links.scss";
+@import "nav/wallet.scss";
+@import "nav/signin.scss";
+@import "nav/burger.scss";
+
+
+@import "header.scss";
+
+
+
+
+/* components */
+@import "buttons.scss";
+@import "wallet-provider.scss";
+@import "sal";
+@import "particles";
+@import "keyframes";
+
+@import "collapse";
+
+@import "web3modal";
+@import "table";
+@import "flashmessage";
+
+
+/* section */
+@import "section_column";
+@import "section_grid";
+@import "section_headline";
+@import "section_dashboard";
+@import "section_hero";
+@import "section_quest";
+@import "section_mission";
+@import "section_leaderboard";
+@import "section_background";
+
+@import "section_footersocial";
+@import "section_footer";
+
+
+
+
+
+/*layout*/
+
+.hide{
+	display: none !important;
+}
+
+.d-none{
+	display: none !important;
+}
+
+
+.receiveadress{
+	display: block;
+	padding: 0.5em 1em;
+
+	color : var(--aqua_light);
+	font-family: 'Space Mono', monospace;
+	background-color: var(--space_pink);
+	
+	font-size: 100%;
+	text-align: center;
+
+	margin-bottom: 2em;
+
+	word-break: break-all;
+}
+
+
+::-moz-selection{ 
+	background: var(--aqua_light);
+	color: var(--space);
+}
+
+::selection {
+	background: var(--aqua_light);
+	color: var(--space);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

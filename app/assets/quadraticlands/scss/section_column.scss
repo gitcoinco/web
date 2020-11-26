@@ -1,0 +1,50 @@
+section.column{
+
+	margin-bottom: 6em;
+	margin: auto;
+	max-width: 1200px;
+	padding: 0em 6em;
+
+	&.centered {
+		text-align: center;
+	}
+
+
+	figure{
+		margin:0;
+		padding:0;
+		background-color: var(--smoke);
+	}
+
+
+}
+
+
+
+@media #{$desktop} { 
+	section.column{
+		padding: 0em 3em;
+	}
+}
+
+
+@media #{$laptop} { 
+	section.column{
+	}
+}
+
+@media #{$tablet} { 
+	section.column{
+	}
+}
+
+@media #{$phone} { 
+	section.column{
+		padding: 0em 1.5em;
+	}
+}
+
+
+
+
+

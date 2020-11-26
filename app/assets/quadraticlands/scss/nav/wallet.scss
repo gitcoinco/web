@@ -1,0 +1,40 @@
+#nav-wallet{
+	align-self: center;
+	display: flex;
+	cursor: pointer;
+
+	//padding : 0.5em 1em;
+
+	img, svg{
+		width: 32px;
+		height: 32px;
+		display: block;
+		align-self: center;
+		cursor: pointer;
+	}
+
+	#noproviderIcon{
+		&.hide{
+			display: none;
+		}
+	}
+
+	#providerIcon{
+		img, svg{
+			&.hide{
+				display: none;
+			}
+		}
+	}
+
+
+	&:hover{
+		//background-color: var(--smoke);
+	}
+
+
+	&.hide{
+		display: none;
+	}
+
+}	

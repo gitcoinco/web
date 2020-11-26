@@ -1,0 +1,2 @@
+console.log("quiz timer"),time=maxTime;const timeleft=document.getElementById("timeleft"),progressbar=document.getElementById("progressbar");questInterval=setInterval((function(){time--,timeleft.innerHTML=time+"s",timePercent=100*time/maxTime,progressbar.style.width=timePercent+"%",time<=10&&progressbar.classList.add("halftime"),time<=4&&progressbar.classList.add("hurryup"),time<=0&&(clearInterval(questInterval),window.location=expiryLink)}),1e3);
+//# sourceMappingURL=questCountdown-min.js.map

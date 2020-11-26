@@ -1,0 +1,55 @@
+:root{
+
+    --purple_light : #9760FF;
+    --purple : #7F51D6;
+    --purple_dark : #6A43B3;
+    --purple_half : #7F51D688;
+    
+    --pink_light : #FA72AF;
+    --pink : #DA5892;
+    --pink_dark : #B44878;
+    --pink_half : #DA589288;
+
+    --aqua_light : #7AFFF7;
+    --aqua : #54D8D0;
+    --aqua_dark : #42AFA9;
+    --aqua_half : #54D8D088;
+
+    --white : #FFF;
+
+    --space : #0E0333;
+    --space_glass : #0E033322;
+    --space_pink : #2D1041;
+    --space_light : #180D3B;
+    --space_light_alpha : rgba(255, 255, 255, 0.04); /* same as space_light but transparent*/
+    
+    --stone : #6E6885;
+    --smoke : #3E355C;
+
+}
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+
+}
+
+img{
+    display: block;
+    width: 100%;
+}
+
+
+body{
+    background-color: var(--space);
+    color : var(--stone);
+
+}
+
+
+
+
+
+
