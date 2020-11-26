@@ -68,12 +68,18 @@ def mission_base(request, mission_name):
         return redirect('/quadraticlands/mission', context)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
 
+def dashboard_index(request):
+    '''render quadraticlands/dashboard/index.html'''
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
+    return TemplateResponse(request, 'quadraticlands/dashboard/index.html', context)  
+
 @login_required
 def mission_state(request, mission_name, mission_state):
     '''quadraticlands/<mission_name>/<mission_state>'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
-    wake_the_ESMS(request) # hack to wake up ESMS so there isn't a delay on token claim (remove for prod or upgrade Heroku dyno)
+    # wake_the_ESMS(request) # hack to wake up ESMS so there isn't a delay on token claim (remove for prod or upgrade Heroku dyno)
     if not request.user.is_authenticated and mission_state == 'claim': # probably can remove this but leaving in case we want/need it
          return redirect('quadraticlands/mission/index.html')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)

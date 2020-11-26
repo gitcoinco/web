@@ -21,7 +21,7 @@ from django.urls import path, re_path
 
 from quadraticlands.helpers import claim, set_mission_status
 from quadraticlands.views import (
-    base, index, mission_answer, mission_base, mission_index, mission_question, mission_state,
+    base, dashboard_index, index, mission_answer, mission_base, mission_index, mission_question, mission_state,
 )
 
 app_name = 'quadraticlands'
@@ -31,9 +31,10 @@ urlpatterns = [
     path('', index, name='quadraticlands'),
     path('/', index, name='quadraticlands'),
     path('mission', mission_index, name='mission'),
+    path('dashboard', dashboard_index, name='dashboard'),
     path('claim', claim, name='claim_json'),
     path('set_mission_status', set_mission_status, name='set_mission_status'),
-    re_path(r'^(?P<base>about|leaderboard|privacy|terms-of-service|mission_knowledge_intro|dashboard|faq)$', base, name='quadraticlands_base'),  
+    re_path(r'^(?P<base>about|leaderboard|privacy|terms-of-service|mission_knowledge_intro|dashboard|faq)$', base, name='quadraticlands_base'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)$', mission_base, name='mission_base'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/(?P<mission_state>intro|outro|claim|snapshot)$', mission_state, name='mission_state'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/question/(?P<question_num>1|2)$', mission_question, name='mission_question'),
