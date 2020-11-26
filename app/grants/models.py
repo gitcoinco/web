@@ -26,9 +26,9 @@ from io import BytesIO
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core import serializers
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core import serializers
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
@@ -45,7 +45,7 @@ from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from grants.utils import get_upload_filename, is_grant_team_member, generate_collection_thumbnail
+from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
@@ -413,6 +413,7 @@ class Grant(SuperModel):
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
+    random_shuffle = models.PositiveIntegerField(blank=True, null=True)
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)

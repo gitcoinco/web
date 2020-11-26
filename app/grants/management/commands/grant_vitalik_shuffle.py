@@ -85,6 +85,7 @@ class Command(BaseCommand):
         for ele in ws:
             grant_idx = custom_index(og_weighted_list, ele)
             grant = grants[grant_idx]
+            grant.random_shuffle = random.randint(0, 99999999)
             grant.weighted_shuffle = counter
             grant.save()
             counter+=1
