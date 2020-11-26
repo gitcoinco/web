@@ -37,6 +37,8 @@
   --space_glass: #0E033322;
   --space_pink: #2D1041;
   --space_light: #180D3B;
+  --space_light_alpha: rgba(255, 255, 255, 0.04);
+  /* same as space_light but transparent*/
   --stone: #6E6885;
   --smoke: #3E355C;
 }
@@ -152,6 +154,7 @@ a:focus {
 /* nav */
 nav {
   display: flex;
+  z-index: 8888;
 }
 
 #nav-user {
@@ -192,6 +195,7 @@ nav {
   }
 }
 #nav-links {
+  z-index: 22222;
   align-self: center;
   white-space: nowrap;
   margin-right: 30px;
@@ -310,6 +314,7 @@ nav {
 
 #burger {
   display: none;
+  z-index: 9999;
 }
 
 @media (max-width: 688px) {
@@ -340,11 +345,13 @@ header {
   font-weight: 600;
   font-size: 80%;
   margin: 0em 30px;
+  user-select: none;
 }
 header .logo {
   height: 48px;
   width: 48px;
   margin: auto;
+  z-index: 9999;
 }
 header .logo img, header .logo svg {
   height: 100%;
@@ -381,6 +388,8 @@ header nav {
   line-height: 1.5em;
   background-color: var(--pink_light);
   color: var(--space);
+  user-select: none;
+  border-radius: 4px;
 }
 .btn:hover {
   animation: colorcycle 1s ease-in-out infinite;
@@ -412,7 +421,7 @@ header nav {
   position: absolute;
   top: 1em;
   right: 1em;
-  z-index: 1001;
+  z-index: 22222;
   min-width: 280px;
   display: none;
 }
@@ -913,7 +922,7 @@ section#particles {
   top: 0;
   height: 100vh;
   width: 100vw;
-  z-index: -1;
+  z-index: -1111;
 }
 section#particles svg {
   display: grid;
@@ -968,6 +977,20 @@ section#particles svg {
   }
   100% {
     stroke: var(--pink);
+  }
+}
+@keyframes colorcycle-fill {
+  0% {
+    fill: var(--pink);
+  }
+  33% {
+    fill: var(--aqua);
+  }
+  66% {
+    fill: var(--purple);
+  }
+  100% {
+    fill: var(--pink);
   }
 }
 @keyframes colorcycle-shadow {
@@ -1173,6 +1196,9 @@ section.grid div {
   text-align: right;
   margin: 0em 3em;
 }
+section.grid figure {
+  user-select: none;
+}
 section.grid figure img, section.grid figure svg {
   object-fit: cover;
   height: 100%;
@@ -1226,23 +1252,169 @@ section.grid.reverse figure.floating {
     margin: 0em 1.5em;
   }
 }
-section.dashboard {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  margin: auto;
-  margin: 0em 30px;
+section.headline {
+  height: 130px;
+  margin-bottom: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-section.dashboard article {
-  background-color: #180D3B;
-  margin: 0.5em;
+section.headline .content h1 {
+  color: var(--white);
+  animation: inherit;
+  margin: 0;
+  padding: 0;
+}
+section.headline .content h1 span {
+  background-color: var(--space);
 }
 
+section.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: auto;
+  margin: 0em 1.5em;
+  grid-gap: 1em;
+}
+section.dashboard .section {
+  background-color: var(--space_light_alpha);
+}
+section.dashboard .header {
+  background-color: var(--space_pink);
+  display: flex;
+  align-items: center;
+  height: 90px;
+  user-select: none;
+}
+section.dashboard .content {
+  margin: 50px 30px;
+}
+section.dashboard a {
+  text-decoration: none;
+}
+
+section.dashboard .header svg {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+section.dashboard .header .icon {
+  margin-left: 1em;
+}
+section.dashboard .header .title {
+  margin-left: 1em;
+  font-weight: 500;
+  color: var(--purple_light);
+}
+section.dashboard .header .title span {
+  color: var(--aqua_light);
+}
+section.dashboard .header .arrow {
+  margin-left: auto;
+}
+section.dashboard .header .arrow svg {
+  margin-right: 0.5em;
+  stroke: var(--purple_light);
+}
+section.dashboard .header:hover .arrow svg {
+  stroke: var(--white);
+}
+
+/* content wallet */
+section.dashboard .content-wallet .amount {
+  font-family: "Space Mono", monospace;
+  color: var(--aqua_light);
+  font-size: 200%;
+  font-weight: 400;
+  margin-bottom: 0.2em;
+  line-height: 1.3em;
+  text-align: center;
+}
+section.dashboard .content-wallet .status {
+  font-size: 100%;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* content delegation */
+section.dashboard .content-delegation .amount {
+  font-family: "Space Mono", monospace;
+  color: var(--aqua_light);
+  font-size: 200%;
+  font-weight: 400;
+  margin-bottom: 0.2em;
+  line-height: 1.3em;
+  text-align: center;
+}
+section.dashboard .content-delegation .status {
+  font-size: 100%;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* content mission */
+section.dashboard .content-mission .col {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+section.dashboard .content-mission .mission-status {
+  margin-left: auto;
+  color: var(--stone);
+}
+section.dashboard .content-mission .mission-status.active {
+  color: var(--aqua_light);
+}
+section.dashboard .content-mission .mission-status.disabled {
+  color: var(--smoke);
+}
+section.dashboard .content-mission .mission-status-icon {
+  margin-left: 1em;
+}
+section.dashboard .content-mission .mission-status-icon svg {
+  fill: var(--stone);
+  height: 17px;
+  width: 17px;
+  display: block;
+}
+section.dashboard .content-mission .mission-status-icon.active svg {
+  fill: var(--aqua_light);
+}
+section.dashboard .content-mission .mission-status-icon.disabled svg {
+  fill: var(--smoke);
+}
+
+/* content leaderboard */
+section.dashboard .content-leaderboard .col {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+section.dashboard .content-leaderboard .place {
+  margin-right: 1em;
+}
+section.dashboard .content-leaderboard .score {
+  margin-left: auto;
+}
+
+/* content proposals */
+section.dashboard .content-proposals .col {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+@media (max-width: 992px) {
+  section.dashboard {
+    grid-template-columns: 1fr;
+  }
+}
 section.hero {
   width: 100%;
   height: 100vh;
   margin-top: -130px;
   display: grid;
   margin-bottom: 3em;
+  z-index: -5;
 }
 section.hero div.content {
   align-self: center;
@@ -1250,13 +1422,19 @@ section.hero div.content {
   grid-row: 1;
   max-width: 600px;
   margin-left: 3em;
+  user-select: none;
 }
 section.hero div.background {
   grid-column: 1;
   grid-row: 1;
-  z-index: -2;
 }
-section.hero img, section.hero svg {
+section.hero svg {
+  display: block;
+  height: 100vh;
+  width: 100%;
+}
+section.hero img {
+  display: block;
   height: 100vh;
   object-fit: cover;
 }
@@ -1267,21 +1445,18 @@ section.hero h1 {
 section.hero h1 span {
   background-color: var(--space_pink);
 }
-section.hero.widescreen {
-  height: 70vh;
+
+/* hover knight rider effect for floor on start page */
+section.hero svg #floor polygon {
+  stroke-width: 1;
+  stroke: var(--smoke);
+  fill: transparent;
+  pointer-events: visible;
+  transition: all 700ms ease;
 }
-section.hero.widescreen img, section.hero.widescreen svg {
-  height: 70vh;
-}
-section.hero.widescreen div.content {
-  width: 100%;
-  max-width: 100%;
-  margin: initial;
-  text-align: center;
-}
-section.hero.widescreen h1 {
-  margin: initial;
-  margin: 3em;
+section.hero svg #floor polygon:hover {
+  fill: var(--aqua_light);
+  transition: padding 0s;
 }
 
 @media (max-width: 688px) {
@@ -1352,6 +1527,7 @@ section.quest main div.reply {
   grid-template-columns: 1fr 1fr;
   grid-gap: 1em;
   margin: 0em 3em;
+  user-select: none;
 }
 section.quest main div.reply a {
   background-color: var(--purple_light);
@@ -1405,6 +1581,7 @@ section.quest nav {
   color: var(--white);
   background-color: var(--space_glass);
   backdrop-filter: blur(18px);
+  user-select: none;
 }
 section.quest nav div {
   align-self: center;
@@ -1470,6 +1647,7 @@ section.mission a {
 
 section.mission .card {
   margin-bottom: 2em;
+  user-select: none;
 }
 section.mission .card .card-image {
   border: 1px solid var(--pink_light);
@@ -1646,6 +1824,7 @@ section#footer {
   margin: 3em 3em;
   padding: 3em;
   border-top: 1px solid var(--smoke);
+  user-select: none;
 }
 section#footer a {
   margin-right: 1.5em;
