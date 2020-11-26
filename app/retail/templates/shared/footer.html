@@ -43,7 +43,7 @@
             <img {{prefix}}src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
           </a>
           <a class="nav-link" target="_blank" href="https://discord.com/invite/83BK5z55yB">
-            <img {{prefix}}src="{% static "v2/images/tribes/landing/chat_round.svg" %}" alt="Chat">
+            <img {{prefix}}src="{% static "v2/images/tribes/landing/chat_round.svg" %}" alt="Discord">
           </a>
           <a class="nav-link" href="mailto:founders@gitcoin.co">
             <img {{prefix}}src="{% static "v2/images/social/mail.png" %}" alt="Mail">
@@ -71,7 +71,7 @@
             <h5>{% trans "Community" %}</h5>
             <a href="https://gitcoin.co/wiki/wiki-code-conduct/">{% trans "Code of Conduct" %}</a>
             <a class="slack{% if active == 'slack' %} selected{% endif %}" target="_blank" href="https://discord.com/invite/83BK5z55yB">
-              Chat
+              Discord
             </a>
             <a href="{% url "request_money" %}">{% trans "Request Money" %}</a>
             <a href="/wiki/">{% trans "Wiki" %}</a>
