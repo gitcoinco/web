@@ -2919,6 +2919,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
         context['is_google_verified'] = profile.is_google_verified
+        context['is_idx_verified'] = profile.is_idx_verified
     else:
         raise Http404
     return context

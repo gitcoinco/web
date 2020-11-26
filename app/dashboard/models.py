@@ -2931,6 +2931,7 @@ class Profile(SuperModel):
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
     is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    is_idx_verified=models.BooleanField(default=False)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
