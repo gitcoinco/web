@@ -1443,7 +1443,11 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
             return JsonResponse(response)
 
-        if zcash_payout_address and not zcash_payout_address.startswith('t'):
+        if (
+            zcash_payout_address and
+            zcash_payout_address != '0x0' and
+            not zcash_payout_address.startswith('t')
+        ):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
