@@ -117,7 +117,7 @@
               </div>
 
               <div class="gc-text-green font-weight-bold">
-                [[ grant.clr_prediction_curve[0][1] ]]
+                [[ grant.clr_prediction_curve[0][1] || 0 | round | formatNumber ]]
                 <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
                 <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
               </div>
@@ -132,7 +132,7 @@
                 <div class="text-uppercase py-1 font-weight-semibold font-caption">[[grant.clr_round_num]]</div>
               </div>
               <div class="gc-text-darkblue font-weight-bold">
-                [[grant.amount_received_in_round | round ]]
+                [[grant.amount_received_in_round || 0 | round | formatNumber ]]
                 <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
                 <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
               </div>
@@ -158,11 +158,11 @@
                 <!-- 1, 10, 100, 1000 usd matching -->
                 <template v-if="grant.tenants.indexOf('ETH') > -1">
                   <span>[[prediction[0] ]] DAI contribution</span>
-                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] | round]] DAI</b> match</span>
+                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] DAI</b> match</span>
                 </template>
                 <template v-else>
                   <span>[[prediction[0] ]] USD contribution</span>
-                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] | round]] USD</b> match</span>
+                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] USD</b> match</span>
                 </template>
               </div>
             </div>

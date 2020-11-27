@@ -357,8 +357,16 @@ if (document.getElementById('gc-new-grant')) {
     },
     mounted() {
       const writeToRoot = ['chainId'];
-      const writeToBody = [ 'title', 'reference_url', 'twitter_handle_1', 'twitter_handle_2',
-        'github_project_url', 'eth_payout_address', 'grant_type', 'grant_categories' ];
+      const writeToBody = [
+        'title',
+        'reference_url',
+        'twitter_handle_1',
+        'twitter_handle_2',
+        'github_project_url',
+        'eth_payout_address',
+        'grant_type',
+        'grant_categories'
+      ];
 
       for (const key of writeToRoot) {
         if (this.queryParams && this.queryParams.has(key)) {
