@@ -143,15 +143,12 @@
                   </span>
                 </li>
 
-                {% comment %}
-                  <li>
-                    <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
-                      <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
-                      Show Idle Grants
-                      <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
-                    </span>
-                  </li>
-                {% endcomment %}
+                <li>
+                  <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+                    Show Idle Grants
+                    <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
+                  </span>
+                </li>
 
               </template>
 
