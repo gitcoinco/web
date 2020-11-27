@@ -175,19 +175,6 @@ Vue.mixin({
         }
       });
     },
-    onEditorBlur(quill) {
-      console.log('editor blur!', quill);
-    },
-    onEditorFocus(quill) {
-      console.log('editor focus!', quill);
-    },
-    onEditorReady(quill, html, text) {
-      console.log('editor ready!', quill, html, text);
-    },
-    onEditorChange({ quill, html, text }) {
-      console.log('editor change!', quill, html, text);
-      this.content = html;
-    },
     userSearch(search, loading) {
       let vm = this;
 
@@ -225,12 +212,10 @@ Vue.mixin({
       });
     },
     onFileChange(e) {
-      console.log(e)
       let vm = this;
 
       if (!e.target) return;
       const file = e.target.files[0];
-      console.log(file)
 
       if (!file) {
         return;
@@ -291,7 +276,6 @@ Vue.mixin({
     teamFormatted: {
       get() {
         return this.grant.team_members.map((user)=> {
-          console.log(user)
           if (!user?.fields) {
             return user;
           }
