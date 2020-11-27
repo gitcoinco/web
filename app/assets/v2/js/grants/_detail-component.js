@@ -38,13 +38,14 @@ Vue.mixin({
     },
     editGrantModal: function() {
       let vm = this;
-      vm.grant.description_rich_edited = vm.grant.description_rich;
-      vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+      // vm.grant.description_rich_edited = vm.grant.description_rich;
+      // vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
       vm.logoPreview = vm.grant.logo_url;
 
       vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
     },
     saveGrant: function(event) {
+      console.log(event)
       event.preventDefault();
       let vm = this;
 
@@ -408,6 +409,8 @@ Vue.component('grant-details', {
   mounted: function() {
     let vm = this;
 
+    vm.grant.description_rich_edited = vm.grant.description_rich;
+    vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     vm.grantInCart();
   }
 

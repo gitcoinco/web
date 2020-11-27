@@ -482,8 +482,8 @@ Vue.component('grants-cart', {
         if (!totals[grant.grant_donation_currency]) {
           totals[grant.grant_donation_currency] = totalDonationAmount;
         } else {
-        // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency].add(totalDonationAmount);
+          // We've seen this token, so just update the total
+          totals[grant.grant_donation_currency] = totals[grant.grant_donation_currency].add(totalDonationAmount);
         }
       });
 

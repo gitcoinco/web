@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
     <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
 
     <script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
@@ -48,10 +49,12 @@
       </div>
     {% endif %}
     <div class="bg-lightblue pb-5" id="gc-grant-detail"  v-cloak>
-
       <div class="" v-if="grant">
         <grant-details :grant="grant" v-if="grant.id">
           <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;">
+          <div class="container mb-3">
+            <a :href="backLink.url" class="font-body"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+          </div>
         </grant-details>
 
         <div class="container">
