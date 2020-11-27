@@ -49,7 +49,7 @@
             <template v-slot:description>
               {% if is_idena_connected %}
                 {% if not is_idena_verified %}
-                  Take part in the Idena validation ceremony {{ idena_next_validation }} GMT
+                  Take part in the Idena validation ceremony {{ idena_next_validation }} GMT <br>
                 {% endif %}
                   {% if is_idena_verified %}
                     <span style="color:limegreen"><i class="fas fa-circle"></i>
@@ -65,7 +65,9 @@
             </template>
             <template v-slot:verify>
               {% if is_idena_connected %}
-                <span style="color:orange"><i class="fal fa-exclamation-circle"></i> Pending Validation</span>
+                  {% if not is_idena_verified %}
+                    <span style="color:orange"><i class="fal fa-exclamation-circle"></i> Pending Validation</span>
+                  {% endif %}
               {% else %}
                 <a href="{{ login_idena_url }}" role="button" id="connect-idena-link" class="button button--primary text-nowrap">Connect</a>
               {% endif %}

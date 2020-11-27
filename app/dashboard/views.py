@@ -3050,7 +3050,7 @@ def authenticate_idena(request, handle):
     sig = data.get('signature', '0x0')
     sig_addr = signature_address(nonce_controller.get(), sig)
 
-    if not is_same_address(sig_addr, profile.idena_address):
+    if not is_address(sig_addr) or not is_same_address(sig_addr, profile.idena_address):
         profile.idena_address = None
         profile.save()
 
