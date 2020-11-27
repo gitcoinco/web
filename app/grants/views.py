@@ -818,6 +818,17 @@ def get_bg(grant_type):
     return bg, mid_back, bottom_back, bg_size, bg_color
 
 
+def get_branding_info(request):
+
+    all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
+    for policy in all_policies:
+        if re.search(policy.url_pattern, request.get_full_path()):
+            return {
+                "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else None,
+                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None
+            }
+
+
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)
@@ -934,15 +945,6 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    grant_bg = None
-    all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
-    for policy in all_policies:
-        if re.search(policy.url_pattern, request.get_full_path()):
-            grant_bg = {
-                "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else None,
-                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None
-            }
-            break
 
     params = {
         'active': 'grants_landing',
@@ -983,7 +985,7 @@ def grants_by_grant_type(request, grant_type):
             'bg_color': bg_color
         },
         'bg': bg,
-        'grant_bg': grant_bg,
+        'grant_bg': get_branding_info(request),
         'announcement': Announcement.objects.filter(key='grants', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('-rank').first(),
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
@@ -1152,7 +1154,8 @@ def grants_by_grant_clr(request, clr_round):
         'grants_following': grants_following,
         'only_contributions': only_contributions,
         'clr_round': clr_round,
-        'collections': collections
+        'collections': collections,
+        'grant_bg': get_branding_info(request)
     }
 
     # log this search, it might be useful for matching purposes down the line
