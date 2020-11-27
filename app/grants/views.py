@@ -939,8 +939,8 @@ def grants_by_grant_type(request, grant_type):
     for policy in all_policies:
         if re.search(policy.url_pattern, request.get_full_path()):
             grant_bg = {
-                "banner_image": request.build_absolute_uri(policy.banner_image.url),
-                "background_image": request.build_absolute_uri(policy.background_image.url)
+                "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else None,
+                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None
             }
             break
 

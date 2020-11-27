@@ -140,16 +140,16 @@ class GrantCLR(SuperModel):
         max_length=15,
         default='',
         blank=True,
-        help_text="used to genrate <customer_name>/round_num/sub_round_slug"
+        help_text="used to genrate customer_name/round_num/sub_round_slug"
     )
     round_num = models.PositiveIntegerField(
-        help_text="CLR Round Number. used to genrate customer_name/<round_num>/sub_round_slug"
+        help_text="CLR Round Number. used to generate customer_name/round_num/sub_round_slug"
     )
     sub_round_slug = models.CharField(
         max_length=25,
         default='',
         blank=True,
-        help_text="used to genrate customer_name/round_num/<sub_round_slug>"
+        help_text="used to generate customer_name/round_num/sub_round_slug"
     )
     display_text = models.CharField(
         max_length=15,
@@ -2025,10 +2025,14 @@ class GrantBrandingRoutingPolicy(SuperModel):
         upload_to=get_upload_filename,
         help_text=_('The banner image for a grant page'),
     )
-    priority = models.PositiveSmallIntegerField(help_text=_("The priority ranking of this image 1-255. Higher priorities would be loaded first"))
+    priority = models.PositiveSmallIntegerField(
+        help_text=_("The priority ranking of this image 1-255. Higher priorities would be loaded first")
+    )
     background_image = models.ImageField(
         upload_to=get_upload_filename,
         help_text=_('Background image'),
+        blank=True,
+        null=True
     )
 
     def __str__(self):
