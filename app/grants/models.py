@@ -2020,6 +2020,12 @@ class GrantBrandingRoutingPolicy(SuperModel):
     For a grant, there are several models and views that handle different kinds of grants, CLRs  and categories.
     This routing policy model sits in the middle and handles the banner and background image of specific sub-url group
     """
+    policy_name = models.CharField(
+        max_length=25,
+        help_text=_("name to make it easier to identify"),
+        blank=True,
+        null=True
+    )
     url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
     banner_image = models.ImageField(
         upload_to=get_upload_filename,
