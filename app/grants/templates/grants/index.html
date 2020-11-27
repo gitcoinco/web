@@ -119,9 +119,9 @@ along with this program. If not, see
                 backdrop-variant="dark"
                 backdrop
                 shadow
-                width="70%"
+                width="max(80vw, 1000px)"
               >
-                <grant-details :grant="grant" v-if="grant.id"> [[grant.id]]
+                <grant-details :grant="grant" :fullview="false" v-if="grant.id">
                   <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;">
                 </grant-details>
               </b-sidebar>

@@ -28,103 +28,10 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
 
-
     <script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
     <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
-    <style>
-
-      .grant-description {
-        max-height: 600px;
-        overflow-y: auto;
-      }
-
-      .blur-img {
-        filter: blur(9px);
-        transition: 0.5s all linear;
-      }
-
-      .img-edit {
-        width: 100%;
-        height: 300px;
-        object-fit: contain;
-        background: black;
-      }
-
-      .ql-editor .ql-video {
-        height: max(170px, 360px);
-        width: clamp(340px, 660px, 100%);
-      }
-
-      .ql-editor img {
-        max-width: 100%;
-      }
-
-      .ql-toolbar.ql-snow {
-        position: sticky;
-        top: 0px;
-        z-index: 1;
-        background: white;
-      }
-
-      .grid {
-        display: grid;
-        margin: auto;
-      }
-
-      .grant-data {
-        grid-area: grant-data;
-      }
-
-
-      .grant-checkout {
-        grid-area: auto / grant-checkout;
-      }
-
-      .grant-cat {
-        grid-area: auto / grant-cat;
-
-      }
-      .grant-wall {
-        grid-area: auto / grant-wall;
-      }
-      .grant-managment {
-        grid-area: grant-managment;
-      }
-      .grid-template-sidebar {
-        grid-template-areas:
-          "grant-data"
-          "grant-managment"
-          "grant-cat"
-          "grant-checkout"
-          "grant-wall";
-        gap: 1.5em;
-      }
-      @media (min-width: 620px) {
-        .grid {
-          /* max-width: 90%; */
-        }
-
-      }
-      @media (min-width: 960px) {
-        .grid-template-sidebar {
-          grid-template-areas:
-            "grant-data grant-data grant-data grant-managment"
-            "grant-data grant-data grant-data grant-checkout"
-            "grant-data grant-data grant-data grant-cat"
-            "grant-data grant-data grant-data grant-wall";
-          gap: 1.5em;
-          grid-auto-columns: 1fr 1fr 1fr 2fr;
-        }
-
-      }
-      @media (min-width: 700px) {
-
-      }
-
-
-    </style>
 
   </head>
 

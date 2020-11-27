@@ -59,7 +59,7 @@ Vue.mixin({
         'description': vm.$refs.myQuillEditor.quill.getText(),
         'description_rich': JSON.stringify(vm.$refs.myQuillEditor.quill.getContents()),
         'github_project_url': vm.grant.github_project_url,
-        'team_members[]': JSON.stringify(vm.grant.team_members),
+        'team_members[]': JSON.stringify(vm.teamFormatted),
         'handle1': vm.grant.twitter_handle_1,
         'handle2': vm.grant.twitter_handle_2,
         'eth_payout_address': vm.grant.eth_payout_address,
@@ -350,7 +350,16 @@ Vue.mixin({
 Vue.component('grant-details', {
   delimiters: [ '[[', ']]' ],
 
-  props: ['grant'],
+  props: {
+    grant: {
+      type: Object
+    },
+    fullview: {
+      type: Boolean,
+      default: true
+    },
+
+  },
   template: '#template-grant-details',
   data() {
     return {
@@ -360,7 +369,6 @@ Vue.component('grant-details', {
       isStaff: isStaff,
       logo: null,
       logoPreview: null,
-      // grant: {},
       relatedGrants: [],
       rows: 0,
       perPage: 4,

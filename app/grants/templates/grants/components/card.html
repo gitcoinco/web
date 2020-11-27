@@ -250,18 +250,20 @@
             </b-dropdown>
 
           </div>
-          <div class="d-flex justify-content-between mx-3 mt-1 pb-4">
-            <b-button @click="quickView($event)" size="sm" variant="outline-gc-blue" class="mr-1 font-body" style="flex: 1 1 0px;">
-              <i class="far fa-eye mr-2"></i>
-              Quick View
-            </b-button>
-            <button @click.prevent="removeFromCart(grant)" class="btn btn-gc-outline-red ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
-              - Remove from Cart
-            </button>
-            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue ml-1 font-body" style="flex: 1 1 0px;" v-else>
-              + Add to Cart
-            </button>
-            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
+          <div class="mx-3 mt-1 pb-4">
+            <div class="d-flex justify-content-between pb-1">
+              <b-button @click="quickView($event)" size="sm" variant="outline-gc-blue" class="mr-1 font-body" style="flex: 1 1 0px;">
+                <i class="far fa-eye mr-2"></i>
+                Quick View
+              </b-button>
+              <button @click.prevent="removeFromCart(grant)" class="btn btn-gc-outline-red ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
+                - Remove from Cart
+              </button>
+              <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue ml-1 font-body" style="flex: 1 1 0px;" v-else>
+                + Add to Cart
+              </button>
+            </div>
+            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-block btn-outline-danger font-body mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
             </button>
           </div>
