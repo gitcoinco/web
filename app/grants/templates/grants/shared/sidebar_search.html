@@ -168,7 +168,7 @@
                 </span>
               </li>
               <li>
-                <a @click="filterLink({type: 'collections',  keyword: handle})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword == handle ? 'selected':''}`" v-if="handle">
+                <a @click="filterLink({type: 'collections',  keyword: handle})"  :class="`btn btn-link font-smaller-1 ml-0 pl-0 text-decoration-none text-left ${ type == 'collections' && keyword == handle ? 'selected':''}`" v-if="handle">
                   My Collections
                 </a>
               </li>
@@ -211,7 +211,7 @@
       <div class="col p-0">
         <div class="info-box p-2 mt-4">
           <p class="mb-1"><b>💡Did you know?</b></p>
-          <span class="font-smaller-3">You can now add grants to your cart & come back to checkout later.  Just make sure to checkout by {{round_end|date:'Y-m-d'}} in order to get your contributions matched. </span>
+          <span class="font-smaller-3">You can now add grants to your cart & come back to checkout later.  Just make sure to checkout before the round ends in order to get your contributions matched. </span>
         </div>
       </div>
   </div>
