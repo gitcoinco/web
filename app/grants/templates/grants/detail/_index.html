@@ -70,6 +70,32 @@
               </div>
             </b-tab>
 
+            <b-tab :title-link-class="'nav-line'" lazy>
+              <template v-slot:title>TRANSACTIONS</template>
+
+              {% if is_team_member %}
+                <div class="float-right font-body">
+                  {% if is_owner %}
+                    <a href="/settings/account#financials" target="_blank">
+                      Export Transactions (OWNER ONLY)
+                    </a> |
+                  {% endif %}
+
+                  <a href="/grants/v1/api/export_addresses/grant{{grant.pk}}.json" target="_blank">
+                    All Contributor Addresses for this Grant (TEAM ONLY)
+                  </a>
+                </div>
+                <br class="break">
+              {% endif %}
+
+              {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+                <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+              {% else %}
+                {% include 'grants/activity.html' %}
+                <span id="grant-network" class="hidden">{{ grant.network }}</span>
+              {% endif %}
+            </b-tab>
+
             <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
               <template v-slot:title>RELATED GRANTS <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
               <div class="row">
@@ -91,6 +117,39 @@
                 </div>
               </div>
             </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" lazy>
+              <template v-slot:title>CONTRIBUTORS</template>
+
+              <div class="grant__stakeholders-list d-flex flex-wrap">
+                {% for contribution in contributors %}
+                  {% if contribution.anonymous %}
+                    {% trans  'Anonymous' as handle %}
+                  {% elif contribution.subscription %}
+                    {% trans  contribution.subscription.contributor_profile.handle  as handle %}
+                  {% else %}
+                    {% trans  contribution.profile.handle  as handle %}
+                  {% endif %}
+                  <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
+                    <div class="mr-2 d-inline-block">
+                      <img data-src="/dynamic/avatar/{{handle}}" />
+                    </div>
+                    <div class="mt-1 d-inline-block">
+                      <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
+                      {% if handle == request.user.profile.handle  %}
+                      <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
+                      {% endif %}
+                    </div>
+                  </a>
+
+                {% empty %}
+                  <div class="no-subscriptions">
+                    <p class="mb-1">{% trans "No contributors." %}</p>
+                  </div>
+                {% endfor %}
+              </div>
+            </b-tab>
+
 
             {% if is_staff %}
             <b-tab :title-link-class="'nav-line'" lazy>
@@ -161,7 +220,7 @@
                           {% for this_profile in sp.4 %}
                                 <a href="/{{this_profile}}">
                                   {% if forloop.counter < 20 %}
-                                    <img data-src="/dynamic/avatar/{{this_profile}}" style="height: 20px; width: 20px; border-radius: 10px;">
+                                    <b-img-lazy class="rounded-circle bg-white" width="30" height="30" src="/dynamic/avatar/{{this_profile}}"></b-img-lazy>
                                   {% endif %}
                                   @{{this_profile}}
                                 </a>
@@ -178,7 +237,7 @@
                 </div>
             </b-tab>
             {% endif %}
-            {% if is_team_member %}
+            {% if is_team_member or is_staff %}
             <b-tab :title-link-class="'nav-line'" lazy>
               <template v-slot:title>STATS</template>
               <div id=grant_stats_graph class="content-block content-block--white">
@@ -261,23 +320,23 @@
     <script>
       var grantDetails = {
                  grant_id: "{{ grant.id }}",
-                 grant_slug: "{{ grant.slug }}",
-                 grant_url: "{{ grant.url }}",
-                 grant_title: "{{ grant.title }}",
-                 grant_contract_version: "{{ grant.contract_version }}",
-                 grant_contract_address: "{{ grant.contract_address }}",
-                 grant_token_symbol: "{{ grant.token_symbol }}",
-                 grant_admin_address: "{{ grant.admin_address }}",
-                 zcash_payout_address: "{{ grant.zcash_payout_address }}",
-                 grant_token_address: "{{ grant.token_address }}",
-                 grant_logo: {% if grant.logo and grant.logo.url %}"{{ grant.logo.url }}"{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} "{% static grant_logo|addstr:id|add:'.png' %}" {% endwith %} {% endif %},
-                 grant_clr_prediction_curve: "{{ grant.clr_prediction_curve }}",
-                 grant_image_css: "{{ grant.image_css }}",
-                 tenants: {{ grant.tenants |safe }},
-                 is_clr_eligible: {{grant.is_clr_eligible|yesno:"true,false"}},
-                 grant_donation_amount: "{{ amount }}",
-                 grant_donation_currency: "{{ token.symbol }}",
-                 token_local_id: "{{ token.id }}"
+                //  grant_slug: "{{ grant.slug }}",
+                //  grant_url: "{{ grant.url }}",
+                //  grant_title: "{{ grant.title }}",
+                //  grant_contract_version: "{{ grant.contract_version }}",
+                //  grant_contract_address: "{{ grant.contract_address }}",
+                //  grant_token_symbol: "{{ grant.token_symbol }}",
+                //  grant_admin_address: "{{ grant.admin_address }}",
+                //  zcash_payout_address: "{{ grant.zcash_payout_address }}",
+                //  grant_token_address: "{{ grant.token_address }}",
+                //  grant_logo: {% if grant.logo and grant.logo.url %}"{{ grant.logo.url }}"{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} "{% static grant_logo|addstr:id|add:'.png' %}" {% endwith %} {% endif %},
+                //  grant_clr_prediction_curve: "{{ grant.clr_prediction_curve }}",
+                //  grant_image_css: "{{ grant.image_css }}",
+                //  tenants: {{ grant.tenants |safe }},
+                //  is_clr_eligible: {{grant.is_clr_eligible|yesno:"true,false"}},
+                //  grant_donation_amount: "{{ amount }}",
+                //  grant_donation_currency: "{{ token.symbol }}",
+                //  token_local_id: "{{ token.id }}"
                };
       var user_code = '{{user_code}}'
       var verification_tweet = '{{verification_tweet}}'

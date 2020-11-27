@@ -1257,9 +1257,9 @@ def grant_details_api(request, grant_id):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
-    tab = request.GET.get('tab', 'description')
     profile = get_profile(request)
     add_cancel_params = False
+
     try:
         grant = None
         try:
@@ -1278,11 +1278,10 @@ def grant_details(request, grant_id, grant_slug):
         activity_count = grant.contribution_count
         contributors = []
         contributions = []
-        negative_contributions = []
-        voucher_fundings = []
         sybil_profiles = []
 
-        if tab == 'sybil_profile' and request.user.is_staff:
+        # Sybil score
+        if request.user.is_staff:
             items = ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification', 'grants_contribution.originated_address']
             for item in items:
                 title = 'Sybil' if item == 'dashboard_profile.sybil_score' else "SMS"
@@ -1295,10 +1294,11 @@ def grant_details(request, grant_id, grant_slug):
                 ]
         _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
         contributions = list(_contributions.order_by('-created_on'))
-        #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
-        if tab == 'contributors':
-            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
-            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+
+        # if tab == 'contributors':
+        # Contributors
+        phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+        contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
@@ -1311,42 +1311,6 @@ def grant_details(request, grant_id, grant_slug):
         add_cancel_params = True
 
     is_team_member = is_grant_team_member(grant, profile)
-
-    if request.method == 'POST' and (is_team_member or request.user.is_staff):
-        grant.last_update = timezone.now()
-        if request.FILES.get('input_image'):
-            logo = request.FILES.get('input_image', None)
-            grant.logo = logo
-            grant.save()
-            record_grant_activity_helper('update_grant', grant, profile)
-            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-        elif 'edit-title' in request.POST:
-            grant.title = request.POST.get('edit-title')
-            grant.github_project_url = request.POST.get('edit-github_project_url')
-            grant.reference_url = request.POST.get('edit-reference_url')
-            team_members = request.POST.getlist('edit-grant_members[]')
-            team_members.append(str(grant.admin_profile.id))
-            grant.team_members.set(team_members)
-
-            if 'edit-twitter_account' in request.POST and request.POST.get('edit-twitter_account') != grant.twitter_handle_1:
-                grant.twitter_verified = False
-                grant.twitter_verified_at = None
-                grant.twitter_verified_by = None
-                grant.twitter_handle_1 = request.POST.get('edit-twitter_account')
-
-            if 'edit-description' in request.POST:
-                grant.description = request.POST.get('edit-description')
-                grant.description_rich = request.POST.get('edit-description_rich')
-            grant.save()
-
-            form_category_ids = request.POST.getlist('edit-categories[]')
-
-            '''Overwrite the existing categories and then add the new ones'''
-            grant.categories.clear()
-            add_form_categories_to_grant(form_category_ids, grant, grant.grant_type)
-
-            record_grant_activity_helper('update_grant', grant, profile)
-            return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     # handle grant updates unsubscribe
     key = 'unsubscribed_profiles'
@@ -1387,14 +1351,12 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'grant': grant,
         'sybil_profiles': sybil_profiles,
-        'tab': tab,
         'title': title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
-        'negative_contributions': negative_contributions,
         'user_subscription': user_subscription,
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
@@ -1405,37 +1367,21 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': is_clr_active,
-        'round_num': grant.clr_round_num,
+        # 'round_num': grant.clr_round_num,
         'is_team_member': is_team_member,
         'is_owner': grant.admin_profile.pk == request.user.profile.pk if request.user.is_authenticated else False,
-        'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
-        'is_round_5_5': False,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
-        'tenants': grant.tenants,
+        # 'tenants': grant.tenants,
     }
-
-    if tab == 'stats':
+    # Stats
+    if is_team_member or request.user.is_staff:
         params['max_graph'] = grant.history_by_month_max
         params['history'] = json.dumps(grant.history_by_month)
         params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')
 
-    if add_cancel_params:
-        add_in_params = {
-            'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-            'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-            'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-            'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-            'eth_usd_conv_rate': eth_usd_conv_rate(),
-            'conf_time_spread': conf_time_spread(),
-            'gas_advisories': gas_advisories(),
-        }
-        for key, value in add_in_params.items():
-            params[key] = value
-
-    # return TemplateResponse(request, 'grants/detail/index.html', params)
     return TemplateResponse(request, 'grants/detail/_index.html', params)
 
 
@@ -1476,11 +1422,6 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: no matching profile found'
             return JsonResponse(response)
 
-        # grant_type = request.POST.get('grant_type', None)
-        # if not grant_type:
-        #     response['message'] = 'error: grant_type is a mandatory parameter'
-        #     return JsonResponse(response)
-
         title = request.POST.get('title', None)
         if not title:
             response['message'] = 'error: title is a mandatory parameter'
@@ -1506,10 +1447,7 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
-        # token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
-
-        # metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
         reference_url = request.POST.get('reference_url', '')
         github_project_url = request.POST.get('github_project_url', None)
@@ -1527,27 +1465,15 @@ def grant_edit(request, grant_id):
         grant.admin_address = eth_payout_address
         grant.zcash_payout_address = zcash_payout_address
         grant.last_update = timezone.now()
-        # grant.admin_profile = profile,
         grant.twitter_handle_1 = twitter_handle_1
         grant.twitter_handle_2 = twitter_handle_2
         grant.region = region
-        # 'logo': logo,
         grant.hidden = False
         save_team_members = []
         save_team_members = [d['id'] for d in json.loads(team_members[0])]
         save_team_members.append(grant.admin_profile.id)
-        print(save_team_members)
         grant.team_members.set(save_team_members)
-        # grant.team_members.add(*save_team_members)
-        # save_team_members.append(str(grant.admin_profile.id))
-        # print(save_team_members)
-        print(grant)
         grant.save()
-
-        messages.info(
-            request,
-            _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
-        )
 
         record_grant_activity_helper('update_grant', grant, profile)
         # process_grant_creation_email.delay(grant.pk, profile.pk)
