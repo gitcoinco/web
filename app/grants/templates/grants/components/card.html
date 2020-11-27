@@ -233,7 +233,7 @@
             </div>
           </div>
 
-          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
+          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active && grant.clr_round_num">
             <template v-if="grant.tenants.indexOf('ETH') > -1">
               {% include 'grants/components/clr_estimate.html' with token='DAI' %}
             </template>
