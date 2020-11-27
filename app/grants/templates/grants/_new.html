@@ -40,7 +40,7 @@
     </div>
 
     <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-new-grant">
-      <form action="" @submit="checkForm" v-cloak>
+      <form action="" @submit="checkForm" ref="formNewGrant" v-cloak>
         <div class="container mt-3 mb-3  position-relative col-lg-6 mx-auto">
           <img :src="grant_type_logo" v-if="grant_type_logo" class="d-block m-auto mw-100">
 
@@ -155,7 +155,7 @@
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_1">Project Twitter Handle</label>
                 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
-                <input id="twitter_handle_1" v-model="form.twitter_handle_1" name="twitter_handle_1" class="form__input form__input-lg" maxlength="20" type="text" placeholder="humanfund"/>
+                <input id="twitter_handle_1" v-model="form.twitter_handle_1" name="twitter_handle_1" class="form__input form__input-lg" maxlength="20" type="text" placeholder="humanfund" required/>
 
                 <div class="text-danger" v-if="errors.twitter_handle_1">
                   [[errors.twitter_handle_1]]
@@ -167,6 +167,10 @@
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
 
                 <input id="twitter_handle_2" v-model="form.twitter_handle_2" name="twitter_handle_2" class="form__input form__input-lg" maxlength="20" type="text" placeholder="georgecostanza"/>
+
+                <div class="text-danger" v-if="errors.twitter_handle_2">
+                  [[errors.twitter_handle_2]]
+                </div>
               </div>
 
 
