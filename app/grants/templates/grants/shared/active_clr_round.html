@@ -7,7 +7,7 @@
       >
         <div class="position-absolute w-100 h-100"
           style="top: 0; right: 0; z-index: 5;
-          background: url('{% if active_round.logo %} {{ active_round.logo.url }} {% else %} #0044e088 {% endif %}') no-repeat center"
+          background: {% if active_round.logo %} url('{{ active_round.logo.url }}') {% else %} #0044e088 {% endif %} no-repeat center"
         >
         </div>
         <div class="d-flex px-4 py-3 justify-content-between position-relative" style="z-index: 10">
