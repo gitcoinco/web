@@ -303,7 +303,7 @@
       shadow
       width="70%"
       >
-      <form action="" @submit="checkForm" v-if="grant">
+      <form action="" @submit="checkForm($event)" ref="formEditGrant" v-if="grant">
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="logo">
             Project Logo

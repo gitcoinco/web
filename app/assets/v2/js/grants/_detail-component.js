@@ -276,7 +276,6 @@ Vue.mixin({
       window.open(tweetContent, '_blank')
     },
     checkForm: function(e) {
-      console.log('checking', e)
       let vm = this;
 
       vm.submitted = true;
@@ -298,6 +297,10 @@ Vue.mixin({
       }
       if (vm.grant.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
+      }
+
+      if (!vm.$refs.formEditGrant.reportValidity()) {
+        return false;
       }
 
       if (Object.keys(vm.errors).length) {
@@ -452,7 +455,9 @@ Vue.component('grant-details', {
   watch: {
     grant: {
       deep: true,
-      handler(newVal, oldVal) {
+      handler: function(newVal, oldVal) {
+        let vm = this;
+
         if (this.dirty && this.submitted) {
           this.checkForm();
         }
