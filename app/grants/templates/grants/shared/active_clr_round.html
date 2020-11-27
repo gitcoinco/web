@@ -1,7 +1,8 @@
 <div class="container-fluid grants-container">
   <div class="container">
     {% for active_round in active_rounds %}
-      <a href="{% if active_round.sub_round_slug %}{% url 'grants:clr_grants' round_num=active_round.round_num sub_round_slug=active_round.sub_round_slug %}{% else %}{% url 'grants:clr_grants' round_num=active_round.round_num %}{% endif %}"
+      <a
+        href="/grants/clr{% if active_round.customer_name %}/{{ active_round.customer_name }}{% endif %}{% if active_round.round_num %}/{{ active_round.round_num }}{% endif %}{% if active_round.sub_round_slug %}/{{ active_round.sub_round_slug }}{% endif %}"
         class="d-block text-decoration-none position-relative my-3 text-white"
         style="background: url('{% if active_round.logo %} {{ active_round.logo.url }} {% endif %}') no-repeat center ">
         <div class="position-absolute"
@@ -26,8 +27,7 @@
               <small>{{active_round.start_date | date:'m/Y'}} - {{active_round.end_date | date:'m/Y'}}</small>
             </h5>
           </div>
-          <p>${{ active_round.total_pot }}</p>
-
+          <p class="my-auto font-weight-semibold">${{ active_round.total_pot }}</p>
         </div>
       </a>
     {% endfor %}

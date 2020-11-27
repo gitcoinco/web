@@ -51,7 +51,7 @@
         <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
           {% for active_round in active_rounds %}
             <li>
-              <a href="{% if active_round.sub_round_slug %}{% url 'grants:clr_grants' round_num=active_round.round_num sub_round_slug=active_round.sub_round_slug %}{% else %}{% url 'grants:clr_grants' round_num=active_round.round_num %}{% endif %}"
+              <a href="/grants/clr{% if active_round.customer_name %}/{{ active_round.customer_name }}{% endif %}{% if active_round.round_num %}/{{ active_round.round_num }}{% endif %}{% if active_round.sub_round_slug %}/{{ active_round.sub_round_slug }}{% endif %}"
                  :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`">
                 {% if active_round.display_text %}
                   {{ active_round.display_text }}
