@@ -1681,7 +1681,7 @@ def grant_new(request):
     profile = get_profile(request)
 
     grant_types = []
-    for g_type in GrantType.objects.all():
+    for g_type in GrantType.objects.filter(is_active=True):
         grant_categories = []
             # project_pk = request.POST.get('project_pk', None)
             # if project_pk:
@@ -1716,15 +1716,6 @@ def grant_new(request):
         'title': _('New Grant'),
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
-        # 'grant': {},
-        # 'keywords': get_keywords(),
-        # 'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        # 'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        # 'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        # 'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        # 'eth_usd_conv_rate': eth_usd_conv_rate(),
-        # 'conf_time_spread': conf_time_spread(),
-        # 'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': grant_types,
         'project_data': project
