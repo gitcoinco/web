@@ -428,14 +428,16 @@
         </div>
 
         <div class="col-12 mb-3 text-right">
-          <button @click="saveGrant($event)" class="btn btn-gc-blue">SAVE CHANGES</button>
+          <button @click="saveGrant($event)" class="btn btn-gc-blue font-weight-semibold">SAVE CHANGES</button>
         </div>
         <div class="col-12 mb-3 mt-5">
-          <div class="alert bs-alert alert-danger" role="alert">
-            <h4 class="alert-heading pt-0">Danger Area</h4>
-            <p>Once the grant is canceled will not longer receive contributions or participate on CLR matching. If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a> and don't forget to include your username and grant link.</p>
-            <hr>
-            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger">CANCEL GRANT</button>
+          <div class="alert bs-alert alert-danger py-4" role="alert">
+            <h4 class="alert-heading pt-2 mb-2">Cancel Your Grant</h4>
+            <p class="mb-0">Once the grant is canceled will not longer receive contributions or participate on CLR matching.</p>
+            <p>If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a>
+              and don't forget to include your username and grant link.
+            </p>
+            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger font-weight-semibold">CANCEL GRANT</button>
           </div>
         </div>
       </form>
