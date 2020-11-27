@@ -7,10 +7,27 @@ Vue.component('grant-card', {
     return {
       collections: document.collections,
       currentUser: document.contxt.github_handle,
-      isCurator: false
+      isCurator: false,
     };
   },
   methods: {
+    quickView: function(event ) {
+      event.preventDefault();
+      let vm = this;
+
+      appGrants.grant = vm.grant;
+      appGrants.$refs["sidebar-quick-view"].$on('hidden', function(e){
+        appGrants.grant = {}
+      });
+      vm.$root.$emit('bv::toggle::collapse', 'sidebar-quick-view');
+    },
+    grantInCart: function() {
+      let vm = this;
+      let inCart = CartData.cartContainsGrantWithId(vm.grant.id);
+
+      vm.$set(vm.grant, 'isInCart', inCart);
+      return vm.grant.isInCart;
+    },
     checkIsCurator: function() {
       if (this.currentUser && this.collection && this.collection.curators.length) {
         const curators = this.collection.curators.map(collection => collection.handle);
@@ -41,11 +58,19 @@ Vue.component('grant-card', {
       return true;
     },
     addToCart: async function(grant) {
+      let vm = this;
       const grantCartPayloadURL = `v1/api/${grant.id}/cart_payload`;
       const response = await fetchData(grantCartPayloadURL, 'GET');
 
+      vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
+      showSideCart();
+    },
+    removeFromCart: function() {
+      let vm = this;
 
+      vm.$set(vm.grant, 'isInCart', false);
+      CartData.removeIdFromCart(vm.grant.id);
       showSideCart();
     },
     addToCollection: async function({collection, grant}) {
@@ -59,6 +84,7 @@ Vue.component('grant-card', {
   },
   mounted() {
     this.checkIsCurator();
+    this.grantInCart();
   }
 });
 

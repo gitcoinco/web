@@ -157,6 +157,7 @@ if (document.getElementById('grants-showcase')) {
     el: '#grants-showcase',
     data: {
       grants: [],
+      grant: {},
       page: 1,
       collectionsPage: 1,
       limit: 6,
