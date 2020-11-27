@@ -50,6 +50,16 @@ Vue.mixin({
         vm.relatedGrants = json.grants;
 
       }).catch(console.error);
+    },
+    backNavigation: function() {
+      let vm = this;
+      var lgi = localStorage.getItem('last_grants_index');
+      var lgt = localStorage.getItem('last_grants_title');
+
+      if (lgi && lgt) {
+        vm.$set(vm.backLink, 'url', lgi);
+        vm.$set(vm.backLink, 'title', lgt);
+      }
     }
   }
 });
@@ -65,9 +75,14 @@ if (document.getElementById('gc-grant-detail')) {
       return {
         grant: {},
         relatedGrants: [],
+        backLink:{
+          url: '/grants',
+          title: 'Grants'
+        }
       };
     },
     mounted: function() {
+      this.backNavigation()
       this.fetchGrantDetails();
     }
   });
