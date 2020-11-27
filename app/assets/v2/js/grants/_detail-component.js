@@ -363,6 +363,13 @@ Vue.mixin({
         (this.currentPage - 1) * this.perPage,
         this.currentPage * this.perPage
       );
+    },
+    isUserLogged() {
+      let vm = this;
+
+      if (vm.currentProfile.username !== 'False') {
+        return true;
+      }
     }
 
   }
@@ -385,6 +392,7 @@ Vue.component('grant-details', {
   template: '#template-grant-details',
   data() {
     return {
+      currentProfile,
       dirty: false,
       submitted: false,
       user_code: userCode,

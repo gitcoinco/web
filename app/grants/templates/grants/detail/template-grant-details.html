@@ -58,7 +58,7 @@
           <div v-if="grant.funding_info" class="flex-fill text-md-left text-center ">
             <i class="text-black-70 fas fa-fw fa-donate"></i> <span>[[grant.funding_info]]</span>
           </div>
-          <div class="flex-fill text-md-left text-center">
+          <div class="flex-fill text-md-left text-center" v-if="isUserLogged">
             <button @click="toggleFollowingGrant(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
               <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
               <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
