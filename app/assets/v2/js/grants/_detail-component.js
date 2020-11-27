@@ -49,6 +49,9 @@ Vue.mixin({
       event.preventDefault();
       let vm = this;
 
+      if (!vm.checkForm(event))
+        return;
+
       const headers = {
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
@@ -81,6 +84,7 @@ Vue.mixin({
         success: response => {
           if (response.status == 200) {
             vm.grant.logo_url = vm.logoPreview;
+            vm.grant.last_update = new Date();
             vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
             vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
@@ -123,12 +127,11 @@ Vue.mixin({
 
       $.when(cancelGrant).then(function(response) {
         vm.grant.active = false;
+        vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
+        _alert('Grant cancelled', 'success');
         return response;
       });
 
-    },
-    checkGrantData: function() {
-      return;
     },
     toggleFollowingGrant: async function(grantId) {
       let vm = this;
@@ -202,7 +205,7 @@ Vue.mixin({
             vm.$set(vm, 'usersOptions', json);
             if (selected) {
               // TODO: BUG -> Make append
-              vm.$set(vm.form, 'team_members', vm.usersOptions[0].text);
+              // vm.$set(vm.form, 'team_members', vm.usersOptions[0].text);
             }
             resolve();
           });
@@ -271,7 +274,38 @@ Vue.mixin({
       let vm = this;
       const tweetContent =`https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`
       window.open(tweetContent, '_blank')
-    }
+    },
+    checkForm: function(e) {
+      console.log('checking', e)
+      let vm = this;
+
+      vm.submitted = true;
+      vm.errors = {};
+      if (!vm.grant.title.length) {
+        vm.$set(vm.errors, 'title', 'Please enter the title');
+      }
+      if (!vm.grant.reference_url.length) {
+        vm.$set(vm.errors, 'reference_url', 'Please enter link to the project');
+      }
+      if (!vm.grant.twitter_handle_1.length) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
+      }
+      if (vm.grant.twitter_handle_1 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_1)) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
+      }
+      if (vm.grant.twitter_handle_2 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_2)) {
+        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
+      }
+      if (vm.grant.description_rich.length < 10) {
+        vm.$set(vm.errors, 'description', 'Please enter description for the grant');
+      }
+
+      if (Object.keys(vm.errors).length) {
+        return false; // there are errors the user must correct
+      }
+      vm.submitted = false;
+      return true; // no errors, continue to create grant
+    },
   },
   computed: {
     teamFormatted: {
@@ -348,6 +382,8 @@ Vue.component('grant-details', {
   template: '#template-grant-details',
   data() {
     return {
+      dirty: false,
+      submitted: false,
       user_code: userCode,
       verification_tweet: verificationTweet,
       imgTransition: false,
@@ -412,7 +448,18 @@ Vue.component('grant-details', {
     vm.grant.description_rich_edited = vm.grant.description_rich;
     vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     vm.grantInCart();
-  }
+  },
+  watch: {
+    grant: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (this.dirty && this.submitted) {
+          this.checkForm();
+        }
+        this.dirty = true;
+      }
+    },
+  },
 
 })
 

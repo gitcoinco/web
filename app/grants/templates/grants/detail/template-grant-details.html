@@ -207,20 +207,7 @@
                 [[grant.positive_round_contributor_count]] Contributions
               </div>
             </div>
-
-
           </div>
-
-
-          <!-- [[grant.clr_round_num]] -->
-          <!-- [[grant.is_clr_active]] -->
-
-
-
-          <div>
-            <!-- [[ grant.clr_prediction_curve[0][1] ]] Estimated match -->
-          </div>
-
         </div>
         <template v-if="grant.link_to_new_grant">
           <a :href="grant.link_to_new_grant" class="btn btn-block btn-gc-blue">Visit the active grant to fund</a>
@@ -316,7 +303,7 @@
       shadow
       width="70%"
       >
-      <form action="" @submit="checkGrantData" v-if="grant">
+      <form action="" @submit="checkForm" v-if="grant">
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="logo">
             Project Logo
@@ -382,6 +369,10 @@
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
 
           <input id="twitter_handle_2" v-model.trim="grant.twitter_handle_2" name="twitter_handle_2" class="form__input form__input-lg" maxlength="20" type="text" placeholder="georgecostanza"/>
+
+          <div class="text-danger" v-if="errors.twitter_handle_2">
+            [[errors.twitter_handle_2]]
+          </div>
         </div>
 
         <!-- Github -->
