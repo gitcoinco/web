@@ -867,7 +867,7 @@ def grants_by_grant_type(request, grant_type):
         return redirect('/grants')
 
     all_grants_count = Grant.objects.filter(
-        network=network, hidden=False
+        network=network, hidden=False, active=True
     ).count()
 
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
