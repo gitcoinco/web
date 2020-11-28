@@ -390,6 +390,7 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
+    raw_id_fields = ['owner']
 
     def link(self, instance):
         try:
