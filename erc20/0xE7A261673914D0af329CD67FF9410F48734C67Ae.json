@@ -1,0 +1,16 @@
+{
+    "symbol": "FLYcoin",
+    "address": "0xE7A261673914D0af329CD67FF9410F48734C67Ae",
+    "overview": {
+        "en": "FLY is committed to creating a safe, efficient and transparent token economic application system, allowing merchants and users to form a community of interests, and work together to share and win-win. At the same time, FLY is not a company in the traditional sense. It has taken a key step in the evolution of a digital asset trading platform to the community. The FLY community is an open, transparent and tokenized organization. FLY represents the legitimate rights and interests of the FLY business alliance. FLY Business Application Ecosystem: Big Data Collection + Blockchain Mall + Industry Information + Love Donations + Blockchain Business School + Social Network + Physical Blockchain Asset Incubation.",
+        "zh": "FLY 致力于创建一个安全的、高效的、透明的通证经济应用系统，让商户和用户形成利益共同体， 携手共享共赢。同时，FLY 不是传统意义的公司，它迈出了数字资产交易平台向社区进化的关键一 步。FLY 社区是一个公开透明的、token 化的组织，FLY 代表 FLY 商业联盟的合法权益。FLY商业 应用生态体系：大数据采集+区块链商城+行业资讯+爱心捐助+区块链商学院+社交网络+实体区块 链资产孵化。"
+    },
+    "email": "flycoin68@gamil.com",
+    "website": "http://flycoinf.com/",
+    "whitepaper": "http://flycoinf.com/static/picture/1.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-28",
+    "initial_price": {
+        "USD": "0.14 USD"
+    }
+}
