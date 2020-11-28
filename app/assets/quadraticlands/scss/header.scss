@@ -1,0 +1,61 @@
+header{
+
+	display: grid;
+	grid-template-columns: 48px auto;
+	grid-column-gap: 1em;
+
+	height: 130px;
+	
+	font-weight: 600;
+	font-size: 80%;
+
+	margin: 0em 30px;
+	user-select: none;
+
+
+
+	.logo{
+		height: 48px;
+		width: 48px;
+		margin: auto;
+
+		z-index: 9999;
+		
+
+		img, svg{
+			height: 100%;
+			width: 100%;
+			display: block;
+		}
+	}
+
+	nav{
+		align-self: center;
+		justify-self: end;
+	}
+
+
+}
+
+
+
+
+@media #{$tablet} { 
+	header{
+		margin: 0em 20px;
+	}
+}
+
+
+@media #{$phone} { 
+	header{
+		margin: 0em 10px;
+	}
+}
+
+
+
+
+
+
+

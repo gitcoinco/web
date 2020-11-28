@@ -1,0 +1,28 @@
+section#particles{
+
+	position: fixed;
+	top: 0;
+	height: 100vh;
+	width: 100vw;
+	z-index: -1111;
+
+
+
+	svg{
+		display: grid;
+		margin: auto;
+		position: absolute;
+		top:0;
+		left:0;
+		width:0px;
+		height:0px;
+		fill: none;
+		transition: all 300ms linear;
+		// transition-delay: 100ms;
+
+		
+	}
+
+}
+
+

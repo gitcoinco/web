@@ -1,0 +1,72 @@
+.web3modal-modal-lightbox{
+	background-color: rgba(0, 0, 0, 0.1) !important;	
+			background-color: var(--space_glass) !important;
+			backdrop-filter: blur(18px) !important;
+}
+
+.web3modal-modal-card {
+	background-color: transparent !important;
+	padding: 0em !important;
+	border-radius: initial !important;
+}
+
+.web3modal-provider-wrapper{
+	border: none !important;
+	border-radius: inherit !important;
+
+}
+
+.web3modal-modal-container{
+	padding: 0px !important;
+}
+
+
+.web3modal-provider-wrapper{
+	padding: 10px !important;
+}
+
+
+
+.web3modal-provider-container{
+	background-color: var(--space) !important;
+	border-radius: initial !important;
+	cursor: pointer;
+	border: 1px solid var(--smoke) !important;
+
+	.web3modal-provider-icon{
+		margin-top: 0.5em !important;
+	}
+
+	.web3modal-provider-name{
+		color: var(--purple_light) !important;
+	    font-family: 'Space Mono', monospace !important;
+	    font-weight: 400 !important;
+	    font-size: 150% !important;
+	}
+
+	.web3modal-provider-description{
+		color: var(--stone) !important;
+	}
+
+
+	&:hover{
+
+		.web3modal-provider-name{
+			color: var(--white) !important;
+			animation: colorcycle-shadow 3s ease-in-out infinite;
+		}
+
+	};
+
+
+}
+
+
+
+
+
+
+
+
+
+

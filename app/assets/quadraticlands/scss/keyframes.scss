@@ -1,0 +1,68 @@
+/*keyframes*/
+
+@keyframes colorcycle { 
+    0% { background-color: var(--pink); } 
+    33%  { background-color: var(--aqua); } 
+    66%   { background-color: var(--purple); }
+    100%   { background-color: var(--pink); }      
+} 
+
+@keyframes colorcycle-text { 
+    0% { color: var(--pink); } 
+    33%  { color: var(--aqua); } 
+    66%   { color: var(--purple); }
+    100%   { color: var(--pink); }      
+} 
+
+
+@keyframes colorcycle-stroke { 
+    0% { stroke: var(--pink); } 
+    33%  { stroke: var(--aqua); } 
+    66%   { stroke: var(--purple); }
+    100%   { stroke: var(--pink); }      
+} 
+
+@keyframes colorcycle-fill { 
+    0% { fill: var(--pink); } 
+    33%  { fill: var(--aqua); } 
+    66%   { fill: var(--purple); }
+    100%   { fill: var(--pink); }      
+} 
+
+@keyframes colorcycle-shadow { 
+    0% { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)) ; } 
+    33%  { filter: drop-shadow(0px 0px 44px var(--aqua)) drop-shadow(0px 0px 6px var(--aqua)); } 
+    66%   { filter: drop-shadow(0px 0px 44px var(--purple)) drop-shadow(0px 0px 6px var(--purple)); }
+    100%   { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)); }      
+} 
+
+@keyframes colorcycle-shadow-pink-purple { 
+    0% { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)) ; }  
+    50%   { filter: drop-shadow(0px 0px 44px var(--purple)) drop-shadow(0px 0px 6px var(--purple)); }
+    100%   { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)); }      
+} 
+
+
+
+
+@keyframes menu-background { 
+    0% { box-shadow: 0px 0px 100px 0px var(--pink_half); } 
+    33%  { box-shadow: 0px 0px 100px 0px var(--aqua_half); } 
+    66%   { box-shadow: 0px 0px 100px 0px var(--purple_half); }
+    100%   { box-shadow: 0px 0px 100px 0px var(--pink_half); }      
+}
+
+
+@keyframes floating { 
+    0% { transform: translate(0,  0px); } 
+    50%  { transform: translate(0, 15px); } 
+    100%   { transform: translate(0, 0px); }     
+} 
+
+@keyframes floating-reverse { 
+    0% { transform: translate(0,  15px); } 
+    50%  { transform: translate(0, 0px); } 
+    100%   { transform: translate(0, 15px); }     
+} 
+
+
