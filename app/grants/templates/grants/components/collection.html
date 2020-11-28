@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 <grant-collection inline-template :collection="collection" v-on:collection:show="showSingleCollection($event)" :small="current_type !== 'collections' ">
-  <a @click="$emit('collection:show', collection.id)" v-if="collection" target="_blank  ">
+  <a @click="$emit('collection:show', collection.id)" v-if="collection" target="_blank">
     <template>
       <div class="collection-item" v-if="small">
         <div class="collection-item__img position-relative">
@@ -104,12 +104,20 @@
         </div>
         <div class="collection-item__footer">
             <div class="col-12 pb-4">
-              <button @click.stop="addToCart()" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+
+              <!--SHOW THIS IF YOU ARE VIEWING A CERTAIN COLLECTION -->
+              <button v-if="collection_id" @click.stop="addToCart()" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
                 <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
               </button>
+              <!-- ELSE SHOW THIS-->
+              <a v-else class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1"
+                :href="`/grants/collections?collection_id=${collection.id}`" v-on:click.stop="app/grants/views.py" target="_blank">
+                <i class="ml-2 fas fa-arrow-right"></i> View
+              </a>
 
               <button @click.stop="shareCollection()" class="btn btn-link gc-text-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
-                <i class="fa fa-share" aria-hidden="true"></i> Share Collection
+                <i class="fa fa-share ml-2" aria-hidden="true"></i>
+                Share Collection
                 <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/collections?collection_id=${collection.id}`">
               </button>
             </div>
