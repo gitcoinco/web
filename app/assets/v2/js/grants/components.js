@@ -59,7 +59,7 @@ Vue.component('grant-card', {
     },
     addToCart: async function(grant) {
       let vm = this;
-      const grantCartPayloadURL = `v1/api/${grant.id}/cart_payload`;
+      const grantCartPayloadURL = `/grants/v1/api/${grant.id}/cart_payload`;
       const response = await fetchData(grantCartPayloadURL, 'GET');
 
       vm.$set(vm.grant, 'isInCart', true);
