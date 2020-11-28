@@ -66,7 +66,7 @@ Vue.mixin({
         'team_members[]': JSON.stringify(vm.teamFormatted),
         'handle1': vm.grant.twitter_handle_1,
         'handle2': vm.grant.twitter_handle_2,
-        'eth_payout_address': vm.grant.eth_payout_address,
+        'eth_payout_address': vm.grant.admin_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'region': vm.grant.region?.name || undefined
       };
@@ -95,14 +95,14 @@ Vue.mixin({
             }
           } else {
             // vm.submitted = false;
-            _alert('Unable to create grant. Please try again', 'error');
-            console.error(`error: grant creation failed with status: ${response.status} and message: ${response.message}`);
+            _alert('Unable to edit grant. Please try again', 'error');
+            console.error(`error: grant edit failed with status: ${response.status} and message: ${response.message}`);
           }
         },
         error: err => {
           // vm.submitted = false;
-          _alert('Unable to create grant. Please try again', 'error');
-          console.error(`error: grant creation failed with msg ${err}`);
+          _alert('Unable to edit grant. Please try again', 'error');
+          console.error(`error: grant edit failed with msg ${err}`);
         }
       });
 

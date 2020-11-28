@@ -1417,7 +1417,6 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: user needs to be authenticated to create grant'
             return JsonResponse(response)
 
-        # profile = request.user.profile if hasattr(request.user, 'profile') else None
         if not profile:
             response['message'] = 'error: no matching profile found'
             return JsonResponse(response)
@@ -1436,51 +1435,69 @@ def grant_edit(request, grant_id):
         if not description_rich:
             description_rich = description
 
-        eth_payout_address = request.POST.get('eth_payout_address',
-            request.POST.get('admin_address'))
-        zcash_payout_address = request.POST.get('zcash_payout_address', None)
-        if not eth_payout_address and not zcash_payout_address:
+        eth_payout_address = request.POST.get('eth_payout_address', '0x0')
+        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
+
+        if (
+            eth_payout_address == '0x0' and
+            zcash_payout_address == '0x0'
+        ):
             response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
             return JsonResponse(response)
 
         if (
-            zcash_payout_address and
             zcash_payout_address != '0x0' and
             not zcash_payout_address.startswith('t')
         ):
             response['message'] = 'error: zcash_payout_address must be a transparent address'
             return JsonResponse(response)
 
-        logo = request.FILES.get('logo', None)
-        team_members = request.POST.getlist('team_members[]')
-        reference_url = request.POST.get('reference_url', '')
-        github_project_url = request.POST.get('github_project_url', None)
-        twitter_handle_1 = request.POST.get('handle1', '')
-        twitter_handle_2 = request.POST.get('handle2', '')
-        region = request.POST.get('region', '')
+        if eth_payout_address != '0x0':
+            grant.admin_address = eth_payout_address
 
+        if zcash_payout_address != '0x0':
+            grant.zcash_payout_address = zcash_payout_address
+
+        github_project_url = request.POST.get('github_project_url', None)
+        if github_project_url:
+            grant.github_project_url = github_project_url
+
+        logo = request.FILES.get('logo', None)
         if logo:
             grant.logo = logo
+
+        twitter_handle_1 = request.POST.get('handle1', None)
+        if twitter_handle_1:
+            grant.twitter_handle_1 = twitter_handle_1
+
+        twitter_handle_2 = request.POST.get('handle2', None)
+        if twitter_handle_2:
+            grant.twitter_handle_2 = twitter_handle_2
+
+        reference_url = request.POST.get('reference_url', None)
+        if reference_url:
+            grant.reference_url = reference_url
+
+        region = request.POST.get('region', None)
+        if region:
+            grant.region = region
+
+        team_members = request.POST.getlist('team_members[]', None)
+        if team_members:
+            save_team_members = []
+            save_team_members = [d['id'] for d in json.loads(team_members[0])]
+            save_team_members.append(grant.admin_profile.id)
+            grant.team_members.set(save_team_members)
+
         grant.title = title
-        grant.reference_url = reference_url
         grant.description = description
         grant.description_rich = description_rich
-        grant.github_project_url = github_project_url
-        grant.admin_address = eth_payout_address
-        grant.zcash_payout_address = zcash_payout_address
         grant.last_update = timezone.now()
-        grant.twitter_handle_1 = twitter_handle_1
-        grant.twitter_handle_2 = twitter_handle_2
-        grant.region = region
         grant.hidden = False
-        save_team_members = []
-        save_team_members = [d['id'] for d in json.loads(team_members[0])]
-        save_team_members.append(grant.admin_profile.id)
-        grant.team_members.set(save_team_members)
+
         grant.save()
 
         record_grant_activity_helper('update_grant', grant, profile)
-        # process_grant_creation_email.delay(grant.pk, profile.pk)
 
         response = {
             'status': 200,
