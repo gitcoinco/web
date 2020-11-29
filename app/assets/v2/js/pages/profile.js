@@ -19,6 +19,7 @@ $(document).ready(function() {
     }
     let url = '/kudos/sync/?pk=' + $(this).data('id');
     let $target = $(this).parents('.flip-card__extra-data').find('.block_explorer_link');
+
     $.get(url, function(response) {
       let block_ex_url = response['url'];
       let txid = response['txid'];
