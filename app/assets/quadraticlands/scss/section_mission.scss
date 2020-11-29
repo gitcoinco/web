@@ -17,6 +17,7 @@ section.mission .card{
 	margin-bottom: 2em;
 	user-select: none;
 
+
 	.card-image{
 
 		border: 1px solid var(--pink_light);
@@ -97,12 +98,6 @@ section.mission .card{
 
 	&:hover{
 
-		.card-image{
-			// border: 1px solid var(--white);
-			// animation: colorcycle-shadow-pink-purple 2s ease-in-out infinite;
-			// background-color: var(--space_light);
-		}
-
 		.card-body{
 			.card-text{
 				.card-title{
@@ -112,6 +107,24 @@ section.mission .card{
 		}
 
 	};
+
+
+
+	&.locked{
+		opacity: 0.5;
+
+		&:hover{
+			.card-body{
+				.card-text{
+					.card-title{
+						color: var(--purple_light);
+					}
+				}
+			}			
+		};
+
+	}
+
 
 
 }

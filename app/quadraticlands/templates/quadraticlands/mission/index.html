@@ -22,161 +22,102 @@
 
 
 
+<!--{% with proof_of_knowledge=0 proof_of_receive=0 proof_of_use=0 %}-->
+
+
 <!--missions-->
 <section class="mission">
 
-	<!-- proof of knowledge -->
 
-	<a href="/quadraticlands/mission/knowledge">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-proof-of-know-start.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">Proof of Knowledge</div>
-					<div class="card-subtitle">unrepeatable</div>
-				</div>
-				<div class="card-badges">
-					<div class="card-badge">
-						{% include "quadraticlands/_inlinesvg/done.svg" %}
-					</div>
-				</div>				
-			</div>
-		</div>
-	</a>
+
+	<!-- PROOF OF KNOWLEDGE CARD -->
+	<!-- no dependencies in other missions -->
+
+	{% with name="Proof of Knowledge" %}
+
+		{% if not proof_of_knowledge  %}
+			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}
+		{% else %}
+			{% include 'quadraticlands/mission/card.html' with message="unrepeatable" svg="landscape-proof-of-know-end.svg" done="true" %}
+		{% endif %}
+
+	{% endwith %}
 
 
 
-	<!-- proof of receive -->
- 	<a href="/quadraticlands/mission/receive">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-proof-of-receive-start.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">Proof of Receive</div>
-					<div class="card-subtitle active">available</div>
-				</div>
-				<div class="card-badges">
-					<div class="card-badge gtc-token">
-						{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
-						{% if not proof_of_receive %}
-						<span>+{{ total_claimable_gtc }}</span>
-						{% endif %}
-					</div>
-				</div>
 
-			</div>
-		</div>
-	</a>
+	<!-- PROOF OF RECEIVE CARD -->
+	<!-- user have to finish proof_of_knowledge first -->
+
+	{% with name="Proof of Receive" %}
+
+		{% if not proof_of_knowledge  %}
+
+			<!-- User can not this mission yet -->
+			{% include 'quadraticlands/mission/card.html' with message="locked" svg="landscape-proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
+
+		{% else %}
+
+			<!-- User can Play -->
+			{% if not proof_of_receive %}
+				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-receive-start.svg" url="/quadraticlands/mission/receive" tokens=total_claimable_gtc %}
+			{% else %}
+				{% include 'quadraticlands/mission/card.html' with message="unrepeatable" svg="landscape-proof-of-receive-end.svg" done="true" %}
+			{% endif %}	
+
+		{% endif %}
 
 
-
-	<!-- proof of use -->
-
-	<a href="/quadraticlands/mission/use">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-proof-of-use-start.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">Proof of Use</div>
-					<div class="card-subtitle active">available</div>
-				</div>
-				<div class="card-badges">
-					<div class="card-badge">
-						{% include "quadraticlands/_inlinesvg/kudos.svg" %}
-					</div>
-				</div>
-			</div>
-		</div>
-	</a>
+	{% endwith %}
 
 
 
-	<!-- dummy -->
 
-	<a href="#">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-mission-dummy.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">SybilHunt</div>
-					<div class="card-subtitle active">available</div>
-				</div>
-				<div class="card-badges">
-					<div class="card-badge gtc-token">
-						{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
-					</div>
-				</div>
-			</div>
-		</div>
-	</a>
+	<!-- PROOF OF USE CARD -->
+	<!-- user have to finish proof_of_receive first -->
 
+	{% with name="Proof of Use" %}
 
+		{% if not proof_of_receive  %}
 
-	<!-- dummy -->
+			<!-- User can not this mission yet -->
+			{% include 'quadraticlands/mission/card.html' with message="locked" svg="landscape-proof-of-use-start.svg" locked="true" %}
 
-	<a href="#">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-mission-dummy.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">Gitcoin Grants Dispute Resolution</div>
-					<div class="card-subtitle">Release 22.1.2021</div>
-				</div>
-			</div>
-		</div>
-	</a>
+		{% else %}
+
+			<!-- User can Play -->
+			{% if not proof_of_use %}
+				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-use-start.svg" url="/quadraticlands/mission/use" %}
+			{% else %}
+				{% include 'quadraticlands/mission/card.html' with message="unrepeatable" svg="landscape-proof-of-use-end.svg" done="true" %}
+			{% endif %}
+
+		{% endif %}
+
+	{% endwith %}
 
 
 
-	<!-- dummy -->
 
-	<a href="#">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-mission-dummy.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">Quadratic Diplomacy</div>
-					<div class="card-subtitle">Release 22.2.2021</div>
-				</div>
-			</div>
-		</div>
-	</a>
+	<!-- DUMMY -->
+	<!-- user have to finish proof_of_receive first -->
 
 
+	<!--
+	{% with name="SybilHunt Dummy Mission" %}
+		{% include 'quadraticlands/mission/card.html' with message="soon" svg="landscape-mission-dummy.svg" url="/quadraticlands/mission/use" locked="true" %}
+	{% endwith %}
+	-->
 
-	<!-- dummy -->
 
-	<a href="#">
-		<div class="card">
-			<div class="card-image">
-				<img src="/static/quadraticlands/images/landscape-mission-dummy.svg">
-			</div>
-			<div class="card-body">
-				<div class="card-text">
-					<div class="card-title">Attack of the mighty Unicorn</div>
-					<div class="card-subtitle">Release 22.4.2021</div>
-				</div>
-			</div>
-		</div>
-	</a>
 
 
 
 
 </section>
 
+
+<!--{% endwith %}-->
 
 
 

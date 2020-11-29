@@ -1,0 +1,34 @@
+{% if playable %}
+<a href="{{url}}">
+{% endif %}
+
+	<div class="card {% if locked %}locked{% endif %}">
+		<div class="card-image">
+			<img src="/static/quadraticlands/images/{{svg}}">
+		</div>
+		<div class="card-body">
+			<div class="card-text">
+				<div class="card-title">{{name}}</div>
+					<div class="card-subtitle {% if playable %} active {% endif %}">{{message}}</div>
+			</div>
+			<div class="card-badges">
+
+				{% if done %} 
+				<div class="card-badge">{% include "quadraticlands/_inlinesvg/done.svg" %}</div>
+				{% endif %}
+
+				{% if tokens %} 
+				<div class="card-badge gtc-token">
+					{% include "quadraticlands/_inlinesvg/gtctoken_dark.svg" %}
+					<span>+{{tokens}}</span>
+				</div>
+				{% endif %}
+
+			</div>				
+		</div>
+	</div>
+
+
+{% if playable %}
+</a>
+{% endif %}
