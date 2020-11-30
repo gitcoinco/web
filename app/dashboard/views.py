@@ -22,6 +22,7 @@ import hashlib
 import html
 import json
 import logging
+import re
 import time
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -3098,6 +3099,8 @@ def verify_user_twitter(request, handle):
     MIN_FOLLOWER_COUNT = 100
     MIN_ACCOUNT_AGE_WEEKS = 26 # ~6 months
 
+    twitter_re = re.compile(r'^https?://(www\.)?twitter\.com/(#!/)?([^/]+)(/\w+)*$')
+
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
         return JsonResponse({
@@ -3113,13 +3116,16 @@ def verify_user_twitter(request, handle):
         })
 
     request_data = json.loads(request.body.decode('utf-8'))
-    twitter_handle = request_data.get('twitter_handle', '')
+    twitter_handle = request_data.get('twitter_handle', '').strip('@')
+    match_twitter_url = twitter_re.match(twitter_handle)
 
-    if twitter_handle == '':
+    if not match_twitter_url  or twitter_handle == '':
         return JsonResponse({
             'ok': False,
             'msg': f'Request must include a Twitter handle'
         })
+
+    twitter_handle = match_twitter_url.group(3)
 
     auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)

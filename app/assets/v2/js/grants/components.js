@@ -29,10 +29,29 @@ Vue.component('grant-card', {
       return vm.grant.isInCart;
     },
     checkIsCurator: function() {
-      if (this.currentUser && this.collection && this.collection.curators.length) {
-        const curators = this.collection.curators.map(collection => collection.handle);
+      let vm = this;
+      let currentUser;
+      // Validate the user presence and clean current user handle
+      if (vm.currentUser) {
+        currentUser = vm.currentUser.replace(/@/, '').replace(/\s/g,'')
+      } else {
+        return;
+      }
 
-        this.isCurator = curators.indexOf(this.currentUser) !== -1;
+      // Validate if exists the collection
+      if (this.collection && this.collection.curators.length) {
+        this.collection.curators.map(curator => {
+          let currentCurator;
+
+          // Clean curator handle
+          if (curator && curator.handle) {
+            currentCurator = curator.handle.replace(/@/, '').replace(/\s/g,'')
+          }
+
+          if (currentCurator === currentUser) {
+            vm.isCurator = true;
+          }
+        });
       }
     },
     get_clr_prediction: function(indexA, indexB) {
