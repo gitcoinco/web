@@ -1477,10 +1477,10 @@ def grant_edit(request, grant_id):
         twitter_handle_2 = request.POST.get('handle2', '')
 
         if twitter_handle_1 and not re.search(r'^@?[a-zA-Z0-9_]{1,15}$', twitter_handle_1):
-                response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'
+            response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'
 
         if twitter_handle_2 and not re.search(r'^@?[a-zA-Z0-9_]{1,15}$', twitter_handle_2):
-                response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
+            response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
 
         grant.twitter_handle_1 = f'https://twitter.com/{twitter_handle_1.strip('@')}'
         grant.twitter_handle_2 = f'https://twitter.com/{twitter_handle_2.strip('@')}'
@@ -1636,10 +1636,10 @@ def grant_new(request):
         twitter_handle_2 = request.POST.get('handle2', '')
 
         if twitter_handle_1 and not re.search(r'^@?[a-zA-Z0-9_]{1,15}$', twitter_handle_1):
-                response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'
+            response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'
 
         if twitter_handle_2 and not re.search(r'^@?[a-zA-Z0-9_]{1,15}$', twitter_handle_2):
-                response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
+            response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
 
         twitter_handle_1 = f'https://twitter.com/{twitter_handle_1.strip('@')}'
         twitter_handle_2 = f'https://twitter.com/{twitter_handle_2.strip('@')}'
