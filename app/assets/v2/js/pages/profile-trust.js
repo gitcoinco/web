@@ -658,15 +658,17 @@ Vue.component('sms-verify-modal', {
 });
 
 Vue.component('ens-verify-modal', {
+  delimiters: [ '[[', ']]' ],
   data: function() {
     return {
       showValidation: false,
       static_url: document.contxt.STATIC_URL,
+      ensDomain: '',
       validationStep: 0,
       validationError: '',
       validationErrorMsg: '',
       validated: false,
-      verificationEthAddress: '',
+      verificationEthAddress: ''
     };
   },
   mounted: function() {
@@ -676,58 +678,11 @@ Vue.component('ens-verify-modal', {
     }.bind(this));
     this.checkENSValidation();
   },
-  template: `
-    <b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
-      <template v-slot:default="{ hide }">
-        <div class="mx-5 mt-5 mb-4 text-center">
-          <div class="mb-3">
-            <h1 class="font-bigger-4 font-weight-bold">Verify with ENS</h1>
-            <p>
-              ENS is a name service built on Ethereum. It offers a secure and decentralized way to address resources using human-readable names.
-              <p class="mb-4">
-                <a href="https://ens.domains/about">Learn more.</a>
-              </p>
-            </p>
-          <div>
-            <h2 class="font-bigger-4 font-weight-bold">You need to have these requirements:</h2>
-            <ol>
-              <li>Setup your address. <span :class="\`mr-2 fas fa-\${ validationStep > 1 ? 'check check gc-text-green' : 'times gc-text-pink' }\`"></span>
-                <input v-model="verificationEthAddress" class="form-control" type="text" @onchange="testVerification()">
-                <a href="#" @click.prevent.stop="pullEthAddress()">Pull address from Metamask</a><br>
-              </li>
-              <li>Your address has an ENS domain associated, you can get one <a href="https://app.ens.domains/">here</a>. <span :class="\`mr-2 fas fa-\${ validationStep > 2 ? 'check gc-text-green' : 'times gc-text-pink' }\`"></span></li>
-              <li>Your address should match with the address associated to the ENS domain. <span :class="\`mr-2 fas fa-\${ validationStep > 5 ? 'check gc-text-green' : 'times gc-text-pink' }\`"></span> </li>
-            </ol>
-          </div>
-        </div>
-        <div>
-          <p class="mb-4" v-if="!validated && validationError === false">
-            You fulfill all the requirements, just click on validate to confirm that your ENS account is valid
-          </p>
-          <b-button @click="verifyENS" class="btn-gc-blue mt-3 mb-2" size="lg" v-if="!validated && validationError === false">
-            Validate
-          </b-button>
-          <div v-if="validationError & validationErrorMsg !== ''" style="color: red">
-            <small>[[validationErrorMsg]]</small>
-          </div>
-          <br />
-          <a href="" v-if="validationError" @click.f="dismissVerification()">
-            Go Back
-          </a>
-        </div>
-        <div v-if="validated && !validationError">
-          Your ENS verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-          <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
-        </div>
-      </div>
-    </template>
-  </b-modal>`,
   methods: {
     dismissVerification() {
       this.showValidation = false;
     },
     verifyENS() {
-      let vm = this;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const headers = {'X-CSRFToken': csrfmiddlewaretoken};
       const data = {};
@@ -738,18 +693,24 @@ Vue.component('ens-verify-modal', {
 
       const verificationRequest = fetchData('/api/v0.1/profile/verify_ens', 'POST', data, headers);
 
+      this.onResponse(verificationRequest);
+    },
+    onchange() {
+      if (typeof web3 !== 'undefined' && web3.utils.isAddress(this.verificationEthAddress)) {
+        this.checkENSValidation();
+      }
+    },
+    onResponse(verificationRequest) {
+      let vm = this;
+
       $.when(verificationRequest).then(response => {
         vm.validationError = response.error;
         vm.validationErrorMsg = response.msg;
         vm.validated = response.data.verified;
         vm.validationStep = response.data.step;
         vm.verificationEthAddress = response.data.address;
+        vm.ensDomain = response.data.ens_domain;
       });
-    },
-    onchange() {
-      if (typeof web3 !== 'undefined' && web3.utils.isAddress(this.verificationEthAddress)) {
-        this.checkENSValidation();
-      }
     },
     checkENSValidation() {
       let vm = this;
@@ -763,13 +724,7 @@ Vue.component('ens-verify-modal', {
 
       const verificationRequest = fetchData('/api/v0.1/profile/verify_ens', 'GET', data, headers);
 
-      $.when(verificationRequest).then(response => {
-        vm.validationError = response.error;
-        vm.validationErrorMsg = response.msg;
-        vm.validated = response.data.verified;
-        vm.validationStep = response.data.step;
-        vm.verificationEthAddress = response.data.address;
-      });
+      this.onResponse(verificationRequest);
     },
     getEthAddress() {
       const accounts = web3.eth.getAccounts();
@@ -799,7 +754,7 @@ Vue.component('ens-verify-modal', {
       } else {
         this.getEthAddress();
       }
-    },
+    }
   }
 });
 

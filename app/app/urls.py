@@ -165,11 +165,7 @@ urlpatterns = [
         name='request_verify_google'
     ),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
-    url(
-        r'^api/v0.1/profile/verify_ens',
-        dashboard.views.verify_profile_with_ens,
-        name='verify_with_ens'
-    ),
+    path('api/v0.1/profile/verify_ens', dashboard.views.verify_profile_with_ens, name='verify_with_ens'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),

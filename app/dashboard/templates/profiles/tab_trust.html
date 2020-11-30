@@ -6,7 +6,7 @@
       <sms-verify-modal></sms-verify-modal>
       <twitter-verify-modal></twitter-verify-modal>
       <poap-verify-modal></poap-verify-modal>
-      <ens-verify-modal></ens-verify-modal>
+      {% include 'profiles/ens-verify-modal.html' %}
     </div>
     <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
     The higher the Trust
@@ -203,7 +203,7 @@
           {% endif %}
         </div>
       </div>
-      
+
       <!-- POAP ROW -->
       <div class="row mt-2 mb-4">
         <div class="col-12 col-md-1 mx-auto text-center pt-1">

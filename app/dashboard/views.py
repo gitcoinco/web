@@ -3129,7 +3129,8 @@ def verify_profile_with_ens(request):
             'data': {
                 'step': 2,
                 'verified': profile.is_ens_verified,
-                'address': user_address
+                'address': user_address,
+                'ens_domain': node
             }
         })
 
@@ -3142,20 +3143,22 @@ def verify_profile_with_ens(request):
             'data': {
                 'step': 3,
                 'verified': profile.is_ens_verified,
-                'address': user_address
+                'address': user_address,
+                'ens_domain': node
             }
         })
 
 
-    # 5. Check if address matches.
+    # 4. Check if address matches.
     if registered_address != user_address:
         return JsonResponse({
             'error': 'NO_ADDRESS_DOESNT_MATCH',
             'msg': f'{node} has {registered_address[0:5]}... set as ETH address which is different from your preferred payout address ({user_address[0:5]}...). Please set your correct ETH address at https://app.ens.domains/name/{node}',
             'data': {
-                'step': 5,
+                'step': 4,
                 'verified': profile.is_ens_verified,
-                'address': user_address
+                'address': user_address,
+                'ens_domain': node
             }
         })
 
@@ -3168,9 +3171,10 @@ def verify_profile_with_ens(request):
             'error': False,
             'msg': f'Account verified successfully',
             'data': {
-                'step': 6,
+                'step': 5,
                 'verified': profile.is_ens_verified,
-                'address': user_address
+                'address': user_address,
+                'ens_domain': node
             }
         })
 
@@ -3179,9 +3183,10 @@ def verify_profile_with_ens(request):
         'error': False,
         'msg': 'Account ready for verification',
         'data': {
-            'step': 6,
+            'step': 5,
             'verified': profile.is_ens_verified,
-            'address': user_address
+            'address': user_address,
+            'ens_domain': node
         }
     })
 
