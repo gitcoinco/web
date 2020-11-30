@@ -55,6 +55,7 @@ Vue.component('grants-cart', {
       include_for_clr: true,
       windowWidth: window.innerWidth,
       userAddress: undefined,
+      isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
@@ -538,6 +539,7 @@ Vue.component('grants-cart', {
         message = err;
 
       _alert(message, 'error');
+      this.isCheckoutOngoing = false;
       indicateMetamaskPopup(true);
     },
 
@@ -764,6 +766,7 @@ Vue.component('grants-cart', {
     async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
+        this.isCheckoutOngoing = true;
         const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)
