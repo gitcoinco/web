@@ -3029,6 +3029,10 @@ class Profile(SuperModel):
             tb *= 1.05
         if self.is_poap_verified:
             tb *= 1.05
+        if self.is_idena_verified:
+            tb *= 1.25
+        if self.is_facebook_verified:
+            tb *= 1.05
         return tb
 
 
