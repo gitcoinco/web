@@ -852,7 +852,7 @@ Vue.component('grants-cart', {
       // We loop through each donation to configure the payload then POST the required data
       const donations = this.donationInputs;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      
+
       // If txHash has a length of one, stretch it so there's one hash for each donation
       let txHashes = txHash;
 
@@ -960,7 +960,7 @@ Vue.component('grants-cart', {
         // Something went wrong, so we create a backup of the users cart
         await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
       }
-      
+
       // Clear JSON Store
       await this.manageEthereumCartJSONStore(userAddress, 'delete');
     },
@@ -1079,7 +1079,7 @@ Vue.component('grants-cart', {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const url = 'manage-ethereum-cart-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
-      
+
       // Send request
       const payload = {
         method: 'POST',
@@ -1097,7 +1097,7 @@ Vue.component('grants-cart', {
       if (action === 'save') {
         // Validate that JSON store was created successfully
         const validationResponse = await this.getEthereumCartJSONStore(userAddress);
-        
+
         if (!validationResponse) {
           throw new Error('Something went wrong. Please try again.');
         }
@@ -1276,8 +1276,10 @@ Vue.component('grants-cart', {
         return Number(item.id) === Number(grant.grant_id);
       });
 
-      // Replace the CLR prediction curve
-      this.grantData[index].grant_clr_prediction_curve = clrCurves[clrIndex].clr_prediction_curve;
+      // Update grantData from server
+      this.$set(this.grantData[index], 'grant_clr_prediction_curve', clrCurves[clrIndex].clr_prediction_curve);
+      this.$set(this.grantData[index], 'is_on_team', clrCurves[clrIndex].is_on_team);
+
     });
 
     // Wait until we can load token list
