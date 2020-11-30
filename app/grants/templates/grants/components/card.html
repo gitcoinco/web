@@ -122,7 +122,7 @@
           <button @click.prevent="addToCart(grant)" :class="{'btn-lg': collection && isCurator}" class="btn btn-gc-blue btn-block font-body font-weight-semibold">
             + Add to Cart
           </button>
-          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-block btn-outline-danger font-body font-weight-semibold" v-if="isCurator">
+          <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})"  class="btn btn-block btn-outline-danger font-body font-weight-semibold" v-if="isCurator">
             - Remove from collection
           </button>
         </div>
@@ -264,7 +264,7 @@
                 + Add to Cart
               </button>
             </div>
-            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-block btn-outline-danger font-body mt-1 mr-1" v-if="collection && isCurator">
+            <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
             </button>
           </div>
