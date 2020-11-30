@@ -7,12 +7,15 @@
       >
         <div class="position-absolute w-100 h-100"
           style="top: 0; right: 0; z-index: 5;
-          background: {% if active_round.logo %} url('{{ active_round.logo.url }}') {% else %} #0044e088 {% endif %} no-repeat center"
+          {% if active_round.logo %}
+          background:  url('{{ active_round.logo.url }}') no-repeat center;
+          {% endif %}
+          background-color: #0044e088;"
         >
         </div>
         <div class="d-flex px-4 py-3 justify-content-between position-relative" style="z-index: 10">
           <div class="d-flex">
-            <div class="bg-white mr-3 p-2 overflow-hidden" style="width: 56px; height: 56px; border-radius: 100px;">
+            <div class="bg-white mr-3 overflow-hidden" style="width: 56px; height: 56px; border-radius: 100px;">
               <img class="img-responsive" style="width: 100%; height: 100%;"
                 src="/dynamic/avatar/{{ active_round.owner.handle | default:'gitcoinco'}}" />
             </div>
