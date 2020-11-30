@@ -199,7 +199,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         new_supporter(grant, subscription)
 
         # emails to contributor
-        thank_you_for_supporting([grant.pk], subscription.profile)
+        thank_you_for_supporting([grant.pk], profile)
         update_grant_metadata.delay(grant_id)
 
 

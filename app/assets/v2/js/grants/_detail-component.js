@@ -270,6 +270,28 @@ Vue.mixin({
       }
 
     },
+    isTwitterUrl(input) {
+      const twitter_re = /^https?:\/\/(www\.)?twitter\.com\/(#!\/)?([^/]+)(\/\w+)*$/;
+      const twitter_match = input.match(twitter_re);
+
+      if (twitter_match) {
+        return twitter_match[3];
+      }
+    },
+    transformTwitterHandle1() {
+      const match_twitter = this.isTwitterUrl(this.grant.twitter_handle_1);
+
+      if (match_twitter) {
+        this.grant.twitter_handle_1 = match_twitter;
+      }
+    },
+    transformTwitterHandle2() {
+      const match_twitter = this.isTwitterUrl(this.grant.twitter_handle_2);
+
+      if (match_twitter) {
+        this.grant.twitter_handle_2 = match_twitter;
+      }
+    },
     tweetVerification() {
       let vm = this;
       const tweetContent =`https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`
@@ -289,11 +311,11 @@ Vue.mixin({
       if (!vm.grant.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-      if (vm.grant.twitter_handle_1 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_1)) {
-        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
+      if (vm.grant.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_1)) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g humanfund');
       }
-      if (vm.grant.twitter_handle_2 && !(/^@[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_2)) {
-        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
+      if (vm.grant.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_2)) {
+        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g georgecostanza');
       }
       if (vm.grant.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
