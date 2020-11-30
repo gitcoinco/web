@@ -105,6 +105,8 @@ from ptokens.models import PersonalToken, PurchasePToken, RedemptionToken
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
+from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
@@ -3234,8 +3236,6 @@ def request_verify_google(request, handle):
 @login_required
 @require_GET
 def verify_user_google(request):
-    from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-
     try:
         google = connect_google()
         google.fetch_token(
@@ -3258,6 +3258,64 @@ def verify_user_google(request):
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
     profile.identity_data_google = r.json()
+    profile.save()
+
+    return redirect('profile_by_tab', 'trust')
+
+def connect_facebook():
+    import urllib.parse
+
+    facebook = OAuth2Session (
+        settings.FACEBOOK_CLIENT_ID,
+        redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_facebook)),
+    )
+
+    return facebook_compliance_fix(facebook)
+
+@login_required
+@require_POST
+def request_verify_facebook(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_facebook_verified:
+        return redirect('profile_by_tab', 'trust')
+
+    facebook = connect_facebook()
+    authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
+    return redirect(authorization_url)
+
+@login_required
+@require_GET
+def verify_user_facebook(request):
+    try:
+        facebook = connect_facebook()
+        if not 'code' in request.GET:
+            return redirect('profile_by_tab', 'trust')
+        facebook.fetch_token(
+            settings.FACEBOOK_TOKEN_URL,
+            client_secret=settings.FACEBOOK_CLIENT_SECRET,
+            code=request.GET['code'],
+        )
+        r = facebook.get('https://graph.facebook.com/me?')
+        if r.status_code != 200:
+            return JsonResponse({
+                'ok': False,
+                'message': 'Invalid code',
+            })
+    except (ConnectionError, InvalidGrantError):
+        return JsonResponse({
+            'ok': False,
+            'message': 'Invalid code',
+        })
+
+    profile = profile_helper(request.user.username, True)
+    profile.is_facebook_verified = True
     profile.save()
 
     return redirect('profile_by_tab', 'trust')

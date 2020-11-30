@@ -233,7 +233,10 @@
           {% if is_facebook_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="" role="button" id="verify-facebook-link" class="button button--primary text-nowrap">Verify</a>
+            <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
+              {% csrf_token %}
+              <input type="submit" value="Verify" class="button button--primary text-nowrap" />
+            </form>
           {% endif %}
         </div>
       </div>
