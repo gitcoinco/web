@@ -166,6 +166,7 @@ urlpatterns = [
     ),
     url(r'^api/v0.1/profile/verify_user_google',dashboard.views.verify_user_google, name='verify_user_google'),
     url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_duniter', dashboard.views.verify_user_duniter, name='verify_user_duniter'),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/create_account_duniter', dashboard.views.create_duniter, name='create_duniter'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),

@@ -59,7 +59,13 @@ import magic
 import pytz
 import requests
 import tweepy
+import asyncio
+import getpass
 
+from duniterpy.key import VerifyingKey, SigningKey, PublicKey
+from duniterpy.key.scrypt_params import ScryptParams
+from duniterpy.key import
+from aiohttp import ClientResponse
 from duniterpy.api import bma
 from duniterpy.api.client import DuniterClient
 from app.services import RedisService, TwilioService
@@ -3114,6 +3120,7 @@ def verify_user_duniter(request, handle):
 
     request_data = json.loads(request.body.decode('utf-8'))
     gitcoin_handle = request_data.get('gitcoin_handle', '')
+    pubkey = request_data.get('publicKey', '')
 
     if gitcoin_handle == '':
         return JsonResponse({
@@ -3126,9 +3133,13 @@ def verify_user_duniter(request, handle):
         #duniter client
         client = DuniterClient(settings.ES_USER_ENDPOINT)
 
-
         # verify if there is account with same username on duniter
-        search_user_duniter_url = await client.get("user/profile/{0}/_search?q=".format(gitcoin_handle.strip(" \n")))
+        url_search = "user/profile/_search?q=" + gitcoin_handle
+        search_user_duniter_url = await client.get(url_search)
+        if search_user_duniter_url != 200:
+            #try search by publickey
+            search_user_duniter_url = await client.get("user/profile/{0}/_source".format(pubkey.strip(" \n")))
+
         duniter_user_response = requests.get(search_user_duniter_url)
 
         await client.close()
@@ -3194,6 +3205,8 @@ def verify_user_duniter(request, handle):
                 'msg': f'You need to add your gitcoin link to your duniter social links'
             })
 
+
+
     except IndexError:
         return JsonResponse({
             'ok': False,
@@ -3207,6 +3220,56 @@ def verify_user_duniter(request, handle):
         'ok': True,
         'msg': 'Your Duniter Qualified User Check was successful!'
     })
+
+@login_required
+def create_duniter(request, handle, salt, password):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    salt = request_data.get('salt_gitcoin', '')
+    password = request_data.get('pass_duniter', '')
+
+    key = SigningKey.from_credentials(salt, password)
+
+    if salt == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Create your personal Salt'
+        })
+
+    if password == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Password cannot be empty'
+        })
+
+    if key == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'ivalid create public key'
+        })
+
+    try:
+
+        return JsonResponse({
+            'ok': True,
+            'msg': 'Duniter successfully created.',
+            'pubkey': key
+        })
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, not working'
+        })
+
+
 
 def connect_google():
     import urllib.parse
