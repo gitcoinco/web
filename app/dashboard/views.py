@@ -3316,6 +3316,7 @@ def verify_user_facebook(request):
 
     profile = profile_helper(request.user.username, True)
     profile.is_facebook_verified = True
+    profile.identity_data_facebook = r.json()
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
