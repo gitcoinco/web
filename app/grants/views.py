@@ -1641,10 +1641,8 @@ def grant_new(request):
         if twitter_handle_2 and not re.search(r'^@?[a-zA-Z0-9_]{1,15}$', twitter_handle_2):
                 response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
 
-
         twitter_handle_1 = f'https://twitter.com/{twitter_handle_1.strip('@')}'
         twitter_handle_2 = f'https://twitter.com/{twitter_handle_2.strip('@')}'
-
 
         # TODO: REMOVE
         contract_version = request.POST.get('contract_version', '2')
