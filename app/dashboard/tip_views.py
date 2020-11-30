@@ -225,11 +225,12 @@ def receive_tip_v3(request, key, txid, network):
             messages.error(request, str(e))
             logger.exception(e)
 
+    gas_price_sanity_multiplier = 1.3
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
+        'gas_price': round(float(gas_price_sanity_multiplier) * float(recommend_min_gas_price_to_confirm_in_time(1)), 1),
         'tip': tip,
         'has_this_user_redeemed': has_this_user_redeemed,
         'key': key,

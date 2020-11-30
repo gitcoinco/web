@@ -205,7 +205,7 @@
             <div class="background_container pt-4">
               <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
               <BR>
-                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 required {% if package.video_enabled%}checked=checked{% endif %} />
+                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 {% if package.video_enabled%}checked=checked{% endif %} />
               <label class="form__label" for="video_enabled">{% trans "Video Enabled Arena" %}</label>
               <BR>
               {% for bg in backgrounds %}

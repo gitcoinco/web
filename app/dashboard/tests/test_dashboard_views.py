@@ -18,11 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
-
 from datetime import date, datetime, timedelta
 from unittest import TestCase
-from django.conf import settings
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils import timezone
@@ -38,11 +37,15 @@ class VerifyUserDuniterTests(TestCase):
         url = 'https://g1.data.duniter.fr/user/profile/_search?q=' + gitcoin_handle
 
         response = requests.get(url)
+<<<<<<< HEAD
         self.assertEqual(response.ok, 200)
+=======
+        self.assertTrue(response.ok)
+>>>>>>> 0b4982cfc00b303b48987d628f36b908d53b3d1f
 
     def test_get_public_key_duniter(self):
         gitcoin_handle = "developerfred"
-        url = "https://g1.duniter.org/user/profile/_search?q=" + gitcoin_handle
+        url = "https://g1.data.duniter.fr/user/profile/_search?q=" + gitcoin_handle
         pub_res = "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr"
 
         response = requests.get(url)
@@ -70,4 +73,4 @@ class VerifyUserDuniterTests(TestCase):
         member_data = response.json()
         is_verified = member_data.get('isMember', {})
 
-        self.assertEqual(is_verified, True)
+        self.assertTrue(is_verified)
