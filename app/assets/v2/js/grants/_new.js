@@ -242,20 +242,22 @@ Vue.mixin({
       handler(newVal, oldVal) {
         let vm = this;
 
-        if (checkFileSize(this.logo, 4000000) === false) {
-          _alert(`Grant Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
-        } else {
-          let reader = new FileReader();
-
-          reader.onload = function(e) {
-            vm.logoPreview = e.target.result;
+        new Compressor(this.logo, {
+          quality: 0.6,
+          maxWidth: 2000,
+          success(result) {
+            vm.logoPreview = URL.createObjectURL(result);
+            vm.logo = new File([result], result.name, { lastModified: result.lastModified })
             $('#preview').css('width', '100%');
             $('#js-drop span').hide();
             $('#js-drop input').css('visible', 'invisible');
-            $('#js-drop').css('padding', 0);
-          };
-          reader.readAsDataURL(vm.logo);
-        }
+            $('#js-drop').css('padding', 0)
+          },
+          error(err) {
+            _alert(err.message, 'error');
+          },
+        });
+
       }
     }
   }
