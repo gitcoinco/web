@@ -32,7 +32,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
-from django.core.paginator import Paginator, EmptyPage
+from django.core.paginator import EmptyPage, Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
@@ -1990,7 +1990,7 @@ def bulk_fund(request):
         })
         batch_grants_mail.append(grant_id)
 
-    thank_you_for_supporting(batch_grants_mail, profile)
+    # thank_you_for_supporting(batch_grants_mail, profile)
 
     return JsonResponse({
         'success': True,
