@@ -103,3 +103,11 @@ ed25519
 tweepy
 oogway==0.7.0
 icalendar==4.0.7
+duniterpy
+aiohttp >= 3.6.3
+jsonschema
+pyPEG2
+attrs
+base58
+libnacl
+pyaes

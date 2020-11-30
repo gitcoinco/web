@@ -53,12 +53,15 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-
+import asyncio
 import dateutil.parser
 import magic
 import pytz
 import requests
 import tweepy
+
+from duniterpy.api import bma
+from duniterpy.api.client import DuniterClient
 from app.services import RedisService, TwilioService
 from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
@@ -144,6 +147,62 @@ confirm_time_minutes_target = 4
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+MODULE = "wot"
+
+CERTIFICATIONS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "pubkey": {"type": "string"},
+        "uid": {"type": "string"},
+        "isMember": {"type": "boolean"},
+        "certifications": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "pubkey": {"type": "string"},
+                    "uid": {"type": "string"},
+                    "cert_time": {
+                        "type": "object",
+                        "properties": {
+                            "block": {"type": "number"},
+                            "medianTime": {"type": "number"},
+                        },
+                        "required": ["block", "medianTime"],
+                    },
+                    "sigDate": {"type": "string"},
+                    "written": {
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "number": {"type": "number"},
+                                    "hash": {"type": "string"},
+                                },
+                                "required": ["number", "hash"],
+                            },
+                            {"type": "null"},
+                        ]
+                    },
+                    "isMember": {"type": "boolean"},
+                    "wasMember": {"type": "boolean"},
+                    "signature": {"type": "string"},
+                },
+                "required": [
+                    "pubkey",
+                    "uid",
+                    "cert_time",
+                    "sigDate",
+                    "written",
+                    "wasMember",
+                    "isMember",
+                    "signature",
+                ],
+            },
+        },
+    },
+    "required": ["pubkey", "uid", "isMember", "certifications"],
+}
 
 
 @protected_resource()
@@ -3064,9 +3123,15 @@ def verify_user_duniter(request, handle):
 
     try:
 
+        #duniter client
+        client = DuniterClient(settings.ES_USER_ENDPOINT)
+
+
         # verify if there is account with same username on duniter
-        search_user_duniter_url = "https://g1.data.duniter.fr/user/profile/_search?q=" + gitcoin_handle
+        search_user_duniter_url = await client.get("user/profile/{0}/_search?q=".format(gitcoin_handle.strip(" \n")))
         duniter_user_response = requests.get(search_user_duniter_url)
+
+        await client.close()
 
         # search the user for their gitcoin link, if the search is successful I save the private key in the variable public_key_duniter
         if duniter_user_response.status_code == 200:
@@ -3076,7 +3141,8 @@ def verify_user_duniter(request, handle):
             public_key_duniter = next(iter(position)).get('_id', {})
 
             # checks uid equals gitcoin-username
-            same_uid_url = "https://g1.duniter.org/wot/lookup/" + public_key_duniter
+            client = DuniterClient(settings.BMAS_ENDPOINT)
+            same_uid_url = await client(bma.wot.lookup, public_key_duniter)
             res_uid = requests.get(same_uid_url)
             uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
 
@@ -3093,7 +3159,18 @@ def verify_user_duniter(request, handle):
                 })
 
             # checks if the user has valid certificates and is a member
-            wot = 'https://g1.duniter.org/wot/certified-by/' + public_key_duniter
+            async def certifiers_of(client: client, search: str) -> dict:
+                """
+                GET UID/Public key certifiers
+                :param client: Client to connect to the api
+                :param search: UID or public key
+                :return:
+                """
+                return await client.get(
+                    MODULE + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
+                )
+
+            wot = certifiers_of(public_key_duniter)
             res_wot = requests.get(wot)
             if not res_wot.status_code == 200:
                 return JsonResponse({

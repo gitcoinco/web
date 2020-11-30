@@ -894,3 +894,6 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+BMAS_ENDPOINT = env('BMAS_ENDPOINT', default='BMAS g1.duniter.org 443')
+ES_CORE_ENDPOINT = env('ES_CORE_ENDPOINT', default='ES_CORE_API g1.data.duniter.fr 443')
+ES_USER_ENDPOINT = env('ES_USER_ENDPOINT', default='ES_USER_API g1.data.duniter.fr 443')
