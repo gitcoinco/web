@@ -184,7 +184,7 @@
               </div>
 
               <div class="gc-text-green font-weight-bold" v-if="grant?.clr_prediction_curve">
-                [[ grant?.clr_prediction_curve[0][1] ]]
+                [[ grant?.clr_prediction_curve[0][1] || 0 | round | formatNumber ]]
                 <span v-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">USD</span>
                 <span v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">DAI</span>
               </div>
