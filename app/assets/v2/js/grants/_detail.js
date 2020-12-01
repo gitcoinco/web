@@ -39,7 +39,7 @@ Vue.mixin({
       });
       idsString = String(ids);
 
-      let url = `http://localhost:8000/grants/v1/api/grants?pks=${idsString}`;
+      let url = `/grants/v1/api/grants?pks=${idsString}`;
 
       fetch(url).then(function(res) {
         return res.json();
