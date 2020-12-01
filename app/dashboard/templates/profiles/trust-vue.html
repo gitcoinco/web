@@ -64,41 +64,6 @@
           </active-trust-row-template>
 
           <active-trust-row-template
-            icon-type="markup"
-            title="Verify with SMS"
-            :match-percent=5
-            :is-verified="'{{is_sms_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('sms-modal')"
-            >
-            <template v-slot:icon>
-              <i class="fa fa-mobile-alt fa-3x" aria-hidden="true"></i>
-            </template>
-            <template v-slot:description>
-              Verify your phone number through SMS. To protect your privacy, Gitcoin doesn't store your phone number.
-              <a href="https://twitter.com/owocki/status/1272149204287160320">Learn more.</a>
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify With Twitter"
-            :match-percent=5
-            :is-verified="'{{is_twitter_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('twitter-modal')"
-            >
-            <template v-slot:icon>
-              <span style="color: #00aced">
-                <i class="fab fa-twitter fa-3x" aria-hidden="true"></i>
-              </span>
-            </template>
-            <template v-slot:description>
-              Verify your Twitter account.
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
             icon-type="image"
             icon-path="/static/v2/images/project_logos/google.png"
             title="Verify With Google"
@@ -132,7 +97,43 @@
               Verify your POAP badges.
             </template>
           </active-trust-row-template>
+
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify with SMS"
+            :match-percent=5
+            :is-verified="'{{is_sms_verified}}' === 'True'"
+            button-text="Verify"
+            @verify-button-pressed="showModal('sms-modal')"
+            >
+            <template v-slot:icon>
+              <i class="fa fa-mobile-alt fa-3x" aria-hidden="true"></i>
+            </template>
+            <template v-slot:description>
+              Verify your phone number through SMS. To protect your privacy, Gitcoin doesn't store your phone number.
+              <a href="https://twitter.com/owocki/status/1272149204287160320">Learn more.</a>
+            </template>
+          </active-trust-row-template>
+
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify With Twitter"
+            :match-percent=5
+            :is-verified="'{{is_twitter_verified}}' === 'True'"
+            button-text="Verify"
+            @verify-button-pressed="showModal('twitter-modal')"
+            >
+            <template v-slot:icon>
+              <span style="color: #00aced">
+                <i class="fab fa-twitter fa-3x" aria-hidden="true"></i>
+              </span>
+            </template>
+            <template v-slot:description>
+              Verify your Twitter account.
+            </template>
+          </active-trust-row-template>
         </div>
+
         <div class="container mt-4">
           <h5>Active Beta</h5>
           <p>
