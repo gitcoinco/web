@@ -1,7 +1,19 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
+const EthereumAuthProvider = window.EthereumAuthProvider.default;
+const ThreeIdConnect = window.ThreeIdConnect.default;
+const Ceramic = window.Ceramic.default;
+const IDXWeb = window.IDXWeb.default;
+const definitions = window.definitions.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
+
+const registry = {
+  ...ThreeIdResolver.getResolver(),
+  ...KeyResolver.getResolver()
+}
+
+const did = new DID({ resolver: { registry } })
 
 let web3;
 let web3Modal;
@@ -528,4 +540,29 @@ async function approveAllowance(address, tokenAddress, weiamount) {
 
   approved = tokensContract.methods.approve(address, amount).send({from: selectedAccount});
   return await approved;
+}
+// Auth Ceramic IDX
+const wallet = new ThreeIdConnect()
+
+async function getAuthProvider() {
+  const ethProvider = await web3Modal.connect();
+  const addresses = await ethProvider.enable();
+  return new EthereumAuthProvider(ethProvider, addresses[0]);
+}
+
+const CERAMIC_URL = 'https://ceramic.3boxlabs.com'; // 'http://localhost:7007'
+
+async function getIDX() {
+  const ceramic = new Ceramic(CERAMIC_URL);
+  // Create the IDX instance with the definitions aliases from the config
+  const idx = new IDXWeb({ ceramic, definitions.basicProfile });
+  // Connect an Ethereum provider
+  const ethereumProvider = await web3modal.connect();
+  const { result } = await ethereumProvider.send('eth_requestAccounts');
+  // Authenticate the IDX instance using the Ethereum provider via 3ID Connect
+  await idx.authenticate({
+    authProvider: new EthereumAuthProvider(ethereumProvider, result[0]),
+  });
+  // Load the existing notes
+  return { ceramic, idx };
 }

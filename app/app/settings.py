@@ -900,6 +900,9 @@ BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
 # CERAMIC
 CERAMIC_URL = env('CERAMIC_URL', default='https://ceramic.3boxlabs.com')
 
+# DISCORD
+DISCORD_BOT_TOKEN = env('DISCORD_BOT_TOKEN', default='wrong-token-discord-bot')
+
 # Idena
 IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
 IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min

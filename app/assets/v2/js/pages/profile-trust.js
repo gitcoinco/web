@@ -81,7 +81,6 @@ Vue.component('sms-verify-modal', {
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
                   </div>
                   <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
-
                   <input class="form-control" type="number" required v-model="code">
                   <div v-if="timeInterval > timePassed">
                     <span class="label-warning">Wait [[ timeInterval - timePassed ]] second before request another
@@ -111,7 +110,9 @@ Vue.component('sms-verify-modal', {
         const verificationRequest = fetchData('/sms/validate/', 'POST', {
           code: vm.code,
           phone: vm.phone
-        }, {'X-CSRFToken': vm.csrf});
+        }, {
+          'X-CSRFToken': vm.csrf
+        });
 
         $.when(verificationRequest).then(response => {
           vm.verificationEnabled = false;
@@ -155,7 +156,9 @@ Vue.component('sms-verify-modal', {
         const verificationRequest = fetchData('/sms/request', 'POST', {
           phone: e164,
           delivery_method: delivery_method || 'sms'
-        }, {'X-CSRFToken': vm.csrf});
+        }, {
+          'X-CSRFToken': vm.csrf
+        });
 
         vm.errorMessage = '';
 
@@ -178,7 +181,9 @@ Vue.component('sms-verify-modal', {
       if (vm.validNumber) {
         const verificationRequest = fetchData('/sms/request', 'POST', {
           phone: e164
-        }, {'X-CSRFToken': vm.csrf});
+        }, {
+          'X-CSRFToken': vm.csrf
+        });
 
         vm.errorMessage = '';
 
@@ -329,7 +334,9 @@ Vue.component('twitter-verify-modal', {
       const payload = JSON.stringify({
         'twitter_handle': this.twitterHandle
       });
-      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+      const headers = {
+        'X-CSRFToken': csrfmiddlewaretoken
+      };
 
       const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_twitter`, 'POST', payload, headers);
 
@@ -360,21 +367,12 @@ Vue.component('poap-verify-modal', {
       validationError: ''
     };
   },
-<<<<<<< HEAD
-  mounted: function() {
-
-    $(document).on('click', '#verify-poap-link', function(event) {
-      event.preventDefault();
-      this.showValidation = true;
-    }.bind(this));
-=======
   props: {
     showValidation: {
       type: Boolean,
       required: false,
       'default': false
     }
->>>>>>> 12595e3b4374505ffd9bb0ece132073b7d658caa
   },
   template: `<b-modal id="poap-modal" @hide="dismissVerification()" :visible="showValidation && !hideTemporarily" center hide-header hide-footer>
                 <template v-slot:default="{ hide }">
@@ -392,7 +390,6 @@ Vue.component('poap-verify-modal', {
                         We want to verify your POAP badges. To do so, you must first connect with your preferred web3 account.
                         Then, we'll validate your account holds at least one POAP badge, and that it's been there for at least 15 days.
                       </p>
-
                       <div class="mt-2 mb-2">
                         <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
                           Pull from Wallet
@@ -401,14 +398,7 @@ Vue.component('poap-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validate-poap' || validationStep == 'perform-validation'">
                       <p class="mb-4">
-<<<<<<< HEAD
-                        Now we'll validate that you have the poap badges. Press validate.
-                      </p>
-                      <p class="mb-4">
-                        You can change your wallet by pressing change wallet.
-=======
                         We'll check for POAP badges held by the following account.
->>>>>>> 12595e3b4374505ffd9bb0ece132073b7d658caa
                       </p>
                       <div class="input-group">
                         <input type="text" readonly class="form-control" placeholder="eth-address" aria-label="handle" aria-describedby="basic-addon1" required maxlength="255" v-model="ethAddress">
@@ -514,7 +504,9 @@ Vue.component('poap-verify-modal', {
         'eth_address': this.ethAddress,
         'signature': this.signature
       });
-      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+      const headers = {
+        'X-CSRFToken': csrfmiddlewaretoken
+      };
 
       const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_poap`, 'POST', payload, headers);
 
@@ -535,208 +527,7 @@ Vue.component('poap-verify-modal', {
   }
 });
 
-<<<<<<< HEAD
-// IDX Verify
-// https://idx.xyz/
-// @CeramicStudios
-
-// import idxWeb from 'https://cdn.skypack.dev/@ceramicstudio/idx-web';
-// import ceramic from 'https://cdn.skypack.dev/@ceramicnetwork/http-client';
-
-
-
-const CERAMIC_URL = 'https://ceramic.3boxlabs.com'
-const web3modalIDX = new Web3Modal({ network: 'mainnet', cacheProvider: true })
-
-Vue.component('idx-verify-modal', {
-  delimiters: ['[[', ']]'],
-  data: function () {
-    return {
-      showValidation: false,
-      validationStep: 'verify-idx',
-      gitcoinHandle: '',
-      validationError: ''
-    };
-  },
-  computed: {
-  },
-  mounted: function () {
-    this.tweetText = verifyTweetText; // Global from tab_trust.html <script> tag
-
-    $(document).on('click', '#verify-idx-link', function (event) {
-      event.preventDefault();
-      this.showValidation = true;
-    }.bind(this));
-
-    // TODO: change this to minify packages
-    // idConnect Library
-    let idConnect = document.createElement('script')
-    idConnect.setAttribute('src', 'https://cdn.skypack.dev/3id-connect')
-    document.head.appendChild(idConnect)
-
-    // idxConstants Library
-    let idxConstants = document.createElement('script')
-    idxConstants.setAttribute('src', 'https://cdn.skypack.dev/@ceramicstudio/idx-constants')
-    document.head.appendChild(idxConstants)
-
-    // ceramic Library
-    let ceramic = document.createElement('script')
-    ceramic.setAttribute('src', 'https://cdn.skypack.dev/@ceramicnetwork/http-client')
-    document.head.appendChild(ceramic)
-
-    // idxWeb Library
-    let idxWeb = document.createElement('script')
-    idxWeb.setAttribute('src', 'https://cdn.skypack.dev/@ceramicstudio/idx-web')
-    document.head.appendChild(idxWeb)
-  },
-  template: `<b-modal id="idx-verify-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
-                <template v-slot:default="{ hide }">
-                  <div class="mx-5 mt-5 mb-4 text-center">
-                    <div class="mb-3">
-                      <h1 class="font-bigger-4 font-weight-bold">Verify your IDX account</h1>
-                    </div>
-                    <div v-if="validationStep === 'verify-idx'">
-                      <p class="mb-4 font-subheader text-left">
-                        We want to verify your IDX account. To do this, you must first Authenticar.
-                      </p>
-                      <p class="mb-4 font-subheader text-left">
-                        The Tweet should say:
-                      </p>
-                      <p class="mb-4 font-subheader text-left">
-                        <em>[[tweetText]]</em>
-                      </p>
-                      <div class="mt-2 mb-2">
-                        <a :href="tweetIntentURL" @click="clickedAuthIDX" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
-                          Send Tweet
-                        </a>
-                      </div>
-                      <a href="" @click="clickedAlreadySent">
-                        I have already Tweeted this
-                      </a>
-                    </div>
-                    <div v-if="validationStep === 'validate-tweet' || validationStep == 'perform-validation'">
-                      <p class="mb-4">
-                        Now we'll validate that you've sent the tweet. Enter your Twitter handle and press validate.
-                      </p>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text form-control" id="basic-addon1">@</span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="handle" aria-label="handle" aria-describedby="basic-addon1" required maxlength="15" v-model="twitterHandle">
-                      </div>
-                      <div v-if="validationError !== ''" style="color: red">
-                        <small>[[validationError]]</small>
-                      </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
-                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
-                        Validate
-                      </b-button>
-                      <br />
-                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
-                        Go Back
-                      </a>
-                    </div>
-                    <div v-if="validationStep === 'validation-complete'">
-                      Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
-                    </div>
-                  </div>
-                </template>
-            </b-modal>`,
-  methods: {
-    dismissVerification() {
-      this.showValidation = false;
-    },
-    clickedSendTweet(event) {
-      this.validationStep = 'validate-tweet';
-    },
-    clickedAlreadySent(event) {
-      event.preventDefault();
-      this.validationStep = 'validate-tweet';
-    },
-    clickedGoBack(event) {
-      event.preventDefault();
-      this.validationStep = 'send-tweet';
-      this.validationError = '';
-    },
-    clickedAuthIDX(event) {
-      event.preventDefault();
-
-      this.getIDX();
-    },
-    clickedValidate(event) {
-      event.preventDefault();
-
-      this.twitterHandle = this.twitterHandle.trim();
-
-      // Strip leading @ if user includes it
-      if (this.twitterHandle.startsWith('@')) {
-        this.twitterHandle = this.twitterHandle.split('@')[1];
-      }
-
-      // Validate handle is 15 word characters
-      const isValidHandle = null !== this.twitterHandle.match(/^(\w){1,15}$/);
-
-      if (!isValidHandle) {
-        this.validationError = 'Please enter a valid Twitter handle';
-        return;
-      }
-
-      // Reset after a prior error
-      this.validationError = '';
-
-      this.validationStep = 'perform-validation';
-
-      this.verifyTwitter();
-    },
-    async getIDX() {
-      var _a;
-      const ceramic = new Ceramic(CERAMIC_URL);
-      // Create the IDX instance with the definitions aliases from the config
-      const idx = new IDXWeb({ ceramic, idxConstants.definitions });
-      // Connect an Ethereum provider
-      const ethereumProvider = await web3modalIDX.connect();
-      const { result } = await ethereumProvider.send('eth_requestAccounts');
-      // Authenticate the IDX instance using the Ethereum provider via 3ID Connect
-      await idx.authenticate({
-        authProvider: new EthereumAuthProvider(ethereumProvider, result[0]),
-      });
-      // Load the existing socialAccounts
-      const docIDList = await idx.get('profile')
-      return { ceramic, idx, profile: (_a = docIDList === null || docIDList === void 0 ? void 0 : docIDList.profile !== null && _a !== void 0 ? _a : [] };
-    },
-    verifyTwitter() {
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const payload = JSON.stringify({
-        'twitter_handle': this.twitterHandle
-      });
-      const headers = { 'X-CSRFToken': csrfmiddlewaretoken };
-
-      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_idx`, 'POST', payload, headers);
-
-      $.when(verificationRequest).then(response => {
-        if (response.ok) {
-          this.validationStep = 'validation-complete';
-        } else {
-          this.validationError = response.msg;
-          this.validationStep = 'validate-tweet';
-        }
-
-      }).catch((_error) => {
-        this.validationError = 'There was an error; please try again later';
-        this.validationStep = 'validate-tweet';
-      });
-    }
-  }
-});
-
-// TODO: This component consists primarily of code taken from the SMS verification flow in the cart.
-// This approach is not DRY, and after Grants Round 7 completes, the cart should be refactored to include
-// this as a shared component, rather than duplicating the code.
-Vue.component('sms-verify-modal', {
-=======
 Vue.component('brightid-verify-modal', {
->>>>>>> 12595e3b4374505ffd9bb0ece132073b7d658caa
   delimiters: [ '[[', ']]' ],
   data: function() {
     return {
@@ -858,7 +649,11 @@ Vue.component('brightid-verify-modal', {
       this.$emit('modal-dismissed');
     },
     formatDate(date) {
-      let options = {hour: 'numeric', minute: 'numeric', dayPeriod: 'short'};
+      let options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        dayPeriod: 'short'
+      };
 
       return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
     }
@@ -968,12 +763,339 @@ Vue.component('active-trust-row-template', {
   `
 });
 
+Vue.component('idx-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      showValidation: false,
+      validationStep: 'verify-idx',
+      gitcoinHandle: '',
+      validationError: ''
+    };
+  },
+  computed: {},
+  template: `<b-modal id="idx-verify-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+                <template v-slot:default="{ hide }">
+                  <div class="mx-5 mt-5 mb-4 text-center">
+                    <div class="mb-3">
+                      <h1 class="font-bigger-4 font-weight-bold">Verify your Twitter account</h1>
+                    </div>
+                    <div v-if="validationStep === 'send-tweet'">
+                      <p class="mb-4 font-subheader text-left">
+                        We want to verify your Twitter account. To do so, you must first send a standardized
+                        Tweet from your account, then we'll validate it's there.
+                      </p>
+                      <p class="mb-4 font-subheader text-left">
+                        The Tweet should say:
+                      </p>
+                      <p class="mb-4 font-subheader text-left">
+                        <em>[[tweetText]]</em>
+                      </p>
+                      <div class="mt-2 mb-2">
+                        <a :href="tweetIntentURL" @click="clickedSendTweet" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
+                          Send Tweet
+                        </a>
+                      </div>
+                      <a href="" @click="clickedAlreadySent">
+                        I have already Tweeted this
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'validate-tweet' || validationStep == 'perform-validation'">
+                      <p class="mb-4">
+                        Now we'll validate that you've sent the tweet. Enter your Twitter handle and press validate.
+                      </p>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text form-control" id="basic-addon1">@</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="handle" aria-label="handle" aria-describedby="basic-addon1" required maxlength="15" v-model="twitterHandle">
+                      </div>
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                        Validate
+                      </b-button>
+                      <br />
+                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
+                        Go Back
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'validation-complete'">
+                      Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                    </div>
+                  </div>
+                </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.showValidation = false;
+    },
+    clickedSendTweet(event) {
+      this.validationStep = 'validate-tweet';
+    },
+    clickedAlreadySent(event) {
+      event.preventDefault();
+      this.validationStep = 'validate-tweet';
+    },
+    clickedGoBack(event) {
+      event.preventDefault();
+      this.validationStep = 'send-tweet';
+      this.validationError = '';
+    },
+    clickedValidate(event) {
+      event.preventDefault();
+
+      this.twitterHandle = this.twitterHandle.trim();
+
+      // Strip leading @ if user includes it
+      if (this.twitterHandle.startsWith('@')) {
+        this.twitterHandle = this.twitterHandle.split('@')[1];
+      }
+
+      // Validate handle is 15 word characters
+      const isValidHandle = null !== this.twitterHandle.match(/^(\w){1,15}$/);
+
+      if (!isValidHandle) {
+        this.validationError = 'Please enter a valid Twitter handle';
+        return;
+      }
+
+      // Reset after a prior error
+      this.validationError = '';
+
+      this.validationStep = 'perform-validation';
+
+      this.verifyTwitter();
+    },
+    verifyTwitter() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const payload = JSON.stringify({
+        'twitter_handle': this.twitterHandle
+      });
+      const headers = {
+        'X-CSRFToken': csrfmiddlewaretoken
+      };
+
+      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_twitter`, 'POST', payload, headers);
+
+      $.when(verificationRequest).then(response => {
+        if (response.ok) {
+          this.validationStep = 'validation-complete';
+        } else {
+          this.validationError = response.msg;
+          this.validationStep = 'validate-tweet';
+        }
+
+      }).catch((_error) => {
+        this.validationError = 'There was an error; please try again later';
+        this.validationStep = 'validate-tweet';
+      });
+    }
+  }
+});
+
+Vue.component('discord-verify-modal', {
+  delimiters: ['[[', ']]'],
+  data: function () {
+    return {
+      showValidation: false,
+      validationStep: 'check-discord',
+      discordHandle: '',
+      didAddress: '',
+      validationError: '',
+      didCeramic: idx,
+      didChallenge: '',
+      jwsString: '',
+
+    };
+  },
+  props: {
+    showValidation: {
+      type: Boolean,
+      required: false,
+      'default': false
+    }
+  },
+  computed: {},
+  template: `<b-modal id="discord-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+                <template v-slot:default="{ hide }">
+                  <div class="mx-5 mt-5 mb-4 text-center">
+                    <div class="mb-3">    
+                      <h1 class="font-bigger-4 font-weight-bold">Verify your Discord account</h1>
+                    </div>
+                    <div>
+                      <p class="mb-4 font-subheader text-left">
+                        We want to verify your Discord account. To do so, you must first click the button to check. Let's check if there is already a discord account attached to your wallet.
+                      </p>
+                    
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text form-control" id="basic-addon1">@</span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="discord username" aria-label="discord username handle" aria-describedby="basic-addon1" required maxlength="15" v-model="discordHandle">
+                        </div>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                          <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                          Verify Discord
+                        </b-button>
+                    </div>
+                    <div v-if="validationStep === 'validate-discord' || validationStep == 'perform-validation'">
+                      <p class="mb-4">
+                        Now we'll validate that you've sent the tweet. Enter your Twitter handle and press validate.
+                      </p>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text form-control" id="basic-addon1">@</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="discord username" aria-label="discord username handle" aria-describedby="basic-addon1" required maxlength="15" v-model="twitterHandle">
+                      </div>
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                        Validate
+                      </b-button>
+                      <br />
+                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
+                        Go Back
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'check-discord-msg'">
+                      <b-button @click="clickedConfirm" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                        Confirm Discord
+                      </b-button>
+                    </div>
+                    <div v-if="validationStep === 'validation-complete'">
+                      Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                    </div>
+                  </div>
+                </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      if (!this.hideTemporarily) {
+        this.$emit('modal-dismissed');
+      }
+    },
+    clickedGoBack(event) {
+      event.preventDefault();
+      this.validationStep = 'send-discord';
+      this.validationError = '';
+    },
+    clickedValidate(event) {
+      event.preventDefault();
+
+      // this.discordHandle = this.discordHandle.trim();
+
+      // // Strip leading @ if user includes it
+      // if (this.discordHandle.startsWith('@')) {
+      //   this.discordHandle = this.discordHandle.split('@')[1];
+      // }
+
+      // // Validate handle is 15 word characters
+      // const isValidHandle = null !== this.discordHandle.match(/^(\w){1,15}$/);
+
+      // if (!isValidHandle) {
+      //   this.validationError = 'Please enter a valid Discord handle';
+      //   return;
+      // }
+
+      // Reset after a prior error
+      // this.validationError = '';
+
+      this.validationStep = 'perform-validation';
+      this.verifyDiscord();
+    },
+    clickedConfirm(event) {
+      event.preventDefault();
+      this.confirmDiscord();
+    },
+    clieckedGetIDX(event) {
+      event.preventDefault();
+    },
+    verifyDiscord() {
+      getIDX()
+      console.log(idx)
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const payload = JSON.stringify({
+        'discord_handle': this.discordHandle,
+        'did_ceramic': this.didCeramic,
+      });
+      const headers = {
+        'X-CSRFToken': csrfmiddlewaretoken
+      };
+
+      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/request_verify_discord`, 'POST', payload, headers);
+
+      $.when(verificationRequest).then(response => {
+        if (response.ok && response.challengeCode) {
+          this.challengeCode = response.challengeCode
+          this.jwsString = did.createJWS(challengeCode)
+          this.validationStep = 'check-discord-msg';
+        } else {
+          this.validationError = response.msg;
+          this.validationStep = 'validate-discord';
+        }
+
+      }).catch((_error) => {
+        this.validationError = 'There was an error; please try again later';
+        this.validationStep = 'validate-discord';
+      });
+    },
+    confirmDiscord(){
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const payload = JSON.stringify({
+        'jws': this.jwsString
+      });
+      const headers = {
+        'X-CSRFToken': csrfmiddlewaretoken
+      };
+
+      const confirmRequest = fetchData(`/api/v0.1/profile/${trustHandle}/confirm_discord`, 'POST', payload, headers);
+
+      $.when(confirmRequest).then(response => {
+        if (response.ok) {
+          this.validationStep = 'validation-complete';
+        } else {
+          this.validationError = response.msg;
+          this.validationStep = 'validate-discord';
+        }
+
+      }).catch((_error) => {
+        this.validationError = 'There was an error; please try again later';
+        this.validationStep = 'validate-discord';
+      });
+    },
+    getIDX() {
+      const CERAMIC_URL = 'https://ceramic.3boxlabs.com'; // 'http://localhost:7007'
+
+      const ceramic = new Ceramic(CERAMIC_URL);
+      // Create the IDX instance with the definitions aliases from the config
+      const idx = new IDXWeb({ ceramic, definitions.basicProfile });
+      // Connect an Ethereum provider
+      const ethereumProvider = await web3modal.connect();
+      const { result } = await ethereumProvider.send('eth_requestAccounts');
+      // Authenticate the IDX instance using the Ethereum provider via 3ID Connect
+      await idx.authenticate({
+        authProvider: new EthereumAuthProvider(ethereumProvider, result[0]),
+      });
+      return { ceramic, idx };
+    }
+  }
+});
+
 if (document.getElementById('gc-trust-manager-app')) {
 
   const trustManagerApp = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-trust-manager-app',
-    data: { }
+    data: {}
   });
 }
 

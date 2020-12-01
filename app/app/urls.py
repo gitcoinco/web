@@ -178,12 +178,22 @@ urlpatterns = [
         name='verify_user_twitter'
     ),
     url(
+        r'^api/v0.1/profile/(?P<handle>.*)/confirm_discord_msg/(?P<did>.*)',
+        dashboard.views.confirm_discord_msg,
+        name='confirm_discord_msg'
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_discord',
+        dashboard.views.request_verify_discord,
+        name='request_verify_discord'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_idx', dashboard.views.verify_user_idx, name='verify_user_idx'),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),

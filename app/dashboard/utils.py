@@ -405,7 +405,7 @@ def get_poap_earliest_owned_token_timestamp(network, address):
     poap_contract = get_poap_contract(network)
     from_block = 7844308
     if network == "ropsten":
-        from_block = 5592255 
+        from_block = 5592255
     # Filter the contract events by owner address
     transfer_filter = poap_contract.events.Transfer.createFilter(argument_filters={'to': address}, fromBlock=from_block, toBlock='latest')
     log_entries = transfer_filter.get_all_entries()
@@ -1196,3 +1196,13 @@ def tx_id_to_block_explorer_url(txid, network):
     if network == 'mainnet':
         return f"https://etherscan.io/tx/{txid}"
     return f"https://{network}.etherscan.io/tx/{txid}"
+
+def is_logged_user_check(user):
+    is_logged_in_user = user.is_authenticated and user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    return is_logged_in_user

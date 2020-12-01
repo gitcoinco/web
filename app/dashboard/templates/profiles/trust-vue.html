@@ -28,6 +28,11 @@
           @modal-dismissed="hideModal()">
         </poap-verify-modal>
 
+        <discord-verify-modal
+          :show-validation="visibleModal === 'discord-modal'"
+          @modal-dismissed="hideModal()">
+        </discord-verify-modal>
+
         <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
         The higher the Trust
         Bonus of a user is, the more we can be confident that the user is real. Higher
@@ -165,6 +170,13 @@
             >
             <template v-slot:description>
               Verify your POAP badges.
+            </template>
+          </active-trust-row-template>
+          <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/discord.svg"
+            title="Verify With Discord" :match-percent=5 :is-verified="'{{is_discord_verified}}' === 'True'" button-text="Verify"
+            @verify-button-pressed="showModal('discord-modal')">
+            <template v-slot:description>
+              Verify your Discord.
             </template>
           </active-trust-row-template>
         </div>

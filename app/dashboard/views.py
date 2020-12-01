@@ -58,10 +58,12 @@ import magic
 import pytz
 import requests
 import tweepy
+import discord
+import asyncio
 from app.services import RedisService, TwilioService
 from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
-    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, CERAMIC_URL, DISCORD_BOT_TOKEN
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -81,7 +83,7 @@ from dashboard.idena_utils import (
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    get_poap_earliest_owned_token_timestamp, profile_helper,
+    get_poap_earliest_owned_token_timestamp, profile_helper, is_logged_user_check
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
@@ -2949,13 +2951,7 @@ def get_profile_by_idena_token(token):
         return None
 
 def logout_idena(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user'
-        })
+    is_logged_user_check(request.user)
 
     profile = profile_helper(handle, True)
     if profile.is_idena_connected:
@@ -3078,12 +3074,7 @@ def authenticate_idena(request, handle):
 
 @login_required
 def recheck_idena_status(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user'
-        })
+    is_logged_user_check(request.user)
 
     profile = profile_helper(handle, True)
     profile.update_idena_status()
@@ -3106,12 +3097,7 @@ def verify_user_twitter(request, handle):
 
     twitter_re = re.compile(r'^https?://(www\.)?twitter\.com/(#!/)?([^/]+)(/\w+)*$')
 
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user'
-        })
+    is_logged_user_check(request.user)
 
     profile = profile_helper(handle, True)
     if profile.is_twitter_verified:
@@ -3215,12 +3201,7 @@ def connect_google():
 @login_required
 @require_POST
 def request_verify_google(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
+    is_logged_user_check(request.user)
 
     profile = profile_helper(handle, True)
     if profile.is_google_verified:
@@ -3268,14 +3249,9 @@ def verify_user_google(request):
 @login_required
 def verify_user_idx(request, handle):
 
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
+    is_logged_user_check(request.user)
 
-    profile = profile_helper(handle, True)
+    profile = profile_helper(request.user.username, True)
     if profile.is_idx_verified:
         return JsonResponse({
             'ok': True,
@@ -3290,6 +3266,120 @@ def verify_user_idx(request, handle):
             'ok': False,
             'msg': f'Request must include gitcoin_handle'
         })
+
+class DiscordClient(discord.Client):
+    async def send_dm(ctx, member: discord.Member, *, content):
+        channel = await member.create_dm()
+        await channel.send(content)
+
+
+def verify_text_for_discord(handle, did):
+    url = 'https://gitcoin.co/' + handle + '/confirm_discord_msg/' + did
+    msg = 'Click no link para verificar sua identidade Discord ' + handle + ' on @gitcoin'
+    full_text = msg + ' ' + url
+
+    return full_text
+
+@login_required
+def request_verify_discord(request, handle):
+    is_logged_user_check(request.user)
+
+    profile = profile_helper(request.user.username, True)
+    if profile.is_discord_verified:
+        return redirect('profile_by_tab', 'trust')
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    did_ceramic = request_data.get('did_ceramic', '')
+    discord_handle = request_data.get('discord_handle', '')
+
+    idx_data = { 'did': did_ceramic, 'username': discord_handle }
+    url_discord = CERAMIC_URL + "/api/v0/request-discord"
+
+    try:
+        
+        request = requests.post(url=url_discord, data=idx_data)
+        if request.Response() == 200:
+            result = request.json()
+            challenge = result.data.challenge
+
+            dClient = DiscordClient()
+            dClient.run(DISCORD_BOT_TOKEN)
+            dClient.send_dm(discord_handle, verify_text_for_discord(request.user, did_ceramic) )
+
+            return JsonResponse({
+                'ok': True,
+                'challengeCode': challenge
+            })
+
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, mensage here'
+        })
+
+        
+
+@login_required
+@require_POST
+def confirm_discord_msg(request, did):
+    is_logged_user_check(request.user)
+    
+    try:
+        if did == '':
+            return JsonResponse({
+                'ok': False,
+                'msg': 'Confirmação invalida'
+            })
+
+        request_data = json.loads(request.body.decode('utf-8'))
+        did_default = request_data.get('did', '')
+
+        if did == did_default:
+            profile.is_discord_verified = True
+            profile.save()
+            return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, Ivalid URL'
+        })
+
+
+
+@require_POST
+def confirm_discord(request):
+    thirty_min_ago = datetime.datetime.now() - datetime.timedelta(minutes=30)
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    jws = request_data.get('jws', '')
+
+
+    try:
+        if datetime.datetime.now() > thirtythirty_min_ago:
+            return JsonResponse({
+                'ok': False,
+                'msg': f'Sua sessão de 30 minutos expirou'
+            })
+
+        url_confirm = CERAMIC_URL + "/api/v0/confirm-discord"
+        request = requests.post(url_confirm, jws)
+        vc_content = request.json()
+        
+        return JsonResponse({
+            'ok': True,
+            'discord_handle': discord_handle,
+            'sub': vc_content.sub,
+            'time': vc_content.nbf
+        })
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'confirm_discord'
+        })
+
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
@@ -6556,12 +6646,7 @@ def events(request, hackathon):
 @login_required
 @require_POST
 def verify_user_poap(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user'
-        })
+    is_logged_user_check(request.user)
 
     profile = profile_helper(handle, True)
     if profile.is_poap_verified:
