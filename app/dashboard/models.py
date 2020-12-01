@@ -2941,8 +2941,8 @@ class Profile(SuperModel):
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
     is_idena_verified = models.BooleanField(default=False)
-    idena_address = models.CharField(max_length=128, null=True, unique=True)
-    idena_status = models.CharField(max_length=32, null=True)
+    idena_address = models.CharField(max_length=128, null=True, unique=True, blank=True)
+    idena_status = models.CharField(max_length=32, null=True, blank=True)
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
