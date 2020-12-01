@@ -302,23 +302,19 @@ def new_supporter(grant, subscription):
 
 
 def thank_you_for_supporting(grants, contributor):
-    subscriptions = []
-    for grant_id in grants:
-        subscription = Subscription.objects.filter(grant_id=grant_id, contributor_profile=contributor).first()
-        if subscription and subscription.negative:
-            continue
-        subscriptions.append(subscription)
+    if subscription and subscription.negative:
+        return
 
     from_email = settings.CONTACT_EMAIL
-    to_email = contributor.email
+    to_email =  subscription.contributor_profile.email
     if not to_email:
         to_email = subscription.contributor_profile.user.email
-        to_email = contributor.user.email
+
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_thank_you_for_supporting_email(subscriptions)
+        html, text, subject = render_thank_you_for_supporting_email(grant, subscription)
 
         if not should_suppress_notification_email(to_email, 'thank_you_for_supporting'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
