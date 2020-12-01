@@ -26,6 +26,7 @@ from random import randint, seed
 from secrets import token_hex
 
 from app import settings
+from app.settings import BASE_DIR
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
@@ -193,8 +194,13 @@ def generate_collection_thumbnail(collection, width, heigth):
         if grant.logo:
             if len(logos) > DISPLAY_GRANTS_LIMIT:
                 break
+            logos.append(grant.logo.open())
+        else:
+            logo = open(f'{BASE_DIR}/assets/v2/images/grants/logos/{grant.id % 3}.png', 'rb')
+            logos.append(logo)
 
-            logos.append(grant.logo)
+    for logo in range(len(logos), 4):
+        logos.append(None)
 
     thumbail = Image.new('RGBA', IMAGE_BOX, color=BG)
     avatar_url = f'{settings.BASE_URL[:-1]}{collection.profile.avatar_url}'
@@ -205,7 +211,7 @@ def generate_collection_thumbnail(collection, width, heigth):
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0) + PROFILE_BOX, fill=0)
     profile_thumbnail = Image.open(fd)
-    profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
+    # profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
     profile_circle = ImageOps.fit(profile_thumbnail, mask.size, centering=(0.5, 0.5))
 
 
@@ -216,22 +222,32 @@ def generate_collection_thumbnail(collection, width, heigth):
         [width - GRANT_WIDTH - MARGIN, heigth - GRANT_HEIGHT - MARGIN]  # bottom right grant
     ]
 
-    for index in range(len(logos)):
+    for index in range(4):
+        if logos[index] is None:
+            grant_bg = Image.new('RGBA', GRANT_BOX, color='white')
+            thumbail.paste(grant_bg, CORNERS[index], grant_bg)
+            continue
+
         if re.match(r'.*\.svg', logos[index].name):
-            grant_img = convert_img(logos[index].open())
+            grant_img = convert_img(logos[index])
             grant_thumbail = Image.open(grant_img)
         else:
-            grant_thumbail = Image.open(logos[index].open())
+            try:
+                grant_thumbail = Image.open(logos[index])
+            except ValueError:
+                grant_thumbail = Image.open(logos[index]).convert("RGBA")
 
         grant_thumbail.thumbnail(GRANT_BOX, Image.ANTIALIAS)
 
         grant_bg = Image.new('RGBA', GRANT_BOX, color='white')
-        if grant_thumbail.mode in ('RGBA'):
+
+        try:
             grant_bg.paste(grant_thumbail, (int(GRANT_WIDTH / 2 - grant_thumbail.size[0] / 2),
                                             int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)), grant_thumbail)
-        else:
+        except ValueError:
             grant_bg.paste(grant_thumbail, (int(GRANT_WIDTH / 2 - grant_thumbail.size[0] / 2),
                                             int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)))
+
         thumbail.paste(grant_bg, CORNERS[index], grant_bg)
 
     draw_on_thumbnail = ImageDraw.Draw(thumbail)
@@ -240,10 +256,10 @@ def generate_collection_thumbnail(collection, width, heigth):
         (int(width / 2 + PROFILE_WIDTH / 2), int(heigth / 2 + PROFILE_HEIGHT / 2))
     ], fill="#0D013B")
 
-    if profile_circle.mode in ('P', 'RGBA'):
+    try:
         thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF),
                        profile_circle)
-    else:
+    except ValueError:
         thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF))
 
     return thumbail

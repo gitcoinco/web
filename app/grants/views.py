@@ -641,7 +641,7 @@ def get_grants(request):
         'current_type': grant_type,
         'category': category,
         'grants': grants_array,
-        'collections': [collection.to_json_dict() for collection in collections],
+        'collections': [collection.to_json_dict(request.build_absolute_uri) for collection in collections],
         'credentials': {
             'is_staff': request.user.is_staff,
             'is_authenticated': request.user.is_authenticated
