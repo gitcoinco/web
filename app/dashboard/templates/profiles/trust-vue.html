@@ -176,6 +176,30 @@
             </template>
           </active-trust-row-template>
 
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify With Facebook"
+            :match-percent=5
+            :is-verified="'{{is_facebook_verified}}' === 'True'"
+            button-text="Verify"
+            >
+            <template v-slot:icon>
+              <span style="color: #1877F2">
+                <i class="fab fa-facebook fa-3x" aria-hidden="true"></i>
+              </span>
+            </template>
+            <template v-slot:description>
+              Verify your Facebook account.
+            </template>
+            {% if not is_facebook_verified %}
+              <template v-slot:verify>
+                <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
+                  {% csrf_token %}
+                  <input type="submit" value="Verify" class="button button--primary text-nowrap" />
+                </form>
+              </template>
+            {% endif %}
+          </active-trust-row-template>
         </div>
       </div>
     </active-trust-manager>
@@ -188,7 +212,6 @@
         {% include "profiles/trust_soon_row.html" with service="Upala" %}
         {% include "profiles/trust_soon_row.html" with service="Duniter" %}
         {% include "profiles/trust_soon_row.html" with service="Equality Protocol" %}
-        {% include "profiles/trust_soon_row.html" with service="Facebook" %}
         {% include "profiles/trust_soon_row.html" with service="KYC" %}
         {% include "profiles/trust_soon_row.html" with service="PASS" %}
         {% include "profiles/trust_soon_row.html" with service="ENS Reverse Lookup" %}
