@@ -97,6 +97,7 @@ urlpatterns = [
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
     re_path(r'^kudos/about/?$', kudos.views.about, name='kudos_about'),
+    re_path(r'^kudos/sync/?$', kudos.views.sync, name='kudos_sync'),
     re_path(r'^kudos/marketplace/?$', kudos.views.marketplace, name='kudos_marketplace'),
     re_path(r'^kudos/mint/?$', kudos.views.mint, name='kudos_mint'),
     re_path(r'^kudos/send/?$', kudos.views.send_2, name='kudos_send'),

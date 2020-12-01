@@ -2883,6 +2883,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         kudos_limit = 8
         context['kudos'] = owned_kudos[0:kudos_limit]
         context['sent_kudos'] = sent_kudos[0:kudos_limit]
+        if request.GET.get('failed', 0):
+            context['kudos'] = profile.get_failed_kudos
         context['kudos_count'] = owned_kudos.count()
         context['sent_kudos_count'] = sent_kudos.count()
     elif tab == 'ptokens':
