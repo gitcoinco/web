@@ -1613,7 +1613,7 @@ class Contribution(SuperModel):
                     # Tx hash should start with `sync-tx:` and have a 64 character hash (no 0x prefix)
                     raise Exception('Unsupported zkSync transaction hash format')
                 tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
-                
+
                 # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
                 base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
                 r = requests.get(f"{base_url}/transactions_all/{tx_hash}")
@@ -1932,7 +1932,7 @@ class GrantCollection(SuperModel):
             'count': grants.count(),
             'grants': [{
                 'id': grant.id,
-                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
             } for grant in grants]
         }
 
@@ -1950,7 +1950,7 @@ class GrantCollection(SuperModel):
         self.cache = cache
         self.save()
 
-    def to_json_dict(self):
+    def to_json_dict(self, build_absolute_uri):
         curators = [{
             'url': curator.url,
             'handle': curator.handle,
@@ -1962,6 +1962,14 @@ class GrantCollection(SuperModel):
             'handle': self.profile.handle,
             'avatar_url': self.profile.avatar_url
         }
+
+        grants = self.cache.get('grants', 0)
+
+        if grants:
+            grants = [{
+                **grant,
+                'logo': build_absolute_uri(static(grant['logo'])) if 'v2/images' in grant['logo'] else grant['logo']
+            } for grant in grants]
         return {
             'id': self.id,
             'owner': owner,
@@ -1969,7 +1977,7 @@ class GrantCollection(SuperModel):
             'description': self.description,
             'cover': self.cover.url if self.cover else '',
             'count': self.cache.get('count', 0),
-            'grants': self.cache.get('grants', 0),
+            'grants': grants,
             'curators': curators + [owner]
         }
 
