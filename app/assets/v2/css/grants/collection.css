@@ -70,7 +70,7 @@
 
 .collection-item__img img {
   width: 100%;
-  object-fit: contain;
+  object-fit: cover;
   height: 100%;
 }
 
