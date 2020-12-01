@@ -20,7 +20,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-CLR_START_DATE = dt.datetime(2020, 9, 14, 15, 0) # TODO:SELF-SERVICE
+CLR_START_DATE = dt.datetime(2020, 12, 1, 15, 0) # TODO:SELF-SERVICE
 
 
 @app.shared_task(bind=True, max_retries=1)
