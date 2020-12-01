@@ -2168,9 +2168,9 @@ def grants_cart_view(request):
 
         is_brightid_verified = ( 'verified' == get_brightid_status(profile.brightid_uuid) )
 
-        context['is_fully_verified'] = (is_brightid_verified and profile.is_idena_verified and \
-                                            profile.sms_verification and profile.is_poap_verified and \
-                                            profile.is_twitter_verified and profile.is_google_verified)
+        context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
+                                            profile.is_poap_verified and profile.is_twitter_verified and \
+                                            profile.is_google_verified)
     else:
         return redirect('/login/github?next=' + request.get_full_path())
 
