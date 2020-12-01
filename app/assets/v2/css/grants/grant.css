@@ -640,6 +640,31 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
 #container_bar{
   background-color: #030118;
 }
+
+.grant-description h1{
+  font-size: 1.5rem;
+}
+
+.grant-description h2{
+  font-size: 1.3rem;
+}
+
+.grant-description h3{
+  font-size: 1.2rem;
+}
+
+.grant-description h4{
+  font-size: 1.1rem;
+}
+
+.grant-description h5{
+  font-size: 1rem;
+}
+
+.grant-description h6{
+  font-size: 1rem;
+}
+
 @media (max-width: 1100px) {
   .grants_hero_img .container{
     min-height: 350px;
