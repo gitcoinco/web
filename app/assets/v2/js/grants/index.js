@@ -509,6 +509,11 @@ if (document.getElementById('grants-showcase')) {
         this.grants = getGrants.grants;
       }
     },
+    computed: {
+      isLandingPage() {
+        return (window.location.pathname == '/grants/');
+      }
+    },
     beforeMount() {
       window.addEventListener('scroll', () => {
         this.bottom = this.scrollEnd();
