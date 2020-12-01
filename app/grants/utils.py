@@ -19,14 +19,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 import os
+import re
+import urllib.request
 from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
+from app import settings
+from app.settings import BASE_DIR
+from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
 from grants.sync.zcash import sync_zcash_payout
 from perftools.models import JSONStore
+from PIL import Image, ImageDraw, ImageOps
 
 logger = logging.getLogger(__name__)
 
@@ -162,10 +168,101 @@ def add_grant_to_active_clrs(grant):
 
     active_clr_rounds = GrantCLR.objects.filter(is_active=True)
     for clr_round in active_clr_rounds:
-        grants_in_clr = Grant.objects.filter(**clr_round.grant_filters)
-        if grants_in_clr.filter(pk=grant.pk).count():
+        if clr_round.grants.filter(pk=grant.pk).exists():
             grant.in_active_clrs.add(clr_round)
             grant.save()
+
+
+def generate_collection_thumbnail(collection, width, heigth):
+    MARGIN = int(width / 30)
+    MID_MARGIN = int(width / 90)
+    BG = (13, 2, 59)
+    DISPLAY_GRANTS_LIMIT = 4
+    PROFILE_WIDTH = PROFILE_HEIGHT = int(width / 3.5)
+    GRANT_WIDTH = int(width / 2) - MARGIN - MID_MARGIN
+    GRANT_HEIGHT = int(heigth / 2) - MARGIN - MID_MARGIN
+    IMAGE_BOX = (width, heigth)
+    LOGO_SIZE_DIFF = int(GRANT_WIDTH / 5)
+    HALF_LOGO_SIZE_DIFF = int(LOGO_SIZE_DIFF / 2)
+    PROFILE_BOX = (PROFILE_WIDTH - LOGO_SIZE_DIFF, PROFILE_HEIGHT - LOGO_SIZE_DIFF)
+    GRANT_BOX = (GRANT_WIDTH, GRANT_HEIGHT)
+
+    grants = collection.grants.all()
+
+    logos = []
+    for grant in grants:
+        if grant.logo:
+            if len(logos) > DISPLAY_GRANTS_LIMIT:
+                break
+            logos.append(grant.logo.open())
+        else:
+            logo = open(f'{BASE_DIR}/assets/v2/images/grants/logos/{grant.id % 3}.png', 'rb')
+            logos.append(logo)
+
+    for logo in range(len(logos), 4):
+        logos.append(None)
+
+    thumbail = Image.new('RGBA', IMAGE_BOX, color=BG)
+    avatar_url = f'{settings.BASE_URL[:-1]}{collection.profile.avatar_url}'
+    fd = urllib.request.urlopen(avatar_url)
+
+    # Make rounder profile avatar img
+    mask = Image.new('L', PROFILE_BOX, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + PROFILE_BOX, fill=0)
+    profile_thumbnail = Image.open(fd)
+    # profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
+    profile_circle = ImageOps.fit(profile_thumbnail, mask.size, centering=(0.5, 0.5))
+
+
+    CORNERS = [
+        [MARGIN, MARGIN],  # Top left grant
+        [width - GRANT_WIDTH - MARGIN, MARGIN],  # Top right grant
+        [MARGIN, heigth - GRANT_HEIGHT - MARGIN],  # bottom left grant
+        [width - GRANT_WIDTH - MARGIN, heigth - GRANT_HEIGHT - MARGIN]  # bottom right grant
+    ]
+
+    for index in range(4):
+        if logos[index] is None:
+            grant_bg = Image.new('RGBA', GRANT_BOX, color='white')
+            thumbail.paste(grant_bg, CORNERS[index], grant_bg)
+            continue
+
+        if re.match(r'.*\.svg', logos[index].name):
+            grant_img = convert_img(logos[index])
+            grant_thumbail = Image.open(grant_img)
+        else:
+            try:
+                grant_thumbail = Image.open(logos[index])
+            except ValueError:
+                grant_thumbail = Image.open(logos[index]).convert("RGBA")
+
+        grant_thumbail.thumbnail(GRANT_BOX, Image.ANTIALIAS)
+
+        grant_bg = Image.new('RGBA', GRANT_BOX, color='white')
+
+        try:
+            grant_bg.paste(grant_thumbail, (int(GRANT_WIDTH / 2 - grant_thumbail.size[0] / 2),
+                                            int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)), grant_thumbail)
+        except ValueError:
+            grant_bg.paste(grant_thumbail, (int(GRANT_WIDTH / 2 - grant_thumbail.size[0] / 2),
+                                            int(GRANT_HEIGHT / 2 - grant_thumbail.size[1] / 2)))
+
+        thumbail.paste(grant_bg, CORNERS[index], grant_bg)
+
+    draw_on_thumbnail = ImageDraw.Draw(thumbail)
+    draw_on_thumbnail.ellipse([
+        (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)),
+        (int(width / 2 + PROFILE_WIDTH / 2), int(heigth / 2 + PROFILE_HEIGHT / 2))
+    ], fill="#0D013B")
+
+    try:
+        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF),
+                       profile_circle)
+    except ValueError:
+        thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF))
+
+    return thumbail
 
 
 def sync_payout(contribution):

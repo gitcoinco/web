@@ -23,7 +23,6 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
-from grants.clr import predict_clr
 from grants.models import Contribution, Grant, GrantCLR
 from grants.tasks import recalc_clr
 from marketing.mails import warn_subscription_failed
@@ -50,7 +49,7 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num}")
+                print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
                 for grant in clr_round.grants:
                     recalc_clr.delay(grant.pk)
 

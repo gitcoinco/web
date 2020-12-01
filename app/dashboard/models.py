@@ -26,6 +26,7 @@ import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
+from logging import error
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -59,6 +60,7 @@ from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
+from dashboard.idena_utils import get_idena_status, next_validation_time
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -2936,6 +2938,20 @@ class Profile(SuperModel):
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
 
+    # Idena fields
+    is_idena_connected = models.BooleanField(default=False)
+    is_idena_verified = models.BooleanField(default=False)
+    idena_address = models.CharField(max_length=128, null=True, unique=True)
+    idena_status = models.CharField(max_length=32, null=True)
+
+    def update_idena_status(self):
+        self.idena_status = get_idena_status(self.idena_address)
+
+        if self.idena_status in ['Newbie', 'Verified', 'Human']:
+            self.is_idena_verified = True
+        else:
+            self.is_idena_verified = False
+
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
@@ -2947,6 +2963,8 @@ class Profile(SuperModel):
             tb *= 1.05
         if self.sms_verification:
             tb *= 1.05
+        if self.is_idena_verified:
+            tb *= 1.25
         return tb
 
 
@@ -5635,6 +5653,11 @@ class Investigation(SuperModel):
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
 
+        htmls.append(f'Idena Verified: {instance.is_idena_verified}')
+        if instance.is_idena_verified:
+            total_sybil_score -= 4
+            htmls.append('(REDEMPTIONx4)')
+
         htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
         if instance.is_twitter_verified:
             total_sybil_score -= 1
@@ -5816,3 +5839,11 @@ class TransactionHistory(SuperModel):
 
     def __str__(self):
         return f"{self.status} <> {self.earning.pk} at {self.captured_at}"
+
+
+class MediaFile(SuperModel):
+    filename = models.CharField(max_length=350, blank=True, null=True)
+    file = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The file.'), )
+
+    def __str__(self):
+        return f'{self.id} - {self.filename}'
