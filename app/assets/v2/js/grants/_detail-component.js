@@ -399,8 +399,10 @@ Vue.mixin({
       if (document.contxt.github_handle) {
         return true;
       }
+    },
+    isLandingPage() {
+      return (window.location.pathname == '/grants/');
     }
-
   }
 });
 

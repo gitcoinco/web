@@ -38,6 +38,7 @@ along with this program. If not, see
     .no-bg {
       background: none !important;
     }
+    {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
 </head>
 
@@ -104,7 +105,9 @@ along with this program. If not, see
                   </template>
                   <template v-else>
                     {% include 'grants/shared/landing_subnav.html' %}
-                     {% include 'grants/shared/active_clr_round.html'%}
+                    <template v-if="isLandingPage">
+                      {% include 'grants/shared/active_clr_round.html'%}
+                    </template>
                     {% include 'grants/shared/landing_grants.html' %}
                   </template>
                 </div>

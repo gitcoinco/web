@@ -832,7 +832,8 @@ def get_branding_info(request):
         if re.search(policy.url_pattern, request.get_full_path()):
             return {
                 "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else None,
-                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None
+                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None,
+                "inline_css": policy.inline_css
             }
 
 

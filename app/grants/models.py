@@ -2048,6 +2048,7 @@ class GrantBrandingRoutingPolicy(SuperModel):
         blank=True,
         null=True
     )
+    inline_css = models.TextField(default='', blank=True, help_text=_('Inline css to customize the banner fit'))
 
     def __str__(self):
         return f'{self.url_pattern} >> {self.priority}'
