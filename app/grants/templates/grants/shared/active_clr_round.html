@@ -1,3 +1,4 @@
+{% load humanize %}
 <div class="container-fluid grants-container">
   <div class="container">
     {% for active_round in active_rounds %}
@@ -35,7 +36,7 @@
               </small>
             </h5>
           </div>
-          <p class="my-auto font-weight-semibold">${{ active_round.total_pot }}</p>
+          <p class="my-auto font-weight-semibold">${{ active_round.total_pot|floatformat:"0"|intcomma }}</p>
         </div>
       </a>
     {% endfor %}
