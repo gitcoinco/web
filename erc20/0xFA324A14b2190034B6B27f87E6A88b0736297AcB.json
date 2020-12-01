@@ -1,0 +1,28 @@
+{
+  "symbol": "CCR",
+  "address": "0xFA324A14b2190034B6B27f87E6A88b0736297AcB",
+  "overview": {
+    "en": "CCR is a token created by the BigBoard digital financial community to solve financial problems. It is an exclusive pass and symbol belonging to the community. At present, it is only officially issued and has no other access channels.",
+    "zh": "CCR，是BigBoard数字金融社区为了解决金融问题所创造的代币，是属于社区的专属通证和象征，目前仅有官方指定发放，无其它获取渠道。"
+  },
+  "email": "lccf911@protonmail.com",
+  "website": "http://ccrtoken.com/#",
+  "whitepaper": "http://ccrtoken.com/pdf.html",
+  "state": "NORMAL",
+  "published_on": "2020-09-04",
+  "initial_price":{
+        "ETH":"1 ETH",
+        "USD":"607 USD",
+        "BTC":"0.033 BTC"
+  },
+  "links": {
+    "blog": "",
+    "twitter": "",
+    "telegram": "",
+    "reddit": "",
+    "github": "",
+    "facebook": "https://www.facebook.com/permalink.php?story_fbid=108585964326453&id=100055251496577&__tn__=%2CdH-R-R&eid=ARDGxyDRd1WLPWXtPMMvosZSNsunAJEZUQb9J2NtfdzSmNCNECyB5giVN9sSu0sBIuPoX9GrUl68e86R",
+    "slack": "",
+    "medium": ""
+  }
+}
