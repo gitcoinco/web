@@ -149,7 +149,8 @@ Vue.component('grant-sidebar', {
 if (document.getElementById('grants-showcase')) {
 
   let sort = getParam('sort');
-  if(!sort){
+
+  if (!sort) {
     sort = 'weighted_shuffle';
   }
   var appGrants = new Vue({

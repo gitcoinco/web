@@ -215,28 +215,30 @@ Vue.mixin({
     onFileChange(e) {
       let vm = this;
 
-      if (!e.target) return;
+      if (!e.target) {
+        return;
+      }
+
       const file = e.target.files[0];
 
       if (!file) {
         return;
       }
 
-      new Compressor(file, {
+      let imgCompress = new Compressor(file, {
         quality: 0.6,
         maxWidth: 2000,
         success(result) {
-          console.log(result)
           vm.logoPreview = URL.createObjectURL(result);
-          vm.logo = new File([result], result.name, { lastModified: result.lastModified })
+          vm.logo = new File([result], result.name, { lastModified: result.lastModified });
           $('#preview').css('width', '100%');
           $('#js-drop span').hide();
           $('#js-drop input').css('visible', 'invisible');
-          $('#js-drop').css('padding', 0)
+          $('#js-drop').css('padding', 0);
         },
         error(err) {
           _alert(err.message, 'error');
-        },
+        }
       });
     }
   },

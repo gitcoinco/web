@@ -7,17 +7,17 @@ Vue.component('grant-card', {
     return {
       collections: document.collections,
       currentUser: document.contxt.github_handle,
-      isCurator: false,
+      isCurator: false
     };
   },
   methods: {
-    quickView: function(event ) {
+    quickView: function(event) {
       event.preventDefault();
       let vm = this;
 
       appGrants.grant = vm.grant;
-      appGrants.$refs["sidebar-quick-view"].$on('hidden', function(e){
-        appGrants.grant = {}
+      appGrants.$refs['sidebar-quick-view'].$on('hidden', function(e) {
+        appGrants.grant = {};
       });
       vm.$root.$emit('bv::toggle::collapse', 'sidebar-quick-view');
     },
@@ -31,9 +31,10 @@ Vue.component('grant-card', {
     checkIsCurator: function() {
       let vm = this;
       let currentUser;
+
       // Validate the user presence and clean current user handle
       if (vm.currentUser) {
-        currentUser = vm.currentUser.replace(/@/, '').replace(/\s/g,'')
+        currentUser = vm.currentUser.replace(/@/, '').replace(/\s/g, '');
       } else {
         return;
       }
@@ -45,7 +46,7 @@ Vue.component('grant-card', {
 
           // Clean curator handle
           if (curator && curator.handle) {
-            currentCurator = curator.handle.replace(/@/, '').replace(/\s/g,'')
+            currentCurator = curator.handle.replace(/@/, '').replace(/\s/g, '');
           }
 
           if (currentCurator === currentUser) {

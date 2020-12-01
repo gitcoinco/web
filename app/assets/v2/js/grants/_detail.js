@@ -1,6 +1,3 @@
-
-
-
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 Quill.register('modules/ImageExtend', ImageExtend);
@@ -75,17 +72,15 @@ if (document.getElementById('gc-grant-detail')) {
       return {
         grant: {},
         relatedGrants: [],
-        backLink:{
+        backLink: {
           url: '/grants',
           title: 'Grants'
         }
       };
     },
     mounted: function() {
-      this.backNavigation()
+      this.backNavigation();
       this.fetchGrantDetails();
     }
   });
 }
-
-

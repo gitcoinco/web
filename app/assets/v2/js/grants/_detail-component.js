@@ -1,8 +1,8 @@
 
 let isStaff = document.contxt.is_staff || false;
 
-let userCode = typeof user_code !== 'undefined'? user_code : undefined;
-let verificationTweet = typeof verification_tweet !== 'undefined'? verification_tweet : undefined;
+let userCode = typeof user_code !== 'undefined' ? user_code : undefined;
+let verificationTweet = typeof verification_tweet !== 'undefined' ? verification_tweet : undefined;
 
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
@@ -25,7 +25,9 @@ Vue.mixin({
 
       vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
-      if (typeof showSideCart != 'undefined') {showSideCart()}
+      if (typeof showSideCart != 'undefined') {
+        showSideCart();
+      }
 
     },
     removeFromCart: function() {
@@ -33,19 +35,19 @@ Vue.mixin({
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
-      if (typeof showSideCart != 'undefined') {showSideCart()}
+      if (typeof showSideCart != 'undefined') {
+        showSideCart();
+      }
 
     },
     editGrantModal: function() {
       let vm = this;
-      // vm.grant.description_rich_edited = vm.grant.description_rich;
-      // vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+
       vm.logoPreview = vm.grant.logo_url;
 
       vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
     },
     saveGrant: function(event) {
-      console.log(event)
       event.preventDefault();
       let vm = this;
 
@@ -70,6 +72,7 @@ Vue.mixin({
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'region': vm.grant.region?.name || undefined
       };
+
       if (vm.logo) {
         data.logo = vm.logo;
       }
@@ -218,31 +221,34 @@ Vue.mixin({
     onFileChange(e) {
       let vm = this;
 
-      if (!e.target) return;
+      if (!e.target) {
+        return;
+      }
+
       const file = e.target.files[0];
 
       if (!file) {
         return;
       }
       vm.imgTransition = true;
-      new Compressor(file, {
+      let imgCompress = new Compressor(file, {
         quality: 0.6,
         maxWidth: 2000,
         success(result) {
           vm.logoPreview = URL.createObjectURL(result);
-          vm.logo = new File([result], result.name, { lastModified: result.lastModified })
+          vm.logo = new File([result], result.name, { lastModified: result.lastModified });
           vm.imgTransition = false;
         },
         error(err) {
           vm.imgTransition = false;
           console.log(err.message);
-        },
+        }
       });
     },
     async twitterVerification() {
       let vm = this;
 
-      if (!vm.grant.twitter_handle_1 || vm.grant.twitter_handle_1 == ''){
+      if (!vm.grant.twitter_handle_1 || vm.grant.twitter_handle_1 == '') {
         _alert('Please add a twitter account to your grant!', 'error', 5000);
         return;
       }
@@ -254,18 +260,18 @@ Vue.mixin({
         return;
       }
       if (response.verified) {
-        _alert('Congratulations, your grant is now verified!', 'success', 5000)
-        vm.grant.verified = true
-        vm.$refs['twitterVerification'].hide()
+        _alert('Congratulations, your grant is now verified!', 'success', 5000);
+        vm.grant.verified = true;
+        vm.$refs['twitterVerification'].hide();
       }
 
       if (!response.has_text) {
-        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'error', 5000)
+        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'error', 5000);
         return;
       }
 
       if (!response.has_code) {
-        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'error', 5000)
+        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'error', 5000);
         return;
       }
 
@@ -294,8 +300,9 @@ Vue.mixin({
     },
     tweetVerification() {
       let vm = this;
-      const tweetContent =`https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`
-      window.open(tweetContent, '_blank')
+      const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`;
+
+      window.open(tweetContent, '_blank');
     },
     checkForm: function(e) {
       let vm = this;
@@ -330,7 +337,7 @@ Vue.mixin({
       }
       vm.submitted = false;
       return true; // no errors, continue to create grant
-    },
+    }
   },
   computed: {
     teamFormatted: {
@@ -349,7 +356,7 @@ Vue.mixin({
 
       },
       set(value) {
-        this.grant.team_members = value
+        this.grant.team_members = value;
       }
     },
     editor() {
@@ -407,9 +414,8 @@ Vue.component('grant-details', {
     },
     fullview: {
       type: Boolean,
-      default: true
-    },
-
+      'default': true
+    }
   },
   template: '#template-grant-details',
   data() {
@@ -492,14 +498,9 @@ Vue.component('grant-details', {
         }
         this.dirty = true;
       }
-    },
-  },
-
-})
-
-
-
-
+    }
+  }
+});
 
 const getFormData = object => {
   const formData = new FormData();

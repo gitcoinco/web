@@ -217,14 +217,14 @@ function showSideCart() {
 
     // Register remove click handler
     $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
-      if (typeof appGrants !== "undefined"){
+      if (typeof appGrants !== 'undefined') {
 
         appGrants.grants.filter(grantSingle => {
           if (Number(grantSingle.id) === Number(grant.grant_id)) {
             grantSingle.isInCart = false;
           }
         });
-      } else if (typeof appGrantDetails !== "undefined" && appGrantDetails.grant.id === Number(grant.grant_id)) {
+      } else if (typeof appGrantDetails !== 'undefined' && appGrantDetails.grant.id === Number(grant.grant_id)) {
         appGrantDetails.grant.isInCart = false;
       }
 

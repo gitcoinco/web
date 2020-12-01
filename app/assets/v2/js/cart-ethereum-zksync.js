@@ -45,9 +45,9 @@ Vue.component('grantsCartEthereumZksync', {
     // saved". The ability to change this message was removed by browsers as it's widely considered
     // a security issue. Source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
     window.addEventListener('beforeunload', (e) => {
+      // The below message will likely be ignored as explaned above, but we include it just in case
       if (this.zksync.checkoutStatus === 'pending') {
-        // The below message will likely be ignored as explaned above, but we include it just in case
-        e.returnValue = 'zkSync checkout in progress. Are you sure you want to leave?'; 
+        e.returnValue = 'zkSync checkout in progress. Are you sure you want to leave?';
       }
     });
   },
@@ -218,7 +218,7 @@ Vue.component('grantsCartEthereumZksync', {
       const numberOfTransfers = String(this.donationInputs.length);
       const minimumCost = gasPerTransfer.mul(numberOfTransfers);
       let totalCost = minimumCost;
-      
+
       // If user has enough balance within zkSync, cost equals the minimum amount
       const { isBalanceSufficient, requiredAmounts } = this.hasEnoughBalanceInZkSync();
 
@@ -229,7 +229,7 @@ Vue.component('grantsCartEthereumZksync', {
       // If we're here, user needs at least one L1 deposit, so let's calculate the total cost
       this.cart.tokenList.forEach((tokenSymbol) => {
         const zksyncBalance = toBigNumber(this.user.zksyncState.committed.balances[tokenSymbol]);
-        
+
         if (requiredAmounts[tokenSymbol].gt(zksyncBalance)) {
           if (tokenSymbol === 'ETH') {
             totalCost = totalCost.add('200000'); // add 200k gas for ETH deposits
@@ -266,7 +266,7 @@ Vue.component('grantsCartEthereumZksync', {
       this.cart.tokenList.forEach((tokenSymbol) => {
         const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
         const requiredAmount = requiredAmounts[tokenSymbol];
-        
+
         if (requiredAmount.gt(userAmount))
           isBalanceSufficient = false;
       });
