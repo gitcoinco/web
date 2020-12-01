@@ -407,7 +407,7 @@ class GrantCollectionAdmin(admin.ModelAdmin):
 
 
 class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'url_pattern', 'priority' ]
+    list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
