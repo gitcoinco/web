@@ -82,7 +82,7 @@ Update the `web/app/app/.env` file to include the values provided by Facebook on
 
 ```sell
 FACEBOOK_CLIENT_ID=xxx
-FACEBOOK_CLIENT_SECTER=xxx
+FACEBOOK_CLIENT_SECRET=xxx
 ```
 
 Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local Gitcoin environment.
