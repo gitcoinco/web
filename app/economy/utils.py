@@ -128,7 +128,6 @@ def watch_txn(tx_id):
     import requests
     from django.conf import settings
     args = {
-      "apiKey": settings.BLOCKNATIVE_API,
       "hash": tx_id,
       "blockchain": "ethereum",
       "network": "main"
