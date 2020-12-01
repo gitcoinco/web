@@ -1,0 +1,422 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load static humanize i18n grants_extra %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+    <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+
+    <script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
+
+  </head>
+
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+    {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+      </div>
+    {% endif %}
+    <div class="bg-lightblue pb-5" id="gc-grant-detail"  v-cloak>
+      <div class="" v-if="grant">
+        <grant-details :grant="grant" v-if="grant.id">
+          <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;">
+          <div class="container mb-3">
+            <a :href="backLink.url" class="font-body"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+          </div>
+        </grant-details>
+
+        <div class="container">
+          <b-tabs  content-class="mt-3">
+            <b-tab :title-link-class="'nav-line'">
+              <template v-slot:title>ACTIVITY</template>
+              <div class="">
+                  {% if is_team_member %}
+                    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+                  {% else %}
+                    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+                  {% endif %}
+                  <div id="activities" class="activity_stream container px-0">
+                    {% include 'shared/activity_container.html' with pinned=False %}
+                  </div>
+              </div>
+            </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" lazy>
+              <template v-slot:title>TRANSACTIONS</template>
+
+              {% if is_team_member %}
+                <div class="float-right font-body">
+                  {% if is_owner %}
+                    <a href="/settings/account#financials" target="_blank">
+                      Export Transactions (OWNER ONLY)
+                    </a> |
+                  {% endif %}
+
+                  <a href="/grants/v1/api/export_addresses/grant{{grant.pk}}.json" target="_blank">
+                    All Contributor Addresses for this Grant (TEAM ONLY)
+                  </a>
+                </div>
+                <br class="break">
+              {% endif %}
+
+              {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+                <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+              {% else %}
+                {% include 'grants/activity.html' %}
+                <span id="grant-network" class="hidden">{{ grant.network }}</span>
+              {% endif %}
+            </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
+              <template v-slot:title>RELATED GRANTS <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
+              <div class="row">
+                <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
+                  <a class="text-decoration-none" :href="relgrant.details_url" data-instant>
+                    <div class="card">
+                      <img :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title">
+                      <div class="card-body">
+                        <h5 class="card-title">[[relgrant.title]]</h5>
+                        <p class="card-text">[[relgrant.description | truncate(150)]]</p>
+                        <div class="d-flex">
+                          <div v-for="member in relgrant.team_members" :key="member.pk">
+                            <b-img-lazy class="rounded-circle bg-white" width="40" height="40" :src="`/dynamic/avatar/${member.fields.handle}`" alt="member.fields.handle"></b-img-lazy>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" lazy>
+              <template v-slot:title>CONTRIBUTORS</template>
+
+              <div class="grant__stakeholders-list d-flex flex-wrap">
+                {% for contribution in contributors %}
+                  {% if contribution.anonymous %}
+                    {% trans  'Anonymous' as handle %}
+                  {% elif contribution.subscription %}
+                    {% trans  contribution.subscription.contributor_profile.handle  as handle %}
+                  {% else %}
+                    {% trans  contribution.profile.handle  as handle %}
+                  {% endif %}
+                  <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
+                    <div class="mr-2 d-inline-block">
+                      <img data-src="/dynamic/avatar/{{handle}}" />
+                    </div>
+                    <div class="mt-1 d-inline-block">
+                      <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
+                      {% if handle == request.user.profile.handle  %}
+                      <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
+                      {% endif %}
+                    </div>
+                  </a>
+
+                {% empty %}
+                  <div class="no-subscriptions">
+                    <p class="mb-1">{% trans "No contributors." %}</p>
+                  </div>
+                {% endfor %}
+              </div>
+            </b-tab>
+
+
+            {% if is_staff %}
+            <b-tab :title-link-class="'nav-line'" lazy>
+              <template v-slot:title>SYBIL PROFILE</template>
+
+
+                <h4>Grant Sybil Profile</h4>
+
+                <hr>
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                SybilScore ™️: {{ grant.sybil_score }}
+                <br>
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                RiskScore ™️: {{ grant.weighted_risk_score }}
+                <pre>
+
+                A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+                - Account Metadata
+                - Suspicious Interactions
+                - Grant Flags Reports
+                - BrightID Trust Score (coming soon)
+                - KYC (maybe coming soon)
+                - MACI (maybe coming soon)
+
+                a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+                </pre>
+                <div id="section-nav-sybil">
+                  {% for ele in sybil_profiles%}
+                  <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+                  <table>
+                    <tr>
+                      <td>
+                        Index
+                      </td>
+                      <td>
+                        Contributors
+                      </td>
+                      <td>
+                        Contributors (pct)
+                      </td>
+                      <td>
+                        Contributions/Contributor
+                      </td>
+                      <td>
+                        Profiles
+                      </td>
+                    </tr>
+                  {% for sp in ele.1.0 %}
+                    <tr style="border-top: 1px solid grey;">
+                      <td>
+                        {% if '0x' in sp.0 %}
+                        <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+                        {% else %}
+                        {{sp.0}}
+                        {% endif %}
+                      </td>
+                      <td>
+                        {{sp.1}}
+                      </td>
+                      <td>
+                        {{sp.5}}%
+                      </td>
+                      <td>
+                        {{sp.3|floatformat:2}}
+                      </td>
+                      <td>
+                        <div style="max-height: 50px; overflow: scroll;">
+                          {% for this_profile in sp.4 %}
+                                <a href="/{{this_profile}}">
+                                  {% if forloop.counter < 20 %}
+                                    <b-img-lazy class="rounded-circle bg-white" width="30" height="30" src="/dynamic/avatar/{{this_profile}}"></b-img-lazy>
+                                  {% endif %}
+                                  @{{this_profile}}
+                                </a>
+                          {% endfor %}
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </table>
+                    <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+
+
+                  {% endfor %}
+                </div>
+            </b-tab>
+            {% endif %}
+            {% if is_team_member or is_staff %}
+            <b-tab :title-link-class="'nav-line'" lazy>
+              <template v-slot:title>STATS</template>
+              <div id=grant_stats_graph class="content-block content-block--white">
+                <div class="container">
+
+                  <div class="value-container">
+                    <div class="chart_container chart_container--big">
+                      {% if stats_history|length %}
+                      <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+                      <table id=stats_history>
+                        <tr class="table_header">
+                          <td>
+                            When
+                          </td>
+                          <td>
+                            Impressions
+                          </td>
+                          <td>
+                            Added to Cart
+                          </td>
+                          <td>
+                            Contributions
+                          </td>
+                        </tr>
+                      {% for ele in stats_history %}
+                        <tr>
+                          <td>
+                            {{ele.created_on|date:"Y/m/d"}}
+                          </td>
+                          <td>
+                            {{ele.data.impressions}}
+                          </td>
+                          <td>
+                            {{ele.data.in_cart}}
+                          </td>
+                          <td>
+                            {{ele.data.contributions}}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      </table>
+                      {% endif %}
+
+                      <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
+                      <div class="chart_container__content">
+                        <div id="grant_chart"></div>
+                      </div>
+                      <div class="grant-status-list">
+                        <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                        <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </b-tab>
+            {% endif %}
+
+          </b-tabs>
+        </div>
+
+
+      </div>
+
+      <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+        {% include 'grants/detail/side-cart.html' %}
+      </div>
+    </div>
+    {% include 'grants/detail/template-grant-details.html' %}
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True ignore_inject_web3=1 %}
+    <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+    <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
+
+    <script>
+      var grantDetails = {
+                 grant_id: "{{ grant.id }}",
+                //  grant_slug: "{{ grant.slug }}",
+                //  grant_url: "{{ grant.url }}",
+                //  grant_title: "{{ grant.title }}",
+                //  grant_contract_version: "{{ grant.contract_version }}",
+                //  grant_contract_address: "{{ grant.contract_address }}",
+                //  grant_token_symbol: "{{ grant.token_symbol }}",
+                //  grant_admin_address: "{{ grant.admin_address }}",
+                //  zcash_payout_address: "{{ grant.zcash_payout_address }}",
+                //  grant_token_address: "{{ grant.token_address }}",
+                //  grant_logo: {% if grant.logo and grant.logo.url %}"{{ grant.logo.url }}"{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} "{% static grant_logo|addstr:id|add:'.png' %}" {% endwith %} {% endif %},
+                //  grant_clr_prediction_curve: "{{ grant.clr_prediction_curve }}",
+                //  grant_image_css: "{{ grant.image_css }}",
+                //  tenants: {{ grant.tenants |safe }},
+                //  is_clr_eligible: {{grant.is_clr_eligible|yesno:"true,false"}},
+                //  grant_donation_amount: "{{ amount }}",
+                //  grant_donation_currency: "{{ token.symbol }}",
+                //  token_local_id: "{{ token.id }}"
+               };
+      var user_code = '{{user_code}}'
+      var verification_tweet = '{{verification_tweet}}'
+
+   </script>
+    {% include 'shared/activity_scripts.html' %}
+    <script src="{% static "v2/js/status.js" %}"></script>
+
+    <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+    <script src="{% static "v2/js/grants/_detail.js" %}"></script>
+    <script src="{% static "v2/js/grants/funding.js" %}"></script>
+    {% if is_team_member %}
+      <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
+      <script src="https://www.gstatic.com/charts/loader.js"></script>
+      <script src="{% static "v2/js/grants/stats.js" %}"></script>
+      <script>
+        // const max_graph = {{max_graph}};
+        // const history = {{history|safe}};
+      </script>
+    {% endif %}
+
+    {% if is_staff %}
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+      <script>
+        var ctx;
+        var checkExist = setInterval(function() {
+          if ($('myChart{{forloop.counter0}}').length) {
+            ctx = document.getElementById('myChart{{forloop.counter0}}').getContext('2d');
+            runGraph();
+            clearInterval(checkExist);
+          }
+        }, 100);
+        function runGraph() {
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: [{% for sp in ele.1.0 %}{{sp.0}}, {%endfor%}],
+                  datasets: [{
+                      label: 'Contributors by Sybil Score',
+                      data: [{% for sp in ele.1.0 %}{{sp.1}}, {%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  title: 'Contributors by Sybil Category',
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+        }
+        </script>
+    {% endif %}
+
+
+
+  </body>

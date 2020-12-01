@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 let openSection;
 const layers = [
   'Wallpaper',

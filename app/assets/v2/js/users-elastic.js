@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
