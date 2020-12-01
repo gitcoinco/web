@@ -3119,13 +3119,14 @@ def verify_user_twitter(request, handle):
     twitter_handle = request_data.get('twitter_handle', '').strip('@')
     match_twitter_url = twitter_re.match(twitter_handle)
 
-    if not match_twitter_url  or twitter_handle == '':
+    if not match_twitter_url and twitter_handle == '':
         return JsonResponse({
             'ok': False,
             'msg': f'Request must include a Twitter handle'
         })
 
-    twitter_handle = match_twitter_url.group(3)
+    if match_twitter_url:
+        twitter_handle = match_twitter_url.group(3)
 
     auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
