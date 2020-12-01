@@ -2,45 +2,42 @@ section.leaderboard{
 
 	margin: 0em 1.5em;
 
-	.wrapper{
+	table{
+		width: 100%;
+	}
 
-		display: grid;
-		grid-template-columns: repeat(7, auto);	
+	thead{
 
-		div{
-			border-bottom: 1px solid var(--smoke);
-			white-space: nowrap;
-			text-align: center;
-			padding: 1em 1em;
-
-			a{
-				text-decoration: none;
-				color: var(--white);
-			}
-		}
-
-
-		.head{
-
-			background-color: var(--space_pink);
+		th{
 			color: var(--purple_light);
 			font-weight: 500;
 			border-bottom: initial;
+			background-color: var(--space_pink);
 			position: sticky;
 			top: 0;
+			font-size: 80%;
+			padding: 1em;
+			cursor: pointer;
 
-			a{
-				text-decoration: none;
-				color: var(--purple_light);
-				font-size: 80%;
+			&:hover{
+				color: var(--white);
+			};
 
-				&.active{
-					color: var(--white);
+			&[data-direction="asc"]{
+				color: var(--white);
+				&:after{
+					content: " ▲";
+					font-size: 70%;
 				}
 
-				&:hover{
-					color: var(--white);
-				};
+			}
+
+			&[data-direction="desc"]{
+				color: var(--white);
+				&:after{
+					content: " ▼";
+					font-size: 70%;
+				}
 			}
 
 		}
@@ -48,9 +45,23 @@ section.leaderboard{
 	}
 
 
+	tbody{
+
+		td{
+			border: none;
+			border-bottom: 1px solid var(--smoke);
+			white-space: nowrap;
+			text-align: center;
+			padding: 1em;
+		}
+
+	}
+
+
+	
+
 
 }
-
 
 
 @media #{$tablet} {
@@ -62,17 +73,9 @@ section.leaderboard{
 
 		.wrapper{
 			overflow-x:auto;
-
-			div{
-				padding: 1em 0.5em;
-			}
-
 		}
 
-
-	
 	}
-
 
 }
 
