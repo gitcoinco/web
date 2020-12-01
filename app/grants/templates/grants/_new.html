@@ -70,7 +70,7 @@
 
                 <div class="form__drop mt-0" id="js-drop">
                   <span>Drag & Drop or Browse</span>
-                  <b-form-file id="img-project" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+                  <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
                   <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
                 </div>
 

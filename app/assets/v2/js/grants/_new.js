@@ -211,6 +211,33 @@ Vue.mixin({
       let grant_type = this.grant_types.filter(grant_type => grant_type.name == vm.form.grant_type);
 
       return grant_type[0].categories;
+    },
+    onFileChange(e) {
+      let vm = this;
+
+      if (!e.target) return;
+      const file = e.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      new Compressor(file, {
+        quality: 0.6,
+        maxWidth: 2000,
+        success(result) {
+          console.log(result)
+          vm.logoPreview = URL.createObjectURL(result);
+          vm.logo = new File([result], result.name, { lastModified: result.lastModified })
+          $('#preview').css('width', '100%');
+          $('#js-drop span').hide();
+          $('#js-drop input').css('visible', 'invisible');
+          $('#js-drop').css('padding', 0)
+        },
+        error(err) {
+          _alert(err.message, 'error');
+        },
+      });
     }
   },
   watch: {
@@ -235,29 +262,6 @@ Vue.mixin({
           this.checkForm();
         }
         this.dirty = true;
-      }
-    },
-    logo: {
-      deep: true,
-      handler(newVal, oldVal) {
-        let vm = this;
-
-        new Compressor(this.logo, {
-          quality: 0.6,
-          maxWidth: 2000,
-          success(result) {
-            vm.logoPreview = URL.createObjectURL(result);
-            vm.logo = new File([result], result.name, { lastModified: result.lastModified })
-            $('#preview').css('width', '100%');
-            $('#js-drop span').hide();
-            $('#js-drop input').css('visible', 'invisible');
-            $('#js-drop').css('padding', 0)
-          },
-          error(err) {
-            _alert(err.message, 'error');
-          },
-        });
-
       }
     }
   }
