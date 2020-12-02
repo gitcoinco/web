@@ -38,29 +38,44 @@ Vue.mixin({
     fetchRelated: function() {
       let vm = this;
       let ids;
+      let size = 6
 
-      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length || vm.relatedGrants.length) {
+      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length) {
         return;
       }
 
       ids = vm.grant.metadata.related.map(arr => {
         return arr[0];
       });
-      idsString = String(ids);
+      vm.relatedGrantsIds = vm.paginate(ids, size, vm.relatedGrantsPage);
 
-      let url = `/grants/v1/api/grants?pks=${idsString}`;
+      vm.relatedGrantsPage+= 1;
+
+      if (!vm.relatedGrantsIds.length) {
+        return;
+      }
+      vm.loadingRelated = true;
+      let url = `/grants/v1/api/grants?pks=${vm.relatedGrantsIds}`;
 
       fetch(url).then(function(res) {
         return res.json();
       }).then(function(json) {
-        vm.relatedGrants = json.grants;
-
+        json.grants.forEach(function(item) {
+          vm.relatedGrants.push(item);
+        });
+        vm.loadingRelated = false;
       }).catch(console.error);
+    },
+    paginate: function(array, page_size, page_number) {
+      return array.slice(page_number * page_size, page_number * page_size + page_size);
     },
     fetchTransactions: function() {
       let vm = this;
 
       page = vm.transactions.next_page_number;
+      if (!page){
+        return
+      }
       vm.loadingTx = true;
 
       let url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
@@ -134,6 +149,7 @@ if (document.getElementById('gc-grant-detail')) {
     data() {
       return {
         loadingTx: false,
+        loadingRelated: false,
         loading: false,
         isStaff: isStaff,
         transactions:{
@@ -144,6 +160,8 @@ if (document.getElementById('gc-grant-detail')) {
         tabSelected: 0,
         tab: null,
         relatedGrants: [],
+        relatedGrantsPage: 0,
+        relatedGrantsIds: [],
         backLink: {
           url: '/grants',
           title: 'Grants'

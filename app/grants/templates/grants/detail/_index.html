@@ -148,7 +148,7 @@
                             </a>
                             <span class="d-flex align-items-center" v-else>
                               <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" src="/dynamic/avatar/Anonymous"></b-img-lazy>
-                              <span>Anonymous</span>
+                              <span>anonymous</span>
                             </span>
                           </div>
                           <div class="col-1 my-auto tags font-caption">
@@ -200,8 +200,9 @@
                   </b-container>
                 </template>
               </b-skeleton-wrapper>
-
-              <button v-if="transactions.next_page_number" @click="fetchTransactions()">Load more</button>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()">Load more</button>
+              </div>
 
 
             </b-tab>
@@ -210,7 +211,7 @@
               <template v-slot:title>RELATED GRANTS <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
               <div class="row">
                 <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
-                  <a class="text-decoration-none" :href="relgrant.details_url" data-instant>
+                  <a class="text-decoration-none" :href="relgrant.details_url">
                     <div class="card">
                       <img :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title">
                       <div class="card-body">
@@ -225,6 +226,28 @@
                     </div>
                   </a>
                 </div>
+              </div>
+              <b-skeleton-wrapper :loading="loadingRelated">
+                <template #loading>
+
+                    <b-row class="mb-3">
+                      <b-col cols="4" v-for="index in 3" :key="index">
+                        <b-card img-top no-body>
+                          <b-skeleton-img card-img="top" ></b-skeleton-img>
+                          <b-card-body>
+                            <b-skeleton width="85%"></b-skeleton>
+                            <b-skeleton width="55%"></b-skeleton>
+                            <b-skeleton width="70%"></b-skeleton>
+                            <b-skeleton type="avatar"></b-skeleton>
+                          </b-card-body>
+                        </b-card>
+                      </b-col>
+                    </b-row>
+
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()">Load more</button>
               </div>
             </b-tab>
 
