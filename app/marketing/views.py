@@ -968,7 +968,7 @@ def trending_avatar():
     return avatar.first()
 
 def quest_of_the_day():
-    quest = trending_quests()[0]
+    quest = trending_quests()[0] if (len(trending_quests())) else 0
     return quest
 
 def upcoming_grant():

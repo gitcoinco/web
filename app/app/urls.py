@@ -97,6 +97,7 @@ urlpatterns = [
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
     re_path(r'^kudos/about/?$', kudos.views.about, name='kudos_about'),
+    re_path(r'^kudos/sync/?$', kudos.views.sync, name='kudos_sync'),
     re_path(r'^kudos/marketplace/?$', kudos.views.marketplace, name='kudos_marketplace'),
     re_path(r'^kudos/mint/?$', kudos.views.mint, name='kudos_mint'),
     re_path(r'^kudos/send/?$', kudos.views.send_2, name='kudos_send'),
@@ -152,6 +153,26 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
     url(
+        r'^api/v0.1/profile/(?P<handle>.*)/start_session_idena',
+        dashboard.views.start_session_idena,
+        name='start_session_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/authenticate_idena',
+        dashboard.views.authenticate_idena,
+        name='authenticate_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
+        dashboard.views.logout_idena,
+        name='logout_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
+        dashboard.views.recheck_idena_status,
+        name='recheck_idena_status'
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'
@@ -198,6 +219,7 @@ urlpatterns = [
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
     url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
+    url(r'^api/v1/file_upload/', dashboard.views.file_upload, name='file_upload'),
 
     # chat
     url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
