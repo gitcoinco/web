@@ -239,17 +239,12 @@ def lazy_round_number(n):
 def helper_grants_round_start_end_date(request, round_id):
     start = timezone.now()
     end = timezone.now()
-    if round_id == 7:
-        # TODO: fix the round_number field in grantclr being overloaded
-        start = timezone.datetime(2020, 9, 15)
-        end = timezone.datetime(2020, 10, 3)
-    else:
-        try:
-            gclr = GrantCLR.objects.filter(round_num=round_id).first()
-            start = gclr.start_date
-            end = gclr.end_date
-        except Exception as e:
-            print(e)
+    try:
+        gclr = GrantCLR.objects.filter(round_num=round_id, customer_name='ethereum').first()
+        start = gclr.start_date
+        end = gclr.end_date
+    except Exception as e:
+        print(e)
     return start, end
 
 def helper_contributions_to_earnings(_contributions):
