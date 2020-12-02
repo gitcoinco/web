@@ -9,6 +9,7 @@ Vue.mixin({
     fetchGrantDetails: function(id) {
       let vm = this;
 
+      vm.loading = true;
       if (!id) {
         id = grantDetails.grant_id;
       }
@@ -21,7 +22,7 @@ Vue.mixin({
           return res.json();
         }).then(function(json) {
           vm.grant = json.grants;
-
+          vm.loading = false;
           if (vm.tab) {
             setTimeout(function() {
               vm.scrollToElement('grant-tabs');
@@ -125,6 +126,7 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        loading: false,
         isStaff: isStaff,
         grantTransactions: {},
         grant: {},
