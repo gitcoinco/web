@@ -257,7 +257,7 @@
               <template v-slot:title>CONTRIBUTORS</template>
               <h4 class="m-auto text-center font-weight-semibold" v-if="!Object.keys(contributors)?.length && !loadingTx">{% trans "No contributors." %}</h4>
 
-              <div class="d-flex">
+              <div class="d-flex flex-wrap">
                 <a :href="`/profile/${contributor.contributor_profile}`" class="d-flex align-items-center" v-for="contributor in contributors" v-if="contributor.contributor_profile">
                   <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="contributor.avatar_url"></b-img-lazy>
                   <span class="font-weight-semibold">[[contributor.contributor_profile]]</span>
