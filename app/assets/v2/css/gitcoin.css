@@ -117,6 +117,10 @@ h4,
   color: #3E00FF;
 }
 
+.gc-text-darkblue {
+  color: var(--gc-purple);
+}
+
 .gc-text-green {
   color: #0FCE7C;
 }

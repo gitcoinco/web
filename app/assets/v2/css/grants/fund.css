@@ -121,8 +121,9 @@
 }
 
 #gitcoin-grant-section .badge-inactive {
-  background: #E8F3FF;
-  color: #4A90E2;
+  background: #ffffff;
+  border-color: #D8D8D8;
+  color: #666666;
 }
 
 .inactive {
