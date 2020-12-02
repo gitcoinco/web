@@ -419,7 +419,7 @@ Vue.component('grants-cart', {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
     confirmClearCart() {
-      if (confirm('are you sure')) {
+      if (confirm('Are you sure you want to clear your cart?')) {
         this.clearCart();
       }
     },
