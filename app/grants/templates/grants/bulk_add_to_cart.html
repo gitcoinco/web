@@ -18,9 +18,8 @@
 $(document).ready(function() {
 
     $('.js-addDetailToCart-form').each(function() {
-
-        const formData = objectifySerialized($(this).serializeArray());
-        CartData.addToCart(formData);
+        // const formData = objectifySerialized($(this).serializeArray());
+        CartData.addToCart(grantDetails);
     });
     setTimeout(function(){
         document.location.href = "/grants/cart";
