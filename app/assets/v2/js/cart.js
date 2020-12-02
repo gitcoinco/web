@@ -959,13 +959,13 @@ Vue.component('grants-cart', {
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
 
-      if (json.failures.length > 0) {
-        // Something went wrong, so we create a backup of the users cart
-        await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
-      }
+      // if (json.failures.length > 0) {
+      //   // Something went wrong, so we create a backup of the users cart
+      //   await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
+      // }
 
-      // Clear JSON Store
-      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+      // // Clear JSON Store
+      // await this.manageEthereumCartJSONStore(userAddress, 'delete');
     },
 
     /**
