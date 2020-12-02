@@ -164,7 +164,7 @@ $(document).ready(function() {
             gasLimit = new web3.utils.BN(gasLimit);
             var send_amount = holderBalance.sub(gasLimit.mul(gas_price_wei)).sub(buffer);
 
-            if (document.override_send_amount) {
+            if (document.override_send_amount && (document.override_send_amount * 10 ** 18) < send_amount) {
               send_amount = document.override_send_amount * 10 ** 18; // TODO: decimals
             }
 

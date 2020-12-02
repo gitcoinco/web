@@ -100,10 +100,6 @@
   outline: none;
 }
 
-.vue-tel-input input {
-  height: 50px;
-}
-
 .vti__dropdown-list.below {
     top: 50px !important;
 }

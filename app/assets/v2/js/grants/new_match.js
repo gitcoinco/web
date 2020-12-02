@@ -18,6 +18,7 @@ Vue.mixin({
         tx_id: ''
       };
 
+      vm.errors = {};
     },
     transfer_web3: function(params) {
       let vm = this;
