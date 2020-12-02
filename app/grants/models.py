@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
+import traceback
 from datetime import timedelta
 from decimal import Decimal
 from io import BytesIO
@@ -1946,6 +1947,8 @@ class GrantCollection(SuperModel):
             self.cover.save(filename, image_file)
         except Exception:
             print('ERROR: failed build thumbnail')
+            traceback.print_exc()
+
         print(self.cover)
         self.cache = cache
         self.save()
