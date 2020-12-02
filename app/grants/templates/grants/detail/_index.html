@@ -209,11 +209,13 @@
 
             <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
               <template v-slot:title>RELATED GRANTS <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants." %}</h4>
+
               <div class="row">
                 <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
                   <a class="text-decoration-none" :href="relgrant.details_url">
                     <div class="card">
-                      <img :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title">
+                      <b-img-lazy :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title"></b-img-lazy>
                       <div class="card-body">
                         <h5 class="card-title">[[relgrant.title]]</h5>
                         <p class="card-text">[[relgrant.description | truncate(150)]]</p>
