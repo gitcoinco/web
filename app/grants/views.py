@@ -1697,7 +1697,9 @@ def grant_new(request):
                 pass
 
         grant.save()
-
+        grant.calc_clr_round()
+        grant.save()
+        
         messages.info(
             request,
             _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
