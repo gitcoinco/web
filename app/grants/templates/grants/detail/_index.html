@@ -201,7 +201,7 @@
                 </template>
               </b-skeleton-wrapper>
               <div class="text-center">
-                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()">Load more</button>
+                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
               </div>
 
 
@@ -231,7 +231,7 @@
                 <template #loading>
 
                     <b-row class="mb-3">
-                      <b-col cols="4" v-for="index in 3" :key="index">
+                      <b-col cols="12" md="6" xl="4" v-for="index in 3" :key="index">
                         <b-card img-top no-body>
                           <b-skeleton-img card-img="top" ></b-skeleton-img>
                           <b-card-body>
@@ -247,39 +247,30 @@
                 </template>
               </b-skeleton-wrapper>
               <div class="text-center">
-                <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()">Load more</button>
+                <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
               </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" @click="tabChange('contributors')">
+            <b-tab :title-link-class="'nav-line'" @click="fetchTransactions">
               <template v-slot:title>CONTRIBUTORS</template>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!Object.keys(contributors)?.length && !loadingTx">{% trans "No contributors." %}</h4>
 
-              <div class="grant__stakeholders-list d-flex flex-wrap">
-                {% for contribution in contributors %}
-                  {% if contribution.anonymous %}
-                    {% trans  'Anonymous' as handle %}
-                  {% elif contribution.subscription %}
-                    {% trans  contribution.subscription.contributor_profile.handle  as handle %}
-                  {% else %}
-                    {% trans  contribution.profile.handle  as handle %}
-                  {% endif %}
-                  <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
-                    <div class="mr-2 d-inline-block">
-                      <img data-src="/dynamic/avatar/{{handle}}" />
-                    </div>
-                    <div class="mt-1 d-inline-block">
-                      <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
-                      {% if handle == request.user.profile.handle  %}
-                      <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
-                      {% endif %}
-                    </div>
-                  </a>
-
-                {% empty %}
-                  <div class="no-subscriptions">
-                    <p class="mb-1">{% trans "No contributors." %}</p>
-                  </div>
-                {% endfor %}
+              <div class="d-flex">
+                <a :href="`/profile/${contributor.contributor_profile}`" class="d-flex align-items-center" v-for="contributor in contributors" v-if="contributor.contributor_profile">
+                  <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="contributor.avatar_url"></b-img-lazy>
+                  <span class="font-weight-semibold">[[contributor.contributor_profile]]</span>
+                </a>
+              </div>
+              <b-skeleton-wrapper :loading="loadingTx" class="d-flex">
+                <template #loading>
+                  <span v-for="index in 4" class="d-flex align-items-center mr-2">
+                    <b-skeleton type="avatar"></b-skeleton>
+                    <b-skeleton width="100px" height="20px" class="ml-1"></b-skeleton>
+                  </span>
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
               </div>
             </b-tab>
 

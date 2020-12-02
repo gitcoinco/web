@@ -23,11 +23,11 @@ Vue.mixin({
         }).then(function(json) {
           vm.grant = json.grants;
           vm.loading = false;
-          if (vm.tab) {
-            setTimeout(function() {
-              vm.scrollToElement('grant-tabs');
-            }, 1000);
-          }
+          // if (vm.tab) {
+          //   setTimeout(function() {
+          //     vm.scrollToElement('grant-tabs');
+          //   }, 1000);
+          // }
 
           resolve();
         }).catch(console.error);
@@ -120,9 +120,6 @@ Vue.mixin({
         case 'sybil_profile':
           vm.tabSelected =  4;
           break;
-        case 'contributors':
-          vm.tabSelected =  3;
-          break;
         case 'stats':
           vm.tabSelected =  5;
           break;
@@ -135,6 +132,25 @@ Vue.mixin({
       let container = this.$refs[element];
 
       container.scrollIntoViewIfNeeded({behavior: "smooth", block: "start"});
+    }
+  },
+  computed: {
+    contributors() {
+      let obj = this.transactions.grantTransactions.map((contributor) => {
+        let newContributor = {};
+
+        newContributor['id'] = contributor.subscription.id;
+        newContributor['contributor_profile'] = contributor.subscription.contributor_profile;
+        newContributor['avatar_url'] = `/dynamic/avatar/${contributor.subscription.contributor_profile}`;
+        return newContributor;
+      })
+
+      return obj.reduce((user, current) => {
+        return Object.assign(user, {
+          [current.contributor_profile]: current
+        });
+      }, {});
+
     }
   }
 });

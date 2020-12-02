@@ -1398,7 +1398,7 @@ def grant_details(request, grant_id, grant_slug):
 @csrf_exempt
 def grant_details_contributions(request, grant_id):
     page = int(request.GET.get('page', 1))
-    limit = int(request.GET.get('limit', 3))
+    limit = int(request.GET.get('limit', 10))
     try:
         grant = Grant.objects.prefetch_related('subscriptions').get(
             pk=grant_id
