@@ -228,8 +228,6 @@ def generate_collection_thumbnail(collection, width, heigth):
     except ValueError:
         profile_circle.putalpha(mask)
 
-    profile_circle.save('im.png')
-
 
     CORNERS = [
         [MARGIN, MARGIN],  # Top left grant
