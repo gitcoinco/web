@@ -20,6 +20,13 @@ Vue.mixin({
           return res.json();
         }).then(function(json) {
           vm.grant = json.grants;
+
+          if (vm.tab) {
+            setTimeout(function() {
+              vm.scrollToElement('grant-tabs');
+            }, 1000);
+          }
+
           resolve();
         }).catch(console.error);
       });
@@ -30,7 +37,7 @@ Vue.mixin({
       let vm = this;
       let ids;
 
-      if (!vm.grant.metadata.related.length || vm.relatedGrants.length) {
+      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length || vm.relatedGrants.length) {
         return;
       }
 
@@ -57,6 +64,37 @@ Vue.mixin({
         vm.$set(vm.backLink, 'url', lgi);
         vm.$set(vm.backLink, 'title', lgt);
       }
+    },
+    tabChange: function(input) {
+
+      console.log(input)
+      window.location = `${this.grant.details_url}?tab=${input}`;
+    },
+    enableTab: function() {
+      let vm = this;
+      let urlParams = new URLSearchParams(window.location.search)
+
+      vm.tab = urlParams.get('tab');
+
+      switch (vm.tab) {
+        case 'sybil_profile':
+          vm.tabSelected =  4;
+          break;
+        case 'contributors':
+          vm.tabSelected =  3;
+          break;
+        case 'stats':
+          vm.tabSelected =  5;
+          break;
+        default:
+          vm.tabSelected =  0;
+      }
+      window.history.replaceState({}, document.title, `${window.location.pathname}`);
+    },
+    scrollToElement(element) {
+      let container = this.$refs[element];
+
+      container.scrollIntoViewIfNeeded({behavior: "smooth", block: "start"});
     }
   }
 });
@@ -71,6 +109,8 @@ if (document.getElementById('gc-grant-detail')) {
     data() {
       return {
         grant: {},
+        tabSelected: 0,
+        tab: null,
         relatedGrants: [],
         backLink: {
           url: '/grants',
@@ -79,6 +119,7 @@ if (document.getElementById('gc-grant-detail')) {
       };
     },
     mounted: function() {
+      this.enableTab();
       this.backNavigation();
       this.fetchGrantDetails();
     }

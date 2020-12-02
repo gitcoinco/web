@@ -1265,6 +1265,7 @@ def grant_details_api(request, grant_id):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
+    tab = request.GET.get('tab')
     profile = get_profile(request)
     add_cancel_params = False
 
@@ -1289,7 +1290,7 @@ def grant_details(request, grant_id, grant_slug):
         sybil_profiles = []
 
         # Sybil score
-        if request.user.is_staff:
+        if tab == 'sybil_profile' and request.user.is_staff:
             items = ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification', 'grants_contribution.originated_address']
             for item in items:
                 title = 'Sybil' if item == 'dashboard_profile.sybil_score' else "SMS"
@@ -1303,10 +1304,10 @@ def grant_details(request, grant_id, grant_slug):
         _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
         contributions = list(_contributions.order_by('-created_on'))
 
-        # if tab == 'contributors':
         # Contributors
-        phantom_funds = grant.phantom_funding.all().cache(timeout=60)
-        contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+        if tab == 'contributors':
+            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
@@ -1359,6 +1360,7 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'grant': grant,
         'sybil_profiles': sybil_profiles,
+        'tab': tab,
         'title': title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
@@ -1385,7 +1387,7 @@ def grant_details(request, grant_id, grant_slug):
         # 'tenants': grant.tenants,
     }
     # Stats
-    if is_team_member or request.user.is_staff:
+    if tab == 'stats':
         params['max_graph'] = grant.history_by_month_max
         params['history'] = json.dumps(grant.history_by_month)
         params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')

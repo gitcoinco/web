@@ -58,8 +58,8 @@
           </div>
         </grant-details>
 
-        <div class="container">
-          <b-tabs  content-class="mt-3">
+        <div class="container" ref="grant-tabs">
+          <b-tabs  content-class="mt-3" v-model="tabSelected" >
             <b-tab :title-link-class="'nav-line'">
               <template v-slot:title>ACTIVITY</template>
               <div class="">
@@ -122,7 +122,7 @@
               </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" lazy>
+            <b-tab :title-link-class="'nav-line'" @click="tabChange('contributors')">
               <template v-slot:title>CONTRIBUTORS</template>
 
               <div class="grant__stakeholders-list d-flex flex-wrap">
@@ -156,7 +156,7 @@
 
 
             {% if is_staff %}
-            <b-tab :title-link-class="'nav-line'" lazy>
+            <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
               <template v-slot:title>SYBIL PROFILE</template>
 
 
@@ -241,63 +241,65 @@
                 </div>
             </b-tab>
             {% endif %}
-            {% if is_team_member or is_staff %}
-            <b-tab :title-link-class="'nav-line'" lazy>
+            {% if is_team_member or is_staff  %}
+            <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
               <template v-slot:title>STATS</template>
-              <div id=grant_stats_graph class="content-block content-block--white">
-                <div class="container">
+              {% if tab == 'stats' %}
+                <div id=grant_stats_graph class="content-block content-block--white">
+                  <div class="container">
 
-                  <div class="value-container">
-                    <div class="chart_container chart_container--big">
-                      {% if stats_history|length %}
-                      <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
-                      <table id=stats_history>
-                        <tr class="table_header">
-                          <td>
-                            When
-                          </td>
-                          <td>
-                            Impressions
-                          </td>
-                          <td>
-                            Added to Cart
-                          </td>
-                          <td>
-                            Contributions
-                          </td>
-                        </tr>
-                      {% for ele in stats_history %}
-                        <tr>
-                          <td>
-                            {{ele.created_on|date:"Y/m/d"}}
-                          </td>
-                          <td>
-                            {{ele.data.impressions}}
-                          </td>
-                          <td>
-                            {{ele.data.in_cart}}
-                          </td>
-                          <td>
-                            {{ele.data.contributions}}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                      </table>
-                      {% endif %}
+                    <div class="value-container">
+                      <div class="chart_container chart_container--big">
+                        {% if stats_history|length %}
+                        <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+                        <table id=stats_history>
+                          <tr class="table_header">
+                            <td>
+                              When
+                            </td>
+                            <td>
+                              Impressions
+                            </td>
+                            <td>
+                              Added to Cart
+                            </td>
+                            <td>
+                              Contributions
+                            </td>
+                          </tr>
+                        {% for ele in stats_history %}
+                          <tr>
+                            <td>
+                              {{ele.created_on|date:"Y/m/d"}}
+                            </td>
+                            <td>
+                              {{ele.data.impressions}}
+                            </td>
+                            <td>
+                              {{ele.data.in_cart}}
+                            </td>
+                            <td>
+                              {{ele.data.contributions}}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                        </table>
+                        {% endif %}
 
-                      <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
-                      <div class="chart_container__content">
-                        <div id="grant_chart"></div>
-                      </div>
-                      <div class="grant-status-list">
-                        <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
-                        <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
+                        <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
+                        <div class="chart_container__content">
+                          <div id="grant_chart"></div>
+                        </div>
+                        <div class="grant-status-list">
+                          <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                          <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
+                  </div>
                 </div>
-              </div>
+              {% endif %}
             </b-tab>
             {% endif %}
 
@@ -356,12 +358,14 @@
     <script src="{% static "v2/js/grants/funding.js" %}"></script>
     {% if is_team_member %}
       <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
-      <script src="https://www.gstatic.com/charts/loader.js"></script>
-      <script src="{% static "v2/js/grants/stats.js" %}"></script>
-      <script>
-        // const max_graph = {{max_graph}};
-        // const history = {{history|safe}};
-      </script>
+      {% if tab == 'stats' %}
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="{% static "v2/js/grants/stats.js" %}"></script>
+        <script>
+          const max_graph = {{max_graph}};
+          const history = {{history|safe}};
+        </script>
+      {% endif %}
     {% endif %}
 
     {% if is_staff %}
