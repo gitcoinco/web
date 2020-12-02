@@ -28,7 +28,7 @@ from secrets import token_hex
 from django.templatetags.static import static
 
 from app import settings
-from app.settings import BASE_DIR, MEDIA_URL, BASE_URL, STATIC_URL, STATIC_HOST
+from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate

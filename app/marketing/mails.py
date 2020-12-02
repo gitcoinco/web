@@ -301,7 +301,7 @@ def new_supporter(grant, subscription):
         translation.activate(cur_language)
 
 
-def thank_you_for_supporting(grants, contributor):
+def thank_you_for_supporting(grant, subscription):
     if subscription and subscription.negative:
         return
 
