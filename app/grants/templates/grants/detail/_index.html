@@ -74,7 +74,7 @@
               </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" lazy>
+            <b-tab :title-link-class="'nav-line'" lazy @click="fetchTransactions">
               <template v-slot:title>TRANSACTIONS</template>
 
               {% if is_team_member %}
@@ -91,13 +91,76 @@
                 </div>
                 <br class="break">
               {% endif %}
+              <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
 
-              {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-                <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
-              {% else %}
-                {% include 'grants/activity.html' %}
-                <span id="grant-network" class="hidden">{{ grant.network }}</span>
-              {% endif %}
+              <div class="px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+
+                      <div id="contributions">
+                        <p class="font-body font-weight-semibold subtitle mb-0">
+                          <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[grantTransactions?.contributions?.length]])
+                        </p>
+                        <div class="" v-for="transaction in grantTransactions.contributions" v-if="grantTransactions?.contributions">
+                          <div class="py-2 mx-sm-0 row transaction-history">
+                            <div class="d-none d-sm-block col-1 col-sm-3 col-md-2 font-subheader text-center text-md-left my-auto">
+                              <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment-fromnow]]</time>
+                              <a :href="`/_administrationgrants/subscription/${transaction.id}/change/`" target="_blank">
+                                <i class="fas fa-external-link-alt" v-if="isStaff"></i>
+                              </a>
+                            </div>
+                            <div class="col-3 col-sm-2 justify-content-center special_tag d-flex">
+                              <a :href="`/profile/${transaction.subscription.contributor_profile}`" v-if="!transaction.anonymous" class="d-flex align-items-center">
+                                <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${ transaction.subscription.contributor_profile }`"></b-img-lazy>
+                                <span>[[transaction.subscription.contributor_profile]]</span>
+                              </a>
+                              <span class="d-flex align-items-center" v-else>
+                                <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" src="/dynamic/avatar/Anonymous"></b-img-lazy>
+                                <span>Anonymous</span>
+                              </span>
+                            </div>
+                            <div class="col-1 my-auto tags font-caption">
+                              <span v-if="!transaction.success">
+                                (Failed)
+                              </span>
+                              <span v-if="!transaction.tx_cleared">
+                                (Pending)
+                              </span>
+                            </div>
+                            <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                              <a class="tx_link" :href="`https://etherscan.io/tx/${ transaction.tx_id }`" target="_blank" rel="noopener noreferrer" v-if="transaction.tx_id">
+                                View Etherscan
+                              </a>
+                            </div>
+                            <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                              <div class="tag tag-lg token">
+                                <p v-b-tooltip.hover.top="transaction.subscription.amount_per_period_minus_gas_price">
+                                  [[transaction.subscription.amount_per_period_minus_gas_price | decimals | formatNumber]]
+                                  <span>[[transaction.subscription.token_symbol]]</span>
+                                </p>
+                              </div>
+                            </div>
+                            <div class="col-2 my-auto tags font-caption">
+                              <div class="tag tag-lg usd" v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
+                                <p>
+                                  ($ [[transaction.subscription.amount_per_period_usdt | decimals | formatNumber ]])
+                                </p>
+                              </div>
+                            </div>
+                            <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin">
+                              (+[[transaction.subscription.amount_per_period_to_gitcoin| decimals | formatNumber]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
+                            </div>
+
+
+                            <!-- [[transaction]] -->
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+
             </b-tab>
 
             <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">

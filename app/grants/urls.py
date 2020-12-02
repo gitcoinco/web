@@ -25,7 +25,7 @@ from grants.views import (
     contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
     flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
     get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
-    grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add,
+    grant_details_contributions, grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add,
     grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view, invoice, leaderboard,
     manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
     subscription_cancel, toggle_grant_favorite, verify_grant,
@@ -89,6 +89,7 @@ urlpatterns = [
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/grants', grants_info, name='grants_info'),
     path('v1/api/grant/<int:grant_id>/', grant_details_api, name='grant_details_api'),
+    path('v1/api/grant/<int:grant_id>/contributions', grant_details_contributions, name='grant_details_contributions'),
     path('v1/api/grant/edit/<int:grant_id>/', grant_edit, name='grant_edit'),
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
 

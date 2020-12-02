@@ -1,3 +1,4 @@
+
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 Quill.register('modules/ImageExtend', ImageExtend);
@@ -55,6 +56,22 @@ Vue.mixin({
 
       }).catch(console.error);
     },
+    fetchTransactions: function() {
+      let vm = this;
+
+      if (vm.grantTransactions?.contributions) {
+        return;
+      }
+
+      let url = `/grants/v1/api/grant/${vm.grant.id}/contributions`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        vm.grantTransactions = json;
+
+      }).catch(console.error);
+    },
     backNavigation: function() {
       let vm = this;
       var lgi = localStorage.getItem('last_grants_index');
@@ -108,6 +125,8 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        isStaff: isStaff,
+        grantTransactions: {},
         grant: {},
         tabSelected: 0,
         tab: null,

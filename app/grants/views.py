@@ -1301,14 +1301,14 @@ def grant_details(request, grant_id, grant_slug):
                     [f'{grant.grant_type.name} {title} Summary Last 60 Days', get_grant_sybil_profile(None, 60 * 24, grant.grant_type, index_on=item)],
                     [f'All {title} Summary Last 60 Days', get_grant_sybil_profile(None, 60 * 24, None, index_on=item)],
                 ]
-        _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
-        contributions = list(_contributions.order_by('-created_on'))
+        # _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+        # contributions = list(_contributions.order_by('-created_on'))
 
-        # Contributors
-        if tab == 'contributors':
-            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
-            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
-        activity_count = len(cancelled_subscriptions) + len(contributions)
+        # # Contributors
+        # if tab == 'contributors':
+        #     phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+        #     contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+        # activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -1375,7 +1375,7 @@ def grant_details(request, grant_id, grant_slug):
         'pinned': pinned,
         'what': what,
         'activity_count': activity_count,
-        'contributors': contributors,
+        # 'contributors': contributors,
         'clr_active': is_clr_active,
         # 'round_num': grant.clr_round_num,
         'is_team_member': is_team_member,
@@ -1394,6 +1394,48 @@ def grant_details(request, grant_id, grant_slug):
 
     return TemplateResponse(request, 'grants/detail/_index.html', params)
 
+
+@csrf_exempt
+def grant_details_contributions(request, grant_id):
+    try:
+        grant = Grant.objects.prefetch_related('subscriptions').get(
+            pk=grant_id
+        )
+    except Grant.DoesNotExist:
+        grant = Grant.objects.prefetch_related('subscriptions').get(
+            pk=grant_id
+        )
+
+    _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+    contributions = list(_contributions.order_by('-created_on'))
+    # print(contributions)
+
+    response = dict()
+    all_contributions = []
+    for contribution in contributions:
+        print(contribution.subscription)
+        # print(contribution.subscription.tx_id)
+
+        contribution_json = {
+            k: getattr(contribution, k) for k in
+            ['id', 'success', 'tx_cleared', 'created_on', 'anonymous', 'tx_id']}
+
+        contribution_json['subscription'] = {
+            k: getattr(contribution.subscription, k) for k in
+            ['id', 'contributor_profile', 'token_symbol', 'amount_per_period_minus_gas_price', 'amount_per_period_usdt', 'amount_per_period_to_gitcoin']}
+
+
+        # contribution_json['subscription']
+        contribution_json['subscription']['hide_wallet_address'] = contribution.subscription.contributor_profile.hide_wallet_address
+        if (contribution.subscription.contributor_profile.hide_wallet_address):
+            contribution_json['tx_id'] = None
+        if (contribution.anonymous):
+            contribution_json['subscription']['contributor_profile'] = None
+        all_contributions.append(contribution_json)
+
+    response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
+
+    return JsonResponse(response)
 
 @csrf_exempt
 def grant_edit(request, grant_id):
