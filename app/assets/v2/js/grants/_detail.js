@@ -60,18 +60,22 @@ Vue.mixin({
     fetchTransactions: function() {
       let vm = this;
 
+      page = vm.transactions.next_page_number;
       vm.loadingTx = true;
 
-      if (vm.grantTransactions?.contributions) {
-        return;
-      }
-
-      let url = `/grants/v1/api/grant/${vm.grant.id}/contributions`;
+      let url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
 
       fetch(url).then(function(res) {
         return res.json();
       }).then(function(json) {
-        vm.grantTransactions = json;
+        json.contributions.forEach(function(item) {
+          vm.transactions.grantTransactions.push(item);
+        });
+
+        vm.transactions.num_pages = json.num_pages;
+        vm.transactions.has_next = json.has_next;
+        vm.transactions.next_page_number = json.next_page_number;
+        vm.transactions.count = json.count;
         vm.loadingTx = false;
 
       }).catch(console.error);
@@ -132,7 +136,10 @@ if (document.getElementById('gc-grant-detail')) {
         loadingTx: false,
         loading: false,
         isStaff: isStaff,
-        grantTransactions: {},
+        transactions:{
+          grantTransactions: [],
+          next_page_number: 1
+        },
         grant: {},
         tabSelected: 0,
         tab: null,

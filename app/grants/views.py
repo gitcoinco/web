@@ -1397,6 +1397,8 @@ def grant_details(request, grant_id, grant_slug):
 
 @csrf_exempt
 def grant_details_contributions(request, grant_id):
+    page = int(request.GET.get('page', 1))
+    limit = int(request.GET.get('limit', 10))
     try:
         grant = Grant.objects.prefetch_related('subscriptions').get(
             pk=grant_id
@@ -1409,10 +1411,12 @@ def grant_details_contributions(request, grant_id):
     _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
     contributions = list(_contributions.order_by('-created_on'))
     # print(contributions)
-
+    all_pages = Paginator(contributions, limit)
+    this_page = all_pages.page(page)
     response = dict()
+
     all_contributions = []
-    for contribution in contributions:
+    for contribution in this_page:
         print(contribution.subscription)
         # print(contribution.subscription.tx_id)
 
@@ -1434,6 +1438,10 @@ def grant_details_contributions(request, grant_id):
         all_contributions.append(contribution_json)
 
     response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
+    response['has_next'] = all_pages.page(page).has_next()
+    response['count'] = all_pages.count
+    response['num_pages'] = all_pages.num_pages
+    response['next_page_number'] = all_pages.page(page).next_page_number() if all_pages.page(page).has_next() else None
 
     return JsonResponse(response)
 
