@@ -266,7 +266,7 @@ class Grant(SuperModel):
         ('southeast_asia', 'Southeast Asia')
     ]
 
-    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
@@ -414,8 +414,8 @@ class Grant(SuperModel):
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
-    random_shuffle = models.PositiveIntegerField(blank=True, null=True)
-    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    random_shuffle = models.PositiveIntegerField(blank=True, null=True, db_index=True)
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True, db_index=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
     # TODO-GRANTS: remove
