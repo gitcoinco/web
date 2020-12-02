@@ -1,0 +1,17 @@
+{
+  "symbol": "vETH",
+  "address": "0xc3D088842DcF02C13699F936BB83DFBBc6f721Ab",
+  "overview":{
+    "en": "vETH is Bifrost's staking derivative for ETH 2.0. As a dual-protocol asset of ERC20 and Substrate Base, it will provide staking liquidity for ETH 2.0.",
+    "zh": "vETH 是 Bifrost 面向 ETH 2.0 的 Staking 衍生品，作为 ERC20 和 Substrate Base 双协议资产将为 ETH 2.0 提供 Staking 流动性。"
+  },
+  "email": "hello@bifrost.finance",
+  "website": "https://bifrost.finance/",
+  "whitepaper": "https://whitepaper.bifrost.finance/en.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-27",
+  "links": {
+    "twitter": "https://twitter.com/bifrost_finance/status/1333378032363397122",
+    "github": "https://github.com/bifrost-finance/bifrost"
+  }
+}
