@@ -74,9 +74,9 @@
               </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" lazy>
+            <b-tab :title-link-class="'nav-line'" lazy @click="fetchTxns">
               <template v-slot:title>TRANSACTIONS</template>
-
+              <div id="transactions" data-href="{{grant.url}}?load_contributions=1">
               {% if is_team_member %}
                 <div class="float-right font-body">
                   {% if is_owner %}
@@ -98,6 +98,7 @@
                 {% include 'grants/activity.html' %}
                 <span id="grant-network" class="hidden">{{ grant.network }}</span>
               {% endif %}
+              </div>
             </b-tab>
 
             <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">

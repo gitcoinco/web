@@ -42,7 +42,6 @@ $(document).ready(function() {
   addGrantLogo();
   initGrantCategoriesInput();
 
-
   var lgi = localStorage.getItem('last_grants_index');
   var lgt = localStorage.getItem('last_grants_title');
 

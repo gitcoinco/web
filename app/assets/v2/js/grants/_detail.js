@@ -33,6 +33,18 @@ Vue.mixin({
 
 
     },
+    fetchTxns: function() {
+      setTimeout(function(){      
+        $("#transactions").each(function(){
+          var url = $(this).data('href');
+          var $target = $(this);
+          $target.html('loading...');
+          $.get(url, function(response){
+            $target.html($(response).find('#transactions').html());
+          })
+        });
+      },100)
+    },
     fetchRelated: function() {
       let vm = this;
       let ids;
