@@ -306,7 +306,7 @@ def thank_you_for_supporting(grants, contributor):
         return
 
     from_email = settings.CONTACT_EMAIL
-    to_email =  subscription.contributor_profile.email
+    to_email = subscription.contributor_profile.email
     if not to_email:
         to_email = subscription.contributor_profile.user.email
 
