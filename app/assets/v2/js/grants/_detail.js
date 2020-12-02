@@ -60,6 +60,8 @@ Vue.mixin({
     fetchTransactions: function() {
       let vm = this;
 
+      vm.loadingTx = true;
+
       if (vm.grantTransactions?.contributions) {
         return;
       }
@@ -70,6 +72,7 @@ Vue.mixin({
         return res.json();
       }).then(function(json) {
         vm.grantTransactions = json;
+        vm.loadingTx = false;
 
       }).catch(console.error);
     },
@@ -126,6 +129,7 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        loadingTx: false,
         loading: false,
         isStaff: isStaff,
         grantTransactions: {},

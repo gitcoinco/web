@@ -122,7 +122,18 @@
                 </div>
                 <br class="break">
               {% endif %}
-              <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!grantTransactions.contributions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h4>
+              <b-skeleton-wrapper :loading="loadingTx">
+                <template #loading>
+                  <b-container>
+                    <b-row class="" v-for="index in 4" :key="index">
+                      <b-col cols="12" class="py-2">
+                        <b-skeleton width="100%" height="58px" class="mb-2"></b-skeleton>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </template>
+              </b-skeleton-wrapper>
 
               <div class="px-0">
                 <div class="row mb-3 py-2 px-0 mx-sm-0">
@@ -181,9 +192,6 @@
                             <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin">
                               (+[[transaction.subscription.amount_per_period_to_gitcoin| decimals | formatNumber]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
                             </div>
-
-
-                            <!-- [[transaction]] -->
                           </div>
                         </div>
                       </div>
