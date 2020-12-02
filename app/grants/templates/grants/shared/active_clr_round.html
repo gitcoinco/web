@@ -22,11 +22,11 @@
             </div>
             <h5 class="font-weight-bold my-auto">
               {% if active_round.display_text %}
-                {{ active_round.display_text }}
+                {{ active_round.display_text|upper }}
               {% elif active_round.customer_name %}
-                {{ active_round.customer_name }} - {{ active_round.round_num }}
+                {{ active_round.customer_name|upper }} - {{ active_round.round_num }}
               {% elif active_round.sub_round_slug %}
-                {{ active_round.sub_round_slug|title }} - {{ active_round.round_num }}
+                {{ active_round.sub_round_slug|upper }} - {{ active_round.round_num }}
               {% else %}
                 {{ active_round.round_num }}
               {% endif %}
