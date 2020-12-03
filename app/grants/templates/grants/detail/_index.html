@@ -131,14 +131,14 @@
 
                     <div id="contributions" v-if="transactions.grantTransactions">
                       <p class="font-body font-weight-semibold subtitle mb-0">
-                        <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[transactions.grantTransactions?.length]])
+                        <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[transactions?.count]])
                       </p>
                       <div class="" v-for="transaction in transactions.grantTransactions">
                         <div class="py-2 mx-sm-0 row transaction-history">
                           <div class="d-none d-sm-block col-1 col-sm-3 col-md-2 font-subheader text-center text-md-left my-auto">
-                            <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment-fromnow]]</time>
-                            <a :href="`/_administrationgrants/subscription/${transaction.id}/change/`" target="_blank">
-                              <i class="fas fa-external-link-alt" v-if="isStaff"></i>
+                            <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment]]</time>
+                            <a :href="`/_administrationgrants/contribution/${transaction.id}/change/`" target="_blank" v-if="isStaff">
+                              <i class="fas fa-external-link-alt"></i>
                             </a>
                           </div>
                           <div class="col-3 col-sm-2 justify-content-center special_tag d-flex">

@@ -8,7 +8,7 @@
           <h1 class="h3">
             [[grant.title]]
           </h1>
-          <time :datetime="grant.last_update" v-b-tooltip.hover.top="grant.last_update" class="font-smaller-3 ml-3">Updated: [[grant.last_update | moment-fromnow]]</time>
+          <time :datetime="grant.last_update" v-b-tooltip.hover.top="grant.last_update" class="font-smaller-3 ml-3">Updated: [[grant.last_update | moment]]</time>
         </div>
         <div class="font-smaller-3">
           <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
