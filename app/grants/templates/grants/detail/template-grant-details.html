@@ -155,7 +155,7 @@
 
 
             <div class="d-flex d-flex flex-wrap justify-content-between mt-2 px-3 py-2 font-body">
-              <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && index >= 1 && index <= 4" class="d-flex flex-column flex-shrink-0">
+              <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && index >= 1 && index <= 4" class="d-flex flex-column" style="flex: 1 1 50%;">
                 <!-- 1, 10, 100, 1000 usd matching -->
                 <template v-if="grant.tenants.indexOf('ETH') > -1">
                   <span>[[prediction[0] ]] DAI contribution</span>
