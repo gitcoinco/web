@@ -594,7 +594,7 @@ def get_grants(request):
     else:
         _grants = build_grants_by_type(**filters)
 
-        collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:12]
+        collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:3]
 
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
@@ -1778,7 +1778,7 @@ def grant_new(request):
         grant.save()
         grant.calc_clr_round()
         grant.save()
-        
+
         messages.info(
             request,
             _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
