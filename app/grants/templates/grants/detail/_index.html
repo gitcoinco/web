@@ -253,17 +253,17 @@
               </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" @click="fetchTransactions">
+            <b-tab :title-link-class="'nav-line'" @click="fetchContributors">
               <template v-slot:title>CONTRIBUTORS</template>
-              <h4 class="m-auto text-center font-weight-semibold" v-if="!Object.keys(contributors)?.length && !loadingTx">{% trans "No contributors." %}</h4>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!contributors.grantContributors?.length && !loadingContributors">{% trans "No contributors." %}</h4>
 
-              <div class="d-flex flex-wrap">
-                <a :href="`/profile/${contributor.contributor_profile}`" class="d-flex align-items-center m-2" v-for="contributor in contributors" v-if="contributor.contributor_profile">
-                  <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="contributor.avatar_url"></b-img-lazy>
-                  <span class="font-weight-semibold">[[contributor.contributor_profile]]</span>
+              <div class="d-flex flex-wrap" v-if="contributors.grantContributors">
+                <a :href="`/profile/${contributor.user}`" class="d-flex align-items-center m-2" v-for="contributor in contributors.grantContributors">
+                  <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${contributor.user}`"></b-img-lazy>
+                  <span class="font-weight-semibold">[[contributor.user]]</span>
                 </a>
               </div>
-              <b-skeleton-wrapper :loading="loadingTx" class="d-flex">
+              <b-skeleton-wrapper :loading="loadingContributors" class="d-flex">
                 <template #loading>
                   <span v-for="index in 4" class="d-flex align-items-center mr-2">
                     <b-skeleton type="avatar"></b-skeleton>
@@ -272,7 +272,7 @@
                 </template>
               </b-skeleton-wrapper>
               <div class="text-center">
-                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
+                <button class="btn btn-gc-blue btn-sm" v-if="contributors.next_page_number" @click="fetchContributors()" :disabled="loadingContributors">Load more</button>
               </div>
             </b-tab>
 

@@ -95,6 +95,32 @@ Vue.mixin({
 
       }).catch(console.error);
     },
+    fetchContributors: function() {
+      let vm = this;
+
+      page = vm.contributors.next_page_number;
+      if (!page){
+        return
+      }
+      vm.loadingContributors = true;
+
+      let url = `/grants/v1/api/grant/${vm.grant.id}/contributors?page=${page}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.contributors.forEach(function(item) {
+          vm.contributors.grantContributors.push(item);
+        });
+
+        vm.contributors.num_pages = json.num_pages;
+        vm.contributors.has_next = json.has_next;
+        vm.contributors.next_page_number = json.next_page_number;
+        vm.contributors.count = json.count;
+        vm.loadingContributors = false;
+
+      }).catch(console.error);
+    },
     backNavigation: function() {
       let vm = this;
       var lgi = localStorage.getItem('last_grants_index');
@@ -135,23 +161,23 @@ Vue.mixin({
     }
   },
   computed: {
-    contributors() {
-      let obj = this.transactions.grantTransactions.map((contributor) => {
-        let newContributor = {};
+    // contributors() {
+    //   let obj = this.transactions.grantTransactions.map((contributor) => {
+    //     let newContributor = {};
 
-        newContributor['id'] = contributor.subscription.id;
-        newContributor['contributor_profile'] = contributor.subscription.contributor_profile;
-        newContributor['avatar_url'] = `/dynamic/avatar/${contributor.subscription.contributor_profile}`;
-        return newContributor;
-      })
+    //     newContributor['id'] = contributor.subscription.id;
+    //     newContributor['contributor_profile'] = contributor.subscription.contributor_profile;
+    //     newContributor['avatar_url'] = `/dynamic/avatar/${contributor.subscription.contributor_profile}`;
+    //     return newContributor;
+    //   })
 
-      return obj.reduce((user, current) => {
-        return Object.assign(user, {
-          [current.contributor_profile]: current
-        });
-      }, {});
+    //   return obj.reduce((user, current) => {
+    //     return Object.assign(user, {
+    //       [current.contributor_profile]: current
+    //     });
+    //   }, {});
 
-    }
+    // }
   }
 });
 
@@ -164,12 +190,17 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        loadingContributors: false,
         loadingTx: false,
         loadingRelated: false,
         loading: false,
         isStaff: isStaff,
         transactions:{
           grantTransactions: [],
+          next_page_number: 1
+        },
+        contributors: {
+          grantContributors: [],
           next_page_number: 1
         },
         grant: {},
