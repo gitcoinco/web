@@ -1009,12 +1009,10 @@ class Subscription(SuperModel):
 
     @property
     def amount_per_period_minus_gas_price(self):
-        if self.grant.pk == 86:
-            # If contribution is to Gitcoin Grant
+        if self.amount_per_period == self.amount_per_period_to_gitcoin:
             return float(self.amount_per_period)
 
-        amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
-        return amount
+        return float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
 
     @property
     def amount_per_period_to_gitcoin(self):
