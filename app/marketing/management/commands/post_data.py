@@ -247,226 +247,236 @@ def earners():
 
 def grants():
 
-    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return
 
     ############################################################################3
     # total stats
     ############################################################################3
+    aclr = active_clr_rounds.first()
+    pprint("")
+    pprint("================================")
+    pprint(f"== BEEP BOOP BOP ⚡️          ")
+    pprint(f"== *{aclr.customer_name.title()} Round {aclr.round_num}* Grants Stats ({aclr.start_date.strftime('%m/%d/%Y')} ➡️ {aclr.end_date.strftime('%m/%d/%Y')})")
+    start = aclr.start_date
+    end = aclr.end_date
+    day = (timezone.now() - start).days
+    pprint(f"== Day {day} Stats 💰🌲👇 ")
+    pprint("================================")
+    pprint("")
 
-    for aclr in active_clr_rounds.order_by('start_date'):
-        pprint("")
-        pprint("================================")
-        pprint(f"== BEEP BOOP BOP ⚡️          ")
-        pprint(f"== *{aclr.customer_name} {aclr.round_num}* Grants Round ({aclr.start_date.strftime('%m/%d/%Y')} ➡️ {aclr.end_date.strftime('%m/%d/%Y')})")
-        start = aclr.start_date
-        end = aclr.end_date
-        day = (timezone.now() - start).days
-        pprint(f"== Day {day} Stats 💰🌲👇 ")
-        pprint("================================")
-        pprint("")
+    must_be_successful = True
+    #grants_pks = []
+    #for aclr in active_clr_rounds:
+    #    grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-        must_be_successful = True
-        grants_pks = []
-        for aclr in active_clr_rounds:
-            grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)#, subscription__grant__in=grants_pks)
+    if must_be_successful:
+        contributions = contributions.filter(success=True)
+    pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
+    total = contributions.count() + pfs.count()
 
-        contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription__grant__in=grants_pks)
-        if must_be_successful:
-            contributions = contributions.filter(success=True)
-        pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
-        total = contributions.count() + pfs.count()
-
-        current_carts = CartActivity.objects.filter(latest=True, grant__in=grants_pks)
-        num_carts = 0
-        amount_in_carts = {}
-        discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
-        for ca in current_carts:
-            for item in ca.metadata:
-                currency, amount = item['grant_donation_currency'], item['grant_donation_amount']
-                if currency not in amount_in_carts.keys():
-                    amount_in_carts[currency] = [0, 0]
-                if amount:
-                    usdt_amount = 0
-                    try:
-                        usdt_amount = convert_token_to_usdt(currency) * float(amount)
-                    except Exception as e:
-                        pass
-                    if usdt_amount < discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling:
-                        try:
-                            amount_in_carts[currency][0] += float(amount)
-                            amount_in_carts[currency][1] += float(usdt_amount)
-                        except:
-                            pass
-
-        contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
-        amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
-
-        pprint(f"Contributions: {total}")
-        pprint(f"Contributors: {contributors}")
-        pprint(f'Amount Raised: ${round(amount, 2)}')
-        total_usdt_in_carts = 0
-        for key, val in amount_in_carts.items():
-            total_usdt_in_carts += val[1]
-        pprint(f"{round(total_usdt_in_carts/1000, 1)}k DAI-equivilent in carts, but not yet checked out yet:")
-        for key, val in amount_in_carts.items():
-            if val[1] > 10 and key:
-                pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
-
-        ############################################################################3
-        # top contributors
-        ############################################################################3
-
-        all_contributors_by_amount = {}
-        all_contributors_by_num = {}
-        all_contributions_by_token = {}
-        for contrib in contributions:
-            key = contrib.subscription.contributor_profile.handle
-            if key not in all_contributors_by_amount.keys():
-                all_contributors_by_amount[key] = 0
-                all_contributors_by_num[key] = 0
-
-            all_contributors_by_num[key] += 1
-            all_contributors_by_amount[key] += contrib.subscription.amount_per_period_usdt
-
-            key = contrib.subscription.token_symbol
-            if key not in all_contributions_by_token.keys():
-                all_contributions_by_token[key] = 0
-            all_contributions_by_token[key] += contrib.subscription.amount_per_period_usdt
-
-
-        all_contributors_by_num = sorted(all_contributors_by_num.items(), key=operator.itemgetter(1))
-        all_contributors_by_num.reverse()
-        all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=operator.itemgetter(1))
-        all_contributors_by_amount.reverse()
-        all_contributions_by_token = sorted(all_contributions_by_token.items(), key=operator.itemgetter(1))
-        all_contributions_by_token.reverse()
-
-        pprint("")
-        pprint("=======================")
-        pprint("")
-
-        limit = 10
-        pprint(f"Top Contributors by Num Contributions")
-        counter = 0
-        for obj in all_contributors_by_num[0:limit]:
-            counter += 1
-            pprint(f"{counter} - {str(round(obj[1]))} by @{obj[0]}")
-
-        pprint("")
-        pprint("=======================")
-        pprint("")
-
-        counter = 0
-        pprint(f"Top Contributors by Amount of Contributions")
-        for obj in all_contributors_by_amount[0:limit]:
-            counter += 1
-            pprint(f"{counter} - ${str(round(obj[1], 2))} by @{obj[0]}")
-
-        pprint("")
-        pprint("=======================")
-        pprint("")
-
-        counter = 0
-        pprint(f"Saturation by Token")
-        for obj in all_contributions_by_token[0:limit]:
-            counter += 1
-            pprint(f"{counter} - ${str(round(obj[1], 2))} in {obj[0]}")
-
-        pprint("")
-        pprint("=======================")
-        pprint("")
-
-        active_rounds = []
-        active_round_threshold = {}
-        active_rounds_allocation = {}
-
-        for active_clr_round in active_clr_rounds:
-            key = active_clr_round.round_num
-
-            active_round_threshold[key] = float(active_clr_round.total_pot)
-            active_rounds_allocation[key] = 0
-            active_rounds.append(key)
-
-            grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, hidden=False)
-            for grant in grants:
+    current_carts = CartActivity.objects.filter(latest=True)#, grant__in=grants_pks)
+    num_carts = 0
+    amount_in_carts = {}
+    discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
+    for ca in current_carts:
+        for item in ca.metadata:
+            currency, amount = item['grant_donation_currency'], item['grant_donation_amount']
+            if currency not in amount_in_carts.keys():
+                amount_in_carts[currency] = [0, 0]
+            if amount:
+                usdt_amount = 0
                 try:
-                    active_rounds_allocation[key] += float(grant.clr_prediction_curve[0][1])
+                    usdt_amount = convert_token_to_usdt(currency) * float(amount)
                 except Exception as e:
-                    print(e)
+                    pass
+                if usdt_amount < discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling:
+                    try:
+                        amount_in_carts[currency][0] += float(amount)
+                        amount_in_carts[currency][1] += float(usdt_amount)
+                    except:
+                        pass
 
-        counter = 0
-        pprint(f"Total Saturation of Matching Funds By Round Type (Round {clr_round})")
-        for key, val in active_rounds_allocation.items():
-            counter += 1
-            allocation_target = active_round_threshold[key]
-            allocation_pct = round(100 * val/allocation_target)
-            if key == 'media':
-                key = 'community' #hack
-            pprint(f"{counter} {key} - ${round(val, 2)} ({allocation_pct}% allocated)")
+    contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
+    amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
 
+    pprint(f"Contributions: {total}")
+    pprint(f"Contributors: {contributors}")
+    pprint(f'Amount Raised: ${round(amount, 2)}')
+    total_usdt_in_carts = 0
+    for key, val in amount_in_carts.items():
+        total_usdt_in_carts += val[1]
+    pprint(f"{round(total_usdt_in_carts/1000, 1)}k DAI-equivilent in carts, but not yet checked out yet:")
+    for key, val in amount_in_carts.items():
+        if val[1] > 10 and key:
+            pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
 
-        pprint("")
-        pprint("=======================")
-        pprint("")
-        pprint("Misc Stats:")
-        idena_contributor_count = contributions.filter(subscription__contributor_profile__is_idena_verified=True).distinct('subscription__contributor_profile').count()
-        brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
-        sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
-        contributor_count = contributions.distinct('subscription__contributor_profile').count()
-        idena_contributor_pct = round(100 * idena_contributor_count / contributor_count)
-        sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
-        brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
+    ############################################################################3
+    # top contributors
+    ############################################################################3
 
-        zksync_contribution_count = contributions.filter(validator_comment__icontains='zkSync').count()
-        contribution_count = contributions.count()
-        zksync_contribution_pct = round(100 * zksync_contribution_count / contribution_count)
-        sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
+    all_contributors_by_amount = {}
+    all_contributors_by_num = {}
+    all_contributions_by_token = {}
+    for contrib in contributions:
+        key = contrib.subscription.contributor_profile.handle
+        if key not in all_contributors_by_amount.keys():
+            all_contributors_by_amount[key] = 0
+            all_contributors_by_num[key] = 0
 
-        pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
-        pprint(f"- {idena_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({idena_contributor_pct}%) ")
-        pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
-        pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
+        all_contributors_by_num[key] += 1
+        all_contributors_by_amount[key] += contrib.subscription.amount_per_period_usdt
 
-        ############################################################################3
-        # new feature stats for round {clr_round}
-        ############################################################################3
-
-        subs_stats = False
-        if subs_stats:
-            subs = Subscription.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(hours=48))
-            subs = subs.filter(subscription_contribution__success=True)
-            pprint(subs.count())
-            pprint(subs.filter(num_tx_approved__gt=1).count())
-            pprint(subs.filter(is_postive_vote=False).count())
+        key = contrib.subscription.token_symbol
+        if key not in all_contributions_by_token.keys():
+            all_contributions_by_token[key] = 0
+        all_contributions_by_token[key] += contrib.subscription.amount_per_period_usdt
 
 
-        ############################################################################3
-        # all contributions export
-        ############################################################################3
+    all_contributors_by_num = sorted(all_contributors_by_num.items(), key=operator.itemgetter(1))
+    all_contributors_by_num.reverse()
+    all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=operator.itemgetter(1))
+    all_contributors_by_amount.reverse()
+    all_contributions_by_token = sorted(all_contributions_by_token.items(), key=operator.itemgetter(1))
+    all_contributions_by_token.reverse()
 
-        export = False
-        if export:
-            contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
-            pprint("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
-            for contribution in contributions:
-                print(contribution.tx_id,
-                    contribution.split_tx_id,
-                    contribution.subscription.contributor_address,
-                    contribution.subscription.amount_per_period,
-                    contribution.subscription.amount_per_period_minus_gas_price,
-                    contribution.subscription.token_address)
+    pprint("")
+    pprint("=======================")
+    pprint("")
 
-        pprint("")
-        pprint("=======================")
-        pprint("More @")
-        pprint("⌗ https://gitcoin.co/grants/activity/")
-        pprint("⌗ https://gitcoin.co/grants/stats/")
-        pprint("=======================")
+    limit = 10
+    pprint(f"Top Contributors by Num Contributions")
+    counter = 0
+    for obj in all_contributors_by_num[0:limit]:
+        counter += 1
+        pprint(f"{counter} - {str(round(obj[1]))} by @{obj[0]}")
 
-        global text
-        do_post(text)
+    pprint("")
+    pprint("=======================")
+    pprint("")
+
+    counter = 0
+    pprint(f"Top Contributors by Amount of Contributions")
+    for obj in all_contributors_by_amount[0:limit]:
+        counter += 1
+        pprint(f"{counter} - ${str(round(obj[1], 2))} by @{obj[0]}")
+
+    pprint("")
+    pprint("=======================")
+    pprint("")
+
+    counter = 0
+    pprint(f"Saturation by Token")
+    for obj in all_contributions_by_token[0:limit]:
+        counter += 1
+        pprint(f"{counter} - ${str(round(obj[1], 2))} in {obj[0]}")
+
+    pprint("")
+    pprint("=======================")
+    pprint("")
+
+    active_rounds = []
+    active_round_threshold = {}
+    active_rounds_allocation = {}
+
+    for active_clr_round in active_clr_rounds:
+        key = active_clr_round.round_num
+
+        active_round_threshold[key] = float(active_clr_round.total_pot)
+        active_rounds_allocation[key] = 0
+        active_rounds.append(key)
+
+        grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, hidden=False)
+        for grant in grants:
+            try:
+                active_rounds_allocation[key] += float(grant.clr_prediction_curve[0][1])
+            except Exception as e:
+                print(e)
+
+    counter = 0
+    pprint(f"Total Saturation of Matching Funds By Round Type (Round {clr_round})")
+    for key, val in active_rounds_allocation.items():
+        counter += 1
+        allocation_target = active_round_threshold[key]
+        allocation_pct = round(100 * val/allocation_target)
+        if key == 'media':
+            key = 'community' #hack
+        pprint(f"{counter} {key} - ${round(val, 2)} ({allocation_pct}% allocated)")
+
+
+    pprint("")
+    pprint("=======================")
+    pprint("")
+    pprint("Misc Stats:")
+    idena_contributor_count = contributions.filter(subscription__contributor_profile__is_idena_verified=True).distinct('subscription__contributor_profile').count()
+    brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
+    sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
+    twitter_contributor_count = contributions.filter(subscription__contributor_profile__is_twitter_verified=True).distinct('subscription__contributor_profile').count()
+    google_contributor_count = contributions.filter(subscription__contributor_profile__is_google_verified=True).distinct('subscription__contributor_profile').count()
+    poap_contributor_count = contributions.filter(subscription__contributor_profile__is_poap_verified=True).distinct('subscription__contributor_profile').count()
+    contributor_count = contributions.distinct('subscription__contributor_profile').count()
+    poap_contributor_pct = round(100 * poap_contributor_count / contributor_count)
+    google_contributor_pct = round(100 * google_contributor_count / contributor_count)
+    twitter_contributor_pct = round(100 * twitter_contributor_count / contributor_count)
+    idena_contributor_pct = round(100 * idena_contributor_count / contributor_count)
+    sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
+    brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
+
+    zksync_contribution_count = contributions.filter(validator_comment__icontains='zkSync').count()
+    contribution_count = contributions.count()
+    zksync_contribution_pct = round(100 * zksync_contribution_count / contribution_count)
+    sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
+
+    pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
+    pprint(f"- {idena_contributor_count} Idena Verified Contributors/{contributor_count} Total Contributors ({idena_contributor_pct}%) ")
+    pprint(f"- {poap_contributor_count} POAP Verified Contributors/{contributor_count} Total Contributors ({poap_contributor_pct}%) ")
+    pprint(f"- {google_contributor_count} Google Verified Contributors/{contributor_count} Total Contributors ({google_contributor_pct}%) ")
+    pprint(f"- {twitter_contributor_count} Twitter Verified Contributors/{contributor_count} Total Contributors ({twitter_contributor_pct}%) ")
+    pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
+    pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
+
+    ############################################################################3
+    # new feature stats for round {clr_round}
+    ############################################################################3
+
+    subs_stats = False
+    if subs_stats:
+        subs = Subscription.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(hours=48))
+        subs = subs.filter(subscription_contribution__success=True)
+        pprint(subs.count())
+        pprint(subs.filter(num_tx_approved__gt=1).count())
+        pprint(subs.filter(is_postive_vote=False).count())
+
+
+    ############################################################################3
+    # all contributions export
+    ############################################################################3
+
+    export = False
+    if export:
+        contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
+        pprint("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
+        for contribution in contributions:
+            print(contribution.tx_id,
+                contribution.split_tx_id,
+                contribution.subscription.contributor_address,
+                contribution.subscription.amount_per_period,
+                contribution.subscription.amount_per_period_minus_gas_price,
+                contribution.subscription.token_address)
+
+    pprint("")
+    pprint("=======================")
+    pprint("More @")
+    pprint("⌗ https://gitcoin.co/grants/activity/")
+    pprint("⌗ https://gitcoin.co/grants/stats/")
+    pprint("=======================")
+
+    global text
+    do_post(text)
+
+
 class Command(BaseCommand):
 
     help = 'puts grants stats on town suqare'
