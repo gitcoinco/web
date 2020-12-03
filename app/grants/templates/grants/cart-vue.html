@@ -169,6 +169,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                               width="20">
                             </div>
+                            <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+                              Cannot match own grant
+                            </div>
                             <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
                               Not Eligible for CLR
                             </div>
