@@ -162,6 +162,7 @@ if (document.getElementById('grants-showcase')) {
       page: 1,
       collectionsPage: 1,
       limit: 6,
+      show_active_clrs: true,
       sort: sort,
       network: document.network,
       keyword: document.keyword,
