@@ -271,12 +271,12 @@ Vue.component('grants-cart', {
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
           // Special case since we overestimate here otherwise
-          return 80000;
+          return 100000;
         }
         // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
         // then generating a conservative best-fit line
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        return 25000 * donationCurrencies.length + 125000;
+        return 27500 * donationCurrencies.length + 125000;
       }
 
       // Otherwise, based on contract tests, we use the more conservative heuristic below to get
@@ -287,7 +287,7 @@ Vue.component('grants-cart', {
         const tokenAddr = currentValue.token.toLowerCase();
 
         if (currentValue.token === ETH_ADDRESS) {
-          return accumulator + 50000; // ETH donation gas estimate
+          return accumulator + 70000; // ETH donation gas estimate
 
         } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
           return accumulator + 170000; // ANT donation gas estimate
