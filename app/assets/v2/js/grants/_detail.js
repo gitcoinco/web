@@ -1,3 +1,4 @@
+
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 Quill.register('modules/ImageExtend', ImageExtend);
@@ -8,6 +9,7 @@ Vue.mixin({
     fetchGrantDetails: function(id) {
       let vm = this;
 
+      vm.loading = true;
       if (!id) {
         id = grantDetails.grant_id;
       }
@@ -20,12 +22,12 @@ Vue.mixin({
           return res.json();
         }).then(function(json) {
           vm.grant = json.grants;
-
-          if (vm.tab) {
-            setTimeout(function() {
-              vm.scrollToElement('grant-tabs');
-            }, 1000);
-          }
+          vm.loading = false;
+          // if (vm.tab) {
+          //   setTimeout(function() {
+          //     vm.scrollToElement('grant-tabs');
+          //   }, 1000);
+          // }
 
           resolve();
         }).catch(console.error);
@@ -36,22 +38,86 @@ Vue.mixin({
     fetchRelated: function() {
       let vm = this;
       let ids;
+      let size = 6
 
-      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length || vm.relatedGrants.length) {
+      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length) {
         return;
       }
 
       ids = vm.grant.metadata.related.map(arr => {
         return arr[0];
       });
-      idsString = String(ids);
+      vm.relatedGrantsIds = vm.paginate(ids, size, vm.relatedGrantsPage);
 
-      let url = `/grants/v1/api/grants?pks=${idsString}`;
+      vm.relatedGrantsPage+= 1;
+
+      if (!vm.relatedGrantsIds.length) {
+        return;
+      }
+      vm.loadingRelated = true;
+      let url = `/grants/v1/api/grants?pks=${vm.relatedGrantsIds}`;
 
       fetch(url).then(function(res) {
         return res.json();
       }).then(function(json) {
-        vm.relatedGrants = json.grants;
+        json.grants.forEach(function(item) {
+          vm.relatedGrants.push(item);
+        });
+        vm.loadingRelated = false;
+      }).catch(console.error);
+    },
+    paginate: function(array, page_size, page_number) {
+      return array.slice(page_number * page_size, page_number * page_size + page_size);
+    },
+    fetchTransactions: function() {
+      let vm = this;
+
+      page = vm.transactions.next_page_number;
+      if (!page){
+        return
+      }
+      vm.loadingTx = true;
+
+      let url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.contributions.forEach(function(item) {
+          vm.transactions.grantTransactions.push(item);
+        });
+
+        vm.transactions.num_pages = json.num_pages;
+        vm.transactions.has_next = json.has_next;
+        vm.transactions.next_page_number = json.next_page_number;
+        vm.transactions.count = json.count;
+        vm.loadingTx = false;
+
+      }).catch(console.error);
+    },
+    fetchContributors: function() {
+      let vm = this;
+
+      page = vm.contributors.next_page_number;
+      if (!page){
+        return
+      }
+      vm.loadingContributors = true;
+
+      let url = `/grants/v1/api/grant/${vm.grant.id}/contributors?page=${page}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.contributors.forEach(function(item) {
+          vm.contributors.grantContributors.push(item);
+        });
+
+        vm.contributors.num_pages = json.num_pages;
+        vm.contributors.has_next = json.has_next;
+        vm.contributors.next_page_number = json.next_page_number;
+        vm.contributors.count = json.count;
+        vm.loadingContributors = false;
 
       }).catch(console.error);
     },
@@ -80,9 +146,6 @@ Vue.mixin({
         case 'sybil_profile':
           vm.tabSelected =  4;
           break;
-        case 'contributors':
-          vm.tabSelected =  3;
-          break;
         case 'stats':
           vm.tabSelected =  5;
           break;
@@ -96,6 +159,25 @@ Vue.mixin({
 
       container.scrollIntoViewIfNeeded({behavior: "smooth", block: "start"});
     }
+  },
+  computed: {
+    // contributors() {
+    //   let obj = this.transactions.grantTransactions.map((contributor) => {
+    //     let newContributor = {};
+
+    //     newContributor['id'] = contributor.subscription.id;
+    //     newContributor['contributor_profile'] = contributor.subscription.contributor_profile;
+    //     newContributor['avatar_url'] = `/dynamic/avatar/${contributor.subscription.contributor_profile}`;
+    //     return newContributor;
+    //   })
+
+    //   return obj.reduce((user, current) => {
+    //     return Object.assign(user, {
+    //       [current.contributor_profile]: current
+    //     });
+    //   }, {});
+
+    // }
   }
 });
 
@@ -108,10 +190,25 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        loadingContributors: false,
+        loadingTx: false,
+        loadingRelated: false,
+        loading: false,
+        isStaff: isStaff,
+        transactions:{
+          grantTransactions: [],
+          next_page_number: 1
+        },
+        contributors: {
+          grantContributors: [],
+          next_page_number: 1
+        },
         grant: {},
         tabSelected: 0,
         tab: null,
         relatedGrants: [],
+        relatedGrantsPage: 0,
+        relatedGrantsIds: [],
         backLink: {
           url: '/grants',
           title: 'Grants'

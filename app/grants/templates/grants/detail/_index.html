@@ -50,6 +50,37 @@
       </div>
     {% endif %}
     <div class="bg-lightblue pb-5" id="gc-grant-detail"  v-cloak>
+
+      <b-skeleton-wrapper :loading="loading">
+        <template #loading>
+          <b-row class="mb-4">
+            <b-col>
+              <b-skeleton-img no-aspect height="290px"></b-skeleton-img>
+            </b-col>
+          </b-row>
+          <b-container>
+
+            <b-row>
+              <b-col cols="7">
+                <b-skeleton width="45%" class="mb-3"></b-skeleton>
+                <b-skeleton width="100%" height="33px" class="mb-2"></b-skeleton>
+                <b-skeleton width="65%" class="mb-2"></b-skeleton>
+                <b-skeleton width="55%" class="mb-2 mt-3"></b-skeleton>
+                <b-skeleton width="45%" class="mb-2"></b-skeleton>
+
+              </b-col>
+              <b-col cols="5">
+                <b-row class="mt-3">
+                  <b-skeleton-img no-aspect height="380px"></b-skeleton-img>
+                </b-row>
+                <b-row class="mt-3">
+                  <b-skeleton-img no-aspect height="235px"></b-skeleton-img>
+                </b-row>
+              </b-col>
+            </b-row>
+          </b-container>
+        </template>
+      </b-skeleton-wrapper>
       <div class="" v-if="grant">
         <grant-details :grant="grant" v-if="grant.id">
           <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;">
@@ -74,7 +105,7 @@
               </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" lazy>
+            <b-tab :title-link-class="'nav-line'" lazy @click="fetchTransactions">
               <template v-slot:title>TRANSACTIONS</template>
 
               {% if is_team_member %}
@@ -91,22 +122,100 @@
                 </div>
                 <br class="break">
               {% endif %}
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h4>
 
-              {% if not subscriptions and not cancelled_subscriptions and not contributions %}
-                <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
-              {% else %}
-                {% include 'grants/activity.html' %}
-                <span id="grant-network" class="hidden">{{ grant.network }}</span>
-              {% endif %}
+
+              <div class="px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+
+                    <div id="contributions" v-if="transactions.grantTransactions">
+                      <p class="font-body font-weight-semibold subtitle mb-0">
+                        <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[transactions.grantTransactions?.length]])
+                      </p>
+                      <div class="" v-for="transaction in transactions.grantTransactions">
+                        <div class="py-2 mx-sm-0 row transaction-history">
+                          <div class="d-none d-sm-block col-1 col-sm-3 col-md-2 font-subheader text-center text-md-left my-auto">
+                            <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment-fromnow]]</time>
+                            <a :href="`/_administrationgrants/subscription/${transaction.id}/change/`" target="_blank">
+                              <i class="fas fa-external-link-alt" v-if="isStaff"></i>
+                            </a>
+                          </div>
+                          <div class="col-3 col-sm-2 justify-content-center special_tag d-flex">
+                            <a :href="`/profile/${transaction.subscription.contributor_profile}`" v-if="!transaction.anonymous" class="d-flex align-items-center">
+                              <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${ transaction.subscription.contributor_profile }`"></b-img-lazy>
+                              <span>[[transaction.subscription.contributor_profile]]</span>
+                            </a>
+                            <span class="d-flex align-items-center" v-else>
+                              <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" src="/dynamic/avatar/Anonymous"></b-img-lazy>
+                              <span>anonymous</span>
+                            </span>
+                          </div>
+                          <div class="col-1 my-auto tags font-caption">
+                            <span v-if="!transaction.success">
+                              (Failed)
+                            </span>
+                            <span v-if="!transaction.tx_cleared">
+                              (Pending)
+                            </span>
+                          </div>
+                          <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                            <a class="tx_link" :href="`https://etherscan.io/tx/${ transaction.tx_id }`" target="_blank" rel="noopener noreferrer" v-if="transaction.tx_id">
+                              View Etherscan
+                            </a>
+                          </div>
+                          <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                            <div class="tag tag-lg token">
+                              <p v-b-tooltip.hover.top="transaction.subscription.amount_per_period_minus_gas_price">
+                                [[transaction.subscription.amount_per_period_minus_gas_price | decimals | formatNumber]]
+                                <span>[[transaction.subscription.token_symbol]]</span>
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-2 my-auto tags font-caption">
+                            <div class="tag tag-lg usd" v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
+                              <p>
+                                ($ [[transaction.subscription.amount_per_period_usdt | decimals | formatNumber ]])
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin">
+                            (+[[transaction.subscription.amount_per_period_to_gitcoin| decimals | formatNumber]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <b-skeleton-wrapper :loading="loadingTx">
+                <template #loading>
+                  <b-container>
+                    <b-row class="" v-for="index in 4" :key="index">
+                      <b-col cols="12" class="py-2">
+                        <b-skeleton width="100%" height="48px" class="mb-2"></b-skeleton>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
+              </div>
+
+
             </b-tab>
 
             <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
               <template v-slot:title>RELATED GRANTS <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants." %}</h4>
+
               <div class="row">
                 <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
-                  <a class="text-decoration-none" :href="relgrant.details_url" data-instant>
+                  <a class="text-decoration-none" :href="relgrant.details_url">
                     <div class="card">
-                      <img :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title">
+                      <b-img-lazy :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title"></b-img-lazy>
                       <div class="card-body">
                         <h5 class="card-title">[[relgrant.title]]</h5>
                         <p class="card-text">[[relgrant.description | truncate(150)]]</p>
@@ -120,37 +229,50 @@
                   </a>
                 </div>
               </div>
+              <b-skeleton-wrapper :loading="loadingRelated">
+                <template #loading>
+
+                    <b-row class="mb-3">
+                      <b-col cols="12" md="6" xl="4" v-for="index in 3" :key="index">
+                        <b-card img-top no-body>
+                          <b-skeleton-img card-img="top" ></b-skeleton-img>
+                          <b-card-body>
+                            <b-skeleton width="85%"></b-skeleton>
+                            <b-skeleton width="55%"></b-skeleton>
+                            <b-skeleton width="70%"></b-skeleton>
+                            <b-skeleton type="avatar"></b-skeleton>
+                          </b-card-body>
+                        </b-card>
+                      </b-col>
+                    </b-row>
+
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
+              </div>
             </b-tab>
 
-            <b-tab :title-link-class="'nav-line'" @click="tabChange('contributors')">
+            <b-tab :title-link-class="'nav-line'" @click="fetchContributors">
               <template v-slot:title>CONTRIBUTORS</template>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!contributors.grantContributors?.length && !loadingContributors">{% trans "No contributors." %}</h4>
 
-              <div class="grant__stakeholders-list d-flex flex-wrap">
-                {% for contribution in contributors %}
-                  {% if contribution.anonymous %}
-                    {% trans  'Anonymous' as handle %}
-                  {% elif contribution.subscription %}
-                    {% trans  contribution.subscription.contributor_profile.handle  as handle %}
-                  {% else %}
-                    {% trans  contribution.profile.handle  as handle %}
-                  {% endif %}
-                  <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
-                    <div class="mr-2 d-inline-block">
-                      <img data-src="/dynamic/avatar/{{handle}}" />
-                    </div>
-                    <div class="mt-1 d-inline-block">
-                      <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
-                      {% if handle == request.user.profile.handle  %}
-                      <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
-                      {% endif %}
-                    </div>
-                  </a>
-
-                {% empty %}
-                  <div class="no-subscriptions">
-                    <p class="mb-1">{% trans "No contributors." %}</p>
-                  </div>
-                {% endfor %}
+              <div class="d-flex flex-wrap" v-if="contributors.grantContributors">
+                <a :href="`/profile/${contributor.user}`" class="d-flex align-items-center m-2" v-for="contributor in contributors.grantContributors">
+                  <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${contributor.user}`"></b-img-lazy>
+                  <span class="font-weight-semibold">[[contributor.user]]</span>
+                </a>
+              </div>
+              <b-skeleton-wrapper :loading="loadingContributors" class="d-flex">
+                <template #loading>
+                  <span v-for="index in 4" class="d-flex align-items-center mr-2">
+                    <b-skeleton type="avatar"></b-skeleton>
+                    <b-skeleton width="100px" height="20px" class="ml-1"></b-skeleton>
+                  </span>
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="contributors.next_page_number" @click="fetchContributors()" :disabled="loadingContributors">Load more</button>
               </div>
             </b-tab>
 
