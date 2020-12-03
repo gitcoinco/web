@@ -524,10 +524,8 @@ Vue.component('duniter-verify-modal', {
   data: function() {
     return {
       showValidation: false,
-      validationStep: 'create-duniter',
+      validationStep: 'validate-duniter',
       validationError: '',
-      duniterPass: '',
-      duniterSalt: '',
       publicKey: '',
     };
   },
@@ -559,28 +557,6 @@ Vue.component('duniter-verify-modal', {
                           <li>if you are is a qualified member</li>
                         </ol>
                          <p>read more about Web of <a href="https://en.wikipedia.org/wiki/Web_of_trust">trust</a></p>
-                      </div>
-                    </div>
-                    <div v-if="validationStep === 'create-duniter'>
-                      <p class="mb-4">
-                        If you don't have a Duniter account you can create now!
-                      </p>
-                      <div class="input-group">
-                        <input type="text" class="form-control" placeholder="create duniter salt key" aria-label="create duniter salt key" aria-describedby="basic-addon1"  v-model="dutinerSalt">
-                      </div>
-                      <div class="input-group">
-                        <input type="text" class="form-control" placeholder="create duniter password" aria-label="create duniter password key" aria-describedby="basic-addon1"  v-model="duniterPass">
-                      </div>
-                      <b-button @click="clickedCreate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
-                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
-                        Create Account
-                      </b-button>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'validate-duniter'" class="btn-gc-blue mt-3 mb-2" size="lg">
-                        <b-spinner v-if="validationStep === 'validate-duniter'" type="grow"></b-spinner>
-                        Existing account
-                      </b-button>
-                       <div v-if="validationError !== ''" style="color: red">
-                        <small>[[validationError]]</small>
                       </div>
                     </div>
                     <div v-if="validationStep === 'validate-duniter' || validationStep == 'perform-validation'">
@@ -621,15 +597,8 @@ Vue.component('duniter-verify-modal', {
       this.validationError = '';
 
       this.validationStep = 'perform-validation';
-
+      this.getUserHandle();
       this.verifyDuniter();
-    },
-    clickedCreate(event) {
-      this.validationError = '';
-
-      this.validationStep = 'create-account';
-
-      this.createDuniterAccount();
     },
     getUserHandle() {
       this.githubHandle = trustHandle;
@@ -654,32 +623,7 @@ Vue.component('duniter-verify-modal', {
         this.validationError = 'There was an error; please try again later';
         this.validationStep = 'validate-duniter';
       });
-    },
-    createDuniterAccount() {
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const headers = { 'X-CSRFToken': csrfmiddlewaretoken };
-      const payload = JSON.stringify({
-        'salt_gitcoin': this.dutinerSalt,
-        'pass_duniter': this.duniterPass
-      });
-
-      const createAccountRequest = fetchData(`/api/v0.1/profile/${trustHandle}/create_account_duniter`, 'POST', payload, headers);
-
-      $.when(createAccountRequest).then(response => {
-        if (response.ok) {
-          this.validationStep = 'create-account-success';
-          this.publicKey = response.pubkey
-        } else {
-          this.validationError = response.msg;
-          this.validationStep = 'create-account';
-        }
-
-      }).catch((_error) => {
-        this.validationError = 'There was an error; please try again later';
-        this.validationStep = 'create-account';
-      });
     }
-
   }
 });
 

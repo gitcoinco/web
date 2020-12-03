@@ -64,16 +64,10 @@ import tweepy
 import asyncio
 import getpass
 
-from duniterpy.key import VerifyingKey, SigningKey, PublicKey
-from duniterpy.key.scrypt_params import ScryptParams
-from duniterpy.key import
-from aiohttp import ClientResponse
-from duniterpy.api import bma
-from duniterpy.api.client import DuniterClient
 from app.services import RedisService, TwilioService
 from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
-    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, ES_USER_ENDPOINT, BMAS_ENDPOINT, ES_CORE_ENDPOINT
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -3270,13 +3264,16 @@ def verify_user_twitter(request, handle):
 
 
 @login_required
-def verify_user_duniter(request, handle):
+async def verify_user_duniter(request, handle):
     """This function searches the database for the gitcoin link, from a verified duniter account.
 
     Args:
         handle (str): The profile handle.
 
     """
+    import asyncio
+    from duniterpy.api.client import Client, RESPONSE_AIOHTTP
+    from duniterpy.api import bma
 
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
@@ -3305,11 +3302,10 @@ def verify_user_duniter(request, handle):
     try:
 
         #duniter client
-        client = DuniterClient(settings.ES_USER_ENDPOINT)
+        client = Client(ES_USER_ENDPOINT)
 
         # verify if there is account with same username on duniter
-        url_search = "user/profile/_search?q=" + gitcoin_handle
-        search_user_duniter_url = await client.get(url_search)
+        search_user_duniter_url = await client.get("user/profile/_search?q={0}".format(gitcoin_handle))
         if search_user_duniter_url != 200:
             #try search by publickey
             search_user_duniter_url = await client.get("user/profile/{0}/_source".format(pubkey.strip(" \n")))
@@ -3326,7 +3322,7 @@ def verify_user_duniter(request, handle):
             public_key_duniter = next(iter(position)).get('_id', {})
 
             # checks uid equals gitcoin-username
-            client = DuniterClient(settings.BMAS_ENDPOINT)
+            client = DuniterClient(BMAS_ENDPOINT)
             same_uid_url = await client(bma.wot.lookup, public_key_duniter)
             res_uid = requests.get(same_uid_url)
             uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
@@ -3394,54 +3390,6 @@ def verify_user_duniter(request, handle):
         'ok': True,
         'msg': 'Your Duniter Qualified User Check was successful!'
     })
-
-@login_required
-def create_duniter(request, handle, salt, password):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
-
-
-    request_data = json.loads(request.body.decode('utf-8'))
-    salt = request_data.get('salt_gitcoin', '')
-    password = request_data.get('pass_duniter', '')
-
-    key = SigningKey.from_credentials(salt, password)
-
-    if salt == '':
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Create your personal Salt'
-        })
-
-    if password == '':
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Password cannot be empty'
-        })
-
-    if key == '':
-        return JsonResponse({
-            'ok': False,
-            'msg': f'ivalid create public key'
-        })
-
-    try:
-
-        return JsonResponse({
-            'ok': True,
-            'msg': 'Duniter successfully created.',
-            'pubkey': key
-        })
-
-    except IndexError:
-        return JsonResponse({
-            'ok': False,
-            'msg': 'Sorry, not working'
-        })
 
 
 
