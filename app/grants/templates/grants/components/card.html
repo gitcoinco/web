@@ -27,7 +27,7 @@
         </div>
         <div :class="`grant-item__content ${ collection && isCurator ? 'col-md-7' : 'col-md-8'} px-3`">
           <h2 class="grant-item__title font-subheader">
-            <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+            <a :href="grant.details_url">[[ grant.title | truncate(60) ]]</a>
             <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="click" data-content='
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
@@ -98,7 +98,7 @@
                   </span>
                 </div>
               </div>
-              <template v-if="cred.is_authenticated">
+              <template v-if="isUserLogged">
                 <button @click="toggleFollowingGrant(grant.id, $event)" :class="`ml-3 text-decoration-none btn btn-link star-action m-0 p-0 font-smaller-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
                   <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
                   <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
@@ -107,17 +107,22 @@
                   <template v-slot:button-content>
                     <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
                   </template>
-                  <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
+                  <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections" :key="collection.id">[[collection.title]]</b-dropdown-item>
                 </b-dropdown>
               </template>
             </div>
           </div>
         </div>
-        <div :class="`${ collection && isCurator ? 'col-md-4' : 'col-md-3' } col-sm-12 py-4 pr-md-5 pl-md-0 grant-action`">
-          <button @click.prevent="addToCart(grant)" :class="`btn btn-gc-blue cart-btn ${ collection && isCurator ? '' : 'large' } font-body font-weight-semibold mt-1 mr-1`">
+
+        <div :class="`${ collection && isCurator ? 'col-md-4' : 'col-md-3' }`" class="col-sm-12 py-4 pr-md-5 pl-md-0 grant-action mx-1">
+          <b-button @click="quickView($event)" size="sm" variant="outline-gc-blue" class="font-weight-semibold font-caption btn-block">
+            <i class="far fa-eye mr-2"></i>
+            Quick View
+          </b-button>
+          <button @click.prevent="addToCart(grant)" :class="{'btn-lg': collection && isCurator}" class="btn btn-gc-blue btn-block font-body font-weight-semibold">
             + Add to Cart
           </button>
-          <button @click.prevent="$emit('collection:remove', {collection, grant})"  class="btn btn-outline-danger font-body font-weight-semibold mt-1 mr-1" v-if="isCurator">
+          <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})"  class="btn btn-block btn-outline-danger font-body font-weight-semibold" v-if="isCurator">
             - Remove from collection
           </button>
         </div>
@@ -138,7 +143,7 @@
       </div>
       <div class="grant-item__content px-3">
         <h2 class="grant-item__title font-subheader">
-          <a :href="grant.details_url" target="_blank">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+          <a :href="grant.details_url" target="_blank">[[ grant.title | truncate(60) ]]</a>
           <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
@@ -146,7 +151,7 @@
             ><img width="13" clas="position-relative" style="top: -2px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
           </button>
         </h2>
-        <p class="grant-item__pitch font-caption mb-2">[[ grant.description.slice(0, 145) ]][[ grant.description.length > 145 ? '...' : '']]</p>
+        <p class="grant-item__pitch font-caption mb-2">[[ grant.description | truncate(145) ]]</p>
         <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
           <span class="font-smaller-5">
             <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
@@ -177,7 +182,7 @@
               </div>
             </a>
           </div>
-          <template v-if="cred.is_authenticated">
+          <template v-if="isUserLogged">
             <button @click="toggleFollowingGrant(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
               <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
               <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
@@ -228,7 +233,7 @@
             </div>
           </div>
 
-          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
+          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active && grant.clr_round_num">
             <template v-if="grant.tenants.indexOf('ETH') > -1">
               {% include 'grants/components/clr_estimate.html' with token='DAI' %}
             </template>
@@ -236,18 +241,30 @@
               {% include 'grants/components/clr_estimate.html' with token='ZEC' %}
             </template>
           </div>
-          <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="m-md-2" menu-class="shadow-sm" v-if="has_collections">
-            <template v-slot:button-content>
-              <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
-            </template>
-            <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections">[[collection.title]]</b-dropdown-item>
-          </b-dropdown>
 
-          <div class="col-12 pb-4">
-            <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
-              + Add to Cart
-            </button>
-            <button @click.prevent="$emit('collection:remove', {collection, grant})" class="btn btn-outline-danger cart-btn large font-body font-weight-semibold mt-1 mr-1" v-if="collection && isCurator">
+          <div class="d-flex mx-3 justify-content-between" v-if="isUserLogged && has_collections">
+            <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="mr-2" menu-class="shadow-sm" v-if="has_collections">
+              <template v-slot:button-content>
+                <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+              </template>
+              <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections" :key="collection.id">[[collection.title]]</b-dropdown-item>
+            </b-dropdown>
+          </div>
+
+          <div class="mx-3 mt-1 pb-4">
+            <div class="d-flex justify-content-between pb-1">
+              <b-button @click="quickView($event)" size="sm" variant="outline-gc-blue" class="mr-1 font-body" style="flex: 1 1 0px;">
+                <i class="far fa-eye mr-2"></i>
+                Quick View
+              </b-button>
+              <button @click.prevent="removeFromCart(grant)" class="btn btn-gc-outline-red ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
+                - Remove from Cart
+              </button>
+              <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue ml-1 font-body" style="flex: 1 1 0px;" v-else>
+                + Add to Cart
+              </button>
+            </div>
+            <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mt-1 mr-1" v-if="collection && isCurator">
             - Remove from collection
             </button>
           </div>

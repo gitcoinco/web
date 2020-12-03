@@ -17,6 +17,7 @@
 '''
 
 import json
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -46,6 +47,7 @@ from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
 
+logger = logging.getLogger(__name__)
 
 def create_email_inventory_cache():
     print('create_email_inventory_cache')
@@ -384,24 +386,31 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grant_type_cache()
-        create_grant_clr_cache()
-        create_grant_category_size_cache()
-        create_grant_active_clr_mapping()
+        operations = []
+        operations.append(create_grant_type_cache)
+        operations.append(create_grant_clr_cache)
+        operations.append(create_grant_category_size_cache)
+        operations.append(create_grant_active_clr_mapping)
         if not settings.DEBUG:
-            create_results_cache()
-            create_hidden_profiles_cache()
-            create_tribes_cache()
-            create_activity_cache()
-            create_post_cache()
-            create_top_grant_spenders_cache()
-            create_avatar_cache()
-            create_quests_cache()
-            create_grants_cache()
-            create_contributor_landing_page_context()
-            create_hackathon_cache()
-            create_hackathon_list_page_cache()
+            operations.append(create_results_cache)
+            operations.append(create_hidden_profiles_cache)
+            operations.append(create_tribes_cache)
+            operations.append(create_activity_cache)
+            operations.append(create_post_cache)
+            operations.append(create_top_grant_spenders_cache)
+            operations.append(create_avatar_cache)
+            operations.append(create_quests_cache)
+            operations.append(create_grants_cache)
+            operations.append(create_contributor_landing_page_context)
+            operations.append(create_hackathon_cache)
+            operations.append(create_hackathon_list_page_cache)
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
                 # do dailyi updates
-                create_email_inventory_cache()
+                operations.append(create_email_inventory_cache)
+        for func in operations:
+            try:
+                print(f'running {func}')
+                func()
+            except Exception as e:
+                logger.exception(e)

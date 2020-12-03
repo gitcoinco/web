@@ -92,7 +92,12 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-
+      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_1)) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
+      }
+      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
+        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
+      }
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
       } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
@@ -111,6 +116,10 @@ Vue.mixin({
       }
       if (vm.form.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
+      }
+
+      if (!vm.$refs.formNewGrant.reportValidity()) {
+        return false;
       }
 
       if (Object.keys(vm.errors).length) {
@@ -143,7 +152,8 @@ Vue.mixin({
         'zcash_payout_address': form.zcash_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
-        'network': form.network
+        'network': form.network,
+        'region': form.region
         // logoPreview
         // admin_address
         // contract_owner_address
@@ -202,6 +212,35 @@ Vue.mixin({
       let grant_type = this.grant_types.filter(grant_type => grant_type.name == vm.form.grant_type);
 
       return grant_type[0].categories;
+    },
+    onFileChange(e) {
+      let vm = this;
+
+      if (!e.target) {
+        return;
+      }
+
+      const file = e.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      let imgCompress = new Compressor(file, {
+        quality: 0.6,
+        maxWidth: 2000,
+        success(result) {
+          vm.logoPreview = URL.createObjectURL(result);
+          vm.logo = new File([result], result.name, { lastModified: result.lastModified });
+          $('#preview').css('width', '100%');
+          $('#js-drop span').hide();
+          $('#js-drop input').css('visible', 'invisible');
+          $('#js-drop').css('padding', 0);
+        },
+        error(err) {
+          _alert(err.message, 'error');
+        }
+      });
     }
   },
   watch: {
@@ -227,30 +266,21 @@ Vue.mixin({
         }
         this.dirty = true;
       }
-    },
-    logo: {
-      deep: true,
-      handler(newVal, oldVal) {
-        let vm = this;
-
-        if (checkFileSize(this.logo, 4000000) === false) {
-          _alert(`Grant Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
-        } else {
-          let reader = new FileReader();
-
-          reader.onload = function(e) {
-            vm.logoPreview = e.target.result;
-            $('#preview').css('width', '100%');
-            $('#js-drop span').hide();
-            $('#js-drop input').css('visible', 'invisible');
-            $('#js-drop').css('padding', 0);
-          };
-          reader.readAsDataURL(vm.logo);
-        }
-      }
     }
   }
 });
+
+const grant_regions = [
+  { 'name': 'north_america', 'label': 'North America'},
+  { 'name': 'oceania', 'label': 'Oceania'},
+  { 'name': 'latin_america', 'label': 'Latin America'},
+  { 'name': 'europe', 'label': 'Europe'},
+  { 'name': 'africa', 'label': 'Africa'},
+  { 'name': 'middle_east', 'label': 'Middle East'},
+  { 'name': 'india', 'label': 'India'},
+  { 'name': 'east_asia', 'label': 'East Asia'},
+  { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+];
 
 if (document.getElementById('gc-new-grant')) {
   appFormBounty = new Vue({
@@ -263,6 +293,7 @@ if (document.getElementById('gc-new-grant')) {
       return {
         chainId: '',
         grant_types: document.grant_types,
+        grant_regions: grant_regions,
         usersOptions: [],
         network: 'mainnet',
         logo: null,
@@ -275,6 +306,7 @@ if (document.getElementById('gc-new-grant')) {
           reference_url: '',
           description_rich: '',
           team_members: [],
+          region: null,
           twitter_handle_1: '',
           twitter_handle_2: '',
           github_project_url: '',
@@ -300,38 +332,33 @@ if (document.getElementById('gc-new-grant')) {
       };
     },
     computed: {
-      // queryParams() {
-      //   let query = window.location.search.substr(1);
+      queryParams() {
+        return new URLSearchParams(window.location.search);
+      },
+      clean() {
+        return value => {
+          value = decodeURIComponent(value);
+          if ((/<[a-zA-Z\\\/]+>/).test(value)) {
+            // if it matches a tag, reset the value to empty
+            value = '';
+          }
+          const arrayCheckRegex = /\[.+\]/;
 
-      //   query = query.split('&');
-      //   let returnVal = {};
-
-      //   query.map(q => {
-      //     const parts = q.split('=');
-      //     const arrayCheckRegex = /\[.+\]/;
-      //     let value = decodeURIComponent(parts[1]);
-
-      //     if ((/<[a-zA-Z\\\/]+>/).test(value)) {
-      //       // if it matches a tag, reset the value to empty
-      //       value = '';
-      //     }
-
-      //     if (arrayCheckRegex.test(value)) {
-      //       // check if array is passed in query params and return it as an array instead of default string.
-      //       // i.e change "[1, 2]" to [1, 2]
-      //       value = value.substr(1, value.length - 2);
-      //       value = value.split(',');
-      //       value = value.map(item => {
-      //         if (!isNaN(item)) {
-      //           return +item;
-      //         }
-      //         return item;
-      //       });
-      //     }
-
-      //     returnVal[parts[0]] = value;
-      //   });
-      // },
+          if (arrayCheckRegex.test(value)) {
+            // check if array is passed in query params and return it as an array instead of default string.
+            // i.e change "[1, 2]" to [1, 2]
+            value = value.substr(1, value.length - 2);
+            value = value.split(',');
+            value = value.map(item => {
+              if (!isNaN(item)) {
+                return +item;
+              }
+              return item;
+            });
+          }
+          return value;
+        };
+      },
       grant_type_logo() {
         const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
 
@@ -342,18 +369,28 @@ if (document.getElementById('gc-new-grant')) {
       }
     },
     mounted() {
-      // const writeToRoot = ['chainId'];
+      const writeToRoot = ['chainId'];
+      const writeToBody = [
+        'title',
+        'reference_url',
+        'twitter_handle_1',
+        'twitter_handle_2',
+        'github_project_url',
+        'eth_payout_address',
+        'grant_type',
+        'grant_categories'
+      ];
 
-      // for (const key of writeToRoot) {
-      //   if (this.queryParams[key]) {
-      //     this[key] = this.queryParams[key];
-      //     delete this.queryParams[key];
-      //   }
-      // }
-      // this.form = {
-      //   ...this.form,
-      //   ...this.queryParams
-      // };
+      for (const key of writeToRoot) {
+        if (this.queryParams && this.queryParams.has(key)) {
+          this[key] = this.clean(this.queryParams.get(key));
+        }
+      }
+      for (const key of writeToBody) {
+        if (this.queryParams && this.queryParams.has(key)) {
+          this.form[key] = this.clean(this.queryParams.get(key));
+        }
+      }
     }
   });
 }

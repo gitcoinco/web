@@ -9,6 +9,7 @@ class CartData {
   }
 
   static cartContainsGrantWithId(grantId) {
+    grantId = String(grantId);
     const cart = this.loadCart();
     const idList = cart.map(grant => {
       return grant.grant_id;
@@ -123,6 +124,8 @@ class CartData {
   }
 
   static removeIdFromCart(grantId) {
+    grantId = String(grantId);
+
     let cartList = this.loadCart();
 
     const newList = cartList.filter(grant => grant.grant_id !== grantId);

@@ -210,7 +210,7 @@ $(document).ready(async function() {
       bounty.methods.increasePayout(
         bountyId,
         String(bountyAmount + amount),
-        String(amount),
+        String(amount)
       ).send({
         from: account,
         value: String(ethAmount),
