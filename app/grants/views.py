@@ -921,7 +921,7 @@ def grants_by_grant_type(request, grant_type):
             } for collection in allowed_collections.distinct()
         ]
 
-    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now())
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
     # populate active round info
     total_clr_pot = None
