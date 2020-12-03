@@ -22,7 +22,7 @@ Vue.component('grantsCartEthereumZksync', {
         showChangeToken: false, // true to show dropdown to let user select feeTokenSymbol
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
-        contractAddres: '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet contract address
+        contractAddress: '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet contract address
       },
 
       cart: {
@@ -182,7 +182,7 @@ Vue.component('grantsCartEthereumZksync', {
         _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
         await appCart.$refs.cart.postToDatabase(
           txHashes, // array of transaction hashes for each contribution
-          this.zksync.contractAddres, // we use the zkSync mainnet contract address to represent zkSync deposits
+          this.zksync.contractAddress, // we use the zkSync mainnet contract address to represent zkSync deposits
           this.user.address
         );
         this.zksync.checkoutStatus = 'complete'; // allows user to freely close tab now

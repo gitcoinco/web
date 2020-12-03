@@ -863,6 +863,13 @@ Vue.component('grants-cart', {
         txHashes = new Array(donations.length).fill(txHash[0]);
       }
 
+      // TODO update celery task to manage this so we can remove these two server requests
+      // Update the JSON store with the transaction hashes. We append a timestamp to ensure it
+      // doesn't get overwritten by a subsequent checkout
+      await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save', txHashes);
+      // Once that's done, we can delete the old JSON store
+      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+
       // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
       // a zkSync checkout
       const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
@@ -1074,14 +1081,34 @@ Vue.component('grants-cart', {
 
     // For the provider address, an action of `save` will backup the user's Ethereum cart data with
     // a JSON store before checkout, and validate that it was saved. An action of `delete` will
-    // delete that JSON store
-    async manageEthereumCartJSONStore(userAddress, action) {
+    // delete that JSON store. The txHashes input must be undefined if no hashes are available, or
+    // or an array with the tx hash for each donation in this.donationInputs
+    async manageEthereumCartJSONStore(userAddress, action, txHashes = undefined) {
       if (action !== 'save' && action !== 'delete') {
         throw new Error("JSON Store action must be 'save' or 'delete'");
       }
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const url = 'manage-ethereum-cart-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+
+      // Configure data to save
+      let cartData;
+      if (!txHashes) {
+        // No transaction hashes were provided, so just save off the cart data directly
+        cartData = this.donationInputs;
+      } else {
+        // Add transaction hashes to each donation input object
+        if (txHashes.length !== this.donationInputs.length) {
+          throw new Error('Invalid length of transaction hashes array');
+        }
+        cartData = this.donationInputs.map((donation, index) => {
+          return {
+            ...donation,
+            txHash: txHashes[index]
+          }
+        })
+      }
+
 
       // Send request
       const payload = {
@@ -1090,7 +1117,7 @@ Vue.component('grants-cart', {
         body: new URLSearchParams({
           action,
           csrfmiddlewaretoken,
-          ethereum_cart_data: action === 'save' ? JSON.stringify(this.grantsByTenant) : null,
+          ethereum_cart_data: action === 'save' ? JSON.stringify(cartData) : null,
           user_address: userAddress
         })
       };
