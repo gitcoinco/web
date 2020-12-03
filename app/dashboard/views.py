@@ -3322,7 +3322,7 @@ async def verify_user_duniter(request, handle):
             public_key_duniter = next(iter(position)).get('_id', {})
 
             # checks uid equals gitcoin-username
-            client = DuniterClient(BMAS_ENDPOINT)
+            client = Client(BMAS_ENDPOINT)
             same_uid_url = await client(bma.wot.lookup, public_key_duniter)
             res_uid = requests.get(same_uid_url)
             uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')

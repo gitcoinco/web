@@ -18,57 +18,145 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+import asyncio
 from datetime import date, datetime, timedelta
 from unittest import TestCase
+
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils import timezone
 
+from app.settings import (
+    ES_USER_ENDPOINT, BMAS_ENDPOINT, ES_CORE_ENDPOINT
+)
+
 import requests
 from dashboard.models import Profile
 from dashboard.views import verify_user_duniter
 
+from duniterpy.api.client import Client, RESPONSE_AIOHTTP
+from duniterpy.api import bma
 
-# class VerifyUserDuniterTests(TestCase):
-    # def test_get_search_user_duniter(self):
-    #     gitcoin_handle = "developerfred"
-    #     url = 'https://g1.data.duniter.fr/user/profile/_search?q=' + gitcoin_handle
+CERTIFICATIONS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "pubkey": {"type": "string"},
+        "uid": {"type": "string"},
+        "isMember": {"type": "boolean"},
+        "certifications": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "pubkey": {"type": "string"},
+                    "uid": {"type": "string"},
+                    "cert_time": {
+                        "type": "object",
+                        "properties": {
+                            "block": {"type": "number"},
+                            "medianTime": {"type": "number"},
+                        },
+                        "required": ["block", "medianTime"],
+                    },
+                    "sigDate": {"type": "string"},
+                    "written": {
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "number": {"type": "number"},
+                                    "hash": {"type": "string"},
+                                },
+                                "required": ["number", "hash"],
+                            },
+                            {"type": "null"},
+                        ]
+                    },
+                    "isMember": {"type": "boolean"},
+                    "wasMember": {"type": "boolean"},
+                    "signature": {"type": "string"},
+                },
+                "required": [
+                    "pubkey",
+                    "uid",
+                    "cert_time",
+                    "sigDate",
+                    "written",
+                    "wasMember",
+                    "isMember",
+                    "signature",
+                ],
+            },
+        },
+    },
+    "required": ["pubkey", "uid", "isMember", "certifications"],
+}
 
-    #     response = requests.get(url)
+def get_certification_document(
+    current_block: dict, self_cert_document: Identity, from_pubkey: str
+) -> Certification:
+    """
+    Create and return a Certification document
+    :param current_block: Current block data
+    :param self_cert_document: Identity document
+    :param from_pubkey: Pubkey of the certifier
+    :rtype: Certification
+    """
+    # construct Certification Document
+    return Certification(
+        version=10,
+        currency=current_block["currency"],
+        pubkey_from=from_pubkey,
+        identity=self_cert_document,
+        timestamp=BlockUID(current_block["number"], current_block["hash"]),
+        signature="",
+    )
 
-    #     self.assertTrue(response.ok)
+class VerifyUserDuniterTests(TestCase):
+    async def test_get_search_user_duniter(self):
+        client = Client(ES_USER_ENDPOINT)
+
+        gitcoin_handle = "developerfred"
+        search_user_duniter_url = await client.get("user/profile/_search?q={0}".format(gitcoin_handle))
+
+        response = requests.get(search_user_duniter_url)
+
+        self.assertTrue(response.ok)
 
 
-    # def test_get_public_key_duniter(self):
-    #     gitcoin_handle = "developerfred"
-    #     url = "https://g1.data.duniter.fr/user/profile/_search?q=" + gitcoin_handle
-    #     pub_res = "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr"
+    async def test_get_public_key_duniter(self):
+        client = Client(ES_USER_ENDPOINT)
+        gitcoin_handle = "developerfred"
+        search_user_duniter_url = await client.get("user/profile/_search?q={0}".format(gitcoin_handle))
+        pub_res = "9PDu1zkECAKZd5uULKZz6ecAeHuv5FtnzCruhBM4a5cr"
 
-    #     response = requests.get(url)
-    #     duniter_user_response = response.json()
-    #     position = duniter_user_response.get('hits', {}).get('hits', {})
-    #     public_key_duniter = next(iter(position)).get('_id', {})
+        response = requests.get(search_user_duniter_url)
+        duniter_user_response = response.json()
+        position = duniter_user_response.get('hits', {}).get('hits', {})
+        public_key_duniter = next(iter(position)).get('_id', {})
 
-    #     self.assertEqual(public_key_duniter, pub_res)
+        self.assertEqual(public_key_duniter, pub_res)
 
-    # def test_same_uid_duniter(self):
-    #     gitcoin_handle = "leomatteudi"
-    #     public_key_duniter = "13XfrqY92tTCDbtu2jFAHsgNbZ9Ne2r5Ts1VGhSCrvUb"
-    #     url = "https://g1.duniter.org/wot/lookup/" + public_key_duniter
+    async def test_same_uid_duniter(self):
+        client = Client(BMAS_ENDPOINT)
+        gitcoin_handle = "leomatteudi"
+        public_key_duniter = "13XfrqY92tTCDbtu2jFAHsgNbZ9Ne2r5Ts1VGhSCrvUb"
 
-    #     response = requests.get(url)
-    #     duniter_lockup_response = response.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
+        lookup_data = await client(bma.wot.lookup, public_key_duniter)
 
-    #     self.assertEqual(duniter_lockup_response, gitcoin_handle)
+        response = requests.get(lookup_data)
+        duniter_lockup_response = response.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
 
-    # def test_is_duniter_member(self):
-    #     public_key_duniter = "13XfrqY92tTCDbtu2jFAHsgNbZ9Ne2r5Ts1VGhSCrvUb"
-    #     url = 'https://g1.duniter.org/wot/certified-by/' + public_key_duniter
+        self.assertEqual(duniter_lockup_response, gitcoin_handle)
 
-    #     response = requests.get(url)
-    #     member_data = response.json()
-    #     is_verified = member_data.get('isMember', {})
+    async def test_is_duniter_member(self):
+        client = Client(BMAS_ENDPOINT)
+        public_key_duniter = "13XfrqY92tTCDbtu2jFAHsgNbZ9Ne2r5Ts1VGhSCrvUb"
+        cert = await get_certification_document(client, public_key_duniter)
+        response = requests.get(cert)
+        member_data = response.json()
+        is_verified = member_data.get('isMember', {})
 
-    #     self.assertTrue(is_verified)
+        self.assertTrue(is_verified)
