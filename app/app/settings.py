@@ -898,3 +898,6 @@ BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
 # Idena
 IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
 IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min
+
+IDENA_RPC_NODE=env('IDENA_RPC_NODE', default=None)
+IDENA_API_KEY=env('IDENA_API_KEY', default='')

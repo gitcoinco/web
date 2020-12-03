@@ -140,3 +140,18 @@ Once you have access to your project secrets, you can enable Sentry error tracki
 ```shell
 SENTRY_DSN=xxx
 ```
+
+## Setup Idena Node Integration
+
+By enabling this integration, the app will use Idena Node to retreive data instead of [Idena API](https://api.idena.io/).
+
+Check this link to run a Idena node: [Idena Node Setup](https://idena.site/faq_tutorials.php#faq47)
+
+Update the `web/app/app/.env` file to include the values of `Node address` and `Node api key`:
+
+```shell
+IDENA_RPC_NODE=http://localhost:9009
+IDENA_API_KEY=123
+```
+
+Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local environment.

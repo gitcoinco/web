@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from uuid import uuid4
 
@@ -5,11 +6,13 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
+import idena
 import requests
-from app.services import RedisService
 from eth_account import Account
 from eth_utils import decode_hex, keccak
 from pytz import UTC
+
+from app.services import RedisService
 
 IDENA_TOKEN_KEY_PREFIX = 'idena_token'
 IDENA_NONCE_KEY_PREFIX = 'idena_nonce'
@@ -87,11 +90,18 @@ def next_validation_time():
     value = (redis.get(key) or b'').decode('utf-8')
 
     if not value:
-        url = 'https://api.idena.io/api/Epoch/Last'
-        r = requests.get(url).json()
-        value = r['result']['validationTime']
-        idena_validation_time = parse_datetime_from_iso(value)
+        if settings.IDENA_RPC_NODE:
+            try:
+                value = idena.client.dna.get_epoch().nextValidation
+            except idena.exceptions.IdenaException as ex:
+                logging.warn('Idena node error: {ex}')
 
+        if value is None:
+            url = 'https://api.idena.io/api/Epoch/Last'
+            r = requests.get(url).json()
+            value = r['result']['validationTime']
+        
+        idena_validation_time = parse_datetime_from_iso(value)
         expiry = int(idena_validation_time.timestamp() - datetime.utcnow().timestamp()) # cache until next epoch
         redis.set(key, value, expiry)
     else:
@@ -100,12 +110,21 @@ def next_validation_time():
     return idena_validation_time
 
 def get_idena_status(address):
-    url = f'https://api.idena.io/api/Identity/{address}'
-    r = requests.get(url).json()
+    status =  None
 
-    if 'error' in r:
-        status = 'Not validated'
-    else:
-        status = r['result']['state']
+    if settings.IDENA_RPC_NODE:
+        try:
+            status = idena.client.dna.get_identity(address).state
+        except idena.exceptions.IdenaException as ex:
+            logging.warn('Idena node error: {ex}')
 
-    return status
+    if status is None: 
+        url = f'https://api.idena.io/api/Identity/{address}'
+        r = requests.get(url).json()
+
+        if 'error' in r:
+            status = 'Not validated'
+        else:
+            status = r['result']['state']
+
+    return status or 'Not validated'
