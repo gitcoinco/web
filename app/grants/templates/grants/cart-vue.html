@@ -383,7 +383,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <div v-if="zkSyncUnsupportedTokens.length > 0">
                                 zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
                               </div>
-                              <div v-else>
+                              <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
                                 Save
                                 <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
                                 on gas costs with [[ checkoutRecommendation.name ]]
@@ -406,7 +406,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
                                       :disabled="cart.unsupportedTokens.length > 0"
                                       id='js-zkSyncfundGrants-button'
-                                      v-b-tooltip.hover.top="'zkSync is a scaling and privacy engine for Ethereum. Its current functionality scope includes low gas transfers of ETH and ERC20 tokens in the Ethereum network (Cheaper option).'"
+                                      v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. Its enables extremely low cost transfers of ETH and ERC20 tokens in the Ethereum network (Cheaper option).'"
                                     >
                                       Checkout with zkSync
                                     </button>
