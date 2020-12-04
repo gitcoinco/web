@@ -1,0 +1,19 @@
+{
+  "symbol": "PERP",
+  "address": "0xbC396689893D065F41bc2C6EcbeE5e0085233447",
+  "overview":{
+        "en": "Perpetual Protocol is a decentralized perpetual contract protocol for every asset, made possible by a Virtual Automated Market Maker(vAMM). PERP holders can stake their tokens in exchange for staking rewards in PERP and a part of the transaction fees in USDC.",
+        "zh": "永续协议是一个使用虚拟化自动做市商(vAMM)的去中心化永续合约平台，其最大的特点是能够支持任何资产。用户可以随时与 vAMM 交易，最高使用 20 倍槓杆，无需等待交易对手；而 PERP 的持有人可以透过质押代币来收取平台手续费分成并获得质押奖励。"
+  },
+  "email": "help@perp.fi",
+  "website": "https://perp.fi",
+  "whitepaper": "https://docs.perp.fi/library/litepaper",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/perpprotocol",
+    "telegram": " https://t.me/perpetualprotocol",
+    "github": "https://github.com/perpetual-protocol",
+    "medium": "https://medium.com/@perpetualprotocol",
+    "discord": "https://discord.gg/mYKKRTn"
+  }
+}
