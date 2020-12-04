@@ -116,6 +116,11 @@ def create_grant_active_clr_mapping():
                 grant.in_active_clrs.add(clr_round)
                 grant.save()
 
+def create_hack_event_cache():
+    from dashboard.models import HackathonEvent
+    for he in HackathonEvent.objects.all():
+        he.save()
+        
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
@@ -393,6 +398,7 @@ class Command(BaseCommand):
         operations.append(create_grant_active_clr_mapping)
         if not settings.DEBUG:
             operations.append(create_results_cache)
+            operations.append(create_hack_event_cache)
             operations.append(create_hidden_profiles_cache)
             operations.append(create_tribes_cache)
             operations.append(create_activity_cache)

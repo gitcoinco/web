@@ -5022,6 +5022,7 @@ class HackathonEvent(SuperModel):
     display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
     calendar_id = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -5107,6 +5108,22 @@ class HackathonEvent(SuperModel):
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
+
+    hackathon_event = instance
+    sponsors = hackathon_event.sponsor_profiles.all()
+    orgs = []
+    for sponsor_profile in sponsors:
+        org = {
+            'handle': sponsor_profile.handle,
+            'display_name': sponsor_profile.name,
+            'avatar_url': sponsor_profile.avatar_url,
+            'org_name': sponsor_profile.handle,
+            'follower_count': sponsor_profile.tribe_members.all().count(),
+            'bounty_count': sponsor_profile.bounties.count()
+        }
+        orgs.append(org)
+    instance.metadata['orgs'] = orgs
+
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
