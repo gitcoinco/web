@@ -150,7 +150,6 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
-    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -867,18 +866,6 @@ if PTOKEN_ABI_PATH:
 if PTOKEN_FACTORY_ABI_PATH:
     with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
         PTOKEN_FACTORY_ABI = json.load(f)
-
-HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
-        'INDEX_NAME': 'haystack',
-    },
-}
-# Update Search index in realtime (using models.db.signals)
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
