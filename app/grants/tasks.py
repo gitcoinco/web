@@ -36,7 +36,10 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
-
+    if instance.in_active_clrs.exists():
+        gclr = instance.in_active_clrs.order_by('start_date').first()
+        round_start_date = gclr.first().start_date
+        
     # grant t shirt sizing
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
     
