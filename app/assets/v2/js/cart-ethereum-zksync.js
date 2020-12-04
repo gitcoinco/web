@@ -52,7 +52,7 @@ Vue.component('grantsCartEthereumZksync', {
     });
 
     // Update zkSync checkout connection, state, and data frontend needs when wallet connection changes
-    window.addEventListener('dataWalletReady', async (e) => {
+    window.addEventListener('dataWalletReady', async(e) => {
       await this.setupZkSync();
       await this.onChangeHandler(this.donationInputs);
     });

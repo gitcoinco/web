@@ -300,7 +300,7 @@ Vue.mixin({
     },
     tweetVerification() {
       let vm = this;
-      const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`;
+      const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(vm.verification_tweet)}%20${encodeURIComponent(vm.user_code)}`;
 
       window.open(tweetContent, '_blank');
     },
