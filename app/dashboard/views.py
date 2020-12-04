@@ -901,7 +901,8 @@ def user_lookup(request):
 def users_directory_elastic(request):
     """Handle displaying users directory page."""
     from retail.utils import programming_languages, programming_languages_full
-
+    messages.info(request, 'The Andrew-era user directory has been deprecated, please contact the #product-data channel if you need something')
+    return redirect('/users')
     keywords = programming_languages + programming_languages_full
 
     params = {
