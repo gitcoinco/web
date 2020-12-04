@@ -41,14 +41,14 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
     
     # contributor counts
-    do_calc = (time.time() - (900)) > instance.performance_metadata.get('last_calc_time_contributor_counts', 0)
+    do_calc = (time.time() - (900)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
     if do_calc:
         print("last_calc_time_contributor_counts")
         instance.contribution_count = instance.get_contribution_count
         instance.contributor_count = instance.get_contributor_count()
         instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
         instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
-        instance.performance_metadata['last_calc_time_contributor_counts'] = time.time()
+        instance.metadata['last_calc_time_contributor_counts'] = time.time()
 
     # cheap calcs
     print(lineno(), round(time.time(), 2))
@@ -58,7 +58,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # sybil amount + amount received amount
     print(lineno(), round(time.time(), 2))
-    do_calc = (time.time() - (400 * grant_calc_buffer)) > instance.performance_metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
+    do_calc = (time.time() - (400 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
     if do_calc:
         print("last_calc_time_sybil_and_contrib_amounts")
         instance.amount_received_in_round = 0
@@ -77,7 +77,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
                 if subscription.num_tx_approved != 1:
                     instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-        instance.performance_metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
+        instance.metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
 
     from django.contrib.contenttypes.models import ContentType
 
@@ -126,7 +126,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     # save related addresses
     # related = same contirbutor, same cart
     print(lineno(), round(time.time(), 2))
-    do_calc = (time.time() - (3600 * 24)) > instance.performance_metadata.get('last_calc_time_related', 0)
+    do_calc = (time.time() - (3600 * 24)) > instance.metadata.get('last_calc_time_related', 0)
     if do_calc:
         print("last_calc_time_related")
         related = {}
@@ -141,7 +141,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     related[key] = 0
                 related[key] += 1
         instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
-        instance.performance_metadata['last_calc_time_related'] = time.time()
+        instance.metadata['last_calc_time_related'] = time.time()
     print(lineno(), round(time.time(), 2))
 
     instance.calc_clr_round()
