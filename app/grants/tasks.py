@@ -1,11 +1,12 @@
 import datetime as dt
+import inspect
 import math
+import time
 from decimal import Decimal
 
 from django.conf import settings
 from django.utils.text import slugify
 
-import time
 import pytz
 from app.services import RedisService
 from celery import app, group
@@ -23,7 +24,6 @@ redis = RedisService().redis
 
 CLR_START_DATE = dt.datetime(2020, 12, 1, 15, 0) # TODO:SELF-SERVICE
 
-import inspect
 
 def lineno():
     """Returns the current line number in our program."""
