@@ -307,6 +307,7 @@ class Grant(SuperModel):
         default='0x0',
         null=True,
         blank=True,
+        db_index=True,
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
     zcash_payout_address = models.CharField(
