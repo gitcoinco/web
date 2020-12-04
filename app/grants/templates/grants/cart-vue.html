@@ -406,6 +406,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
                                       :disabled="cart.unsupportedTokens.length > 0"
                                       id='js-zkSyncfundGrants-button'
+                                      v-b-tooltip.hover.top="'zkSync is a scaling and privacy engine for Ethereum. Its current functionality scope includes low gas transfers of ETH and ERC20 tokens in the Ethereum network (Cheaper option).'"
                                     >
                                       Checkout with zkSync
                                     </button>
@@ -498,7 +499,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 </div>
                               <div class="col-auto">
-                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing">
+                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Tranditional Ethereum easy payouts with your connected wallet funds (Easiest option).'">
                                   Standard Checkout
                                 </button>
                               </div>
