@@ -1093,6 +1093,7 @@ Vue.component('grants-cart', {
 
       // Configure data to save
       let cartData;
+
       if (!txHashes) {
         // No transaction hashes were provided, so just save off the cart data directly
         cartData = this.donationInputs;
@@ -1105,8 +1106,8 @@ Vue.component('grants-cart', {
           return {
             ...donation,
             txHash: txHashes[index]
-          }
-        })
+          };
+        });
       }
 
 
