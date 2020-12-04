@@ -1,0 +1,27 @@
+{
+    "symbol": "CSM",
+    "address": "0x2620638EDA99F9e7E902Ea24a285456EE9438861",
+    "overview":{
+          "en": "CSM (Crust Storage Market) token is designed for Crust storage market.  The total amount of CSM is 200 million, and will be dropped to community freely. CSM can be used as a ticket to to participate in storage market related CRU drop activities (such as subsequent store-data-to-get-CRU activity), obtain storage market related fee discounts, and get recycled to claim CRU of storage market revenue pool.",
+          "zh": "CSM (Crust Storage Market) 是Crust的存储市场通证。CSM总量共计2亿，会以免费的方式向社区投放。CSM主要服务于存储市场，可被用作凭证参与存储市场相关投放活动（如后续的存储数据获取CRU活动）、获得商户和用户的存储相关费率优惠、以及兑换存储市场CRU收益池。"
+    },
+    "email": "CrustNetwork@gmail.com",
+    "website": "https://crust.network",
+    "whitepaper": "https://crust.network/download/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-30",
+    "initial_price":{
+          "ETH":"0.0 ETH",
+          "USD":"0.0 USD",
+          "BTC":"0.0 BTC"
+    },
+    "links": {
+      "blog": "https://medium.com/crustnetwork/",
+      "twitter": "https://twitter.com/CrustNetwork",
+      "telegram": "https://t.me/CrustNetwork",
+      "reddit": "https://www.reddit.com/r/CrustNetwork/",
+      "github": "https://github.com/crustio",
+      "facebook": "https://www.facebook.com/CrustNetwork/",
+      "medium": "https://medium.com/crustnetwork/"
+    }
+  }
