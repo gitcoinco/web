@@ -5,6 +5,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.utils.text import slugify
 
+import time
 import pytz
 from app.services import RedisService
 from celery import app, group
@@ -22,38 +23,65 @@ redis = RedisService().redis
 
 CLR_START_DATE = dt.datetime(2020, 12, 1, 15, 0) # TODO:SELF-SERVICE
 
+import inspect
+
+def lineno():
+    """Returns the current line number in our program."""
+    return inspect.currentframe().f_back.f_lineno
 
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
+
+    # setup
+    print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
-    instance.contribution_count = instance.get_contribution_count
-    instance.contributor_count = instance.get_contributor_count()
-    instance.slug = slugify(instance.title)[:49]
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
-    instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
-    instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+
+    # grant t shirt sizing
+    grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
+    
+    # contributor counts
+    do_calc = (time.time() - (900)) > instance.performance_metadata.get('last_calc_time_contributor_counts', 0)
+    if do_calc:
+        print("last_calc_time_contributor_counts")
+        instance.contribution_count = instance.get_contribution_count
+        instance.contributor_count = instance.get_contributor_count()
+        instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
+        instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+        instance.performance_metadata['last_calc_time_contributor_counts'] = time.time()
+
+    # cheap calcs
+    print(lineno(), round(time.time(), 2))
+    instance.slug = slugify(instance.title)[:49]
     instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
     instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
 
-    instance.amount_received_in_round = 0
-    instance.amount_received = 0
-    instance.monthly_amount_subscribed = 0
-    instance.sybil_score = 0
-    for subscription in instance.subscriptions.all():
-        value_usdt = subscription.get_converted_amount(False)
-        for contrib in subscription.subscription_contribution.filter(success=True):
-            if value_usdt:
-                instance.amount_received += Decimal(value_usdt)
-                if contrib.created_on > round_start_date:
-                    instance.amount_received_in_round += Decimal(value_usdt)
-                    instance.sybil_score += subscription.contributor_profile.sybil_score
+    # sybil amount + amount received amount
+    print(lineno(), round(time.time(), 2))
+    do_calc = (time.time() - (400 * grant_calc_buffer)) > instance.performance_metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
+    if do_calc:
+        print("last_calc_time_sybil_and_contrib_amounts")
+        instance.amount_received_in_round = 0
+        instance.amount_received = 0
+        instance.monthly_amount_subscribed = 0
+        instance.sybil_score = 0
+        for subscription in instance.subscriptions.all():
+            value_usdt = subscription.get_converted_amount(False)
+            for contrib in subscription.subscription_contribution.filter(success=True):
+                if value_usdt:
+                    instance.amount_received += Decimal(value_usdt)
+                    if contrib.created_on > round_start_date:
+                        instance.amount_received_in_round += Decimal(value_usdt)
+                        instance.sybil_score += subscription.contributor_profile.sybil_score
 
-        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-            if subscription.num_tx_approved != 1:
-                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+            if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
+                if subscription.num_tx_approved != 1:
+                    instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
+        instance.performance_metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
 
     from django.contrib.contenttypes.models import ContentType
 
+    print(lineno(), round(time.time(), 2))
     from search.models import SearchResult
     if instance.pk:
         SearchResult.objects.update_or_create(
@@ -71,6 +99,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
     instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else -1
     max_sybil_score = 5
+    print(lineno(), round(time.time(), 2))
     if instance.sybil_score > max_sybil_score:
         instance.sybil_score = max_sybil_score
     try:
@@ -81,6 +110,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     except Exception as e:
         print(e)
 
+    print(lineno(), round(time.time(), 2))
     # save all subscription comments
     wall_of_love = {}
     forbidden_text = 'created by ingest'
@@ -95,19 +125,27 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # save related addresses
     # related = same contirbutor, same cart
-    related = {}
-    from django.utils import timezone
-    for subscription in instance.subscriptions.all():
-        _from = subscription.created_on - timezone.timedelta(hours=1)
-        _to = subscription.created_on + timezone.timedelta(hours=1)
-        profile = subscription.contributor_profile
-        for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=grant_id):
-            key = _subs.grant.pk
-            if key not in related.keys():
-                related[key] = 0
-            related[key] += 1
-    instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
+    print(lineno(), round(time.time(), 2))
+    do_calc = (time.time() - (3600 * 24)) > instance.performance_metadata.get('last_calc_time_related', 0)
+    if do_calc:
+        print("last_calc_time_related")
+        related = {}
+        from django.utils import timezone
+        for subscription in instance.subscriptions.all():
+            _from = subscription.created_on - timezone.timedelta(hours=1)
+            _to = subscription.created_on + timezone.timedelta(hours=1)
+            profile = subscription.contributor_profile
+            for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=grant_id):
+                key = _subs.grant.pk
+                if key not in related.keys():
+                    related[key] = 0
+                related[key] += 1
+        instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
+        instance.performance_metadata['last_calc_time_related'] = time.time()
+    print(lineno(), round(time.time(), 2))
+
     instance.calc_clr_round()
+    print(lineno(), round(time.time(), 2))
     instance.save()
 
 
