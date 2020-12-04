@@ -486,11 +486,6 @@ class Grant(SuperModel):
     twitter_verified = models.BooleanField(default=False, help_text='The owner grant has verified the twitter account')
     twitter_verified_by = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.SET_NULL, help_text='Team member who verified this grant')
     twitter_verified_at = models.DateTimeField(blank=True, null=True, help_text='At what time and date what verified this grant')
-    performance_metadata = JSONField(
-        default=dict,
-        blank=True,
-        help_text=_('performance metadata, for managing site uptime & performance in backend queue systems.  mostly just timestamps to control clock like behaviour to start'),
-    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
