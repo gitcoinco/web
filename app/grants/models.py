@@ -758,7 +758,7 @@ class Grant(SuperModel):
 
     def repr(self, user, build_absolute_uri):
         team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__avatar_url']
+                            fields=['handle', 'url', 'profile__lazy_avatar_url']
                         )
         grant_type = None
         if self.grant_type:
@@ -785,7 +785,7 @@ class Grant(SuperModel):
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
-                    'avatar_url': self.admin_profile.avatar_url
+                    'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
@@ -1959,13 +1959,13 @@ class GrantCollection(SuperModel):
         curators = [{
             'url': curator.url,
             'handle': curator.handle,
-            'avatar_url': curator.avatar_url
+            'avatar_url': curator.lazy_avatar_url
         } for curator in self.curators.all()]
 
         owner = {
             'url': self.profile.url,
             'handle': self.profile.handle,
-            'avatar_url': self.profile.avatar_url
+            'avatar_url': self.profile.lazy_avatar_url
         }
 
         grants = self.cache.get('grants', 0)

@@ -3940,6 +3940,10 @@ class Profile(SuperModel):
         return f"https://github.com/{self.handle}"
 
     @property
+    def lazy_avatar_url(self):
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+
+    @property
     def avatar_url(self):
         if self.admin_override_avatar:
             return self.admin_override_avatar.url
@@ -3956,7 +3960,7 @@ class Profile(SuperModel):
                     return self.active_avatar.avatar_url
                 except Exception as e:
                     logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
-        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+        return self.lazy_avatar_url
 
     @property
     def avatar_url_with_gitcoin_logo(self):
