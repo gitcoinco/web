@@ -26,14 +26,14 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import connection
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from quadraticlands.helpers import get_initial_dist, get_mission_status, wake_the_ESMS
+from quadraticlands.helpers import get_FAQ, get_initial_dist, get_mission_status, wake_the_ESMS
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,8 @@ def base(request, base):
     '''render templates for /quadraticlands/'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
+    if base == 'faq':
+        context.update(get_FAQ(request))
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 def mission_index(request):

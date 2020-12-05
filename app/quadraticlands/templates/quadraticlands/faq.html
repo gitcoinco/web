@@ -23,26 +23,13 @@
 
 
 <!--FAQ-->
-
-
 <section class="column">
-
-	<div class="collapse">
-		<div class="question">How do i get my Tokens?</div>
-		<div class="answer">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed <a href="#">xxxxxxxx</a> voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
-	</div>
-
-	<div class="collapse">
-		<div class="question">I did not get my Tokens!</div>
-		<div class="answer">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</div>
-	</div>
-
-	<div class="collapse">
-		<div class="question">What i can do with GTC Tokens?</div>
-		<div class="answer">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
-	</div>		
-
-
+	{% for key, value in FAQ.items %}
+		<div class="collapse">
+			<div class="question">{{ value.question }} </div>
+			<div class="answer">{{ value.answer }}</div>
+		</div>
+	{% endfor %}
 </section>
 
 {% endblock %}
