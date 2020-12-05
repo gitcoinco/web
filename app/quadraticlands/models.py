@@ -23,6 +23,17 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class QuadLandsFAQ(models.Model):
+    '''Table for storing quadlands FAQ items'''
+    position = models.IntegerField(blank=False, unique=True)
+    created_on = models.DateTimeField(auto_now=True)
+    question = models.TextField(default='', blank=True)
+    answer = models.TextField(default='', blank=True)
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.question}'
+
+
 class Uint256Field(models.DecimalField):
     description = _("Ethereum uint256 number")
     '''
