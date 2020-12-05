@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 *********
-CONTROLLER LOGIC 4 Quadratic Lands --)> 
+CONTROLLER LOGIC 4 Quadratic Lands Initial Distribution--)> 
 *********
 """
 
@@ -40,17 +40,40 @@ from django.views.decorators.http import require_http_methods
 import requests
 from dashboard.models import Profile
 from eth_utils import is_address, is_checksum_address, to_checksum_address
-from quadraticlands.models import InitialTokenDistribution, MissionStatus
+from quadraticlands.models import InitialTokenDistribution, MissionStatus, QuadLandsFAQ
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
+
+def get_FAQ(request):
+    '''Get FAQ objects from the db and bundle them up to be added to faq context'''
+    faq_dict = {}
+    full_faq = {}
+    item = {}
+
+    try:
+        faq = QuadLandsFAQ.objects.all()
+    except Exception as e:
+        logger.info(f'QuadLands - There was an issue getting FAQ DB object - {e}')
+        faq = False
+    
+    for faq_item in faq:
+        item = {
+            'question' : faq_item.question,
+            'answer' : faq_item.answer
+        }
+        faq_dict[str(faq_item.position)] = item 
+        
+    full_faq['FAQ'] = faq_dict
+    
+    return full_faq
 
 def get_profile_from_username(request):
     '''Return profile object for a given request'''
     try:  
         profile = Profile.objects.get(handle=request.user.username)
     except Exception as e:
-        logger.info(f'QuadLands - There was an issue getting user profile object!')
+        logger.info(f'QuadLands - There was an issue getting user profile object - {e}')
         profile = False 
     return profile 
 
