@@ -1,0 +1,17 @@
+{
+  "symbol": "FOMP",
+  "address": "0x05385abD2a95a8cd9B696F738aed73f1AFbc12E0",
+  "overview":{
+        "en": "Fompound is committed to building a decentralized financial aggregator in the field of IPFS with block chain technology, and invests in the field of IPFS including but not limited to computing power provision.The initiator will use Defi impoundment and liquid mining to generate the rights and interests of the platform and control Fomp. Through investment from FOM-A to FOM-J in stages and in batches, it will generate polymerization benefits for Fomp and thus enhance the project value of Fompound.",
+        "zh": "Fompound是致力于用区块链技术打造在IPFS领域的去中心化金融聚合器，对IPFS领域包括但不限于算力提供等方式进行投资。该聚合器将使用Defi质押加流动性挖矿的方式产生平台权益及治理代币Fomp，通过FOM-A至FOM-J分期分批的投资，对Fomp产生聚合效益，从而提升Fompound的项目价值。"
+  },
+  "email": "info@fompound.com",
+  "website": "https://fompound.com/",
+  "whitepaper": "https://fompound.com/Fompound.pdf",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2020-10-15",
+  "links": {
+    "twitter": "https://twitter.com/Fompound1",
+    "github": "https://github.com/Fompound"
+  }
+}
