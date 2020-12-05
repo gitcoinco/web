@@ -24,10 +24,10 @@
 
 <!--FAQ-->
 <section class="column">
-	{% for key, value in FAQ.items %}
+	{% for key, faq in FAQ.items %}
 		<div class="collapse">
-			<div class="question">{{ value.question }} </div>
-			<div class="answer">{{ value.answer }}</div>
+			<div class="question">{{ faq.question }} </div>
+			<div class="answer">{{ faq.answer }}</div>
 		</div>
 	{% endfor %}
 </section>
