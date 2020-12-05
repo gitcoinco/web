@@ -62,10 +62,6 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
-        <a class="dropdown-item" href="{% url "dashboard" %}">
-          <i class="fas fa-tachometer-alt"></i>
-          {% trans "Dashboard" %}
-        </a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url "new_funding" %}">
           <i class="fab fa-ethereum"></i>
@@ -88,9 +84,9 @@
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
         </a>
-        <a class="dropdown-item" href="/wiki">
-          <i class="fas fa-question-circle"></i>
-          {% trans "Wiki" %}
+        <a class="dropdown-item" href="{% url "dashboard" %}">
+          <i class="fas fa-tachometer-alt"></i>
+          {% trans "My Dashboard" %}
         </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
