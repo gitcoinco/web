@@ -857,7 +857,12 @@ def grants_by_grant_type(request, grant_type):
     _grants = None
     bg, mid_back, bottom_back, bg_size, bg_color = get_bg(grant_type)
     show_past_clr = False
+    all_grant_types = GrantType.objects.all()
 
+    all_styles = {}
+    for _gtype in all_grant_types:
+        bg, mid_back, bottom_back, bg_size, bg_color = get_bg(_gtype)
+        all_styles[_gtype.name] = dict(bg=bg, mid_back=mid_back, bottom_back=bottom_back, bg_size=bg_size, bg_color=bg_color)
     sort_by_index = None
 
     grant_amount = 0
@@ -983,6 +988,7 @@ def grants_by_grant_type(request, grant_type):
         'avatar_width': 1953,
         'grants': grants,
         'what': what,
+        'all_styles': all_styles,
         'can_pin': can_pin(request, what),
         'pinned': pinned,
         'target': f'/activity?what=all_grants',
