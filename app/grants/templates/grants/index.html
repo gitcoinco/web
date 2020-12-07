@@ -172,12 +172,17 @@ along with this program. If not, see
       {% endif %}
       document.all_type_styles = {{ all_styles|safe }}
       
+      {% if grant_bg %}
+        document.current_style = {
+          banner_image: "{{ grant_bg.banner_image }}"
+        }
+      {% else %}
         document.current_style = {
           bg: '/static/v2/images/bg/{{styles.bg}}',
           size: "{{styles.bg_size}}",
           color: "{{styles.bg_color}}"
         }
-    
+      {% endif %}
 
     </script>
     {% include 'shared/activity_scripts.html' %}

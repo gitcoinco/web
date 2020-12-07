@@ -53,7 +53,7 @@ $(document).ready(() => {
 
   toggleStyle = function (style) {
 
-    let banner = `url("${style.banner_image || style.bg }") center top / ${style.size} ${style.color}  no-repeat}` // center no-repeat ${style.bg ? 'top ' + style.size : '' }`
+    let banner = `url("${style.banner_image || style.bg }") center no-repeat` // center no-repeat ${style.bg ? 'top ' + style.size : '' }`
     $('#grant-hero-img').css("background", banner)
 
     console.log(banner)
