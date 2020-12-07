@@ -951,6 +951,9 @@ Vue.component('grants-cart', {
         saveSubscriptionPayload.token_symbol.push(tokenName);
       } // end for each donation
 
+      // to allow , within comments
+      saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
+
       // Configure request parameters
       const url = '/grants/bulk-fund';
       const headers = {
