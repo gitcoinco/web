@@ -48,36 +48,6 @@ document.addEventListener("DOMContentLoaded",function(){
 	});
 
 
-
-
-	// COLLAPSE
-	//
-	// find all classes .collapse 
-	// 
-	// click div.question
-	// toggle visibility on div.awnser
-
-	const collapse = document.querySelectorAll(".collapse");
-
-	collapse.forEach(item => {
-
-		// on load check if any hash in collapsables to open directly
-		if(window.location.hash) {
-		  id = window.location.hash.replace('#','')
-		  let collapsed = document.getElementById(id);
-		  collapsed.classList.add("visible")
-		}
-
-		item.addEventListener("click", () => {
-			collapse.forEach(item => { item.classList.remove("visible") }) //reset all to invis 
-			item.classList.add("visible") // set current visible
-			document.getElementById(item.id).scrollIntoView({behavior: 'smooth'})
-			history.pushState (null, null, "#"+item.id) // update history
-		});
-
-	});
-
-
 });
 
 

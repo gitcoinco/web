@@ -23,14 +23,25 @@
 
 
 <!--FAQ-->
-<section class="column">
+<section class="faq column">
+
 	{% for key, faq in FAQ.items %}
-		<div class="collapse" id="{{ forloop.counter }}">
-			<div class="question"><span>#{{ forloop.counter }}</span>{{ faq.question }} </div>
-			<div class="answer">{{ faq.answer | safe }}</div>
-		</div>
+
+
+		<article id="{{ forloop.counter }}">
+			<div class="q">
+				<a href="#{{ forloop.counter }}">
+					<span>#{{ forloop.counter }}</span>{{ faq.question }}</div>
+				</a>
+			<div class="a">{{ faq.answer | safe }}</div>
+		</article>
+	
+
 	{% endfor %}
+
 </section>
+
+
 
 
 

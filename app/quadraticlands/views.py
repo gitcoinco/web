@@ -70,6 +70,7 @@ def mission_base(request, mission_name):
         return redirect('/quadraticlands/mission', context)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
 
+@login_required
 def dashboard_index(request):
     '''render quadraticlands/dashboard/index.html'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
