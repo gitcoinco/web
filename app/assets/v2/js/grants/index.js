@@ -59,7 +59,7 @@ $(document).ready(() => {
       banner = `url("${ style.banner_image }") center  no-repeat`
     }
     $('#grant-hero-img').css("background", banner)
-
+    $("#grant-background-image-mount-point").css("background-image", style.background_image)
     console.log("Bazinga", style, banner)
     /**
       style="{% if grant_bg %} background: url({{ grant_bg.banner_image }}) center  no-repeat;
