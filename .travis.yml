@@ -23,9 +23,10 @@ jobs:
   include:
     # Lint and test the repository.
     - stage: lint-test
+      before_install:
+        - nvm install "14"
       before_script:
         - psql -c 'create database testdb;' -U postgres
-        - nvm use 14
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
