@@ -59,14 +59,9 @@ $(document).ready(() => {
       banner = `url("${ style.banner_image }") center  no-repeat`
     }
     $('#grant-hero-img').css("background", banner)
-    $("#grant-background-image-mount-point").css("background-image", style.background_image)
-    console.log("Bazinga", style, banner)
-    /**
-      style="{% if grant_bg %} background: url({{ grant_bg.banner_image }}) center  no-repeat;
-      {% else %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
-    * 
-     */
-
+    if (style.background_image) {
+      $("#grant-background-image-mount-point").css("background-image", style.background_image)
+    }
   }
   toggleStyle(document.current_style)
 
@@ -319,9 +314,11 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
-        console.log({filters})
+        let current_style
         if (filters.type !== null && filters.type !== undefined) {
-          toggleStyle(document.all_type_styles[filters.type])
+          if (!current_style) {
+            current_style = document.all_type_styles[filters.type]
+          }
           this.current_type = filters.type;
           if (this.current_type === 'collections') {
             this.collection_id = null;
@@ -355,10 +352,15 @@ if (document.getElementById('grants-showcase')) {
         if (filters.type === 'collections') {
           this.collectionsPage = 1;
         }
-
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
+        const regex_style = document.all_routing_policies.find(policy => {
+          console.log(policy.url_pattern, window.location.href,  new RegExp(policy.url_pattern).test(window.location.href))
+          return new RegExp(policy.url_pattern).test(window.location.href)
+        })
+        toggleStyle(regex_style || current_style)
+
       },
       clearSingleCollection: function() {
         this.grants = [];
