@@ -100,6 +100,6 @@ twilio
 django-queryset-csv
 django-proxy==1.2.1
 ed25519
-tweepy
+tweepy==3.9.0
 oogway==0.7.0
 icalendar==4.0.7
