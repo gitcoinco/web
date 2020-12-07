@@ -2,7 +2,7 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
-
+let toggleStyle
 $(document).ready(() => {
   $('#sort_option').select2({
     minimumResultsForSearch: Infinity
@@ -51,6 +51,21 @@ $(document).ready(() => {
 
   });
 
+  toggleStyle = function (style) {
+
+    let banner = `url("${style.banner_image || style.bg }") center top / ${style.size} ${style.color}  no-repeat}` // center no-repeat ${style.bg ? 'top ' + style.size : '' }`
+    $('#grant-hero-img').css("background", banner)
+
+    console.log(banner)
+    /**
+      style="{% if grant_bg %} background: url({{ grant_bg.banner_image }}) center  no-repeat;
+      {% else %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
+    * 
+     */
+
+  }
+  toggleStyle(document.current_style)
+
 });
 
 Vue.component('grant-sidebar', {
@@ -89,6 +104,8 @@ Vue.component('grant-sidebar', {
       return window.innerWidth < 576;
     },
     filterLink: function(params) {
+      return this.filter_grants(params);
+
       if (params.type === this.type) {
         this.filter_grants(params);
       } else if (params.type === 'collections') {
@@ -102,7 +119,7 @@ Vue.component('grant-sidebar', {
           collections_query.keyword = params.keyword;
         }
 
-        document.location.href = `/grants/collections?${$.param(collections_query)}`;
+        // document.location.href = `/grants/collections?${$.param(collections_query)}`;
       } else {
         let target = `/grants/${params.type}`;
 
@@ -121,8 +138,8 @@ Vue.component('grant-sidebar', {
             target = `/grants/clr/${this.customer_name}/${this.round_num}/${this.sub_round_slug}?type=${params.type}`;
           }
         }
-
-        document.location.href = target;
+        fetchGrants(this.page)
+        // document.location.href = target;
       }
     },
     searchKeyword: function() {
@@ -298,8 +315,9 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
-
+        console.log({filters})
         if (filters.type !== null && filters.type !== undefined) {
+          toggleStyle(document.all_type_styles[filters.type])
           this.current_type = filters.type;
           if (this.current_type === 'collections') {
             this.collection_id = null;
