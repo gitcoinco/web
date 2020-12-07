@@ -392,6 +392,7 @@ class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
     raw_id_fields = ['owner']
 
+
     def link(self, instance):
         try:
             url = f'/_administration/mesh?type=grant&year={instance.start_date.strftime("%Y")}&month={instance.start_date.strftime("%m")}&day={instance.start_date.strftime("%d")}&to_year={instance.end_date.strftime("%Y")}&to_month={instance.end_date.strftime("%m")}&to_day={instance.end_date.strftime("%d")}&submit=Go'
@@ -400,6 +401,25 @@ class GrantCLRAdmin(admin.ModelAdmin):
             return mark_safe(html)
         except:
             return "N/A"
+
+    def response_change(self, request, obj):
+        if "_clear_cache_grantclr" in request.POST:
+            from perftools.management.commands.create_page_cache import create_grant_type_cache, create_grant_clr_cache, create_grant_category_size_cache, create_grant_active_clr_mapping
+            operations = []
+            operations.append(create_grant_type_cache)
+            operations.append(create_grant_clr_cache)
+            operations.append(create_grant_category_size_cache)
+            operations.append(create_grant_active_clr_mapping)
+            
+            for func in operations:
+                try:
+                    func()
+                except Exception as e:
+                    self.message_user(request, f"Error clearing cache: {e}")
+        
+        self.message_user(request, "cleared grantclr cache")
+        return redirect(obj.admin_url)
+
 
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
