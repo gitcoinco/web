@@ -25,6 +25,7 @@ jobs:
     - stage: lint-test
       before_script:
         - psql -c 'create database testdb;' -U postgres
+        - nvm use 14
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
@@ -42,6 +43,7 @@ jobs:
         # Install libvips dependencies.
         - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
+        - node --version
         - npm install
         - pip install -r requirements/test.txt
         - npm run eslint
