@@ -1137,19 +1137,6 @@
 		"oS": 3,
 		"sct": 0
 		},
-	"/scss/collapse.scss": {
-		"aP": 0,
-		"bl": 0,
-		"dP": 10,
-		"ec": 1,
-		"ft": 4,
-		"ma": 1,
-		"oA": 1,
-		"oAP": "/css/collapse.css",
-		"oF": 0,
-		"oS": 3,
-		"sct": 0
-		},
 	"/scss/core.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1341,6 +1328,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/css/section_dashboard.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/section_faq.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/section_faq.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
