@@ -326,12 +326,15 @@
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="logo">
             Project Logo
           </label>
-
           <div class="form__drop mt-0" id="js-drop">
             <span v-if="!logoPreview">Drag & Drop or Browse</span>
-            <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
+            <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :style="grant.image_css" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
             <b-form-file @change="onFileChange($event)" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
           </div>
+        </div>
+        <div class="col-12 mb-3 d-flex align-items-center">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0 mr-3" for="title">Logo background color</label>
+          <input type="color" v-model="logoBackground" @input="changeColor">
         </div>
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">Title</label>
@@ -513,6 +516,21 @@
   }
   .grant-managment {
     grid-area: grant-managment;
+  }
+  input[type=color]{
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 40px;
+    background: none;
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: solid 1px rgb(58, 58, 58);
+    border-radius: 40px;
   }
   .grid-template-sidebar {
     grid-template-areas:

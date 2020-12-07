@@ -77,6 +77,10 @@ Vue.mixin({
         data.logo = vm.logo;
       }
 
+      if (vm.logoBackground) {
+        data.image_css = `background-color: ${vm.logoBackground};`;
+      }
+
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -90,6 +94,7 @@ Vue.mixin({
             vm.grant.last_update = new Date();
             vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
             vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
+            vm.grant.image_css = `background-color: ${vm.logoBackground};`;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -217,6 +222,10 @@ Vue.mixin({
           }
         });
       });
+    },
+    changeColor() {
+      let vm = this;
+      vm.grant.image_css = `background-color: ${vm.logoBackground};`
     },
     onFileChange(e) {
       let vm = this;
@@ -427,6 +436,7 @@ Vue.component('grant-details', {
       isStaff: isStaff,
       logo: null,
       logoPreview: null,
+      logoBackground: null,
       relatedGrants: [],
       rows: 0,
       perPage: 4,

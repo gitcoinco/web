@@ -1556,6 +1556,10 @@ def grant_edit(request, grant_id):
         if logo:
             grant.logo = logo
 
+        image_css = request.POST.get('image_css', None)
+        if image_css:
+            grant.image_css = image_css
+
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
 
