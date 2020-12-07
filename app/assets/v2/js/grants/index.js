@@ -52,11 +52,15 @@ $(document).ready(() => {
   });
 
   toggleStyle = function (style) {
-
-    let banner = `url("${style.banner_image || style.bg }") center no-repeat` // center no-repeat ${style.bg ? 'top ' + style.size : '' }`
+    let banner
+    if (style.bg) {
+      banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`
+    } else {
+      banner = `url("${ style.banner_image }") center  no-repeat`
+    }
     $('#grant-hero-img').css("background", banner)
 
-    console.log(banner)
+    console.log("Bazinga", style, banner)
     /**
       style="{% if grant_bg %} background: url({{ grant_bg.banner_image }}) center  no-repeat;
       {% else %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
