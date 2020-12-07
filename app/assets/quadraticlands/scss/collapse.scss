@@ -6,12 +6,17 @@
 		padding: 1em 0em;
 		border-bottom: 1px solid var(--smoke);
 		color: var(--white);
+
+	    span{
+	        animation: colorcycle-text 1s ease-in-out infinite;
+	        margin-right: 1em;
+	    }		
 	}
 
 	.answer{
 		display: none;
-		
 		padding: 1em 0em;
+		padding-bottom: 3em;
 	}
 
 
@@ -26,7 +31,12 @@
 		.answer{
 			display: block;
 		}
+		&:hover{
+			cursor: default;
+			.question{
+				color: var(--white);
+			}
+		};
 	}
-
 
 }

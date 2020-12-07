@@ -161,6 +161,18 @@ function render(data){
 			account.innerHTML = '<a href="/quadraticlands/profile/'+col.account+'">'+shortenAdress(col.account)+'</a>'
 			tr.appendChild(account)
 
+
+			// userid
+			var userid = document.createElement("td")
+			userid.innerHTML = col.user_id
+			tr.appendChild(userid)
+
+			// id
+			var id = document.createElement("td")
+			id.innerHTML = col.id
+			tr.appendChild(id)
+
+
 			/*
 			// position
 			var position = document.createElement("td");
