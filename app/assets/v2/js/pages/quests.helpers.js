@@ -48,9 +48,11 @@ var post_state = async(data) => {
   const location = document.location.href.replace('#', '');
   const settings = {
     method: 'POST',
+    cache: 'no-cache',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Answers': JSON.stringify(data),
     },
     body: JSON.stringify(data)
   };

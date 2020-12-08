@@ -13,6 +13,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from json.decoder import JSONDecodeError
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from quests.helpers import (
     get_active_attempt_if_any, get_base_quest_view_params, get_leaderboard, max_ref_depth, process_start, process_win,
@@ -54,7 +55,12 @@ def details(request, quest):
 
     # process form submission
     try:
-        payload = json.loads(request.body)
+        payload = {}
+        try:
+            payload = json.loads(request.body)
+        except JSONDecodeError:
+            payload = json.loads(request.headers['Answers'])
+
         qn = payload.get('question_number')
         can_continue = True
         did_win = False
