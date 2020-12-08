@@ -317,6 +317,18 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The zcash wallet address where subscription funds will be sent.'),
     )
+    celo_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The celo wallet address where subscription funds will be sent.'),
+    )
+    zil_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The zilliqa wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -853,7 +865,9 @@ class Subscription(SuperModel):
 
     TENANT = [
         ('ETH', 'ETH'),
-        ('ZCASH', 'ZCASH')
+        ('ZCASH', 'ZCASH'),
+        ('CELO', 'CELO'),
+        ('ZIL', 'ZIL')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
@@ -1510,7 +1524,9 @@ class Contribution(SuperModel):
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
         ('eth_zksync', 'eth_zksync'),
-        ('zcash_std', 'zcash_std')
+        ('zcash_std', 'zcash_std'),
+        ('celo_std', 'celo_std'),
+        ('zil_std', 'zil_std')
     ]
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))

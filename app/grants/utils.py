@@ -32,7 +32,9 @@ from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.celo import sync_celo_payout
 from grants.sync.zcash import sync_zcash_payout
+from grants.sync.zil import sync_zil_payout
 from perftools.models import JSONStore
 from PIL import Image, ImageDraw, ImageOps
 
@@ -290,3 +292,7 @@ def sync_payout(contribution):
 
     if subscription.tenant == 'ZCASH':
         sync_zcash_payout(contribution)
+    elif subscription.tenant == 'CELO':
+        sync_celo_payout(contribution)
+    elif subscription.tenant == 'ZIL':
+        sync_zil_payout(contribution)

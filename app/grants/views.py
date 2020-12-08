@@ -1695,11 +1695,13 @@ def grant_new(request):
         if not description_rich:
             description_rich = description
 
-        eth_payout_address = request.POST.get('eth_payout_address',
-            request.POST.get('admin_address'))
-        zcash_payout_address = request.POST.get('zcash_payout_address', None)
-        if not eth_payout_address and not zcash_payout_address:
-            response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
+        eth_payout_address = request.POST.get('eth_payout_address', request.POST.get('admin_address'))
+        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
+        celo_payout_address = request.POST.get('celo_payout_address', '0x0')
+        zil_payout_address = request.POST.get('celo_payout_address', '0x0')
+
+        if not eth_payout_address and not zcash_payout_address and not celo_payout_address and not zil_payout_address:
+            response['message'] = 'error: eth_payout_address/zcash_payout_address/celo_payout_address/zil_payout_address is a mandatory parameter'
             return JsonResponse(response)
 
         if zcash_payout_address and not zcash_payout_address.startswith('t'):
@@ -3013,7 +3015,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH']:
+        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO']:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'

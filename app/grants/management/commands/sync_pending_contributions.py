@@ -39,10 +39,12 @@ class Command(BaseCommand):
             tx_cleared = False
         )
 
+        # Auto expire pending transactions
+        timeout_period = timezone.now() - timedelta(minutes=60)
+
+        # PENDING ZCASH TXN
         zcash_pending_contributions = pending_contribution.filter(subscription__tenant='ZCASH')
         if zcash_pending_contributions:
-            # Auto expire pending transactions
-            timeout_period = timezone.now() - timedelta(minutes=60)
 
             contrib_to_be_expired = zcash_pending_contributions.filter(created_on__lt=timeout_period)
             contrib_to_be_expired.update(
@@ -53,4 +55,36 @@ class Command(BaseCommand):
                 update_grant_metadata.delay(contribution.subscription.grant.pk)
 
             for contribution in zcash_pending_contributions.all():
+                sync_payout(contribution)
+
+
+        # PENDING CELO TXN
+        celo_pending_contributions = pending_contribution.filter(subscription__tenant='CELO')
+        if celo_pending_contributions:
+
+            contrib_to_be_expired = celo_pending_contributions.filter(created_on__lt=timeout_period)
+            contrib_to_be_expired.update(
+                success=False,
+                tx_cleared=False
+            )
+            for contribution in contrib_to_be_expired:
+                update_grant_metadata.delay(contribution.subscription.grant.pk)
+
+            for contribution in celo_pending_contributions.all():
+                sync_payout(contribution)
+
+
+        # PENDING ZIL TXN
+        zil_pending_contributions = pending_contribution.filter(subscription__tenant='ZIL')
+        if zil_pending_contributions:
+
+            contrib_to_be_expired = zil_pending_contributions.filter(created_on__lt=timeout_period)
+            contrib_to_be_expired.update(
+                success=False,
+                tx_cleared=False
+            )
+            for contribution in contrib_to_be_expired:
+                update_grant_metadata.delay(contribution.subscription.grant.pk)
+
+            for contribution in zil_pending_contributions.all():
                 sync_payout(contribution)
