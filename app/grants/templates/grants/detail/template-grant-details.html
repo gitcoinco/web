@@ -119,8 +119,7 @@
 
               <div class="gc-text-green font-weight-bold">
                 [[ grant.clr_prediction_curve[0][1] || 0 | round | formatNumber ]]
-                <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
-                <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
+                <span>USD</span>
               </div>
               <div class="gc-text-green">
                 Estimated match
@@ -134,8 +133,7 @@
               </div>
               <div class="gc-text-darkblue font-weight-bold">
                 [[grant.amount_received_in_round || 0 | round | formatNumber ]]
-                <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
-                <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
+                <span>USD</span>
               </div>
               <div class="gc-text-darkblue">
                 [[grant.positive_round_contributor_count]] Contributors
@@ -144,27 +142,32 @@
           </div>
           <!-- [[grant.clr_prediction_curve]] -->
           <div class="arrow_box mb-3">
-            <div v-if="grant.tenants.indexOf('ETH') > -1" class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
-              Your DAI Contribution Goes A Long Way!
-              <img class="" height="24" src="{% static "v2/images/diamonds_high_fiving.gif" %}">
-            </div>
-            <div v-else-if="grant.tenants.indexOf('ZCASH') > -1" class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
-              Your ZEC Contribution Goes A Long Way!
-              <img class="" height="24" src="{% static "v2/images/chains/zcash.svg" %}">
-            </div>
+            <div class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
+              Your Contribution Goes A Long Way!
 
+              <img v-if="grant.tenants.indexOf('ETH') > -1" class="" height="24"
+                src="{% static "v2/images/diamonds_high_fiving.gif" %}"
+              />
+
+              <img v-if="grant.tenants.indexOf('ZCASH') > -1" class="" height="24"
+                src="{% static "v2/images/chains/zcash.svg" %}"
+              />
+
+              <img v-if="grant.tenants.indexOf('CELO') > -1" class="" height="24"
+                src="{% static "v2/images/chains/celo.svg" %}"
+              />
+
+              <img v-if="grant.tenants.indexOf('ZIL') > -1" class="" height="24"
+                src="{% static "v2/images/chains/zillqa.svg" %}"
+              />
+
+            </div>
 
             <div class="d-flex d-flex flex-wrap justify-content-between mt-2 px-3 py-2 font-body">
               <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && index >= 1 && index <= 4" class="d-flex flex-column" style="flex: 1 1 50%;">
                 <!-- 1, 10, 100, 1000 usd matching -->
-                <template v-if="grant.tenants.indexOf('ETH') > -1">
-                  <span>[[prediction[0] ]] DAI contribution</span>
-                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] DAI</b> match</span>
-                </template>
-                <template v-else>
-                  <span>[[prediction[0] ]] USD contribution</span>
-                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] USD</b> match</span>
-                </template>
+                <span>[[prediction[0] ]] USD contribution</span>
+                <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] USD</b> match</span>
               </div>
             </div>
             <div class="w-100 text-center text-black-70 pb-1 font-smaller-5">
@@ -186,8 +189,7 @@
 
               <div class="gc-text-green font-weight-bold" v-if="grant?.clr_prediction_curve">
                 [[ grant?.clr_prediction_curve[0][1] || 0 | round | formatNumber ]]
-                <span v-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">USD</span>
-                <span v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">DAI</span>
+                <span>USD</span>
               </div>
               <div class="gc-text-green">
                 Final match
@@ -201,8 +203,7 @@
               </div>
               <div class="gc-text-darkblue font-weight-bold">
                 [[grant.amount_received | round ]]
-                <span v-if="grant?.tenants?.indexOf('ZCASH') > -1">USD</span>
-                <span v-if="grant?.tenants?.indexOf('ETH') > -1">DAI</span>
+                <span>USD</span>
               </div>
               <div class="gc-text-darkblue">
                 [[grant.positive_round_contributor_count]] Contributors

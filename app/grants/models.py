@@ -339,19 +339,19 @@ class Grant(SuperModel):
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The amount received in DAI this round.'),
+        help_text=_('The amount received in USD this round.'),
     )
     monthly_amount_subscribed = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The monthly subscribed to by contributors USDT/DAI.'),
+        help_text=_('The monthly subscribed to by contributors USD.'),
     )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The total amount received for the Grant in USDT/DAI.'),
+        help_text=_('The total amount received for the Grant in USD.'),
     )
     # TODO-GRANTS: remove
     token_address = models.CharField(
@@ -1472,7 +1472,7 @@ class Donation(SuperModel):
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The donation amount converted to USDT/DAI at the moment of donation.'),
+        help_text=_('The donation amount converted to USD at the moment of donation.'),
     )
     tx_id = models.CharField(
         max_length=255,
