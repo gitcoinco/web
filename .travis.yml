@@ -14,7 +14,6 @@ services:
   - redis
 
 cache:
-  npm: false
   directories:
     - $HOME/.cache/pip
     - node_modules
