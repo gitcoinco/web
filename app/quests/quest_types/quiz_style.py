@@ -3,6 +3,7 @@ import json
 import logging
 import random
 import re
+from json.decoder import JSONDecodeError
 
 from django.conf import settings
 from django.contrib import messages
@@ -13,7 +14,6 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from json.decoder import JSONDecodeError
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
 from quests.helpers import (
     get_active_attempt_if_any, get_base_quest_view_params, get_leaderboard, max_ref_depth, process_start, process_win,
