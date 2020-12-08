@@ -333,7 +333,7 @@ Vue.mixin({
       if (vm.grant.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g georgecostanza');
       }
-      if (vm.grant.description_rich.length < 10) {
+      if (vm.grant.description_rich_edited.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
 
@@ -493,7 +493,9 @@ Vue.component('grant-details', {
     let vm = this;
 
     vm.grant.description_rich_edited = vm.grant.description_rich;
-    vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+    if (vm.grant.description_rich_edited) {
+      vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+    }
     vm.grantInCart();
   },
   watch: {
