@@ -45,14 +45,13 @@ var random_taunt_effect = function(ele) {
 };
 
 var post_state = async(data) => {
-  const location = document.location.href.replace('#', '');
+  const location = document.location.href.replace('#', '') + '?answers=' + JSON.stringify(data);
   const settings = {
     method: 'POST',
     cache: 'no-cache',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'answers': JSON.stringify(data),
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
   };
