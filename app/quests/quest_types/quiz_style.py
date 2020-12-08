@@ -59,7 +59,7 @@ def details(request, quest):
         try:
             payload = json.loads(request.body)
         except JSONDecodeError:
-            payload = json.loads(request.headers['Answers'])
+            payload = json.loads(request.headers['answers'])
 
         qn = payload.get('question_number')
         can_continue = True

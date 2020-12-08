@@ -52,7 +52,7 @@ var post_state = async(data) => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Answers': JSON.stringify(data),
+      'answers': JSON.stringify(data),
     },
     body: JSON.stringify(data)
   };
