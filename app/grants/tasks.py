@@ -217,7 +217,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             profile.save()
 
         if 'anonymize_gitcoin_grants_contributions' in package:
-            profile.anonymize_gitcoin_grants_contributions = bool(package.get('anonymize_gitcoin_grants_contributions', False))
+            profile.anonymize_gitcoin_grants_contributions = package.get('anonymize_gitcoin_grants_contributions')
             profile.save()
 
         activity_profile = profile if not profile.anonymize_gitcoin_grants_contributions else Profile.objects.get(handle='gitcoinbot')
