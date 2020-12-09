@@ -872,3 +872,40 @@ Vue.component('copy-clipboard', {
     }
   }
 });
+
+
+Vue.component('render-quill', {
+  props: ['delta'],
+  template: '<div>{{this.renderHtml}}</div>',
+  data() {
+    return {
+      jqEl: null,
+      renderHtml: ''
+
+    };
+  },
+  methods: {
+    transform: function() {
+      let vm = this;
+
+      if (!vm.delta) {
+        return;
+      }
+
+      vm.jqEl = this.$el;
+      const quill = new Quill(vm.jqEl);
+
+      quill.enable(false);
+      vm.renderHtml = quill.setContents(JSON.parse(vm.delta));
+    }
+
+  },
+  mounted() {
+    this.transform();
+  },
+  watch: {
+    delta: function() {
+      return this.transform();
+    }
+  }
+});

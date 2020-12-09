@@ -65,13 +65,6 @@
   <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
 </a>
 <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
-<p>{% trans "You can see the grant cancellation transaction on Etherscan" %}
-  {% if grant.network == 'mainnet' %}
-    <a href="http://etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
-  {% else %}
-    <a href="http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}">{% trans "here." %}</a>
-  {% endif %}
-</p>
 <p class="grant-link">
   <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>

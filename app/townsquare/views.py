@@ -69,8 +69,13 @@ def get_next_time_available(key):
     if key == 'monthly':
         month = int(d.strftime('%m'))
         year = int(d.strftime('%Y'))
-        year += 1 if month > 11 else 0
-        month += 1
+
+        if month == 12:
+            year += 1
+            month = 1
+        else:
+            month += 1
+
         d = timezone.datetime(year=year, month=month, day=1)
     return d
 
