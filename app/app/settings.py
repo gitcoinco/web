@@ -112,7 +112,6 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
-    'chat',
     'quests',
     'faucet',
     'tdi',
@@ -182,7 +181,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -522,7 +521,6 @@ CELERY_ROUTES = [
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
-    ('chat.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
     ('townsquare.tasks.*', {'queue': 'default'}),
     ('kudos.tasks.*', {'queue': 'default'}),
@@ -610,14 +608,6 @@ OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
 
-# Chat
-CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
-CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
-CHAT_SERVER_URL = env('CHAT_SERVER_URL', default='chat')  # location of where mattermost is hosted
-CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
-GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
-GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
-GITCOIN_LEADERBOARD_CHANNEL_ID = env('GITCOIN_LEADERBOARD_CHANNEL_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'

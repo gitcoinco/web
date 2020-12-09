@@ -80,9 +80,6 @@
         <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
           <i class="fab fa-linkedin-in"></i>
         </a>
-        <a @click="chatWindow('@' + user.handle);" href="javascript:" v-if="user.chat_id">
-          <i class="fas fa-comment-dots"></i>
-        </a>
       </div>
       <div class="text-center" id="job_status" v-if="user.show_job_status">
         <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
@@ -110,12 +107,6 @@
         <i class="far fa-lightbulb gc-text-blue font-bigger-3"></i><br>
         <span class="font-body">Looking for a project</span>
     </div>
-    <div class="text-center mt-2">
-      <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="chatWindow(user.handle, $event);">
-        <i class="fas fa-comment-dots mr-2"></i> Chat
-      </b-button>
-    </div>
-
   </div>
 </div>
 

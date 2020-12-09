@@ -265,7 +265,6 @@ const loadDynamicScript = (callback, url, id) => {
             publish_to_ts: false
           },
           showCoreTeam: true,
-          chatURL: document.chatURL || 'https://chat.gitcoin.co/',
           activePanel: document.activePanel,
           tribe: document.currentProfile,
           online: (document.contxt && document.contxt.github_handle),
