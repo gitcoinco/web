@@ -307,6 +307,7 @@ class Grant(SuperModel):
         default='0x0',
         null=True,
         blank=True,
+        db_index=True,
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
     zcash_payout_address = models.CharField(
@@ -500,7 +501,7 @@ class Grant(SuperModel):
         # create_grant_active_clr_mapping
         clr_rounds = GrantCLR.objects.filter(is_active=True)
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants:
+            if self in this_clr_round.grants.all():
                 self.in_active_clrs.add(this_clr_round)
             else:
                 self.in_active_clrs.remove(this_clr_round)
@@ -758,7 +759,7 @@ class Grant(SuperModel):
 
     def repr(self, user, build_absolute_uri):
         team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__avatar_url']
+                            fields=['handle', 'url', 'profile__lazy_avatar_url']
                         )
         grant_type = None
         if self.grant_type:
@@ -785,7 +786,7 @@ class Grant(SuperModel):
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
-                    'avatar_url': self.admin_profile.avatar_url
+                    'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
@@ -815,7 +816,7 @@ class Grant(SuperModel):
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
-                'github_project_url': self.github_project_url,
+                'github_project_url': self.github_project_url or '',
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
@@ -1009,8 +1010,10 @@ class Subscription(SuperModel):
 
     @property
     def amount_per_period_minus_gas_price(self):
-        amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
-        return amount
+        if self.amount_per_period == self.amount_per_period_to_gitcoin:
+            return float(self.amount_per_period)
+
+        return float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
 
     @property
     def amount_per_period_to_gitcoin(self):
@@ -1957,13 +1960,13 @@ class GrantCollection(SuperModel):
         curators = [{
             'url': curator.url,
             'handle': curator.handle,
-            'avatar_url': curator.avatar_url
+            'avatar_url': curator.lazy_avatar_url
         } for curator in self.curators.all()]
 
         owner = {
             'url': self.profile.url,
             'handle': self.profile.handle,
-            'avatar_url': self.profile.avatar_url
+            'avatar_url': self.profile.lazy_avatar_url
         }
 
         grants = self.cache.get('grants', 0)

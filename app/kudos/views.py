@@ -175,6 +175,7 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': title,
+        'q': q,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),

@@ -22,7 +22,7 @@
 
   <head>
     {% include 'shared/head.html' with slim=1 %}
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
     <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
@@ -83,7 +83,7 @@
       </b-skeleton-wrapper>
       <div class="" v-if="grant">
         <grant-details :grant="grant" v-if="grant.id">
-          <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;">
+          <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
           <div class="container mb-3">
             <a :href="backLink.url" class="font-body"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
           </div>
@@ -131,14 +131,14 @@
 
                     <div id="contributions" v-if="transactions.grantTransactions">
                       <p class="font-body font-weight-semibold subtitle mb-0">
-                        <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[transactions.grantTransactions?.length]])
+                        <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[transactions?.count]])
                       </p>
                       <div class="" v-for="transaction in transactions.grantTransactions">
                         <div class="py-2 mx-sm-0 row transaction-history">
                           <div class="d-none d-sm-block col-1 col-sm-3 col-md-2 font-subheader text-center text-md-left my-auto">
-                            <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment-fromnow]]</time>
-                            <a :href="`/_administrationgrants/subscription/${transaction.id}/change/`" target="_blank">
-                              <i class="fas fa-external-link-alt" v-if="isStaff"></i>
+                            <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment]]</time>
+                            <a :href="`/_administrationgrants/contribution/${transaction.id}/change/`" target="_blank" v-if="isStaff">
+                              <i class="fas fa-external-link-alt"></i>
                             </a>
                           </div>
                           <div class="col-3 col-sm-2 justify-content-center special_tag d-flex">
@@ -447,6 +447,8 @@
     <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
     <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
 
+    {{verification_tweet|json_script:"verification_tweet"}}
+    {{user_code|json_script:"user_code"}}
     <script>
       var grantDetails = {
                  grant_id: "{{ grant.id }}",
@@ -468,10 +470,11 @@
                 //  grant_donation_currency: "{{ token.symbol }}",
                 //  token_local_id: "{{ token.id }}"
                };
-      var user_code = '{{user_code}}'
-      var verification_tweet = '{{verification_tweet}}'
+      var user_code = JSON.parse(document.getElementById('user_code').textContent);
+      var verification_tweet = JSON.parse(document.getElementById('verification_tweet').textContent);
 
    </script>
+
     {% include 'shared/activity_scripts.html' %}
     <script src="{% static "v2/js/status.js" %}"></script>
 

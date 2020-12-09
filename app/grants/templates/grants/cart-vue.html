@@ -383,7 +383,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <div v-if="zkSyncUnsupportedTokens.length > 0">
                                 zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
                               </div>
-                              <div v-else>
+                              <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
                                 Save
                                 <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
                                 on gas costs with [[ checkoutRecommendation.name ]]
@@ -406,6 +406,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
                                       :disabled="cart.unsupportedTokens.length > 0"
                                       id='js-zkSyncfundGrants-button'
+                                      v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
                                     >
                                       Checkout with zkSync
                                     </button>
@@ -498,7 +499,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 </div>
                               <div class="col-auto">
-                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing">
+                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
                                   Standard Checkout
                                 </button>
                               </div>
@@ -756,7 +757,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.9/dist/main.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.10/dist/main.js"></script>
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
 
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>

@@ -593,8 +593,9 @@ def get_grants(request):
             collections = paginator.get_page(page)
     else:
         _grants = build_grants_by_type(**filters)
-
-        collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:12]
+        collections = []
+        # disabling collections on the main grant page to improve performance
+        # collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:3].cache(timeout=60)
 
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
@@ -707,7 +708,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if category:
         _grants = _grants.filter(Q(categories__category__icontains=category))
 
-    _grants = _grants.prefetch_related('categories')
+    _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
 
     return _grants
 
@@ -1555,6 +1556,10 @@ def grant_edit(request, grant_id):
         if logo:
             grant.logo = logo
 
+        image_css = request.POST.get('image_css', None)
+        if image_css:
+            grant.image_css = image_css
+
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
 
@@ -1778,7 +1783,7 @@ def grant_new(request):
         grant.save()
         grant.calc_clr_round()
         grant.save()
-        
+
         messages.info(
             request,
             _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
@@ -2045,10 +2050,11 @@ def bulk_fund(request):
                 'signature': request.POST.get('signature'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
+                'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
                 # Values that vary by donation
                 'admin_address': request.POST.get('admin_address').split(',')[index],
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
-                'comment': request.POST.get('comment').split(',')[index],
+                'comment': request.POST.get('comment').split('_,_')[index],
                 'confirmed': request.POST.get('confirmed').split(',')[index],
                 'contract_address': request.POST.get('contract_address').split(',')[index],
                 'contract_version': request.POST.get('contract_version').split(',')[index],
@@ -2679,10 +2685,13 @@ def toggle_grant_favorite(request, grant_id):
 
 
 def get_grant_verification_text(grant, long=True):
+    from django.utils.safestring import mark_safe
+
     msg = f'I am verifying my ownership of { grant.title } on Gitcoin Grants'
     if long:
         msg += f' at https://gitcoin.co{grant.get_absolute_url()}.'
-    return msg
+
+    return mark_safe(msg)
 
 
 @login_required

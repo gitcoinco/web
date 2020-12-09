@@ -38,7 +38,7 @@ Vue.mixin({
     fetchRelated: function() {
       let vm = this;
       let ids;
-      let size = 6
+      let size = 6;
 
       if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length) {
         return;
@@ -49,7 +49,7 @@ Vue.mixin({
       });
       vm.relatedGrantsIds = vm.paginate(ids, size, vm.relatedGrantsPage);
 
-      vm.relatedGrantsPage+= 1;
+      vm.relatedGrantsPage += 1;
 
       if (!vm.relatedGrantsIds.length) {
         return;
@@ -73,8 +73,8 @@ Vue.mixin({
       let vm = this;
 
       page = vm.transactions.next_page_number;
-      if (!page){
-        return
+      if (!page) {
+        return;
       }
       vm.loadingTx = true;
 
@@ -99,8 +99,8 @@ Vue.mixin({
       let vm = this;
 
       page = vm.contributors.next_page_number;
-      if (!page){
-        return
+      if (!page) {
+        return;
       }
       vm.loadingContributors = true;
 
@@ -133,31 +133,31 @@ Vue.mixin({
     },
     tabChange: function(input) {
 
-      console.log(input)
+      console.log(input);
       window.location = `${this.grant.details_url}?tab=${input}`;
     },
     enableTab: function() {
       let vm = this;
-      let urlParams = new URLSearchParams(window.location.search)
+      let urlParams = new URLSearchParams(window.location.search);
 
       vm.tab = urlParams.get('tab');
 
       switch (vm.tab) {
         case 'sybil_profile':
-          vm.tabSelected =  4;
+          vm.tabSelected = 4;
           break;
         case 'stats':
-          vm.tabSelected =  5;
+          vm.tabSelected = 5;
           break;
         default:
-          vm.tabSelected =  0;
+          vm.tabSelected = 0;
       }
       window.history.replaceState({}, document.title, `${window.location.pathname}`);
     },
     scrollToElement(element) {
       let container = this.$refs[element];
 
-      container.scrollIntoViewIfNeeded({behavior: "smooth", block: "start"});
+      container.scrollIntoViewIfNeeded({behavior: 'smooth', block: 'start'});
     }
   },
   computed: {
@@ -195,7 +195,7 @@ if (document.getElementById('gc-grant-detail')) {
         loadingRelated: false,
         loading: false,
         isStaff: isStaff,
-        transactions:{
+        transactions: {
           grantTransactions: [],
           next_page_number: 1
         },
