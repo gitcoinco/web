@@ -406,7 +406,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
                                       :disabled="cart.unsupportedTokens.length > 0"
                                       id='js-zkSyncfundGrants-button'
-                                      v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. Its enables extremely low cost transfers of ETH and ERC20 tokens in the Ethereum network (Cheaper option).'"
+                                      v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
                                     >
                                       Checkout with zkSync
                                     </button>
@@ -499,7 +499,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 </div>
                               <div class="col-auto">
-                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Tranditional Ethereum easy payouts with your connected wallet funds (Easiest option).'">
+                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
                                   Standard Checkout
                                 </button>
                               </div>
