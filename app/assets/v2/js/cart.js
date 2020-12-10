@@ -52,7 +52,7 @@ Vue.component('grants-cart', {
       comments: undefined,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
-      include_for_clr: true,
+      include_for_clr: false,
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
