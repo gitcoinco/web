@@ -29,7 +29,7 @@ jobs:
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
-        - pip install pip setuptools --upgrade
+        - pip install pip==20.0.2 setuptools --upgrade
         - pip install codecov
         # Fetch and Install GeoIP database files.
         - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
