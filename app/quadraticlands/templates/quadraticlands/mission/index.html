@@ -29,13 +29,14 @@
 
 	<!-- PROOF OF KNOWLEDGE CARD -->
 	<!-- no dependencies in other missions -->
+	<!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-	{% with name="Proof of Knowledge" %}
+	{% with name="Proof of Knowledge" proof_of_knowledge=false %}
 
-		{% if not proof_of_knowledge  %}
+		{% if not proof_of_knowledge %}
 			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}
 		{% else %}
-			{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-know-end.svg" done="true" %}
+			{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-know-end.svg" done="true" locked="true" %}
 		{% endif %}
 
 	{% endwith %}
@@ -59,7 +60,7 @@
 			{% if not proof_of_receive %}
 				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-receive-start.svg" url="/quadraticlands/mission/receive" tokens=total_claimable_gtc %}
 			{% else %}
-				{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-receive-end.svg" done="true" %}
+				{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-receive-end.svg" done="true" locked="true" %}
 			{% endif %}	
 
 		{% endif %}
@@ -86,7 +87,7 @@
 			{% if not proof_of_use %}
 				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-use-start.svg" url="/quadraticlands/mission/use" %}
 			{% else %}
-				{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-use-end.svg" done="true" %}
+				{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-use-end.svg" done="true" locked="true" %}
 			{% endif %}
 
 		{% endif %}

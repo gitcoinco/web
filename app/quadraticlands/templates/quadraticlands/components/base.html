@@ -50,27 +50,17 @@
    
     {% include 'quadraticlands/components/footer_scripts.html' %}
 
-
-    <!-- this is just here to have some test links - it have to go out
-      on deploy to real world -->
-    {% include 'quadraticlands/components/dev.html' %}
-
+    {% include 'quadraticlands/components/cookielaw.html' %}
 
 
   </body>
 
+  {% block 'scripts' %}
 
-  {% block 'scripts' %}{% endblock %}
 
-<!-- terrible script that calls wallet login on every page..?
-  <script>
-    needWalletConnection();
-    if ('addEventListener' in window) {
-      window.addEventListener('load', function () {
-        document.body.className = document.body.className.replace(/\bis-loading\b/, '');
-      });
-      document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
-    }
-  </script>
--->
+  {% endblock %}
+
+
+
+
 </html>

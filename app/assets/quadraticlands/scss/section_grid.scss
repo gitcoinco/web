@@ -17,10 +17,16 @@ section.grid{
 
 	figure{
 		user-select: none;
+
+		padding: 3em;
 		img, svg{
   			object-fit: cover;
   			height: 100%;
-  			padding: 3em;
+  			//padding: 3em;
+  			//margin: 3em;
+
+  			background-color: var(--space_light);
+			border: 1px solid var(--space_light);
 		}
 
 		&.floating{
@@ -57,8 +63,8 @@ section.grid{
 @media #{$laptop} { 
 	section.grid{
 		figure{
+			padding: 1em;
 			img, svg{
-				padding: 1em;
 			}	
 		}
 	}
@@ -72,9 +78,12 @@ section.grid{
 		display: block;
 
 		figure{
+			padding: 0px;
+			//border-top: 1px solid var(--pink_light);
+			//border-bottom: 1px solid var(--pink_light);
 			img, svg{
-	  			object-fit: contain;
-	  			height: 700px;
+	  			object-fit: cover;
+	  			height: 500px;
 	  			padding: initial;
 			}	
 		}
@@ -95,7 +104,8 @@ section.grid{
 	section.grid{
 		figure{
 			img, svg{
-				object-fit: contain;
+				//object-fit: contain;
+				object-fit: cover;
 	  			height: 500px;
 	  			padding: inherit;
 			}	

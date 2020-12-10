@@ -6,12 +6,12 @@
 
 
 /* nav */
-@import "nav.scss";
-@import "nav/user.scss";
-@import "nav/links.scss";
-@import "nav/wallet.scss";
-@import "nav/signin.scss";
-@import "nav/burger.scss";
+@import "nav";
+@import "nav/user";
+@import "nav/links";
+@import "nav/wallet";
+@import "nav/signin";
+@import "nav/burger";
 
 
 @import "header.scss";
@@ -20,8 +20,8 @@
 
 
 /* components */
-@import "buttons.scss";
-@import "wallet-provider.scss";
+@import "buttons";
+@import "wallet-provider";
 @import "sal";
 @import "particles";
 @import "keyframes";
@@ -29,6 +29,7 @@
 @import "web3modal";
 @import "table";
 @import "flashmessage";
+@import "cookielaw";
 
 
 /* section */

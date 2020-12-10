@@ -20,7 +20,9 @@ section.mission .card{
 
 	.card-image{
 
-		border: 1px solid var(--pink_light);
+		//border: 1px solid var(--pink_light);
+		background-color: var(--space_light);
+		border: 1px solid var(--space_light);
 
 		img, svg{
 			width: 100%;	
@@ -111,7 +113,11 @@ section.mission .card{
 
 
 	&.locked{
-		opacity: 0.5;
+		
+		.card-image{
+			opacity: 0.5;
+		}
+
 
 		&:hover{
 			.card-body{
@@ -120,6 +126,18 @@ section.mission .card{
 						color: var(--purple_light);
 					}
 				}
+			}			
+		};
+
+	}
+
+
+	&.playable{
+
+		&:hover{
+			.card-image{
+					animation: colorcycle-border 1s ease-in-out infinite;
+					background-color: transparent;
 			}			
 		};
 

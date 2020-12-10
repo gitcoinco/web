@@ -14,6 +14,12 @@
     100%   { color: var(--pink); }      
 } 
 
+@keyframes colorcycle-border { 
+    0% { border: 1px solid var(--pink); } 
+    33%  { border: 1px solid var(--aqua); } 
+    66%   { border: 1px solid var(--purple); }
+    100%   { border: 1px solid var(--pink); }      
+} 
 
 @keyframes colorcycle-stroke { 
     0% { stroke: var(--pink); } 
@@ -44,12 +50,11 @@
 
 
 
-
 @keyframes menu-background { 
-    0% { box-shadow: 0px 0px 100px 0px var(--pink_half); } 
-    33%  { box-shadow: 0px 0px 100px 0px var(--aqua_half); } 
-    66%   { box-shadow: 0px 0px 100px 0px var(--purple_half); }
-    100%   { box-shadow: 0px 0px 100px 0px var(--pink_half); }      
+    0% { box-shadow: 0px 0px 100px 0px var(--pink); } 
+    33%  { box-shadow: 0px 0px 100px 0px var(--aqua); } 
+    66%   { box-shadow: 0px 0px 100px 0px var(--purple); }
+    100%   { box-shadow: 0px 0px 100px 0px var(--pink); }      
 }
 
 
