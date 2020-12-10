@@ -185,10 +185,10 @@ def process_grant_contributions(self, valid_grants, profile_id, retry: bool = Tr
                         activity=activity,
                         comment=comment)
 
-                    subscription.refresh_from_db()
-                    new_supporter(grant, subscription)
-                    update_grant_metadata.delay(grant_id)
 
+            subscription.refresh_from_db()
+            new_supporter(grant, subscription)
+            update_grant_metadata.delay(grant_id)
             subscriptions.append(subscription)
 
     # emails to grant owner
