@@ -885,7 +885,7 @@ Vue.component('grants-cart', {
         gas_price: 0,
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,
-        anonymize_gitcoin_grants_contributions: this.AnonymizeGrantsContribution,
+        anonymize_gitcoin_grants_contributions: false,
         include_for_clr: this.include_for_clr,
         match_direction: '+',
         network: document.web3network,
