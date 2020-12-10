@@ -10,7 +10,7 @@ def forwards(apps, schema_editor):
             quest.kudos_reward = quest.kudos_reward.on_xdai
             quest.save()
             print(f'migrated {quest.pk}');
-        else:
+        elif quest:
             print(f'could not migrate {quest.pk}');
             quest.visible=False
             quest.save()
