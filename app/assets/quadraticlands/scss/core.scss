@@ -1,30 +1,31 @@
 :root{
 
-    --purple_light : #9760FF;
-    --purple : #7F51D6;
-    --purple_dark : #6A43B3;
-    --purple_half : #7F51D688;
+    /* purple with shades : 20%white, 20%black */
+    --purple_light : #8C65F7;
+    --purple : #6F3FF5;
+    --purple_dark : #5932C4;
     
-    --pink_light : #FA72AF;
-    --pink : #DA5892;
-    --pink_dark : #B44878;
-    --pink_half : #DA589288;
+    /* pink with shades : 20%white, 20%black */
+    --pink_light : #F579A6;
+    --pink : #F35890;
+    --pink_dark : #C24673;
 
-    --aqua_light : #7AFFF7;
-    --aqua : #54D8D0;
-    --aqua_dark : #42AFA9;
-    --aqua_half : #54D8D088;
+    /* aqua with shades : 20%white, 20%black */
+    --aqua_light : #44EFC5;
+    --aqua : #15EBB7;
+    --aqua_dark : #11BC92;
 
-    --white : #FFF;
-
+    /* space with shades : 15%pink, 5%white, 5%white only, space 22hex transparent */
     --space : #0E0333;
-    --space_glass : #0E033322;
-    --space_pink : #2D1041;
-    --space_light : #180D3B;
-    --space_light_alpha : rgba(255, 255, 255, 0.04); /* same as space_light but transparent*/
-    
-    --stone : #6E6885;
-    --smoke : #3E355C;
+    --space_pink : #301041; /*+15%pink*/
+    --space_light : #1A103D; /*+5%white*/
+    --space_light_alpha : rgba(255, 255, 255, 0.05); /*5%white only*/
+    --space_glass : #0E033322; /*space 22opacity (in hex) - arround 35% transparent*/
+
+    /* greys */
+    --white : #FFFFFF;
+    --stone : #9B95B0; /* default text grey */
+    --smoke : #3B3058; /* seperator lines darkish grey */
 
 }
 

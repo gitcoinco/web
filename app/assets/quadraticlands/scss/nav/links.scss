@@ -28,29 +28,12 @@
 			margin-right: initial;
 		}
 
-
-
-
-
 		li{
 			color: var(--purple_light);
 			display: inline-block;
 			margin-bottom: initial;
-
-			/* token ammount in menu bar*/
-			span{
-				background-color: var(--aqua_light);
-				color: var(--space);
-				font-size: 80%;
-				font-weight: 600;
-				font-family: 'Space Mono', monospace;
-				padding:0.5em 0.5em;
-				margin-left: 0.5em;
-				animation: colorcycle-shadow 3s ease-in-out infinite;
-			}
 		}
 
-		
 	}
 
 

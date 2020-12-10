@@ -47,14 +47,7 @@
         <a href="/quadraticlands/mission" class="particleAttract" 
         {% if "mission" in request.path %} aria-current="page" {% endif %}
         >
-          <li>
-            Mission
-            <!-- this span should just be here, if user can claim x GTC tokens AND logged in -->
-            {% if user.is_authenticated and not proof_of_receive and total_claimable_gtc != 0 %}
-            <span>+{{ total_claimable_gtc }} GTC</span>
-            {% endif %}
-
-          </li>
+          <li>Mission</li>
         </a>
 
       </ul>
@@ -78,6 +71,18 @@
     <!-- default wallet button / wallet status
     what TRIGGER another div to pop up (components/wallet-provider.html) -->
     <div id="nav-wallet" class="">
+
+      <!-- CLAIMABLE AMOUNT -->
+      <!-- IF :  and not proof_of_receive and total_claimable_gtc != 0 -->
+      {% if user.is_authenticated  %}
+      <span class="claimable"><a href="/quadraticlands/mission">+ {{ total_claimable_gtc }}</a></span>
+      {% endif %}
+
+      <!-- USERS CURRENT TOKEN AMOUNT -->
+      {% if user.is_authenticated  %}
+      <span id="current_gtc" class="current hide"></span>
+      {% endif %}
+
       <div id="noproviderIcon">
         {% include "quadraticlands/_inlinesvg/wallet.svg" %}
       </div>
@@ -103,6 +108,35 @@
 
 
 </header>
+
+
+
+
+<script>
+
+/* here in this script i need to find out how to 
+fetch token amount from adress to show current
+*/
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+  // wallet found
+  window.addEventListener("dataWalletReady", () => {
+    const current_gtc = document.getElementById("current_gtc");
+    current_gtc.classList.remove("hide")
+
+    current_gtc.innerHTML = "44444"
+    console.log(selectedAccount)
+
+    console.debug("CURRENT_GTC found")
+  });
+
+});
+
+</script>
+
+
 
 
 

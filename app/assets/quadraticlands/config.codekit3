@@ -27,6 +27,24 @@
 		"oAP": "/css/app.css.map",
 		"oF": 0
 		},
+	"/css/cookielaw.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/css/cookielaw-min.css",
+		"oF": 0,
+		"oS": 3
+		},
+	"/css/cookielaw.css.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/css/cookielaw.css.map",
+		"oF": 0
+		},
 	"/images/700x900.png": {
 		"ft": 32768,
 		"iS": 295213,
@@ -915,6 +933,36 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/js/cookielaw-min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/cookielaw-min-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/js/cookielaw-min.js.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/js/cookielaw-min.js.map",
+		"oF": 0
+		},
+	"/js/cookielaw.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/cookielaw-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/js/gtc-token-claim.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1133,6 +1181,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/css/buttons.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/cookielaw.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/cookielaw.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
