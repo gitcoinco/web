@@ -46,7 +46,7 @@ Vue.component('grants-cart', {
       adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
       tokenList: undefined, // array of all tokens for selected network
       isLoading: undefined,
-      gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
+      gitcoinFactorRaw: 0, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
       grantData,
       comments: undefined,

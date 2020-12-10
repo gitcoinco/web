@@ -276,7 +276,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div> -->
 
                     {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
-                    <div class="flex-container text-left grant-header-row black">
+                    <div class="flex-container text-left grant-header-row black d-none"> 
                       <div style="width: 100%">
                         <div class="flex-container" style="justify-content: start">
                           <div id="gitcoin-grant-section" class="form__group-horizontal mt-2">
@@ -355,11 +355,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <li>
                               You are contributing <span style="font-weight: bold">[[donationsToGrantsString]]</span>
                             </li>
-                            <li>
+                            <!-- <li>
                               You are additionally contributing
                               <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
                               to the Gitcoin Maintainer Grant
-                            </li>
+                            </li> -->
                             <li>
                               Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
                               <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
