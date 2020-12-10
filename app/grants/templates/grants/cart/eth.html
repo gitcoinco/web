@@ -1,5 +1,5 @@
 <!-- Ethereum flow. used zksync and bulk checkout -->
-
+{% load static i18n %}
 <b-tab :title-link-class="nav-line">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
 
@@ -194,7 +194,7 @@
                     :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
                     v-model="gitcoinFactorRaw"
                   >
-                  {% include './heart.html' %}
+                  {% include '../heart.html' %}
                 </div>
               </div>
               <br/>

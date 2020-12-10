@@ -112,9 +112,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
               <div>
                 <b-tabs @input="tabChange" v-model="tabIndex" content-class="mt-3">
+                  <!-- Checkout for ETH Grants -->
                   {% include 'grants/cart/eth.html' %}
 
+                  <!-- Checkout for ZCASH Grants -->
                   {% include 'grants/cart/zcash.html' %}
+
+                  <!-- Checkout for CELO Grants -->
+
+                  <!-- Checkout for ZIL Grants -->
                 </b-tabs>
               </div>
               {% comment %} Cart total {% endcomment %}

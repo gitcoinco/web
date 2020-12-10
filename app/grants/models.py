@@ -539,6 +539,10 @@ class Grant(SuperModel):
             tenants.append('ETH')
         if self.zcash_payout_address and self.zcash_payout_address != '0x0':
             tenants.append('ZCASH')
+        if self.celo_payout_address and self.celo_payout_address != '0x0':
+            tenants.append('CELO')
+        if self.zil_payout_address and self.zil_payout_address != '0x0':
+            tenants.append('ZIL')
 
         return tenants
 
@@ -817,6 +821,8 @@ class Grant(SuperModel):
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
                 'zcash_payout_address': self.zcash_payout_address or '',
+                'celo_payout_address': self.celo_payout_address,
+                'zil_payout_address': self.zil_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,

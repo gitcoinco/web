@@ -84,7 +84,7 @@ Vue.component('grants-cart', {
     },
     grantsCountByTenant() {
       let vm = this;
-      let tenants = [ 'ETH', 'ZCASH' ];
+      let tenants = [ 'ETH', 'ZCASH', 'CELO', 'ZIL' ];
 
       var grantsTentantsCount = vm.grantData.reduce(function(result, grant) {
         var currentCount = result[grant.tenants] || 0;

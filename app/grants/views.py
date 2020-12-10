@@ -1527,12 +1527,16 @@ def grant_edit(request, grant_id):
 
         eth_payout_address = request.POST.get('eth_payout_address', '0x0') if request.POST.get('eth_payout_address') else '0x0'
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0') if request.POST.get('zcash_payout_address') else '0x0'
+        celo_payout_address = request.POST.get('celo_payout_address', '0x0') if request.POST.get('celo_payout_address') else '0x0'
+        zil_payout_address = request.POST.get('zil_payout_address', '0x0') if request.POST.get('zil_payout_address') else '0x0'
 
         if (
             eth_payout_address == '0x0' and
-            zcash_payout_address == '0x0'
+            zcash_payout_address == '0x0' and
+            celo_payout_address == '0x0' and
+            zil_payout_address == '0x0'
         ):
-            response['message'] = 'error: eth_payout_address/zcash_payout_address is a mandatory parameter'
+            response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
 
         if (
@@ -1547,6 +1551,12 @@ def grant_edit(request, grant_id):
 
         if zcash_payout_address != '0x0':
             grant.zcash_payout_address = zcash_payout_address
+
+        if celo_payout_address != '0x0':
+            grant.celo_payout_address = celo_payout_address
+
+        if zil_payout_address != '0x0':
+            grant.zil_payout_address = zil_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -1697,8 +1707,8 @@ def grant_new(request):
 
         eth_payout_address = request.POST.get('eth_payout_address', request.POST.get('admin_address'))
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
-        celo_payout_address = request.POST.get('celo_payout_address', '0x0')
-        zil_payout_address = request.POST.get('celo_payout_address', '0x0')
+        celo_payout_address = request.POST.get('celo_payout_address', None)
+        zil_payout_address = request.POST.get('zil_payout_address', None)
 
         if not eth_payout_address and not zcash_payout_address and not celo_payout_address and not zil_payout_address:
             response['message'] = 'error: eth_payout_address/zcash_payout_address/celo_payout_address/zil_payout_address is a mandatory parameter'
@@ -1741,6 +1751,8 @@ def grant_new(request):
             'github_project_url': github_project_url,
             'admin_address': eth_payout_address if eth_payout_address else '0x0',
             'zcash_payout_address': zcash_payout_address if zcash_payout_address else '0x0',
+            'celo_payout_address': celo_payout_address if celo_payout_address else '0x0',
+            'zil_payout_address': zil_payout_address if zil_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
