@@ -358,7 +358,7 @@ Vue.component('grants-cart', {
           break;
       }
     },
-    confirmZcashPayment: function(e, grant) {
+    confirmQRPayment: function(e, grant) {
       let vm = this;
 
       e.preventDefault();

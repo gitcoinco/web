@@ -1,5 +1,5 @@
 {% load static i18n %}
-<b-tab :title-link-class="nav-line">
+<b-tab v-if="grantsCountByTenant.ZCASH > 0" :title-link-class="nav-line">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
@@ -82,7 +82,7 @@
       </div>
       <div>
         <b-collapse :id="`collapse-${grant.grant_id}`">
-          <form action="" ref="form" @submit="confirmZcashPayment($event, grant)">
+          <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
             <div class="form-row font-smaller-3 mt-3" >
               <div class="comment-option col-auto" >
                 <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
