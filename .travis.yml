@@ -23,9 +23,8 @@ jobs:
   include:
     # Lint and test the repository.
     - stage: lint-test
-      before_install:
-        - nvm install "14"
       before_script:
+        - nvm install "14"
         - psql -c 'create database testdb;' -U postgres
       script:
         # Setup Env.
