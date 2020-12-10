@@ -11,7 +11,7 @@ os:
 services:
   - docker
   - postgresql
-  - redis-server
+  - redis
 
 cache:
   npm: false
@@ -23,6 +23,8 @@ jobs:
   include:
     # Lint and test the repository.
     - stage: lint-test
+      before_install:
+        - nvm install "14"
       before_script:
         - psql -c 'create database testdb;' -U postgres
       script:
@@ -42,6 +44,7 @@ jobs:
         # Install libvips dependencies.
         - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
+        - node --version
         - npm install
         - pip install -r requirements/test.txt
         - npm run eslint
