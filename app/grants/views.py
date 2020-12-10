@@ -26,7 +26,6 @@ import random
 import re
 import time
 
-from celery import chord
 from decimal import Decimal
 
 from django.conf import settings
