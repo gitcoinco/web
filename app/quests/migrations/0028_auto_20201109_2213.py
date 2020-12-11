@@ -4,7 +4,8 @@ from django.db import migrations
 
 
 def forwards(apps, schema_editor):
-    from quests.models import Quest
+    Quest = apps.get_model('quests', 'Quest')
+
     for quest in Quest.objects.filter(visible=True):
         if quest.kudos_reward.on_xdai:
             quest.kudos_reward = quest.kudos_reward.on_xdai
