@@ -6,6 +6,9 @@
     {% include 'shared/cards_pic.html' %}
   </head>
   <body>
+    {% for grant in grants %}
+    {% endfor %}
+
     <script>
       const grantsDetails= [
             {% for grant in grants %}
@@ -22,13 +25,13 @@
                   zcash_payout_address: "{{ grant.obj.zcash_payout_address }}",
                   grant_token_address: "{{ grant.obj.token_address }}",
                   grant_logo: {% if grant.logo and grant.logo.url %}"{{ grant.obj.logo.url }}"{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} "{% static grant_logo|addstr:id|add:'.png' %}" {% endwith %} {% endif %},
-                  grant_clr_prediction_curve: "{{ grant.clr_prediction_curve }}",
-                  grant_image_css: "{{ grant.image_css }}",
+                  grant_clr_prediction_curve: "{{ grant.obj.clr_prediction_curve }}",
+                  grant_image_css: "{{ grant.obj.image_css }}",
                   tenants: {{ grant.obj.tenants |safe }},
-                  is_clr_eligible: {{grant.is_clr_eligible|yesno:"true,false"}},
-                  grant_donation_amount: "{{ amount }}",
-                  grant_donation_currency: "{{ token.symbol }}",
-                  token_local_id: "{{ token.id }}"
+                  is_clr_eligible: {{grant.obj.is_clr_eligible|yesno:"true,false"}},
+                  grant_donation_amount: "{{ grant.amount }}",
+                  grant_donation_currency: "{{ grant.token.symbol }}",
+                  token_local_id: "{{ grant.token.id }}"
                 }
             {% endfor %}
             ]
