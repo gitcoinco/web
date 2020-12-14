@@ -771,6 +771,8 @@ class Grant(SuperModel):
             'is_clr_eligible': self.is_clr_eligible,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
+            'celo_payout_address': self.celo_payout_address,
+            'zil_payout_address': self.zil_payout_address,
         }
 
     def repr(self, user, build_absolute_uri):

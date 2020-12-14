@@ -111,7 +111,7 @@
               <div class="bg-white rounded col ml-2 py-3 d-flex flex-column mt-4">
                 <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>t-address</b> or <b>transaction hash</b> and press the confirm button.</p>
 
-                <b-form-radio-group id="radio-slots" v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots">
+                <b-form-radio-group id="radio-slots" v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots" class="font-body">
                 </b-form-radio-group>
 
                 <div class="form-row align-items-center mt-3">
@@ -129,7 +129,7 @@
                       <small class="form-text text-muted">Only t-address are allowed (no z-address support)</small>
                     </div>
                   </div>
-                  <div class="mt-2">
+                  <div class="mt-4 pt-1">
                     <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="(selectedZcashPayment === 'taddress' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
                   </div>
                 </div>
