@@ -32,6 +32,12 @@ def lineno():
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
+    # KO hack 12/14/2020
+    # this will prevent tasks on grants that have been issued from an app server from being immediately 
+    # rewritten by the celery server.  not elegant, but it works.  perhaps in the future,
+    # a delay could be introduced in the call of the task, not the task itself.
+    time.sleep(1)
+
     # setup
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
