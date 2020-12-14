@@ -198,6 +198,12 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.split_tx_id = package.get('split_tx_id', '0x0')
         subscription.num_tx_approved = package.get('num_tx_approved', 1)
         subscription.network = package.get('network', '')
+        if subscription.network == 'undefined':
+            # we unfortunately cannot trust the frontend to give us a valid network name
+            # so this handles that case.  more details are available at
+            # https://gitcoincore.slack.com/archives/C01FQV4FX4J/p1607980714026400
+            if not settings.DEBUG:
+                subscription.network = 'mainnet'
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.comments = package.get('comment', '')
