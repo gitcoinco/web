@@ -38,6 +38,11 @@ Vue.component('grants-cart', {
         { text: 'Wallet t-address', value: 'taddress' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
+      selectedQRPayment: 'address',
+      optionsQRPayment: [
+        { text: 'Wallet address', value: 'address' },
+        { text: 'Transaction Hash', value: 'txid' }
+      ],
       chainId: '',
       network: 'mainnet',
       tabSelected: 'ETH',
@@ -338,7 +343,7 @@ Vue.component('grants-cart', {
     tabChange: async function(input) {
       let vm = this;
 
-      console.log(input);
+
       switch (input) {
         default:
         case 0:
@@ -355,6 +360,14 @@ Vue.component('grants-cart', {
         case 1:
           vm.tabSelected = 'ZCASH';
           vm.chainId = '123123';
+          break;
+        case 2:
+          vm.tabSelected = 'CELO';
+          vm.chainId = '42220';
+          break;
+        case 3:
+          vm.tabSelected = 'ZIL';
+          vm.chainId = '102';
           break;
       }
     },

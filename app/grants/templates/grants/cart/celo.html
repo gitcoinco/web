@@ -1,6 +1,6 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" height="16"> Celo ([[grantsCountByTenant.CELO || 0]])</template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
     <div class="flex-fill">
@@ -54,7 +54,7 @@
         <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
           <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
             <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
-            <img src="{% static 'v2/images/chains/zcash.svg' %}" alt="Diamonds high-fiving"
+            <img src="{% static 'v2/images/chains/celo.svg' %}" alt="Diamonds high-fiving"
             width="20">
           </div>
           <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
@@ -85,17 +85,19 @@
           <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
             {% include './comment.html' %}
             <div class="d-flex">
+              HI [[grant.celo_payout_address]]
               <div class="bg-white rounded col mr-2 py-3 d-flex flex-column mt-4">
                 <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
 
                 <div class="d-flex align-items-center">
-                  <qrcode :string="`zcash:${grant.zcash_payout_address}?amount=${grant.grant_donation_amount}&&message=Thank%20you%20for%20your%20contribution`" :size="100"></qrcode>
+                  
+                  <!-- <qrcode :string="`celo://wallet/pay?address=${grant.celo_payout_address}&amount=${grant.grant_donation_amount}&token=${grant.grant_donation_currency}" :size="100"></qrcode> -->
                   <div class="flex-fill font-smaller-1 ml-4">
                     <div class="d-flex align-items-center">
                       <span class="mr-2">To:</span>
                       <div class="">
-                        <span class="font-weight-bold">[[grant.zcash_payout_address]]</span>
-                        <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zcash_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+                        <span class="font-weight-bold">[[grant.celo_payout_address]]</span>
+                        <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.celo_payout_address"><i class="far fa-copy"></i></copy-clipboard>
                       </div>
                     </div>
                     <div class="d-flex align-items-center">
@@ -109,28 +111,27 @@
                 </div>
               </div>
               <div class="bg-white rounded col ml-2 py-3 d-flex flex-column mt-4">
-                <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>t-address</b> or <b>transaction hash</b> and press the confirm button.</p>
+                <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>address</b> or <b>transaction hash</b> and press the confirm button.</p>
 
-                <b-form-radio-group id="radio-slots" v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots">
+                <b-form-radio-group id="radio-slots" v-model="selectedQRPayment" :options="optionsQRPayment" name="radio-options-slots">
                 </b-form-radio-group>
 
                 <div class="form-row align-items-center mt-3">
-                  <div class="col" v-show="selectedZcashPayment === 'txid'">
+                  <div class="col" v-show="selectedQRPayment === 'txid'">
                     <div class="">
                       <label :for="`payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
                       <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
                       <small class="form-text text-muted">Paste the transaction id</small>
                     </div>
                   </div>
-                  <div class="col" v-show="selectedZcashPayment === 'taddress'">
+                  <div class="col" v-show="selectedQRPayment === 'address'">
                     <div class="">
-                      <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Your T-address:</label>
-                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
-                      <small class="form-text text-muted">Only t-address are allowed (no z-address support)</small>
+                      <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
+                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
                     </div>
                   </div>
                   <div class="mt-2">
-                    <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="(selectedZcashPayment === 'taddress' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
+                    <button type="submit" class="btn btn-sm btn-gc-blue" :disabled="(selectedQRPayment === 'address' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
                   </div>
                 </div>
                 <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>
