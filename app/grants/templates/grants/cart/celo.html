@@ -125,7 +125,7 @@
                   <div class="col" v-show="selectedQRPayment === 'address'">
                     <div class="">
                       <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
-                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
+                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" :disabled="grant.success">
                     </div>
                   </div>
                   <div class="mt-4 pt-1">
