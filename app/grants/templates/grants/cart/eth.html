@@ -1,6 +1,6 @@
 <!-- Ethereum flow. used zksync and bulk checkout -->
 {% load static i18n %}
-<b-tab title-link-class="nav-line">
+<b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">

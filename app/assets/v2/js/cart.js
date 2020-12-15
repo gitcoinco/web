@@ -101,7 +101,6 @@ Vue.component('grants-cart', {
       return grantsTentantsCount;
     },
     sortByPriority: function() {
-      console.log(this.currentTokens);
       return this.currentTokens.sort(function(a, b) {
         return b.priority - a.priority;
       });
@@ -124,7 +123,6 @@ Vue.component('grants-cart', {
         result = vm.filterByNetwork;
       } else {
         result = vm.filterByNetwork.filter((item) => {
-          console.log(item.chainId, vm.chainId);
           return String(item.chainId) === vm.chainId;
         });
       }
@@ -343,30 +341,28 @@ Vue.component('grants-cart', {
     tabChange: async function(input) {
       let vm = this;
 
+      vm.tabSelected = vm.$refs.tabs.tabs[input].id;
+      if (!vm.grantsCountByTenant[vm.tabSelected]) {
+        vm.tabIndex += 1;
+        return;
+      }
 
-      switch (input) {
+      switch (vm.tabSelected) {
         default:
-        case 0:
-          vm.tabSelected = 'ETH';
+        case 'ETH':
           vm.chainId = '1';
-          if (!vm.grantsCountByTenant.ETH) {
-            vm.tabIndex = 1;
-            return;
-          }
+
           if (!provider) {
             await onConnect();
           }
           break;
-        case 1:
-          vm.tabSelected = 'ZCASH';
+        case 'ZCASH':
           vm.chainId = '123123';
           break;
-        case 2:
-          vm.tabSelected = 'CELO';
+        case 'CELO':
           vm.chainId = '42220';
           break;
-        case 3:
-          vm.tabSelected = 'ZIL';
+        case 'ZIL':
           vm.chainId = '102';
           break;
       }
@@ -451,6 +447,7 @@ Vue.component('grants-cart', {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
       update_cart_title();
+      this.tabChange(this.tabIndex);
     },
 
     addComment(id, text) {

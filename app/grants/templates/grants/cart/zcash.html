@@ -1,5 +1,5 @@
 {% load static i18n %}
-<b-tab title-link-class="nav-line">
+<b-tab title-link-class="nav-line" id="ZCASH" v-if="grantsCountByTenant.ZCASH !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
@@ -111,21 +111,21 @@
               <div class="bg-white rounded col ml-2 py-3 d-flex flex-column mt-4">
                 <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>t-address</b> or <b>transaction hash</b> and press the confirm button.</p>
 
-                <b-form-radio-group id="radio-slots" v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots" class="font-body">
+                <b-form-radio-group v-model="selectedZcashPayment" :options="optionsZcashPayment" name="radio-options-slots" class="font-body">
                 </b-form-radio-group>
 
                 <div class="form-row align-items-center mt-3">
                   <div class="col" v-show="selectedZcashPayment === 'txid'">
                     <div class="">
-                      <label :for="`payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
-                      <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
+                      <label :for="`zcash_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
+                      <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`zcash_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
                       <small class="form-text text-muted">Paste the transaction id</small>
                     </div>
                   </div>
                   <div class="col" v-show="selectedZcashPayment === 'taddress'">
                     <div class="">
-                      <label :for="`contributor_address_${grant.grant_id}`" class="font-smaller-1">Your T-address:</label>
-                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`contributor_address_${grant.grant_id}`" placeholder="t00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
+                      <label :for="`zcash_contributor_address_${grant.grant_id}`" class="font-smaller-1">Your T-address:</label>
+                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`zcash_contributor_address_${grant.grant_id}`" placeholder="t00000..." class="form-control form-control-sm" pattern="^t1[a-zA-Z0-9]{33}$" :disabled="grant.success">
                       <small class="form-text text-muted">Only t-address are allowed (no z-address support)</small>
                     </div>
                   </div>
