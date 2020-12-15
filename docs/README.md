@@ -15,9 +15,6 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
   <a href="https://twitter.com/gitcoin">
    <img src="https://img.shields.io/twitter/follow/gitcoin?style=social" alt="Follow @gitcoin" />
   </a>
-  <a href="https://codecov.io/gh/gitcoinco/web">
-   <img src="https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg" />
-  </a>
   <a href="https://travis-ci.org/gitcoinco/web">
    <img src="https://travis-ci.org/gitcoinco/web.svg?branch=master" />
   </a>

@@ -29,7 +29,6 @@ jobs:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
         - pip install pip setuptools --upgrade
-        - pip install codecov
         # Fetch and Install GeoIP database files.
         - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
         # Download links no more valid
@@ -47,8 +46,6 @@ jobs:
         - npm run eslint
         - npm run stylelint
         - pytest -p no:ethereum -p no:warnings
-        # Publish CodeCov coverage results.
-        - codecov
         # Generate Markdown documentation and static docs page.
         - pydocmd build
       env:
