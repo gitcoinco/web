@@ -34,18 +34,27 @@ from grants.models import Contribution, Grant, Subscription
 from perftools.models import JSONStore
 from web3 import Web3
 
-"""
-NOTE: This script only supports (1) regular L1 BulkCheckout, and (2) zkSync with L1 deposit. The
-third case, pure zkSync donations, is not yet supported because none of the missing contributions
-(at the time of this writing) are from this case.
-"""
-
 # ============================== Set the variables for this run here ===============================
-network = "rinkeby" # "mainnet" or "rinkeby"
-handle = "mds1" # Gitcoin username of user who made the contributions
-checkout_type = 'eth_zksync' # 'eth_std' for regular checkout, 'eth_zksync' for zkSync checkout
-do_write = True # Use True to save contributions to Database
-jsonstore_key = '0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD - 1608054625706' # JSON store key containing all user cart data
+
+# network should be "mainnet" or "rinkeby"
+network = "rinkeby"
+
+# Gitcoin username of user who made the contributions
+handle = "mds1"
+
+# 'eth_std' for regular checkout, 'eth_zksync' for zkSync checkout. These values corresponds to the
+# allowed values for `checkout_type` defined in the Contribution model
+checkout_type = 'eth_zksync'
+
+# JSON store key containing all user cart data. Must be a JSON store where `view=ethereum_cart_data`.
+# Note that the key must have the timestamp appended to the end, as this sample one does, because
+# only JSON stores with a timestamp have all the transaction hashes saved with them
+jsonstore_key = '0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD - 1608054625706'
+
+# Use True to save contributions to database
+do_write = True
+
+# ==================================================================================================
 
 class Command(BaseCommand):
 
@@ -116,16 +125,17 @@ class Command(BaseCommand):
             subscription.split_tx_id = txid
             subscription.save()
 
-            contrib = Contribution.objects.create(
-                success=True,
-                tx_cleared=True,
-                tx_override=True,
-                split_tx_id=txid,
-                subscription=subscription,
-                validator_passed=True,
-                validator_comment=validator_comment,
-                created_on=created_on,
+            # Create contribution and set the contribution as successful
+            contrib = subscription.successful_contribution(
+                '0x0', # subscription.new_approve_tx_id,
+                True, # include_for_clr
+                checkout_type=checkout_type
             )
+            contrib.success=True
+            contrib.tx_cleared=True
+            contrib.tx_override=True
+            contrib.validator_comment = validator_comment
+            contrib.save()
             print(f"ingested {subscription.pk} / {contrib.pk}")
 
             metadata = {
@@ -154,7 +164,7 @@ class Command(BaseCommand):
             print("\n")
 
     def handle(self, *args, **options):
-        # Setup ============================================================================================
+        # Setup ====================================================================================
         # Setup web3 provider
         PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
         w3 = Web3(Web3.WebsocketProvider(PROVIDER))
@@ -177,7 +187,7 @@ class Command(BaseCommand):
         created_on = entry.created_on
         cart_data = entry.data
 
-        # Main Execution ===================================================================================
+        # Main Execution ===========================================================================
         if checkout_type == 'eth_std':
             # BulkCheckout
             # Every transaction hash is the same, so we get the transaction hash from the first entry
