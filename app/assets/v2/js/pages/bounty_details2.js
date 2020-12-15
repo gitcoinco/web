@@ -79,6 +79,7 @@ Vue.mixin({
           break;
 
         case 'BNB':
+        case 'BUSD':
           url = `https://bscscan.com/tx/${txn}`;
           break;
 
@@ -126,6 +127,7 @@ Vue.mixin({
           break;
 
         case 'BNB':
+        case 'BUSD':
           url = `https://bscscan.com/address/${address}`;
           break;
 
@@ -340,6 +342,7 @@ Vue.mixin({
           break;
 
         case 'BNB':
+        case 'BUSD':
           tenant = 'BINANCE';
           break;
 
