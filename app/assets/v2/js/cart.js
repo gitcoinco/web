@@ -297,6 +297,9 @@ Vue.component('grants-cart', {
 
         } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
           return accumulator + 450000; // cDAI donation gas estimate
+        
+        } else if (tokenAddr === '0x3472A5A71965499acd81997a54BBA8D852C6E53d'.toLowerCase()) {
+          return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
 
         }
         return accumulator + 100000; // generic token donation gas estimate
