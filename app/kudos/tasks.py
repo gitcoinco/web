@@ -67,8 +67,10 @@ def redeem_bulk_kudos(self, kt_id, delay_if_gas_prices_gt_redeem= 50, override_g
         with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
             with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=override_lock_timeout):
                 multiplier = 1
-                # high gas prices, 5 hour gas limit - DL
-                gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
+                gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier * 10**9)
+                if network == 'xdai':
+                    gas_price = 1 * 10**9
+
                 if override_gas_price:
                     gas_price = override_gas_price
                 if gas_price > delay_if_gas_prices_gt_redeem:

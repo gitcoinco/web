@@ -13,10 +13,6 @@ def get_polkadot_txn_status(txnid, token_name):
     if not txnid:
         return None
 
-    response = {
-        'status': 'pending'
-    }
-
     try:
         response = { 'status': 'pending' }
 
@@ -54,12 +50,13 @@ def sync_polkadot_payout(fulfillment):
     if fulfillment.payout_tx_id:
         txn_status = get_polkadot_txn_status(fulfillment.payout_tx_id, fulfillment.token_name)
         if txn_status:
-            if txn_status.get('status') == 'done':
+            status_description = txn_status.get('status')
+            if status_description == 'done':
                 fulfillment.payout_status = 'done'
                 fulfillment.accepted_on = timezone.now()
                 fulfillment.accepted = True
+                fulfillment.save()
                 record_payout_activity(fulfillment)
-            elif txn_status.get('status') == 'expired':
+            elif status_description == 'expired':
                 fulfillment.payout_status = 'expired'
-
-        fulfillment.save()
+                fulfillment.save()

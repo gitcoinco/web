@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 import sendgrid
 from app.utils import get_profiles_from_text
+from grants.models import Subscription
 from marketing.utils import func_name, get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
@@ -303,10 +304,12 @@ def new_supporter(grant, subscription):
 def thank_you_for_supporting(grant, subscription):
     if subscription and subscription.negative:
         return
+
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     if not to_email:
         to_email = subscription.contributor_profile.user.email
+
     cur_language = translation.get_language()
 
     try:
@@ -336,21 +339,20 @@ def support_cancellation(grant, subscription):
         translation.activate(cur_language)
 
 
-def grant_cancellation(grant, subscription):
-    if subscription and subscription.negative:
-        return
+def grant_cancellation(grant):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_grant_cancellation_email(grant, subscription)
+        html, text, subject = render_grant_cancellation_email(grant)
 
         if not should_suppress_notification_email(to_email, 'grant_cancellation'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
+
 
 def grant_txn_failed(failed_contrib):
     profile, grant, tx_id = failed_contrib.subscription.contributor_profile, failed_contrib.subscription.grant, failed_contrib.tx_id
