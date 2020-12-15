@@ -43,10 +43,9 @@ third case, pure zkSync donations, is not yet supported because none of the miss
 # ============================== Set the variables for this run here ===============================
 network = "rinkeby" # "mainnet" or "rinkeby"
 handle = "mds1" # Gitcoin username of user who made the contributions
-checkout_type = 'eth_std' # 'eth_std' for regular checkout, 'eth_zksync' for zkSync checkout
-from_address = "0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD" # address that sent the transaction
+checkout_type = 'eth_zksync' # 'eth_std' for regular checkout, 'eth_zksync' for zkSync checkout
 do_write = True # Use True to save contributions to Database
-jsonstore_key = '0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD - 1607983236910' # JSON store key containing all user cart data
+jsonstore_key = '0x60A5dcB2fC804874883b797f37CbF1b0582ac2dD - 1608054625706' # JSON store key containing all user cart data
 
 class Command(BaseCommand):
 
@@ -233,37 +232,40 @@ class Command(BaseCommand):
 
         else:
             # zkSync
+            # First we get a list of zkSync tokens
+            tokens_url = 'https://rinkeby-api.zksync.io/api/v0.1/tokens' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1/tokens'
+            r = requests.get(tokens_url)
+            r.raise_for_status()
+            token_data = r.json() # zkSync token data
+            
+            # Sort token data so the array is ordered by id, in ascending order
+            token_data.sort(key=lambda token: token['id'], reverse=False)
+
             # Loop through each item in the JSON store
             for (index,item) in enumerate(cart_data):
-                print(f'Processing {index + 1} of {len(cart_data)}')
+                print(f'\nProcessing {index + 1} of {len(cart_data)}')
 
+                # Get transaction hash from cart data. Each item has a unique transaction hash on zkSync
+                tx_hash = cart_data[index]['txHash']
 
-            # Get history of transfers from this user's Gitcoin zkSync address
-            if network == "mainnet":
-                r = requests.get(f"https://api.zksync.io/api/v0.1/account/{from_address}/history/older_than")
-            else:
-                r = requests.get(f"https://rinkeby-api.zksync.io/api/v0.1/account/{from_address}/history/older_than")
-            r.raise_for_status()
-            transactions = r.json()  # array of zkSync transactions
+                # Tx hash should start with `sync-tx:` and have a 64 character hash (no 0x prefix)
+                if not tx_hash.startswith('sync-tx:') or len(tx_hash) != 72:
+                    raise Exception('Unsupported zkSync transaction hash format')
+                txid = tx_hash.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
 
-            for transaction in transactions:
-                # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
-                if transaction["tx"]["type"] != "Transfer":
-                    continue
-
-                # Skip if we are sending back to the user
-                to = w3.toChecksumAddress(transaction["tx"]["to"])
-                if to == w3.toChecksumAddress(from_address) or to == w3.toChecksumAddress(from_address):
-                    continue
+                # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
+                base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
+                r = requests.get(f"{base_url}/transactions_all/{txid}")
+                r.raise_for_status()
+                tx_data = r.json() # zkSync transaction data
 
                 # Extract contribution parameters from the JSON
-                symbol = transaction["tx"]["token"]
-                value = transaction["tx"]["amount"]
-                token = Token.objects.filter(network=network, symbol=transaction["tx"]["token"], approved=True).first().to_dict
-                decimals = token["decimals"]
-                symbol = token["name"]
+                token_id = tx_data['token']
+                symbol = token_data[token_id]['symbol']
+                decimals = token_data[token_id]['decimals']
+                value = tx_data['amount']
                 value_adjusted = int(value) / 10 ** int(decimals)
-                to = transaction["tx"]["to"]
+                to = tx_data["to"]
 
                 # Find the grant
                 try:
