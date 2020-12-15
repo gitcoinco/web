@@ -77,6 +77,10 @@ Vue.mixin({
         data.logo = vm.logo;
       }
 
+      if (vm.logoBackground) {
+        data.image_css = `background-color: ${vm.logoBackground};`;
+      }
+
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -90,6 +94,7 @@ Vue.mixin({
             vm.grant.last_update = new Date();
             vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
             vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
+            vm.grant.image_css = `background-color: ${vm.logoBackground};`;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -218,6 +223,10 @@ Vue.mixin({
         });
       });
     },
+    changeColor() {
+      let vm = this;
+      vm.grant.image_css = `background-color: ${vm.logoBackground};`
+    },
     onFileChange(e) {
       let vm = this;
 
@@ -300,7 +309,7 @@ Vue.mixin({
     },
     tweetVerification() {
       let vm = this;
-      const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURI(vm.verification_tweet)}%20${encodeURI(vm.user_code)}`;
+      const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(vm.verification_tweet)}%20${encodeURIComponent(vm.user_code)}`;
 
       window.open(tweetContent, '_blank');
     },
@@ -324,7 +333,7 @@ Vue.mixin({
       if (vm.grant.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g georgecostanza');
       }
-      if (vm.grant.description_rich.length < 10) {
+      if (vm.grant.description_rich_edited.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
 
@@ -400,7 +409,6 @@ Vue.mixin({
         return true;
       }
     }
-
   }
 });
 
@@ -428,6 +436,7 @@ Vue.component('grant-details', {
       isStaff: isStaff,
       logo: null,
       logoPreview: null,
+      logoBackground: null,
       relatedGrants: [],
       rows: 0,
       perPage: 4,
@@ -484,7 +493,9 @@ Vue.component('grant-details', {
     let vm = this;
 
     vm.grant.description_rich_edited = vm.grant.description_rich;
-    vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+    if (vm.grant.description_rich_edited) {
+      vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+    }
     vm.grantInCart();
   },
   watch: {

@@ -98,12 +98,12 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 # TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
 clr_round=7
-last_round_start = timezone.datetime(2020, 6, 15, 12, 0)
-last_round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
+last_round_start = timezone.datetime(2020, 9, 14, 12, 0)
+last_round_end = timezone.datetime(2020, 10, 2, 16, 0) #tz=utc, not mst
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
-next_round_start = timezone.datetime(2020, 9, 14, 15, 0) #tz=utc, not mst
-after_that_next_round_begin = timezone.datetime(2020, 12, 2, 12, 0)
-round_end = timezone.datetime(2020, 10, 2, 18, 0) #tz=utc, not mst
+next_round_start = timezone.datetime(2020, 12, 1, 15, 0) #tz=utc, not mst
+after_that_next_round_begin = timezone.datetime(2021, 2, 2, 12, 0)
+round_end = timezone.datetime(2020, 12, 17, 18, 0) #tz=utc, not mst
 
 round_types = ['media', 'tech', 'change']
 # TODO-SELF-SERVICE: END
@@ -239,17 +239,12 @@ def lazy_round_number(n):
 def helper_grants_round_start_end_date(request, round_id):
     start = timezone.now()
     end = timezone.now()
-    if round_id == 7:
-        # TODO: fix the round_number field in grantclr being overloaded
-        start = timezone.datetime(2020, 9, 15)
-        end = timezone.datetime(2020, 10, 3)
-    else:
-        try:
-            gclr = GrantCLR.objects.filter(round_num=round_id).first()
-            start = gclr.start_date
-            end = gclr.end_date
-        except Exception as e:
-            print(e)
+    try:
+        gclr = GrantCLR.objects.filter(round_num=round_id, customer_name='ethereum').first()
+        start = gclr.start_date
+        end = gclr.end_date
+    except Exception as e:
+        print(e)
     return start, end
 
 def helper_contributions_to_earnings(_contributions):
@@ -598,8 +593,9 @@ def get_grants(request):
             collections = paginator.get_page(page)
     else:
         _grants = build_grants_by_type(**filters)
-
-        collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:12]
+        collections = []
+        # disabling collections on the main grant page to improve performance
+        # collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:3].cache(timeout=60)
 
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
@@ -712,7 +708,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if category:
         _grants = _grants.filter(Q(categories__category__icontains=category))
 
-    _grants = _grants.prefetch_related('categories')
+    _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
 
     return _grants
 
@@ -832,7 +828,8 @@ def get_branding_info(request):
         if re.search(policy.url_pattern, request.get_full_path()):
             return {
                 "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else None,
-                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None
+                "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None,
+                "inline_css": policy.inline_css
             }
 
 
@@ -925,7 +922,7 @@ def grants_by_grant_type(request, grant_type):
             } for collection in allowed_collections.distinct()
         ]
 
-    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now())
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
     # populate active round info
     total_clr_pot = None
@@ -1264,6 +1261,7 @@ def grant_details_api(request, grant_id):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
+    tab = request.GET.get('tab')
     profile = get_profile(request)
     add_cancel_params = False
 
@@ -1288,7 +1286,7 @@ def grant_details(request, grant_id, grant_slug):
         sybil_profiles = []
 
         # Sybil score
-        if request.user.is_staff:
+        if tab == 'sybil_profile' and request.user.is_staff:
             items = ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification', 'grants_contribution.originated_address']
             for item in items:
                 title = 'Sybil' if item == 'dashboard_profile.sybil_score' else "SMS"
@@ -1299,14 +1297,14 @@ def grant_details(request, grant_id, grant_slug):
                     [f'{grant.grant_type.name} {title} Summary Last 60 Days', get_grant_sybil_profile(None, 60 * 24, grant.grant_type, index_on=item)],
                     [f'All {title} Summary Last 60 Days', get_grant_sybil_profile(None, 60 * 24, None, index_on=item)],
                 ]
-        _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
-        contributions = list(_contributions.order_by('-created_on'))
+        # _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+        # contributions = list(_contributions.order_by('-created_on'))
 
+        # # Contributors
         # if tab == 'contributors':
-        # Contributors
-        phantom_funds = grant.phantom_funding.all().cache(timeout=60)
-        contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
-        activity_count = len(cancelled_subscriptions) + len(contributions)
+        #     phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+        #     contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+        # activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
@@ -1358,6 +1356,7 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'grant': grant,
         'sybil_profiles': sybil_profiles,
+        'tab': tab,
         'title': title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
@@ -1372,7 +1371,7 @@ def grant_details(request, grant_id, grant_slug):
         'pinned': pinned,
         'what': what,
         'activity_count': activity_count,
-        'contributors': contributors,
+        # 'contributors': contributors,
         'clr_active': is_clr_active,
         # 'round_num': grant.clr_round_num,
         'is_team_member': is_team_member,
@@ -1384,13 +1383,97 @@ def grant_details(request, grant_id, grant_slug):
         # 'tenants': grant.tenants,
     }
     # Stats
-    if is_team_member or request.user.is_staff:
+    if tab == 'stats':
         params['max_graph'] = grant.history_by_month_max
         params['history'] = json.dumps(grant.history_by_month)
         params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')
 
     return TemplateResponse(request, 'grants/detail/_index.html', params)
 
+
+@csrf_exempt
+def grant_details_contributors(request, grant_id):
+    page = int(request.GET.get('page', 1))
+    limit = int(request.GET.get('limit', 30))
+
+    try:
+        grant = Grant.objects.prefetch_related('subscriptions').get(
+            pk=grant_id
+        )
+    except Grant.DoesNotExist:
+        response['message'] = 'error: grant cannot be found'
+        return JsonResponse(response)
+
+    _contributors = set(Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True, anonymous=False).prefetch_related('subscription', 'profile_for_clr').values_list('profile_for_clr__handle', flat=True).order_by('-created_on'))
+    contributors = list(_contributors)
+    all_pages = Paginator(contributors, limit)
+    this_page = all_pages.page(page)
+    response = dict()
+    all_contributors = []
+
+    for contributor in this_page:
+        contributor_json = {}
+        contributor_json['user']=  contributor
+
+        all_contributors.append(contributor_json)
+
+    response['contributors'] = json.loads(json.dumps(all_contributors, default=str))
+    response['has_next'] = all_pages.page(page).has_next()
+    response['count'] = all_pages.count
+    response['num_pages'] = all_pages.num_pages
+    response['next_page_number'] = all_pages.page(page).next_page_number() if all_pages.page(page).has_next() else None
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def grant_details_contributions(request, grant_id):
+    page = int(request.GET.get('page', 1))
+    limit = int(request.GET.get('limit', 10))
+    try:
+        grant = Grant.objects.prefetch_related('subscriptions').get(
+            pk=grant_id
+        )
+    except Grant.DoesNotExist:
+        response['message'] = 'error: grant cannot be found'
+        return JsonResponse(response)
+
+    _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+    contributions = list(_contributions.order_by('-created_on'))
+    # print(contributions)
+    all_pages = Paginator(contributions, limit)
+    this_page = all_pages.page(page)
+    response = dict()
+
+    all_contributions = []
+    for contribution in this_page:
+        print(contribution.subscription)
+        # print(contribution.subscription.tx_id)
+
+        contribution_json = {
+            k: getattr(contribution, k) for k in
+            ['id', 'success', 'tx_cleared', 'created_on', 'anonymous', 'tx_id']}
+
+        contribution_json['subscription'] = {
+            k: getattr(contribution.subscription, k) for k in
+            ['id', 'contributor_profile', 'token_symbol', 'amount_per_period_minus_gas_price', 'amount_per_period_usdt', 'amount_per_period_to_gitcoin']}
+
+
+        # contribution_json['subscription']
+        contribution_json['subscription']['hide_wallet_address'] = contribution.subscription.contributor_profile.hide_wallet_address
+        if (contribution.subscription.contributor_profile.hide_wallet_address):
+            contribution_json['tx_id'] = None
+        if (contribution.anonymous):
+            contribution_json['subscription']['contributor_profile'] = None
+        all_contributions.append(contribution_json)
+
+    response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
+    response['has_next'] = all_pages.page(page).has_next()
+    response['count'] = all_pages.count
+    response['num_pages'] = all_pages.num_pages
+    response['next_page_number'] = all_pages.page(page).next_page_number() if all_pages.page(page).has_next() else None
+
+    return JsonResponse(response)
 
 @csrf_exempt
 def grant_edit(request, grant_id):
@@ -1472,6 +1555,10 @@ def grant_edit(request, grant_id):
         logo = request.FILES.get('logo', None)
         if logo:
             grant.logo = logo
+
+        image_css = request.POST.get('image_css', None)
+        if image_css:
+            grant.image_css = image_css
 
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
@@ -1654,8 +1741,8 @@ def grant_new(request):
             'description_rich': description_rich,
             'reference_url': reference_url,
             'github_project_url': github_project_url,
-            'admin_address': eth_payout_address,
-            'zcash_payout_address': zcash_payout_address,
+            'admin_address': eth_payout_address if eth_payout_address else '0x0',
+            'zcash_payout_address': zcash_payout_address if zcash_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
@@ -1693,6 +1780,8 @@ def grant_new(request):
             except Exception as e:
                 pass
 
+        grant.save()
+        grant.calc_clr_round()
         grant.save()
 
         messages.info(
@@ -1961,10 +2050,11 @@ def bulk_fund(request):
                 'signature': request.POST.get('signature'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
+                'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
                 # Values that vary by donation
                 'admin_address': request.POST.get('admin_address').split(',')[index],
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
-                'comment': request.POST.get('comment').split(',')[index],
+                'comment': request.POST.get('comment').split('_,_')[index],
                 'confirmed': request.POST.get('confirmed').split(',')[index],
                 'contract_address': request.POST.get('contract_address').split(',')[index],
                 'contract_version': request.POST.get('contract_version').split(',')[index],
@@ -2167,9 +2257,9 @@ def grants_cart_view(request):
 
         is_brightid_verified = ( 'verified' == get_brightid_status(profile.brightid_uuid) )
 
-        context['is_fully_verified'] = (is_brightid_verified and profile.is_idena_verified and \
-                                            profile.sms_verification and profile.is_poap_verified and \
-                                            profile.is_twitter_verified and profile.is_google_verified)
+        context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
+                                            profile.is_poap_verified and profile.is_twitter_verified and \
+                                            profile.is_google_verified)
     else:
         return redirect('/login/github?next=' + request.get_full_path())
 
@@ -2595,10 +2685,13 @@ def toggle_grant_favorite(request, grant_id):
 
 
 def get_grant_verification_text(grant, long=True):
+    from django.utils.safestring import mark_safe
+
     msg = f'I am verifying my ownership of { grant.title } on Gitcoin Grants'
     if long:
         msg += f' at https://gitcoin.co{grant.get_absolute_url()}.'
-    return msg
+
+    return mark_safe(msg)
 
 
 @login_required

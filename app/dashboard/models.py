@@ -292,6 +292,7 @@ class Bounty(SuperModel):
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
         ('polkadot_ext', 'Polkadot Ext'),
+        ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
@@ -1406,6 +1407,7 @@ class BountyFulfillment(SuperModel):
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
         ('polkadot_ext', 'polkadot_ext'),
+        ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('manual', 'manual')
     ]
@@ -1418,6 +1420,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('BINANCE', 'BINANCE'),
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
@@ -2945,8 +2948,8 @@ class Profile(SuperModel):
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
     is_idena_verified = models.BooleanField(default=False)
-    idena_address = models.CharField(max_length=128, null=True, unique=True)
-    idena_status = models.CharField(max_length=32, null=True)
+    idena_address = models.CharField(max_length=128, null=True, unique=True, blank=True)
+    idena_status = models.CharField(max_length=32, null=True, blank=True)
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
@@ -2967,8 +2970,10 @@ class Profile(SuperModel):
             tb *= 1.05
         if self.sms_verification:
             tb *= 1.05
-        if self.is_idena_verified:
-            tb *= 1.25
+        if self.is_google_verified:
+            tb *= 1.05
+        if self.is_poap_verified:
+            tb *= 1.05
         return tb
 
 
@@ -3942,6 +3947,10 @@ class Profile(SuperModel):
         return f"https://github.com/{self.handle}"
 
     @property
+    def lazy_avatar_url(self):
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+
+    @property
     def avatar_url(self):
         if self.admin_override_avatar:
             return self.admin_override_avatar.url
@@ -3958,7 +3967,7 @@ class Profile(SuperModel):
                     return self.active_avatar.avatar_url
                 except Exception as e:
                     logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
-        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+        return self.lazy_avatar_url
 
     @property
     def avatar_url_with_gitcoin_logo(self):
@@ -5020,6 +5029,7 @@ class HackathonEvent(SuperModel):
     display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
     calendar_id = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -5105,6 +5115,22 @@ class HackathonEvent(SuperModel):
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
+
+    hackathon_event = instance
+    sponsors = hackathon_event.sponsor_profiles.all()
+    orgs = []
+    for sponsor_profile in sponsors:
+        org = {
+            'handle': sponsor_profile.handle,
+            'display_name': sponsor_profile.name,
+            'avatar_url': sponsor_profile.avatar_url,
+            'org_name': sponsor_profile.handle,
+            'follower_count': sponsor_profile.tribe_members.all().count(),
+            'bounty_count': sponsor_profile.bounties.count()
+        }
+        orgs.append(org)
+    instance.metadata['orgs'] = orgs
+
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult

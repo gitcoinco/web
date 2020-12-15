@@ -25,8 +25,10 @@ from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
+from django.templatetags.static import static
+
 from app import settings
-from app.settings import BASE_DIR
+from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
@@ -186,6 +188,7 @@ def generate_collection_thumbnail(collection, width, heigth):
     HALF_LOGO_SIZE_DIFF = int(LOGO_SIZE_DIFF / 2)
     PROFILE_BOX = (PROFILE_WIDTH - LOGO_SIZE_DIFF, PROFILE_HEIGHT - LOGO_SIZE_DIFF)
     GRANT_BOX = (GRANT_WIDTH, GRANT_HEIGHT)
+    media_url = '' if 'media' not in MEDIA_URL else BASE_URL[:-1]
 
     grants = collection.grants.all()
 
@@ -194,25 +197,36 @@ def generate_collection_thumbnail(collection, width, heigth):
         if grant.logo:
             if len(logos) > DISPLAY_GRANTS_LIMIT:
                 break
-            logos.append(grant.logo.open())
+            grant_url = f'{media_url}{grant.logo.url}'
+            print(f'Trying to get: ${grant_url}')
+            fd = urllib.request.urlopen(grant_url)
+            logos.append(fd)
         else:
-            logo = open(f'{BASE_DIR}/assets/v2/images/grants/logos/{grant.id % 3}.png', 'rb')
-            logos.append(logo)
+            static_file = f'assets/v2/images/grants/logos/{grant.id % 3}.png'
+            logos.append(static_file)
 
     for logo in range(len(logos), 4):
         logos.append(None)
 
     thumbail = Image.new('RGBA', IMAGE_BOX, color=BG)
-    avatar_url = f'{settings.BASE_URL[:-1]}{collection.profile.avatar_url}'
+    avatar_url = f'{media_url}{collection.profile.avatar_url}'
     fd = urllib.request.urlopen(avatar_url)
 
     # Make rounder profile avatar img
     mask = Image.new('L', PROFILE_BOX, 0)
     draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0) + PROFILE_BOX, fill=0)
+    draw.ellipse((0, 0) + PROFILE_BOX, fill=255)
     profile_thumbnail = Image.open(fd)
-    # profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
+
+    profile_thumbnail.thumbnail(PROFILE_BOX, Image.ANTIALIAS)
     profile_circle = ImageOps.fit(profile_thumbnail, mask.size, centering=(0.5, 0.5))
+
+    try:
+        applied_mask = profile_circle.copy()
+        applied_mask.putalpha(mask)
+        profile_circle.paste(applied_mask, (0, 0), profile_circle)
+    except ValueError:
+        profile_circle.putalpha(mask)
 
 
     CORNERS = [
@@ -228,7 +242,7 @@ def generate_collection_thumbnail(collection, width, heigth):
             thumbail.paste(grant_bg, CORNERS[index], grant_bg)
             continue
 
-        if re.match(r'.*\.svg', logos[index].name):
+        if type(logos[index]) is not str and re.match(r'.*\.svg', logos[index].url):
             grant_img = convert_img(logos[index])
             grant_thumbail = Image.open(grant_img)
         else:

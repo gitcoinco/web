@@ -409,7 +409,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             clr_prediction_curve = list(zip(potential_donations, potential_clr))
             base = clr_prediction_curve[0][1]
             _grant.last_clr_calc_date = timezone.now()
-            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=20)
+            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
 
             can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
 

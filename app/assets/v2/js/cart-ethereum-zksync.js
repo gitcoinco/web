@@ -22,7 +22,7 @@ Vue.component('grantsCartEthereumZksync', {
         showChangeToken: false, // true to show dropdown to let user select feeTokenSymbol
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
-        contractAddres: '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet contract address
+        contractAddress: '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet contract address
       },
 
       cart: {
@@ -49,6 +49,12 @@ Vue.component('grantsCartEthereumZksync', {
       if (this.zksync.checkoutStatus === 'pending') {
         e.returnValue = 'zkSync checkout in progress. Are you sure you want to leave?';
       }
+    });
+
+    // Update zkSync checkout connection, state, and data frontend needs when wallet connection changes
+    window.addEventListener('dataWalletReady', async(e) => {
+      await this.setupZkSync();
+      await this.onChangeHandler(this.donationInputs);
     });
   },
 
@@ -95,46 +101,8 @@ Vue.component('grantsCartEthereumZksync', {
         if (!this.zksync.checkoutManager) {
           await this.setupZkSync();
         }
-
-        // Get array of token symbols based on cart data. For example, if the user has two
-        // DAI grants and one ETH grant in their cart, this returns `[ 'DAI', 'ETH' ]`
-        this.cart.tokenList = [...new Set(donations.map((donation) => donation.name))];
-
-        // Get list of tokens in cart not supported by zkSync
-        this.cart.unsupportedTokens = this.cart.tokenList.filter(
-          (token) => !this.supportedTokens.includes(token)
-        );
-
-        // If currently selected fee token is still in the cart, don't change it. Otherwise, set
-        // fee token to the token used for the first item in the cart
-        if (!this.cart.tokenList.includes(this.zksync.feeTokenSymbol)) {
-          this.zksync.feeTokenSymbol = donations[0].name;
-        }
-
-        // Check if user has enough balance
-        this.zksync.checkoutManager
-          .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address)
-          .then((hasEnoughBalance) => {
-            this.user.hasEnoughBalance = hasEnoughBalance;
-            // If they have insufficient balance but modal is already visible, alert user.
-            // This happens if the balance check promise resolves after the user opens the modal
-            if (!this.user.hasEnoughBalance && this.zksync.showModal)
-              this.insufficientBalanceAlert();
-          })
-          .catch((e) => {
-            // Assume user has enough balance if there's an error
-            console.warn(e);
-            this.user.hasEnoughBalance = true;
-          });
-
-        // Update the fee estimate and gas cost based on changes
-        const estimatedGasCost = this.estimateGasCost();
-
-        // Emit event so cart.js can update state accordingly to display info to user
-        this.$emit('zksync-data-updated', {
-          zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
-          zkSyncEstimatedGasCost: estimatedGasCost
-        });
+        // Update state and data that frontend needs
+        await this.onChangeHandler(donations);
       }
     }
   },
@@ -143,6 +111,49 @@ Vue.component('grantsCartEthereumZksync', {
     // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
+    },
+
+    // We want to run this whenever wallet or cart content changes
+    async onChangeHandler(donations) {
+      // Get array of token symbols based on cart data. For example, if the user has two
+      // DAI grants and one ETH grant in their cart, this returns `[ 'DAI', 'ETH' ]`
+      this.cart.tokenList = [...new Set(donations.map((donation) => donation.name))];
+
+      // Get list of tokens in cart not supported by zkSync
+      this.cart.unsupportedTokens = this.cart.tokenList.filter(
+        (token) => !this.supportedTokens.includes(token)
+      );
+
+      // If currently selected fee token is still in the cart, don't change it. Otherwise, set
+      // fee token to the token used for the first item in the cart
+      if (!this.cart.tokenList.includes(this.zksync.feeTokenSymbol)) {
+        this.zksync.feeTokenSymbol = donations[0].name;
+      }
+
+      // Check if user has enough balance
+      this.zksync.checkoutManager
+        .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address)
+        .then((hasEnoughBalance) => {
+          this.user.hasEnoughBalance = hasEnoughBalance;
+          // If they have insufficient balance but modal is already visible, alert user.
+          // This happens if the balance check promise resolves after the user opens the modal
+          if (!this.user.hasEnoughBalance && this.zksync.showModal)
+            this.insufficientBalanceAlert();
+        })
+        .catch((e) => {
+          // Assume user has enough balance if there's an error
+          console.warn(e);
+          this.user.hasEnoughBalance = true;
+        });
+
+      // Update the fee estimate and gas cost based on changes
+      const estimatedGasCost = this.estimateGasCost();
+
+      // Emit event so cart.js can update state accordingly to display info to user
+      this.$emit('zksync-data-updated', {
+        zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
+        zkSyncEstimatedGasCost: estimatedGasCost
+      });
     },
 
     // Alert user they have insufficient balance to complete checkout
@@ -182,7 +193,7 @@ Vue.component('grantsCartEthereumZksync', {
         _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
         await appCart.$refs.cart.postToDatabase(
           txHashes, // array of transaction hashes for each contribution
-          this.zksync.contractAddres, // we use the zkSync mainnet contract address to represent zkSync deposits
+          this.zksync.contractAddress, // we use the zkSync mainnet contract address to represent zkSync deposits
           this.user.address
         );
         this.zksync.checkoutStatus = 'complete'; // allows user to freely close tab now

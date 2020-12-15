@@ -23,7 +23,7 @@
   :customer_name="customer_name" :featured="featured"
   inline-template
 >
-  <div class="sidebar_search font-body pr-0 pl-4 w-100">
+  <div class="sidebar_search font-body pr-lg-0 px-4">
     <div class="search font-caption mb-4 w-100">
       <div class="search-area col-12">
         <input @input="searchKeyword()" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
@@ -48,17 +48,17 @@
           {% trans "CLR Rounds" as filts %}{{ filts|upper }}
         </div>
 
-        <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+        <ul class="font-weight-semibold nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
           {% for active_round in active_rounds %}
             <li>
               <a href="/grants/clr{% if active_round.customer_name %}/{{ active_round.customer_name }}{% endif %}{% if active_round.round_num %}/{{ active_round.round_num }}{% endif %}{% if active_round.sub_round_slug %}/{{ active_round.sub_round_slug }}{% endif %}"
                  :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`">
                 {% if active_round.display_text %}
-                  {{ active_round.display_text }}
+                  {{ active_round.display_text|upper }}
                 {% elif active_round.customer_name %}
-                  {{ active_round.customer_name }} - {{ active_round.round_num }}
+                  {{ active_round.customer_name|upper }} - {{ active_round.round_num }}
                 {% elif active_round.sub_round_slug %}
-                  {{ active_round.sub_round_slug|title }} - {{ active_round.round_num }}
+                  {{ active_round.sub_round_slug|upper }} - {{ active_round.round_num }}
                 {% else %}
                   {{ active_round.round_num }}
                 {% endif %}

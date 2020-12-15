@@ -220,7 +220,7 @@ Vue.component('grants-cart', {
           grant_image_css: '',
           grant_logo: '',
           grant_slug: 'gitcoin-sustainability-fund',
-          grant_title: 'Gitcoin Grants Round 7+ Development Fund',
+          grant_title: 'Gitcoin Grants Round 8 + Dev Fund',
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
           isAutomatic: true // we add this field to help properly format the POST requests
@@ -271,12 +271,12 @@ Vue.component('grants-cart', {
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
           // Special case since we overestimate here otherwise
-          return 80000;
+          return 100000;
         }
         // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
         // then generating a conservative best-fit line
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        return 25000 * donationCurrencies.length + 125000;
+        return 27500 * donationCurrencies.length + 125000;
       }
 
       // Otherwise, based on contract tests, we use the more conservative heuristic below to get
@@ -287,7 +287,7 @@ Vue.component('grants-cart', {
         const tokenAddr = currentValue.token.toLowerCase();
 
         if (currentValue.token === ETH_ADDRESS) {
-          return accumulator + 50000; // ETH donation gas estimate
+          return accumulator + 70000; // ETH donation gas estimate
 
         } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
           return accumulator + 170000; // ANT donation gas estimate
@@ -419,7 +419,7 @@ Vue.component('grants-cart', {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
     confirmClearCart() {
-      if (confirm('are you sure')) {
+      if (confirm('Are you sure you want to clear your cart?')) {
         this.clearCart();
       }
     },
@@ -863,6 +863,13 @@ Vue.component('grants-cart', {
         txHashes = new Array(donations.length).fill(txHash[0]);
       }
 
+      // TODO update celery task to manage this so we can remove these two server requests
+      // Update the JSON store with the transaction hashes. We append a timestamp to ensure it
+      // doesn't get overwritten by a subsequent checkout
+      await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save', txHashes);
+      // Once that's done, we can delete the old JSON store
+      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+
       // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
       // a zkSync checkout
       const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
@@ -944,6 +951,9 @@ Vue.component('grants-cart', {
         saveSubscriptionPayload.token_symbol.push(tokenName);
       } // end for each donation
 
+      // to allow , within comments
+      saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
+
       // Configure request parameters
       const url = '/grants/bulk-fund';
       const headers = {
@@ -959,13 +969,13 @@ Vue.component('grants-cart', {
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
 
-      if (json.failures.length > 0) {
-        // Something went wrong, so we create a backup of the users cart
-        await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
-      }
+      // if (json.failures.length > 0) {
+      //   // Something went wrong, so we create a backup of the users cart
+      //   await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
+      // }
 
-      // Clear JSON Store
-      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+      // // Clear JSON Store
+      // await this.manageEthereumCartJSONStore(userAddress, 'delete');
     },
 
     /**
@@ -1074,14 +1084,35 @@ Vue.component('grants-cart', {
 
     // For the provider address, an action of `save` will backup the user's Ethereum cart data with
     // a JSON store before checkout, and validate that it was saved. An action of `delete` will
-    // delete that JSON store
-    async manageEthereumCartJSONStore(userAddress, action) {
+    // delete that JSON store. The txHashes input must be undefined if no hashes are available, or
+    // or an array with the tx hash for each donation in this.donationInputs
+    async manageEthereumCartJSONStore(userAddress, action, txHashes = undefined) {
       if (action !== 'save' && action !== 'delete') {
         throw new Error("JSON Store action must be 'save' or 'delete'");
       }
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const url = 'manage-ethereum-cart-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+
+      // Configure data to save
+      let cartData;
+
+      if (!txHashes) {
+        // No transaction hashes were provided, so just save off the cart data directly
+        cartData = this.donationInputs;
+      } else {
+        // Add transaction hashes to each donation input object
+        if (txHashes.length !== this.donationInputs.length) {
+          throw new Error('Invalid length of transaction hashes array');
+        }
+        cartData = this.donationInputs.map((donation, index) => {
+          return {
+            ...donation,
+            txHash: txHashes[index]
+          };
+        });
+      }
+
 
       // Send request
       const payload = {
@@ -1090,7 +1121,7 @@ Vue.component('grants-cart', {
         body: new URLSearchParams({
           action,
           csrfmiddlewaretoken,
-          ethereum_cart_data: action === 'save' ? JSON.stringify(this.grantsByTenant) : null,
+          ethereum_cart_data: action === 'save' ? JSON.stringify(cartData) : null,
           user_address: userAddress
         })
       };

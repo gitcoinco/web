@@ -97,7 +97,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               <div v-if="!isFullyVerified" class="grant-row-style">
                 <div class="row align-items-center justify-content-between">
                   <div class="col col-12 col-md-8 col-lg-9">
-                    <strong>Get up to 70% greater CLR Match Amount by improving your Trust Bonus</strong> <br />
+                    <strong>Get up to 45% greater CLR Match Amount by improving your Trust Bonus</strong> <br />
                     <font size="2">
                       Increase your CLR Match Amount by verifying your profile with various services, and help Gitcoin be more sybil-resistant.
                       Do this anytime before the end of the grants round to earn the match retroactively for all your contributions.
@@ -130,7 +130,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="grant-row-style">
                         <div class="d-flex align-items-center justify-content-between flex-wrap">
                           {% comment %} Title and logo {% endcomment %}
-                          <div class="d-flex flex-fill">
+                          <div class="col-lg-6 d-flex flex-fill">
                               <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
                               <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
                           </div>
@@ -168,6 +168,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
                               <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                               width="20">
+                            </div>
+                            <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+                              Cannot match own grant
                             </div>
                             <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
                               Not Eligible for CLR
@@ -355,7 +358,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <li>
                               You are additionally contributing
                               <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
-                              to the Gitcoin Mainainter Grant
+                              to the Gitcoin Maintainer Grant
                             </li>
                             <li>
                               Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
@@ -380,7 +383,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               <div v-if="zkSyncUnsupportedTokens.length > 0">
                                 zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
                               </div>
-                              <div v-else>
+                              <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
                                 Save
                                 <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
                                 on gas costs with [[ checkoutRecommendation.name ]]
@@ -403,6 +406,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
                                       :disabled="cart.unsupportedTokens.length > 0"
                                       id='js-zkSyncfundGrants-button'
+                                      v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
                                     >
                                       Checkout with zkSync
                                     </button>
@@ -480,6 +484,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                             <button @click="checkoutWithZksync" class="btn btn-gc-blue shadow-none">
                                             Proceed
                                             </button>
+                                            <div class="font-smaller-2 font-italic mt-2">
+                                              If the zkSync page does not open, your browser may have blocked it.
+                                              Please allow popups from https://gitcoin.co in your browser settings.
+                                            </div>
                                           </div>
                                         </div>
                                       </template>
@@ -491,7 +499,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 </div>
                               <div class="col-auto">
-                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing">
+                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
                                   Standard Checkout
                                 </button>
                               </div>
@@ -519,7 +527,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="grant-row-style">
                         <div class="d-flex align-items-center justify-content-between flex-wrap">
                           {% comment %} Title and logo {% endcomment %}
-                          <div class="d-flex flex-fill">
+                          <div class="col-lg-6 d-flex flex-fill">
                               <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
                               <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
                           </div>
@@ -749,7 +757,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.8/dist/main.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.10/dist/main.js"></script>
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
 
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>

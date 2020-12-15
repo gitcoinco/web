@@ -118,6 +118,7 @@ Vue.mixin({
           break;
         }
 
+
         default:
           break;
       }
@@ -210,6 +211,10 @@ Vue.mixin({
         case '58':
           // polkadot
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
           break;
         case '1000':
           // harmony

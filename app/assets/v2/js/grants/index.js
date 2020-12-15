@@ -162,6 +162,7 @@ if (document.getElementById('grants-showcase')) {
       page: 1,
       collectionsPage: 1,
       limit: 6,
+      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       sort: sort,
       network: document.network,
       keyword: document.keyword,
@@ -191,6 +192,10 @@ if (document.getElementById('grants-showcase')) {
       numGrants
     },
     methods: {
+      toggleActiveCLRs(){
+        this.show_active_clrs = !this.show_active_clrs
+        window.localStorage.setItem('show_active_clrs', this.show_active_clrs)
+      },
       setView: function(mode, event) {
         event.preventDefault();
         localStorage.setItem('grants_view', mode);
@@ -507,6 +512,11 @@ if (document.getElementById('grants-showcase')) {
         });
 
         this.grants = getGrants.grants;
+      }
+    },
+    computed: {
+      isLandingPage() {
+        return (window.location.pathname == '/grants/');
       }
     },
     beforeMount() {

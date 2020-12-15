@@ -38,6 +38,18 @@ along with this program. If not, see
     .no-bg {
       background: none !important;
     }
+
+    @media (min-width: 768px) {
+      .grants-details-parent {
+        width: 100vw;
+      }
+
+      .grants-showcase--child {
+        max-width: 99vw;
+      }
+    }
+
+    {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
 </head>
 
@@ -54,7 +66,7 @@ along with this program. If not, see
     {% include 'grants/shared/landing_hero.html' %}
 
 
-    <div class="row" class="mx-0" style="width: 100vw">
+    <div class="row grants-details-parent" class="mx-0">
       <div id="grants-details" class="no-gutters w-100">
         <div style="background-image: url('{% if grant_bg %} {{ grant_bg.background_image }} {% else %} /static/v2/images/bg/{{bottom_back}} {% endif %} '); background-size: contain;">
           <div
@@ -76,8 +88,8 @@ along with this program. If not, see
             </div>
             {% endif %}
             <div id="grants-showcase" v-cloak>
-              <div class="row" style="max-width: 99vw">
-                <div class="col-12 col-lg-3 col-xl-2 pr-0" id="sidebar_container">
+              <div class="row" class="grants-showcase--child">
+                <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
                   {% include 'grants/shared/sidebar_search.html' %}
                 </div>
 
@@ -104,7 +116,9 @@ along with this program. If not, see
                   </template>
                   <template v-else>
                     {% include 'grants/shared/landing_subnav.html' %}
-                     {% include 'grants/shared/active_clr_round.html'%}
+                    <template v-if="isLandingPage">
+                      {% include 'grants/shared/active_clr_round.html'%}
+                    </template>
                     {% include 'grants/shared/landing_grants.html' %}
                   </template>
                 </div>
@@ -119,7 +133,7 @@ along with this program. If not, see
                 width="max(80vw, 1000px)"
               >
                 <grant-details :grant="grant" :fullview="false" v-if="grant.id">
-                  <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;">
+                  <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
                 </grant-details>
               </b-sidebar>
             </div>

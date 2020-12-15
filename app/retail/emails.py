@@ -132,8 +132,8 @@ def render_new_supporter_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_thank_you_for_supporting_email(subscriptions):
-    params = {'subscriptions': subscriptions}
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
     subject = _("Thank you for supporting Grants on Gitcoin!")
@@ -230,8 +230,8 @@ def support_cancellation(request):
 @staff_member_required
 def thank_you_for_supporting(request):
     grant = Grant.objects.first()
-    subscription = Subscription.objects.all()[:5]
-    response_html, __, __ = render_thank_you_for_supporting_email(subscription)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
     return HttpResponse(response_html)
 
 

@@ -420,6 +420,7 @@ def send_tip_3(request):
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@login_required
 def send_tip_2(request):
     """Handle the second stage of sending a tip.
 
