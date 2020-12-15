@@ -390,7 +390,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               </div>
                             </div>
                             <div class="row align-items-center justify-content-between">
-                              <div class="col-auto">
+                              <div v-if="!isZkSyncDown" class="col-auto">
                                 {% comment %} HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 <grants-cart-ethereum-zksync
                                   inline-template
@@ -499,11 +499,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 </div>
                               <div class="col-auto">
-                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+                                <button v-if="!isZkSyncDown" class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+                                  Standard Checkout
+                                </button>
+                                <button v-else class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
                                   Standard Checkout
                                 </button>
                               </div>
                             </div>
+                            <p v-if="isZkSyncDown" class="font-smaller-1 mt-2">
+                              zkSync is down at the moment, so if you'd like to checkout now you'll have to use standard checkout!
+                            </p>
                           </div>
                         </div>
                       </div>
