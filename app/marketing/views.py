@@ -806,7 +806,7 @@ def leaderboard(request, key=''):
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = int(request.GET.get('limit', 50))
-    cadence = request.GET.get('cadence', 'weekly')
+    cadence = request.GET.get('cadence', 'monthly')
 
     # backwards compatibility fix for old inbound links
     for ele in cadences:
