@@ -31,7 +31,8 @@
                   is_clr_eligible: {{grant.obj.is_clr_eligible|yesno:"true,false"}},
                   grant_donation_amount: "{{ grant.amount }}",
                   grant_donation_currency: "{{ grant.token.symbol }}",
-                  token_local_id: "{{ grant.token.id }}"
+                  token_local_id: "{{ grant.token.id }}",
+                  clr_round_num: "{{ grant.obj.clr_round_num }}"
                 }
             {% endfor %}
             ]
