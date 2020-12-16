@@ -8,7 +8,7 @@
   "email": "drc",
   "website": "drcglobal.org/",
   "whitepaper": "https://drcglobal.org/white-paper-1/",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2020-10-05",
   "initial_price":{
         "ETH":"0.0000000045 ETH",
