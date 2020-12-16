@@ -192,9 +192,9 @@ if (document.getElementById('grants-showcase')) {
       numGrants
     },
     methods: {
-      toggleActiveCLRs(){
-        this.show_active_clrs = !this.show_active_clrs
-        window.localStorage.setItem('show_active_clrs', this.show_active_clrs)
+      toggleActiveCLRs() {
+        this.show_active_clrs = !this.show_active_clrs;
+        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
       },
       setView: function(mode, event) {
         event.preventDefault();
