@@ -92,6 +92,9 @@ def create_grant_type_cache():
 def create_grant_active_clr_mapping():
     print('create_grant_active_clr_mapping')
     # Upate grants mppping to active CLR rounds
+    # NOTE: deprecated; this has been replaced by create_grant_clr_cache
+    # by Owocki 12/16/2020
+    return
     from grants.models import Grant, GrantCLR
 
     grants = Grant.objects.all()
@@ -395,7 +398,6 @@ class Command(BaseCommand):
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
-        operations.append(create_grant_active_clr_mapping)
         if not settings.DEBUG:
             operations.append(create_results_cache)
             operations.append(create_hack_event_cache)
