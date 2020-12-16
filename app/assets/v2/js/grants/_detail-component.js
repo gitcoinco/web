@@ -225,7 +225,8 @@ Vue.mixin({
     },
     changeColor() {
       let vm = this;
-      vm.grant.image_css = `background-color: ${vm.logoBackground};`
+
+      vm.grant.image_css = `background-color: ${vm.logoBackground};`;
     },
     onFileChange(e) {
       let vm = this;

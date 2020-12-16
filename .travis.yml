@@ -11,7 +11,7 @@ os:
 services:
   - docker
   - postgresql
-  - redis-server
+  - redis
 
 cache:
   npm: false
@@ -24,11 +24,12 @@ jobs:
     # Lint and test the repository.
     - stage: lint-test
       before_script:
+        - nvm install "14"
         - psql -c 'create database testdb;' -U postgres
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
-        - pip install pip setuptools --upgrade
+        - pip install pip==20.0.2 setuptools --upgrade
         # Fetch and Install GeoIP database files.
         - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
         # Download links no more valid
@@ -41,6 +42,7 @@ jobs:
         # Install libvips dependencies.
         - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
+        - node --version
         - npm install
         - pip install -r requirements/test.txt
         - npm run eslint

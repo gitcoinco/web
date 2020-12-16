@@ -5113,18 +5113,21 @@ class HackathonEvent(SuperModel):
 def psave_hackathonevent(sender, instance, **kwargs):
 
     hackathon_event = instance
-    sponsors = hackathon_event.sponsor_profiles.all()
     orgs = []
-    for sponsor_profile in sponsors:
-        org = {
-            'handle': sponsor_profile.handle,
-            'display_name': sponsor_profile.name,
-            'avatar_url': sponsor_profile.avatar_url,
-            'org_name': sponsor_profile.handle,
-            'follower_count': sponsor_profile.tribe_members.all().count(),
-            'bounty_count': sponsor_profile.bounties.count()
-        }
-        orgs.append(org)
+    try:
+        sponsors = hackathon_event.sponsor_profiles.all()
+        for sponsor_profile in sponsors:
+            org = {
+                'handle': sponsor_profile.handle,
+                'display_name': sponsor_profile.name,
+                'avatar_url': sponsor_profile.avatar_url,
+                'org_name': sponsor_profile.handle,
+                'follower_count': sponsor_profile.tribe_members.all().count(),
+                'bounty_count': sponsor_profile.bounties.count()
+            }
+            orgs.append(org)
+    except:
+        pass
     instance.metadata['orgs'] = orgs
 
 

@@ -225,7 +225,23 @@
         </template>
 
 
-        <div class="text-right mt-2">
+        <div class="d-flex justify-content-between mt-2">
+          <div class="d-flex align-items-center font-smaller-2" id="popover-target-1">
+            <span class="fa-stack font-smaller-6 mr-2">
+              <i class="fas fa-circle fa-stack-2x"></i>
+              <i class="fas fa-info fa-stack-1x fa-inverse"></i>
+            </span> Rules
+          </div>
+          <b-popover target="popover-target-1" triggers="hover" placement="left">
+            <template #title>Rules</template>
+            <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+            <ul class="pl-3">
+              <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+              <li><b>DO NOT</b> make up a new identity to contribute.</li>
+              <li><b>DO NOT</b> try to falsify a contribution.</li>
+            </ul>
+            Read all the <a href="https://gitcoin.co/wiki/grants/">rules here</a>.  If you see someone breaking the rules, please use 'Flag Grant' to report them.
+          </b-popover>
           <button @click="flag" class="btn btn-gc-pink btn-sm font-caption font-weight-semibold px-3">
             Flag <i class="ml-2 far fa-flag"></i>
           </button>
@@ -484,6 +500,18 @@
 
   .ql-editor img {
     max-width: 100%;
+  }
+
+  .ql-editor pre {
+    white-space: pre-wrap;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: #23241f;
+    color: #f8f8f2;
+    overflow: visible;
+    border-radius: 3px;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
   }
 
   .ql-toolbar.ql-snow {
