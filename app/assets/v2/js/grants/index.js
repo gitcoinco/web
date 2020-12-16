@@ -62,6 +62,11 @@ $(document).ready(() => {
     if (style.background_image) {
       $("#grant-background-image-mount-point").css("background-image", style.background_image)
     }
+
+    if (style.inline_css) {
+      $('style').last().text(style.inline_css);
+    }
+   
   }
   toggleStyle(document.current_style)
 

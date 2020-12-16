@@ -51,6 +51,7 @@ along with this program. If not, see
 
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
+  <style></style>
 </head>
 
 <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
@@ -183,7 +184,8 @@ along with this program. If not, see
       {% if grant_bg %}
         document.current_style = {
           banner_image: "{{ grant_bg.banner_image }}",
-          background_image: " url('{{background_image }}')"
+          background_image: " url('{{background_image }}')",
+          inline_css: "{{ inline_css }}"
         }
       {% else %}
         document.current_style = base_style
