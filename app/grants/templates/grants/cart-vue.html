@@ -164,7 +164,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           {% comment %} CLR Match Amount {% endcomment %}
 
                           <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-                            <div v-if="grant.is_clr_eligible == true && !grant.is_on_team" class="clr-match-box d-flex flex-nowrap align-items-center">
+                            <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+                              Not in an active CLR
+                            </div>
+                            <div v-else-if="grant.is_clr_eligible == true && !grant.is_on_team" class="clr-match-box d-flex flex-nowrap align-items-center">
                               <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
                               <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                               width="20">
@@ -260,7 +263,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
 
                     {% comment %} Anonymize my contribution {% endcomment %}
-                    <div class="flex-container text-left grant-header-row black m-1 p-1">
+                    <!-- <div class="flex-container text-left grant-header-row black m-1 p-1">
                       <div style="width: 100%">
                         <div class="flex-container" style="justify-content: start">
                           <input v-model="AnonymizeGrantsContribution" type="checkbox" id="anonymize_gitcoin_grants_contributions"
@@ -273,7 +276,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
 
                     {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
                     <div class="flex-container text-left grant-header-row black">
@@ -323,7 +326,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 <div class="flex-container text-left grant-header-row black m-1 p-1">
                                   <div class="w-100">
                                     <div class="flex-container" style="justify-content: start">
-                                      <input type="checkbox" id="include_for_clr" name="include_for_clr" v-model="include_for_clr" checked style="margin-right:1rem">
+                                      <input type="checkbox" id="include_for_clr" name="include_for_clr" v-model="include_for_clr" style="margin-right:1rem">
                                       <label class="font-smaller-1 darker-gray mb-0 pb-0" for="include_for_clr">
                                         Include this contribution to CLR matching
                                       </label>
@@ -390,7 +393,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               </div>
                             </div>
                             <div class="row align-items-center justify-content-between">
-                              <div class="col-auto">
+                              <div v-if="!isZkSyncDown" class="col-auto">
                                 {% comment %} HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 <grants-cart-ethereum-zksync
                                   inline-template
@@ -499,11 +502,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 </div>
                               <div class="col-auto">
-                                <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+                                <button v-if="!isZkSyncDown" class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+                                  Standard Checkout
+                                </button>
+                                <button v-else class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
                                   Standard Checkout
                                 </button>
                               </div>
                             </div>
+                            <p v-if="isZkSyncDown" class="font-smaller-1 mt-2">
+                              zkSync is down at the moment, so if you'd like to checkout now you'll have to use standard checkout!
+                            </p>
                           </div>
                         </div>
                       </div>

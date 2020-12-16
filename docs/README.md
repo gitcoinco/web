@@ -11,7 +11,7 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
 
 # web repo
 <p align="center">
-  
+
   <a href="https://twitter.com/gitcoin">
    <img src="https://img.shields.io/twitter/follow/gitcoin?style=social" alt="Follow @gitcoin" />
   </a>
@@ -33,7 +33,7 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
   <a href="https://www.reddit.com/r/gitcoincommunity/">
     <img alt="Subreddit subscribers" src="https://img.shields.io/reddit/subreddit-subscribers/gitcoincommunity?style=social">
   </a>
-    
+
 </p>
 
 This is the website that is live at [gitcoin.co](https://gitcoin.co)
@@ -191,8 +191,8 @@ Have an ERC20 compatible token that you'd like to use on the platform?  Great!  
   - [Supporting Individuals](#showing-support-to-individuals)
 - [Tips](#tips)
 - [Kudos](#kudos)
-  
-### Bounties 
+
+### Bounties
 
 This is the high level flow of a bounty on Gitcoin:
 
@@ -212,9 +212,9 @@ We may introduce arbitration at some point in the future.  Until then, we are lu
 
 #### Showing Support to Individuals
 
-- via [Tips](https://gitcoin.co/tips) 
+- via [Tips](https://gitcoin.co/tips)
   - A free, fast way to show immediate gratitude towards an individual via github username or email address
-  
+
 - via [Kudos](https://gitcoin.co/kudos)
   - Showcases special skills and appreciation towards other Gitcoin members.
 
