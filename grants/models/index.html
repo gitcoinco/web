@@ -2340,11 +2340,30 @@ object the first time, the query is executed.</p>
 <pre><code class="python">GrantCLR(self, *args, **kwargs)
 </code></pre>
 
-<p>GrantCLR(id, created_on, modified_on, round_num, is_active, start_date, end_date, grant_filters, subscription_filters, collection_filters, verified_threshold, unverified_threshold, total_pot, contribution_multiplier, logo)
-<h3 id="grants.models.GrantCLR.collection_filters">collection_filters</h3></p>
+<p>GrantCLR(id, created_on, modified_on, customer_name, round_num, sub_round_slug, display_text, owner, is_active, start_date, end_date, grant_filters, subscription_filters, collection_filters, verified_threshold, unverified_threshold, total_pot, contribution_multiplier, logo)
+<h3 id="grants.models.GrantCLR.clr_calculations">clr_calculations</h3></p>
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="grants.models.GrantCLR.collection_filters">collection_filters</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.GrantCLR.contribution_multiplier">contribution_multiplier</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLR.customer_name">customer_name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLR.display_text">display_text</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2431,11 +2450,28 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="grants.models.GrantCLR.owner">owner</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.GrantCLR.owner_id">owner_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.GrantCLR.round_num">round_num</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.GrantCLR.start_date">start_date</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLR.sub_round_slug">sub_round_slug</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2510,10 +2546,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.backup_clr_prediction_curve">backup_clr_prediction_curve</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.cancel_tx_id">cancel_tx_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2539,6 +2571,17 @@ a many-to-many relation.</p>
 </code></pre>
 <p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
 instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="grants.models.Grant.clr_calculations">clr_calculations</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.Grant.clr_matches">clr_matches</h3>
@@ -2651,6 +2694,11 @@ object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.get_previous_by_modified_on">_method</h3>
 
 <pre><code class="python">Grant._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.Grant.get_region_display">_method</h3>
+
+<pre><code class="python">Grant._method(self, *, field=&lt;django.db.models.fields.CharField: region&gt;)
 </code></pre>
 
 <h3 id="grants.models.Grant.github_project_url">github_project_url</h3>
@@ -2819,12 +2867,24 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.random_shuffle">random_shuffle</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.reference_url">reference_url</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.required_gas_price">required_gas_price</h3>
+<h3 id="grants.models.Grant.region">region</h3>
 
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.REGIONS">REGIONS</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="grants.models.Grant.required_gas_price">required_gas_price</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.slug">slug</h3>
@@ -3245,11 +3305,13 @@ object the first time, the query is executed.</p>
 
 <p>Returns the grants subscription hash (has to get it from web3).
 <h3 id="grants.models.Subscription.successful_contribution">successful_contribution</h3></p>
-<pre><code class="python">Subscription.successful_contribution(self, tx_id)
+<pre><code class="python">Subscription.successful_contribution(self, tx_id, include_for_clr=True, **kwargs)
 </code></pre>
 
-<p>Create a contribution object.
-<h2 id="grants.models.DonationQuerySet">DonationQuerySet</h2></p>
+<p>Create a contribution object. Only expected keyword argument is checkout_type, which was
+added as a keyword argument to avoid breaking existing calls to this function</p>
+<h2 id="grants.models.DonationQuerySet">DonationQuerySet</h2>
+
 <pre><code class="python">DonationQuerySet(self, model=None, query=None, using=None, hints=None)
 </code></pre>
 
@@ -3596,7 +3658,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">Contribution.update_tx_status(self)
 </code></pre>
 
-<p>Updates tx status.
+<p>Updates tx status for Ethereum contributions.
 <h2 id="grants.models.next_month">next_month</h2></p>
 <pre><code class="python">next_month()
 </code></pre>
@@ -4108,7 +4170,125 @@ object the first time, the query is executed.</p>
 
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.</p>
+The argument must be an iterable if specified.
+<h2 id="grants.models.GrantCLRCalculation">GrantCLRCalculation</h2></p>
+<pre><code class="python">GrantCLRCalculation(self, *args, **kwargs)
+</code></pre>
+
+<p>GrantCLRCalculation(id, created_on, modified_on, latest, grant, grantclr, clr_prediction_curve)
+<h3 id="grants.models.GrantCLRCalculation.clr_prediction_curve">clr_prediction_curve</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLRCalculation.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">GrantCLRCalculation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantCLRCalculation.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">GrantCLRCalculation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantCLRCalculation.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">GrantCLRCalculation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantCLRCalculation.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">GrantCLRCalculation._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantCLRCalculation.grant">grant</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.GrantCLRCalculation.grant_id">grant_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLRCalculation.grantclr">grantclr</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.GrantCLRCalculation.grantclr_id">grantclr_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLRCalculation.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCLRCalculation.latest">latest</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="grants.models.GrantBrandingRoutingPolicy">GrantBrandingRoutingPolicy</h2>
+
+<pre><code class="python">GrantBrandingRoutingPolicy(self, *args, **kwargs)
+</code></pre>
+
+<p>This manages the background that would be put on a grant page (or grant CLR based on a regex matching in the URL)</p>
+<p>For a grant, there are several models and views that handle different kinds of grants, CLRs  and categories.
+This routing policy model sits in the middle and handles the banner and background image of specific sub-url group</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.background_image">background_image</h3>
+
+<p>Just like the FileDescriptor, but for ImageFields. The only difference is
+assigning the width/height to the width_field/height_field, if appropriate.</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.banner_image">banner_image</h3>
+
+<p>Just like the FileDescriptor, but for ImageFields. The only difference is
+assigning the width/height to the width_field/height_field, if appropriate.</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">GrantBrandingRoutingPolicy._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantBrandingRoutingPolicy.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">GrantBrandingRoutingPolicy._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantBrandingRoutingPolicy.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">GrantBrandingRoutingPolicy._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantBrandingRoutingPolicy.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">GrantBrandingRoutingPolicy._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantBrandingRoutingPolicy.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.inline_css">inline_css</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.policy_name">policy_name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.priority">priority</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantBrandingRoutingPolicy.url_pattern">url_pattern</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
                 
                   
                 

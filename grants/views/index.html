@@ -1987,7 +1987,7 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 
 <p>Handle grants explorer.
 <h2 id="grants.views.clr_grants">clr_grants</h2></p>
-<pre><code class="python">clr_grants(request, round_num)
+<pre><code class="python">clr_grants(request, round_num, sub_round_slug='', customer_name='')
 </code></pre>
 
 <p>CLR grants explorer.
@@ -2001,6 +2001,16 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 </code></pre>
 
 <p>Handle grants explorer.
+<h2 id="grants.views.grant_details_api">grant_details_api</h2></p>
+<pre><code class="python">grant_details_api(request, grant_id)
+</code></pre>
+
+<p>Json the Grant details.
+<h3 id="grants.views.grant_details_api.csrf_exempt">csrf_exempt</h3></p>
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
 <h2 id="grants.views.grant_details">grant_details</h2></p>
 <pre><code class="python">grant_details(request, grant_id, grant_slug)
 </code></pre>
@@ -2026,20 +2036,24 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Handle grant funding.
-<h2 id="grants.views.zksync_set_interrupt_status">zksync_set_interrupt_status</h2></p>
-<pre><code class="python">zksync_set_interrupt_status(request)
+<h2 id="grants.views.bulk_fund">bulk_fund</h2></p>
+<pre><code class="python">bulk_fund(request)
 </code></pre>
 
-<p>For the specified address, save off the deposit hash of the value the tx that was interrupted.
-If a deposit hash is present, then the user was interrupted and must complete the existing
-checkout before doing another one</p>
-<h2 id="grants.views.zksync_get_interrupt_status">zksync_get_interrupt_status</h2>
-
-<pre><code class="python">zksync_get_interrupt_status(request)
+<p>Called when checking out with an Ethereum cart
+<h2 id="grants.views.manage_ethereum_cart_data">manage_ethereum_cart_data</h2></p>
+<pre><code class="python">manage_ethereum_cart_data(request)
 </code></pre>
 
-<p>Returns the transaction hash of a deposit into zkSync if user was interrupted before zkSync
-chekout was complete</p>
+<p>For the specified user address:
+  1. <code>action == save</code> will save the provided cart data as a JSON Store
+  2. <code>action == delete</code> will removed saved cart data from the JSON Store</p>
+<h2 id="grants.views.get_ethereum_cart_data">get_ethereum_cart_data</h2>
+
+<pre><code class="python">get_ethereum_cart_data(request)
+</code></pre>
+
+<p>For the specified user address, returns the saved checkout data if found</p>
 <h2 id="grants.views.get_replaced_tx">get_replaced_tx</h2>
 
 <pre><code class="python">get_replaced_tx(request)

@@ -1296,6 +1296,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#round-8" title="Round 8" class="md-nav__link">
+    Round 8
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#round-7" title="Round 7" class="md-nav__link">
     Round 7
   </a>
@@ -2072,6 +2079,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#round-8" title="Round 8" class="md-nav__link">
+    Round 8
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#round-7" title="Round 7" class="md-nav__link">
     Round 7
   </a>
@@ -2164,6 +2178,36 @@
                 
                 
                 <h1 id="grants-general-documentation">Grants General Documentation</h1>
+<ul>
+<li><a href="#grants-general-documentation">Grants General Documentation</a></li>
+<li><a href="#round-8">Round 8</a></li>
+<li><a href="#round-7">Round 7</a><ul>
+<li><a href="#architecture-background">Architecture Background</a></li>
+<li><a href="#checkout-flow">Checkout Flow</a></li>
+<li><a href="#transfer-fees">Transfer Fees</a></li>
+</ul>
+</li>
+<li><a href="#round-6">Round 6</a></li>
+<li><a href="#rounds-15">Rounds 1–5</a><ul>
+<li><a href="#how-grants-works">How Grants works</a></li>
+<li><a href="#sub-miner">Sub Miner</a></li>
+<li><a href="#more-information">More information</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="round-8">Round 8</h2>
+<p>In round 8, the zkSync checkout flow was significantly simplified thanks to the new
+<a href="https://www.npmjs.com/package/zksync-checkout"><code>zksync-checkout</code></a> library released by zkSync. This library natively supports batch transfers, meaning multiple transfers can be approved
+with just one L1 signature. This provides many benefits over the round 7 approach:</p>
+<ul>
+<li>It resolves the UX issues we worked around by introducing "Gitcoin zkSync wallets" in round 7</li>
+<li>Security is improved, as Gitcoin never sees any of your zkSync private keys</li>
+<li>It provides a familiar web2 checkout flow, similar to "Checkout with Amazon" or "Checkout with Google Pay"</li>
+<li>It's less confusing to users as your transaction history on zkScan now shows ordinary transfers to grants instead of one big transfer to an unknown address</li>
+<li>These native batch transfers are atomic, so your checkout will either succeed or fail. The previous approach can leave user accounts in an odd state if one of the multiple transfers failed, and care must be taken to properly recover from this</li>
+</ul>
+<p>For more information on how this new checkout flow works, please see the
+<a href="https://www.notion.so/zkSync-Checkout-docs-2bffd6f169e746d0b51873e4127992a6">zkSync Checkout documentation</a>.</p>
 <h2 id="round-7">Round 7</h2>
 <p>In round 7 we introduced the option to checkout on L2 using <a href="https://zksync.io/">zkSync</a>.
 This means there are now three possible checkout flows&mdash;the Bulk Checkout flow introduced in
@@ -2277,7 +2321,7 @@ It works as follows:</p>
 <ul>
 <li>https://github.com/gitcoinco/web/issues/2424</li>
 <li>https://github.com/gitcoinco/web/pull/3055
-  https://chat.gitcoin.co/</li>
+  https://discord.com/invite/83BK5z55yB</li>
 <li>http://1337alliance.com</li>
 </ul>
                 
