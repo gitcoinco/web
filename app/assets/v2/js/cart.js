@@ -59,6 +59,7 @@ Vue.component('grants-cart', {
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
+      isZkSyncDown: false, // disable zkSync when true
       // verification
       isFullyVerified: false,
       // Collection
