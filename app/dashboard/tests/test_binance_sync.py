@@ -71,7 +71,6 @@ class BinanceSyncTest(TestCase):
             payout_tx_id='0xc32f5ad8a1dec9e0ae67f0f55f772ea752e7e032b62b1cdaf8d392e12c66e919'
         )
 
-    @mock.patch("") 
     def test_get_binance_txn_status(self, mocked_requests):
         pass
 
