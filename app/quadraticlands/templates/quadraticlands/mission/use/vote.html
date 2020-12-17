@@ -1,0 +1,385 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background/anim-5.svg">
+</section>
+
+
+<section class="quest">
+
+	<!-- content gets filled by js -->
+	<main>
+		<div class="quest-vote">
+
+			<!-- interface for intro -->
+			<div id="intro" class="hide glass">
+				<h3>Introduction</h3>
+				<h1>Gitcoin’s Core Values</h1>
+				<p style="margin-bottom:2em;">Influence our principles of our living constitution by balance your voting power to the core values you care the most by drag some sliders.</p>
+			</div>	
+
+			<!-- interface for voting -->
+			<div id="voting" class="hide">
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Self Reliance</label>
+					<div>
+						<input type="number" name="SelfReliance" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Collaboration</label>
+					<div>
+						<input type="number" name="Collaboration" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Intellectual Honesty</label>
+					<div>
+						<input type="number" name="IntellectualHonesty" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Empathy</label>
+					<div>
+						<input type="number" name="Empathy" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Stress Reducers</label>
+					<div>
+						<input type="number" name="StressReducers" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Inclusivity</label>
+					<div>
+						<input type="number" name="Inclusivity" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+				<div class="option glass">
+					<div class="bar"></div>
+					<label>Giving First</label>
+					<div>
+						<input type="number" name="GivingFirst" value="0" step="5">
+						<span>%</span>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</main>
+
+
+	<!-- timer / seperator -->
+	<div class="seperator">
+		<div id="progressbar" style="width:0px"></div>
+	</div>
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Use
+		</div>
+
+		<!-- button status -->
+		<div class="right">
+
+			<!-- intro - start voting process -->
+			<div id="btnStart" class="hide" >
+				<a class="btn">Start</a>
+			</div>
+
+			<!-- voting submit -->
+			<div id="btnVoting" class="hide" >
+				<a class="btn">Submit</a>
+			</div>
+
+			<!-- availablePercent left  -->
+			<div id="availablePercent" class="hide" style="color:var(--aqua);"><span>100</span>% left</div>
+
+			<!-- finish - goto outro -->
+			<div id="btnOutro" class="hide" >
+				<a class="btn" href="/quadraticlands/mission/use/outro">Continue</a>
+			</div>
+
+
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+<!--APP - burger menu, wallet menu, provider select, collapse, flashMessage-->
+<script src="/static/quadraticlands/js/app.js"></script>
+
+
+
+<script>
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	// on load check if wallet then show intro - else show no wallet
+	
+	updateInterface("intro");
+	//updateInterface("voting")
+
+	
+
+
+
+
+
+	// on each input field 
+	const inputs = document.querySelectorAll("input")
+
+	inputs.forEach(i => {
+		console.log(i)
+		i.addEventListener('focus', (event) => {
+
+			// reset all options to not active
+			let reset = document.querySelectorAll(".option")
+			reset.forEach(r => { r.classList.remove("active") })
+
+			// set current parent div active  
+			// BUG GEHT NICH IN FF mit path2
+
+			event.target.parentNode.parentNode.classList.add("active")
+
+			
+
+
+
+		});
+
+
+
+		// input validate
+		i.addEventListener("input", input => {
+
+			if (i.value <= 0) { i.value = 0}
+			if (i.value >= 100 ) { i.value = 100}
+
+			let usedPercent = 0
+
+			// select all not current inputs to see usedPercent so far
+			let inputs = document.querySelectorAll(".option:not(.active) input")
+			inputs.forEach(i => {
+				usedPercent = parseInt(usedPercent) + parseInt(i.value)
+			})
+
+			let availablePercent = 100 - usedPercent
+
+			// check if users input is bigger than possible - if so - go all in on this with
+			// rest of the available percentages
+			if (i.value >= availablePercent ) { i.value = availablePercent }
+
+
+			// %-bar on this user input
+			let bar = document.querySelector(".option.active div.bar")
+			bar.style.width = i.value + "%";
+
+					
+
+			// update % left status in nav ( bottom right)
+
+			let used = (100 - usedPercent) - i.value
+			let interfaceAvailablePercentSpan = document.querySelector("#availablePercent span")
+			interfaceAvailablePercentSpan.innerHTML = used
+			console.debug("USED : " + used)
+
+
+
+			// check if 100% to show button to vote
+
+			let btnVoting = document.getElementById("btnVoting")
+			let interfaceAvailablePercent = document.getElementById("availablePercent")
+
+			if ( used == 0 ){ 
+				btnVoting.classList.remove("hide")
+				interfaceAvailablePercent.classList.add("hide") 
+			}
+			else{
+				btnVoting.classList.add("hide")
+				interfaceAvailablePercent.classList.remove("hide") 
+			}
+
+
+
+			// update progressbar
+
+			let free = Math.abs(used-100)
+			const progressbar = document.getElementById("progressbar");
+			progressbar.style.width = free + "%";
+			console.debug("FREE : " + free)
+
+		});
+
+
+	});
+
+
+
+
+
+
+
+
+
+
+	// helper : click on any .option div will focus child input field
+	const options = document.querySelectorAll(".option")
+	options.forEach(o => {
+
+		o.addEventListener("click", () => {
+			let input = o.querySelector("input")
+			input.focus()
+		});
+	});
+
+
+
+
+
+
+
+
+
+
+	// on btnStart change to voting view
+	const btnStart = document.getElementById("btnStart")
+	btnStart.addEventListener("click", () => {
+		updateInterface("voting")
+	});	
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+function updateInterface(status){
+
+	// views
+	const interfaceIntro = document.getElementById("intro")
+	const interfaceVoting = document.getElementById("voting")
+
+	// hide all views
+	interfaceIntro.classList.add("hide")
+	interfaceVoting.classList.add("hide")
+
+	// hide all things in nav bar that might change based on view
+	let btnStart = document.getElementById("btnStart")
+	btnStart.classList.add("hide")
+
+	let availablePercent = document.getElementById("availablePercent")
+	availablePercent.classList.add("hide")
+
+
+
+	// update interface based on interface status
+
+	if (status=="intro")
+	{
+		interfaceIntro.classList.remove("hide")
+		btnStart.classList.remove("hide")
+		console.debug("INTERFACE:INTRO")
+	}
+
+
+	if (status=="voting")
+	{		
+		interfaceVoting.classList.remove("hide")
+		availablePercent.classList.remove("hide")
+		flashMessage("UP/DOWN key's to quickly distribute your voting power",8000);			
+		console.debug("INTERFACE:VOTING")
+	}
+
+
+	if (status=="success")
+	{
+		console.debug("INTERFACE:SUCCESS")
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+

@@ -37,7 +37,7 @@
 	<section class="hero">
 		<div class="background">
 			<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
-			{% include "quadraticlands/_inlinesvg/town_experiment.svg" %}
+			{% include "quadraticlands/_inlinesvg/town_experiment2.svg" %}
 		</div>
 
 		<div class="content">
@@ -65,7 +65,7 @@
 	<!-- GOVERNANCE -->
 	<section class="grid">
 		
-		<figure>
+		<figure class="laptop-cover tablet-cover phone-cover ">
 			<img src="/static/quadraticlands/images/governance.svg">
 		</figure>
 
@@ -147,7 +147,7 @@
 
 	document.addEventListener("DOMContentLoaded",function(){
 
-		const polygones = document.querySelectorAll("svg #floor polygon")
+		const polygones = document.querySelectorAll("svg #floor path")
 
 		setInterval(() => {
 			fillFloorRandom(polygones)

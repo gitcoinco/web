@@ -2,9 +2,9 @@
 <a href="{{url}}">
 {% endif %}
 
-	<div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %}">
+	<div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %} {% if done %}done{% endif %}">
 		<div class="card-image">
-			<img src="/static/quadraticlands/images/{{svg}}">
+			<img src="/static/quadraticlands/images/mission/{{svg}}">
 		</div>
 		<div class="card-body">
 			<div class="card-text">
@@ -14,7 +14,7 @@
 			<div class="card-badges">
 
 				{% if done %} 
-				<div class="card-badge">{% include "quadraticlands/_inlinesvg/done.svg" %}</div>
+				<div class="card-badge done">{% include "quadraticlands/_inlinesvg/done.svg" %}</div>
 				{% endif %}
 
 				{% if tokens %} 

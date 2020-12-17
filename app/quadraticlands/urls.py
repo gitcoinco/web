@@ -36,7 +36,7 @@ urlpatterns = [
     path('set_mission_status', set_mission_status, name='set_mission_status'),
     re_path(r'^(?P<base>about|leaderboard|privacy|terms-of-service|mission_knowledge_intro|dashboard|faq)$', base, name='quadraticlands_base'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)$', mission_base, name='mission_base'),
-    re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/(?P<mission_state>intro|outro|claim|snapshot)$', mission_state, name='mission_state'),
+    re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/(?P<mission_state>intro|outro|claim|snapshot|vote)$', mission_state, name='mission_state'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/question/(?P<question_num>1|2)$', mission_question, name='mission_question'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/question/(?P<question_num>1|2)/(?P<answer>right|wrong|timeout)$', mission_answer, name='mission_answer'),
     

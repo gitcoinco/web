@@ -52,7 +52,7 @@ section.hero{
 
 section.hero svg #floor{
 
-	polygon {
+	polygon, path {
 		stroke-width: 1;
 		stroke: var(--smoke);
 		fill: transparent;

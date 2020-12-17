@@ -15,10 +15,10 @@
 } 
 
 @keyframes colorcycle-border { 
-    0% { border: 1px solid var(--pink); } 
-    33%  { border: 1px solid var(--aqua); } 
-    66%   { border: 1px solid var(--purple); }
-    100%   { border: 1px solid var(--pink); }      
+    0% { border: 2px solid var(--pink); } 
+    33%  { border: 2px solid var(--aqua); } 
+    66%   { border: 2px solid var(--purple); }
+    100%   { border: 2px solid var(--pink); }      
 } 
 
 @keyframes colorcycle-stroke { 

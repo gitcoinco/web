@@ -20,12 +20,12 @@ section.mission .card{
 
 	.card-image{
 
-		//border: 1px solid var(--pink_light);
 		background-color: var(--space_light);
-		border: 1px solid var(--space_light);
+		border: 2px solid var(--space_light);
 
+		transition: all 200ms ease-in-out;	
 		img, svg{
-			width: 100%;	
+			width: 100%;
 		}
 
 	}
@@ -91,6 +91,16 @@ section.mission .card{
 					}
 				}
 
+
+				&.done{
+					background-color: var(--aqua_light);
+					svg{
+						fill: none;
+						stroke: var(--space);
+						stroke-width: 4;
+					}
+				}
+
 			}
 
 		}
@@ -112,13 +122,9 @@ section.mission .card{
 
 
 
+
 	&.locked{
 		
-		.card-image{
-			opacity: 0.5;
-		}
-
-
 		&:hover{
 			.card-body{
 				.card-text{
@@ -132,13 +138,42 @@ section.mission .card{
 	}
 
 
+
+	&.done{
+		
+		.card-body{
+			.card-text{
+				.card-title{
+					color: var(--aqua_light);
+				}
+			}
+		}
+
+		&:hover{
+			.card-body{
+				.card-text{
+					.card-title{
+						color: var(--aqua_light);
+					}
+				}
+			}			
+		};
+
+	}
+
+
+
 	&.playable{
+
+		.card-image{
+				animation: colorcycle-border 1s ease-in-out infinite;
+		}	
 
 		&:hover{
 			.card-image{
-					animation: colorcycle-border 1s ease-in-out infinite;
-					background-color: transparent;
-			}			
+				background-color: transparent;
+			}	
+		
 		};
 
 	}

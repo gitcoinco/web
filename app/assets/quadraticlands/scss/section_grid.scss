@@ -2,12 +2,10 @@ section.grid{
 
 	display: grid;
 	grid-template-columns: 50% 50%;
-	margin-bottom: 6em;
-
-	// theoretisch max width möglich. 
+	
 	max-width: 1600px;
 	margin: auto;
-
+	margin-bottom: 6em;
 
 	div{
 		align-self: center;
@@ -16,21 +14,9 @@ section.grid{
 	}
 
 	figure{
-		user-select: none;
-
 		padding: 3em;
 		img, svg{
-  			object-fit: cover;
   			height: 100%;
-  			//padding: 3em;
-  			//margin: 3em;
-
-  			background-color: var(--space_light);
-			border: 1px solid var(--space_light);
-		}
-
-		&.floating{
-			animation: floating 3s ease-in-out infinite;
 		}
 	}
 
@@ -45,12 +31,6 @@ section.grid{
 			figure{
 				grid-column: 2;
 				grid-row: 1;
-				
-
-				&.floating{
-					animation: floating-reverse 3s ease-in-out infinite;
-				}
-
 			}
 
 	}
@@ -62,14 +42,9 @@ section.grid{
 
 @media #{$laptop} { 
 	section.grid{
-		figure{
-			padding: 1em;
-			img, svg{
-			}	
-		}
+
 	}
 }
-
 
 
 
@@ -79,11 +54,8 @@ section.grid{
 
 		figure{
 			padding: 0px;
-			//border-top: 1px solid var(--pink_light);
-			//border-bottom: 1px solid var(--pink_light);
+
 			img, svg{
-	  			object-fit: cover;
-	  			height: 500px;
 	  			padding: initial;
 			}	
 		}
@@ -102,15 +74,6 @@ section.grid{
 
 @media #{$phone} { 
 	section.grid{
-		figure{
-			img, svg{
-				//object-fit: contain;
-				object-fit: cover;
-	  			height: 500px;
-	  			padding: inherit;
-			}	
-		}
-
 		div{
 			margin: 0em 1.5em;
 		}
