@@ -130,6 +130,11 @@ Vue.component('grantsCartEthereumZksync', {
         this.zksync.feeTokenSymbol = donations[0].name;
       }
 
+      // If no checkoutManager instance, return, since we can't check balance or estimate gas cost
+      if (!this.zksync.checkoutManager) {
+        return;
+      }
+
       // Check if user has enough balance
       this.zksync.checkoutManager
         .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address)
@@ -170,6 +175,7 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Called on page load to initialize zkSync
     async setupZkSync() {
+      if (!web3) return; // exit if web3 isn't defined, and we'll run this function later
       this.user.address = (await web3.eth.getAccounts())[0];
       this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(this.network || 'mainnet');
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
@@ -178,6 +184,17 @@ Vue.component('grantsCartEthereumZksync', {
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
       try {
+        // Ensure wallet is connected
+        if (!web3) {
+          throw new Error('Please connect a wallet');
+        }
+
+        // Make sure setup is completed properly
+        const isCorrectNetwork = this.zksync.checkoutManager && this.zksync.checkoutManager.network === this.network;
+        if (!isCorrectNetwork || !this.user.address) {
+          await this.setupZkSync();
+        }
+
         // Save off cart data
         this.zksync.checkoutStatus = 'pending';
         await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');
