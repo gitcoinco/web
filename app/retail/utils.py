@@ -555,6 +555,7 @@ def build_stat_results(keyword=None):
         float(total_tips_usd),
         float(total_grants_usd),
         float(total_kudos_usd),
+        float(total_manual_gmv),
         float(total_codefund_usd)
         ]
     context['universe_total_usd'] = sum(all_platforms)
