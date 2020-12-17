@@ -15,7 +15,7 @@ def is_txn_done_recently(time_of_txn, before_hours=500):
 
     now = timezone.now().replace(tzinfo=None)
     txn_should_be_done_before = now - timezone.timedelta(hours=before_hours)
-    time_of_txn = datetime.fromtimestamp(time_of_txn)
+    time_of_txn = datetime.fromtimestamp(int(time_of_txn))
 
     if time_of_txn > txn_should_be_done_before:
         return True

@@ -12,7 +12,7 @@ def find_txn_on_celo_explorer(contribution):
     grant = subscription.grant
     token_symbol = subscription.token_symbol
 
-    if subscription.tenant != 'ZCASH':
+    if subscription.tenant != 'CELO':
         return None
 
     if token_symbol != 'cUSD' and token_symbol != 'CELO':
@@ -22,18 +22,19 @@ def find_txn_on_celo_explorer(contribution):
     from_address = subscription.contributor_address
     amount = subscription.amount_per_period
 
-    blockscout_url = f'https://explorer.celo.org/api?module=account&action=tokentx&address={funderAddress}'
+    blockscout_url = f'https://explorer.celo.org/api?module=account&action=tokentx&address={to_address}'
     blockscout_response = requests.get(blockscout_url).json()
+
     if blockscout_response['message'] and blockscout_response['result']:
         for txn in blockscout_response['result']:
             if (
                 txn['from'] == from_address.lower() and
                 txn['to'] == to_address.lower() and
-                float(txn['value']) == float(amount) and
+                int(txn['value']) / 10 ** int(txn['tokenDecimal']) == amount and
                 is_txn_done_recently(txn['timeStamp']) and
                 not txn_already_used(txn['hash'], token_symbol)
             ):
-                return txn
+                return txn['hash']
     return None
 
 
