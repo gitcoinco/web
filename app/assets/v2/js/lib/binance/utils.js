@@ -36,12 +36,7 @@ binance_utils.getAddressBalance = async address => {
   if (!isConnected || !address)
     return;
 
-  data = {
-    method: 'eth_getBalance',
-    params: [address, 'latest']
-  };
-
-  const result = await BinanceChain.request(data);
+  const result = await jsonRpcRequest('eth_getBalance', [address, 'latest']);
 
   // convert hex balance to integer and account for decimal points
   const bnbBalance = BigInt(result).toString(10) * 10 ** -18;
