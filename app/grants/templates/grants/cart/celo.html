@@ -89,7 +89,7 @@
                 <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
 
                 <div class="d-flex align-items-center">
-                  <qrcode :string="`celo://wallet/pay?address=[[ grant.celo_payout_address ]]&amount=[[grant.grant_donation_amount]]&token=[[grant.grant_donation_currency]]`" :size="100"></qrcode>
+                  <qrcode :string="`celo://wallet/pay?address=${grant.celo_payout_address}&amount=${grant.grant_donation_amount}&token=${grant.grant_donation_currency}`" :size="100"></qrcode>
                   <div class="flex-fill font-smaller-1 ml-4">
                     <div class="d-flex align-items-center">
                       <span class="mr-2">To:</span>
