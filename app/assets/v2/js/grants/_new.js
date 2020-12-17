@@ -111,8 +111,8 @@ Vue.mixin({
         vm.$set(vm.errors, 'zcash_payout_address', 'Please enter transparent ZCash address');
       } else if (vm.chainId == 'celo' && !vm.form.celo_payout_address) {
         vm.$set(vm.errors, 'celo_payout_address', 'Please enter CELO address');
-      } else if (vm.chainId == 'zilliqa' && !vm.form.zilliqa_payout_address) {
-        vm.$set(vm.errors, 'zilliqa_payout_address', 'Please enter Zilliqa address');
+      } else if (vm.chainId == 'zilliqa' && !vm.form.zil_payout_address) {
+        vm.$set(vm.errors, 'zil_payout_address', 'Please enter Zilliqa address');
       }
 
       if (!vm.form.grant_type) {
@@ -157,7 +157,7 @@ Vue.mixin({
         'eth_payout_address': form.eth_payout_address,
         'zcash_payout_address': form.zcash_payout_address,
         'celo_payout_address': form.celo_payout_address,
-        'zilliqa_payout_address': form.zilliqa_payout_address,
+        'zil_payout_address': form.zil_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
         'network': form.network,
@@ -312,7 +312,7 @@ if (document.getElementById('gc-new-grant')) {
           eth_payout_address: '',
           zcash_payout_address: '',
           celo_payout_address: '',
-          zilliqa_payout_address: '',
+          zil_payout_address: '',
           grant_type: '',
           grant_categories: [],
           network: 'mainnet'
