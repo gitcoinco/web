@@ -128,8 +128,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
     const chainVerbose = binance_utils.getChainVerbose(BinanceChain.chainId);
 
     if (!from_address) {
-      const accounts = await binance_utils.getExtensionConnectedAccounts();
-      from_address = accounts && accounts[0]['addresses'].find(address => address.type === chainVerbose.addressType).address;
+      from_address = await binance_utils.getSelectedAccount();
     }
 
     if (!from_address) {
