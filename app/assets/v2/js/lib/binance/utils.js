@@ -119,10 +119,6 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
       reject('transferViaExtension: missing param to_address');
     }
 
-    if (!token_name) {
-      token_name = 'BNB';
-    }
-
     const chainVerbose = binance_utils.getChainVerbose(BinanceChain.chainId);
 
     if (!from_address) {
@@ -132,6 +128,10 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
 
     if (!from_address) {
       reject('transferViaExtension: missing param from_address');
+    }
+
+    if (!token_name) {
+      token_name = 'BNB';
     }
 
     if (token_name === 'BNB') {
