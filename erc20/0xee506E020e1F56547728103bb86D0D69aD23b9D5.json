@@ -1,0 +1,28 @@
+{
+  "symbol": "HZHH",
+  "address": "0xee506E020e1F56547728103bb86D0D69aD23b9D5",
+  "overview":{
+        "en": "HZHH is to solve the problem of capital circulation and settlement of the big health industry, cross-regional production, circulation, and transactions, and establish a trustworthy, credible, stable, and efficient trading platform channel for the big health industry and a weakly centralized economic circulation system.",
+        "zh": "HZHH是解决大健康产业资金流通结算，跨地域的生产、流通、交易等问题，建立大健康产业可信任的、具有公信力的、稳定的、流通高效的交易平台通道和弱中心化的经济流通体系。"
+  },
+  "email": "mariaabdul1762@gmail.com",
+  "website": "https://hzhh.pro/",
+  "whitepaper": "https://hzhh.pro/hzhh.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-01",
+  "initial_price":{
+        "ETH":"0.0001428 ETH",
+        "USD":"0.078 USD",
+        "BTC":"0.000004167 BTC"
+  },
+  "links": {
+    "blog": "https://hzhh.pro/blog",
+    "twitter": "https://twitter.com/hzhh95798990",
+    "telegram": "https://t.me/joinchat/AAAAAE-RRtcx2PJctkqpAw",
+    "github": "https://github.com/hzhhpro/token-profile",
+    "facebook": "https://www.facebook.com/hzhhpro",
+    "reddit": "https://www.reddit.com/u/hzhhpro/",
+    "slack": "https://join.slack.com/t/hzhhworkspace/shared_invite/zt-jwtqbuiq-dgMvhhcFHap8X5sw82gETA",
+    "medium": "https://medium.com/@mariaabdul1762"
+  }
+}
