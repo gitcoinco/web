@@ -94,6 +94,17 @@ binance_utils.getExtensionConnectedAccounts = async () => {
 
 
 /**
+ * Get selected account connected in extension
+ */
+binance_utils.getSelectedAccount = async () => {
+  const chainVerbose = binance_utils.getChainVerbose(BinanceChain.chainId);
+  const accounts = await binance_utils.getExtensionConnectedAccounts();
+  address = accounts && accounts[0]['addresses'].find(address => address.type === chainVerbose.addressType).address;
+  return address
+}
+
+
+/**
  * Sign and transfer token to another address via extension and returns txn hash
  * @param {Number} amount : in wei
  * @param {String} to_address
