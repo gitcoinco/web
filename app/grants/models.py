@@ -753,6 +753,7 @@ class Grant(SuperModel):
             'grant_clr_prediction_curve': self.clr_prediction_curve,
             'grant_image_css': self.image_css,
             'is_clr_eligible': self.is_clr_eligible,
+            'clr_round_num': self.clr_round_num,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
         }
