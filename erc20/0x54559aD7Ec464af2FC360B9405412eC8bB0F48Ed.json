@@ -1,0 +1,22 @@
+{
+  "symbol": "DADA",
+  "address": "0x54559aD7Ec464af2FC360B9405412eC8bB0F48Ed",
+  "overview": {
+    "en": "DADA is a DAO aggregator built for blockchain project founders and investors, to unlock abundant capital flow safely and transparently and profit from the investments. Users co-governs the community and select the projects they want to participate; fund managers launch or lock their projects using smart contracts. The decentralized platform makes investment information transparent, which lowers the risk for investors.",
+    "zh": "DADA致力于建设一站式的去中心化DAO，DADA基于用户在区块链行业的投资需求和偏好，为其提供数字化、自动化、智能化的技术与平台支持， DADA矿业生态聚合器作为区块链中的平台层，用户可通过社区自治来选择想要参与的项目，基金经理可以通过智能合约发布和锁定自己的项目，同时通过DADA提供的完全去中心化的交易体验将所有流转信息公开透明、分散风险，让普通用户参与DAO无后顾之忧。"
+  },
+  "email": "support@dd.finance",
+  "website": "https://dd.finance",
+  "whitepaper": "",
+  "state": "NORMAL",
+  "published_on": "2020-12-18",
+  "initial_price": {
+    "USD": "0.045 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/FinanceDada",
+    "telegram": "https://t.me/joinchat/AAAAAEVqGZbYVB7eR7qFlg",
+    "github": "https://github.com/dada-fintech",
+    "medium": "https://ddfinance.medium.com/"
+  }
+}
