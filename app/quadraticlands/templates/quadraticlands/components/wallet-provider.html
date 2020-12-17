@@ -38,8 +38,12 @@
 		<!-- wallet accounts -->
 		<span id="wallet-accounts"></span>
 
-		
-       
+    <!-- current GTC amount -->
+    <!-- @zach : need to get the real value in here in the span -->
+
+    <div id="current_gtc"><span>xxxxx</span> GTC</div>
+
+		   
 	</div>
 
 	<!-- connect -->
@@ -52,9 +56,6 @@
 	</div>
 
 </div>
-
-
-
 
 
 
@@ -90,6 +91,29 @@
 
 
 
+
+<script>
+
+/* 
+fetch token amount from adress to show current
+@zach's task list :)
+*/
+
+document.addEventListener("DOMContentLoaded",function(){
+
+  // wallet found
+  window.addEventListener("dataWalletReady", () => {
+    const current_gtc = document.querySelector("#current_gtc span");
+
+    // write 44444 to the dom's element
+    // need to be replaced with the "real data"
+    current_gtc.innerHTML = "44444"
+    console.debug("CURRENT_GTC found")
+  });
+
+});
+
+</script>
 
 
 

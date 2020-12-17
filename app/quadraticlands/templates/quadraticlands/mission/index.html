@@ -31,12 +31,12 @@
 	<!-- no dependencies in other missions -->
 	<!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-	{% with name="Proof of Knowledge" proof_of_knowledge=false %}
+	{% with name="1. Proof of Knowledge" %}
 
 		{% if not proof_of_knowledge %}
-			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}
+			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}
 		{% else %}
-			{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-know-end.svg" done="true" locked="true" %}
+			{% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-know-end.svg" done="true" locked="true" %}
 		{% endif %}
 
 	{% endwith %}
@@ -46,21 +46,22 @@
 
 	<!-- PROOF OF RECEIVE CARD -->
 	<!-- user have to finish proof_of_knowledge first -->
+	<!-- add in with proof_of_receive=false to simulate available mission -->
 
-	{% with name="Proof of Receive" %}
+	{% with name="2. Proof of Receive" %}
 
 		{% if not proof_of_knowledge  %}
 
 			<!-- User can not this mission yet -->
-			{% include 'quadraticlands/mission/card.html' with message="locked" svg="landscape-proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
+			{% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
 
 		{% else %}
 
 			<!-- User can Play -->
 			{% if not proof_of_receive %}
-				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-receive-start.svg" url="/quadraticlands/mission/receive" tokens=total_claimable_gtc %}
+				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-receive-start.svg" url="/quadraticlands/mission/receive" tokens=total_claimable_gtc %}
 			{% else %}
-				{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-receive-end.svg" done="true" locked="true" %}
+				{% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-receive-end.svg" done="true" locked="true" %}
 			{% endif %}	
 
 		{% endif %}
@@ -73,21 +74,22 @@
 
 	<!-- PROOF OF USE CARD -->
 	<!-- user have to finish proof_of_receive first -->
+	<!-- add in with proof_of_use=false to simulate available mission -->
 
-	{% with name="Proof of Use" %}
+	{% with name="3. Proof of Use" %}
 
 		{% if not proof_of_receive  %}
 
 			<!-- User can not this mission yet -->
-			{% include 'quadraticlands/mission/card.html' with message="locked" svg="landscape-proof-of-use-start.svg" locked="true" %}
+			{% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-use-start.svg" locked="true" %}
 
 		{% else %}
 
 			<!-- User can Play -->
 			{% if not proof_of_use %}
-				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="landscape-proof-of-use-start.svg" url="/quadraticlands/mission/use" %}
+				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-use-start.svg" url="/quadraticlands/mission/use" %}
 			{% else %}
-				{% include 'quadraticlands/mission/card.html' with message="completed" svg="landscape-proof-of-use-end.svg" done="true" locked="true" %}
+				{% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-use-end.svg" done="true" locked="true" %}
 			{% endif %}
 
 		{% endif %}
@@ -97,18 +99,20 @@
 
 
 
-	<!-- DUMMY -->
-	<!-- user have to finish proof_of_receive first -->
+	<!-- SYBIL -->
 
 	{% with name="SybilHunt Dummy Mission" %}
-		{% include 'quadraticlands/mission/card.html' with message="soon" svg="landscape-mission-dummy.svg" url="/quadraticlands/mission/use" locked="true" %}
+		{% include 'quadraticlands/mission/card.html' with message="soon" svg="sybil-start.svg" url="/quadraticlands/mission/use" locked="true" %}
 	{% endwith %}
 
+
+
+	<!-- DUMMY -->
+
+	{% with name="SybilHunt Dummy Mission" %}
+		{% include 'quadraticlands/mission/card.html' with message="soon" svg="back-card.svg" url="/quadraticlands/mission/use" locked="true" %}
+	{% endwith %}
 	
-
-
-
-
 
 
 </section>

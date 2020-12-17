@@ -16,6 +16,10 @@
 		display: block;
 	};
 
+	#current_gtc{
+		color: var(--aqua);
+	}
+
 
 	div.header{
 		display: grid;
@@ -57,11 +61,6 @@
 		}
 		
 	}
-
-
-
-
-
 
 
 	div.provider{

@@ -1,0 +1,38 @@
+section.dashboard .content-mission{
+
+	.wrapper{
+
+	}
+
+	.col{
+		display: flex;
+		align-items: center;
+		margin-bottom: 1em;
+	}
+
+	.mission-name{
+	}
+
+	.mission-status{
+		margin-left: auto;
+		color: var(--stone);
+		&.active{ color: var(--aqua_light); }
+		&.disabled{ color: var(--smoke); }
+	}
+
+	.mission-status-icon{
+		margin-left: 1em;
+
+		svg{
+			fill: var(--stone);
+			height: 17px;
+			width: 17px;
+			display: block;
+		}
+		&.active{ svg{ fill: var(--aqua_light); } }
+		&.disabled{ svg{ fill: var(--smoke); } }
+	}
+
+
+
+}

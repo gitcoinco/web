@@ -78,11 +78,6 @@
       <span class="claimable"><a href="/quadraticlands/mission">+ {{ total_claimable_gtc }}</a></span>
       {% endif %}
 
-      <!-- USERS CURRENT TOKEN AMOUNT -->
-      {% if user.is_authenticated  %}
-      <span id="current_gtc" class="current hide"></span>
-      {% endif %}
-
       <div id="noproviderIcon">
         {% include "quadraticlands/_inlinesvg/wallet.svg" %}
       </div>
@@ -112,29 +107,7 @@
 
 
 
-<script>
 
-/* here in this script i need to find out how to 
-fetch token amount from adress to show current
-*/
-
-
-document.addEventListener("DOMContentLoaded",function(){
-
-  // wallet found
-  window.addEventListener("dataWalletReady", () => {
-    const current_gtc = document.getElementById("current_gtc");
-    current_gtc.classList.remove("hide")
-
-    current_gtc.innerHTML = "44444"
-    console.log(selectedAccount)
-
-    console.debug("CURRENT_GTC found")
-  });
-
-});
-
-</script>
 
 
 
