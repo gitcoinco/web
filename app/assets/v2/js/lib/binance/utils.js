@@ -13,6 +13,18 @@ binance_utils.getChainVerbose = chainId => {
   }
 }
 
+async function jsonRpcRequest(method, params) {
+  return new Promise(async (resolve, reject) => {
+    BinanceChain
+      .request({ method, params })
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
 
 /**
  * Returns wallet's balance on the connected binance network
@@ -35,6 +47,39 @@ binance_utils.getAddressBalance = async address => {
   const bnbBalance = BigInt(result).toString(10) * 10 ** -18;
 
   return Promise.resolve(bnbBalance.toFixed(4));
+};
+
+/**
+ * Returns wallet's BEP20 token balance on the connected binance network
+ * @param {String} address
+ * @param {String} tokenContractAddress
+ */
+binance_utils.getAddressTokenBalance = async (address, tokenContractAddress) => {
+  const isConnected = await BinanceChain.isConnected();
+
+  if (!isConnected || !address || !tokenContractAddress)
+    return;
+
+  const methodSignature = await jsonRpcRequest(
+    'web3_sha3',
+    ['balanceOf(address)']
+  );
+  const method_id = methodSignature.substr(0, 10);
+  const address = address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
+
+  const params = [
+    {
+      to: tokenContractAddress,
+      data: method_id + address
+    },
+    'latest'
+  ]
+  const result = await jsonRpcRequest('eth_call', params);
+
+  // convert hex balance to integer and account for decimal points
+  const tokenBalance = BigInt(result).toString(10) * 10 ** -18;
+
+  return Promise.resolve(tokenBalance.toFixed(4));
 };
 
 
@@ -106,57 +151,45 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
           },
         ];
 
-        BinanceChain
-          .request({
-            method: 'eth_sendTransaction',
-            params
-          })
-          .then(txHash => {
-            resolve(txHash);
-          })
-          .catch(error => {
-            reject('transferViaExtension: something went wrong' + error);
-          });
+        try {
+          const txHash = await jsonRpcRequest('eth_sendTransaction', params)
+          resolve(txHash)
+        } catch (error) {
+          reject('transferViaExtension: something went wrong' + error);
+        }
       }
 
     } else if (token_name === 'BUSD') {
 
+      const account_balance = await binance_utils.getAddressTokenBalance(from_address);
+
+      if (Number(account_balance) < amount) {
+        reject(`transferViaExtension: insufficent balance in address ${from_address}`);
+      }
+
       if (chainVerbose.addressType === 'eth') {
-        const params = [
-          "transfer(address, uint256)"
-        ]
+        try {
+          const methodSignature = await jsonRpcRequest(
+            'web3_sha3',
+            ['transfer(address, uint256)']
+          );
+          const method_id = methodSignature.substr(0, 10);
+          const amount = BigInt(amount * 10 ** 18).toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
+          const to_address = to_address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
-        BinanceChain
-          .request({
-            method: 'web3_sha3',
-            params: ['transfer(address, uint256)']
-          })
-          .then(result => {
-            method_id = result.substr(0, 10);
-            amount = BigInt(amount * 10 ** 18).toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
-            to_address = to_address.substr(2).padStart(64, '0') // remove 0x and pad with zeroes
+          const params = [
+            {
+              from: from_address,
+              to: '0xe9e7cea3dedca5984780bafc599bd69add087d56', // BUSD token contract address
+              data: method_id + to_address + amount
+            },
+          ]
+          const txHash = await jsonRpcRequest('eth_sendTransaction', params);
 
-            BinanceChain
-              .request({
-                method: 'eth_sendTransaction',
-                params: [
-                  {
-                    from: from_address,
-                    to: '0xe9e7cea3dedca5984780bafc599bd69add087d56', // BUSD token contract address
-                    data: method_id + to_address + amount
-                  },
-                ]
-              })
-              .then(txHash => {
-                resolve(txHash);
-              })
-              .catch(error => {
-                reject('transferViaExtension: something went wrong' + error);
-              });
-          })
-          .catch(error => {
-            reject('transferViaExtension: something went wrong' + error);
-          });
+          resolve(txHash);
+        } catch (error) {
+          reject('transferViaExtension: something went wrong' + error);
+        }
       }
     }
   });
