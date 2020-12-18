@@ -79,7 +79,7 @@ def signature_address(nonce, signature):
 def parse_datetime_from_iso(iso):
     return timezone.make_aware(
         timezone.datetime.strptime(
-            iso, 
+            iso,
             '%Y-%m-%dT%H:%M:%SZ',
         ),
         UTC
@@ -100,7 +100,7 @@ def next_validation_time():
             url = 'https://api.idena.io/api/Epoch/Last'
             r = requests.get(url).json()
             value = r['result']['validationTime']
-        
+
         idena_validation_time = parse_datetime_from_iso(value)
         expiry = int(idena_validation_time.timestamp() - datetime.utcnow().timestamp()) # cache until next epoch
         redis.set(key, value, expiry)
@@ -118,13 +118,13 @@ def get_idena_status(address):
         except idena.exceptions.IdenaException as ex:
             logging.warn('Idena node error: {ex}')
 
-    if status is None: 
+    if status is None:
         url = f'https://api.idena.io/api/Identity/{address}'
         r = requests.get(url).json()
 
         if 'error' in r:
             status = 'Not validated'
         else:
-            status = r['result']['state']
+            status = r.get('result').get('state')
 
     return status or 'Not validated'
