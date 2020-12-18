@@ -1765,7 +1765,7 @@ def grant_new(request):
         hackathon_project_id = request.GET.get('related_hackathon_project_id')
         if hackathon_project_id:
             hackathon_project = HackathonProject.objects.filter(id=hackathon_project_id).first()
-            if hackathon_project:
+            if hackathon_project and hackathon_project.profiles.filter(pk=profile.id).exists():
                 hackathon_project.grant_obj  = grant
                 hackathon_project.save()
 
