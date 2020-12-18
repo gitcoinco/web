@@ -210,8 +210,10 @@ class Command(BaseCommand):
                 for match in unpaid_scheduled_matches.order_by('amount'):
                     full_payouts_mapping.append({
                         'recipient': match.grant.admin_address,
-                        'amount': match.amount
+                        'amount': Decimal(match.amount) * SCALE # convert to wei
                     })
+
+                # TODO dedupe this for grants have 2 admin address
 
                 # In tests, it took 68,080 gas to set 2 payout values. Let's be super conservative
                 # and say it's 50k gas per payout mapping. If we are ok using 6M gas per transaction,
