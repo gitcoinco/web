@@ -375,6 +375,7 @@ if (document.getElementById('gc-new-grant')) {
       const writeToRoot = ['chainId'];
       const writeToBody = [
         'title',
+        'description_rich',
         'reference_url',
         'twitter_handle_1',
         'twitter_handle_2',
