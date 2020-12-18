@@ -10,6 +10,8 @@ headers = {
     "X-APIKEY" : settings.VIEW_BLOCK_API_KEY
 }
 
+DECIMALS = 12
+
 def find_txn_on_zil_explorer(contribution):
 
     subscription = contribution.subscription
@@ -22,11 +24,11 @@ def find_txn_on_zil_explorer(contribution):
     if token_symbol != 'ZIL':
         return None
 
-    to_address = grant.celo_payout_address
+    to_address = grant.zil_payout_address
     from_address = subscription.contributor_address
     amount = subscription.amount_per_period
 
-    url = f'https://api.viewblock.io/v1/zilliqa/addresses/{from_address}/txs?network=mainnet'
+    url = f'https://api.viewblock.io/v1/zilliqa/addresses/{to_address}/txs?network=mainnet'
     response = requests.get(url, headers=headers).json()
 
     if len(response):
@@ -34,12 +36,12 @@ def find_txn_on_zil_explorer(contribution):
             if (
                 txn['from'] == from_address.lower() and
                 txn['to'] == to_address.lower() and
-                txn['direction'] == 'out' and
-                float(txn['value']) == float(amount) and
-                is_txn_done_recently(txn['timestamp']) and
+                txn['direction'] == 'in' and
+                float(txn['value']) / 10 ** DECIMALS == float(amount) and
+                is_txn_done_recently(txn['timestamp']/1000) and
                 not txn_already_used(txn['hash'], token_symbol)
             ):
-                return txn
+                return txn['hash']
     return None
 
 
