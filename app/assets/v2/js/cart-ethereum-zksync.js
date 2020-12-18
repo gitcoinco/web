@@ -178,7 +178,11 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Called on page load to initialize zkSync
     async setupZkSync() {
-      if (!web3) return; // exit if web3 isn't defined, and we'll run this function later
+
+      if (!web3) {
+        return; // exit if web3 isn't defined, and we'll run this function later
+      }
+
       this.user.address = (await web3.eth.getAccounts())[0];
       this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(this.network || 'mainnet');
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
@@ -194,6 +198,7 @@ Vue.component('grantsCartEthereumZksync', {
 
         // Make sure setup is completed properly
         const isCorrectNetwork = this.zksync.checkoutManager && this.zksync.checkoutManager.network === this.network;
+
         if (!isCorrectNetwork || !this.user.address) {
           await this.setupZkSync();
         }
