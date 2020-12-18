@@ -33,7 +33,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import EmptyPage, Paginator
-from django.db import connection
+from django.db import connection, transaction
 from django.db.models import Avg, Count, Max, Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -1656,6 +1656,7 @@ def grant_new_whitelabel(request):
 
 
 @login_required
+@transaction.atomic
 def grant_new(request):
     """Handle new grant."""
 
@@ -1760,6 +1761,13 @@ def grant_new(request):
         }
 
         grant = Grant.objects.create(**grant_kwargs)
+
+        hackathon_project_id = request.GET.get('related_hackathon_project_id')
+        if hackathon_project_id:
+            hackathon_project = HackathonProject.objects.filter(id=hackathon_project_id).first()
+            if hackathon_project:
+                hackathon_project.grant_obj  = grant
+                hackathon_project.save()
 
         team_members = (team_members[0].split(','))
         team_members.append(profile.id)
