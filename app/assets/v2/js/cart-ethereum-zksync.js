@@ -11,6 +11,7 @@ Vue.component('grantsCartEthereumZksync', {
   props: {
     currentTokens: { type: Array, required: true }, // Array of available tokens for the selected web3 network
     donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
+    grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     network: { type: String, required: true } // web3 network to use
   },
 
@@ -27,7 +28,8 @@ Vue.component('grantsCartEthereumZksync', {
 
       cart: {
         tokenList: [], // array of tokens in the cart
-        unsupportedTokens: [] // tokens in cart which are not supported by zkSync
+        unsupportedTokens: [], // tokens in cart which are not supported by zkSync
+        maxItems: 45 // zkSync only supports up to 50 transfers in a batch, so we limit it to 45 cart items to account for automatic tips
       },
 
       user: {
@@ -157,7 +159,8 @@ Vue.component('grantsCartEthereumZksync', {
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('zksync-data-updated', {
         zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
-        zkSyncEstimatedGasCost: estimatedGasCost
+        zkSyncEstimatedGasCost: estimatedGasCost,
+        zkSyncMaxCartItems: this.cart.maxItems
       });
     },
 
