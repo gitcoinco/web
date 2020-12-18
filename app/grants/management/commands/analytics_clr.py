@@ -40,9 +40,9 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
 
     print(total_pot)
 
-    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+    grants, contributions = fetch_data(clr_round, network)
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
 
     # calculate clr analytics output
     for grant in grants:
