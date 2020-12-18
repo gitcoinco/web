@@ -325,7 +325,7 @@ def get_interest_modal(request):
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
         'is_registered': is_registered,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        'login_link': '/login/github/?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
 
@@ -829,7 +829,7 @@ def onboard(request, flow=None):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
@@ -1066,7 +1066,7 @@ def users_fetch(request):
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
     if not current_user:
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
     current_profile = Profile.objects.get(user=current_user)
 
     if not settings.DEBUG:
@@ -3546,7 +3546,7 @@ def extend_issue_deadline(request):
         'title': _('Extend Expiration'),
         'bounty': bounty,
         'user_logged_in': request.user.is_authenticated,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        'login_link': '/login/github/?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
@@ -3903,7 +3903,7 @@ def change_bounty(request, bounty_id):
                 {'error': _('You must be authenticated via github to use this feature!')},
                 status=401)
         else:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
 
     try:
         bounty_id = int(bounty_id)

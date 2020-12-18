@@ -51,7 +51,7 @@ def details(request, quest):
     time_per_answer_buffer = 5
 
     if not request.user.is_authenticated and request.GET.get('login'):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     # process form submission
     try:

@@ -152,7 +152,7 @@ def privacy_settings(request):
     # setup
     profile, __, __, is_logged_in = settings_helper_get_auth(request)
     if not profile:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
@@ -209,7 +209,7 @@ def matching_settings(request):
     # setup
     profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
@@ -244,7 +244,7 @@ def feedback_settings(request):
     # setup
     __, es, __, __ = settings_helper_get_auth(request)
     if not es:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
@@ -286,7 +286,7 @@ def email_settings(request, key):
     if not request.user.is_authenticated and (not es and key) or (
         request.user.is_authenticated and not hasattr(request.user, 'profile')
     ):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     # handle 'noinput' case
     email = ''
@@ -393,7 +393,7 @@ def slack_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -439,7 +439,7 @@ def token_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -511,7 +511,7 @@ def account_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -603,7 +603,7 @@ def job_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -676,7 +676,7 @@ def org_settings(request):
     current_scopes = []
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     social_auth = user.social_auth.first()
@@ -709,7 +709,7 @@ def tax_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
         
     # location  dict is not empty
