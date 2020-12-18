@@ -70,16 +70,18 @@ def mission_base(request, mission_name):
         return redirect('/quadraticlands/mission', context)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
 
-@login_required
 def dashboard_index(request):
     '''render quadraticlands/dashboard/index.html'''
+    if not request.user.is_authenticated:
+        return redirect('/login/github/?next=' + request.get_full_path())
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, 'quadraticlands/dashboard/index.html', context)  
 
-@login_required
 def mission_state(request, mission_name, mission_state):
     '''quadraticlands/<mission_name>/<mission_state>'''
+    if not request.user.is_authenticated:
+        return redirect('/login/github/?next=' + request.get_full_path())
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     # wake_the_ESMS(request) # hack to wake up ESMS so there isn't a delay on token claim (remove for prod or upgrade Heroku dyno)
@@ -87,16 +89,18 @@ def mission_state(request, mission_name, mission_state):
          return redirect('quadraticlands/mission/index.html')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
 
-@login_required
 def mission_question(request, mission_name, question_num):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
+    if not request.user.is_authenticated:
+        return redirect('/login/github/?next=' + request.get_full_path())
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}.html', context)
 
-@login_required
 def mission_answer(request, mission_name, question_num, answer):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>/<answer>'''
+    if not request.user.is_authenticated:
+        return redirect('/login/github/?next=' + request.get_full_path())
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)
