@@ -152,6 +152,10 @@ def get_ecosystem_history_at_date(date, keyword):
     return amount
 
 
+def get_quarter(then):
+    import math
+    return math.ceil((then.month)/3)
+
 def get_codefund_history_at_date(date, keyword):
     date = date.replace(tzinfo=None)
     amount = 0
@@ -372,16 +376,19 @@ def get_bounty_history(keyword=None, cumulative=True):
         if year == 2018:
             months = range(6, 13)
         for month in months:
+            if month % 3 != 1:
+                continue
             day_of_month = 3 if year == 2018 and month < 7 else 1
             then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
             if then < timezone.now():
-                label = (then - timezone.timedelta(days=2)).strftime("%B %Y")
+                label = (then - timezone.timedelta(days=2))
+                label = "Q" + str(get_quarter(label)) + " " + label.strftime("%Y")
                 row = get_bounty_history_row(label, then, keyword)
                 bh.append(row)
 
-    if timezone.now().day > 9:
-        # get current month date to month
-        label = timezone.now().strftime("%B %Y") + " (MTD)"
+    if int(timezone.now().strftime('%j')) % (30 * 3) > 9:
+        # get current QTF if past 9th day of quarter
+        label = "Q" + str(get_quarter(timezone.now())) + " " + timezone.now().strftime("%Y") + " (QTD)"
         row = get_bounty_history_row(label, timezone.now(), keyword)
         bh.append(row)
 
@@ -607,14 +614,14 @@ def build_stat_results(keyword=None):
     # last month data
     today = timezone.now()
     first = today.replace(day=1)
-    lastMonth = first - timezone.timedelta(days=1)
-    context['prev_month_name'] = lastMonth.strftime("%B %Y")
-    context['prev_month_name_short'] = lastMonth.strftime("%B")
-    bh = bounty_history[-1] if context['prev_month_name'] == bounty_history[-1][0] else bounty_history[-2]
+    lastQuarter = first - timezone.timedelta(days=3 * 31)
+    context['prev_quarter_name'] = "Q" + str(get_quarter(lastQuarter)) + " " + lastQuarter.strftime("%Y")
+    context['prev_quarter_name_short'] = "Q" + str(get_quarter(lastQuarter))
+    bh = bounty_history[-1] if context['prev_quarter_name'] == bounty_history[-1][0] else bounty_history[-2]
     bh[0] = 0
-    context['last_month_amount'] = round(sum(bh)/1000)
-    context['last_month_amount_hourly'] = sum(bh) / 30 / 24
-    context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
+    context['last_quarter_amount'] = round(sum(bh)/1000)
+    context['last_quarter_amount_hourly'] = sum(bh) / 30 / 24 / 3
+    context['last_quarter_amount_hourly_business_hours'] = context['last_quarter_amount_hourly'] / 0.222
     context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('-start_date').all()]
     context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
     from dashboard.models import FeedbackEntry
@@ -622,7 +629,9 @@ def build_stat_results(keyword=None):
     context['reviews'] = [(ele.rating, ele.anonymized_comment) for ele in reviews]
     context['ratings'] = [1, 2, 3, 4, 5]
     context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
-    grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
+    grants_gmv = 0
+    if not settings.DEBUG:
+        grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
     context['grants_gmv'] = str(round(grants_gmv / 10**6, 2)) + "m"
     num_contributions = Contribution.objects.count()
     from dashboard.models import BountyFulfillment
@@ -632,7 +641,9 @@ def build_stat_results(keyword=None):
     context['no_tips'] = Tip.objects.filter(network='mainnet').send_happy_path().count()
     context['ads_gmv'] = get_codefund_history_at_date(timezone.now(), '')
     context['ads_gmv'] = str(round(context['ads_gmv'] / 10**3, 1)) + "k"
-    context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
+    context['bounties_gmv'] = 0
+    if not settings.DEBUG:
+        context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
     context['bounties_gmv'] = str(round((total_tips_usd + context['bounties_gmv']) / 10**6, 2)) + "m"
     median_index = int(num_contributions/2)
     context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
