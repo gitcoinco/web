@@ -90,6 +90,7 @@
       </div>
     </div>
 
+
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
         <h2 class="content-block__title">{% trans "Gitcoin Platform-Wide Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
@@ -195,10 +196,21 @@
     </div>
     </div>
 
+    <div class="row mt-2 pb-2 text-center">
+      <div class="col">
+        <h2>Gitcoin Grants: The Growth Engine that Could</h2>
+      </div>
+    </div>
 
     <div class="row mt-2 pb-2 text-center">
       <div class="col">
-        <h2>Leaderboards</h2>
+<iframe    src="https://metabase.gitcoin.co/public/question/437a0ed4-bcb7-41eb-af63-e67c0965d200"    frameborder="0"    width="100%"    height="600"    allowtransparency></iframe>
+      </div>
+    </div>
+
+    <div class="row mt-2 pb-2 text-center">
+      <div class="col">
+        <h2>Leaderboard</h2>
       </div>
     </div>
 
@@ -314,31 +326,6 @@
         <a class="button button--primary" role="button" href="/activity">{% trans "See more activity" %}</a>
       </div>
     </div>
-
-    <div class="content-block content-block--blue-grey">
-      <div class="container">
-        <h2 class="content-block__title">
-          {% trans "Top Tribes" %} {% if keyword %}({{keyword}}){% endif %}
-        </h2>
-        <div class="col-md-12 align-items-center">
-          <div id="repo_repos">
-            {% for org in top_orgs %}
-              <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
-              </a>
-            {% endfor %}
-          </div>
-        </div>
-        <div class="row mt-5 pb-3 text-center">
-          <div class="col">
-            <a class="button button--primary" role="button" href="/tribes">{% trans "See more Tribes" %}</a>
-          </div>
-        </div>
-
-
-      </div>
-    </div>
-
 
     {% if not keyword %}
       <div class="content-block content-block--white">
