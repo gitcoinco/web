@@ -363,11 +363,10 @@ def get_bounty_history(keyword=None, cumulative=True):
         ['', 'Bounties', 'Tips', 'Grants', 'Kudos', 'Ads', 'Ecosystem'],
     ]
     initial_stats = [
-        ["December 2017", 5534, 2011, 0, 0, 0, 0],
-        ["January 2018", 15930, 5093, 0, 0, 0, 0],
-        ["February 2018", 16302, 7391, 0, 0, 0, 0],
-        ["March 2018", 26390, 8302, 0, 0, 0, 0],
-        ["April 2018", 37342, 10109, 0, 0, 0, 0],
+        ["Q2 2017", 0, 0, 0, 0, 0, 0],
+        ["Q3 2017", 1038, 320, 0, 0, 0, 0],
+        ["Q4 2017", 5534, 2011, 0, 0, 0, 0],
+        ["Q1 2018", 15930 + 16302 + 26390, 5093 + 7391 + 8302, 0, 0, 0, 0],
     ]
     if not keyword:
         bh = bh + initial_stats
@@ -619,7 +618,7 @@ def build_stat_results(keyword=None):
     context['prev_quarter_name_short'] = "Q" + str(get_quarter(lastQuarter))
     bh = bounty_history[-1] if context['prev_quarter_name'] == bounty_history[-1][0] else bounty_history[-2]
     bh[0] = 0
-    context['last_quarter_amount'] = round(sum(bh)/1000)
+    context['last_quarter_amount'] = round(sum(bh)/1000/1000)
     context['last_quarter_amount_hourly'] = sum(bh) / 30 / 24 / 3
     context['last_quarter_amount_hourly_business_hours'] = context['last_quarter_amount_hourly'] / 0.222
     context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('-start_date').all()]
