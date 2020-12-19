@@ -618,7 +618,7 @@ def build_stat_results(keyword=None):
     context['prev_quarter_name_short'] = "Q" + str(get_quarter(lastQuarter))
     bh = bounty_history[-1] if context['prev_quarter_name'] == bounty_history[-1][0] else bounty_history[-2]
     bh[0] = 0
-    context['last_quarter_amount'] = round(sum(bh)/1000/1000)
+    context['last_quarter_amount'] = round(sum(bh)/1000/1000, 1)
     context['last_quarter_amount_hourly'] = sum(bh) / 30 / 24 / 3
     context['last_quarter_amount_hourly_business_hours'] = context['last_quarter_amount_hourly'] / 0.222
     context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('-start_date').all()]
