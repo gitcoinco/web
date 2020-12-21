@@ -19,7 +19,7 @@
 
 
 <section class="background">
-	<img src="/static/quadraticlands/images/background/anim-5.svg">
+	<img src="/static/quadraticlands/images/background/anim-9.svg">
 </section>
 
 
@@ -161,6 +161,9 @@
 
 
 
+
+
+
 {% block 'scripts' %}
 
 <!--APP - burger menu, wallet menu, provider select, collapse, flashMessage-->
@@ -173,47 +176,33 @@
 
 document.addEventListener("DOMContentLoaded",function(){
 
-	// on load check if wallet then show intro - else show no wallet
-	
-	updateInterface("intro");
-	//updateInterface("voting")
-
-	
-
-
-
-
-
-	// on each input field 
 	const inputs = document.querySelectorAll("input")
 
+	/*********** VIEW ON LOAD */
+	// updateInterface("intro")
+	updateInterface("voting")
+
+
+
+	/*********** VIEW:VOTING > INPUT FIELD CHANGE EVENT */
+
 	inputs.forEach(i => {
-		console.log(i)
+
 		i.addEventListener('focus', (event) => {
-
-			// reset all options to not active
-			let reset = document.querySelectorAll(".option")
-			reset.forEach(r => { r.classList.remove("active") })
-
-			// set current parent div active  
-			// BUG GEHT NICH IN FF mit path2
-
+			// reset all options to not have class .active
+			document.querySelectorAll(".option").forEach(r => { r.classList.remove("active") })
+			// set parent div.option to class .active
 			event.target.parentNode.parentNode.classList.add("active")
-
-			
-
-
-
 		});
-
 
 
 		// input validate
 		i.addEventListener("input", input => {
 
-			if (i.value <= 0) { i.value = 0}
-			if (i.value >= 100 ) { i.value = 100}
-
+			if(isNaN(i.value)) { i.value = 0 }
+			if (i.value <= 0) { i.value = 0 }
+			if (i.value >= 100 ) { i.value = 100 }
+			
 			let usedPercent = 0
 
 			// select all not current inputs to see usedPercent so far
@@ -224,28 +213,19 @@ document.addEventListener("DOMContentLoaded",function(){
 
 			let availablePercent = 100 - usedPercent
 
-			// check if users input is bigger than possible - if so - go all in on this with
-			// rest of the available percentages
+			// users input will be more than availablePercent
 			if (i.value >= availablePercent ) { i.value = availablePercent }
 
-
-			// %-bar on this user input
+			// update background percent bar on this user input
 			let bar = document.querySelector(".option.active div.bar")
 			bar.style.width = i.value + "%";
 
-					
-
 			// update % left status in nav ( bottom right)
-
 			let used = (100 - usedPercent) - i.value
 			let interfaceAvailablePercentSpan = document.querySelector("#availablePercent span")
 			interfaceAvailablePercentSpan.innerHTML = used
-			console.debug("USED : " + used)
 
-
-
-			// check if 100% to show button to vote
-
+			// user spend 100% > show button to vote
 			let btnVoting = document.getElementById("btnVoting")
 			let interfaceAvailablePercent = document.getElementById("availablePercent")
 
@@ -258,10 +238,7 @@ document.addEventListener("DOMContentLoaded",function(){
 				interfaceAvailablePercent.classList.remove("hide") 
 			}
 
-
-
-			// update progressbar
-
+			// update global progressbar (seperator)
 			let free = Math.abs(used-100)
 			const progressbar = document.getElementById("progressbar");
 			progressbar.style.width = free + "%";
@@ -269,43 +246,28 @@ document.addEventListener("DOMContentLoaded",function(){
 
 		});
 
-
 	});
 
 
+	/*********** VIEW:VOTING > OPTION CLICK EVENT */
+	// additional helper to enable a click on any .option 
+	// to focus its related child input field
 
-
-
-
-
-
-
-
-	// helper : click on any .option div will focus child input field
 	const options = document.querySelectorAll(".option")
 	options.forEach(o => {
-
 		o.addEventListener("click", () => {
 			let input = o.querySelector("input")
 			input.focus()
+			input.select()
 		});
 	});
 
 
-
-
-
-
-
-
-
-
-	// on btnStart change to voting view
+	/*********** VIEW:INTRO > BUTTON TO SWITCH TO VIEW:VOTING */
 	const btnStart = document.getElementById("btnStart")
 	btnStart.addEventListener("click", () => {
 		updateInterface("voting")
 	});	
-
 
 
 });
@@ -315,11 +277,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
-
-
-
-
-
+/*********** VIEWS */
 
 function updateInterface(status){
 
@@ -337,7 +295,6 @@ function updateInterface(status){
 
 	let availablePercent = document.getElementById("availablePercent")
 	availablePercent.classList.add("hide")
-
 
 
 	// update interface based on interface status
@@ -365,8 +322,6 @@ function updateInterface(status){
 	}
 	
 }
-
-
 
 
 

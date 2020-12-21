@@ -1,12 +1,12 @@
 #cookielaw{
 	position: fixed;
-	bottom: 0em;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
 	display: flex;
 	align-items: center;
 	padding: 3em;
-
-	background-color: var(--space_glass);
-	backdrop-filter: blur(18px);
+	width: 100%;
 
 	.text{
 		font-size: 80%;

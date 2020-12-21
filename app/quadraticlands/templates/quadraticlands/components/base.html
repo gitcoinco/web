@@ -29,10 +29,10 @@
     <!-- flash message -->
     {% include 'quadraticlands/components/flashmessage.html' %}
 
-    <!-- flash particles -->
+    <!-- particles -->
     {% include 'quadraticlands/components/particles.html' %}
 
-    <!-- flash navigation -->
+    <!-- navigation -->
     {% include 'quadraticlands/components/nav.html' %}
 
     <!-- just load wallet menu when user is auth -->
@@ -44,23 +44,22 @@
     {% block 'content' %}
     {% endblock %}
 
-
+    <!-- social media icons-->
     {% include 'quadraticlands/components/footersocial.html' %}
+
+    <!-- footer -->
     {% include 'quadraticlands/components/footer.html' %}
    
+    <!-- javascripts ( TOO MUCH ) -->
     {% include 'quadraticlands/components/footer_scripts.html' %}
 
+    <!-- cookielaw ( rewritten ! its not the same anymore ^^ ) -->
     {% include 'quadraticlands/components/cookielaw.html' %}
-
 
   </body>
 
   {% block 'scripts' %}
-
-
   {% endblock %}
-
-
 
 
 </html>
