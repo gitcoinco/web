@@ -205,15 +205,24 @@ class Command(BaseCommand):
                     if user_input != 'y':
                         return
 
-                # Generate array of payout mapping that we'll use to set the contract's payout mapping
-                full_payouts_mapping = [] 
+                # Generate dict of payout mapping that we'll use to set the contract's payout mapping
+                full_payouts_mapping_dict = {} 
                 for match in unpaid_scheduled_matches.order_by('amount'):
-                    full_payouts_mapping.append({
-                        'recipient': match.grant.admin_address,
-                        'amount': Decimal(match.amount) * SCALE # convert to wei
-                    })
+                    # Amounts to set
+                    recipient = match.grant.admin_address
+                    amount = Decimal(match.amount) * SCALE # convert to wei
 
-                # TODO dedupe this for grants have 2 admin address
+                    # This ensures that even when multiple grants have the same receiving address,
+                    # all match funds are accounted for
+                    if recipient in full_payouts_mapping_dict.keys():
+                        full_payouts_mapping_dict[recipient] += amount
+                    else:
+                        full_payouts_mapping_dict[recipient] = amount
+
+                # Convert dict to array to use it as inputs to the contract
+                full_payouts_mapping = []
+                for key, value in full_payouts_mapping_dict.items():
+                    full_payouts_mapping.append({'recipient': key, 'amount': value})
 
                 # In tests, it took 68,080 gas to set 2 payout values. Let's be super conservative
                 # and say it's 50k gas per payout mapping. If we are ok using 6M gas per transaction,
