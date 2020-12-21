@@ -212,7 +212,7 @@ class Command(BaseCommand):
             full_payouts_mapping_dict = {} 
             for match in unpaid_scheduled_matches.order_by('amount'):
                 # Amounts to set
-                recipient = match.grant.admin_address
+                recipient = w3.toChecksumAddress(match.grant.admin_address)
                 amount = Decimal(match.amount) * SCALE # convert to wei
 
                 # This ensures that even when multiple grants have the same receiving address,
