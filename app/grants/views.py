@@ -1576,6 +1576,10 @@ def grant_edit(request, grant_id):
         if logo:
             grant.logo = logo
 
+        image_css = request.POST.get('image_css', None)
+        if image_css:
+            grant.image_css = image_css
+
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
 
@@ -2078,7 +2082,7 @@ def bulk_fund(request):
                 'signature': request.POST.get('signature'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
-                'anonymize_gitcoin_grants_contributions': request.POST.get('anonymize_gitcoin_grants_contributions'),
+                'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
                 # Values that vary by donation
                 'admin_address': request.POST.get('admin_address').split(',')[index],
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
@@ -2289,7 +2293,7 @@ def grants_cart_view(request):
                                             profile.is_poap_verified and profile.is_twitter_verified and \
                                             profile.is_google_verified)
     else:
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'

@@ -111,6 +111,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               {% comment %} Cart header {% endcomment %}
 
               <div>
+
                 <b-tabs @input="tabChange" v-model="tabIndex" content-class="mt-3" lazy ref="tabs">
                   <!-- Checkout for ETH Grants -->
                   {% include 'grants/cart/eth.html' %}
@@ -123,7 +124,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                   <!-- Checkout for ZIL Grants -->
                   {% include 'grants/cart/qr/zil.html' %}
-
                 </b-tabs>
               </div>
               {% comment %} Cart total {% endcomment %}
@@ -192,7 +192,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.9/dist/main.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/zksync-checkout@0.0.10/dist/main.js"></script>
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
 
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>

@@ -175,6 +175,7 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': title,
+        'q': q,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
@@ -326,7 +327,7 @@ def send_2(request):
 
     """
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     _id = request.GET.get('id')
     if _id and not str(_id).isdigit():
@@ -644,7 +645,7 @@ def receive(request, key, txid, network):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if kudos_transfer.receive_txid:
@@ -890,7 +891,7 @@ def newkudos(request):
     }
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:

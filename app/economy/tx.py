@@ -203,12 +203,15 @@ def grants_transaction_validator(contribution, w3):
         # Validator currently assumes msg.sender == originator as described above
         response['originator'] = [ receipt['from'] ]
 
-        # Return if recipient is not the BulkCheckout contract
-        is_bulk_checkout = is_bulk_checkout_tx(receipt)
-        if not is_bulk_checkout:
-            to_address = receipt['to']
-            response['validation']['comment'] = f'This function only validates transactions through the BulkCheckout contract, but this transaction was sent to {to_address}'
-            return response
+        # The below check was commented out since it wrongly fails for transactions sent via Argent
+        # and other wallets that use meta-transactions or relayers
+
+        # # Return if recipient is not the BulkCheckout contract
+        # is_bulk_checkout = is_bulk_checkout_tx(receipt)
+        # if not is_bulk_checkout:
+        #     to_address = receipt['to']
+        #     response['validation']['comment'] = f'This function only validates transactions through the BulkCheckout contract, but this transaction was sent to {to_address}'
+        #     return response
 
         # Parse receipt logs to look for expected transfer info. We don't need to distinguish
         # between ETH and token transfers, and don't need to look at any other receipt parameters,

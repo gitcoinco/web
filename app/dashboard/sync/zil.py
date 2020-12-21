@@ -70,5 +70,4 @@ def sync_zil_payout(fulfillment):
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
             fulfillment.save()
-
             record_payout_activity(fulfillment)

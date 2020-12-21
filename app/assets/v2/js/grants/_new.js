@@ -102,8 +102,12 @@ Vue.mixin({
       // payout address validation based on chain
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
-      } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
-        vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+      } else if (vm.chainId == 'eth') {
+        if (!vm.form.eth_payout_address) {
+          vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+        } else if (vm.form.eth_payout_address.trim().endsWith('.eth')) {
+          vm.$set(vm.errors, 'eth_payout_address', 'ENS is not supported. Please enter ETH address');
+        }
       } else if (
         vm.chainId == 'zcash' &&
         (!vm.form.zcash_payout_address || !vm.form.zcash_payout_address.toLowerCase().startsWith('t'))

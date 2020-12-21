@@ -64,5 +64,4 @@ def sync_celo_payout(fulfillment):
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
             record_payout_activity(fulfillment)
-
         fulfillment.save()
