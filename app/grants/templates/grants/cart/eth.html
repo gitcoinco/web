@@ -53,6 +53,9 @@
           <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
             Cannot match own grant
           </div>
+          <div v-else-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+            Not in an active CLR
+          </div>
           <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
             Not Eligible for CLR
           </div>
