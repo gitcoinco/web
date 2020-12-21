@@ -746,10 +746,10 @@ def get_grant_types(network, filtered_grants=None):
     for grant_type in grant_types:
         _keyword = grant_type['keyword']
         grant_type['sub_categories'] = [{
-            'label': tuple[0],
-            'count': get_category_size(tuple[0]),
+            'label': _tuple[0],
+            'count': get_category_size(grant_type, _tuple[0]),
             # TODO: add in 'funding'
-            } for tuple in basic_grant_categories(_keyword)]
+            } for _tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
@@ -781,10 +781,11 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
 
     for grant_type in grant_types: # TODO : Tweak to get only needed categories
         _keyword = grant_type['keyword']
+        print("hahha")
         grant_type['sub_categories'] = [{
-            'label': tuple[0],
-            'count': get_category_size(tuple[0]),
-            } for tuple in basic_grant_categories(_keyword)]
+            'label': _tuple[0],
+            'count': get_category_size(grant_type, _tuple[0]),
+            } for _tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
@@ -2268,8 +2269,8 @@ def grants_cart_view(request):
     return response
 
 
-def get_category_size(category):
-    key = f"grant_category_{category}"
+def get_category_size(grant_type, category):
+    key = f"grant_category_{grant_type.get('keyword')}_{category}"
     redis = RedisService().redis
     try:
         return int(redis.get(key))
