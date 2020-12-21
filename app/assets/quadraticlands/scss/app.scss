@@ -39,12 +39,15 @@
 @import "section_footer";
 
 /* section quest */
-@import "section_quest";
+@import "quest/section";
+@import "quest/quest-intro";
 @import "quest/quest-video";
 @import "quest/quest-quiz";
 @import "quest/quest-claim";
 @import "quest/quest-vote";
 @import "quest/progressbar";
+
+
 
 /* section dashboard */
 @import "dashboard/section_dashboard";

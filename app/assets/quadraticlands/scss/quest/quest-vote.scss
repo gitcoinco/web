@@ -1,126 +1,104 @@
 .quest-vote{
 
-	justify-self: center;
-	align-self: center;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 1em;
+	margin: 0em 3em;
+	user-select: none;
 
-	/* for proof of use - voting intro */
-	#intro{
-		max-width: 600px;
-		padding: 2em;
-		text-align: center;
-		animation: menu-background 4s ease-in-out infinite; 
-	}
+	.option{
+		height: 100px;
+		cursor: pointer;
+		display: flex;
+		padding: 0.5em;
+		text-decoration: none;
+		cursor: pointer;
 
-	/* for proof of use - voting intro */
-	#voting{
-
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-gap: 1em;
-		margin: 0em 3em;
-		user-select: none;
-
-		.option{
-			height: 100px;
+		label, div{
+			display: inline;
+			justify-self: center;
+			align-self: center;
 			cursor: pointer;
+		}
+
+		label{
+			font-weight: 600;
+			color: var(--white);
+			margin: 0em 1em;
+		}
+
+		div{
 			display: flex;
-			padding: 0.5em;
-			text-decoration: none;
-			cursor: pointer;
+			margin: 0em 1em;
+			margin-left: auto;
 
-			label, div{
+			input, span{
 				display: inline;
 				justify-self: center;
 				align-self: center;
-				cursor: pointer;
 			}
 
-			label{
+			input{
+				border:0;
+				outline:0;
+				padding:0;
+				margin:0;
+				background-color: transparent;
+				color: var(--aqua);
+				font-size: 100%;
 				font-weight: 600;
-				color: var(--white);
-				margin: 0em 1em;
-			}
+				width: 100px;
+				height: 80px;
+				text-align: right;
+				margin-right: 0.1em;
+				margin-left: 1em;	
+				cursor: pointer;
 
-			div{
-				display: flex;
-				margin: 0em 1em;
-				margin-left: auto;
+				-moz-appearance: textfield;
 
-				input, span{
-					display: inline;
-					justify-self: center;
-					align-self: center;
+				&::selection{
+					background-color: var(--aqua);
+					color: var(--space);
 				}
 
-				input{
-					border:0;
-					outline:0;
-					padding:0;
-					margin:0;
-					background-color: transparent;
-					color: var(--aqua);
-					font-size: 100%;
-					font-weight: 600;
-					width: 100px;
-					height: 80px;
-					text-align: right;
-					margin-right: 0.1em;
-					margin-left: 1em;	
-					cursor: pointer;
-
-					-moz-appearance: textfield;
-
-					&::selection{
-						background-color: var(--aqua);
-						color: var(--space);
-					}
-
-				}
-
-				span{
-					color: var(--aqua);
-				}			
 			}
 
-
-			.bar{
-				position: absolute;
-				top: 0;
-				left: 0;
-				background-color:var(--purple_light);
-				width: 0%;
-				height: 100%;
-				z-index: -1;
-				transition: all 1000ms linear;
-			}
-
-			&.active{
-				background-color: var(--space);
-				animation: colorcycle-shadow 3s ease-in-out infinite;
-			}
-
-			&:hover{
-				animation: colorcycle-shadow 3s ease-in-out infinite;
-				backdrop-filter: none;
-				background-color: var(--space);
-			};
-
+			span{
+				color: var(--aqua);
+			}			
 		}
 
 
+		.bar{
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-color:var(--purple_light);
+			width: 0%;
+			height: 100%;
+			z-index: -1;
+			transition: all 1000ms linear;
+		}
 
+		&.active{
+			background-color: var(--space);
+			animation: colorcycle-shadow 3s ease-in-out infinite;
+		}
 
-
+		&:hover{
+			animation: colorcycle-shadow 3s ease-in-out infinite;
+			backdrop-filter: none;
+			background-color: var(--space);
+		};
 
 	}
 
 
-
-	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button {
-	  -webkit-appearance: none;
-	  margin: 0;
+	input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
 	}
+
 
 
 
@@ -132,13 +110,13 @@
 @media #{$phone} { 
 	.quest-vote{
 
-		#intro{
+		.intro{
 			padding: 2em 1em;
 			margin: 1em;
 		}
 
 
-		#voting{
+		.voting{
 			grid-template-columns: 1fr;
 			padding: 0;
 			margin: 0em 1em;
