@@ -88,3 +88,33 @@ class Command(BaseCommand):
 
             for contribution in zil_pending_contributions.all():
                 sync_payout(contribution)
+
+        # PENDING POLKADOT TXN
+        polkadot_pending_contributions = pending_contribution.filter(subscription__tenant='POLKADOT')
+        if polkadot_pending_contributions:
+
+            contrib_to_be_expired = polkadot_pending_contributions.filter(created_on__lt=timeout_period)
+            contrib_to_be_expired.update(
+                success=False,
+                tx_cleared=False
+            )
+            for contribution in contrib_to_be_expired:
+                update_grant_metadata.delay(contribution.subscription.grant.pk)
+
+            for contribution in polkadot_pending_contributions.all():
+                sync_payout(contribution)
+
+        # PENDING HARMONY TXN
+        harmony_pending_contributions = pending_contribution.filter(subscription__tenant='HARMONY')
+        if harmony_pending_contributions:
+
+            contrib_to_be_expired = harmony_pending_contributions.filter(created_on__lt=timeout_period)
+            contrib_to_be_expired.update(
+                success=False,
+                tx_cleared=False
+            )
+            for contribution in contrib_to_be_expired:
+                update_grant_metadata.delay(contribution.subscription.grant.pk)
+
+            for contribution in harmony_pending_contributions.all():
+                sync_payout(contribution)

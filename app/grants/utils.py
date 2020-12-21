@@ -33,6 +33,8 @@ from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
 from grants.sync.celo import sync_celo_payout
+from grants.sync.harmony import sync_harmony_payout
+from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.zcash import sync_zcash_payout
 from grants.sync.zil import sync_zil_payout
 from perftools.models import JSONStore
@@ -296,3 +298,7 @@ def sync_payout(contribution):
         sync_celo_payout(contribution)
     elif subscription.tenant == 'ZIL':
         sync_zil_payout(contribution)
+    elif subscription.tenant == 'POLKADOT':
+        sync_polkadot_payout(contribution)
+    elif subscription.tenant == 'HARMONY':
+        sync_harmony_payout(contribution)

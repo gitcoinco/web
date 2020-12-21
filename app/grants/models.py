@@ -329,6 +329,18 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The zilliqa wallet address where subscription funds will be sent.'),
     )
+    polkadot_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The polkadot wallet address where subscription funds will be sent.'),
+    )
+    harmony_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The harmony wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -543,6 +555,10 @@ class Grant(SuperModel):
             tenants.append('CELO')
         if self.zil_payout_address and self.zil_payout_address != '0x0':
             tenants.append('ZIL')
+        if self.polkadot_payout_address and self.polkadot_payout_address != '0x0':
+            tenants.append('POLKADOT')
+        if self.harmony_payout_address and self.harmony_payout_address != '0x0':
+            tenants.append('HARMONY')
 
         return tenants
 
@@ -773,6 +789,8 @@ class Grant(SuperModel):
             'zcash_payout_address': self.zcash_payout_address,
             'celo_payout_address': self.celo_payout_address,
             'zil_payout_address': self.zil_payout_address,
+            'polkadot_payout_address': self.polkadot_payout_address,
+            'harmony_payout_address': self.harmony_payout_address
         }
 
     def repr(self, user, build_absolute_uri):
@@ -825,6 +843,8 @@ class Grant(SuperModel):
                 'zcash_payout_address': self.zcash_payout_address or '',
                 'celo_payout_address': self.celo_payout_address,
                 'zil_payout_address': self.zil_payout_address,
+                'polkadot_payout_address': self.polkadot_payout_address,
+                'harmony_payout_address': self.harmony_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
@@ -875,7 +895,9 @@ class Subscription(SuperModel):
         ('ETH', 'ETH'),
         ('ZCASH', 'ZCASH'),
         ('CELO', 'CELO'),
-        ('ZIL', 'ZIL')
+        ('ZIL', 'ZIL'),
+        ('POLKADOT', 'POLKADOT'),
+        ('HARMONY', 'HARMONY')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
@@ -1534,7 +1556,9 @@ class Contribution(SuperModel):
         ('eth_zksync', 'eth_zksync'),
         ('zcash_std', 'zcash_std'),
         ('celo_std', 'celo_std'),
-        ('zil_std', 'zil_std')
+        ('zil_std', 'zil_std'),
+        ('polkadot_std', 'polkadot_std'),
+        ('harmony_std', 'harmony_std')
     ]
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
