@@ -25,93 +25,54 @@
 
 <section class="quest">
 
-	<!-- content gets filled by js -->
-	<main>
-		<div class="quest-vote">
 
-			<!-- interface for intro -->
-			<div id="intro" class="hide glass">
+	<!-- quest-intro : text -->
+	<!-- kevin talked about having not text intro but video intro
+	<main id="intro" class="hide">
+		<div class="wrapper">
+			<div class="quest-intro glass">
 				<h3>Introduction</h3>
 				<h1>Gitcoin’s Core Values</h1>
-				<p style="margin-bottom:2em;">Influence our principles of our living constitution by balance your voting power to the core values you care the most by drag some sliders.</p>
-			</div>	
-
-			<!-- interface for voting -->
-			<div id="voting" class="hide">
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Self Reliance</label>
-					<div>
-						<input type="number" name="SelfReliance" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Collaboration</label>
-					<div>
-						<input type="number" name="Collaboration" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Intellectual Honesty</label>
-					<div>
-						<input type="number" name="IntellectualHonesty" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Empathy</label>
-					<div>
-						<input type="number" name="Empathy" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Stress Reducers</label>
-					<div>
-						<input type="number" name="StressReducers" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Inclusivity</label>
-					<div>
-						<input type="number" name="Inclusivity" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
-				<div class="option glass">
-					<div class="bar"></div>
-					<label>Giving First</label>
-					<div>
-						<input type="number" name="GivingFirst" value="0" step="5">
-						<span>%</span>
-					</div>
-				</div>
-
+				<p style="margin-bottom:2em;">Influence our principles of our living constitution by balance your voting power to the core values you care the most by drag some sliders.</p>			
 			</div>
-
 		</div>
 	</main>
+	-->
+
+
+	<!-- quest-intro : video  -->
+	<main id="intro" class="hide">
+		<div class="wrapper">
+			<div class="quest-video">
+				<iframe src="https://www.youtube.com/embed/QtgFm38ck0k?rel=0" frameborder="0"allowfullscreen></iframe>
+			</div>
+		</div>
+	</main>
+	
+
+	<!-- quest-vote -->
+	<main id="voting" class="hide">
+		<div class="wrapper">
+			<div class="quest-vote">
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Self Reliance" %}
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Collaboration" %}
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Intellectual Honesty" %}
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Empathy" %}
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Stress Reducers" %}
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Inclusivity" %}
+				{% include 'quadraticlands/components/quest-vote-option.html' with name="Giving First" %}
+			</div>
+		</div>
+	</main>
+
 
 
 	<!-- timer / seperator -->
 	<div class="seperator">
 		<div id="progressbar" style="width:0px"></div>
 	</div>
+
+
 
 	<!-- bottom navigation -->
 	<nav class="glass">
@@ -179,7 +140,7 @@ document.addEventListener("DOMContentLoaded",function(){
 	const inputs = document.querySelectorAll("input")
 
 	/*********** VIEW ON LOAD */
-	// updateInterface("intro")
+	updateInterface("intro")
 	updateInterface("voting")
 
 

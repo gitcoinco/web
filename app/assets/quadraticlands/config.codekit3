@@ -838,6 +838,19 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/test.png": {
+		"ft": 32768,
+		"iS": 763532,
+		"oA": 1,
+		"oAP": "/images/test.png",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"oT": 1,
+		"ou": "lpckwebp-none",
+		"q": 100,
+		"rq": 75
+		},
 	"/images/token.svg": {
 		"ft": 2097152,
 		"miP": 0,
@@ -1539,6 +1552,19 @@
 		"oS": 3,
 		"sct": 0
 		},
+	"/scss/quest/quest-intro.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/quest-intro.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
 	"/scss/quest/quest-quiz.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1574,6 +1600,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/scss/css/quest-vote.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/quest/section.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/section.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
@@ -1717,19 +1756,6 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/css/section_mission.css",
-		"oF": 0,
-		"oS": 3,
-		"sct": 0
-		},
-	"/scss/section_quest.scss": {
-		"aP": 0,
-		"bl": 0,
-		"dP": 10,
-		"ec": 1,
-		"ft": 4,
-		"ma": 1,
-		"oA": 1,
-		"oAP": "/css/section_quest.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
