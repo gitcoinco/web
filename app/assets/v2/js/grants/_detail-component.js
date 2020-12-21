@@ -348,7 +348,7 @@ Vue.mixin({
       vm.submitted = false;
       return true; // no errors, continue to create grant
     },
-    claimMatch: async function() {
+    claimMatch: async function(recipient) {
       // Helper method to manage state
       const waitingState = (state) => {
         indicateMetamaskPopup(!state);
@@ -374,12 +374,17 @@ Vue.mixin({
       );
 
       // Claim payout
-      console.log('matchPayouts: ', matchPayouts);
       matchPayouts.methods.claimMatchPayout(recipient)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
-          // Do stuff
-      })
+          waitingState(false);
+          $('#match-payout-section').hide();
+          _alert("Match payout claimed! Funds will be sent to this grant's address", 'success');
+        })
+        .on('error', function (error) {
+          waitingState(false);
+          _alert(error, 'error');
+        });
     }
   },
   computed: {

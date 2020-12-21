@@ -1352,6 +1352,23 @@ def grant_details(request, grant_id, grant_slug):
     if is_clr_active:
         title = '💰 ' + title
 
+    # If the user viewing the page is team member or admin, check if grant has match funds available
+    # to withdraw
+    is_match_available_to_claim = False
+    if is_team_member or is_admin:
+        w3 = get_web3(grant.network)
+        match_payouts_abi = settings.MATCH_PAYOUTS_ABI
+        match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
+        match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
+        amount_available = match_payouts.functions.payouts(grant.admin_address).call()
+        is_match_available_to_claim = True if amount_available > 0 else False
+
+    # Check if this grant needs to complete KYC before claiming match funds
+    is_blocked_by_kyc = hasattr(grant, 'clrmatches') and grant.clrmatches.filter(round=8).has_passed_kyc
+
+    # Determine if we should show the claim match button on the grant details page
+    should_show_claim_match_button = (is_team_member or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -1381,6 +1398,7 @@ def grant_details(request, grant_id, grant_slug):
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
+        'should_show_claim_match_button': should_show_claim_match_button
     }
     # Stats
     if tab == 'stats':
