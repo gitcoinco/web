@@ -46,6 +46,14 @@ block_codes = ('▖', '▗', '▘', '▙', '▚', '▛', '▜', '▝', '▞', '�
 emoji_codes = ('🎉', '🎈', '🎁', '🎊', '🙌', '🥂', '🎆', '🔥', '⚡', '👍')
 
 
+tenant_payout_mapper = {
+    'ZCASH': sync_zcash_payout,
+    'CELO': sync_celo_payout,
+    'ZIL': sync_zil_payout,
+    'HARMONY': sync_harmony_payout,
+    'POLKADOT': sync_polkadot_payout
+}
+
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
     file_path = os.path.basename(filename)
@@ -292,13 +300,4 @@ def sync_payout(contribution):
     if not subscription:
         return None
 
-    if subscription.tenant == 'ZCASH':
-        sync_zcash_payout(contribution)
-    elif subscription.tenant == 'CELO':
-        sync_celo_payout(contribution)
-    elif subscription.tenant == 'ZIL':
-        sync_zil_payout(contribution)
-    elif subscription.tenant == 'POLKADOT':
-        sync_polkadot_payout(contribution)
-    elif subscription.tenant == 'HARMONY':
-        sync_harmony_payout(contribution)
+    tenant_payout_mapper[subscription.tenant](contribution)
