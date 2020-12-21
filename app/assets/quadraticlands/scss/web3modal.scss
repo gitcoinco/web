@@ -1,8 +1,17 @@
 .web3modal-modal-lightbox{
-	background-color: rgba(0, 0, 0, 0.1) !important;	
-			background-color: var(--space_glass) !important;
-			backdrop-filter: blur(18px) !important;
+	background-color: var(--space_glass_firefox) !important;
+	background-color: none !important;
+	z-index: 99999999 !important;
+	background-color: green;
 }
+
+@supports ((-webkit-backdrop-filter: blur(2em)) or (backdrop-filter: blur(2em))) {
+	.web3modal-modal-lightbox{
+		background-color: var(--space_glass);
+		backdrop-filter: blur(18px);
+	}
+}
+
 
 .web3modal-modal-card {
 	background-color: transparent !important;
@@ -22,16 +31,16 @@
 
 
 .web3modal-provider-wrapper{
-	padding: 10px !important;
+	padding: 0.2em !important;
 }
 
 
-
 .web3modal-provider-container{
-	background-color: var(--space) !important;
+
+	background-color: var(--space_light) !important;
 	border-radius: initial !important;
 	cursor: pointer;
-	border: 1px solid var(--smoke) !important;
+	border: none !important;
 
 	.web3modal-provider-icon{
 		margin-top: 0.5em !important;

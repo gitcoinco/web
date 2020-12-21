@@ -1,21 +1,18 @@
-// particles
-//
-// controlls the behaviour of existing svg's in
-// <section id="particles"></section>
+document.addEventListener("DOMContentLoaded",function(){
+
+  console.debug("PARTICLES")
+
+  // init particle system
+  particleInit()
+
+  // check if this is a touch device
+  // to prevent particleAttract() on mobile
+  mobile = false
+  window.addEventListener('touchstart', function() { 
+    mobile = true
+  });
 
 
-
-console.log("init app");
-
-particleInit();
-
-
-
-// check if this is a touch device
-// to prevent particleAttract() on mobile
-mobile = false;
-window.addEventListener('touchstart', function() { 
-  mobile = true;
 });
 
 
@@ -47,7 +44,7 @@ function particleInit() {
       // apply color animation with random timing
       durationFill = Math.floor(Math.random() * (6000 - 600) + 600);
       p.animate({
-        fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ]
+        fill: [ "#6F3FF5", "#F35890", "#02E2AC", "#6F3FF5" ]
       }
       , { 
         duration: durationFill,

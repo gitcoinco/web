@@ -180,6 +180,16 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/background/anim-9.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/anim-9.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
 	"/images/background/claim.svg": {
 		"ft": 2097152,
 		"miP": 0,
@@ -920,6 +930,36 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "/js/app-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/js/background-min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/background-min-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/js/background-min.js.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/js/background-min.js.map",
+		"oF": 0
+		},
+	"/js/background.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/background-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

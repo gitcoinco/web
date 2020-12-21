@@ -69,6 +69,12 @@
 					cursor: pointer;
 
 					-moz-appearance: textfield;
+
+					&::selection{
+						background-color: var(--aqua);
+						color: var(--space);
+					}
+
 				}
 
 				span{
