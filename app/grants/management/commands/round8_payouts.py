@@ -225,73 +225,40 @@ class Command(BaseCommand):
             # Convert dict to array to use it as inputs to the contract
             full_payouts_mapping = []
             for key, value in full_payouts_mapping_dict.items():
-                full_payouts_mapping.append({'recipient': key, 'amount': value})
+                full_payouts_mapping.append([key, str(int(value))])
+            total_amount = sum(int(ele[1]) for ele in full_payouts_mapping)
 
             # In tests, it took 68,080 gas to set 2 payout values. Let's be super conservative
             # and say it's 50k gas per payout mapping. If we are ok using 6M gas per transaction,
             # that means we can set 6M / 50k = 120 payouts per transaction. So we chunk the
             # payout mapping into sub-arrays with max length of 120 each
+            # KO 12/21 - edited with Matt to make 2.1x that
             def chunks(lst, n):
                 """Yield successive n-sized chunks from lst. https://stackoverflow.com/a/312464"""
                 for i in range(0, len(lst), n):
                     yield lst[i:i + n]
-
-            chunked_payouts_mapping = chunks(full_payouts_mapping, 120)
-
+            chunk_size = 250 if not settings.DEBUG else 120
+            chunked_payouts_mapping = chunks(full_payouts_mapping, chunk_size)
             # Set payouts
             from_address = settings.GRANTS_PAYOUT_ADDRESS
             from_pk = settings.GRANTS_PAYOUT_PRIVATE_KEY
             for payout_mapping in chunked_payouts_mapping:
-                w3 = get_web3(network)
-                tx_args = {
-                    'nonce': w3.eth.getTransactionCount(from_address),
-                    'gas': 8000000, # Set gas limit to 8M so we have even more margin
-                    'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4)
-                }
 
-                tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
-                signed = w3.eth.account.signTransaction(tx, from_pk)
+                #tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
 
-                tx_id = None
-                success = False
-                counter = 0
-                while not success:
-                    try:
-                        tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-                        success = True
-                    except Exception as e:
-                        counter +=1
-                        if 'replacement transaction underpriced' in str(e):
-                            print(f'replacement transaction underpriced. retrying {counter}')
-                            time.sleep(WAIT_TIME_BETWEEN_TXS)
-
-                            # rebuild txn
-                            tx_args['gasPrice'] = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.6) # bump up multiplier to 1.6
-                            tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
-                            signed = w3.eth.account.signTransaction(tx, from_pk)
-                        elif 'nonce too low' in str(e):
-                            print(f'nonce too low. retrying {counter}')
-                            time.sleep(WAIT_TIME_BETWEEN_TXS)
-
-                            # rebuild txn
-                            tx_args['nonce'] = w3.eth.getTransactionCount(from_address)
-                            tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
-                            signed = w3.eth.account.signTransaction(tx, from_pk)
-                        else:
-                            raise e
-
-                if not tx_id:
-                    raise Exception('Cannot set mapping')
-
-                # Mapping has been successfully set
-                # wait for tx to clear
-                while not has_tx_mined(tx_id, network):
-                    time.sleep(1)
+                print(f"#TODO: Send this txn view etherscan {match_payouts_address}")
+                print(json.dumps(payout_mapping))
 
                 # Pause until the next one
                 print("SLEEPING")
                 time.sleep(WAIT_TIME_BETWEEN_TXS)
                 print("DONE SLEEPING")
+
+            user_input = input("continue? (y/n) ")
+            if user_input != 'y':
+                return
+
+            tx_id = input("enter a txid:  ")
 
             # All payouts have been successfully set, so now we update the database
             for match in unpaid_scheduled_matches.order_by('amount'):
@@ -303,7 +270,7 @@ class Command(BaseCommand):
                 else:
                     match.test_payout_tx = tx_id
                     match.test_payout_tx_date = timezone.now()
-                    grant_match_distribution_test_txn(match)
+                    #grant_match_distribution_test_txn(match)
                 match.save()
 
                 # create payout obj artifacts
