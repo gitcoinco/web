@@ -1,0 +1,20 @@
+{
+  "symbol": "xUSD",
+  "address": "0x5C71bF122B5e1eEC7fb2cf029D6fAB7B224BD94F",
+  "overview":{
+        "en": "TGX holders can cast xUSD by locking their TGX as collateral through DeFi-Xsmart contract. xUSD is a synthetic asset that tracks the actual asset price. They allow holders to trade various asset classes on Ethereum without having to own the actual assets or entrust any custodian. In the future, it can be used for transactions of legal tender, commodities, cryptocurrency and reverse cryptocurrency, as well as multi-scenario payment of offline shopping, hotel and travel consumption.\nCurrently, xUSD only supports users through the POW working mechanism to get it .\nIn the near future, xUSD+TGX high-yield mining pool will be added to the official website. Users can stake xUSD and TGX to obtain more coinage tools, TGX. Coinage can be started after DeFi-Xecological upgrading is improved and DeFi-XExchange of coinage factory is established.\nxUSD cash account will be displayed on DeFi-Xofficial website soon. Users can exchange xUSD for USDT (one-way transaction only), obtain xUSD through off-market transactions, or through stake TGX to borrow xUSD on the official website.",
+        "zh": "TGX持有者可以通过 DeFi-X 智能合约锁定其TGX作为抵押品来铸造xUSD。xUSD是跟踪实际资产价格的合成资产。它们使持有者无需自己持有实际资产或委托任何托管人，就可以在以太坊上交易各种资产类别。将来可用于法定货币，大宗商品，加密货币和反向加密货币的交易，以及线下购物、酒店、旅游消费等多场景支付。\n目前，xUSD只支持用户通过POW工作机制获取。\n将来不久，官网会增加xUSD+TGX高收益挖矿池，用户可以质押xUSD和TGX获取更多的铸币工具TGX，待DeFi-X生态升级完善，铸币工厂DeFi-X Exchange建立起来，即可进行铸币。\nxUSD现金账户即将会体现在DeF-X官网，用户可以用xUSD兑换USDT（仅单向交易），或通过场外交易得到xUSD，或通过官网进行抵押TGX借贷xUSD。"
+  },
+  "email": "cs@defix.finance",
+  "website": "https://www.defix.finance/",
+  "state": "NORMAL",
+  "published_on": "2020-10",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DeFiXFinance",
+    "telegram": "https://t.me/defixcn",
+    "medium": "https://defixfinance.medium.com/"
+  }
+}
