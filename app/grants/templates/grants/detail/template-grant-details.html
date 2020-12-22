@@ -1,0 +1,595 @@
+{% load static humanize i18n grants_extra %}
+<script type="text/x-template" id="template-grant-details">
+  <div>
+    <slot></slot>
+    <div class="container grid grid-template-sidebar mb-5">
+      <div class="grant-data">
+        <div class="d-flex align-items-baseline">
+          <h1 class="h3">
+            [[grant.title]]
+          </h1>
+          <time :datetime="grant.last_update" v-b-tooltip.hover.top="grant.last_update" class="font-smaller-3 ml-3">Updated: [[grant.last_update | moment]]</time>
+        </div>
+        <div class="font-smaller-3">
+          <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
+            <span class="" v-b-tooltip.hover.top="grant.admin_address"><i class="fab fa-fw fa-ethereum"></i> [[grant.admin_address | truncateHash]] <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.admin_address"><i class="far fa-copy"></i></copy-clipboard></span>
+
+            <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
+            <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
+          </template>
+          <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://sochain.com/address/ZEC/${grant.zcash_payout_address}`">
+                <span id="z-cash-address" class="wallet-address" v-b-tooltip.hover.top="grant.zcash_payout_address">
+                  [[grant.zcash_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zcash_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+        </div>
+        <div class="grant-description mt-4 mb-5">
+          <render-quill :delta="grant.description_rich"></render-quill>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center font-body">
+
+          <span class="flex-fill text-md-left text-center ">
+            <i class="text-black-70 fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
+            <span v-if="grant.verified" class="py-0 position-relative px-0 btn btn-sm animate-verify" id="tooltip-verify">
+              <b-tooltip target="tooltip-verify" triggers="hover" variant="light">
+                <p class="h6 my-2 text-left">
+                  Verified Ownership
+                  <img width="18" src="{% static "v2/images/badge-verify.svg" %}">
+                </p>
+                <p class="text-left">Grant owner has verified ownership of their twitter account.</p>
+              </b-tooltip>
+              <img width="13" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+            </span>
+          </span>
+
+          <div v-if="grant.github_project_url" class="flex-fill text-md-left text-center ">
+            <i class="text-black-70 fab fa-fw fa-github"></i> <a target="_blank" :href="grant.github_project_url">Project repo</a>
+          </div>
+          <div class="flex-fill text-md-left text-center ">
+            <i class="text-black-70 fas fa-fw fa-link"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url]]</a>
+          </div>
+          <div v-if="grant.funding_info" class="flex-fill text-md-left text-center ">
+            <i class="text-black-70 fas fa-fw fa-donate"></i> <span>[[grant.funding_info]]</span>
+          </div>
+          <div class="flex-fill text-md-left text-center" v-if="isUserLogged">
+            <button @click="toggleFollowingGrant(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+              <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
+            </button>
+          </div>
+        </div>
+        <div class="mt-5">
+          <h6 class="font-smaller-1 font-weight-bold mb-3 text-black-70">TEAM</h6>
+          <div class="d-flex" style="gap: 16px;">
+            <div v-for="member in teamFormatted" :key="member.id" class="d-flex flex-column align-items-center" v-if="member?.text">
+              <b-img-lazy class="rounded-circle bg-white" width="50" height="50" :src="member.avatar_url" :alt="member.text"></b-img-lazy>
+              <a :href="`/profile/${member.text}`" class="">[[member.text]]</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grant-managment">
+        <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
+          <div class="bs-alert alert alert-warning pt-0 pb-0 pr-2 pl-2 d-flex">
+            <div class="font-body">
+              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
+              <div class="uppercase font-weight-semibold d-inline">
+                Warning: This grant has not verified their ownership of the twitter account listed.
+              </div>
+              <template v-if="grant.is_on_team && user_code">
+                <div class="my-2 d-inline-block font-weight-semibold text-center w-100">
+                  <b-button v-b-modal.modal-start-twitter-verification size="sm" variant="twitter" class="font-weight-semibold font-caption">
+                    <i class="fab fa-twitter mr-2"></i>
+                    VERIFY GRANT
+                  </b-button>
+                  <span class="mx-2">OR</span>
+                  <a class="font-caption" target="_blank" href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md&title=Verify%20Grant%20Issue">SUBMIT SUPPORT REQUEST</a>.
+                </div>
+              </template>
+              <template v-else-if="grant.is_on_team && !user_code">
+                <div class="my-2 font-weight-semibold text-center">
+                  <p class="mb-1">Visit grant details page to verify the grant.</p>
+                  <a :href="grant.details_url" target="_blank">Go to grant details page</a>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-block btn-gc-blue" @click="editGrantModal()" v-if="fullview && (grant.active && grant.is_on_team) || fullview && (grant.active && isStaff)">Edit Grant</button>
+        <a class="btn btn-block btn-gc-blue" :href="grant.details_url" target="_blank" v-else-if="!fullview && (grant.active && grant.is_on_team)">Edit Grant</a>
+      </div>
+
+      <div class="grant-checkout rounded shadow-sm bg-white p-3 border">
+        <div v-if="grant.clr_round_num && grant.is_clr_eligible" class="">
+          <div class="d-flex justify-content-between mb-2">
+            <div class="flex-fill mr-2">
+              <div class="clr-label label font-caption font-weight-semibold mb-1 p-1">
+                <span class="text-capitalize">[[grant.clr_round_num]]</span>
+                MATCH ROUND
+              </div>
+
+              <div class="gc-text-green font-weight-bold">
+                [[ grant.clr_prediction_curve[0][1] || 0 | round | formatNumber ]]
+                <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
+                <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
+              </div>
+              <div class="gc-text-green">
+                Estimated match
+              </div>
+
+            </div>
+
+            <div class="flex-fill ml-2">
+              <div class="text-black-70">
+                <div class="text-uppercase py-1 font-weight-semibold font-caption">[[grant.clr_round_num]]</div>
+              </div>
+              <div class="gc-text-darkblue font-weight-bold">
+                [[grant.amount_received_in_round || 0 | round | formatNumber ]]
+                <span v-if="grant.tenants.indexOf('ZCASH') > -1">USD</span>
+                <span v-if="grant.tenants.indexOf('ETH') > -1">DAI</span>
+              </div>
+              <div class="gc-text-darkblue">
+                [[grant.positive_round_contributor_count]] Contributors
+              </div>
+            </div>
+          </div>
+          <!-- [[grant.clr_prediction_curve]] -->
+          <div class="arrow_box mb-3">
+            <div v-if="grant.tenants.indexOf('ETH') > -1" class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
+              Your DAI Contribution Goes A Long Way!
+              <img class="" height="24" src="{% static "v2/images/diamonds_high_fiving.gif" %}">
+            </div>
+            <div v-else-if="grant.tenants.indexOf('ZCASH') > -1" class="align-items-center d-flex font-smaller-2 justify-content-between px-3 py-2" style="border-bottom: 1px solid #0FCE7C;">
+              Your ZEC Contribution Goes A Long Way!
+              <img class="" height="24" src="{% static "v2/images/chains/zcash.svg" %}">
+            </div>
+
+
+            <div class="d-flex d-flex flex-wrap justify-content-between mt-2 px-3 py-2 font-body">
+              <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && index >= 1 && index <= 4" class="d-flex flex-column" style="flex: 1 1 50%;">
+                <!-- 1, 10, 100, 1000 usd matching -->
+                <template v-if="grant.tenants.indexOf('ETH') > -1">
+                  <span>[[prediction[0] ]] DAI contribution</span>
+                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] DAI</b> match</span>
+                </template>
+                <template v-else>
+                  <span>[[prediction[0] ]] USD contribution</span>
+                  <span class="gc-text-green"><i class="fas fa-arrow-circle-right"></i> + <b>[[prediction[2] || 0 | round]] USD</b> match</span>
+                </template>
+              </div>
+            </div>
+            <div class="w-100 text-center text-black-70 pb-1 font-smaller-5">
+              Next update : [[grant.safe_next_clr_calc_date ]]
+              <span class="mx-1">|</span>
+              Last updated : [[grant.last_clr_calc_date ]]
+            </div>
+          </div>
+        </div>
+
+
+
+        <div v-else>
+          <div class="d-flex justify-content-between mb-2">
+            <div class="flex-fill mr-2">
+              <div class="clr-label label font-caption font-weight-semibold mb-1 p-1">
+                LAST MATCH ROUND
+              </div>
+
+              <div class="gc-text-green font-weight-bold" v-if="grant?.clr_prediction_curve">
+                [[ grant?.clr_prediction_curve[0][1] || 0 | round | formatNumber ]]
+                <span v-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">USD</span>
+                <span v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">DAI</span>
+              </div>
+              <div class="gc-text-green">
+                Final match
+              </div>
+
+            </div>
+
+            <div class="flex-fill ml-2">
+              <div class="text-black-70">
+                <div class="text-uppercase py-1 font-weight-semibold font-caption">All Time Funding</div>
+              </div>
+              <div class="gc-text-darkblue font-weight-bold">
+                [[grant.amount_received | round ]]
+                <span v-if="grant?.tenants?.indexOf('ZCASH') > -1">USD</span>
+                <span v-if="grant?.tenants?.indexOf('ETH') > -1">DAI</span>
+              </div>
+              <div class="gc-text-darkblue">
+                [[grant.positive_round_contributor_count]] Contributors
+              </div>
+            </div>
+          </div>
+        </div>
+        <template v-if="grant.link_to_new_grant">
+          <a :href="grant.link_to_new_grant" class="btn btn-block btn-gc-blue">Visit the active grant to fund</a>
+        </template>
+        <template v-else-if="!grant.active">
+          <button type="button" class="btn btn-block btn-gc-blue" disabled>
+            {% trans "Grant Has Ended" %}
+          </button>
+        </template>
+        <template v-else>
+
+          <button class="btn btn-block btn-gc-outline-red" @click="removeFromCart()" v-if="grant.isInCart">Remove From Cart</button>
+          <button class="btn btn-block btn-gc-blue" @click="addToCart()" v-else >Add to Cart</button>
+        </template>
+
+
+        <div class="d-flex justify-content-between mt-2">
+          <div class="d-flex align-items-center font-smaller-2" id="popover-target-1">
+            <span class="fa-stack font-smaller-6 mr-2">
+              <i class="fas fa-circle fa-stack-2x"></i>
+              <i class="fas fa-info fa-stack-1x fa-inverse"></i>
+            </span> Rules
+          </div>
+          <b-popover target="popover-target-1" triggers="hover" placement="left">
+            <template #title>Rules</template>
+            <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+            <ul class="pl-3">
+              <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+              <li><b>DO NOT</b> make up a new identity to contribute.</li>
+              <li><b>DO NOT</b> try to falsify a contribution.</li>
+            </ul>
+            Read all the <a href="https://gitcoin.co/wiki/grants/">rules here</a>.  If you see someone breaking the rules, please use 'Flag Grant' to report them.
+          </b-popover>
+          <button @click="flag" class="btn btn-gc-pink btn-sm font-caption font-weight-semibold px-3">
+            Flag <i class="ml-2 far fa-flag"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="grant-cat rounded shadow-sm bg-white p-3 border">
+
+        <template v-if="grant.region && grant.region.label != 'undefined'">
+          <h6 class="font-smaller-1 font-weight-bold mb-2 text-black-70">
+            REGION
+          </h6>
+          <div class="d-flex flex-wrap mb-4">
+            <span class="btn btn-outline-gc-blue py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[grant.region.label]]</span>
+          </div>
+        </template>
+
+        <h6 class="font-smaller-1 font-weight-bold mb-2 text-black-70">
+          CATEGORY
+        </h6>
+        <div class="d-flex flex-wrap">
+          <a :href="`/grants/${item.fields.name}`" v-for="item in grant.grant_type" class="btn btn-outline-gc-blue py-1 font-weight-bold font-smaller-4 text-capitalize mr-1">[[item.fields.label]]</a>
+        </div>
+
+        <template v-if="grant.categories && grant.categories.length > 0">
+          <h6 class="font-smaller-1 font-weight-bold mt-4 mb-2 text-black-70">SUB-CATEGORY</h6>
+          <div class="d-flex flex-wrap">
+            <a :href="`/grants/${grant.grant_type[0].fields.name}?category=${item.fields.category}`" v-for="item in grant.categories" class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4 text-capitalize mr-1 mb-1">[[item.fields.category]]</a>
+          </div>
+        </template>
+      </div>
+
+      <div class="grant-wall bg-white p-4 rounded shadow-sm border" v-if="filteredMsg?.length">
+        <div class="font-smaller-1 font-weight-bold mb-3 text-black-70">WALL OF LOVE</div>
+        <div class="d-flex justify-content-between">
+          <!-- [[Object.keys(grant?.metadata).length > 0]] -->
+          <div v-for="msg in filteredMsg" class="" v-if="filteredMsg && grant.metadata" >
+            <div v-if="msg[0].includes('💪 keep up the great work')" class="bg-light rounded px-2 py-1 h2 mb-0"> 💪 <span class="badge badge-primary badge-pill position-absolute font-smaller-5 mt-n2">[[ msg[1] ]]</span></div>
+            <div v-if="msg[0].includes('👍 i appreciate you')" class="bg-light rounded px-2 py-1 h2 mb-0"> 👍 <span class="badge badge-primary badge-pill position-absolute font-smaller-5 mt-n2">[[ msg[1] ]]</span></div>
+            <div v-if="msg[0].includes('🙌 Great Job')" class="bg-light rounded px-2 py-1 h2 mb-0"> 🙌 <span class="badge badge-primary badge-pill position-absolute font-smaller-5 mt-n2">[[ msg[1] ]]</span></div>
+            <div v-if="msg[0].includes('😍 love the mission of your project')" class="bg-light rounded px-2 py-1 h2 mb-0"> 😍 <span class="badge badge-primary badge-pill position-absolute font-smaller-5 mt-n2">[[ msg[1] ]]</span></div>
+          </div>
+        </div>
+
+        <div id="msg-list" class="font-smaller-2">
+          <div v-for="msg in itemsForList " v-if="grant.metadata" class="bg-light rounded p-3 my-3">
+            [[ msg[0] ]]
+          </div>
+        </div>
+
+        <b-pagination
+          pills
+          size="sm"
+          align="center"
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+          aria-controls="msg-list"
+          v-if="itemsForList"
+        ></b-pagination>
+      </div>
+
+    </div>
+
+    <b-modal ref="startTwitterVerification" id="modal-start-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
+      <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+      <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
+      <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
+      <b-button v-b-modal.modal-twitter-verification size="lg" variant="gc-blue">Verify with twitter</b-button>
+    </b-modal>
+
+    <b-modal ref="twitterVerification" id="modal-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
+      <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+      <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
+      <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
+        <i class="fas fa-check text-highlight-green" v-if="grant.twitter_handle_1"></i>
+        <i class="fas fa-exclamation-triangle" style="color: #b88b16" v-else></i>
+      </p>
+      <p class="mb-4 text-left"><b>Step 2:</b> Click to send the verification tweet from the grant account (<b>[[grant.twitter_handle_1]]</b>)
+      </p>
+      <b-button size="sm" variant="outline-gc-blue" @click="tweetVerification" :disabled="!grant.twitter_handle_1"><i class="fab fa-twitter"></i> Send Verification Tweet</b-button>
+      <p class="mb-4 mt-3 text-left mt-2"><b>Step 3:</b> Click the "Verify" button below</p>
+      <button class="btn btn-lg btn-gc-blue mt-2 mb-4" @click="twitterVerification" :disabled="!grant.twitter_handle_1">Verify</button>
+      <br>
+      <span class="error" id="validation-errors"></span>
+    </b-modal>
+
+    <b-sidebar
+      id="sidebar-grant-edit"
+      title="Edit Grant"
+      backdrop-variant="dark"
+      backdrop
+      shadow
+      width="70%"
+      >
+      <form action="" @submit="checkForm($event)" ref="formEditGrant" v-if="grant">
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="logo">
+            Project Logo
+          </label>
+          <div class="form__drop mt-0" id="js-drop">
+            <span v-if="!logoPreview">Drag & Drop or Browse</span>
+            <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :style="grant.image_css" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
+            <b-form-file @change="onFileChange($event)" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+          </div>
+        </div>
+        <div class="col-12 mb-3 d-flex align-items-center">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0 mr-3" for="title">Logo background color</label>
+          <input type="color" v-model="logoBackground" @input="changeColor">
+        </div>
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">Title</label>
+          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+          <input id="title" name="title" v-model.trim="grant.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="The Human Fund" required />
+
+          <div class="text-danger" v-if="errors.title">
+            [[errors.title]]
+          </div>
+        </div>
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">Description</label>
+          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+          <quill-editor
+            ref="myQuillEditor"
+            class="editor"
+            v-model.trim="grant.description_rich_edited"
+            :options="editorOptionPrio"
+
+          ></quill-editor>
+
+
+          <div class="text-danger" v-if="errors.description">
+            [[errors.description]]
+          </div>
+        </div>
+
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
+          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+          <input v-model.trim="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
+          <div class="text-danger" v-if="errors.reference_url">
+            [[errors.reference_url]]
+          </div>
+        </div>
+
+        <!-- Project twitter -->
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_1">Project Twitter Handle</label>
+          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+          <input id="twitter_handle_1" v-model="grant.twitter_handle_1" @change="transformTwitterHandle1" name="twitter_handle_1" class="form__input form__input-lg" type="text" placeholder="humanfund" required>
+
+          <div class="text-danger" v-if="errors.twitter_handle_1">
+            [[errors.twitter_handle_1]]
+          </div>
+        </div>
+
+        <!-- Owner twitter -->
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
+
+          <input id="twitter_handle_2" v-model="grant.twitter_handle_2" @change="transformTwitterHandle2" name="twitter_handle_2" class="form__input form__input-lg" type="text" placeholder="georgecostanza"/>
+
+          <div class="text-danger" v-if="errors.twitter_handle_2">
+            [[errors.twitter_handle_2]]
+          </div>
+        </div>
+
+        <!-- Github -->
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
+          <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="150" type="url" placeholder="https://github.com/humanfund"/>
+        </div>
+
+
+
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
+          <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch"  :options="usersOptions" placeholder="Add your team Gitcoin usernames" v-model="teamFormatted" multiple>
+            <template slot="no-options">
+              type to search Users..
+            </template>
+
+            <template slot="option" slot-scope="option">
+              <div class="d-flex align-items-baseline">
+                <div class="mr-2">
+                  <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+                </div>
+                <div>[[ option.text ]]</div>
+              </div>
+            </template>
+
+            <template slot="selected-option" slot-scope="option">
+              <div class="d-flex align-items-center">
+                <img class="rounded-circle mr-2" :src="option.avatar_url" width="20" height="20"/>
+                <div>[[ option.text ]]</div>
+              </div>
+            </template>
+          </v-select>
+        </div>
+
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_region">Region</label>
+
+          <v-select placeholder="Pick your region" :options="grantRegions" label="label" v-model="grant.region">
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.label ]]</span>
+            </template>
+          </v-select>
+        </div>
+
+        <div class="col-12 mb-3 text-right">
+          <button @click="saveGrant($event)" class="btn btn-gc-blue font-weight-semibold">SAVE CHANGES</button>
+        </div>
+        <div class="col-12 mb-3 mt-5">
+          <div class="alert bs-alert alert-danger py-4" role="alert">
+            <h4 class="alert-heading pt-2 mb-2">Cancel Your Grant</h4>
+            <p class="mb-0">Once the grant is canceled will not longer receive contributions or participate on CLR matching.</p>
+            <p>If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a>
+              and don't forget to include your username and grant link.
+            </p>
+            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger font-weight-semibold">CANCEL GRANT</button>
+          </div>
+        </div>
+      </form>
+    </b-sidebar>
+  </div>
+</script>
+
+<style>
+
+  .grant-description {
+    max-height: 600px;
+    overflow-y: auto;
+    will-change: height;
+  }
+
+  .blur-img {
+    filter: blur(9px);
+    transition: 0.5s all linear;
+  }
+
+  .img-edit {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    background: black;
+  }
+
+  .ql-editor .ql-video {
+    height: max(170px, 360px);
+    width: clamp(340px, 660px, 100%);
+  }
+
+  .ql-editor img {
+    max-width: 100%;
+  }
+
+  .ql-editor pre {
+    white-space: pre-wrap;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: #23241f;
+    color: #f8f8f2;
+    overflow: visible;
+    border-radius: 3px;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  }
+
+  .ql-toolbar.ql-snow {
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    background: white;
+  }
+
+  .grid {
+    display: grid;
+    margin: auto;
+  }
+
+  .grant-data {
+    grid-area: grant-data;
+  }
+
+
+  .grant-checkout {
+    grid-area: auto / grant-checkout;
+  }
+
+  .grant-cat {
+    grid-area: auto / grant-cat;
+
+  }
+  .grant-wall {
+    grid-area: auto / grant-wall;
+  }
+  .grant-managment {
+    grid-area: grant-managment;
+  }
+  input[type=color]{
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 40px;
+    background: none;
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: solid 1px rgb(58, 58, 58);
+    border-radius: 40px;
+  }
+  .grid-template-sidebar {
+    grid-template-areas:
+      "grant-data"
+      "grant-managment"
+      "grant-cat"
+      "grant-checkout"
+      "grant-wall";
+    gap: 1.5em;
+  }
+  @media (min-width: 620px) {
+    .grid {
+      /* max-width: 90%; */
+    }
+
+  }
+  @media (min-width: 960px) {
+    .grid-template-sidebar {
+      grid-template-areas:
+        "grant-data grant-data grant-data grant-managment"
+        "grant-data grant-data grant-data grant-checkout"
+        "grant-data grant-data grant-data grant-cat"
+        "grant-data grant-data grant-data grant-wall";
+      gap: 1.5em;
+      grid-auto-columns: 1fr 1fr 1fr 2fr;
+    }
+
+  }
+  @media (min-width: 700px) {
+
+  }
+
+
+</style>

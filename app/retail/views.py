@@ -575,6 +575,18 @@ def about(request):
             True
         ),
         (
+            "solexplorer",
+            "Wannabe community Star",
+            "solexplorer",
+            '',
+            "Community",
+            "Pizza",
+            "",
+            "Community leader",
+            "rachid_eth",
+            True
+        ),
+        (
             "jdorfman",
             "DevRel SuperStar",
             "jdorfman",

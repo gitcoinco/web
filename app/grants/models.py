@@ -17,13 +17,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import logging
+import traceback
 from datetime import timedelta
 from decimal import Decimal
+from io import BytesIO
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core import serializers
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
@@ -40,7 +46,7 @@ from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from grants.utils import get_upload_filename, is_grant_team_member
+from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
@@ -127,10 +133,41 @@ class GrantType(SuperModel):
 
 
 class GrantCLR(SuperModel):
-    round_num = models.CharField(max_length=15, help_text="CLR Round Number")
+
+    class Meta:
+        unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
+
+    customer_name = models.CharField(
+        max_length=15,
+        default='',
+        blank=True,
+        help_text="used to genrate customer_name/round_num/sub_round_slug"
+    )
+    round_num = models.PositiveIntegerField(
+        help_text="CLR Round Number. used to generate customer_name/round_num/sub_round_slug"
+    )
+    sub_round_slug = models.CharField(
+        max_length=25,
+        default='',
+        blank=True,
+        help_text="used to generate customer_name/round_num/sub_round_slug"
+    )
+    display_text = models.CharField(
+        max_length=15,
+        null=True,
+        blank=True,
+        help_text="sets the custom text in CLR banner on the landing page"
+    )
+    owner = models.ForeignKey(
+        'dashboard.Profile',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text='sets the owners profile photo in CLR banner on the landing page'
+    )
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
-    end_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round End Date")
     grant_filters = JSONField(
         default=dict,
         null=True, blank=True,
@@ -146,33 +183,36 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grant Collections to be allowed in this CLR round"
     )
-    verified_threshold = models.DecimalField(help_text="Verfied CLR Threshold",
+    verified_threshold = models.DecimalField(
+        help_text="This is the verfied CLR threshold. You can generally increase the saturation of the round / increase the CLR match by increasing this value, as it has a proportional relationship. However, depending on the pair totals by grant, it may reduce certain matches. In any case, please use the contribution multiplier first.",
         default=25.0,
         decimal_places=2,
         max_digits=5
     )
-    unverified_threshold = models.DecimalField(help_text="Unverified CLR Threshold",
+    unverified_threshold = models.DecimalField(
+        help_text="This is the unverified CLR threshold. The relationship with the CLR match is the same as the verified threshold. If you would like to increase the saturation of round / increase the CLR match, increase this value, but please use the contribution multiplier first.",
         default=5.0,
         decimal_places=2,
         max_digits=5
     )
-    total_pot = models.DecimalField(help_text="CLR Pot",
+    total_pot = models.DecimalField(
+        help_text="Total CLR Pot",
         default=0,
         decimal_places=2,
         max_digits=10
     )
     contribution_multiplier = models.DecimalField(
-        help_text="A contribution multipler to be applied to each contribution",
+        help_text="This contribution multipler is applied to each contribution before running CLR calculations. In order to increase the saturation, please increase this value first, before modifying the thresholds.",
         default=1.0,
         decimal_places=4,
-        max_digits=10,
+        max_digits=10
     )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
         blank=True,
         max_length=500,
-        help_text=_('The Grant CLR round image'),
+        help_text=_('sets the background in CLR banner on the landing page'),
     )
 
     def __str__(self):
@@ -180,7 +220,29 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        return Grant.objects.filter(**self.grant_filters).filter(is_clr_eligible=True)
+
+        grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.grant_filters:
+            grants = grants.filter(**self.grant_filters)
+        if self.subscription_filters:
+            grants = grants.filter(**self.subscription_filters)
+        if self.collection_filters:
+            grants = grants.filter(**self.collection_filters)
+
+        return grants
+
+
+    def record_clr_prediction_curve(self, grant, clr_prediction_curve):
+        for obj in self.clr_calculations.filter(grant=grant):
+            obj.latest = False
+            obj.save()
+
+        GrantCLRCalculation.objects.create(
+            grantclr=self,
+            grant=grant,
+            clr_prediction_curve=clr_prediction_curve,
+            latest=True,
+        )
 
 
 class Grant(SuperModel):
@@ -192,7 +254,19 @@ class Grant(SuperModel):
         ordering = ['-created_on']
 
 
-    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    REGIONS = [
+        ('north_america', 'North America'),
+        ('oceania', 'Oceania'),
+        ('latin_america', 'Latin America'),
+        ('europe', 'Europe'),
+        ('africa', 'Africa'),
+        ('middle_east', 'Middle East'),
+        ('india', 'India'),
+        ('east_asia', 'East Asia'),
+        ('southeast_asia', 'Southeast Asia')
+    ]
+
+    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
@@ -201,6 +275,13 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    region = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        choices=REGIONS,
+        help_text="region to which grant belongs to"
+    )
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
         null=True,
@@ -226,6 +307,7 @@ class Grant(SuperModel):
         default='0x0',
         null=True,
         blank=True,
+        db_index=True,
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
     zcash_payout_address = models.CharField(
@@ -331,21 +413,10 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The fundingamount across all rounds with phantom funding'),
     )
-    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
-    clr_prediction_curve = ArrayField(
-        ArrayField(
-            models.FloatField(),
-            size=2,
-        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
-    # TODO: REMOVE
-    backup_clr_prediction_curve = ArrayField(
-        ArrayField(
-            models.FloatField(),
-            size=2,
-        ), blank=True, default=list, help_text=_('backup 5 point curve to predict CLR donations - used to store a secondary backup of the clr prediction curve, in the case a new identity mechanism is used'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
-    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    random_shuffle = models.PositiveIntegerField(blank=True, null=True, db_index=True)
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True, db_index=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
     # TODO-GRANTS: remove
@@ -392,6 +463,12 @@ class Grant(SuperModel):
 
     funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
 
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
     weighted_risk_score = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -417,13 +494,14 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
+
     def calc_clr_round(self):
         clr_round = None
 
         # create_grant_active_clr_mapping
         clr_rounds = GrantCLR.objects.filter(is_active=True)
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants:
+            if self in this_clr_round.grants.all():
                 self.in_active_clrs.add(this_clr_round)
             else:
                 self.in_active_clrs.remove(this_clr_round)
@@ -439,6 +517,7 @@ class Grant(SuperModel):
             self.is_clr_active = False
             self.clr_round_num = ''
 
+
     @property
     def tenants(self):
         """returns list of chains the grant can recieve contributions in"""
@@ -450,6 +529,35 @@ class Grant(SuperModel):
             tenants.append('ZCASH')
 
         return tenants
+
+
+    @property
+    def calc_clr_round_nums(self):
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            return ", ".join(round_nums)
+        return ''
+
+
+    @property
+    def calc_clr_prediction_curve(self):
+        # [amount_donated, match amount, bonus_from_match_amount ], etc..
+        # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
+        _clr_prediction_curve = []
+        for insert_clr_calc in self.clr_calculations.filter(latest=True).order_by('-created_on'):
+            insert_clr_calc = insert_clr_calc.clr_prediction_curve
+            if not _clr_prediction_curve:
+                _clr_prediction_curve = insert_clr_calc
+            else:
+                for j in [1,2]:
+                    for i in [0,1,2,3,4,5]:
+                        # add the 1 and 2 index of each clr prediction cuve
+                        _clr_prediction_curve[i][j] += insert_clr_calc[i][j]
+
+        if not _clr_prediction_curve:
+            _clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+
+        return _clr_prediction_curve
 
 
     def updateActiveSubscriptions(self):
@@ -645,17 +753,31 @@ class Grant(SuperModel):
             'grant_clr_prediction_curve': self.clr_prediction_curve,
             'grant_image_css': self.image_css,
             'is_clr_eligible': self.is_clr_eligible,
+            'clr_round_num': self.clr_round_num,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
         }
 
     def repr(self, user, build_absolute_uri):
+        team_members = serializers.serialize('json', self.team_members.all(),
+                            fields=['handle', 'url', 'profile__lazy_avatar_url']
+                        )
+        grant_type = None
+        if self.grant_type:
+            grant_type = serializers.serialize('json', [self.grant_type],
+                                fields=['name', 'label']
+                            )
+
+        categories = serializers.serialize('json', self.categories.all(),
+                            fields=['category'])
         return {
                 'id': self.id,
+                'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
                 'description': self.description,
+                'description_rich': self.description_rich,
                 'last_update': self.last_update,
                 'last_update_natural': naturaltime(self.last_update),
                 'sybil_score': self.sybil_score,
@@ -665,7 +787,7 @@ class Grant(SuperModel):
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
-                    'avatar_url': self.admin_profile.avatar_url
+                    'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
@@ -673,6 +795,7 @@ class Grant(SuperModel):
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
                 'safe_next_clr_calc_date': naturaltime(self.safe_next_clr_calc_date) if self.safe_next_clr_calc_date else None,
                 'amount_received_in_round': self.amount_received_in_round,
+                'amount_received': self.amount_received,
                 'positive_round_contributor_count': self.positive_round_contributor_count,
                 'monthly_amount_subscribed': self.monthly_amount_subscribed,
                 'is_clr_eligible': self.is_clr_eligible,
@@ -682,11 +805,22 @@ class Grant(SuperModel):
                 'contract_address': self.contract_address,
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
-                'zcash_payout_address': self.zcash_payout_address,
+                'zcash_payout_address': self.zcash_payout_address or '',
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
+                'team_members': json.loads(team_members),
+                'metadata': self.metadata,
+                'grant_type': json.loads(grant_type) if grant_type else None,
+                'categories': json.loads(categories),
+                'twitter_handle_1': self.twitter_handle_1,
+                'twitter_handle_2': self.twitter_handle_2,
+                'reference_url': self.reference_url,
+                'github_project_url': self.github_project_url or '',
+                'funding_info': self.funding_info,
+                'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
             }
 
     def favorite(self, user):
@@ -694,6 +828,10 @@ class Grant(SuperModel):
 
     def save(self, update=True, *args, **kwargs):
         """Override the Grant save to optionally handle modified_on logic."""
+
+        self.clr_prediction_curve = self.calc_clr_prediction_curve
+        self.clr_round_num = self.calc_clr_round_nums
+
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
             update_grant_metadata.delay(self.pk)
@@ -873,8 +1011,10 @@ class Subscription(SuperModel):
 
     @property
     def amount_per_period_minus_gas_price(self):
-        amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
-        return amount
+        if self.amount_per_period == self.amount_per_period_to_gitcoin:
+            return float(self.amount_per_period)
+
+        return float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
 
     @property
     def amount_per_period_to_gitcoin(self):
@@ -1144,8 +1284,11 @@ next_valid_timestamp: {next_valid_timestamp}
         sc.split_tx_confirmed = self.split_tx_confirmed
         sc.save()
 
-    def successful_contribution(self, tx_id):
-        """Create a contribution object."""
+    def successful_contribution(self, tx_id, include_for_clr=True, **kwargs):
+        """
+        Create a contribution object. Only expected keyword argument is checkout_type, which was
+        added as a keyword argument to avoid breaking existing calls to this function
+        """
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
         self.num_tx_processed += 1
@@ -1153,7 +1296,8 @@ next_valid_timestamp: {next_valid_timestamp}
             'tx_id': tx_id,
             'subscription': self,
             'split_tx_id': self.split_tx_id,
-            'split_tx_confirmed': self.split_tx_confirmed
+            'split_tx_confirmed': self.split_tx_confirmed,
+            'checkout_type': kwargs['checkout_type'] if 'checkout_type' in kwargs else None
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
@@ -1176,8 +1320,10 @@ next_valid_timestamp: {next_valid_timestamp}
             # CLR matching, as it gives gitcoin an unfair advantage
             is_automatic = bool(contribution.subscription.amount_per_period == contribution.subscription.gas_price)
             from dashboard.models import Profile
-            contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
-            contribution.match = False
+
+            if not include_for_clr:
+                contribution.profile_for_clr = Profile.objects.get(handle='gitcoinbot')
+                contribution.match = False
             contribution.save()
 
         return contribution
@@ -1224,7 +1370,6 @@ next_valid_timestamp: {next_valid_timestamp}
 
         update_grant_metadata.delay(self.pk)
         return contribution
-
 
 
 class DonationQuerySet(models.QuerySet):
@@ -1365,9 +1510,7 @@ class Contribution(SuperModel):
 
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
-        ('eth_zksync_deposit', 'eth_zksync_deposit'),
-        ('eth_zksync_batch_deposit', 'eth_zksync_batch_deposit'),
-        ('eth_zksync_pure', 'eth_zksync_pure'),
+        ('eth_zksync', 'eth_zksync'),
         ('zcash_std', 'zcash_std')
     ]
 
@@ -1455,59 +1598,49 @@ class Contribution(SuperModel):
             return self.subscription.contributor_profile.id
 
     def update_tx_status(self):
-        """Updates tx status."""
+        """Updates tx status for Ethereum contributions."""
         try:
-            from economy.tx import grants_transaction_validator_v2
+            from economy.tx import grants_transaction_validator
             from dashboard.utils import get_tx_status
             from economy.tx import getReplacedTX
+
+            # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
                 return
 
-            # handle replace of tx_id
-            if self.tx_id:
-                tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-                if tx_status in ['pending', 'dropped', 'unknown', '']:
-                    new_tx = getReplacedTX(self.tx_id)
-                    if new_tx:
-                        self.tx_id = new_tx
-                    else:
-                        print('TODO: do stuff related to long running pending txns')
-                    return
-
-            # We use the transaction hashes of this object to help identify zkSync checkouts. This
-            # works as follows:
-            #
-            #   self.split_tx_id holds one of:
-            #     Case 1: The tx hash of an L1 transaction to the BulkCheckout contract for an
-            #             ordinary checkout
-            #     Case 2: The tx hash of an L1 transaction that deposits funds into zkSync. This
-            #             occurs when a user did not have existing funds in zkSync
-            #     Case 3: The address of the Gitcoin zkSync wallet that executed the donations. This
-            #             occurs when a user already had funds in zkSync
-            #
-            # Case 1 has already been handled by everything above. For Case 2, we mark a
-            # contribution as cleared once both of the below conditions are met:
-            #   1. The L1 deposit transaction has been confirmed, and
-            #   2. The L2 transfers have been completed
-            #
-            # For case 3, we mark a contribution as cleared once the L2 transfers are completed.
-
-            # Prepare web3 provider
+            # Execute transaction validator based on checkout type
             network = self.subscription.network
-            PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
-            w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+            if self.checkout_type == 'eth_zksync':
+                # zkSync checkout using their zksync-checkout library
 
-            # Get case number
-            is_split_tx_id_address = len(self.split_tx_id) == 42 and self.split_tx_id[0:2] == '0x'
-            if is_split_tx_id_address:
-                case_number = 3
+                # Get the tx hash
+                if not self.split_tx_id.startswith('sync-tx:') or len(self.split_tx_id) != 72:
+                    # Tx hash should start with `sync-tx:` and have a 64 character hash (no 0x prefix)
+                    raise Exception('Unsupported zkSync transaction hash format')
+                tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
 
-            else:
-                # Figure out if we are in Case 1 or Case 2
-                # handle replace of split_tx_id
-                if not self.split_tx_id:
-                    return
+                # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
+                base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
+                r = requests.get(f"{base_url}/transactions_all/{tx_hash}")
+                r.raise_for_status()
+                tx_data = r.json() # zkSync transaction data
 
+                # Update contribution values based on transaction data
+                self.originated_address = tx_data['from'] # assumes sender is originator
+                self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
+                self.validator_passed = True
+                self.split_tx_confirmed = True
+                self.tx_cleared = True
+                self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+
+            elif self.checkout_type == 'eth_std':
+                # Standard L1 checkout using the BulkCheckout contract
+
+                # Prepare web3 provider
+                PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
+                w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+
+                # Handle replaced transactions
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
                 if split_tx_status in ['pending', 'dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
@@ -1517,166 +1650,21 @@ class Contribution(SuperModel):
                         print('TODO: do stuff related to long running pending txns')
                     return
 
-                # Get recipient of L1 transfer
-                receipt = w3.eth.getTransactionReceipt(self.split_tx_id)
-                recipient_L1 = receipt.to.lower()
+                # Validate that the token transfers occurred
+                response = grants_transaction_validator(self, w3)
+                if len(response['originator']):
+                    self.originated_address = response['originator'][0]
+                self.validator_passed = response['validation']['passed']
+                self.validator_comment = response['validation']['comment']
+                self.tx_cleared = response['tx_cleared']
+                self.split_tx_confirmed = response['split_tx_confirmed']
+                self.success = self.validator_passed
 
-                # Determine if this is Case 1 (BulkCheckout) or Case 2 (deposit into zkSync)
-                zksync_mainnet_addr = '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF'
-                zksync_rinkeby_addr = '0x82F67958A5474e40E1485742d648C0b0686b6e5D'
-                zksync_contract_addr = zksync_rinkeby_addr if network == 'rinkeby' else zksync_mainnet_addr
-                batch_zksync_deposit_contract_addr = '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6'.lower()
-                zkSync_recipients = [zksync_contract_addr.lower(), batch_zksync_deposit_contract_addr.lower()]
-                case_number = 2 if recipient_L1 in zkSync_recipients else 1
+            else:
+                # This validator is only for eth_std and eth_zksync, so exit for other contribution types
+                return
 
-            # If case 1, proceed as normal
-            if case_number == 1:
-                # actually validate token transfers
-                try:
-                    response = grants_transaction_validator_v2(self, w3)
-                    if len(response['originator']):
-                        self.originated_address = response['originator'][0]
-                    self.validator_passed = response['validation']['passed']
-                    self.validator_comment = response['validation']['comment']
-                    self.tx_cleared = response['tx_cleared']
-                    self.split_tx_confirmed = response['split_tx_confirmed']
-                    self.success = self.validator_passed
-                except Exception as e:
-                    if 'Expecting value' in str(e):
-                        self.validator_passed = True
-                        self.validator_comment = 'temporary stopgap success, alethio API failed/re-running'
-                        self.tx_cleared = True
-                        self.split_tx_confirmed = True
-                        self.success = self.validator_passed
-                    else:
-                        raise e
-
-
-            elif case_number == 2:
-                self.validator_comment = 'zkSync with L1 deposit'
-                self.originated_address = self.subscription.contributor_address
-
-                # Make sure L1 tx succeeded
-                if receipt.status == 0:
-                    print('okkkk')
-                    self.tx_cleared = True
-                    self.success = False
-                    self.validator_passed = True
-                    self.split_tx_confirmed = True
-                    self.validator_comment = f"{self.validator_comment}. L1 transaction failed (receipt.status == 0)"
-                    print("TODO: do stuff related to failed contribs, like emails (failed tx)")
-                    return
-
-                # If Case 2, we get the address of the gitcoin zkSync account from events
-                zksync_abi = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockVerification","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"totalBlocksVerified","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"totalBlocksCommitted","type":"uint32"}],"name":"BlocksRevert","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"DepositCommit","type":"event"},{"anonymous":false,"inputs":[],"name":"ExodusMode","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint32","name":"nonce","type":"uint32"},{"indexed":false,"internalType":"bytes","name":"fact","type":"bytes"}],"name":"FactAuth","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"FullExitCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint64","name":"serialId","type":"uint64"},{"indexed":false,"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"indexed":false,"internalType":"bytes","name":"pubData","type":"bytes"},{"indexed":false,"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"name":"NewPriorityRequest","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}],"name":"OnchainDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"OnchainWithdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsAdd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsComplete","type":"event"},{"constant":true,"inputs":[],"name":"EMPTY_STRING_KECCAK","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"}],"name":"authFacts","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"bytes22","name":"","type":"bytes22"}],"name":"balancesToWithdraw","outputs":[{"internalType":"uint128","name":"balanceToWithdraw","type":"uint128"},{"internalType":"uint8","name":"gasReserveValue","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"blocks","outputs":[{"internalType":"uint32","name":"committedAtBlock","type":"uint32"},{"internalType":"uint64","name":"priorityOperations","type":"uint64"},{"internalType":"uint32","name":"chunks","type":"uint32"},{"internalType":"bytes32","name":"withdrawalsDataHash","type":"bytes32"},{"internalType":"bytes32","name":"commitment","type":"bytes32"},{"internalType":"bytes32","name":"stateRoot","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint64","name":"_n","type":"uint64"}],"name":"cancelOutstandingDepositsForExodusMode","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint32","name":"_feeAccount","type":"uint32"},{"internalType":"bytes32[]","name":"_newBlockInfo","type":"bytes32[]"},{"internalType":"bytes","name":"_publicData","type":"bytes"},{"internalType":"bytes","name":"_ethWitness","type":"bytes"},{"internalType":"uint32[]","name":"_ethWitnessSizes","type":"uint32[]"}],"name":"commitBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_n","type":"uint32"}],"name":"completeWithdrawals","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint104","name":"_amount","type":"uint104"},{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositETH","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"uint16","name":"_tokenId","type":"uint16"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint16","name":"","type":"uint16"}],"name":"exited","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"exodusMode","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPendingWithdrawalIndex","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPriorityRequestId","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"address","name":"_token","type":"address"}],"name":"fullExit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint16","name":"_tokenId","type":"uint16"}],"name":"getBalanceToWithdraw","outputs":[{"internalType":"uint128","name":"","type":"uint128"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"getNoticePeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"initializationParameters","type":"bytes"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"isReadyForUpgrade","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfPendingWithdrawals","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"pendingWithdrawals","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint16","name":"tokenId","type":"uint16"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint64","name":"","type":"uint64"}],"name":"priorityRequests","outputs":[{"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"internalType":"bytes","name":"pubData","type":"bytes"},{"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_maxBlocksToRevert","type":"uint32"}],"name":"revertBlocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"_pubkey_hash","type":"bytes"},{"internalType":"uint32","name":"_nonce","type":"uint32"}],"name":"setAuthPubkeyHash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksCommitted","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksVerified","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCommittedPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalOpenPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"triggerExodusIfNeeded","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"upgradeParameters","type":"bytes"}],"name":"upgrade","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeCanceled","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeFinishes","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeNoticePeriodStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActivationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"upgradePreparationStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"},{"internalType":"bytes","name":"_withdrawalsData","type":"bytes"}],"name":"verifyBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint128","name":"_maxAmount","type":"uint128"}],"name":"withdrawERC20Guarded","outputs":[{"internalType":"uint128","name":"withdrawnAmount","type":"uint128"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawETH","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]'
-                zksync_contract = w3.eth.contract(address=zksync_contract_addr, abi=zksync_abi)
-                parsed_logs = zksync_contract.events.OnchainDeposit().processReceipt(receipt)
-                if len(parsed_logs) == 0:
-                    self.tx_cleared = True
-                    self.success = False
-                    self.validator_passed = True
-                    self.split_tx_confirmed = True
-                    self.validator_comment = f"{self.validator_comment}. No event logs found"
-                    print("TODO: do stuff related to failed contribs, like emails (no event logs found)")
-                    return
-
-                # Event logs found, continue
-                gitcoin_zksync_addr = parsed_logs[0]['args']['owner']
-                self.validator_passed = True
-                self.split_tx_confirmed = True
-
-            elif case_number == 3:
-                # If Case 3, the split_tx_id field hold the address
-                gitcoin_zksync_addr = self.split_tx_id
-                self.originated_address = self.subscription.contributor_address
-                self.validator_passed = True
-                self.validator_comment = 'zkSync only'
-                self.split_tx_confirmed = True
-
-            # Validate zkSync transfers now
-            if case_number == 2 or case_number == 3:
-                # Now we look for successful L2 transfers from gitcoin_zksync_addr to the
-                # grant's admin address with the expected token and transfer amount.
-
-                # Get last 100 executed zkSync transfers for that address
-                #   - TODO support users with more than 100 transfers (i.e. more than 100 grant
-                #      donations). This can be done with the pagination from the zkSync API
-                #   - TODO this fails if a user makes the exact same donation twice, as the second
-                #     will already be marked as completed because of the first. For this failure
-                #     mode to occur the (1) recipient, (2) token used, and (3) amount donated must
-                #     all be indentical
-                base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
-                r = requests.get(f"{base_url}/account/{gitcoin_zksync_addr}/history/older_than")
-                r.raise_for_status()
-                transactions = r.json() # array of zkSync transactions
-
-                # Define expected properties of the transfer
-                expected_recipient = self.normalized_data['admin_address']
-                expected_token = self.normalized_data['token_symbol']
-
-                token = Token.objects.filter(network=network, symbol=expected_token, approved=True).first().to_dict
-                decimals = token['decimals']
-                expected_transfer_amount = Decimal(
-                    self.subscription.amount_per_period_minus_gas_price * 10 ** decimals
-                )
-                transfer_tolerance = 0.05 # use a 5% tolerance
-                expected_amount_min = expected_transfer_amount * (Decimal(1 - transfer_tolerance))
-                expected_amount_max = expected_transfer_amount * (Decimal(1 + transfer_tolerance))
-
-                # Look through zkSync transfers to find one with the expected amounts
-                is_correct_recipient = False
-                is_correct_token = False
-                is_correct_amount = False
-
-                number_of_transfers = 0
-                number_of_deposits = 0
-
-                for transaction in transactions:
-                    if transaction['tx']['type'] == "Deposit":
-                        number_of_deposits += 1
-                        continue
-
-                    if transaction['tx']['type'] != "Transfer":
-                        continue
-
-                    number_of_transfers += 1
-
-                    is_correct_recipient = transaction['tx']['to'].lower() == expected_recipient.lower()
-                    is_correct_token = transaction['tx']['token'] == expected_token
-
-                    transfer_amount = Decimal(transaction['tx']['amount'])
-                    is_correct_amount = transfer_amount > expected_amount_min and transfer_amount < expected_amount_max
-
-                    if is_correct_recipient and is_correct_token and is_correct_amount:
-                        self.tx_cleared = True
-                        self.success = transaction['success']
-                        self.validator_comment = f"{self.validator_comment}. Success"
-                        break
-
-                if not is_correct_recipient or not is_correct_token or not is_correct_amount:
-                    # Transaction was not found, let's find out why
-                    if len(transactions) == 0:
-                        # No activity was found for user
-                        self.validator_comment = f"{self.validator_comment}. User has not interacted with zkSync"
-                    elif number_of_deposits > 0 and number_of_transfers == 0:
-                        # User deposited funds, but did not send their donation transactions. This
-                        # occurs if the user closes the page after sending their deposit transaction
-                        # and before zkSync transfers are sent
-                        self.validator_comment = f"{self.validator_comment}. Found deposit but no transfer. User likely closed page before transfers were sent and should revisit cart to complete checkout. User may not be aware so send them email reminders"
-
-                    elif len(transactions) > 100:
-                        # See the TODO above for more info -- the validator current is likely to
-                        # miss some transfers if the user has over 100 transactions in zkSync
-                        self.validator_comment = f"{self.validator_comment}. User has over 100 transactions on zkSync, so transaction may exist but not have been found. Update validator to use pagination on zkSync API to resolve this"
-
-                    else:
-                        # Could not find expected transfer, so try list specifics about why. We
-                        # Ascannot find exactly what went wrong because: We cycle through a list of
-                        # transactions. Some may have correct recipient and token but wrong amount.
-                        # Others may have correct token and amount but wrong recipient. In such a
-                        # case we cannot distinguish exactly what the cause was for not finding the
-                        # desired transasction.
-                        self.validator_comment = f"{self.validator_comment}. Transaction not found, unknown reason"
+            # Validator complete!
 
             if self.success:
                 print("TODO: do stuff related to successful contribs, like emails")
@@ -1949,33 +1937,54 @@ class GrantCollection(SuperModel):
             'count': grants.count(),
             'grants': [{
                 'id': grant.id,
-                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
             } for grant in grants]
         }
 
+        try:
+            cover = generate_collection_thumbnail(self, 348, 175)
+            filename = f'thumbnail_{self.id}.png'
+            buffer = BytesIO()
+            cover.save(fp=buffer, format='PNG')
+            tempfile = ContentFile(buffer.getvalue())
+            image_file = InMemoryUploadedFile(tempfile, None, filename, 'image/png', tempfile.tell, None)
+            self.cover.save(filename, image_file)
+        except Exception:
+            print('ERROR: failed build thumbnail')
+            traceback.print_exc()
+
+        print(self.cover)
         self.cache = cache
         self.save()
 
-    def to_json_dict(self):
+    def to_json_dict(self, build_absolute_uri):
         curators = [{
             'url': curator.url,
             'handle': curator.handle,
-            'avatar_url': curator.avatar_url
+            'avatar_url': curator.lazy_avatar_url
         } for curator in self.curators.all()]
 
         owner = {
             'url': self.profile.url,
             'handle': self.profile.handle,
-            'avatar_url': self.profile.avatar_url
+            'avatar_url': self.profile.lazy_avatar_url
         }
+
+        grants = self.cache.get('grants', 0)
+
+        if grants:
+            grants = [{
+                **grant,
+                'logo': build_absolute_uri(static(grant['logo'])) if 'v2/images' in grant['logo'] else grant['logo']
+            } for grant in grants]
         return {
             'id': self.id,
             'owner': owner,
             'title': self.title,
             'description': self.description,
             'cover': self.cover.url if self.cover else '',
-            'count': self.cache['count'],
-            'grants': self.cache['grants'],
+            'count': self.cache.get('count', 0),
+            'grants': grants,
             'curators': curators + [owner]
         }
 
@@ -1999,3 +2008,54 @@ class GrantStat(SuperModel):
 
     def __str__(self):
         return f'{self.snapshot_type} {self.created_on} for {self.grant.title}'
+
+
+class GrantCLRCalculation(SuperModel):
+
+    latest = models.BooleanField(default=False, db_index=True, help_text="Is this calc the latest?")
+    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant'))
+    grantclr = models.ForeignKey(GrantCLR, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant CLR Round'))
+
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
+    def __str__(self):
+        return f'{self.created_on} for g:{self.grant.pk} / gclr:{self.grantclr.pk} : {self.clr_prediction_curve}'
+
+
+class GrantBrandingRoutingPolicy(SuperModel):
+    """
+    This manages the background that would be put on a grant page (or grant CLR based on a regex matching in the URL)
+
+    For a grant, there are several models and views that handle different kinds of grants, CLRs  and categories.
+    This routing policy model sits in the middle and handles the banner and background image of specific sub-url group
+    """
+    policy_name = models.CharField(
+        max_length=25,
+        help_text=_("name to make it easier to identify"),
+        blank=True,
+        null=True
+    )
+    url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
+    banner_image = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text=_('The banner image for a grant page'),
+    )
+    priority = models.PositiveSmallIntegerField(
+        help_text=_("The priority ranking of this image 1-255. Higher priorities would be loaded first")
+    )
+    background_image = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text=_('Background image'),
+        blank=True,
+        null=True
+    )
+    inline_css = models.TextField(default='', blank=True, help_text=_('Inline css to customize the banner fit'))
+
+    def __str__(self):
+        return f'{self.url_pattern} >> {self.priority}'

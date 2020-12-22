@@ -83,6 +83,29 @@ def get_profile(handle):
     return to_profile
 
 
+def sync(request):
+    response = {}
+    try:
+        kt_id = request.GET.get('pk')
+        kt = KudosTransfer.objects.get(pk=kt_id)
+        response['txid'] = kt.txid
+        if kt.kudos_token_cloned_from.is_owned_by_gitcoin:
+            if request.user.is_authenticated:
+                if request.user.profile.handle in [kt.username.replace('@',''), kt.from_username.replace('@','')] or settings.DEBUG:
+                    authd = not kt.tx_time or kt.tx_time < (timezone.now() - timezone.timedelta(minutes=30))
+                    authd = authd and (kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped' or kt.receive_tx_status == 'unknown')
+                    if authd:
+                        from kudos.helpers import re_send_kudos_transfer
+                        response['txid'] = re_send_kudos_transfer(kt, True)
+        from dashboard.utils import tx_id_to_block_explorer_url
+        response['url'] = tx_id_to_block_explorer_url(kt.txid, kt.network)
+        response['success'] = 1
+    except Exception as e:
+        response['error'] = str(e)
+
+    return JsonResponse(response)
+
+
 def about(request):
     """Render the Kudos 'about' page."""
     activity_limit = 5
@@ -152,6 +175,7 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': title,
+        'q': q,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
@@ -303,7 +327,7 @@ def send_2(request):
 
     """
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     _id = request.GET.get('id')
     if _id and not str(_id).isdigit():
@@ -621,7 +645,7 @@ def receive(request, key, txid, network):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if kudos_transfer.receive_txid:
@@ -867,7 +891,7 @@ def newkudos(request):
     }
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:

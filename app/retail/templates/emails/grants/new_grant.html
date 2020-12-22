@@ -68,6 +68,16 @@
     font-weight: 600;
   }
 
+  .learn-more-button {
+    padding: 12px 36px;
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    background-color: #00D373;
+    color: white;
+    font-weight: 600;
+  }
+
   #grant-logo {
     max-width: 25rem;
     width: 100%;
@@ -85,10 +95,14 @@
 <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
 <h1 class="grant-email-name">{{ grant.title }}</h1>
 <p class="grant-description">{{ grant.description }}</p>
-<p>{% trans "To view or edit your grant click the button below." %}</p>
-<p style="margin: 2rem;">
-  <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>
-</p>
+<div style="text-align: center;">
+  <span>
+    <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Your Grant" %}</a>
+  </span>
+  <span>
+    <a class="learn-more-button" href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/">{% trans "Learn How to Maximize your Matching" %}</a>
+  </span>
+</div>
 <hr>
 
 {% endblock %}

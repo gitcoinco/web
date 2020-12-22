@@ -47,9 +47,15 @@
       <a href="{{kt.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
     {% endif %}
     {% if kt.receive_txid == 'pending_celery' %}
-      Pending Issuance on Chain
+      Pending Issuance on Chain 
     {% else %}
-      <a title="{% trans 'tx on block explroer' %}" href="{{kt.receive_tx_blockexplorer_link}}" target="_blank" class="mb-1">{{ kt.receive_txid|humanize_address }}</a>
+      <a title="{% trans 'tx on block explorer' %}" href="{{kt.receive_tx_blockexplorer_link}}" target="_blank" class="mb-1 block_explorer_link">{{ kt.receive_txid|humanize_address }}</a>
     {% endif %}
+    {% if kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped'  or kt.receive_tx_status == 'unknown' %}
+      {% if github_handle == kt.username or github_handle == kt.from_username or 1 %}
+        <div><i class="fas fa-sync" data-id="{{kt.id}}" data-owned='{{kt.kudos_token_cloned_from.is_owned_by_gitcoin}}'></i></div> 
+      {% endif %}
+    {% endif %}
+
   </div>
 {% endfor %}

@@ -2,11 +2,12 @@
 
 {% trans "Gitcoin Heart Robot" %}
 
-{% trans "Thank you for supporting" %} {{ grant.title }}
+{% for subscription in subscriptions %}
+{% trans "Thank you for supporting" %} {{ subscription.grant.title }}
 
 {% trans "The world of open source is a better place because of you." %}
 
-{{ grant.description }}
+{{ subscription.grant.description }}
 
 {% trans "You have agreed to give" %}
 
@@ -24,3 +25,4 @@
 {% trans "View Updates" %}
 
 {% trans "If you ever need to you can cancel your support" %} {% trans "here." %}
+{% endfor %}

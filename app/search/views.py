@@ -16,10 +16,33 @@ logger = logging.getLogger(__name__)
 
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def get_search(request):
     keyword = request.GET.get('term', '')
 
-    all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(title=keyword)]
+    # attempt elasticsearch first
+    mimetype = 'application/json'
+    return_results = []
+    try:
+        all_result_sets = search(keyword)
+        return_results = [ele['_source'] for ele in all_result_sets['hits']['hits']]
+
+        if request.user.is_authenticated:
+            data = {'keyword': keyword}
+            SearchHistory.objects.update_or_create(
+                search_type='sitesearch',
+                user=request.user,
+                data=data,
+                ip_address=get_ip(request)
+            )
+
+    except Exception as e:
+        logger.exception(e)
+    finally:
+        if not settings.DEBUG or len(return_results):
+            return HttpResponse(json.dumps(return_results), mimetype)
+
+    all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(description__icontains=keyword)]
     return_results = []
     exclude_pks = []
     for results in all_result_sets:

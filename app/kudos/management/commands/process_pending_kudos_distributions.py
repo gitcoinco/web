@@ -46,7 +46,7 @@ class Command(BaseCommand):
         _async = options['async']
         override_gas_price = options['override_gas_price']
         order_by = options['order_by'].replace('_', '-')
-        delay_if_gas_prices_gt_redeem = 300
+        delay_if_gas_prices_gt_redeem = 200
         send_notif_email = True
         send_on_xdai = True
         gitcoin_owner_addr = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'

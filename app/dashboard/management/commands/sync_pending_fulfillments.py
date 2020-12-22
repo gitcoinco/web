@@ -47,12 +47,17 @@ class Command(BaseCommand):
             for fulfillment in polkadot_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
+        # binance extension
+        binance_pending_fulfillments = pending_fulfillments.filter(payout_type='binance_ext')
+        if binance_pending_fulfillments:
+            for fulfillment in binance_pending_fulfillments.all():
+                sync_payout(fulfillment)
+
         # harmony extension
         harmony_pending_fulfillments = pending_fulfillments.filter(payout_type='harmony_ext')
         if harmony_pending_fulfillments:
             for fulfillment in harmony_pending_fulfillments.all():
                 sync_payout(fulfillment)
-
 
         # QR
         qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')

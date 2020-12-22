@@ -1,0 +1,534 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load static humanize i18n grants_extra %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-select@latest/dist/vue-select.css">
+    <link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+
+    <script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
+
+  </head>
+
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+    </div>
+    {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+      </div>
+    {% endif %}
+    <div class="bg-lightblue pb-5" id="gc-grant-detail"  v-cloak>
+
+      <b-skeleton-wrapper :loading="loading">
+        <template #loading>
+          <b-row class="mb-4">
+            <b-col>
+              <b-skeleton-img no-aspect height="290px"></b-skeleton-img>
+            </b-col>
+          </b-row>
+          <b-container>
+
+            <b-row>
+              <b-col cols="7">
+                <b-skeleton width="45%" class="mb-3"></b-skeleton>
+                <b-skeleton width="100%" height="33px" class="mb-2"></b-skeleton>
+                <b-skeleton width="65%" class="mb-2"></b-skeleton>
+                <b-skeleton width="55%" class="mb-2 mt-3"></b-skeleton>
+                <b-skeleton width="45%" class="mb-2"></b-skeleton>
+
+              </b-col>
+              <b-col cols="5">
+                <b-row class="mt-3">
+                  <b-skeleton-img no-aspect height="380px"></b-skeleton-img>
+                </b-row>
+                <b-row class="mt-3">
+                  <b-skeleton-img no-aspect height="235px"></b-skeleton-img>
+                </b-row>
+              </b-col>
+            </b-row>
+          </b-container>
+        </template>
+      </b-skeleton-wrapper>
+      <div class="" v-if="grant">
+        <grant-details :grant="grant" v-if="grant.id">
+          <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
+          <div class="container mb-3">
+            <a :href="backLink.url" class="font-body"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+          </div>
+        </grant-details>
+
+        <div class="container" ref="grant-tabs">
+          <b-tabs  content-class="mt-3" v-model="tabSelected" >
+            <b-tab :title-link-class="'nav-line'">
+              <template v-slot:title>ACTIVITY</template>
+              <div class="">
+                  {% if is_team_member %}
+                    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+                  {% else %}
+                    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+                  {% endif %}
+                  <div id="activities" class="activity_stream container px-0">
+                    {% include 'shared/activity_container.html' with pinned=False %}
+                  </div>
+              </div>
+            </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" lazy @click="fetchTransactions">
+              <template v-slot:title>TRANSACTIONS</template>
+
+              {% if is_team_member %}
+                <div class="float-right font-body">
+                  {% if is_owner %}
+                    <a href="/settings/account#financials" target="_blank">
+                      Export Transactions (OWNER ONLY)
+                    </a> |
+                  {% endif %}
+
+                  <a href="/grants/v1/api/export_addresses/grant{{grant.pk}}.json" target="_blank">
+                    All Contributor Addresses for this Grant (TEAM ONLY)
+                  </a>
+                </div>
+                <br class="break">
+              {% endif %}
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h4>
+
+
+              <div class="px-0">
+                <div class="row mb-3 py-2 px-0 mx-sm-0">
+                  <div class="col-12 px-0">
+
+                    <div id="contributions" v-if="transactions.grantTransactions">
+                      <p class="font-body font-weight-semibold subtitle mb-0">
+                        <i class="g-icon g-icon__dot-circle mr-2"></i>  {% trans "Contributions" %} ([[transactions?.count]])
+                      </p>
+                      <div class="" v-for="transaction in transactions.grantTransactions">
+                        <div class="py-2 mx-sm-0 row transaction-history">
+                          <div class="d-none d-sm-block col-1 col-sm-3 col-md-2 font-subheader text-center text-md-left my-auto">
+                            <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3">[[transaction.created_on | moment]]</time>
+                            <a :href="`/_administrationgrants/contribution/${transaction.id}/change/`" target="_blank" v-if="isStaff">
+                              <i class="fas fa-external-link-alt"></i>
+                            </a>
+                          </div>
+                          <div class="col-3 col-sm-2 justify-content-center special_tag d-flex">
+                            <a :href="`/profile/${transaction.subscription.contributor_profile}`" v-if="!transaction.anonymous" class="d-flex align-items-center">
+                              <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${ transaction.subscription.contributor_profile }`"></b-img-lazy>
+                              <span>[[transaction.subscription.contributor_profile]]</span>
+                            </a>
+                            <span class="d-flex align-items-center" v-else>
+                              <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" src="/dynamic/avatar/Anonymous"></b-img-lazy>
+                              <span>anonymous</span>
+                            </span>
+                          </div>
+                          <div class="col-1 my-auto tags font-caption">
+                            <span v-if="!transaction.success">
+                              (Failed)
+                            </span>
+                            <span v-if="!transaction.tx_cleared">
+                              (Pending)
+                            </span>
+                          </div>
+                          <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                            <a class="tx_link" :href="`https://etherscan.io/tx/${ transaction.tx_id }`" target="_blank" rel="noopener noreferrer" v-if="transaction.tx_id">
+                              View Etherscan
+                            </a>
+                          </div>
+                          <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+                            <div class="tag tag-lg token">
+                              <p v-b-tooltip.hover.top="transaction.subscription.amount_per_period_minus_gas_price">
+                                [[transaction.subscription.amount_per_period_minus_gas_price | decimals | formatNumber]]
+                                <span>[[transaction.subscription.token_symbol]]</span>
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-2 my-auto tags font-caption">
+                            <div class="tag tag-lg usd" v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
+                              <p>
+                                ($ [[transaction.subscription.amount_per_period_usdt | decimals | formatNumber ]])
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin">
+                            (+[[transaction.subscription.amount_per_period_to_gitcoin| decimals | formatNumber]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <b-skeleton-wrapper :loading="loadingTx">
+                <template #loading>
+                  <b-container>
+                    <b-row class="" v-for="index in 4" :key="index">
+                      <b-col cols="12" class="py-2">
+                        <b-skeleton width="100%" height="48px" class="mb-2"></b-skeleton>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
+              </div>
+
+
+            </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
+              <template v-slot:title>RELATED GRANTS <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants." %}</h4>
+
+              <div class="row">
+                <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
+                  <a class="text-decoration-none" :href="relgrant.details_url">
+                    <div class="card">
+                      <b-img-lazy :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title"></b-img-lazy>
+                      <div class="card-body">
+                        <h5 class="card-title">[[relgrant.title]]</h5>
+                        <p class="card-text">[[relgrant.description | truncate(150)]]</p>
+                        <div class="d-flex">
+                          <div v-for="member in relgrant.team_members" :key="member.pk">
+                            <b-img-lazy class="rounded-circle bg-white" width="40" height="40" :src="`/dynamic/avatar/${member.fields.handle}`" alt="member.fields.handle"></b-img-lazy>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <b-skeleton-wrapper :loading="loadingRelated">
+                <template #loading>
+
+                    <b-row class="mb-3">
+                      <b-col cols="12" md="6" xl="4" v-for="index in 3" :key="index">
+                        <b-card img-top no-body>
+                          <b-skeleton-img card-img="top" ></b-skeleton-img>
+                          <b-card-body>
+                            <b-skeleton width="85%"></b-skeleton>
+                            <b-skeleton width="55%"></b-skeleton>
+                            <b-skeleton width="70%"></b-skeleton>
+                            <b-skeleton type="avatar"></b-skeleton>
+                          </b-card-body>
+                        </b-card>
+                      </b-col>
+                    </b-row>
+
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
+              </div>
+            </b-tab>
+
+            <b-tab :title-link-class="'nav-line'" @click="fetchContributors">
+              <template v-slot:title>CONTRIBUTORS</template>
+              <h4 class="m-auto text-center font-weight-semibold" v-if="!contributors.grantContributors?.length && !loadingContributors">{% trans "No contributors." %}</h4>
+
+              <div class="d-flex flex-wrap" v-if="contributors.grantContributors">
+                <a :href="`/profile/${contributor.user}`" class="d-flex align-items-center m-2" v-for="contributor in contributors.grantContributors">
+                  <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${contributor.user}`"></b-img-lazy>
+                  <span class="font-weight-semibold">[[contributor.user]]</span>
+                </a>
+              </div>
+              <b-skeleton-wrapper :loading="loadingContributors" class="d-flex">
+                <template #loading>
+                  <span v-for="index in 4" class="d-flex align-items-center mr-2">
+                    <b-skeleton type="avatar"></b-skeleton>
+                    <b-skeleton width="100px" height="20px" class="ml-1"></b-skeleton>
+                  </span>
+                </template>
+              </b-skeleton-wrapper>
+              <div class="text-center">
+                <button class="btn btn-gc-blue btn-sm" v-if="contributors.next_page_number" @click="fetchContributors()" :disabled="loadingContributors">Load more</button>
+              </div>
+            </b-tab>
+
+
+            {% if is_staff %}
+            <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
+              <template v-slot:title>SYBIL PROFILE</template>
+
+
+                <h4>Grant Sybil Profile</h4>
+
+                <hr>
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                SybilScore ™️: {{ grant.sybil_score }}
+                <br>
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                RiskScore ™️: {{ grant.weighted_risk_score }}
+                <pre>
+
+                A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+                - Account Metadata
+                - Suspicious Interactions
+                - Grant Flags Reports
+                - BrightID Trust Score (coming soon)
+                - KYC (maybe coming soon)
+                - MACI (maybe coming soon)
+
+                a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+                </pre>
+                <div id="section-nav-sybil">
+                  {% for ele in sybil_profiles%}
+                  <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+                  <table>
+                    <tr>
+                      <td>
+                        Index
+                      </td>
+                      <td>
+                        Contributors
+                      </td>
+                      <td>
+                        Contributors (pct)
+                      </td>
+                      <td>
+                        Contributions/Contributor
+                      </td>
+                      <td>
+                        Profiles
+                      </td>
+                    </tr>
+                  {% for sp in ele.1.0 %}
+                    <tr style="border-top: 1px solid grey;">
+                      <td>
+                        {% if '0x' in sp.0 %}
+                        <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+                        {% else %}
+                        {{sp.0}}
+                        {% endif %}
+                      </td>
+                      <td>
+                        {{sp.1}}
+                      </td>
+                      <td>
+                        {{sp.5}}%
+                      </td>
+                      <td>
+                        {{sp.3|floatformat:2}}
+                      </td>
+                      <td>
+                        <div style="max-height: 50px; overflow: scroll;">
+                          {% for this_profile in sp.4 %}
+                                <a href="/{{this_profile}}">
+                                  {% if forloop.counter < 20 %}
+                                    <b-img-lazy class="rounded-circle bg-white" width="30" height="30" src="/dynamic/avatar/{{this_profile}}"></b-img-lazy>
+                                  {% endif %}
+                                  @{{this_profile}}
+                                </a>
+                          {% endfor %}
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </table>
+                    <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+
+
+                  {% endfor %}
+                </div>
+            </b-tab>
+            {% endif %}
+            {% if is_team_member or is_staff  %}
+            <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
+              <template v-slot:title>STATS</template>
+              {% if tab == 'stats' %}
+                <div id=grant_stats_graph class="content-block content-block--white">
+                  <div class="container">
+
+                    <div class="value-container">
+                      <div class="chart_container chart_container--big">
+                        {% if stats_history|length %}
+                        <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+                        <table id=stats_history>
+                          <tr class="table_header">
+                            <td>
+                              When
+                            </td>
+                            <td>
+                              Impressions
+                            </td>
+                            <td>
+                              Added to Cart
+                            </td>
+                            <td>
+                              Contributions
+                            </td>
+                          </tr>
+                        {% for ele in stats_history %}
+                          <tr>
+                            <td>
+                              {{ele.created_on|date:"Y/m/d"}}
+                            </td>
+                            <td>
+                              {{ele.data.impressions}}
+                            </td>
+                            <td>
+                              {{ele.data.in_cart}}
+                            </td>
+                            <td>
+                              {{ele.data.contributions}}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                        </table>
+                        {% endif %}
+
+                        <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
+                        <div class="chart_container__content">
+                          <div id="grant_chart"></div>
+                        </div>
+                        <div class="grant-status-list">
+                          <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                          <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              {% endif %}
+            </b-tab>
+            {% endif %}
+
+          </b-tabs>
+        </div>
+
+
+      </div>
+
+      <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+        {% include 'grants/detail/side-cart.html' %}
+      </div>
+    </div>
+    {% include 'grants/detail/template-grant-details.html' %}
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'grants/shared/shared_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True ignore_inject_web3=1 %}
+    <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+    <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
+
+    {{verification_tweet|json_script:"verification_tweet"}}
+    {{user_code|json_script:"user_code"}}
+    <script>
+      var grantDetails = {
+                 grant_id: "{{ grant.id }}"
+               };
+      var user_code = JSON.parse(document.getElementById('user_code').textContent);
+      var verification_tweet = JSON.parse(document.getElementById('verification_tweet').textContent);
+
+   </script>
+
+    {% include 'shared/activity_scripts.html' %}
+    <script src="{% static "v2/js/status.js" %}"></script>
+
+    <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+    <script src="{% static "v2/js/grants/_detail.js" %}"></script>
+    <script src="{% static "v2/js/grants/funding.js" %}"></script>
+    {% if is_team_member %}
+      <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
+      {% if tab == 'stats' %}
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="{% static "v2/js/grants/stats.js" %}"></script>
+        <script>
+          const max_graph = {{max_graph}};
+          const history = {{history|safe}};
+        </script>
+      {% endif %}
+    {% endif %}
+
+    {% if is_staff %}
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+      <script>
+        var ctx;
+        var checkExist = setInterval(function() {
+          if ($('myChart{{forloop.counter0}}').length) {
+            ctx = document.getElementById('myChart{{forloop.counter0}}').getContext('2d');
+            runGraph();
+            clearInterval(checkExist);
+          }
+        }, 100);
+        function runGraph() {
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: [{% for sp in ele.1.0 %}{{sp.0}}, {%endfor%}],
+                  datasets: [{
+                      label: 'Contributors by Sybil Score',
+                      data: [{% for sp in ele.1.0 %}{{sp.1}}, {%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  title: 'Contributors by Sybil Category',
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+        }
+        </script>
+    {% endif %}
+
+
+
+  </body>

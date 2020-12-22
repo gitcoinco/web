@@ -11,11 +11,48 @@ Vue.component('grant-card', {
     };
   },
   methods: {
-    checkIsCurator: function() {
-      if (this.currentUser && this.collection && this.collection.curators.length) {
-        const curators = this.collection.curators.map(collection => collection.handle);
+    quickView: function(event) {
+      event.preventDefault();
+      let vm = this;
 
-        this.isCurator = curators.indexOf(this.currentUser) !== -1;
+      appGrants.grant = vm.grant;
+      appGrants.$refs['sidebar-quick-view'].$on('hidden', function(e) {
+        appGrants.grant = {};
+      });
+      vm.$root.$emit('bv::toggle::collapse', 'sidebar-quick-view');
+    },
+    grantInCart: function() {
+      let vm = this;
+      let inCart = CartData.cartContainsGrantWithId(vm.grant.id);
+
+      vm.$set(vm.grant, 'isInCart', inCart);
+      return vm.grant.isInCart;
+    },
+    checkIsCurator: function() {
+      let vm = this;
+      let currentUser;
+
+      // Validate the user presence and clean current user handle
+      if (vm.currentUser) {
+        currentUser = vm.currentUser.replace(/@/, '').replace(/\s/g, '');
+      } else {
+        return;
+      }
+
+      // Validate if exists the collection
+      if (this.collection && this.collection.curators.length) {
+        this.collection.curators.map(curator => {
+          let currentCurator;
+
+          // Clean curator handle
+          if (curator && curator.handle) {
+            currentCurator = curator.handle.replace(/@/, '').replace(/\s/g, '');
+          }
+
+          if (currentCurator === currentUser) {
+            vm.isCurator = true;
+          }
+        });
       }
     },
     get_clr_prediction: function(indexA, indexB) {
@@ -41,11 +78,19 @@ Vue.component('grant-card', {
       return true;
     },
     addToCart: async function(grant) {
-      const grantCartPayloadURL = `v1/api/${grant.id}/cart_payload`;
+      let vm = this;
+      const grantCartPayloadURL = `/grants/v1/api/${grant.id}/cart_payload`;
       const response = await fetchData(grantCartPayloadURL, 'GET');
 
+      vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
+      showSideCart();
+    },
+    removeFromCart: function() {
+      let vm = this;
 
+      vm.$set(vm.grant, 'isInCart', false);
+      CartData.removeIdFromCart(vm.grant.id);
       showSideCart();
     },
     addToCollection: async function({collection, grant}) {
@@ -59,12 +104,13 @@ Vue.component('grant-card', {
   },
   mounted() {
     this.checkIsCurator();
+    this.grantInCart();
   }
 });
 
 Vue.component('grant-collection', {
   delimiters: [ '[[', ']]' ],
-  props: ['collection'],
+  props: [ 'collection', 'small' ],
   methods: {
     shareCollection: function() {
       let testingCodeToCopy = document.querySelector(`#collection-${this.collection.id}`);

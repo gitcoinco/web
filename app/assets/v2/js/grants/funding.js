@@ -29,7 +29,7 @@ $(document).ready(function() {
     const allDonations = CartData.loadCart();
     const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
     const otherDonations = allDonations.filter((grant) => grant.tenants[0] !== 'ETH');
-    
+
     if (allDonations.length) {
       let cart_html = 'You just funded: ';
       let bulk_add_cart = CartData.share_url();
@@ -217,6 +217,17 @@ function showSideCart() {
 
     // Register remove click handler
     $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
+      if (typeof appGrants !== 'undefined') {
+
+        appGrants.grants.filter(grantSingle => {
+          if (Number(grantSingle.id) === Number(grant.grant_id)) {
+            grantSingle.isInCart = false;
+          }
+        });
+      } else if (typeof appGrantDetails !== 'undefined' && appGrantDetails.grant.id === Number(grant.grant_id)) {
+        appGrantDetails.grant.isInCart = false;
+      }
+
       $(`#side-cart-row-${grant.grant_id}`).remove();
       CartData.removeIdFromCart(grant.grant_id);
     });
