@@ -159,7 +159,7 @@ class Command(BaseCommand):
 
         # Payout rankings (round must be finalized first) ------------------------------------------
         if what in ['prepare_final_payout']:
-            payout_matches = scheduled_matches.exclude(test_payout_tx='').filter(ready_for_payout=False)
+            payout_matches = scheduled_matches.filter(ready_for_payout=False)
             payout_matches_amount = sum(sm.amount for sm in payout_matches)
             print(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
             print('------------------------------')
