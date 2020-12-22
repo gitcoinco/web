@@ -1,4 +1,4 @@
-const payWithWeb3 = (fulfillment_id, fulfiller_address,  vm, modal) => {
+const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
   
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
@@ -29,7 +29,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address,  vm, modal) => {
     );
   }
 
-  function callback (error, result) {
+  function callback(error, result) {
     if (error) {
       _alert({ message: gettext('Unable to payout bounty. Please try again.') }, 'error');
       console.log(error);
@@ -65,4 +65,4 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address,  vm, modal) => {
       });
     }
   }
-}
+};

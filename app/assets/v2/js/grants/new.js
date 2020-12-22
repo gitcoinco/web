@@ -205,9 +205,10 @@ function saveGrant(grantData, isFinal) {
 
   $('#new_button').attr('disabled', 'disabled');
   let newGrantURL = '/grants/new';
-  const queryParams = new URLSearchParams(window.location.search)
+  const queryParams = new URLSearchParams(window.location.search);
+
   if (queryParams.get('related_hackathon_project_id')) {
-    newGrantURL += `?related_hackathon_project_id=${queryParams.get('related_hackathon_project_id')}`
+    newGrantURL += `?related_hackathon_project_id=${queryParams.get('related_hackathon_project_id')}`;
   }
 
   $.ajax({

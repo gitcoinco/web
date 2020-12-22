@@ -70,6 +70,8 @@ Vue.mixin({
         'handle2': vm.grant.twitter_handle_2,
         'eth_payout_address': vm.grant.admin_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
+        'celo_payout_address': vm.grant.celo_payout_address,
+        'zil_payout_address': vm.grant.zil_payout_address,
         'region': vm.grant.region?.name || undefined
       };
 
@@ -381,7 +383,7 @@ Vue.mixin({
           $('#match-payout-section').hide();
           _alert("Match payout claimed! Funds will be sent to this grant's address", 'success');
         })
-        .on('error', function (error) {
+        .on('error', function(error) {
           waitingState(false);
           _alert(error, 'error');
         });
