@@ -184,8 +184,10 @@ Vue.mixin({
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
 
-      const apiUrlGrant = '/grants/new';
-
+      let apiUrlGrant = '/grants/new';
+      if (vm.queryParams.get('related_hackathon_project_id')) {
+        apiUrlGrant += `?related_hackathon_project_id=${vm.queryParams.get('related_hackathon_project_id')}`
+      }
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -377,12 +379,14 @@ if (document.getElementById('gc-new-grant')) {
       const writeToRoot = ['chainId'];
       const writeToBody = [
         'title',
+        'description_rich',
         'reference_url',
         'twitter_handle_1',
         'twitter_handle_2',
         'github_project_url',
         'eth_payout_address',
         'grant_type',
+        'team_members',
         'grant_categories'
       ];
 

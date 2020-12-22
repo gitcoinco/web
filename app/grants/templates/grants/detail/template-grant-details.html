@@ -272,6 +272,17 @@
             Flag <i class="ml-2 far fa-flag"></i>
           </button>
         </div>
+        {% if should_show_claim_match_button %}
+          <div id="match-payout-section">
+            <hr class="my-4">
+            <button @click="claimMatch(grant.admin_address)" class="btn btn-gc-blue button--full shadow-none mb-2" id="claim-match">
+            Claim Match
+            </button>
+            <div class="font-smaller-1">
+            Match payouts are ready to be claimed! Use the button above to send the earned match amount to this grant.
+            </div>
+          </div>
+        {% endif %}
       </div>
 
       <div class="grant-cat rounded shadow-sm bg-white p-3 border">

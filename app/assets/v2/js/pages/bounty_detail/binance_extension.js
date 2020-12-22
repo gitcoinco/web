@@ -7,7 +7,8 @@ const payWithBinanceExtension = (fulfillment_id, to_address, vm, modal) => {
     binance_utils.transferViaExtension(
       amount * 10 ** vm.decimals,
       to_address,
-      from_address
+      from_address,
+      vm.bounty.token_name
     ).then(txn => {
       callback(null, from_address, txn);
     }).catch(err => {

@@ -204,10 +204,15 @@ function saveGrant(grantData, isFinal) {
   let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
 
   $('#new_button').attr('disabled', 'disabled');
+  let newGrantURL = '/grants/new';
+  const queryParams = new URLSearchParams(window.location.search)
+  if (queryParams.get('related_hackathon_project_id')) {
+    newGrantURL += `?related_hackathon_project_id=${queryParams.get('related_hackathon_project_id')}`
+  }
 
   $.ajax({
     type: 'post',
-    url: '/grants/new',
+    url: newGrantURL,
     processData: false,
     contentType: false,
     data: grantData,
