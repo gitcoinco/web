@@ -1145,7 +1145,6 @@ $(document).ready(function() {
 
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-    openChat();
 
     $('.comment_activity').each(function() {
       var open = $(this).data('open');
