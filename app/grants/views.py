@@ -1370,7 +1370,8 @@ def grant_details(request, grant_id, grant_slug):
     is_blocked_by_kyc = hasattr(grant, 'clrmatches') and not grant.clrmatches.filter(round=8).ready_for_payout
 
     # Determine if we should show the claim match button on the grant details page
-    should_show_claim_match_button = (is_team_member or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
+    is_staff = request.user.is_authenticated and request.user.is_staff
+    should_show_claim_match_button = (is_team_member or is_staff) and is_match_available_to_claim and not is_blocked_by_kyc  
 
     params = {
         'active': 'grant_details',
