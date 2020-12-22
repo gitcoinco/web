@@ -48,7 +48,7 @@ var dataChains =
     "chainId": 100,
     "shortName": "xdai",
     "chain": "XDAI",
-    "network": "mainnet",
+    "network": "xdai",
     "networkId": 100,
     "nativeCurrency": {
       "name": "xDAI",
