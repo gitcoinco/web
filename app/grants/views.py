@@ -1357,8 +1357,9 @@ def grant_details(request, grant_id, grant_slug):
     # to withdraw
     is_match_available_to_claim = False
     is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2020, 12, 30, 12, 0).replace(tzinfo=pytz.utc)
+    is_staff = request.user.is_authenticated and request.user.is_staff
     if is_within_payout_period_for_most_recent_round:
-        if is_team_member or is_admin:
+        if is_team_member or is_staff or is_admin:
             w3 = get_web3(grant.network)
             match_payouts_abi = settings.MATCH_PAYOUTS_ABI
             match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
@@ -1370,8 +1371,7 @@ def grant_details(request, grant_id, grant_slug):
     is_blocked_by_kyc = hasattr(grant, 'clrmatches') and not grant.clrmatches.filter(round=8).ready_for_payout
 
     # Determine if we should show the claim match button on the grant details page
-    is_staff = request.user.is_authenticated and request.user.is_staff
-    should_show_claim_match_button = (is_team_member or is_staff) and is_match_available_to_claim and not is_blocked_by_kyc  
+    should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
 
     params = {
         'active': 'grant_details',
