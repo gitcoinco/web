@@ -533,10 +533,6 @@ def api(request, activity_id):
             comment_dict['handle'] = comment.profile.handle
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             # perf - 0.3s on a 150 comment thread
-            comment_dict['last_chat_status'] = comment.profile.last_chat_status
-            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
-            comment_dict['last_chat_status_title'] = comment_dict['last_chat_status'].title()
-            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)

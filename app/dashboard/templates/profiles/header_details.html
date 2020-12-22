@@ -5,7 +5,6 @@
 </h1>
 <p class="mb-0">
   @{{ profile.handle }}
- {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 last_chat_status=profile.last_chat_status chat_id=profile.chat_id handle=profile.handle %}
   {% if profile.match_this_round %}
     <span data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
       {% include 'profiles/match_estimate_explainer.html' %}
@@ -61,14 +60,6 @@
 {% endif %}
 
 <p class="mb-0 mt-1">
-  {% if not profile.is_org and profile.chat_id %}
-    <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{profile}}">
-      <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
-        title="Chat @{{ profile.handle }}">
-      </i>
-    </button>
-  {% endif %}
-
   <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
     href="{% url 'tip' %}?username={{ profile.handle }}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="Tip @{{ profile.handle }}"
   >

@@ -28,28 +28,28 @@ from django.utils.translation import gettext_lazy as _
 from marketing.models import LeaderboardRank
 from slackclient import SlackClient
 
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-def post_to_chat(channel, msg):
-    try:
-        from chat.tasks import get_driver
-        chat_driver = get_driver()
+# def post_to_chat(channel, msg):
+#     try:
+#         from chat.tasks import get_driver
+#         chat_driver = get_driver()
 
-        response = chat_driver.posts.create_post({
-            'channel_id': channel,
-            'message': msg
-        })
+#         response = chat_driver.posts.create_post({
+#             'channel_id': channel,
+#             'message': msg
+#         })
 
-        if 'message' in response:
-            return False
+#         if 'message' in response:
+#             return False
 
-        return False
-    except Exception as e:
-        print(e)
-        return False
+#         return False
+#     except Exception as e:
+#         print(e)
+#         return False
 
 
 class Command(BaseCommand):

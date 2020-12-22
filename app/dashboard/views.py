@@ -70,9 +70,6 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import (
-    add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
-)
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
@@ -159,8 +156,7 @@ def oauth_connect(request, *args, **kwargs):
         "handle": active_user_profile.handle,
         "id": f'{active_user_profile.user.id}',
         "auth_data": f'{active_user_profile.user.id}',
-        "auth_service": "gitcoin",
-        "notify_props": chat_notify_default_props(active_user_profile)
+        "auth_service": "gitcoin"
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
@@ -1181,7 +1177,7 @@ def users_fetch(request):
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org', 'last_chat_status', 'chat_id']}
+            'organizations', 'is_org']}
 
         profile_json['is_following'] = is_following
 
@@ -1314,13 +1310,6 @@ def bounty_mentor(request):
             mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
             for mentor in mentors_to_add:
                 mentor.user.groups.add(bounty_org_default_mentors)
-
-            try:
-                from chat.tasks import hackathon_chat_sync
-                hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
-            except Exception as e:
-                message = 'Hackathon does not exist'
-                logger.info(str(e))
 
     return JsonResponse({'message': message}, status=200, safe=False)
 
@@ -4395,8 +4384,6 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
-    from chat.tasks import get_chat_url
-    params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
@@ -4693,24 +4680,6 @@ def hackathon_save_project(request):
             'message': message,
         })
 
-    try:
-
-        if profile.chat_id is '' or profile.chat_id is None:
-            created, profile = associate_chat_to_profile(profile)
-    except Exception as e:
-        logger.info("Bounty Profile owner not apart of gitcoin")
-    profiles_to_connect = [profile.chat_id]
-
-    hackathon_admins = Profile.objects.filter(user__groups__name='hackathon-admin')
-
-    try:
-        for hack_admin in hackathon_admins:
-            if hack_admin.chat_id is '' or hack_admin.chat_id is None:
-                created, hack_admin = associate_chat_to_profile(hack_admin)
-            profiles_to_connect.append(hack_admin.chat_id)
-    except Exception as e:
-        logger.debug('Error with adding admin')
-
     if project_id:
         try:
 
@@ -4894,11 +4863,6 @@ def hackathon_registration(request):
             referer=referer,
             registrant=profile
         )
-        try:
-            from chat.tasks import hackathon_chat_sync
-            hackathon_chat_sync.delay(hackathon_event.id, profile.handle)
-        except Exception as e:
-            logger.error('Error while adding to chat', e)
 
         if poll:
             poll = json.loads(poll)
@@ -6162,68 +6126,6 @@ def bulkemail(request):
     }
 
     return TemplateResponse(request, 'bulk_email.html', context)
-
-
-@staff_member_required
-def bulkDM(request):
-    handles = request.POST.get('handles', '')
-    message = request.POST.get('message', '')
-
-    if message and handles:
-        try:
-            from mattermostdriver import Driver
-            from chat.tasks import driver_opts
-
-            from_profile = request.user.profile
-            from_user_id = from_profile.chat_id
-            driver_opts = {
-                'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
-                'url': settings.CHAT_SERVER_URL,
-                'port': settings.CHAT_PORT,
-                'token': from_profile.gitcoin_chat_access_token
-            }
-
-            chat_driver = Driver(driver_opts)
-            chat_driver.login()
-            handles = list(set(handles.split(',')))
-
-            for to_handle in handles:
-                to_handle = to_handle.lower().strip()
-                to_profile = Profile.objects.filter(handle=to_handle).first()
-                if not to_profile:
-                    continue
-                to_user_id = to_profile.chat_id
-                if not to_user_id:
-                    messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
-                    continue
-                try:
-                    response = chat_driver.client.make_request('post',
-                        '/channels/direct',
-                        options=None,
-                        params=None,
-                        data=f'["{to_user_id}", "{from_user_id}"]',
-                        files=None,
-                        basepath=None)
-                    channel_id = response.json()['id']
-                    chat_driver.posts.create_post(options={
-                        'channel_id': channel_id,
-                        'message': message
-                        })
-                except Exception as e:
-                    messages.error(request, f'{to_handle} : {e}')
-
-
-            messages.success(request, 'sent')
-        except Exception as e:
-            messages.error(request, str(e))
-
-
-    context = {
-        'message': message,
-        'handles': request.POST.get('handles', ''),
-    }
-
-    return TemplateResponse(request, 'bulk_DM.html', context)
 
 
 def validate_number(user, twilio, phone, redis, delivery_method='sms'):

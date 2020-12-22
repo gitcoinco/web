@@ -27,7 +27,6 @@ from django.utils import timezone
 import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
-from chat.tasks import get_chat_url
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
@@ -73,9 +72,6 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
-    chat_url = get_chat_url(front_end=True)
-    chat_access_token = ''
-    chat_id = ''
     ptoken = None
 
     search_url = ''
@@ -117,9 +113,6 @@ def preprocess(request):
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
 
-        chat_access_token = profile.gitcoin_chat_access_token
-        chat_id = profile.chat_id
-
         ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
 
     # handles marketing callbacks
@@ -147,16 +140,10 @@ def preprocess(request):
         'max_length': max_length,
         'max_length_offset': max_length_offset,
         'search_url': f'{settings.BASE_URL}user_lookup',
-        'chat_url': chat_url,
         'base_url': settings.BASE_URL,
-        'chat_id': chat_id,
-        'chat_access_token': chat_access_token,
         'github_handle': request.user.username.lower() if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'last_chat_status':
-            request.user.profile.last_chat_status if
-            (hasattr(request.user, 'profile') and user_is_authenticated) else False,
         'raven_js_version': settings.RAVEN_JS_VERSION,
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
@@ -178,7 +165,6 @@ def preprocess(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
-        'chat_persistence_frequency': 90 * 1000,
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,

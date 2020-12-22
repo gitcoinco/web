@@ -28,7 +28,6 @@ from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
 import bounty_requests.views
-import chat.views
 import credits.views
 import dashboard.embed
 import dashboard.gas_views
@@ -71,7 +70,6 @@ urlpatterns = [
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
     path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
     path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
-    re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
     # inbox
@@ -221,8 +219,6 @@ urlpatterns = [
     url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
     url(r'^api/v1/file_upload/', dashboard.views.file_upload, name='file_upload'),
 
-    # chat
-    url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -681,7 +677,6 @@ urlpatterns = [
         faucet.views.process_faucet_request,
         name='process_faucet_request'
     ),
-    re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
     re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
