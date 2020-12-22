@@ -1,0 +1,13 @@
+{
+  "symbol": "RIN",
+  "address": "0x3D4C1A59971abFfCCCd80234A7a1Da565D8632b7",
+  "overview":{
+        "en": "GoldDawn combines blockchain technology with traditional regulatory framework to issue our security token Rhine (“RIN”), which is backed by shares of a compliant Digital Investment Fund of Funds (FOF) in a 1:1 ratio. RIN boasts boasts higher clearing and settlement efficiency, lower transaction costs, and stronger cross-border and cross-exchange transferability, which is expected to bring fair and sustainable inclusive finance to everyone.",
+        "zh": "GoldDawn将区块链技术与传统金融监管框架相结合，以合规发行的数字投资母基金（FOF）份额作为价值支撑，按照1:1比例对标发行证券化代币——莱茵币（Rhine，简写“RIN”）。RIN具有更高的清算结算效率，更低的交易成本，更强的跨境、跨交易所可转移性，能带来人人无门槛参与、公平、可持续的普惠金融。"
+  },
+  "email": "recruitment@i2i.link",
+  "website": "https://i2i.link/#strategic",
+  "whitepaper": "https://i2i.link/site/assets/files/1/golddawn_rin_1_0.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-12-22"
+}
