@@ -23,6 +23,7 @@
 
 import json
 import time
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -40,7 +41,6 @@ from marketing.mails import (
 )
 from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
-from decimal import Decimal
 
 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
 match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
