@@ -1172,7 +1172,7 @@ def grant_match_distribution_final_txn(match, needs_claimed=False):
         action = f"We have sent your {rounded_amount} DAI to the address on file at {match.grant.admin_address}.  The txid of this transaction is {match.payout_tx}."
         if needs_claimed:
             subject = f"💰ACTION REQUIRED - Your Grants Round {match.round_number} Distribution of {rounded_amount} DAI"
-            action = f"Please claim your payout by logging into Gitcoin + clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and clicking 'Claim Payout'."
+            action = f"Please claim your payout by logging into Gitcoin, enabling your web3 wall, + clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ). From there click 'Claim Match' to receive your matching distribution."
         body = f"""
 <pre>
 Hello @{match.grant.admin_profile.handle},
@@ -1183,8 +1183,8 @@ This email is in regards to your Gitcoin Grants Round {match.round_number} payou
 
 Congratulations on a successful Gitcoin Grants Round {match.round_number}, Your grant raised {match.grant.amount_received_in_round} DAI-equivilent from {match.grant.positive_round_contributor_count} contributors.
 
-What now?
-1. Send a thank you tweet to the public goods justice league (who funded this round) on twitter: @krakenfx @binance @balancerlabs @synthetix_io @iearnfinance @optimismpbc @chainlink @defiancecapital . Here is a handy one click link: https://twitter.com/intent/tweet?text=@krakenfx+@binance+@balancerlabs+@synthetix_io+@iearnfinance+@optimismpbc+@chainlink+@defiancecapital+thank+you+for+funding+gitcoin+grants!
+What next?
+1. Send a thank you tweet to the public goods justice league (who funded this round) on twitter: @badgerdao @krakenfx @binance @balancerlabs @synthetix_io @iearnfinance @optimismpbc @chainlink @defiancecapital . Here is a handy one click link: https://twitter.com/intent/tweet?text=@badgerdao+@krakenfx+@binance+@balancerlabs+@synthetix_io+@iearnfinance+@optimismpbc+@chainlink+@defiancecapital+Thank+you+for+funding+gitcoin+grants!
 2. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
 3. Celebrate 🎉 and consider joining us for KERNEL 2 ( https://gitcoin.co/blog/announcing-kernel-block-2/ ) as you continue growing your project. 🛠🛠
 4. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://github.com/gitcoinco/web/issues/8000]. We'd love to hear how the round went for you.
