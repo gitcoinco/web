@@ -1364,7 +1364,7 @@ def grant_details(request, grant_id, grant_slug):
         is_match_available_to_claim = True if amount_available > 0 else False
 
     # Check if this grant needs to complete KYC before claiming match funds
-    is_blocked_by_kyc = hasattr(grant, 'clrmatches') and grant.clrmatches.filter(round=8).has_passed_kyc
+    is_blocked_by_kyc = hasattr(grant, 'clrmatches') and not grant.clrmatches.filter(round=8).ready_for_payout
 
     # Determine if we should show the claim match button on the grant details page
     should_show_claim_match_button = (is_team_member or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
