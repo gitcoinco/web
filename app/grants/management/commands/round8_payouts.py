@@ -75,6 +75,7 @@ class Command(BaseCommand):
             type=int,
             help="what CLR round number is this? eg 7"
         )
+        parser.add_argument('--process_all', help='process_all, not just is_ready', action='store_true')
 
 
     def handle(self, *args, **options):
@@ -82,6 +83,7 @@ class Command(BaseCommand):
         # Parse inputs
         what = options['what']
         network = options['network']
+        process_all = options['process_all']
 
         valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts_test', 'set_payouts']
         if what not in valid_whats:
@@ -197,11 +199,12 @@ class Command(BaseCommand):
             print(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments already created worth ${round(total_owed_matches,2)} {network} {token_name}")
             print(f"there are {paid_scheduled_matches.count()} PAID Match Payments already created worth ${round(total_paid_matches,2)} {network} {token_name}")
             print('------------------------------')
+            target_matches = unpaid_scheduled_matches if not process_all else scheduled_matches
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
 
-            print(f"continuing with {unpaid_scheduled_matches.count()} unpaid scheduled payouts")
+            print(f"continuing with {target_matches.count()} unpaid scheduled payouts")
 
             if is_real_payout:
                 user_input = input(F"THIS IS A REAL PAYOUT FOR {network} {token_name}.  ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
@@ -210,7 +213,7 @@ class Command(BaseCommand):
 
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
             full_payouts_mapping_dict = {} 
-            for match in unpaid_scheduled_matches.order_by('amount'):
+            for match in target_matches.order_by('amount'):
                 # Amounts to set
                 recipient = w3.toChecksumAddress(match.grant.admin_address)
                 amount = Decimal(match.amount) * SCALE # convert to wei
@@ -261,7 +264,7 @@ class Command(BaseCommand):
             tx_id = input("enter a txid:  ")
 
             # All payouts have been successfully set, so now we update the database
-            for match in unpaid_scheduled_matches.order_by('amount'):
+            for match in target_matches.order_by('amount'):
                 # make save state to DB
                 if is_real_payout:
                     match.payout_tx = tx_id
