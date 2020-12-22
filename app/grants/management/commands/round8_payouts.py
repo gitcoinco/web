@@ -266,7 +266,7 @@ class Command(BaseCommand):
                 if is_real_payout:
                     match.payout_tx = tx_id
                     match.payout_tx_date = timezone.now()
-                    grant_match_distribution_final_txn(match)
+                    grant_match_distribution_final_txn(match, True)
                 else:
                     match.test_payout_tx = tx_id
                     match.test_payout_tx_date = timezone.now()
