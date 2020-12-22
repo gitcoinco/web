@@ -23,6 +23,7 @@ import html
 import json
 import logging
 import re
+import pytz
 import time
 from decimal import Decimal
 
@@ -1355,7 +1356,7 @@ def grant_details(request, grant_id, grant_slug):
     # If the user viewing the page is team member or admin, check if grant has match funds available
     # to withdraw
     is_match_available_to_claim = False
-    is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2020, 12, 30, 12, 0)
+    is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2020, 12, 30, 12, 0).replace(tzinfo=pytz.utc)
     if is_within_payout_period_for_most_recent_round:
         if is_team_member or is_admin:
             w3 = get_web3(grant.network)
