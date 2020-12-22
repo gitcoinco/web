@@ -270,10 +270,6 @@
                                       </div>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
-                                      <!--a :href="profile.email"><i class="fa fa-envelope"></i></a-->
-                                      <button class="btn btn-link gc-text-blue pt-0" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
-                                    </b-td>
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <b-form-checkbox class="font-smaller-4 mt-1" v-model="project.winner" name="check-button" switch @change="markWinner($event, project, prizeIndex)">
                                         Winner
                                       </b-form-checkbox>

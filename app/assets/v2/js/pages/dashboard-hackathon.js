@@ -933,7 +933,6 @@
         hackathonSponsors: document.hackathonSponsors,
         prizeFounders: document.prizeFounders,
         hackathonProjects: [],
-        chatURL: document.chatURL,
         hackHasEnded: document.displayShowcase,
         isSponsor: document.is_sponsor
       })

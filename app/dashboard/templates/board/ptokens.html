@@ -106,7 +106,6 @@
                       <a href="{% url 'dashboard' %}?tab=ptoken" class="font-weight-semibold text-truncate mb-2 text-dark">[[ token.reason ]]</a>
                       <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-4 col-md-3 px-0">
                         <span class="my-1">[[ token.amount ]] [[ token.token_symbol ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
-                        <a @click="messageUser(token.requester)" href="#" class="mx-md-2 my-1 p-0" >Chat</a>
                       </div>
                     </div>
                   </div>
@@ -155,7 +154,6 @@
                       <a href="{% url 'dashboard' %}?tab=ptoken" class="font-weight-semibold text-truncate mb-2 text-dark">[[ token.reason ]]</a>
                       <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2 col-md-3 px-0">
                         <span class="my-1">[[ token.amount ]] [[ token.token_symbol ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
-                        <a @click="messageUser(token.requester)" href="#" class="mx-md-2 my-1 p-0" >Chat</a>
                       </div>
                     </div>
                   </div>
@@ -199,7 +197,6 @@
                       <a :href="token.absolute_url" title="View token details" class="font-weight-semibold text-truncate mb-2 text-dark">[[ token.reason ]]</a>
                       <div class="d-flex flex-column flex-md-row font-smaller-2 col-md-3 px-0">
                         <span class="my-1">[[ token.amount ]] [[ token.token_symbol ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
-                        <a @click="messageUser(token.requester)" href="#" class="mx-md-2 my-1 p-0" >Chat</a>
                       </div>
                     </div>
                   </div>
@@ -238,7 +235,6 @@
                       <a :href="token.absolute_url" title="View token details" class="text-truncate mb-2 text-dark font-weight-semibold">[[ token.reason ]]</a>
                       <div class="d-flex flex-column flex-md-row font-smaller-2  col-md-3 px-0">
                         <span class="my-1">[[ token.amount ]] [[ token.token_symbol ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
-                        <a @click="messageUser(token.requester)" href="#" class="mx-md-2 my-1 p-0" >Chat</a>
                       </div>
                     </div>
                   </div>
@@ -279,7 +275,6 @@
                       <a :href="token.absolute_url" title="View token details" class="text-truncate mb-2 text-dark font-weight-semibold">[[ token.reason ]]</a>
                       <div class="d-flex flex-column flex-md-row font-smaller-2  col-md-3 px-0">
                         <span class="my-1">[[ token.amount ]] [[ token.token_symbol ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
-                        <a @click="messageUser(token.requester)" href="#" class="mx-md-2 my-1 p-0" >Chat</a>
                       </div>
                     </div>
                   </div>
