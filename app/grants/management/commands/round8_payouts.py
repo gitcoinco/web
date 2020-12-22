@@ -175,12 +175,6 @@ class Command(BaseCommand):
         if what in ['set_payouts_test', 'set_payouts']:
             is_real_payout = what == 'set_payouts'
 
-            # Make sure that is_real_payout corresponds with the configured network
-            if network == 'rinkeby' and is_real_payout:
-                raise Exception(f'Network and what do not match: specified {network} and {what}')
-            elif network == 'mainnet' and not is_real_payout:
-                raise Exception(f'Network and what do not match: specified {network} and {what}')
-
             kwargs = {}
             token_name = 'DAI'
             key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
