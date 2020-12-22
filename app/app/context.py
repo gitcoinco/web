@@ -194,7 +194,9 @@ def preprocess(request):
         'ptoken_factory_address': settings.PTOKEN_FACTORY_ADDRESS,
         'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI,
         'ptoken_address': ptoken.token_address if ptoken else '',
-        'ptoken_id': ptoken.id if ptoken else None
+        'ptoken_id': ptoken.id if ptoken else None,
+        'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
+        'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

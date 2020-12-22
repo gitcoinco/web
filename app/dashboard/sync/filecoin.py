@@ -94,12 +94,12 @@ def sync_filecoin_payout(fulfillment):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
+            fulfillment.save()
             record_payout_activity(fulfillment)
         
         elif txn_status == 'expired':
             fulfillment.payout_status = 'expired'
-
-        fulfillment.save()
+            fulfillment.save()
 
 
 def isValidTxn(fulfillment, txn):

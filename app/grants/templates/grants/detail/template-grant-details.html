@@ -225,11 +225,38 @@
         </template>
 
 
-        <div class="text-right mt-2">
+        <div class="d-flex justify-content-between mt-2">
+          <div class="d-flex align-items-center font-smaller-2" id="popover-target-1">
+            <span class="fa-stack font-smaller-6 mr-2">
+              <i class="fas fa-circle fa-stack-2x"></i>
+              <i class="fas fa-info fa-stack-1x fa-inverse"></i>
+            </span> Rules
+          </div>
+          <b-popover target="popover-target-1" triggers="hover" placement="left">
+            <template #title>Rules</template>
+            <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+            <ul class="pl-3">
+              <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+              <li><b>DO NOT</b> make up a new identity to contribute.</li>
+              <li><b>DO NOT</b> try to falsify a contribution.</li>
+            </ul>
+            Read all the <a href="https://gitcoin.co/wiki/grants/">rules here</a>.  If you see someone breaking the rules, please use 'Flag Grant' to report them.
+          </b-popover>
           <button @click="flag" class="btn btn-gc-pink btn-sm font-caption font-weight-semibold px-3">
             Flag <i class="ml-2 far fa-flag"></i>
           </button>
         </div>
+        {% if should_show_claim_match_button %}
+          <div id="match-payout-section">
+            <hr class="my-4">
+            <button @click="claimMatch(grant.admin_address)" class="btn btn-gc-blue button--full shadow-none mb-2" id="claim-match">
+            Claim Match
+            </button>
+            <div class="font-smaller-1">
+            Match payouts are ready to be claimed! Use the button above to send the earned match amount to this grant.
+            </div>
+          </div>
+        {% endif %}
       </div>
 
       <div class="grant-cat rounded shadow-sm bg-white p-3 border">
@@ -326,12 +353,15 @@
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="logo">
             Project Logo
           </label>
-
           <div class="form__drop mt-0" id="js-drop">
             <span v-if="!logoPreview">Drag & Drop or Browse</span>
-            <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
+            <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :style="grant.image_css" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
             <b-form-file @change="onFileChange($event)" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
           </div>
+        </div>
+        <div class="col-12 mb-3 d-flex align-items-center">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0 mr-3" for="title">Logo background color</label>
+          <input type="color" v-model="logoBackground" @input="changeColor">
         </div>
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">Title</label>
@@ -483,6 +513,18 @@
     max-width: 100%;
   }
 
+  .ql-editor pre {
+    white-space: pre-wrap;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: #23241f;
+    color: #f8f8f2;
+    overflow: visible;
+    border-radius: 3px;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  }
+
   .ql-toolbar.ql-snow {
     position: sticky;
     top: 0px;
@@ -513,6 +555,21 @@
   }
   .grant-managment {
     grid-area: grant-managment;
+  }
+  input[type=color]{
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 40px;
+    background: none;
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: solid 1px rgb(58, 58, 58);
+    border-radius: 40px;
   }
   .grid-template-sidebar {
     grid-template-areas:

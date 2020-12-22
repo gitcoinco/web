@@ -100,8 +100,12 @@ Vue.mixin({
       }
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
-      } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
-        vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+      } else if (vm.chainId == 'eth') {
+        if (!vm.form.eth_payout_address) {
+          vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+        } else if (vm.form.eth_payout_address.trim().endsWith('.eth')) {
+          vm.$set(vm.errors, 'eth_payout_address', 'ENS is not supported. Please enter ETH address');
+        }
       } else if (
         vm.chainId == 'zcash' &&
             (!vm.form.zcash_payout_address || !vm.form.zcash_payout_address.toLowerCase().startsWith('t'))
@@ -180,8 +184,10 @@ Vue.mixin({
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
 
-      const apiUrlGrant = '/grants/new';
-
+      let apiUrlGrant = '/grants/new';
+      if (vm.queryParams.get('related_hackathon_project_id')) {
+        apiUrlGrant += `?related_hackathon_project_id=${vm.queryParams.get('related_hackathon_project_id')}`
+      }
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -371,12 +377,14 @@ if (document.getElementById('gc-new-grant')) {
       const writeToRoot = ['chainId'];
       const writeToBody = [
         'title',
+        'description_rich',
         'reference_url',
         'twitter_handle_1',
         'twitter_handle_2',
         'github_project_url',
         'eth_payout_address',
         'grant_type',
+        'team_members',
         'grant_categories'
       ];
 

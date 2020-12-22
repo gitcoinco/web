@@ -36,7 +36,7 @@ def next_quest(request):
     """Render the Quests 'random' page."""
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     for quest in Quest.objects.filter(visible=True).order_by('?'):
@@ -57,7 +57,7 @@ def editquest(request, pk=None):
 
     # auth
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     quest = None

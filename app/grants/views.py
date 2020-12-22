@@ -33,7 +33,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import EmptyPage, Paginator
-from django.db import connection
+from django.db import connection, transaction
 from django.db.models import Avg, Count, Max, Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -746,10 +746,10 @@ def get_grant_types(network, filtered_grants=None):
     for grant_type in grant_types:
         _keyword = grant_type['keyword']
         grant_type['sub_categories'] = [{
-            'label': tuple[0],
-            'count': get_category_size(tuple[0]),
+            'label': _tuple[0],
+            'count': get_category_size(grant_type, _tuple[0]),
             # TODO: add in 'funding'
-            } for tuple in basic_grant_categories(_keyword)]
+            } for _tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
@@ -781,10 +781,11 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
 
     for grant_type in grant_types: # TODO : Tweak to get only needed categories
         _keyword = grant_type['keyword']
+        print("hahha")
         grant_type['sub_categories'] = [{
-            'label': tuple[0],
-            'count': get_category_size(tuple[0]),
-            } for tuple in basic_grant_categories(_keyword)]
+            'label': _tuple[0],
+            'count': get_category_size(grant_type, _tuple[0]),
+            } for _tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
@@ -1352,6 +1353,23 @@ def grant_details(request, grant_id, grant_slug):
     if is_clr_active:
         title = '💰 ' + title
 
+    # If the user viewing the page is team member or admin, check if grant has match funds available
+    # to withdraw
+    is_match_available_to_claim = False
+    if is_team_member or is_admin:
+        w3 = get_web3(grant.network)
+        match_payouts_abi = settings.MATCH_PAYOUTS_ABI
+        match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
+        match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
+        amount_available = match_payouts.functions.payouts(grant.admin_address).call()
+        is_match_available_to_claim = True if amount_available > 0 else False
+
+    # Check if this grant needs to complete KYC before claiming match funds
+    is_blocked_by_kyc = hasattr(grant, 'clrmatches') and grant.clrmatches.filter(round=8).has_passed_kyc
+
+    # Determine if we should show the claim match button on the grant details page
+    should_show_claim_match_button = (is_team_member or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -1381,6 +1399,7 @@ def grant_details(request, grant_id, grant_slug):
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
+        'should_show_claim_match_button': should_show_claim_match_button
     }
     # Stats
     if tab == 'stats':
@@ -1556,6 +1575,10 @@ def grant_edit(request, grant_id):
         if logo:
             grant.logo = logo
 
+        image_css = request.POST.get('image_css', None)
+        if image_css:
+            grant.image_css = image_css
+
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
 
@@ -1652,6 +1675,7 @@ def grant_new_whitelabel(request):
 
 
 @login_required
+@transaction.atomic
 def grant_new(request):
     """Handle new grant."""
 
@@ -1756,6 +1780,13 @@ def grant_new(request):
         }
 
         grant = Grant.objects.create(**grant_kwargs)
+
+        hackathon_project_id = request.GET.get('related_hackathon_project_id')
+        if hackathon_project_id:
+            hackathon_project = HackathonProject.objects.filter(id=hackathon_project_id).first()
+            if hackathon_project and hackathon_project.profiles.filter(pk=profile.id).exists():
+                hackathon_project.grant_obj  = grant
+                hackathon_project.save()
 
         team_members = (team_members[0].split(','))
         team_members.append(profile.id)
@@ -2046,10 +2077,11 @@ def bulk_fund(request):
                 'signature': request.POST.get('signature'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
+                'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
                 # Values that vary by donation
                 'admin_address': request.POST.get('admin_address').split(',')[index],
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
-                'comment': request.POST.get('comment').split(',')[index],
+                'comment': request.POST.get('comment').split('_,_')[index],
                 'confirmed': request.POST.get('confirmed').split(',')[index],
                 'contract_address': request.POST.get('contract_address').split(',')[index],
                 'contract_version': request.POST.get('contract_version').split(',')[index],
@@ -2256,15 +2288,15 @@ def grants_cart_view(request):
                                             profile.is_poap_verified and profile.is_twitter_verified and \
                                             profile.is_google_verified)
     else:
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
 
-def get_category_size(category):
-    key = f"grant_category_{category}"
+def get_category_size(grant_type, category):
+    key = f"grant_category_{grant_type.get('keyword')}_{category}"
     redis = RedisService().redis
     try:
         return int(redis.get(key))

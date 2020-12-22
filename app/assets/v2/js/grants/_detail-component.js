@@ -77,6 +77,10 @@ Vue.mixin({
         data.logo = vm.logo;
       }
 
+      if (vm.logoBackground) {
+        data.image_css = `background-color: ${vm.logoBackground};`;
+      }
+
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -90,6 +94,7 @@ Vue.mixin({
             vm.grant.last_update = new Date();
             vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
             vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
+            vm.grant.image_css = `background-color: ${vm.logoBackground};`;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -218,6 +223,11 @@ Vue.mixin({
         });
       });
     },
+    changeColor() {
+      let vm = this;
+
+      vm.grant.image_css = `background-color: ${vm.logoBackground};`;
+    },
     onFileChange(e) {
       let vm = this;
 
@@ -324,7 +334,7 @@ Vue.mixin({
       if (vm.grant.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.grant.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g georgecostanza');
       }
-      if (vm.grant.description_rich.length < 10) {
+      if (vm.grant.description_rich_edited.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
 
@@ -337,6 +347,44 @@ Vue.mixin({
       }
       vm.submitted = false;
       return true; // no errors, continue to create grant
+    },
+    claimMatch: async function(recipient) {
+      // Helper method to manage state
+      const waitingState = (state) => {
+        indicateMetamaskPopup(!state);
+        $('#claim-match').prop('disabled', state);
+      };
+
+      // Connect wallet
+      if (!provider) {
+        await onConnect();
+      }
+
+      // Confirm wallet was connected (user may have closed wallet connection prompt)
+      if (!provider) {
+        return;
+      }
+      waitingState(true);
+      const user = (await web3.eth.getAccounts())[0];
+
+      // Get contract instance
+      const matchPayouts = await new web3.eth.Contract(
+        JSON.parse(document.contxt.match_payouts_abi),
+        document.contxt.match_payouts_address
+      );
+
+      // Claim payout
+      matchPayouts.methods.claimMatchPayout(recipient)
+        .send({from: user})
+        .on('transactionHash', async function(txHash) {
+          waitingState(false);
+          $('#match-payout-section').hide();
+          _alert("Match payout claimed! Funds will be sent to this grant's address", 'success');
+        })
+        .on('error', function (error) {
+          waitingState(false);
+          _alert(error, 'error');
+        });
     }
   },
   computed: {
@@ -427,6 +475,7 @@ Vue.component('grant-details', {
       isStaff: isStaff,
       logo: null,
       logoPreview: null,
+      logoBackground: null,
       relatedGrants: [],
       rows: 0,
       perPage: 4,
@@ -483,7 +532,9 @@ Vue.component('grant-details', {
     let vm = this;
 
     vm.grant.description_rich_edited = vm.grant.description_rich;
-    vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+    if (vm.grant.description_rich_edited) {
+      vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
+    }
     vm.grantInCart();
   },
   watch: {
