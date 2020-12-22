@@ -190,7 +190,7 @@ def wake_the_ESMS(request):
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def claim(request):
     '''
-    Receives AJAX post from CLAIM button 
+    Receives AJAX post from CLAIM button on claim.html 
     Returns JSON response (signed token claim!) from Eth Signed Message Service
     '''
     if request.user.is_authenticated:
@@ -214,14 +214,32 @@ def claim(request):
         except:
             logger.error('QuadLands: There was an issue validating user wallet address.')
             return JsonResponse({'error': 'Token claim address failed validation'})
+        
+        # confirm we received a valid, checksummed delegate address for the token claim
+        # then add address to post_data_to_emss dict 
+        try:
+            if is_checksum_address(request.POST.get('delegate')):
+                post_data_to_emss['delegate_address'] = request.POST.get('delegate')
+            elif is_address(request.POST.get('delegate')):
+                post_data_to_emss['delegate_address'] = to_checksum_address(request.POST.get('delegate'))
+            else:
+                logger.info('QuadLands: token claim delegate_address failed integrity check. No claim will be generated.')
+                return JsonResponse({'error': 'Token claim delegate failed integrity checks.'})
+        except:
+            logger.error('QuadLands: There was an issue validating delegate address.')
+            return JsonResponse({'error': 'Token claim delegate failed validation'})
           
         claim = get_initial_dist(request)
 
         post_data_to_emss['user_amount'] = claim['total_claimable_wei'] 
              
-        # create a hash of post data TODO- wrap in try/except                
-        sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
-        
+        # create a hash of post data
+        try:                 
+            sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
+        except: 
+            logger.error('QuadLands: Error creating hash of POST data for EMSS')
+            return JsonResponse({'error': 'Creating hashing token claim data.'})
+
         header = { 
             "X-GITCOIN-SIG" : sig,
             "content-type": "application/json",
@@ -231,7 +249,7 @@ def claim(request):
         try: 
             emss_response = requests.post(settings.GTC_DIST_API_URL, data=json.dumps(post_data_to_emss), headers=header)
             emss_response_content = emss_response.content
-            logger.info(f'GTC Distributor: emss_response_content: {emss_response_content}')
+            # logger.info(f'GTC Distributor: emss_response_content: {emss_response_content}')
         except requests.exceptions.ConnectionError:
             logger.info('GTC Distributor: ConnectionError while connecting to EMSS!')
         except requests.exceptions.Timeout:
@@ -260,7 +278,6 @@ def claim(request):
         logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
         return JsonResponse(esms_response)
     else:
-        # TODO Make this redirect to token claim page I think 
         logger.info('Non authenticated request sent to claim - highly sus - request ignored.')
         raise Http404
 
