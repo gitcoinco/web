@@ -1181,7 +1181,7 @@ This email is in regards to your Gitcoin Grants Round {match.round_number} payou
 
 {action}
 
-Congratulations on a successful Gitcoin Grants Round {match.round_number}.
+Congratulations on a successful Gitcoin Grants Round {match.round_number}, Your grant raised {match.grant.amount_received_in_round} DAI-equivilent from {match.grant.positive_round_contributor_count} contributors.
 
 What now?
 1. Send a thank you tweet to the public goods justice league (who funded this round) on twitter: @krakenfx @binance @balancerlabs @synthetix_io @iearnfinance @optimismpbc @chainlink @defiancecapital . Here is a handy one click link: https://twitter.com/intent/tweet?text=@krakenfx+@binance+@balancerlabs+@synthetix_io+@iearnfinance+@optimismpbc+@chainlink+@defiancecapital+thank+you+for+funding+gitcoin+grants!
