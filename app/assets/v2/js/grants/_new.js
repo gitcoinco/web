@@ -185,8 +185,9 @@ Vue.mixin({
       };
 
       let apiUrlGrant = '/grants/new';
+
       if (vm.queryParams.get('related_hackathon_project_id')) {
-        apiUrlGrant += `?related_hackathon_project_id=${vm.queryParams.get('related_hackathon_project_id')}`
+        apiUrlGrant += `?related_hackathon_project_id=${vm.queryParams.get('related_hackathon_project_id')}`;
       }
       $.ajax({
         type: 'post',

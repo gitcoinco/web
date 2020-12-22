@@ -9,8 +9,8 @@ const payWithPYPL = (fulfillment_id, fulfiller_identifier, ele, vm, modal) => {
       },
       createOrder: function(data, actions) {
         return actions.order.create({
-          application_context : {
-            shipping_preference: "NO_SHIPPING"
+          application_context: {
+            shipping_preference: 'NO_SHIPPING'
           },
           purchase_units: [{
             payee: {
@@ -58,9 +58,9 @@ const payWithPYPL = (fulfillment_id, fulfiller_identifier, ele, vm, modal) => {
 
         }).catch(function(error) {
           _alert('Unable to make payout bounty. Please try again later', 'error');
-          console.log(error)
+          console.log(error);
         });
       }
     }
   ).render(ele);
-}
+};

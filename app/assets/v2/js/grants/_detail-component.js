@@ -383,7 +383,7 @@ Vue.mixin({
           $('#match-payout-section').hide();
           _alert("Match payout claimed! Funds will be sent to this grant's address", 'success');
         })
-        .on('error', function (error) {
+        .on('error', function(error) {
           waitingState(false);
           _alert(error, 'error');
         });
