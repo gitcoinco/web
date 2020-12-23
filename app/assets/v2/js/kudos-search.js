@@ -14,7 +14,7 @@ function kudosSearch(elem) {
       auto_terms = [ 'samurai', 'evil', 'undead', 'bot', 'cellarius', 'devcon', 'meme', 'doge', 'bowtie', 'moloch' ];
     }
     if (name == 'reward') {
-      auto_terms = [ 'common', 'diamond', 'fun', 'bot', 'eth', 'hummingbird', 'holy hand grenade' ];
+      auto_terms = [ 'common', 'diamond', 'fun', 'bot', 'eth', 'hummingbird', 'eye for detail' ];
     }
     var autocomplete_html = '';
 
