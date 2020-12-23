@@ -2,27 +2,25 @@
 
 <div class="clr clr-prediction arrow_box">
   <p class="title">
-    Your {{token}} contribution goes a long way!
+    Your contribution goes a long way!
 
+    <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" v-if="grant.tenants.indexOf('ETH') > -1">
     <img class="float-right" src="{% static "v2/images/chains/zcash.svg" %}" v-if="grant.tenants.indexOf('ZCASH') > -1">
-    <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" v-else>
+    <img class="float-right" src="{% static "v2/images/chains/zilliqa.svg" %}" v-if="grant.tenants.indexOf('ZIL') > -1">
+    <img class="float-right" src="{% static "v2/images/chains/celo.svg" %}" v-if="grant.tenants.indexOf('CELO') > -1">
   </p>
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">
       <p class="predict-label mb-0">
         <span class="font-weight-semibold">
-          1
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          1 USD
         </span>
         contribution
       </p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
         <span class="font-weight-bold">
-          + [[ get_clr_prediction(1, 2) || 0 | round | formatNumber ]]
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          + [[ get_clr_prediction(1, 2) || 0 | round | formatNumber ]] USD
         </span>
         match
       </p>
@@ -31,18 +29,14 @@
     <div class="col-6 px-2 mb-2" v-if="!short">
       <p class="predict-label mb-0">
         <span class="font-weight-semibold">
-          10
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          10 USD
         </span>
         contribution
       </p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
         <span class="font-weight-bold">
-          + [[ get_clr_prediction(2, 2) || 0 | round | formatNumber ]]
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          + [[ get_clr_prediction(2, 2) || 0 | round | formatNumber ]] USD
         </span>
         match
       </p>
@@ -50,18 +44,15 @@
 
     <div class="col-6 px-2 mb-2">
       <p class="predict-label mb-0">
-        <span class="font-weight-semibold">100
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+        <span class="font-weight-semibold">
+          100 USD
         </span>
         contribution
       </p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
         <span class="font-weight-bold">
-          + [[ get_clr_prediction(3, 2) || 0 | round | formatNumber ]]
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          + [[ get_clr_prediction(3, 2) || 0 | round | formatNumber ]] USD
         </span>
         match
       </p>
@@ -70,18 +61,14 @@
     <div class="col-6 px-2 mb-2" v-if="!short">
       <p class="predict-label mb-0">
         <span class="font-weight-semibold">
-          1,000
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          1,000 USD
         </span>
         contribution
       </p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
         <span class="font-weight-bold">
-          + [[ get_clr_prediction(4, 2) || 0 | round | formatNumber]]
-          <template v-if="grant.tenants.indexOf('ETH') > -1">DAI</template>
-          <template v-else>USD</template>
+          + [[ get_clr_prediction(4, 2) || 0 | round | formatNumber]] USD
         </span>
         match
       </p>

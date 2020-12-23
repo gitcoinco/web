@@ -1,9 +1,25 @@
 
 import logging
+from datetime import datetime
+
+from django.utils import timezone
 
 from townsquare.models import Comment
 
 logger = logging.getLogger(__name__)
+
+
+def is_txn_done_recently(time_of_txn, before_hours=500):
+    if not time_of_txn:
+        return False
+
+    now = timezone.now().replace(tzinfo=None)
+    txn_should_be_done_before = now - timezone.timedelta(hours=before_hours)
+    time_of_txn = datetime.fromtimestamp(int(time_of_txn))
+
+    if time_of_txn > txn_should_be_done_before:
+        return True
+    return False
 
 
 def txn_already_used(txn, token_symbol):

@@ -58,9 +58,7 @@
           </p>
           <h2 class="font-title font-weight-bold amount pt-1 mb-0">
             {{grant.amount_received_in_round|floatformat:0|intcomma}}
-            <!-- TODO-GRANTS: UPDATE UI WHEN BOTH ARE PRESENT -->
-            {% if 'ETH' in grant.tenants %} DAI
-            {% elif 'ZCASH' in grant.tenants %} USD {% endif %}
+            USD
           </h2>
           <p class="mb-2 font-caption">
             {{grant.positive_round_contributor_count}} CONTRIBUTORS
@@ -71,9 +69,7 @@
           </p>
           <h2 class="font-title font-weight-bold amount pt-1 mb-0">
             {{grant.amount_received|floatformat:0|intcomma}}
-            <!-- TODO-GRANTS: UPDATE UI WHEN BOTH ARE PRESENT -->
-            {% if 'ETH' in grant.tenants %} DAI
-            {% elif 'ZCASH' in grant.tenants %} USD {% endif %}
+            USD
           </h2>
           <p class="mb-2 font-caption">
             {{grant.contributor_count}} CONTRIBUTORS
@@ -84,11 +80,7 @@
       </div>
 
       {% if grant.is_clr_eligible and clr_active and grant.active %}
-        {% if 'ETH' in grant.tenants %}
-          {% include 'grants/card/clr_estimate.html' with token='DAI' %}
-        {% elif 'ZCASH' in grant.tenants %}
-          {% include 'grants/card/clr_estimate.html' with token='ZEC' %}
-        {% endif %}
+        {% include 'grants/card/clr_estimate.html' %}
       {% endif %}
 
       {% if not grant.active %}

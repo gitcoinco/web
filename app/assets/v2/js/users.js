@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
@@ -8,9 +10,6 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 
 Vue.mixin({
   methods: {
-    chatWindow: function(channel) {
-      window.chatSidebar.chatWindow(channel);
-    },
     fetchUsers: function(newPage) {
       let vm = this;
 
@@ -284,7 +283,6 @@ Vue.component('user-directory', {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {
@@ -354,7 +352,6 @@ if (document.getElementById('gc-users-directory')) {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {},

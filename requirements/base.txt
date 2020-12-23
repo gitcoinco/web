@@ -27,7 +27,7 @@ python-twitter==3.2
 sendgrid==5.6.0
 slackclient==2.0.0
 eth-tester
-elasticsearch>=2.0.0,<3.0.0
+elasticsearch
 websockets
 web3==4.5.0
 eth-abi==1.1.1
@@ -87,7 +87,6 @@ websocket-client
 bleach
 python-magic
 django-oauth-toolkit
-mattermostdriver
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11

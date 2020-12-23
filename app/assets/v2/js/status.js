@@ -588,7 +588,7 @@ $(document).ready(function() {
         success_callback,
         failure_callback,
         false,
-        true, // No available user to send tip at this moment
+        true // No available user to send tip at this moment
       );
 
     } else {

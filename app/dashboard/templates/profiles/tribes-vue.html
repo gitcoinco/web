@@ -704,9 +704,6 @@
                                     <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                       <i class="fab fa-linkedin-in"></i>
                                     </a>
-                                    <a @click="chatWindow('@' + user.handle);" href="#" v-if="user.chat_id">
-                                      <i class="fas fa-comment-dots"></i>
-                                    </a>
                                   </div>
                                   <div class="text-center" id="job_status" v-if="user.show_job_status">
                                     <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
@@ -1529,7 +1526,6 @@
       document.is_my_org = {{is_my_org | safe}};
       document.activePanel = {{active_panel| safe}};
       document.is_on_tribe = {{is_on_tribe | safe}};
-      document.chatURL = "{{ chat_url | safe }}";
     </script>
     <script src='{% static "v2/js/users.js" %}'></script>
     <script src='{% static "v2/js/explorer.js" %}'></script>

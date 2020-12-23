@@ -8,9 +8,9 @@
 
 {{ grant.description }}
 
-{% trans "You have agreed to give" %}
+{% trans "You have contributed" %}
 
-{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
+{{ transaction.value_true }} {{ transaction.token_name }}
 {% if subscription.token_symbol == 'ZEC' %}
   {% trans "You can see the transaction info at" %} {% url 'grants:details' grant.id grant.slug %}
 {% else %}

@@ -3,7 +3,7 @@ from datetime import datetime
 from django.utils import timezone
 
 import requests
-from grants.sync.helpers import record_contribution_activity, txn_already_used
+from grants.sync.helpers import is_txn_done_recently, record_contribution_activity, txn_already_used
 
 
 def find_txn_on_zcash_explorer(contribution):
@@ -86,19 +86,6 @@ def is_zcash_txn_successful(txnid):
         return True
 
     return None
-
-
-def is_txn_done_recently(time_of_txn):
-    if not time_of_txn:
-        return False
-
-    now = timezone.now().replace(tzinfo=None)
-    five_hours_ago = now - timezone.timedelta(hours=500)
-    time_of_txn = datetime.fromtimestamp(time_of_txn)
-
-    if time_of_txn > five_hours_ago:
-        return True
-    return False
 
 
 def is_valid_zcash_txn(contribution):

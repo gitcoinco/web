@@ -26,6 +26,7 @@ import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
+from logging import error
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -59,6 +60,7 @@ from avatar.utils import get_user_github_avatar_image
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
+from dashboard.idena_utils import get_idena_status, next_validation_time
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -290,6 +292,7 @@ class Bounty(SuperModel):
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
         ('polkadot_ext', 'Polkadot Ext'),
+        ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
@@ -1404,6 +1407,7 @@ class BountyFulfillment(SuperModel):
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
         ('polkadot_ext', 'polkadot_ext'),
+        ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('manual', 'manual')
     ]
@@ -1416,6 +1420,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('BINANCE', 'BINANCE'),
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
@@ -2791,6 +2796,7 @@ class Profile(SuperModel):
     last_calc_date = models.DateTimeField(default=get_0_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    # todo remove chat related
     gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
@@ -2936,6 +2942,20 @@ class Profile(SuperModel):
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
 
+    # Idena fields
+    is_idena_connected = models.BooleanField(default=False)
+    is_idena_verified = models.BooleanField(default=False)
+    idena_address = models.CharField(max_length=128, null=True, unique=True, blank=True)
+    idena_status = models.CharField(max_length=32, null=True, blank=True)
+
+    def update_idena_status(self):
+        self.idena_status = get_idena_status(self.idena_address)
+
+        if self.idena_status in ['Newbie', 'Verified', 'Human']:
+            self.is_idena_verified = True
+        else:
+            self.is_idena_verified = False
+
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
@@ -2946,6 +2966,10 @@ class Profile(SuperModel):
         if self.is_twitter_verified:
             tb *= 1.05
         if self.sms_verification:
+            tb *= 1.05
+        if self.is_google_verified:
+            tb *= 1.05
+        if self.is_poap_verified:
             tb *= 1.05
         return tb
 
@@ -2998,32 +3022,6 @@ class Profile(SuperModel):
             return f'VeryX{score} High'
         return _map.get(score, "Unknown")
 
-    @property
-    def chat_num_unread_msgs(self):
-        from mattermostdriver import Driver
-        if not self.gitcoin_chat_access_token:
-            return 0
-
-        driver_opts = {
-            'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
-            'url': settings.CHAT_SERVER_URL,
-            'port': settings.CHAT_PORT,
-            'token': self.gitcoin_chat_access_token
-        }
-
-        chat_driver = Driver(driver_opts)
-        chat_driver.login()
-
-        response = chat_driver.client.make_request('get',
-            '/users/me/teams/unread',
-            options=None,
-            params=None,
-            data=None,
-            files=None,
-            basepath=None)
-        total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
-        return total_unread
-
 
     @property
     def subscribed_threads(self):
@@ -3041,13 +3039,6 @@ class Profile(SuperModel):
     @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
-
-    @property
-    def online_now(self):
-        # returns True IFF the user is online now
-        if not self.last_chat_status:
-            return False
-        return self.last_chat_status in ['online', 'away']
 
     @property
     def match_this_round(self):
@@ -3143,6 +3134,13 @@ class Profile(SuperModel):
         return Token.objects.filter(artist=self.handle, num_clones_allowed__gt=1, hidden=False)
 
     @property
+    def get_failed_kudos(self):
+        from kudos.models import KudosTransfer
+        pks = list(self.get_my_kudos.values_list('pk', flat=True)) + list(self.get_sent_kudos.values_list('pk', flat=True))
+        qs = KudosTransfer.objects.filter(pk__in=pks)
+        return qs.filter(Q(txid='pending_celery') | Q(tx_status__in=['dropped', 'unknown']))
+
+    @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
         kt_owner_address = KudosTransfer.objects.filter(
@@ -3157,7 +3155,8 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network__in=[settings.KUDOS_NETWORK, 'xdai']
         )
-        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
+        # Multiple support requests for kudos not showing on profile were caused by this
+        # kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
 
         # remove this line IFF we ever move to showing multiple kudos transfers on a profile
         kudos_transfers = kudos_transfers.distinct('id')
@@ -3173,7 +3172,8 @@ class Profile(SuperModel):
         kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
 
         kudos_transfers = kt_address | kt_sender_profile
-        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
+        # Multiple support requests for kudos not showing on profile were caused by this
+        # kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network__in=[settings.KUDOS_NETWORK, 'xdai']
         )
@@ -3232,20 +3232,6 @@ class Profile(SuperModel):
     def active_bounties(self):
         active_bounties = Bounty.objects.current().filter(bounty_state='work_started')
         return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
-
-    @property
-    def last_chat_status(self):
-        if not self.chat_id:
-            return 'offline'
-        try:
-            from app.services import RedisService
-            redis = RedisService().redis
-            status = redis.get(f"chat:{self.chat_id}")
-            if not status:
-                return 'offline'
-            return str(status.decode('utf-8'))
-        except KeyError:
-            return 'offline'
 
     @property
     def frontend_calc_stale(self):
@@ -3911,6 +3897,10 @@ class Profile(SuperModel):
         return f"https://github.com/{self.handle}"
 
     @property
+    def lazy_avatar_url(self):
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+
+    @property
     def avatar_url(self):
         if self.admin_override_avatar:
             return self.admin_override_avatar.url
@@ -3927,7 +3917,7 @@ class Profile(SuperModel):
                     return self.active_avatar.avatar_url
                 except Exception as e:
                     logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
-        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+        return self.lazy_avatar_url
 
     @property
     def avatar_url_with_gitcoin_logo(self):
@@ -4989,6 +4979,7 @@ class HackathonEvent(SuperModel):
     display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
     calendar_id = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -5074,6 +5065,25 @@ class HackathonEvent(SuperModel):
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
+
+    hackathon_event = instance
+    orgs = []
+    try:
+        sponsors = hackathon_event.sponsor_profiles.all()
+        for sponsor_profile in sponsors:
+            org = {
+                'handle': sponsor_profile.handle,
+                'display_name': sponsor_profile.name,
+                'avatar_url': sponsor_profile.avatar_url,
+                'org_name': sponsor_profile.handle,
+                'follower_count': sponsor_profile.tribe_members.all().count(),
+                'bounty_count': sponsor_profile.bounties.count()
+            }
+            orgs.append(org)
+    except:
+        pass
+    instance.metadata['orgs'] = orgs
+
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
@@ -5635,6 +5645,11 @@ class Investigation(SuperModel):
             total_sybil_score -= 2
             htmls.append('(REDEMPTIONx2)')
 
+        htmls.append(f'Idena Verified: {instance.is_idena_verified}')
+        if instance.is_idena_verified:
+            total_sybil_score -= 4
+            htmls.append('(REDEMPTIONx4)')
+
         htmls.append(f'Twitter Verified: {instance.is_twitter_verified}')
         if instance.is_twitter_verified:
             total_sybil_score -= 1
@@ -5816,3 +5831,11 @@ class TransactionHistory(SuperModel):
 
     def __str__(self):
         return f"{self.status} <> {self.earning.pk} at {self.captured_at}"
+
+
+class MediaFile(SuperModel):
+    filename = models.CharField(max_length=350, blank=True, null=True)
+    file = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The file.'), )
+
+    def __str__(self):
+        return f'{self.id} - {self.filename}'

@@ -26,7 +26,7 @@ const payWithPolkadotExtension = (fulfillment_id, to_address, vm, modal) => {
         amount: amount,
         token_name: token_name,
         funder_address: from_address,
-        payout_tx_id: txn,
+        payout_tx_id: txn
       };
 
       modal.closeModal();
@@ -43,10 +43,10 @@ const payWithPolkadotExtension = (fulfillment_id, to_address, vm, modal) => {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         _alert('Unable to make payout bounty. Please try again later', 'error');
         console.log(error);
       });
     }
   }
-}
+};
