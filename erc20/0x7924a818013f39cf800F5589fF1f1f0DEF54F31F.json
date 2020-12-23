@@ -1,5 +1,5 @@
 {
-  "symbol": "Uniswap LON/ETH Pool",
+  "symbol": "UNI-V2 LON/ETH LP",
   "address": "0x7924a818013f39cf800F5589fF1f1f0DEF54F31F",
   "overview":{
         "en": "UNI-V2 token represents a share in the Uniswap LON/ETH Pool. Liquidity providers earn 0.3% fee on every trade made through the protocol. The fees are then split proportionally to your share of the pool. Own share of the pool, you become a liquidity provider of the Uniswap LON/ETH Pool.",
