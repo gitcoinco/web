@@ -34,6 +34,8 @@ var kudos_address = function() {
       return '0x2aea4add166ebf38b63d09a75de1a7b94aa24163';
     case 'ropsten':
       return '0xcd520707fc68d153283d518b29ada466f9091ea8';
+    case 'xdai':
+      return '0x74e596525C63393f42C76987b6A66F4e52733efa';
     case 'kovan':
       throw 'this network is not supported for kudos';
     case 'rinkeby':

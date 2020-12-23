@@ -78,6 +78,11 @@ Vue.mixin({
           url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
           break;
 
+        case 'BNB':
+        case 'BUSD':
+          url = `https://bscscan.com/tx/${txn}`;
+          break;
+
         case 'ONE':
           url = `https://explorer.harmony.one/#/tx/${txn}`;
           break;
@@ -119,6 +124,11 @@ Vue.mixin({
 
         case 'FIL':
           url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
+          break;
+
+        case 'BNB':
+        case 'BUSD':
+          url = `https://bscscan.com/address/${address}`;
           break;
 
         case 'ONE':
@@ -331,6 +341,11 @@ Vue.mixin({
           tenant = 'FILECOIN';
           break;
 
+        case 'BNB':
+        case 'BUSD':
+          tenant = 'BINANCE';
+          break;
+
         case 'ONE':
           tenant = 'HARMONY';
           break;
@@ -410,11 +425,14 @@ Vue.mixin({
           payWithPolkadotExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
+        case 'binance_ext':
+          payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+          
         case 'harmony_ext':
           payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
-
     },
     closeBounty: function() {
 
@@ -619,6 +637,11 @@ Vue.mixin({
               console.log(err);
             });
           });
+          break;
+        }
+
+        case 'binance_ext': {
+          vm.fulfillment_context.active_step = 'payout_amount';
           break;
         }
 

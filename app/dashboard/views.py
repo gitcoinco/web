@@ -321,7 +321,7 @@ def get_interest_modal(request):
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
         'is_registered': is_registered,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        'login_link': '/login/github/?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
 
@@ -825,7 +825,7 @@ def onboard(request, flow=None):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
@@ -1062,7 +1062,7 @@ def users_fetch(request):
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
     if not current_user:
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
     current_profile = Profile.objects.get(user=current_user)
 
     if not settings.DEBUG:
@@ -3535,7 +3535,7 @@ def extend_issue_deadline(request):
         'title': _('Extend Expiration'),
         'bounty': bounty,
         'user_logged_in': request.user.is_authenticated,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        'login_link': '/login/github/?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
@@ -3892,7 +3892,7 @@ def change_bounty(request, bounty_id):
                 {'error': _('You must be authenticated via github to use this feature!')},
                 status=401)
         else:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
 
     try:
         bounty_id = int(bounty_id)
@@ -5826,7 +5826,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -5943,8 +5943,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6010,7 +6010,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)

@@ -752,7 +752,7 @@ def offer_go(request, offer_id, offer_slug):
 
     try:
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', False)
         return redirect(offer.url)
     except:
@@ -764,7 +764,7 @@ def offer_decline(request, offer_id, offer_slug):
     try:
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', False)
         return redirect('/')
     except:
@@ -780,7 +780,7 @@ def offer_view(request, offer_id, offer_slug):
             offers = offers.current()
         offer = offers.get(pk=offer_id)
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         if not is_debugging_offers:

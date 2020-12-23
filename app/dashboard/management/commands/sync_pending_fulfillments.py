@@ -35,10 +35,11 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        # web3 modal
-        web3_modal_pending_fulfillments = pending_fulfillments.filter(payout_type='web3_modal')
-        if web3_modal_pending_fulfillments:
-            for fulfillment in web3_modal_pending_fulfillments.all():
+        # Extensions
+        ext_payout_types= ['web3_modal', 'polkadot_ext', 'harmony_ext']
+        for ext_payout_type in ext_payout_types:
+            ext_pending_fulfillments = pending_fulfillments.filter(payout_type=ext_payout_type)
+            for fulfillment in ext_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
         # polkadot extension
@@ -47,12 +48,17 @@ class Command(BaseCommand):
             for fulfillment in polkadot_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
+        # binance extension
+        binance_pending_fulfillments = pending_fulfillments.filter(payout_type='binance_ext')
+        if binance_pending_fulfillments:
+            for fulfillment in binance_pending_fulfillments.all():
+                sync_payout(fulfillment)
+
         # harmony extension
         harmony_pending_fulfillments = pending_fulfillments.filter(payout_type='harmony_ext')
         if harmony_pending_fulfillments:
             for fulfillment in harmony_pending_fulfillments.all():
                 sync_payout(fulfillment)
-
 
         # QR
         qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')

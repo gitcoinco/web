@@ -35,7 +35,7 @@ from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything, SuperModel
-from grants.models import Contribution, Grant, GrantCategory
+from grants.models import Contribution, Grant, GrantCategory, GrantType
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
 from marketing.models import Stat
@@ -127,11 +127,13 @@ def create_hack_event_cache():
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
+    grant_types = GrantType.objects.all()
     redis = RedisService().redis
-    for category in GrantCategory.objects.all():
-        key = f"grant_category_{category.category}"
-        val = Grant.objects.filter(categories__category__contains=category.category).count()
-        redis.set(key, val)
+    for g_type in grant_types:
+        for category in GrantCategory.objects.all():
+            key = f"grant_category_{g_type.name}_{category.category}"
+            val = Grant.objects.filter(grant_type=g_type, categories__category__contains=category.category).count()
+            redis.set(key, val)
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
