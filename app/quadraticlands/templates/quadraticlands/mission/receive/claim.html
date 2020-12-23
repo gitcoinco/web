@@ -255,7 +255,7 @@ async function setupGTCTokenClaim(emss_response) {
 			// waitingState(true);
 
 			tokenDistributor.methods
-			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), eth_signed_message_hash_hex, eth_signed_signature_hex)
+			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), delegate_address_cleaned, eth_signed_message_hash_hex, eth_signed_signature_hex)
        
 			.send({ from: user, gasLimit: '300000' })
 
