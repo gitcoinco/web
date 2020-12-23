@@ -239,7 +239,7 @@ async function setupGTCTokenClaim(emss_response) {
 		// ZW TODO - move token contract addy to env or standard abi.js file, added new Rinkeby tokendist contract 10/29/2020
 		const tokenDistributor = await new web3.eth.Contract(
 			token_distributor_abi,
-			'0xE671f8729e4cc7c312675C5cB655DC3647Faa059'
+			'0xa8FF6B461123f896F667057f4d3E3DE6362E7ccb'
 		);
 
 		const claimGTCtokens = () => {
