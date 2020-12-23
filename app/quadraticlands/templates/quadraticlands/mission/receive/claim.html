@@ -231,8 +231,12 @@ async function setupGTCTokenClaim(emss_response) {
 
 	try {
 		// who will send the transaction? (active user wallet account)
+<<<<<<< HEAD
 		// this should always be the same as the claim address
 		// what if user has two accounts connected?! This will break probably... ZW needs to fix this
+=======
+		// this should always be the same as the claim address 
+>>>>>>> e8b3666d226aa7b33e1838206245f2fb6240bb2f
 		[user] = await web3.eth.getAccounts();
 
 		// ZW TODO - move token contract addy to env or standard abi.js file, added new Rinkeby tokendist contract 10/29/2020
