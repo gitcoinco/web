@@ -19,7 +19,7 @@ section#whatisgitcoin{
 	div.grid{
 
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: 1fr;
 		grid-gap: 3em;
 
 		margin: 0em 3em;
@@ -27,10 +27,13 @@ section#whatisgitcoin{
 		div{
 			p{
 				max-width: 600px;
-			}
+      }
+      a {
+        margin-right: 26px;
+      }
 		}
 
-	}
+  }
 
 
 }
