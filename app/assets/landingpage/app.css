@@ -833,12 +833,15 @@ section#whatisgitcoin figure img {
 }
 section#whatisgitcoin div.grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   grid-gap: 3em;
   margin: 0em 3em;
 }
 section#whatisgitcoin div.grid div p {
   max-width: 600px;
+}
+section#whatisgitcoin div.grid a {
+  margin-right: 26px;
 }
 
 @media (max-width: 688px) {
