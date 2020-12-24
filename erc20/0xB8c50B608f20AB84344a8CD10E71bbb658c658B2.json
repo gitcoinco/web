@@ -10,6 +10,9 @@
   "whitepaper": "https://raw.githubusercontent.com/dipperdev/materials/master/whitepaper.pdf",
   "state": "NORMAL",
   "published_on": "2020-12-08",
+  "initial_price":{
+      "USD": "30 USD"
+  },
   "links": {
     "twitter": "https://twitter.com/DipperDam",
     "telegram": "https://t.me/dipperdam",
