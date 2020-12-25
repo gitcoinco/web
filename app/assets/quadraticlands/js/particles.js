@@ -37,7 +37,7 @@ function particleInit() {
       p.style.top = (Math.floor(Math.random() * vh)) + "px";
 
       // random scale
-      size = Math.floor(Math.random() * (16 - 4) + 4);
+      size = Math.floor(Math.random() * (30 - 10) + 10);
       p.style.width = size + "px";
       p.style.height = size + "px";
 
