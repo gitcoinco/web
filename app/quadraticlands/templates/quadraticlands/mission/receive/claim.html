@@ -36,7 +36,7 @@
 				<!-- headline -->
 				<h3 id="claimHeadline"></h3>
 
-				<!-- selected wallet adress -->
+				<!-- selected wallet address -->
 				<div id="claimAdress" class="claimAdress">
 					<div class="receiveadress" id="wallet-address"></div>
 				</div>
@@ -178,15 +178,27 @@ document.addEventListener("DOMContentLoaded",function(){
 	        return console.log('Please confirm you have a wallet connected!!');
 	    }
 
-        // POST to claim endpoint 
-    	var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
+		/** 
+		 * POST to claim endpoint 
+		 * provided active account/address (claim address) & delegate address
+		 * returns signed claim message data 
+		**/
+
+		// working before delegate set add 
+		// var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
+
+		var getClaimData = fetchData('/quadraticlands/claim', 'POST', {
+			'address':selectedAccount, 
+			'delegate':selectedAccount
+		}, {'X-CSRFToken': csrftoken});
 
 
 		$.when(getClaimData).then((response, status, statusCode) => {
 			//for debugging, remove for prod 
-			console.log('POST RETURNED!', statusCode, response, status);
+			console.log('CLAIM RETURNED!', statusCode, response, status);
 
-	        // if we don't get a 200 from the Ethereum Message Signing Service then return error  
+			// if we don't get a 200 from the Ethereum Message Signing Service then return error
+			// need to confirm this works as expected, empty return probably not what we want...  
 	        if (statusCode.status != 200) {
 	            console.log('getClaimData response: ', statusCode.status )
 	            return //_alert(response.msg, 'error');
@@ -208,39 +220,43 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 // setupGTCTokenClaim
-//
-
 async function setupGTCTokenClaim(emss_response) {
 
     const user_id = emss_response.user_id;
     const user_amount = emss_response.user_amount;
-    const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, ''));
+	const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, ''));
+	const delegate_address_cleaned = web3.utils.toChecksumAddress(emss_response["delegate_address"].replace(/\"/g, ''));
     const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, '');
     const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, '');
 
 	try {
 		// who will send the transaction? (active user wallet account)
+		// this should always be the same as the claim address
+		// what if user has two accounts connected?! This will break probably... ZW needs to fix this
+		// this should always be the same as the claim address 
 		[user] = await web3.eth.getAccounts();
 
 		// ZW TODO - move token contract addy to env or standard abi.js file, added new Rinkeby tokendist contract 10/29/2020
 		const tokenDistributor = await new web3.eth.Contract(
 			token_distributor_abi,
-			'0xa4c8B8a59805F6B049b977296881CE76f538D7C4'
+			'0x5D9aBdA108De232a971D3bF5a72237920D7Fb61d'
 		);
 
 		const claimGTCtokens = () => {
+			
+			/** 
+			 * @Richard, I think we might want to implement something here to let a user know the TX send is in process
+			 * for example, once a user clicks send, it can take 5-10 seconds before a on.receipt or on.confirm fires
+			 * users can/will be confused maybe and hit send again. Even just a message that lets them know the TX has been broadcast might be good 
+			 * for example, "your claim has been broadcast! please stand by for confirmation."  
+			 * This is what waitingState was used for in other parts of the app I think
+            **/
 
 			// waitingState(true);
 
 			tokenDistributor.methods
-			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), eth_signed_message_hash_hex, eth_signed_signature_hex)
-          
-			/** TODO - Evaluate optimal gas settings for token claims 
-			* strat: hard coded price is fallback, dynamic real time gas adjustment is optimal  - how much gas can we save? 
-			*  // Legacy Note- We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
-			*  // that their transaction will fail because the approval tx has not yet been confirmed
-			*/
-
+			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), delegate_address_cleaned, eth_signed_message_hash_hex, eth_signed_signature_hex)
+       
 			.send({ from: user, gasLimit: '300000' })
 
 			.on('transactionHash', async function(transactionHash) {
@@ -249,13 +265,13 @@ async function setupGTCTokenClaim(emss_response) {
 				updateInterface('pending', transactionHash);
 				console.log("ON TRANSACTION HASH - PENDING");
 				console.log(transactionHash);
-				
-				// need to create DB models first before we can write txid to postgres db 
-				// pushTXID2DB(transactionHash);
 
 			})
 
 			.on('receipt', receipt => {
+				// https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#eth-gettransactionreceipt-return
+				// you can read about receipt vs confirm on the link above ^^ 
+				// @Richard is there a reason we want/need to call this? if not, lets remove  
 				console.log("ON RECEIPT - WHAT EVER THIS IS");
 			    console.log('receipt:', receipt);
 			})
@@ -271,8 +287,10 @@ async function setupGTCTokenClaim(emss_response) {
 
 			.on('error', (error) => { 
 				// update interface to the generic error view
+				// @Richard, we should send something other than 'error', like the actual error or a generic message.
+				// for example. "we're sorry, there was an issue with your tokenclaim, please contact support for more info" 
 				updateInterface('error');
-				console.log("ON ERROR");
+				console.error("Error-2 on TX send:", error);
 			});
 
 		};
@@ -283,9 +301,7 @@ async function setupGTCTokenClaim(emss_response) {
 	} 
 
 	catch (error) {
-		// handleError(error);
-		var errorMsg = 'catch error';
-        console.log('errorMsg',errorMsg);
+        console.error("Error-1 on TX send:", error);
 	}
 
 
@@ -318,7 +334,7 @@ function checkWeb3() {
 
 
 // handleError
-//
+// @Richard do we intend to use this? if not, lets remove. 
 function handleError(err) {
     console.error(err);
     let message = 'There was an error';
@@ -449,20 +465,7 @@ function updateInterface(status="init", transactionHash="") {
 
 
 }
-
-
-
-
-
-
-
-
 </script>
-
-
-
-
-
 {% endblock %}
 
 
