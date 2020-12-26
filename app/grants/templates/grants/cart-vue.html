@@ -164,16 +164,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           {% comment %} CLR Match Amount {% endcomment %}
 
                           <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-                            <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-                              Not in an active CLR
-                            </div>
-                            <div v-else-if="grant.is_clr_eligible == true && !grant.is_on_team" class="clr-match-box d-flex flex-nowrap align-items-center">
+                            <div v-if="grant.is_clr_eligible == true && !grant.is_on_team" class="clr-match-box d-flex flex-nowrap align-items-center">
                               <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
                               <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                               width="20">
                             </div>
                             <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
                               Cannot match own grant
+                            </div>
+                            <div v-else-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+                              Not in an active CLR
                             </div>
                             <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
                               Not Eligible for CLR
@@ -392,7 +392,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                 on gas costs with [[ checkoutRecommendation.name ]]
                               </div>
                             </div>
-                            <div class="row align-items-center justify-content-between">
+                            <div class="row align-items-center justify-content-start">
                               <div v-if="!isZkSyncDown" class="col-auto">
                                 {% comment %} HTML Template for cart-ethereum-zksync.js {% endcomment %}
                                 <grants-cart-ethereum-zksync
@@ -400,6 +400,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                   @zksync-data-updated="onZkSyncUpdate"
                                   :current-tokens="currentTokens"
                                   :donation-inputs="donationInputs"
+                                  :grants-by-tenant="grantsByTenant"
                                   :network="network"
                                 >
                                   <div>
@@ -407,7 +408,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                                     <button
                                       @click="zksync.showModal = true"
                                       class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
-                                      :disabled="cart.unsupportedTokens.length > 0"
+                                      :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > cart.maxItems"
                                       id='js-zkSyncfundGrants-button'
                                       v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
                                     >
@@ -512,6 +513,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             </div>
                             <p v-if="isZkSyncDown" class="font-smaller-1 mt-2">
                               zkSync is down at the moment, so if you'd like to checkout now you'll have to use standard checkout!
+                            </p>
+                            <p v-else-if="grantsByTenant.length > zkSyncMaxCartItems" class="font-smaller-1 mt-2">
+                              Must have a maximum of [[zkSyncMaxCartItems]] items in your cart to checkout with zkSync
                             </p>
                           </div>
                         </div>
@@ -766,7 +770,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/zksync-checkout@0.0.10/dist/main.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/zksync-checkout@0.0.10/dist/main.js"></script>
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
 
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>

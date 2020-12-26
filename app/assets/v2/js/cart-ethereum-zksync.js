@@ -11,6 +11,7 @@ Vue.component('grantsCartEthereumZksync', {
   props: {
     currentTokens: { type: Array, required: true }, // Array of available tokens for the selected web3 network
     donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
+    grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     network: { type: String, required: true } // web3 network to use
   },
 
@@ -27,7 +28,8 @@ Vue.component('grantsCartEthereumZksync', {
 
       cart: {
         tokenList: [], // array of tokens in the cart
-        unsupportedTokens: [] // tokens in cart which are not supported by zkSync
+        unsupportedTokens: [], // tokens in cart which are not supported by zkSync
+        maxItems: 45 // zkSync only supports up to 50 transfers in a batch, so we limit it to 45 cart items to account for automatic tips
       },
 
       user: {
@@ -130,6 +132,11 @@ Vue.component('grantsCartEthereumZksync', {
         this.zksync.feeTokenSymbol = donations[0].name;
       }
 
+      // If no checkoutManager instance, return, since we can't check balance or estimate gas cost
+      if (!this.zksync.checkoutManager) {
+        return;
+      }
+
       // Check if user has enough balance
       this.zksync.checkoutManager
         .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address)
@@ -152,7 +159,8 @@ Vue.component('grantsCartEthereumZksync', {
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('zksync-data-updated', {
         zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
-        zkSyncEstimatedGasCost: estimatedGasCost
+        zkSyncEstimatedGasCost: estimatedGasCost,
+        zkSyncMaxCartItems: this.cart.maxItems
       });
     },
 
@@ -170,6 +178,11 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Called on page load to initialize zkSync
     async setupZkSync() {
+
+      if (!web3) {
+        return; // exit if web3 isn't defined, and we'll run this function later
+      }
+
       this.user.address = (await web3.eth.getAccounts())[0];
       this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(this.network || 'mainnet');
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
@@ -178,6 +191,18 @@ Vue.component('grantsCartEthereumZksync', {
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
       try {
+        // Ensure wallet is connected
+        if (!web3) {
+          throw new Error('Please connect a wallet');
+        }
+
+        // Make sure setup is completed properly
+        const isCorrectNetwork = this.zksync.checkoutManager && this.zksync.checkoutManager.network === this.network;
+
+        if (!isCorrectNetwork || !this.user.address) {
+          await this.setupZkSync();
+        }
+
         // Save off cart data
         this.zksync.checkoutStatus = 'pending';
         await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');

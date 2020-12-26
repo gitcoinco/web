@@ -2261,7 +2261,7 @@ def grants_cart_view(request):
                                             profile.is_poap_verified and profile.is_twitter_verified and \
                                             profile.is_google_verified)
     else:
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
