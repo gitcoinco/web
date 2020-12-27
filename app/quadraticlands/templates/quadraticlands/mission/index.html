@@ -31,7 +31,7 @@
 	<!-- no dependencies in other missions -->
 	<!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-	{% with name="1. Proof of Knowledge" %}
+	{% with name="1. Proof of Knowledge" proof_of_knowledge=false %}
 
 		{% if not proof_of_knowledge %}
 			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}

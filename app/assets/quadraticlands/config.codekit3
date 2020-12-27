@@ -977,17 +977,6 @@
 		"sC": 0,
 		"tS": 0
 		},
-	"/js/claim-gtc-tokens.js": {
-		"bF": 0,
-		"ft": 64,
-		"ma": 1,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "/js/claim-gtc-tokens-min.js",
-		"oF": 0,
-		"sC": 0,
-		"tS": 0
-		},
 	"/js/cookielaw-min.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1014,17 +1003,6 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "/js/cookielaw-min.js",
-		"oF": 0,
-		"sC": 0,
-		"tS": 0
-		},
-	"/js/gtc-token-claim.js": {
-		"bF": 0,
-		"ft": 64,
-		"ma": 1,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "/js/gtc-token-claim-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -1085,6 +1063,17 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "/js/particles-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/js/particles_old.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/particles_old-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

@@ -28,19 +28,7 @@
     100%   { stroke: var(--pink); }      
 } 
 
-@keyframes colorcycle-fill { 
-    0% { fill: var(--pink); } 
-    33%  { fill: var(--aqua); } 
-    66%   { fill: var(--purple); }
-    100%   { fill: var(--pink); }      
-} 
 
-@keyframes colorcycle-shadow { 
-    0% { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)) ; } 
-    33%  { filter: drop-shadow(0px 0px 44px var(--aqua)) drop-shadow(0px 0px 6px var(--aqua)); } 
-    66%   { filter: drop-shadow(0px 0px 44px var(--purple)) drop-shadow(0px 0px 6px var(--purple)); }
-    100%   { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)); }      
-} 
 
 @keyframes colorcycle-shadow-pink-purple { 
     0% { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)) ; }  
@@ -69,5 +57,29 @@
     50%  { transform: translate(0, 0px); } 
     100%   { transform: translate(0, 15px); }     
 } 
+
+
+
+
+
+
+
+
+
+@keyframes colorcycle-fill { 
+    0% { fill: var(--pink); } 
+    33%  { fill: var(--aqua); } 
+    66%   { fill: var(--purple); }
+    100%   { fill: var(--pink); }      
+} 
+
+@keyframes colorcycle-shadow { 
+    0% { filter: drop-shadow(0px 0px 11px var(--pink))  ; } 
+    33%  { filter: drop-shadow(0px 0px 11px var(--aqua)) ; } 
+    66%   { filter: drop-shadow(0px 0px 11px var(--purple)) ; }
+    100%   { filter: drop-shadow(0px 0px 11px var(--pink)) ; }      
+} 
+
+
 
 
