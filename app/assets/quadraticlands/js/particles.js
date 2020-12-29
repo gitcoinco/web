@@ -33,12 +33,17 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
+  /// CREATE SECTION#particles ( the place where all particles live )
+  const div = document.createElement("section")
+  div.setAttribute("id","particles")
+  document.body.appendChild(div)
+
+
 
   /// SVG : generate inline svgs from this Array ( one time only per page )
   particles.forEach(p => {
     create(p, config)
   })
-
 
 
 
@@ -159,8 +164,6 @@ function draw(svg, index, particles, config){
   svg.style.width = particles[index].size + "px"
   svg.style.height = particles[index].size + "px"
 
-  
- 
   svg.animate({ fill: [ config.color.purple, config.color.pink, config.color.aqua, config.color.purple ]}, 
     { duration: particles[index].colorcycleTime, delay: 0, iterations: Infinity })
 
@@ -203,12 +206,6 @@ function drawStarfield(particles, config){
 
 
 }
-
-
-
-
-
-
 
 
 
