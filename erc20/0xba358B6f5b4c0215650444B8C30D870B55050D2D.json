@@ -1,0 +1,21 @@
+{
+  "symbol": "HUB",
+  "address": "0xba358B6f5b4c0215650444B8C30D870B55050D2D",
+  "overview":{
+    "en": "Hub’s vision is to encode user identity and reputation on the blockchain and become the next digital identity protocol interoperable across multiple platforms. By putting identity data, one of the most valuable data types, back in the hands of users, Hub enables users to gain access to new economic opportunities and financial freedom in communities and marketplaces."
+  },
+  "email": "Email",
+  "website": "https://hubtoken.org/",
+  "whitepaper": "https://hubtoken.org/images/hub-white-paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-12-01",
+  "initial_price":{
+    "USD":"0.011 USD"
+  },
+  "links": {
+    "blog": "https://joinhub.com/hubs/hub-token-community/:4USLmhJ7",
+    "twitter": "https://twitter.com/hubtoken",
+    "telegram": "https://t.me/hubtoken",
+    "medium": "https://medium.com/@hubtoken"
+  }
+}
