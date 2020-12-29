@@ -1,0 +1,26 @@
+{
+  "symbol": "PLOT",
+  "address": "0x72F020f8f3E8fd9382705723Cd26380f8D0c66Bb",
+  "overview":{
+        "en": "PlotX is a non-custodial prediction market protocol that enables users to earn rewards on high-yield prediction markets. Dubbed as the Uniswap of Prediction Markets, PlotX uses an Automated Market Making algorithm to settle markets and distribute rewards on the Ethereum Blockchain without any counterparty risk. Markets are focused on crypto-pairs like BTC-USD & ETH-USD and created in intervals of 4h, 1d and 1w.",
+        "zh": "PlotX 是一种非托管预测协议，使用户能够在高收益预测市场获得回报。PlotX 被称为预测市场的 Uniswap，它使用自动做市商算法在以太坊区块链上设立市场，进行结算并分配奖励，没有任何交易对手风险。专注于以下加密货币交易对，如BTC-USD ，ETH-USD，并建立4小时，一天和一周的时间间隔自动更新。",
+  },
+  "website": "https://plotx.io/",
+  "whitepaper": "https://docsend.com/view/nnea7um4434u49uh",
+  "state": "NORMAL",
+  "published_on": "2020-10-13",
+  "initial_price": {
+        "USD": "0.05 USD"
+    },
+  "links": {
+    "twitter": "https://twitter.com/TryPlotX",
+    "telegram": "https://t.me/plotx_official",
+    "github": "https://github.com/plotx",
+    "facebook": "https://www.facebook.com/TryPlotX",
+    "reddit": "https://reddit.com/r/Plotx",
+    "discord": "https://discord.com/invite/8CWNQnG",
+    "slack": "",
+    "youtube": "https://www.youtube.com/channel/UCiUd_PC6uUdsavWk3vYbtgA",
+    "medium": "https://medium.com/plotx"
+  }
+}
