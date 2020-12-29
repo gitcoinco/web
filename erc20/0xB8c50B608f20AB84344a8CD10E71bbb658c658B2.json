@@ -1,0 +1,24 @@
+{
+  "symbol": "DIPP",
+  "address": "0xB8c50B608f20AB84344a8CD10E71bbb658c658B2",
+  "overview":{
+        "en": "DIPPER，the decentralized asset management platform, It is the world's first dam platform in the field of defi. It redefines the trading service and asset management in the era of open finance, and truly realizes the decentralized open asset management platform by means of fund custody decentralization, underlying trading decentralization, strategy revenue and withdrawal data Oracle verification, real-time transaction signal storage and online chain.",
+        "zh": "DIPPER，是DEFI领域全球第一个DAM平台，重新定义开放式金融时代下的交易服务与资产管理，通过资金托管去中心化、标的交易去中心化、策略收益与回撤数据预言机验证、交易信号实时存证上链等技术手段，真正实现去中心化的开放式资产管理平台。DIPP是开放式资管平台DIPPER的唯一平台通证，总发行量仅1000万枚，通证经济模型领先有效，将成功打造开放式资管与交易服务新生态。"
+  },
+  "email": "dipperfordam@outlook.com",
+  "website": "https://www.dipper.top",
+  "whitepaper": "https://raw.githubusercontent.com/dipperdev/materials/master/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-12-08",
+  "initial_price":{
+      "USD": "30 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DipperDam",
+    "telegram": "https://t.me/dipperdam",
+    "github": "https://github.com/andyleeee",
+    "medium": "https://medium.com/DipperDam",
+    "discord": "https://discord.gg/TW3MRR9uAw",
+    "reddit": "https://www.reddit.com/r/DipperDam"
+  }
+}
