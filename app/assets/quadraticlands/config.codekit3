@@ -1015,6 +1015,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/js/forceWallet.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/forceWallet-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/js/leaderboard-min.js": {
 		"bF": 0,
 		"ft": 64,
