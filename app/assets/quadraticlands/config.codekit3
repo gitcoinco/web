@@ -230,10 +230,18 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/background/right.keyshape": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/images/background/right.keyshape",
+		"oF": 0
+		},
 	"/images/background/right.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/right.svg",
 		"oF": 0,
 		"opt": 0,
