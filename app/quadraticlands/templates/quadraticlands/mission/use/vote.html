@@ -231,10 +231,40 @@ document.addEventListener("DOMContentLoaded",function(){
 	const btnStart = document.getElementById("btnStart")
 	btnStart.addEventListener("click", () => {
 		updateInterface("voting")
-	});	
+	});
+
+
+
+	/*********** VIEW:VOTING > BUTTON TO SUBMIT */
+	const btnVoting = document.getElementById("btnVoting")
+	btnVoting.addEventListener("click", () => {
+		console.debug ("BTN:VOTING")
+		const inputs = document.querySelectorAll("input")
+		const selection = {}
+		inputs.forEach(i => { 
+			selection[i.name] = i.value;
+		});
+
+		// submit function with users selection
+		submit(selection)
+		
+		// update view to results
+		updateInterface("results")
+	});
+
+
+
+
+
+
+
 
 
 });
+
+
+
+
 
 
 
@@ -284,10 +314,28 @@ function updateInterface(status){
 	{
 		console.debug("INTERFACE:SUCCESS")
 	}
+
+
+	if (status=="results")
+	{
+		// we will need some data to display
+		// lets talk about how we fetch the data,
+		// then i build the interface for it
+		console.debug("INTERFACE:RESULTS")
+	}
+
 	
 }
 
 
+
+
+/*********** SUBMIT */
+function submit(selection){
+	console.log(selection)
+	//@zach here is your selection object with users picks
+	//you can do what ever here in this function
+}
 
 
 
