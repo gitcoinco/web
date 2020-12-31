@@ -124,6 +124,7 @@
 
 
 
+
 {% block 'scripts' %}
 
 <!--APP - burger menu, wallet menu, provider select, collapse, flashMessage-->
@@ -136,13 +137,12 @@
 
 <script>
 
+
 document.addEventListener("DOMContentLoaded",function(){
 
 	const inputs = document.querySelectorAll("input")
 
-
-	/*********** VIEW ON LOAD - right now i skip the intro - and load voting instant for faster testing 
-	but later it will initialy just load "intro"  */
+	/*********** VIEW ON LOAD */
 	updateInterface("intro")
 	updateInterface("voting")
 
@@ -227,7 +227,6 @@ document.addEventListener("DOMContentLoaded",function(){
 	});
 
 
-
 	/*********** VIEW:INTRO > BUTTON TO SWITCH TO VIEW:VOTING */
 	const btnStart = document.getElementById("btnStart")
 	btnStart.addEventListener("click", () => {
@@ -237,7 +236,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 	/*********** VIEW:VOTING > BUTTON TO SUBMIT */
-
+	/**
 	const btnVoting = document.getElementById("btnVoting")
 	btnVoting.addEventListener("click", () => {
 		console.debug ("BTN:VOTING")
@@ -253,6 +252,10 @@ document.addEventListener("DOMContentLoaded",function(){
 		// update view to results
 		updateInterface("results")
 	});
+	**/
+
+
+
 
 
 
@@ -317,6 +320,9 @@ function updateInterface(status){
 
 	if (status=="results")
 	{
+		// we will need some data to display
+		// lets talk about how we fetch the data,
+		// then i build the interface for it
 		console.debug("INTERFACE:RESULTS")
 	}
 
@@ -326,117 +332,141 @@ function updateInterface(status){
 
 
 
-
-
-
 /*********** SUBMIT */
-//
-// selection = object with users choices e.g. { "War":50, "Freedom":25, "Cake":25 }
-
-async function submit(selection){
-
-	console.debug("SUBMIT")
-
-	SelfReliance = selection["SelfReliance"]
-	Collaboration = selection["Collaboration"]
-	IntellectualHonesty = selection["IntellectualHonesty"]
-	Empathy = selection["Empathy"]
-	StressReducers = selection["StressReducers"]
-	Inclusivity = selection["Inclusivity"]
-	GivingFirst = selection["GivingFirst"]
-
-	const createCastVoteSigMsg = (contractAddress, SelfReliance, Collaboration, IntellectualHonesty, Empathy, StressReducers, Inclusivity, GivingFirst, expiry = 10e9, chainId = 4, nonce = 0, version = 1) => {
-
-		const types = {
-		  EIP712Domain: [
-			{ name: 'name', type: 'string' },
-			{ name: 'version', type: 'string' },
-			{ name: 'chainId', type: 'uint256' },
-			{ name: 'verifyingContract', type: 'address' }
-		  ],
-		  CastVote: [
-		  	{ name: 'SelfReliance', type: 'uint256' },
-			{ name: 'Collaboration', type: 'uint256' },
-			{ name: 'IntellectualHonesty', type: 'uint256' },
-			{ name: 'Empathy', type: 'uint256' },
-			{ name: 'StressReducers', type: 'uint256' },
-			{ name: 'Inclusivity', type: 'uint256' },
-			{ name: 'GivingFirst', type: 'uint256' },
-			{ name: 'nonce', type: 'uint256' },
-			{ name: 'expiry', type: 'uint256' }
-		  ]
-		};
-
-		const primaryType = 'CastVote';
-		const domain = { name: 'GTCToken', version, chainId, verifyingContract: contractAddress };
-
-		const message = { SelfReliance, Collaboration, IntellectualHonesty, Empathy, StressReducers, Inclusivity, GivingFirst, nonce, expiry };
-
-		console.log (message)
-
-		return JSON.stringify({ types, primaryType, domain, message })
-	}
-
-	console.log(createCastVoteSigMsg)
-
-	const contractAddress = '0xc00e94Cb662C3520282E6f5717214004A7f26888'
-
-	// we have access to selectedAccount already so i picked this
-	const myAccount = selectedAccount
-
-	const _nonce = 0
-	const _expiry = 10e9
-	const _chainId = web3.currentProvider.networkVersion
-	const _version = 1
-
-	const msgParams = createCastVoteSigMsg(contractAddress, SelfReliance, Collaboration, IntellectualHonesty, Empathy, StressReducers, Inclusivity, GivingFirst, _expiry, _chainId, _nonce, _version)
-
-	console.debug('msgParms before sign:', msgParams);
-
-	web3.currentProvider.sendAsync(
-		{
-		method: 'eth_signTypedData_v4',
-		params: [ myAccount, msgParams ],
-		from: myAccount
-		},
-
-		async (err, result) => {
-
-			// err 4001 from metamask = user canceled sig
-
-			if (err) {
-				console.error('ERROR', err)
-				return
-			}
-
-			else if (result.error){
-				console.error('ERROR', result.error.message);
-				return;
-			}
-
-			console.debug('past send!')
-
-			const sig = result.result;
-
-			console.log('signature', sig);
-
-			console.log('msgParams', JSON.parse(msgParams));
-		
-		}
-	);
-
-
+/**
+function submit(selection){
+	console.log(selection)
+	//@zach here is your selection object with users picks
+	//you can do what ever here in this function
 }
-
-
+**/
 
 
 
 </script>
 
 
+<script type="text/javascript">
+	const createCastVoteSigMsg = (contractAddress, q_1, q_2, q_3, q_4, expiry = 10e9, chainId = 4, nonce = 0, version = 1) => {
+		const types = {
+		  EIP712Domain: [
+			{ name: 'name', type: 'string' },
+			{ name: 'version', type: 'string' },
+			{ name: 'chainId', type: 'uint256' },
+			{ name: 'verifyingContract', type: 'address' },
+		  ],
+		  CastVote: [
+			{ name: 'q_1', type: 'uint256' },
+			{ name: 'q_2', type: 'uint256' },
+			{ name: 'q_3', type: 'uint256' },
+			{ name: 'q_4', type: 'uint256' },
+			{ name: 'nonce', type: 'uint256' },
+			{ name: 'expiry', type: 'uint256' },
+		  ]
+		};
+		
+		const primaryType = 'CastVote';
+		const domain = { name: 'GTCToken', version, chainId, verifyingContract: contractAddress };
+		const message = { q_1, q_2, q_3, q_4, nonce, expiry };
+	
+		return JSON.stringify({ types, primaryType, domain, message });
+	  };
+	 
+	  window.addEventListener('load', (event) => {
+		let web3;
+		/**
+		const web3Warning = document.getElementById('web3-warning');
+		const myAddress = document.getElementById('my-address');
+		const applicantName = document.getElementById('applicant-name');
+		const id_number = document.getElementById('id-number');
+		const msg_hex = document.getElementById('msg-hex');
+		const delegateTo = document.getElementById('delegate-to');
+		const sign = document.getElementById('sign');
+		const signature = document.getElementById('signature');
+		const delegate = document.getElementById('delegate');
+		const delegatee = document.getElementById('delegatee');
+		const nonce = document.getElementById('nonce');
+		const expiry = document.getElementById('expiry');
+		const chainId = document.getElementById('chainId');
+		**/
+	
+		if (typeof window.ethereum === 'undefined') {
+		  console.error('Client does not have an active Web3 provider or the example app is not being run from an HTTP server.');
+		  console.log('Go here to install MetaMask: https://metamask.io/');
+		  alert(
+			'You need a Web3 provider to run this page. ' + 
+			'Go here to install MetaMask:\n\n' +
+			'https://metamask.io/'
+		  );
+		  web3Warning.classList.remove('hidden');
+		} else {
+		  main();
+		}
+	
+		async function main() {
+		  web3 = new Web3(window.ethereum);
+	
+		  // Mainnet
+		  const contractAddress = '0xc00e94Cb662C3520282E6f5717214004A7f26888';
+		  // const contractAbi = window.gaming_license_ABI;
+		  //const GTC_contract = new web3.eth.Contract(contractAbi, contractAddress);
+	
+		  const accounts = await window.ethereum.enable();
+		  const myAccount = accounts[0];
+		  // myAddress.innerText = myAccount;
+	
+		  signTypedDataV4Button.onclick = async () => {
+			console.debug('BEGIN CREATE SIGNATURE!')
+			// const _delegatee = delegateTo.value;
+			// const _licensee = '0xc00e94Cb662C3520282E6f5717214004A7f26888' // random address for now as placeholder
+			// const _nonce = await gaming_contract.methods.nonces(myAccount).call();
+		
+		    const inputs = document.querySelectorAll("input")
+		    const selection = {}
+		    inputs.forEach(i => { 
+				selection[i.name] = i.value;
+			});
+			console.debug('selection', selection, selection["SelfReliance"])
+				
+			const _nonce = 0;
+			const _expiry = 10e9; // expiration of signature, in seconds since unix epoch
+			const _chainId = web3.currentProvider.networkVersion;
+			const _version = 1;
+			// need to update to pull actual values from votes below 
+			const msgParams = createCastVoteSigMsg(contractAddress, selection["SelfReliance"],'2','3','4', _expiry, _chainId, _nonce, _version);
+			console.debug('msgParms before sign:', msgParams);
+	
+			web3.currentProvider.sendAsync({
+			  method: 'eth_signTypedData_v4',
+			  params: [ myAccount, msgParams ],
+			  from: myAccount
+			}, async (err, result) => {
+				// err 4001 from metamask = user canceled sig 
+			  if (err) {
+				console.error('ERROR', err);
+				alert(err);
+				return;
+			  } else if (result.error) {
+				console.error('ERROR', result.error.message);
+				alert(result.error.message);
+				return;
+			  }
+			  console.debug('past send!')
+			  const sig = result.result;
+		  
+	         
+			  console.log('signature', sig);
+			  console.log('msgParams', JSON.parse(msgParams));
+
+		
+
+			});
+		  };
+		}
+	  });
+</script>
+
 
 
 {% endblock %}
-
 
