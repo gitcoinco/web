@@ -6493,3 +6493,7 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
+
+
+def future_donations(request):
+    return TemplateResponse(request, 'future/future.html')

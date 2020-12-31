@@ -72,6 +72,19 @@
               </li>
             </ul>
 
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/future' in request.path %}gc-megamenu-active{% endif %}">
+              <li>
+                <a class="text-reset" href="{% url 'future_donations' %}">
+                  <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Future" height="48">
+                  <b class="gc-megamenu-title">{% trans "Future" %}</b>
+                </a>
+                <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Donate/Bequest to Science and Free Software or Climate" %}</p>
+              </li>
+              <li>
+                <a class="dropdown-item dropdown-item-small" href="{% url 'future_donations' %}">{% trans "Future" %}</a>
+              </li>
+            </ul>
+
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/grants' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'grants:grants' %}">
@@ -107,7 +120,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path %}gc-megamenu-active{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path or '/kernel' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'kudos_main' %}">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="48">
@@ -124,9 +137,6 @@
               <li>
                 <a class="dropdown-item dropdown-item-small" href="{% url 'kudos_about' %}">{% trans "About Kudos" %}</a>
               </li>
-            </ul>
-
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kernel' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="https://kernel.community">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kudos" height="48">
