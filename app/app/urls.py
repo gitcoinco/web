@@ -331,7 +331,8 @@ urlpatterns = [
     path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
-    re_path(r'^future/?', dashboard.views.future_donations, name='future_donations'),
+    re_path(r'^future/donate/?', dashboard.views.future_donate, name='future_donate'),
+    re_path(r'^future/register/?', dashboard.views.future_register_for_salary, name='future_register'),
     re_path(
         r'^contributor/?(?P<tech_stack>.*)/?',
         retail.views.contributor_bounties_redirect,

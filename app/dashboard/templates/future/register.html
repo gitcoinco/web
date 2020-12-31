@@ -30,9 +30,38 @@
     </div>
 
     <div class="container-fluid">
-        <h1>Donate/Bequest to Science and Free Software or Climate</h1>
-        <p style="color: red;">Contracts are not yet audited and deployed.</p>
-    </div>
+    <h1>Donate/Bequest to Science and Free Software or Climate</h1>
+    <p style="color: red;">Contracts are not yet audited and deployed.</p>
+    <p>
+        <NavLink to="/">Donate/bequest for science, free software, or climate.</NavLink>
+        <br/> 
+        <small>Just bequest all your funds here.</small>
+    </p>
+    <p>
+        <small>Free software authors, scientists/inventors, and science/software publishers:</small>
+    </p>
+    <p>
+        <button className="donateButton" onclick={register}>Register for a salary</button>
+        <br/>
+        <small>
+        After you have been registered, see TODO to improve your rating.
+        <br/>
+        Remember, if you publish open source, your rating will tend to improve.
+        </small>
+    </p>
+    <p>
+        <small>
+        Registration is free (except of an Ethereum network fee). The earlier you register, the more money you get.
+        </small>
+        <br/>
+        <small>
+        No matter what happens, you will receive 1 token per second since the moment of registration till you die
+        (or go inopt for corporations).
+        <br/>
+        Your salary exchange rate will be "calculated" by free market based on future predictions of your performance,
+        such as your expected citations count in the future.
+        </small>
+    </p>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

@@ -74,14 +74,17 @@
 
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/future' in request.path %}gc-megamenu-active{% endif %}">
               <li>
-                <a class="text-reset" href="{% url 'future_donations' %}">
+                <a class="text-reset" href="{% url 'future_donate' %}">
                   <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Future" height="48">
                   <b class="gc-megamenu-title">{% trans "Future" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Donate/Bequest to Science and Free Software or Climate" %}</p>
               </li>
               <li>
-                <a class="dropdown-item dropdown-item-small" href="{% url 'future_donations' %}">{% trans "Future" %}</a>
+                <a class="dropdown-item dropdown-item-small" href="{% url 'future_donate' %}">{% trans "Donate" %}</a>
+              </li>
+              <li>
+                <a class="dropdown-item dropdown-item-small" href="{% url 'future_register' %}">{% trans "Register for a salary" %}</a>
               </li>
             </ul>
 

@@ -6495,5 +6495,9 @@ def file_upload(request):
     return JsonResponse(data)
 
 
-def future_donations(request):
-    return TemplateResponse(request, 'future/future.html')
+def future_donate(request):
+    return TemplateResponse(request, 'future/donate.html')
+
+
+def future_register_for_salary(request):
+    return TemplateResponse(request, 'future/register.html')
