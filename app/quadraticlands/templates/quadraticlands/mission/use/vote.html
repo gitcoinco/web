@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded",function(){
 		});
 
 		// submit function with users selection
-		submit(selection)
+		submit()
 		
 		// update view to results
 		updateInterface("results")
@@ -331,83 +331,39 @@ function updateInterface(status){
 
 /*********** SUBMIT */
 //
-// selection = object with users choices e.g. { "War":50, "Freedom":25, "Cake":25 }
 
-async function submit(selection){
+function submit(){
 
 	console.debug("SUBMIT")
 
-	SelfReliance = selection["SelfReliance"]
-	Collaboration = selection["Collaboration"]
-	IntellectualHonesty = selection["IntellectualHonesty"]
-	Empathy = selection["Empathy"]
-	StressReducers = selection["StressReducers"]
-	Inclusivity = selection["Inclusivity"]
-	GivingFirst = selection["GivingFirst"]
+	msgParams = JSON.stringify( {
+		"types" :  { "EIP712Domain" : EIP712Domain(), "CastVote" : CastVote()  },
+		"primaryType" : "CastVote", "domain" : domain(), "message" : message()
+	} )
 
-	const createCastVoteSigMsg = (contractAddress, SelfReliance, Collaboration, IntellectualHonesty, Empathy, StressReducers, Inclusivity, GivingFirst, expiry = 10e9, chainId = 4, nonce = 0, version = 1) => {
-
-		const types = {
-		  EIP712Domain: [
-			{ name: 'name', type: 'string' },
-			{ name: 'version', type: 'string' },
-			{ name: 'chainId', type: 'uint256' },
-			{ name: 'verifyingContract', type: 'address' }
-		  ],
-		  CastVote: [
-		  	{ name: 'SelfReliance', type: 'uint256' },
-			{ name: 'Collaboration', type: 'uint256' },
-			{ name: 'IntellectualHonesty', type: 'uint256' },
-			{ name: 'Empathy', type: 'uint256' },
-			{ name: 'StressReducers', type: 'uint256' },
-			{ name: 'Inclusivity', type: 'uint256' },
-			{ name: 'GivingFirst', type: 'uint256' },
-			{ name: 'nonce', type: 'uint256' },
-			{ name: 'expiry', type: 'uint256' }
-		  ]
-		};
-
-		const primaryType = 'CastVote';
-		const domain = { name: 'GTCToken', version, chainId, verifyingContract: contractAddress };
-
-		const message = { SelfReliance, Collaboration, IntellectualHonesty, Empathy, StressReducers, Inclusivity, GivingFirst, nonce, expiry };
-
-		console.log (message)
-
-		return JSON.stringify({ types, primaryType, domain, message })
-	}
-
-	console.log(createCastVoteSigMsg)
-
-	const contractAddress = '0xc00e94Cb662C3520282E6f5717214004A7f26888'
-
-	// we have access to selectedAccount already so i picked this
-	const myAccount = selectedAccount
-
-	const _nonce = 0
-	const _expiry = 10e9
-	const _chainId = web3.currentProvider.networkVersion
-	const _version = 1
-
-	const msgParams = createCastVoteSigMsg(contractAddress, SelfReliance, Collaboration, IntellectualHonesty, Empathy, StressReducers, Inclusivity, GivingFirst, _expiry, _chainId, _nonce, _version)
-
-	console.debug('msgParms before sign:', msgParams);
-
+	console.log('parms before sign:', msgParams);
+	
 	web3.currentProvider.sendAsync(
 		{
 		method: 'eth_signTypedData_v4',
-		params: [ myAccount, msgParams ],
-		from: myAccount
+		params: [ selectedAccount, msgParams ],
+		from: selectedAccount
 		},
 
 		async (err, result) => {
 
-			// err 4001 from metamask = user canceled sig
-
 			if (err) {
+
+				console.debug("ERROR")
+				
+				if (err == "4001") {
+					console.debug("User canceled Sig")
+				}
+
 				console.error('ERROR', err)
 				return
 			}
+
 
 			else if (result.error){
 				console.error('ERROR', result.error.message);
@@ -415,16 +371,79 @@ async function submit(selection){
 			}
 
 			console.debug('past send!')
-
-			const sig = result.result;
-
-			console.log('signature', sig);
-
-			console.log('msgParams', JSON.parse(msgParams));
+			const signature = result.result;
+			console.log('signature', signature);
+			console.log('msgParams', JSON.parse( msgParams ));
 		
 		}
 	);
 
+
+}
+
+
+
+
+// helper to build the EIP712Domain Object
+function EIP712Domain(){
+
+	let EIP712Domain = [
+		{ name: 'name', type: 'string' },
+		{ name: 'version', type: 'string' },
+		{ name: 'chainId', type: 'uint256' },
+		{ name: 'verifyingContract', type: 'address' }
+	]
+
+	return EIP712Domain
+}
+
+
+
+// helper to build the CastVote Array
+function CastVote(){
+
+	let vote = []
+
+	let inputs = document.querySelectorAll("input")
+	inputs.forEach(i => {     
+		vote.push( { "name" : i.name, "type":"uint256" } )     
+	});
+	vote.push( {"name":"nonce", "type":"uint256"} )
+	vote.push( {"name":"expiry", "type":"uint256"} )
+
+	return vote
+}
+
+
+// helper to build the domain Object
+function domain(){
+
+	let name = "GTCToken"
+	let version = 1
+	let chainId = web3.currentProvider.networkVersion
+	let verifyingContract = "0xc00e94Cb662C3520282E6f5717214004A7f26888"
+
+	let domain = { "name":name, "version": version, "chainId": chainId, "verifyingContract": verifyingContract }
+
+	return domain
+}
+
+
+
+// helper to build the message Object
+function message(){
+
+	let message = {}
+	let inputs = document.querySelectorAll("input")
+
+	inputs.forEach(i => { 
+		message[i.name] = i.value    
+	});
+
+	message["nonce"] = 0
+	message["expiry"] = "10e9"
+
+	return message
 
 }
 
@@ -438,5 +457,33 @@ async function submit(selection){
 
 
 {% endblock %}
+
+
+
+
+
+
+
+<!--
+
+{
+   "types":{  DONE },
+
+   "primaryType":"CastVote",
+
+   "domain":{
+		DONE
+   },
+
+   "message":{
+      DONE 
+   }
+
+}
+
+
+-->
+
+
 
 
