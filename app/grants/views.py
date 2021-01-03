@@ -1358,7 +1358,7 @@ def grant_details(request, grant_id, grant_slug):
         # If the user viewing the page is team member or admin, check if grant has match funds available
         # to withdraw
         is_match_available_to_claim = False
-        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2020, 12, 30, 12, 0).replace(tzinfo=pytz.utc)
+        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 1, 30, 12, 0).replace(tzinfo=pytz.utc)
         is_staff = request.user.is_authenticated and request.user.is_staff
 
         # Check if this grant needs to complete KYC before claiming match funds
