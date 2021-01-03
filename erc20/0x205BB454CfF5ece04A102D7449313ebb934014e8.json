@@ -1,0 +1,17 @@
+{
+    "symbol": "PZS",
+    "address": "0x205BB454CfF5ece04A102D7449313ebb934014e8",
+    "overview":{
+          "en": "PizzaSwap is a standardized, market-oriented, and decentralized digital financial platform with embedded Defi modules such as DEX, NFT, liquidity mining, two-way lending, and convenient payment.",
+          "zh": "PizzaSwap 是规范化、市场化、去中心化的数字金融平台，内嵌有DEX、NFT、流动性挖矿、双向借贷、便捷支付等 Defi模块。"
+    },
+    "email": "pizza@pizzaswap.info",
+    "website": "https://pizzaswap.info/",
+    "whitepaper": "https://pizzaswap.info/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-19",
+    "links": {
+        "telegram": "https://t.me/pzsgroup",
+        "twitter": "https://twitter.com/pizzaswap3"
+      }
+}
