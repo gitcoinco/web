@@ -1,0 +1,23 @@
+{
+  "symbol": "Zild",
+  "address": "0x006699d34AA3013605d468d2755A2Fe59A16B12B",
+  "overview":{
+        "en": "ZILD is a DeFi protocol that utilizes decentralized financial technologies to enable the sustainable creation of individual and collective non-custodial wealth. It aims to launch ZILD (governance token), YILD (synthetic token for staking) and XILD (reputation token)."},
+  "email": "marketing@zild.finance",
+  "website": "https://zild.finance/",
+  "whitepaper": "https://www.zild.finance/WP_Zild.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-01",
+  "initial_price":{
+        "ETH":"0.006 ETH",
+        "USD":"2.0 USD",
+        "BTC":"0.0001666 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/zild_finance",
+    "telegram": "https://t.me/Zildfinance",
+    "github": "https://github.com/zildfinance/",
+    "facebook": "https://www.facebook.com/zild.finance/",
+    "medium": "https://medium.com/@zild"
+  }
+}
