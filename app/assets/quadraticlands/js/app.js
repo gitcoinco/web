@@ -20,17 +20,23 @@ document.addEventListener("DOMContentLoaded",function(){
 	// this is JUST to SHOW AND HIDE the div "#wallet-provider"
 	// nothing more nothing less !!!!
 
+
 	const navWallet = document.getElementById("nav-wallet");
 	const walletProvider = document.getElementById("wallet-provider");
 	const closeWalletProvider = document.getElementById("close-wallet-provider");
 
-	navWallet.addEventListener("click", () => {
-	  walletProvider.classList.toggle("active");
-	});
+	if (navWallet)
+	{
+		navWallet.addEventListener("click", () => {
+		  walletProvider.classList.toggle("active");
+		});
 
-	closeWalletProvider.addEventListener("click", () => {
-	  walletProvider.classList.toggle("active");
-	});
+		closeWalletProvider.addEventListener("click", () => {
+		  walletProvider.classList.toggle("active");
+		});		
+	}
+
+
 
 
 	// inside the wallet menu i reused the .provider class
