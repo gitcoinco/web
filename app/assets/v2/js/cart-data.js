@@ -91,7 +91,20 @@ class CartData {
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'ZEC';
       }
-
+    } else if (grantData.tenants.includes('CELO')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'CELO';
+      }
+    } else if (grantData.tenants.includes('ZIL')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ZIL';
+      }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;

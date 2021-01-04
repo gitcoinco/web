@@ -63,12 +63,11 @@ def sync_zil_payout(fulfillment):
             fulfillment.payout_tx_id = txn['hash']
             fulfillment.save()
 
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_zil_txn_status(fulfillment.payout_tx_id)
         if txn_status and txn_status.get('has_mined'):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
             fulfillment.save()
-
             record_payout_activity(fulfillment)

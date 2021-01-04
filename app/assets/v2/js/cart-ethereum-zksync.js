@@ -17,6 +17,8 @@ Vue.component('grantsCartEthereumZksync', {
 
   data: function() {
     return {
+      ethersProvider: undefined,
+
       zksync: {
         checkoutManager: undefined, // zkSync API CheckoutManager class
         feeTokenSymbol: undefined, // token symbol to pay zksync fee with, e.g. 'DAI'
@@ -106,6 +108,15 @@ Vue.component('grantsCartEthereumZksync', {
         // Update state and data that frontend needs
         await this.onChangeHandler(donations);
       }
+    },
+
+    // When network changes we need to update zkSync config, fetch new balances, etc.
+    network: { 
+      immediate: true,
+      async handler() {
+        await this.setupZkSync();
+        await this.onChangeHandler(this.donationInputs);
+      }
     }
   },
 
@@ -132,9 +143,14 @@ Vue.component('grantsCartEthereumZksync', {
         this.zksync.feeTokenSymbol = donations[0].name;
       }
 
+      // If no checkoutManager instance, return, since we can't check balance or estimate gas cost
+      if (!this.zksync.checkoutManager) {
+        return;
+      }
+
       // Check if user has enough balance
       this.zksync.checkoutManager
-        .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address)
+        .checkEnoughBalance(this.transfers, this.zksync.feeTokenSymbol, this.user.address, this.ethersProvider)
         .then((hasEnoughBalance) => {
           this.user.hasEnoughBalance = hasEnoughBalance;
           // If they have insufficient balance but modal is already visible, alert user.
@@ -173,14 +189,38 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Called on page load to initialize zkSync
     async setupZkSync() {
+      const network = this.network || 'mainnet'; // fallback to mainnet if no wallet is connected
+
+      if (!web3) {
+        return; // exit if web3 isn't defined, and we'll run this function later
+      }
+
       this.user.address = (await web3.eth.getAccounts())[0];
-      this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(this.network || 'mainnet');
+      this.ethersProvider = ethers.getDefaultProvider(network, {
+        infura: document.contxt.INFURA_V3_PROJECT_ID,
+        // etherscan: YOUR_ETHERSCAN_API_KEY,
+        // alchemy: YOUR_ALCHEMY_API_KEY,
+        // pocket: YOUR_POCKET_APPLICATION_KEY
+      });
+      this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(network);
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
     },
 
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
       try {
+        // Ensure wallet is connected
+        if (!web3) {
+          throw new Error('Please connect a wallet');
+        }
+
+        // Make sure setup is completed properly
+        const isCorrectNetwork = this.zksync.checkoutManager && this.zksync.checkoutManager.network === this.network;
+
+        if (!isCorrectNetwork || !this.user.address) {
+          await this.setupZkSync();
+        }
+
         // Save off cart data
         this.zksync.checkoutStatus = 'pending';
         await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');

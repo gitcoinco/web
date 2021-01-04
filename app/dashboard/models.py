@@ -292,6 +292,7 @@ class Bounty(SuperModel):
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
         ('polkadot_ext', 'Polkadot Ext'),
+        ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
@@ -1406,6 +1407,7 @@ class BountyFulfillment(SuperModel):
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
         ('polkadot_ext', 'polkadot_ext'),
+        ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('manual', 'manual')
     ]
@@ -1418,6 +1420,7 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('BINANCE', 'BINANCE'),
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('OTHERS', 'OTHERS')
@@ -2793,6 +2796,7 @@ class Profile(SuperModel):
     last_calc_date = models.DateTimeField(default=get_0_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    # todo remove chat related
     gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
@@ -3018,32 +3022,6 @@ class Profile(SuperModel):
             return f'VeryX{score} High'
         return _map.get(score, "Unknown")
 
-    @property
-    def chat_num_unread_msgs(self):
-        from mattermostdriver import Driver
-        if not self.gitcoin_chat_access_token:
-            return 0
-
-        driver_opts = {
-            'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
-            'url': settings.CHAT_SERVER_URL,
-            'port': settings.CHAT_PORT,
-            'token': self.gitcoin_chat_access_token
-        }
-
-        chat_driver = Driver(driver_opts)
-        chat_driver.login()
-
-        response = chat_driver.client.make_request('get',
-            '/users/me/teams/unread',
-            options=None,
-            params=None,
-            data=None,
-            files=None,
-            basepath=None)
-        total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
-        return total_unread
-
 
     @property
     def subscribed_threads(self):
@@ -3061,13 +3039,6 @@ class Profile(SuperModel):
     @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
-
-    @property
-    def online_now(self):
-        # returns True IFF the user is online now
-        if not self.last_chat_status:
-            return False
-        return self.last_chat_status in ['online', 'away']
 
     @property
     def match_this_round(self):
@@ -3261,20 +3232,6 @@ class Profile(SuperModel):
     def active_bounties(self):
         active_bounties = Bounty.objects.current().filter(bounty_state='work_started')
         return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
-
-    @property
-    def last_chat_status(self):
-        if not self.chat_id:
-            return 'offline'
-        try:
-            from app.services import RedisService
-            redis = RedisService().redis
-            status = redis.get(f"chat:{self.chat_id}")
-            if not status:
-                return 'offline'
-            return str(status.decode('utf-8'))
-        except KeyError:
-            return 'offline'
 
     @property
     def frontend_calc_stale(self):

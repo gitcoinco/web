@@ -137,7 +137,7 @@ def about(request):
 
 def marketplace(request):
     """Render the Kudos 'marketplace' page."""
-    q = request.GET.get('q')
+    q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
     title = str(_('Kudos Marketplace'))
     network = request.GET.get('network', settings.KUDOS_NETWORK)
@@ -327,7 +327,7 @@ def send_2(request):
 
     """
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     _id = request.GET.get('id')
     if _id and not str(_id).isdigit():
@@ -645,7 +645,7 @@ def receive(request, key, txid, network):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if kudos_transfer.receive_txid:
@@ -891,7 +891,7 @@ def newkudos(request):
     }
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
