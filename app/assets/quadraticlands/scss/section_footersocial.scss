@@ -20,7 +20,8 @@ section#footersocial{
 			fill: none;
 
 			&:hover{
-				animation: colorcycle-stroke 3s ease-in-out infinite;
+				// animation: colorcycle-stroke 3s ease-in-out infinite;
+				stroke: var(--white);
 			};
 		}
 
