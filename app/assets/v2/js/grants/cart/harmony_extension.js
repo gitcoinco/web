@@ -1,20 +1,26 @@
 const contributeWithHarmonyExtension = async(grant, vm, modal) => {
 
+  if (!harmony_utils.isOnewalletInstalled()) {
+    _alert({ message: `Please ensure your Harmony One wallet is installed and unlocked`}, 'error');
+    return;
+  }
+
   const amount = grant.grant_donation_amount;
   const to_address = grant.harmony_payout_address;
 
   // step 1: init harmony
-  let hmy = harmony_utils.initHarmony();
+  let hmy = harmony_utils.initHarmony('test');
 
-  // step 2: init extension and ensure right from_address is connected
+  // step 2: init extension
   let harmonyExt = await harmony_utils.initHarmonyExtension('test');
-  const from_address = await harmony_utils.loginHarmonyExtension(harmonyExt);
 
   // step 3: check balance
+  const from_address = await harmony_utils.loginHarmonyExtension(harmonyExt);
   const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
 
   if (account_balance < amount) {
     _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'error');
+    harmony_utils.logoutHarmonyExtension(harmonyExt);
     return;
   }
 
@@ -64,10 +70,12 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
 
         } else {
           _alert('Unable to make contribute to grant. Please try again later', 'error');
+          harmony_utils.logoutHarmonyExtension(harmonyExt);
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         _alert('Unable to make contribute to grant. Please try again later', 'error');
+        harmony_utils.logoutHarmonyExtension(harmonyExt);
         console.log(error);
       });
     }

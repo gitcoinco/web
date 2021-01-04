@@ -2,8 +2,7 @@
 <b-tab title-link-class="nav-line" id="HARMONY" v-if="grantsCountByTenant.HARMONY !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" height="16"> Harmony ([[grantsCountByTenant.HARMONY || 0]])</template>
 
-  <p>
-    <!-- TODO: SHOW ONLY WHEN EXTENSION NOT INSTALLED-->
+  <p v-if="!isHarmonyExtInstalled">
     You’ll need a Harmony wallet to contribute to Harmony grants. We recommend
     <a href="https://docs.harmony.one/home/network/wallets/browser-extensions-wallets/one-wallet" target="_blank">Harmony ONE Wallet.</a>
   </p>
@@ -62,7 +61,7 @@
           </div>
         </div>
         <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button class="btn btn-gc-blue px-4 font-body" @click="contributeWithExtension(grant, 'HARMONY')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
+          <b-button :disabled=!isHarmonyExtInstalled class="btn btn-gc-blue px-4 font-body" @click="contributeWithExtension(grant, 'HARMONY')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
             Payout
           </b-button>
         </div>

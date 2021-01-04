@@ -330,6 +330,10 @@ Vue.component('grants-cart', {
       const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
 
       return { name: 'zkSync', savingsInGas, savingsInPercent };
+    },
+
+    isHarmonyExtInstalled() {
+      return window.onewallet && window.onewallet.isOneWallet;
     }
   },
 
@@ -440,7 +444,7 @@ Vue.component('grants-cart', {
 
       switch (tenant) {
         case 'HARMONY':
-          // contributeWithHarmonyExtension(grant, vm, modal);
+          contributeWithHarmonyExtension(grant, vm, modal);
           break;
       }
     },
