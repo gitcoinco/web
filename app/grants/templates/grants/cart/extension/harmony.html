@@ -23,9 +23,9 @@
     <div class="grant-row-style">
       <div class="d-flex align-items-center justify-content-between flex-wrap">
         {% comment %} Title and logo {% endcomment %}
-        <div class="col-lg-6 d-flex flex-fill">
-            <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
-            <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
+        <div class="col-lg-6 col-xl-5 d-flex flex-fill">
+          <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
+          <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
         </div>
         {% comment %} Grant amount and currency {% endcomment %}
         <div class="d-flex flex-column order-md-0 order-1">
@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button class="btn btn-gc-blue" @click="contributeWithExtension(grant, 'HARMONY')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
+          <b-button class="btn btn-gc-blue px-4 font-body" @click="contributeWithExtension(grant, 'HARMONY')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
             Payout
           </b-button>
         </div>
