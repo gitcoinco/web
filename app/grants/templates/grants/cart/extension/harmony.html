@@ -46,7 +46,13 @@
         {% comment %} CLR Match Amount {% endcomment %}
 
         <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
+          <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+            Not in an active CLR
+          </div>
+          <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+            Cannot match own grant
+          </div>
+          <div v-else-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
             <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
             <img src="{% static 'v2/images/chains/harmony.svg' %}" alt="Diamonds high-fiving"
             width="20">
