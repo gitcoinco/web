@@ -27,9 +27,7 @@
           <div class="d-flex align-items-center">
             <input class=" form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
               placeholder="Amount" style="margin-right: 1rem">
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="flex-shrink-0" style="
-              width: 160px;"
-            >
+            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="flex-shrink-0" style="width: 160px;">
               <template v-slot:option="option">
                 <span class="font-weight-semibold">[[ option.symbol ]]</span>
               </template>
@@ -44,17 +42,17 @@
         </div>
         {% comment %} CLR Match Amount {% endcomment %}
 
-        <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <div v-if="grant.is_clr_eligible == true && !grant.is_on_team" class="clr-match-box d-flex flex-nowrap align-items-center">
-            <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
-            <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
-            width="20">
+        <div class="align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
+          <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
+            Not in an active CLR
           </div>
           <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
             Cannot match own grant
           </div>
-          <div v-else-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Not in an active CLR
+          <div v-else-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
+            <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
+            <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+            width="20">
           </div>
           <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
             Not Eligible for CLR
@@ -142,7 +140,7 @@
   </div>
 
   {% comment %} Anonymize my contribution {% endcomment %}
-  <div class="flex-container text-left grant-header-row black m-1 p-1">
+  <!-- <div class="flex-container text-left grant-header-row black m-1 p-1">
     <div style="width: 100%">
       <div class="flex-container" style="justify-content: start">
         <input v-model="AnonymizeGrantsContribution" type="checkbox" id="anonymize_gitcoin_grants_contributions"
@@ -155,7 +153,7 @@
         </span>
       </div>
     </div>
-  </div>
+  </div> -->
 
   {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
   <div class="flex-container text-left grant-header-row black">
@@ -205,7 +203,7 @@
               <div class="flex-container text-left grant-header-row black m-1 p-1">
                 <div class="w-100">
                   <div class="flex-container" style="justify-content: start">
-                    <input type="checkbox" id="include_for_clr" name="include_for_clr" v-model="include_for_clr" checked style="margin-right:1rem">
+                    <input type="checkbox" id="include_for_clr" name="include_for_clr" v-model="include_for_clr" style="margin-right:1rem">
                     <label class="font-smaller-1 darker-gray mb-0 pb-0" for="include_for_clr">
                       Include this contribution to CLR matching
                     </label>
@@ -271,14 +269,15 @@
               on gas costs with [[ checkoutRecommendation.name ]]
             </div>
           </div>
-          <div class="row align-items-center justify-content-between">
-            <div class="col-auto">
+          <div class="row align-items-center justify-content-start">
+            <div v-if="!isZkSyncDown" class="col-auto">
               {% comment %} HTML Template for cart-ethereum-zksync.js {% endcomment %}
               <grants-cart-ethereum-zksync
                 inline-template
                 @zksync-data-updated="onZkSyncUpdate"
                 :current-tokens="currentTokens"
                 :donation-inputs="donationInputs"
+                :grants-by-tenant="grantsByTenant"
                 :network="network"
               >
                 <div>
@@ -286,9 +285,9 @@
                   <button
                     @click="zksync.showModal = true"
                     class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
-                    :disabled="cart.unsupportedTokens.length > 0"
+                    :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > cart.maxItems"
                     id='js-zkSyncfundGrants-button'
-                    v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. Its enables extremely low cost transfers of ETH and ERC20 tokens in the Ethereum network (Cheaper option).'"
+                    v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
                   >
                     Checkout with zkSync
                   </button>
@@ -381,11 +380,20 @@
               {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
               </div>
             <div class="col-auto">
-              <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Tranditional Ethereum easy payouts with your connected wallet funds (Easiest option).'">
+              <button v-if="!isZkSyncDown" class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+                Standard Checkout
+              </button>
+              <button v-else class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
                 Standard Checkout
               </button>
             </div>
           </div>
+          <p v-if="isZkSyncDown" class="font-smaller-1 mt-2">
+            zkSync is down at the moment, so if you'd like to checkout now you'll have to use standard checkout!
+          </p>
+          <p v-else-if="grantsByTenant.length > zkSyncMaxCartItems" class="font-smaller-1 mt-2">
+            Must have a maximum of [[zkSyncMaxCartItems]] items in your cart to checkout with zkSync
+          </p>
         </div>
       </div>
     </div>

@@ -137,7 +137,7 @@ def about(request):
 
 def marketplace(request):
     """Render the Kudos 'marketplace' page."""
-    q = request.GET.get('q')
+    q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
     title = str(_('Kudos Marketplace'))
     network = request.GET.get('network', settings.KUDOS_NETWORK)
