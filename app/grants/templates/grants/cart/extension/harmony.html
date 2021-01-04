@@ -56,10 +56,9 @@
           </div>
         </div>
         <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button class="btn btn-gc-blue" @click="contributeWithExtension(grant, 'HARMONY')">
+          <b-button class="btn btn-gc-blue" @click="contributeWithExtension(grant, 'HARMONY')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
             Payout
           </b-button>
-
         </div>
         {% comment %} Delete Icon {% endcomment %}
         <div class="d-flex">
@@ -68,20 +67,25 @@
           </i>
         </div>
       </div>
-      <div>
-        <form action="" ref="form" @submit="signHarmonyTransaction($event, grant)">
-          {% include '../comment.html' %}
-        </form>
-      </div>
+
+      {% include '../comment.html' %}
+
+      <modal :id="'payoutModal' + grant.grant_id" ref="payout-modal">
+        <div slot="body" class="text-center">
+          <div v-if="grant.payment_status == 'waiting'">
+            <i class="fas fa-spinner fa-pulse d-block" style="font-size: 7rem;"></i>
+            <p class="font-bigger-1 mt-5">
+              Waiting for confirmation
+              <br>
+              from the wallet...
+            </p>
+          </div>
+          <div v-else>
+            <h1 class="">Transaction Submitted</h1>
+            <a href="#" class="btn btn-gc-blue" data-dismiss="modal">Close</a>
+          </div>
+          </div>
+      </modal>
     </div>
   </div>
-
-  <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
-  <script src="{% static "v2/js/lib/harmony/HarmonyJs.browser.js" %}"></script>
-  <script src="{% static "v2/js/lib/harmony/HarmonyAccount.browser.js" %}"></script>
-  <script src="{% static "v2/js/lib/harmony/HarmonyCrypto.browser.js" %}"></script>
-  <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
-  <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
-  <script src="{% static "v2/js/grants/cart/harmony_extension.js" %}"></script>
-
 </b-tab>

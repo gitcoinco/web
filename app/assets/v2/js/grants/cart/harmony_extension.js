@@ -6,18 +6,17 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
   // step 1: init harmony
   let hmy = harmony_utils.initHarmony();
 
-  // step 2: check balance
+  // step 2: init extension and ensure right from_address is connected
+  let harmonyExt = await harmony_utils.initHarmonyExtension('test');
+  const from_address = await harmony_utils.loginHarmonyExtension(harmonyExt);
+
+  // step 3: check balance
   const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
 
   if (account_balance < amount) {
     _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'error');
     return;
   }
-
-  // step 3: init extension and ensure right from_address is connected
-  let harmonyExt = await harmony_utils.initHarmonyExtension('test');
-  const from_address = await harmony_utils.loginHarmonyExtension(harmonyExt);
-
 
   // step 4: payout
   harmony_utils.transfer(

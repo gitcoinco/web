@@ -227,7 +227,8 @@ Vue.component('grants-cart', {
           grant_title: 'Gitcoin Grants Round 8 + Dev Fund',
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
-          isAutomatic: true // we add this field to help properly format the POST requests
+          isAutomatic: true, // we add this field to help properly format the POST requests,
+          payment_status: 'waiting' // this is used for handling modal state for contributions made via extension
         };
 
         // Only add to donation inputs array if donation amount is greater than 0
@@ -435,11 +436,11 @@ Vue.component('grants-cart', {
     contributeWithExtension: function(grant, tenant) {
       let vm = this;
       // TODO: WIRE IN MODAL and ensure it's open with the loader
-      const modal = this.$refs['contribute-modal'][0];
+      const modal = this.$refs['payout-modal'][0];
 
       switch (tenant) {
         case 'HARMONY':
-          contributeWithHarmonyExtension(grant, vm, modal);
+          // contributeWithHarmonyExtension(grant, vm, modal);
           break;
       }
     },
