@@ -401,6 +401,15 @@ class GrantCLRAdmin(admin.ModelAdmin):
         except:
             return "N/A"
 
+    def response_change(self, request, obj):
+        if "_recalculate_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            for grant in obj.grants:
+                recalc_clr.delay(grant.pk)
+            self.message_user(request, "submitted recaclulation to queue")
+        return redirect(obj.admin_url)
+
+
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
     raw_id_fields = ['profile', 'grants', 'curators']
