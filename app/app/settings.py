@@ -843,6 +843,7 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_BLOCKED_REGION = { 'country_code': 'US', 'region': 'NY' }
 PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
 PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
 PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x75589C2e56095c80f63EC773509f033aC595c34e')
