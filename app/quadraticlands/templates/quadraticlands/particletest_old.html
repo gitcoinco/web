@@ -18,39 +18,37 @@
 <!-- PARTICLE TEST -->
 
 <section class="column" style="height:100vh">
-	<h2>initial particle effect</h2>
-	<p>Particles can get an initial "effect" on load<br>
-	pre script e.g. > const particleSetup = {"mode": "floating"}</p>
+	<h2>load initial particle effect</h2>
+	<p>Particles can now get initial "effect" on load</p>
 	<a class="btn" href="#">hover me</a>
 </section>
 
-<section class="column particleMode" data-mode="wind" style="height:100vh">
-	<h2>sections in view</h2>
-	<p>can trigger other modes<br>
-		in example wind > setMode("wind")</p>
+<section class="column particleForce" data-force="windRight" style="height:100vh">
+	<h2>sections can have</h2>
+	<p>other forces : in example windRight</p>
 	<a class="btn" href="#">hover me</a>
 </section>
 
-<section class="column particleMode" data-mode="floating" style="height:100vh">
-	<h2>trigger with console</h2>
-	<p>
-		setMode("wind")<br>
-		setMode("floating")<br>
-		setMode("")<br>
-	</p>
+<section class="column particleForce" data-force="windLeft" style="height:100vh">
+	<h2>so there should be a windLeft</h2>
 	<a class="btn" href="#">hover me</a>
 </section>
 
-<section class="column particleMode" data-mode="" style="height:100vh">
+<section class="column particleForce" data-force="randomFloating" style="height:100vh">
+	<h2>another effect: randomFloating</h2>
+	<a class="btn" href="#">hover me</a>
+</section>
+
+<section class="column particleForce" data-force="" style="height:100vh">
 	<h2>default</h2>
 	<p>thats the default :)</p>
 	<a class="btn" href="#">hover me</a>
 </section>
 
 
-<section class="column particleMode" data-mode="" style="height:100vh">
-	<h2>particlesize on hover</h2>
-	<p>particles can have various sizes while hovering link-areas</p>
+<section class="column" data-force="" style="height:100vh">
+	<h2>particlesize</h2>
+	<p>particles can have various sizes on attract to links</p>
 	<a class="btn" href="#">default</a>
 	<a class="btn" href="#" data-particlesize="200" >200</a>
 	<a class="btn" href="#" data-particlesize="400" >400</a>
@@ -67,8 +65,11 @@
 
 {% block 'scripts' %}
 
-	<script>const particleSetup = {"mode": "floating"}</script>
-	<script src="/static/quadraticlands/js/particles2.js"></script>
+	<script>
+		window.particlesConfig = { defaultforce : "randomFloating" }
+	</script>
+
+	<script src="/static/quadraticlands/js/particles.js"></script>
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
 	<script src="/static/quadraticlands/js/app.js"></script>
 {% endblock %}
