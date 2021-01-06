@@ -3,6 +3,7 @@ mode : mouse-trail
 attrackt / distribute
 mode : magnetic
 mode : touch particle = give it a bit a twist / other random direction ?
+navigation / button on click onclick="setMode('explosion')"  ?
 
 */
 
