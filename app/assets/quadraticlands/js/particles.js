@@ -1,3 +1,12 @@
+/*
+mode : mouse-trail
+attrackt / distribute
+mode : magnetic
+mode : touch particle = give it a bit a twist / other random direction ?
+
+*/
+
+
 console.debug("PARTICLES")
 
 config = {
@@ -27,17 +36,22 @@ config = {
   padding: "5px",
   paddingTime : { min: 600, max: 4000 },
   opacityTime : { min: 600, max: 6000 },
-  mode : "", //"","wind","floating",
+  initialmode : "", // can be set external
+  mode : "space", //"space","wind","floating",
   floating : { min: -5, max: 5 },
-  wind : { min: -0.3, max: -15 }
+  wind : { min: -0.3, max: -15 },
+  magneticSpeed : { min: 20, max: 60 },
+  shuffle : false
 
 }
 
 
 // check if external override outside of this script
-// e.g. <script>const particleSetup = {"mode": "floating"}</script>
+// e.g. <script>const particleSetup = {"initialmode": "floating"}</script>
+// later : maybe override other values as well here like particles count
 if (typeof particleSetup !== 'undefined') {
-  config.mode = particleSetup.mode
+  config.mode = particleSetup.initialmode
+  console.log("INITIALMODE:", config.mode )
 }
 
 
@@ -49,6 +63,7 @@ class Particle {
     this.x = Math.random() * config.scene.w
     this.y = Math.random() * config.scene.h
     this.size = ~~(Math.random() * (config.size.max - config.size.min) + config.size.min)
+    this.sizeDefault = this.size = ~~(Math.random() * (config.size.max - config.size.min) + config.size.min)
     this.path = config.paths[ ~~( Math.random() * config.paths.length ) ]
     this.colorcycleTime = ~~(Math.random() * (config.colorcycleTime.max - config.colorcycleTime.min) + config.colorcycleTime.min)
     this.rotationTime = ~~(Math.random() * (config.rotationTime.max - config.rotationTime.min) + config.rotationTime.min)
@@ -58,36 +73,34 @@ class Particle {
     this.dy = 0
     this.targetX = 0
     this.targetY = 0
-    this.attractSpeed = 50
+    this.magneticSpeed = ~~(Math.random() * (config.magneticSpeed.max - config.magneticSpeed.min) + config.magneticSpeed.min)
+
   }
 
   update(){
+    if(config.mode == "space") { this.space() }
     if(config.mode == "wind") { this.wind() }
     if(config.mode == "floating") { this.floating() }
+    if(this.targetX || this.targetY) { this.magnetic() }
+    if(config.shuffle) { this.shuffle() }
   }
 
   draw(i){
     scene = document.getElementById("particles")
     svg = scene.childNodes;
-    
-    if (this.targetX){
-      if (this.x > this.targetX ) { this.x -= this.attractSpeed  }
-      if (this.x < this.targetX ) { this.x += this.attractSpeed  }
+
+    if (!this.targetX || !this.targetY){
+      this.y += this.dy
+      this.x += this.dx      
     }
 
-    if (this.targetY){
-      if (this.y > this.targetY ) { this.y -= this.attractSpeed  }
-      if (this.y < this.targetY ) { this.y += this.attractSpeed  }
-    }    
-
-    this.y += this.dy
-    this.x += this.dx
-
+  
     svg[i].style.left = this.x + "px"
     svg[i].style.top = this.y + "px" 
     svg[i].style.width = this.size + "px"
     svg[i].style.height = this.size + "px"
   }
+
 
   wind(){
     if (this.x < 0){
@@ -101,6 +114,40 @@ class Particle {
       if (this.y < 0 || this.y > config.scene.h ) { this.dy = -this.dy }
   }
 
+  space(){
+
+  }
+
+
+  magnetic(){
+      if (this.x >= this.targetX ) { this.x -= this.magneticSpeed  }
+      if (this.x <= this.targetX ) { this.x += this.magneticSpeed  }
+      if (this.y >= this.targetY ) { this.y -= this.magneticSpeed  }
+      if (this.y <= this.targetY ) { this.y += this.magneticSpeed  }
+  }
+
+
+
+
+
+  shuffle(){
+    if (config.mode == "space")
+    {
+    //redistribute particles on space mode
+    this.x = Math.random() * config.scene.w
+    this.y = Math.random() * config.scene.h
+    this.targetY = false
+    this.targetX = false
+    this.size = Math.random() * (config.size.max - config.size.min) + config.size.min
+    config.shuffle = false
+    init()
+    console.log("SHUFFLE")      
+    }
+  }
+
+
+
+
 
 
 }
@@ -111,8 +158,8 @@ class Particle {
 
 function setMode(mode){
 
-  if (mode==""){
-    config.mode = ""
+  if (mode=="space"){
+    config.mode = "space"
     for (let i=0; i<particlesArray.length; i++){
       particlesArray[i].dx = 0
       particlesArray[i].dy = 0
@@ -158,7 +205,7 @@ function init(){
   }
 
   // set particle mode based on config
-  if(config.mode == "") { setMode("") }
+  if(config.mode == "space") { setMode("space") }
   if(config.mode == "wind") { setMode("wind") }
   if(config.mode == "floating") { setMode("floating") }
 
@@ -208,42 +255,48 @@ function initSVGS(){
 
 const particleAttract = document.querySelectorAll(".particleAttract, section a, section .btn")
 
+
 particleAttract.forEach(link => {
+  link.onmouseover = () => {
 
-  link.onmouseover = (event) => {
+    particlesArrayPast = particlesArray
+    console.log("PAST")
+    console.log(particlesArrayPast)
 
-    if (link.dataset.particlesize) { size = link.dataset.particlesize } else { size = 60 }
+    box = link.getBoundingClientRect()
 
-    box = link.getBoundingClientRect();
-    area = { width : link.offsetWidth, height : link.offsetHeight }
+    size = 60
+    if (link.dataset.particlesize) { size = link.dataset.particlesize }
 
     for (let i=0; i<particlesArray.length; i++){
-      // just pick some random particles
       if ( Math.random() >= 0.5) {
-        particlesArray[i].targetX = box.left + ( ~~(Math.random() * area.width)) - ( size / 2 )
-        particlesArray[i].targetY =  box.top + ( ~~(Math.random() * area.height)) - ( size / 2 )
-        particlesArray[i].size = size 
-        particlesArray[i].attractSpeed = 50
-        if (config.mode=="wind") { particlesArray[i].dx = 0; particlesArray[i].dy = 0; }
-        if (config.mode=="floating") { particlesArray[i].dx = 0; particlesArray[i].dy = 0; }      
+        particlesArray[i].targetX = box.left + ( ~~(Math.random() * link.offsetWidth )) - ( size / 2 )
+        particlesArray[i].targetY = box.top + ( ~~(Math.random() * link.offsetHeight )) - ( size / 2 )
+        particlesArray[i].size = size
       }
-
     }
 
+
     console.log(particlesArray)
+
 
   };
 
 
-  /// on mouseout 
-  link.onmouseout = (event) => {
+  link.onmouseout = () => {
+
+    particlesArray = particlesArrayPast
+
+    config.shuffle = true
+
     for (let i=0; i<particlesArray.length; i++){
-        particlesArray[i].targetX = Math.random() * config.scene.w
-        particlesArray[i].targetY = Math.random() * config.scene.h
         particlesArray[i].size = Math.random() * (config.size.max - config.size.min) + config.size.min
-        init()
-        particlesArray[i].attractSpeed = 0     
+        particlesArray[i].targetY = false
+        particlesArray[i].targetX = false 
     }
+
+
+
   };
 
 
@@ -272,6 +325,10 @@ particleMode.forEach((mode) => {
     console.log(config.mode)
   });
 })
+
+
+
+
 
 
 // init particleArray
