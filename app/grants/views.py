@@ -3048,12 +3048,12 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if is_grant_team_member(grant, profile):
-            invalid_contributions.append({
-                'grant_id': grant_id,
-                'message': 'error: team members cannot contribute to own grant'
-            })
-            continue
+        # if is_grant_team_member(grant, profile):
+        #     invalid_contributions.append({
+        #         'grant_id': grant_id,
+        #         'message': 'error: team members cannot contribute to own grant'
+        #     })
+        #     continue
 
         contributor_address = contribution.get('contributor_address', '0x0')
         tx_id = contribution.get('tx_id', '0x0')

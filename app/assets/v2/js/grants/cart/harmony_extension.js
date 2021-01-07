@@ -42,6 +42,7 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
 
   function callback(error, from_address, txn) {
     if (error) {
+      vm.updatePaymentStatus(grant.grant_id, 'failed');
       _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'error');
       console.log(error);
     } else {
@@ -61,21 +62,22 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
       const apiUrlBounty = `v1/api/contribute`;
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
+        console.log(response);
+        console.log(payload);
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
 
-          // TODO: remove grant from cart 
-          // TODO: set grant.payment_status = 'done'
-          // vm.removeGrantFromCart(grant.grant_id)
+          // TODO: add txnid
+          vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {
+          vm.updatePaymentStatus(grant.grant_id, 'failed');
           _alert('Unable to make contribute to grant. Please try again later', 'error');
-          // TODO: set grant.payment_status = 'failed''
           harmony_utils.logoutHarmonyExtension(harmonyExt);
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
-         // TODO: set grant.payment_status = 'failed'
+        vm.updatePaymentStatus(grant.grant_id, 'failed');
         _alert('Unable to make contribute to grant. Please try again later', 'error');
         harmony_utils.logoutHarmonyExtension(harmonyExt);
         console.log(error);

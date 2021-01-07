@@ -439,12 +439,10 @@ Vue.component('grants-cart', {
     },
     contributeWithExtension: function(grant, tenant) {
       let vm = this;
-      // TODO: WIRE IN MODAL and ensure it's open with the loader
-      const modal = this.$refs['payout-modal'][0];
 
       switch (tenant) {
         case 'HARMONY':
-          contributeWithHarmonyExtension(grant, vm, modal);
+          contributeWithHarmonyExtension(grant, vm);
           break;
       }
     },
@@ -481,6 +479,16 @@ Vue.component('grants-cart', {
       this.$forceUpdate();
 
       // $('input[type=textarea]').focus();
+    },
+
+    updatePaymentStatus(grant_id, step='waiting') {
+      let vm = this;
+      let grantData = vm.grantData;
+      grantData.forEach((grant, index) => {
+        if (grant.grant_id == grant_id) {
+         vm.grantData[index].payment_status = step;
+        }
+       });
     },
 
     /**
