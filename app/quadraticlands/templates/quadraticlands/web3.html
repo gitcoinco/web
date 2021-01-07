@@ -1,31 +1,31 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
-
 {% block 'content' %}
-
-
 	<section class="column">
-		web3
+		<p>web3</p>
 	</section>
-
-
-
 {% endblock %}
-
-
-
 {% block 'scripts' %}
-
 	<!--some custom particles-->
 	<script src="/static/quadraticlands/js/particles.js"></script>
-	
 	<!--Scroll Animation Library (sal) INIT-->
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
-
 	<!--APP - burger menu, wallet menu, provider select-->
 	<script src="/static/quadraticlands/js/app.js"></script>
-
-
+	<!-- this page NEEDS a Wallet and will force the Web3Modal -->
+	<script src="/static/quadraticlands/js/forceWallet.js"></script>
+	<!-- ABIs -->
+    <script src="{% static "v2/js/abi.js" %}"></script>
+	<script>
+		function web3Ready() {
+		  console.debug('WEB3 version from script', web3.version);
+		  // some tests
+		  // i'm working with Octo on best way to dynamical set contract addys and will update soon to avoid hardcoded contract addy
+		  let tokenAddress = '0x7676BB604Cf8174515107c1b35D6C9A87931B4BC';
+		  getTokenBalances(tokenAddress).then(function(result) {
+				 console.debug('ERC20 TokenBalance:', result.balance);
+		  });
+		}
+	    document.addEventListener("dataWalletReady", web3Ready);
+	</script>
 {% endblock %}
-
-
