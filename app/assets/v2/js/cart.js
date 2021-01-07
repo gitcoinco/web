@@ -228,7 +228,6 @@ Vue.component('grants-cart', {
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
           isAutomatic: true, // we add this field to help properly format the POST requests,
-          payment_status: 'waiting' // this is used for handling modal state for contributions made via extension
         };
 
         // Only add to donation inputs array if donation amount is greater than 0
@@ -481,12 +480,15 @@ Vue.component('grants-cart', {
       // $('input[type=textarea]').focus();
     },
 
-    updatePaymentStatus(grant_id, step='waiting') {
+    updatePaymentStatus(grant_id, step='waiting', txnid) {
       let vm = this;
       let grantData = vm.grantData;
       grantData.forEach((grant, index) => {
         if (grant.grant_id == grant_id) {
          vm.grantData[index].payment_status = step;
+         if (txnid) {
+          vm.grantData[index].txnid = txnid
+         }
         }
        });
     },

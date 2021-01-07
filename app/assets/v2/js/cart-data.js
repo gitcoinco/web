@@ -128,6 +128,7 @@ class CartData {
     }
 
     grantData.payment_status = 'waiting';
+    grantData.txnid = null;
 
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 0;

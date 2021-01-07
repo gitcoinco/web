@@ -67,7 +67,6 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
 
-          // TODO: add txnid
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {

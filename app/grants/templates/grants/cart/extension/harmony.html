@@ -105,7 +105,7 @@
 
             <p class="font-smaller-1">
               You can view the status of your transaction on
-              <a href="" target="_blank">here.</a>
+              <a :href="'https://explorer.harmony.one/#/tx/' + grant.txnid" target="_blank">here.</a>
             </p>
 
             <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-gc-blue btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-gc-blue font-smaller-2 py-2 px-4">Payout your next Grant</a>
