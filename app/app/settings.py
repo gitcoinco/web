@@ -353,7 +353,7 @@ LOGGING = {
 }
 
 # Production logging
-if ENV not in ['local', 'test', 'staging', 'preview']:
+if ENV not in ['local', 'test', 'staging', 'preview'] and False:
     # add AWS monitoring
     boto3_session = Session(
         aws_access_key_id=AWS_ACCESS_KEY_ID,
