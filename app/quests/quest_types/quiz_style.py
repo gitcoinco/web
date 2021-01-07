@@ -87,7 +87,7 @@ def details(request, quest):
                     if not did_they_do_correct:
                         reason = 'not correct'
                     if is_out_of_time:
-                        reason = f'out of time- used {time_used} s'
+                        reason = f'out of time- used {time_used} s from qa {qa.pk} '
                     if can_continue:
                         qa.state += 1
                         qa.save()
