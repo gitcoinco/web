@@ -217,15 +217,6 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
                 profile.email = user.email
                 profile.save()
 
-                if profile is not None and (profile.chat_id is '' or profile.gitcoin_chat_access_token is ''):
-
-                    try:
-                        from chat.tasks import associate_chat_to_profile
-                        # created, profile = associate_chat_to_profile(profile)
-
-                    except Exception as e:
-                        logger.error(str(e))
-
         except UserSocialAuth.DoesNotExist:
             pass
     else:

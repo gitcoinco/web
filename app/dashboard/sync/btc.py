@@ -61,7 +61,7 @@ def sync_btc_payout(fulfillment):
         txn = find_txn_on_btc_explorer(fulfillment)
         fulfillment.payout_tx_id = txn
 
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_btc_txn_status(fulfillment.payout_tx_id)
         if txn_status:
             fulfillment.payout_status = 'done'

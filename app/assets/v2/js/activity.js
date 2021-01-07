@@ -807,11 +807,6 @@ $(document).ready(function() {
           <div class="col-11 activity_comments_main pl-4 px-sm-3">
             <div class="mb-0">
               <span>
-              <span class="chat_presence_indicator mini ${comment['last_chat_status']}" data-openchat="${comment['profile_handle']}">
-                <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
-                  •
-                </span>
-              </span>
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
                 @${comment['profile_handle']}
@@ -819,34 +814,26 @@ $(document).ready(function() {
                 ${comment['match_this_round'] ? `
                 <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.
                 <BR><BR>
-
-              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(1000 * comment['default_match_round']) / 1000}</strong> in matching.
-              <br>
-              <br>
-              Other contribution levels will mean other matching amounts:
-              <ul>
-              ${sorted_match_curve_html}
-              </ul>
-
-              <br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.
-              ">
+                Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(1000 * comment['default_match_round']) / 1000}</strong> in matching.
+                <br>
+                <br>
+                Other contribution levels will mean other matching amounts:
+                <ul>
+                ${sorted_match_curve_html}
+                </ul>
+                <br>Want to learn more?  Go to gitcoin.co/townsquare and checkout the CLR Matching Round Leaderboard.
+                ">
                   <i class="fab fa-ethereum mr-0" aria-hidden="true"></i>
                   $${comment['match_this_round']} | +$${Math.round(100 * comment['default_match_round']) / 100}
-                </span>
-
-                  ` : ' '}
+                </span>` : ' '}
               </span>
               <span class='float-right'>
                 <span class="d-none d-sm-inline grey font-smaller-5 text-right">
                   ${timeAgo} ${is_edited ? '(edited)' : ''}
                 </span>
                 <span class="comment_options font-smaller-5 mt-1" style="display: block; text-align: right;">
-                  ${is_comment_owner ?
-    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| `
-    : ''}
-    ${is_comment_owner ?
-    `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| `
-    : ''}
+                  ${is_comment_owner ? `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| ` : ''}
+                  ${is_comment_owner ? `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| ` : ''}
                   ${show_tip ? `
                   <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
                     <i class="far fa-heart grey"></i> <span class=like_count>${comment['like_count']}</span>
@@ -1158,7 +1145,6 @@ $(document).ready(function() {
 
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-    openChat();
 
     $('.comment_activity').each(function() {
       var open = $(this).data('open');

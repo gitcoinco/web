@@ -687,6 +687,24 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/bender.svg',
         },
+        'qpix': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/qlands_pix.svg',
+        },
+        'unicorn': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/qlands_unicorn.svg',
+        },
         'bendy': {
             'preview_viewbox': {
                 'background': '0 0 250 250',

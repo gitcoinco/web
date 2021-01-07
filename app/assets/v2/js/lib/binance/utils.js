@@ -60,7 +60,7 @@ binance_utils.getAddressTokenBalance = async (address, tokenContractAddress) => 
     ['balanceOf(address)']
   );
   const method_id = methodSignature.substr(0, 10);
-  address = address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
+  const address = address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
   const params = [
     {

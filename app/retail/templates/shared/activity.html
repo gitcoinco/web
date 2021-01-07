@@ -58,7 +58,6 @@
     </div>
     <div class="col-10 col-sm-8 pl-3 activity_detail">
       <div>
-        {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
           <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
