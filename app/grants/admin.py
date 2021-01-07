@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 import twitter
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription, GrantCLRCalculation
 )
 
 
@@ -73,6 +73,18 @@ class MatchPledgeAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     list_display =['pk', 'profile', 'active','pledge_type','amount']
 
+
+class GrantCLRCalculationAdmin(admin.ModelAdmin):
+    """Define the GrantCLRCalculation administration layout."""
+
+    ordering = ['-id']
+    list_display =['pk', 'latest', 'grant','grantclr','clr_prediction_curve']
+    readonly_fields = [
+        'grant','grantclr','clr_prediction_curve'
+    ]
+    search_fields = [
+        'grant','grantclr'
+    ]
 
 class CLRMatchAdmin(admin.ModelAdmin):
     """Define the CLRMatch administration layout."""
@@ -424,3 +436,4 @@ admin.site.register(GrantCLR, GrantCLRAdmin)
 admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
+admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)

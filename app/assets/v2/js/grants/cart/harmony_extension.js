@@ -64,16 +64,18 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
 
-          // TODO: Show success message in modal 
           // TODO: remove grant from cart 
+          // TODO: set grant.payment_status = 'done'
           // vm.removeGrantFromCart(grant.grant_id)
 
         } else {
           _alert('Unable to make contribute to grant. Please try again later', 'error');
+          // TODO: set grant.payment_status = 'failed''
           harmony_utils.logoutHarmonyExtension(harmonyExt);
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
+         // TODO: set grant.payment_status = 'failed'
         _alert('Unable to make contribute to grant. Please try again later', 'error');
         harmony_utils.logoutHarmonyExtension(harmonyExt);
         console.log(error);

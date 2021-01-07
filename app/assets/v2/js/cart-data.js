@@ -127,6 +127,7 @@ class CartData {
       grantData.grant_donation_currency = 'ETH';
     }
 
+    grantData.payment_status = 'waiting';
 
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 0;

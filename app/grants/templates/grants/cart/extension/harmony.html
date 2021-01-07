@@ -76,7 +76,7 @@
       {% include '../comment.html' %}
 
       <modal :id="'payoutModal' + grant.grant_id" ref="payout-modal">
-        <div slot="body" class="text-center">
+        <div slot="body" class="text-center px-5">
           <div v-if="grant.payment_status == 'waiting'">
             <i class="fas fa-spinner fa-pulse d-block" style="font-size: 7rem;"></i>
             <p class="font-bigger-1 mt-5">
@@ -85,9 +85,30 @@
               from the wallet...
             </p>
           </div>
+          <div v-else-if="grant.payment_status == 'failed'">
+            <p class="font-header font-weight-semibold">
+              Signing Transaction Failed.
+            </p>
+              <i class="fas fa-times" style="font-size: 7rem;"></i>
+              <a href="#" class="btn btn-gc-pink btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-gc-blue font-smaller-2 py-2 px-4">Try again in some time</a>
+            </p>
+          </div>
           <div v-else>
-            <h1 class="">Transaction Submitted</h1>
-            <a href="#" class="btn btn-gc-blue" data-dismiss="modal">Close</a>
+            <p class="font-header font-weight-semibold mb-4">
+              Transaction Submitted!
+            </p>
+
+            <img :src="grant.grant_logo" alt="Grant logo"  height="60">
+            <p class="mt-3 mb-1 font-weight-bold">[[grant.grant_title]] ([[grant.grant_donation_amount]] [[grant.grant_donation_currency]]) </p>
+
+            <p class="font-body text-black-70 mb-4">[[ grant.harmony_payout_address ]]</p>
+
+            <p class="font-smaller-1">
+              You can view the status of your transaction on
+              <a href="" target="_blank">here.</a>
+            </p>
+
+            <a href="#" class="btn btn-gc-blue btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-gc-blue font-smaller-2 py-2 px-4">Payout your next Grant</a>
           </div>
           </div>
       </modal>
