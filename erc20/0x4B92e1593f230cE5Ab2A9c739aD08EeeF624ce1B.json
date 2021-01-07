@@ -1,0 +1,17 @@
+{
+    "symbol": "OBVO",
+    "address": "0x4B92e1593f230cE5Ab2A9c739aD08EeeF624ce1B",
+    "overview":{
+          "en": "OBVO utilises Blockchain, Artificial Intelligence, Internet of Things and state of the art Security and Privacy. Only with these capabilities in tandem can we implement a digital platform the Diamond Industry and consumers can trust.",
+          "zh": "OBVO利用区块链，人工智能，物联网以及最先进的安全性和隐私性, 实现钻石行业和消费者可以信赖的数字平台。"
+    },
+    "email": "support@obvo.info",
+    "website": "https://www.obvo.io/",
+    "whitepaper": "https://www.obvo.io/Obsidian_white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-12-16",
+    "links": {
+        "telegram": "https://t.me/OBVO_info",
+        "twitter": "https://twitter.com/obsidian"
+      }
+}
