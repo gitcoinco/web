@@ -82,6 +82,11 @@ def details(request, quest):
                         this_time_per_answer = answer_level_seconds_to_respond
                     time_used = (timezone.now() - qa.modified_on).seconds
                     is_out_of_time = time_used > this_time_per_answer + time_per_answer_buffer
+                    if is_out_of_time:
+                        # fix for silly issue where the time used is almost exactly
+                        # 24 hours off.  cant figure out exactly why but it happens.
+                        if time_used > 86390 and time_used <= 86400:
+                            is_out_of_time = False
                     did_they_do_correct = set(correct_answers) == set(their_answers) or (this_question.get('any_correct', False) and len(their_answers))
                     can_continue = did_they_do_correct and not is_out_of_time
                     if not did_they_do_correct:
