@@ -613,7 +613,7 @@ def build_stat_results(keyword=None):
     # last month data
     today = timezone.now()
     first = today.replace(day=1)
-    lastQuarter = first - timezone.timedelta(days=3 * 31)
+    lastQuarter = first - timezone.timedelta(days=3 * 28)
     context['prev_quarter_name'] = "Q" + str(get_quarter(lastQuarter)) + " " + lastQuarter.strftime("%Y")
     context['prev_quarter_name_short'] = "Q" + str(get_quarter(lastQuarter))
     bh = bounty_history[-1] if context['prev_quarter_name'] == bounty_history[-1][0] else bounty_history[-2]
