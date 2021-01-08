@@ -119,6 +119,10 @@ Vue.mixin({
         vm.$set(vm.errors, 'zil_payout_address', 'Please enter Zilliqa address');
       } else if (vm.chainId == 'harmony' && !vm.form.harmony_payout_address) {
         vm.$set(vm.errors, 'harmony_payout_address', 'Please enter Harmony address');
+      } else if (vm.chainId == 'polkadot' && !vm.form.polkadot_payout_address) {
+        vm.$set(vm.errors, 'polkadot_payout_address', 'Please enter Polkadot address');
+      } else if (vm.chainId == 'kusama' && !vm.form.kusama_payout_address) {
+        vm.$set(vm.errors, 'kusama_payout_address', 'Please enter Kusama address');
       }
 
       if (!vm.form.grant_type) {
@@ -165,6 +169,8 @@ Vue.mixin({
         'celo_payout_address': form.celo_payout_address,
         'zil_payout_address': form.zil_payout_address,
         'harmony_payout_address': form.harmony_payout_address,
+        'polkadot_payout_address': form.polkadot_payout_address,
+        'kusama_payout_address': form.kusama_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
         'network': form.network,
@@ -324,6 +330,8 @@ if (document.getElementById('gc-new-grant')) {
           celo_payout_address: '',
           zil_payout_address: '',
           harmony_payout_address: '',
+          polkadot_payout_address: '',
+          kusama_payout_address: '',
           grant_type: '',
           grant_categories: [],
           network: 'mainnet'

@@ -333,6 +333,10 @@ Vue.component('grants-cart', {
 
     isHarmonyExtInstalled() {
       return window.onewallet && window.onewallet.isOneWallet;
+    },
+
+    isPolkadotExtInstalled() {
+      return polkadot_extension_dapp.isWeb3Injected;
     }
   },
 
@@ -435,12 +439,20 @@ Vue.component('grants-cart', {
         vm.$set(grant, 'loading', false);
       });
     },
-    contributeWithExtension: function(grant, tenant) {
+    contributeWithExtension: function(grant, tenant, data) {
       let vm = this;
 
       switch (tenant) {
         case 'HARMONY':
           contributeWithHarmonyExtension(grant, vm);
+          break;
+        case 'POLKADOT':
+        case 'KUSAMA':
+          if (data) {
+            contributeWithPolkadotExtension(grant, vm, data);
+          } else {
+            initPolkadotConnection(grant, vm);
+          }
           break;
       }
     },
@@ -479,7 +491,7 @@ Vue.component('grants-cart', {
       // $('input[type=textarea]').focus();
     },
 
-    updatePaymentStatus(grant_id, step = 'waiting', txnid) {
+    updatePaymentStatus(grant_id, step = 'waiting', txnid, additionalAttributes) {
       let vm = this;
       let grantData = vm.grantData;
 
@@ -488,6 +500,9 @@ Vue.component('grants-cart', {
           vm.grantData[index].payment_status = step;
           if (txnid) {
             vm.grantData[index].txnid = txnid;
+          }
+          if (additionalAttributes) {
+            vm.grantData[index].additionalAttributes = additionalAttributes;
           }
         }
       });

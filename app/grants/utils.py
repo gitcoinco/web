@@ -51,7 +51,8 @@ tenant_payout_mapper = {
     'CELO': sync_celo_payout,
     'ZIL': sync_zil_payout,
     'HARMONY': sync_harmony_payout,
-    'POLKADOT': sync_polkadot_payout
+    'POLKADOT': sync_polkadot_payout,
+    'KUSAMA': sync_polkadot_payout
 }
 
 def get_upload_filename(instance, filename):
