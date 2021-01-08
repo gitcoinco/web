@@ -32,10 +32,19 @@ def lineno():
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
+    # KO hack 12/14/2020
+    # this will prevent tasks on grants that have been issued from an app server from being immediately 
+    # rewritten by the celery server.  not elegant, but it works.  perhaps in the future,
+    # a delay could be introduced in the call of the task, not the task itself.
+    time.sleep(1)
+
     # setup
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
+    if instance.in_active_clrs.exists():
+        gclr = instance.in_active_clrs.order_by('start_date').first()
+        round_start_date = gclr.start_date
 
     # grant t shirt sizing
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
@@ -189,6 +198,12 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.split_tx_id = package.get('split_tx_id', '0x0')
         subscription.num_tx_approved = package.get('num_tx_approved', 1)
         subscription.network = package.get('network', '')
+        if subscription.network == 'undefined':
+            # we unfortunately cannot trust the frontend to give us a valid network name
+            # so this handles that case.  more details are available at
+            # https://gitcoincore.slack.com/archives/C01FQV4FX4J/p1607980714026400
+            if not settings.DEBUG:
+                subscription.network = 'mainnet'
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.comments = package.get('comment', '')
@@ -214,7 +229,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             profile.save()
 
         if 'anonymize_gitcoin_grants_contributions' in package:
-            profile.anonymize_gitcoin_grants_contributions = bool(package.get('anonymize_gitcoin_grants_contributions', False))
+            profile.anonymize_gitcoin_grants_contributions = package.get('anonymize_gitcoin_grants_contributions')
             profile.save()
 
         activity_profile = profile if not profile.anonymize_gitcoin_grants_contributions else Profile.objects.get(handle='gitcoinbot')

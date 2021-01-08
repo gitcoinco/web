@@ -431,7 +431,7 @@ class DashboardModelsTest(TestCase):
             web3_type='yge',
         )
         assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
-        assert tip.get_natural_value() == 7e-18
+        assert tip.get_natural_value() == 7
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
         assert tip.status == 'PENDING'

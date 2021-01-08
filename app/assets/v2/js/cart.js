@@ -52,13 +52,15 @@ Vue.component('grants-cart', {
       comments: undefined,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
-      include_for_clr: true,
+      include_for_clr: false,
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
+      zkSyncMaxCartItems: 45, // Max supported items by zkSync, defaults to 45 unless zkSync component says otherwise
+      isZkSyncDown: false, // disable zkSync when true
       // verification
       isFullyVerified: false,
       // Collection
@@ -297,6 +299,9 @@ Vue.component('grants-cart', {
 
         } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
           return accumulator + 450000; // cDAI donation gas estimate
+        
+        } else if (tokenAddr === '0x3472A5A71965499acd81997a54BBA8D852C6E53d'.toLowerCase()) {
+          return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
 
         }
         return accumulator + 100000; // generic token donation gas estimate
@@ -333,6 +338,7 @@ Vue.component('grants-cart', {
     onZkSyncUpdate: function(data) {
       this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
+      this.zkSyncMaxCartItems = data.zkSyncMaxCartItems;
     },
 
     tabChange: async function(input) {
@@ -885,7 +891,7 @@ Vue.component('grants-cart', {
         gas_price: 0,
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,
-        anonymize_gitcoin_grants_contributions: this.AnonymizeGrantsContribution,
+        anonymize_gitcoin_grants_contributions: false,
         include_for_clr: this.include_for_clr,
         match_direction: '+',
         network: document.web3network,
@@ -950,6 +956,9 @@ Vue.component('grants-cart', {
         saveSubscriptionPayload.token_address.push(tokenAddress);
         saveSubscriptionPayload.token_symbol.push(tokenName);
       } // end for each donation
+
+      // to allow , within comments
+      saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
 
       // Configure request parameters
       const url = '/grants/bulk-fund';
@@ -1093,6 +1102,7 @@ Vue.component('grants-cart', {
 
       // Configure data to save
       let cartData;
+
       if (!txHashes) {
         // No transaction hashes were provided, so just save off the cart data directly
         cartData = this.donationInputs;
@@ -1105,8 +1115,8 @@ Vue.component('grants-cart', {
           return {
             ...donation,
             txHash: txHashes[index]
-          }
-        })
+          };
+        });
       }
 
 

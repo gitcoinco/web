@@ -812,7 +812,7 @@ def mesh_network_viz(request, ):
         "to_month": to_month,
         "to_day": to_day,
         "years": range(2017, 1 + int(timezone.now().strftime("%Y"))),
-        "months": range(1, 12),
+        "months": range(1, 13),
         "days": range(1, 31),
         'types': ['all', 'grant', 'bounty', 'tip', 'kudos']
     }

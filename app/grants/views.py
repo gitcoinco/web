@@ -47,6 +47,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import pytz
 import requests
 import tweepy
 from app.services import RedisService
@@ -595,7 +596,7 @@ def get_grants(request):
         _grants = build_grants_by_type(**filters)
         collections = []
         # disabling collections on the main grant page to improve performance
-        # collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:3]
+        # collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:3].cache(timeout=60)
 
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
@@ -1352,6 +1353,35 @@ def grant_details(request, grant_id, grant_slug):
     if is_clr_active:
         title = '💰 ' + title
 
+    should_show_claim_match_button = False
+    try:
+        # If the user viewing the page is team member or admin, check if grant has match funds available
+        # to withdraw
+        is_match_available_to_claim = False
+        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 1, 30, 12, 0).replace(tzinfo=pytz.utc)
+        is_staff = request.user.is_authenticated and request.user.is_staff
+
+        # Check if this grant needs to complete KYC before claiming match funds
+        clr_matches = grant.clr_matches.filter(round_number=8)
+        is_blocked_by_kyc = clr_matches.exists() and not clr_matches.first().ready_for_payout
+
+        # calculate whether is available
+        # TODO - do this asyncronously so as not to block the pageload
+        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc:
+            if is_team_member or is_staff or is_admin:
+                w3 = get_web3(grant.network)
+                match_payouts_abi = settings.MATCH_PAYOUTS_ABI
+                match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
+                match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
+                amount_available = match_payouts.functions.payouts(grant.admin_address).call()
+                is_match_available_to_claim = True if amount_available > 0 else False
+
+        # Determine if we should show the claim match button on the grant details page
+        should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
+
+    except Exception as e:
+        logger.exception(e)
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -1381,6 +1411,7 @@ def grant_details(request, grant_id, grant_slug):
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
+        'should_show_claim_match_button': should_show_claim_match_button
     }
     # Stats
     if tab == 'stats':
@@ -1555,6 +1586,10 @@ def grant_edit(request, grant_id):
         logo = request.FILES.get('logo', None)
         if logo:
             grant.logo = logo
+
+        image_css = request.POST.get('image_css', None)
+        if image_css:
+            grant.image_css = image_css
 
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
@@ -2046,10 +2081,11 @@ def bulk_fund(request):
                 'signature': request.POST.get('signature'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
+                'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
                 # Values that vary by donation
                 'admin_address': request.POST.get('admin_address').split(',')[index],
                 'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
-                'comment': request.POST.get('comment').split(',')[index],
+                'comment': request.POST.get('comment').split('_,_')[index],
                 'confirmed': request.POST.get('confirmed').split(',')[index],
                 'contract_address': request.POST.get('contract_address').split(',')[index],
                 'contract_version': request.POST.get('contract_version').split(',')[index],
@@ -2680,10 +2716,13 @@ def toggle_grant_favorite(request, grant_id):
 
 
 def get_grant_verification_text(grant, long=True):
+    from django.utils.safestring import mark_safe
+
     msg = f'I am verifying my ownership of { grant.title } on Gitcoin Grants'
     if long:
         msg += f' at https://gitcoin.co{grant.get_absolute_url()}.'
-    return msg
+
+    return mark_safe(msg)
 
 
 @login_required

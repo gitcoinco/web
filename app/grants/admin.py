@@ -389,7 +389,7 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
+    list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
     raw_id_fields = ['owner']
 
     def link(self, instance):
@@ -400,6 +400,15 @@ class GrantCLRAdmin(admin.ModelAdmin):
             return mark_safe(html)
         except:
             return "N/A"
+
+    def response_change(self, request, obj):
+        if "_recalculate_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            for grant in obj.grants:
+                recalc_clr.delay(grant.pk)
+            self.message_user(request, "submitted recaclulation to queue")
+        return redirect(obj.admin_url)
+
 
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']

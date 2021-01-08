@@ -137,7 +137,7 @@ def about(request):
 
 def marketplace(request):
     """Render the Kudos 'marketplace' page."""
-    q = request.GET.get('q')
+    q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
     title = str(_('Kudos Marketplace'))
     network = request.GET.get('network', settings.KUDOS_NETWORK)
@@ -175,6 +175,7 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': title,
+        'q': q,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),

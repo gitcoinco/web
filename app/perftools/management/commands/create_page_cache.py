@@ -92,6 +92,9 @@ def create_grant_type_cache():
 def create_grant_active_clr_mapping():
     print('create_grant_active_clr_mapping')
     # Upate grants mppping to active CLR rounds
+    # NOTE: deprecated; this has been replaced by create_grant_clr_cache
+    # by Owocki 12/16/2020
+    # return
     from grants.models import Grant, GrantCLR
 
     grants = Grant.objects.all()
@@ -104,17 +107,19 @@ def create_grant_active_clr_mapping():
             _grant.in_active_clrs.remove(clr_round)
             _grant.save()
 
+    return
+
     # update new mapping
-    active_clr_rounds = clr_rounds.filter(is_active=True)
-    for clr_round in active_clr_rounds:
-        grants_in_clr_round = grants.filter(**clr_round.grant_filters)
+    # active_clr_rounds = clr_rounds.filter(is_active=True)
+    # for clr_round in active_clr_rounds:
+    #     grants_in_clr_round = grants.filter(**clr_round.grant_filters)
 
-        for grant in grants_in_clr_round:
-            grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
+    #     for grant in grants_in_clr_round:
+    #         grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
 
-            if not grant_has_mapping_to_round:
-                grant.in_active_clrs.add(clr_round)
-                grant.save()
+    #         if not grant_has_mapping_to_round:
+    #             grant.in_active_clrs.add(clr_round)
+    #             grant.save()
 
 def create_hack_event_cache():
     from dashboard.models import HackathonEvent
@@ -392,10 +397,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         operations = []
+        operations.append(create_grant_active_clr_mapping)
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
-        operations.append(create_grant_active_clr_mapping)
         if not settings.DEBUG:
             operations.append(create_results_cache)
             operations.append(create_hack_event_cache)
