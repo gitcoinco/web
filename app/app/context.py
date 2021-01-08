@@ -183,6 +183,7 @@ def preprocess(request):
         'ptoken_id': ptoken.id if ptoken else None,
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
+        'mautic_id': profile.mautic_id if profile else None,
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

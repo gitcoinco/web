@@ -572,6 +572,10 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
+MAUTIC_USER = env('MAUTIC_USER', default='')
+MAUTIC_PASSWORD = env('MAUTIC_PASSWORD', default='')
+
+
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')

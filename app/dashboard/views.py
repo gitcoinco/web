@@ -18,6 +18,7 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import base64
 import hashlib
 import html
 import json
@@ -6493,3 +6494,63 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
+
+@csrf_exempt
+def mautic_api(request, endpoint=''):
+    print(request.GET)
+    params = request.GET
+    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+    headers = {"Authorization": f"Basic {token}"}
+    print(headers)
+    print(endpoint)
+    print(request.body)
+    if request.body:
+        body_unicode = request.body.decode('utf-8')
+        payload = json.loads(body_unicode)
+        print(payload)
+
+    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+    if request.method == 'GET':
+        response = requests.get(url=url, headers=headers, params=params).json()
+    elif request.method == 'POST':
+        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PUT':
+        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PUT':
+        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PATCH':
+        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def mautic_profile_save(request):
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            return JsonResponse(
+                { 'error': _('You must be authenticated') },
+                status=401
+            )
+        print(request.POST)
+        mautic_id = request.POST.get('mtcId')
+        profile.mautic_id = mautic_id
+        profile.save()
+
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+    return JsonResponse(
+        {
+            'success': True,
+            'msg': 'Data saved'
+        },
+        status=200
+    )

@@ -2941,6 +2941,8 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+    mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True)
+
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
