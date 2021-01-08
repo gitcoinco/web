@@ -9,10 +9,10 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
   const to_address = grant.harmony_payout_address;
 
   // step 1: init harmony
-  let hmy = harmony_utils.initHarmony('test');
+  let hmy = harmony_utils.initHarmony();
 
   // step 2: init extension
-  let harmonyExt = await harmony_utils.initHarmonyExtension('test');
+  let harmonyExt = await harmony_utils.initHarmonyExtension();
 
   // step 3: check balance
   const from_address = await harmony_utils.loginHarmonyExtension(harmonyExt);
