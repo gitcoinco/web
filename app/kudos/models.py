@@ -646,6 +646,7 @@ class BulkTransferCoupon(SuperModel):
 
     sender_address = models.CharField(max_length=255, blank=True)
     sender_pk = models.CharField(max_length=255, blank=True)
+    quest_pk = models.CharField(max_length=255, blank=True)
     tag = models.CharField(max_length=255, blank=True)
     metadata = JSONField(default=dict, blank=True)
     make_paid_for_first_minutes = models.IntegerField(default=0)
