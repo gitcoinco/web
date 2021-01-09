@@ -14,6 +14,43 @@
 			margin-bottom: initial;
 		}
 
+
+		#advanced{
+
+			label{
+				display: block;
+				margin-top: 1em;
+				margin-bottom: 0.5em;
+				font-size: 80%;
+				line-height: 1em;
+				color: var(--stone);
+			}
+
+			input{
+				display: block;
+				padding: 0.5em 1em;
+				color : var(--space);
+				font-family: 'Space Mono', monospace;
+				background-color: var(--aqua);
+				font-size: 90%;
+				text-align: center;
+				word-break: break-all;
+				border: none;
+				outline: none;
+				width: 100%;
+				margin-top: 0.3em;
+				margin-bottom: 1em;
+
+				&:focus {
+					outline: none;
+				}
+
+			}
+		}
+
+
+
+
 		.claimAdress{
 			width: 100%;
 		}
@@ -48,6 +85,11 @@
 
 
 	}
+
+
+
+
+
 
 }
 

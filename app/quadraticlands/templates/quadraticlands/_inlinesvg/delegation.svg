@@ -1,18 +1,25 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M40 60H24L32 52L40 60Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M40 4H24L32 12L40 4Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M60 40V24L52 32L60 40Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M4 40V24L12 32L4 40Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M48.3 60H60V48" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M16 4H4V16" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M60 16V4H48" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M4 48V60H16" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M4 60L20 44" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M44 20L60 4" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M60 60L44 44" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M20 20L4 4" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M37.9298 38.0103L43.9401 32L37.9298 25.9897L31.9194 32L37.9298 38.0103Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M25.9297 38.0104L31.94 32.0001L25.9297 25.9897L19.9193 32.0001L25.9297 38.0104Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M38.0103 26.0703L31.9999 20.06L25.9896 26.0703L31.9999 32.0807L38.0103 26.0703Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M38.0104 38.0702L32.0001 32.0599L25.9897 38.0702L32.0001 44.0806L38.0104 38.0702Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="64px" height="64px" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#F35890;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st1{fill:none;stroke:#02E2AC;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M40,60H24l8-8L40,60z"/>
+<path class="st0" d="M40,4H24l8,8L40,4z"/>
+<path class="st0" d="M60,40V24l-8,8L60,40z"/>
+<path class="st0" d="M4,40V24l8,8L4,40z"/>
+<path class="st1" d="M48.3,60H60V48"/>
+<path class="st1" d="M16,4H4v12"/>
+<path class="st1" d="M60,16V4H48"/>
+<path class="st1" d="M4,48v12h12"/>
+<path class="st1" d="M4,60l16-16"/>
+<path class="st1" d="M44,20L60,4"/>
+<path class="st1" d="M60,60L44,44"/>
+<path class="st1" d="M20,20L4,4"/>
+<path class="st0" d="M37.9,38l6-6l-6-6l-6,6L37.9,38z"/>
+<path class="st0" d="M25.9,38l6-6l-6-6l-6,6L25.9,38z"/>
+<path class="st0" d="M38,26.1l-6-6l-6,6l6,6L38,26.1z"/>
+<path class="st0" d="M38,38.1l-6-6l-6,6l6,6L38,38.1z"/>
 </svg>

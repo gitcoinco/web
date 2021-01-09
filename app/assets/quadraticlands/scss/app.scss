@@ -45,6 +45,7 @@
 @import "quest/quest-quiz";
 @import "quest/quest-claim";
 @import "quest/quest-vote";
+@import "quest/quest-setup";
 @import "quest/progressbar";
 
 
@@ -82,12 +83,11 @@
 	font-family: 'Space Mono', monospace;
 	background-color: var(--space_pink);
 	
-	font-size: 100%;
+	font-size: 90%;
 	text-align: center;
 
-	margin-bottom: 2em;
-
 	word-break: break-all;
+	margin-bottom: 1em;
 }
 
 

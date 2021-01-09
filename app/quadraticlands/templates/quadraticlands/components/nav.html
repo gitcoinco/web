@@ -21,10 +21,18 @@
 <header>
 
   <!-- logo-->
-  <div class="logo">
-    <a href="/quadraticlands/">
+  <div class="logos">
+
+    <a class="gitcoin" href="/">
+      {% include "quadraticlands/_inlinesvg/logo_gitcoin.svg" %}
+    </a>
+
+    <span class="arrow">{% include "quadraticlands/_inlinesvg/logo_arrow.svg" %}</span>
+
+    <a class="quadraticlands" href="/quadraticlands/">
       {% include "quadraticlands/_inlinesvg/ql.svg" %}
     </a>
+
   </div>
 
 
@@ -47,7 +55,7 @@
         <a href="/quadraticlands/mission" class="particleAttract" 
         {% if "mission" in request.path %} aria-current="page" {% endif %}
         >
-          <li>Mission</li>
+          <li>Mission Control</li>
         </a>
 
       </ul>

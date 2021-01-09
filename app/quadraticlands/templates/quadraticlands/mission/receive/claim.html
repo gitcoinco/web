@@ -23,6 +23,16 @@
 </section>
 
 
+
+<!-- advanced setup button -->
+<div id="quest-setup">
+	<div id="advancedButton" >
+		{% include "quadraticlands/_inlinesvg/setup.svg" %}
+	</div>
+</div>
+
+
+
 <section class="quest">
 
 	<!-- content-->
@@ -40,7 +50,19 @@
 				<div id="claimAdress" class="claimAdress">
 					<div class="receiveadress" id="wallet-address"></div>
 				</div>
-				
+
+				<!-- advanced mode : ( delegate feature ) -->
+				<div id="advanced" class="hide">	
+					<div class="">
+						<label>Claim & delegate your tokens in one Transaction.</label>
+						<div class="delegateToAdress">
+							<input type="text" id="delegateToAdress" name="delegateToAdress" placeholder="Delegate to ETH-Adress">
+						</div>
+
+					</div>
+				</div>
+
+
 				<!-- details why you get X tokens -->
 				<div id="claimListing" class="grid">
 					<!-- @zach : need data from db + here a loop of one row -->
@@ -67,20 +89,14 @@
 				<!-- place for a link to a block explorer -->
 				<p id="claimTXLink" class="hide"></p>
 
+
+
 			</div>
 
 
 			{% else %}
 
-				<!--  richard: if user is not loged in, he should not SEE ANYTHING,
-					not even a warning, he should even be able to come here without logged in 
-					by controller ... not need to check or build views for this.  -->
-
-				<!-- Zac: I've configured a redirect so if a user is not logged in 
-					they will be sent to quadraticlands/mission/index.html 
-					what should be do if user is logged in but has already made claim?
-				    the display claim TXID? or just redirect too? -->
-
+	
 			{% endif %}
 
 
@@ -193,9 +209,14 @@ document.addEventListener("DOMContentLoaded",function(){
 		// working before delegate set add 
 		// var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
 
+
+		var delegate_adress = document.getElementById("delegateToAdress").value
+		if (!delegate_adress) { delegate_adress = selectedAccount}
+		console.debug("DELEGATE TO ", delegate_adress)
+	
 		var getClaimData = fetchData('/quadraticlands/claim', 'POST', {
 			'address':selectedAccount, 
-			'delegate':selectedAccount
+			'delegate':delegate_adress
 		}, {'X-CSRFToken': csrftoken});
 
 
@@ -388,6 +409,10 @@ function updateInterface(status="init", transactionHash="") {
 	const divClaimingSpinner = document.getElementById("divClaimingSpinner");
 	const divClaimedButton = document.getElementById("divClaimedButton");
 	const claimAdress = document.getElementById("claimAdress");
+	const advanced = document.getElementById("advanced");
+	const questSetup = document.getElementById("quest-setup");
+	
+
 
 	if (status=="init")
 	{
@@ -403,6 +428,8 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimingSpinner.classList.add("hide");
 		divClaimedButton.classList.add("hide");
 		claimAdress.classList.remove("hide");
+		questSetup.classList.remove("hide");
+
 	}
 
 	if (status=="pending")
@@ -420,6 +447,8 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimingSpinner.classList.remove("hide");
 		divClaimedButton.classList.add("hide");
 		claimAdress.classList.remove("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
 		flashMessage("Your claim has been broadcast to the network!",5000);
 	}
 
@@ -435,6 +464,8 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimingSpinner.classList.add("hide");
 		divClaimedButton.classList.remove("hide");
 		claimAdress.classList.remove("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
     	flashMessage("Transaction Confirmed",5000);
 	}
 
@@ -449,6 +480,8 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimedButton.classList.add("hide");
 		divClaimButton.classList.remove("hide");
 		claimAdress.classList.remove("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
 		flashMessage("Error",5000);
 	}
 
@@ -466,11 +499,32 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimingSpinner.classList.add("hide");
 		divClaimedButton.classList.add("hide");
 		claimAdress.classList.add("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
 	}
 
 
 
 }
+
+
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	const advancedButton = document.getElementById("advancedButton");
+	const advanced = document.getElementById("advanced");
+	advancedButton.addEventListener("click", () => {
+		advanced.classList.toggle("hide");
+	});
+
+
+});
+
+
+
+
+
 </script>
 {% endblock %}
 
