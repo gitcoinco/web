@@ -1,12 +1,12 @@
 <div class="section">
 
-	<a href="" class="noparticles">
+	<a href="/quadraticlands/mission" class="noparticles">
 		<div class="header">
 			<div class="icon">
 				{% include "quadraticlands/_inlinesvg/missioncontrol.svg" %}
 			</div>
 			<div class="title">
-				Mission</span>
+				Mission Control</span>
 			</div>
 			<div class="arrow">
 				{% include "quadraticlands/_inlinesvg/arrow.svg" %}
@@ -18,52 +18,78 @@
 		<div class="content-mission">
 			<div class="wrapper">
 
-				<div class="col">
-					<div class="mission-name">
-						<!-- no a href here as this is "passed not repeatable" -->
-						Proof of Knowledge
-					</div>
-					<!-- set font colors per class : active, disabled -->
-					<div class="mission-status">Passed</div>
-					<!-- set icon colors per class : active, disabled -->
-					<div class="mission-status-icon">
-						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
-					</div>											
-				</div>
+				<!-- PROOF OF KNOWLEDGE -->
+				<!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-				<div class="col">
-					<div class="mission-name">
-						<!-- render a href for active repeatable missions -->
-						<a href="/quadraticlands/mission/receive">Proof of Receive</a>
-					</div>
-					<div class="mission-status active">Active</div>
-					<div class="mission-status-icon active">
-						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
-					</div>											
-				</div>
+				{% with name="1. Proof of Knowledge" %}
+
+					{% if not proof_of_knowledge %}
+						{% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available"  url="/quadraticlands/mission/knowledge" %}
+					{% else %}
+						{% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
+					{% endif %}
+
+				{% endwith %}
 
 
-				<div class="col">
-					<div class="mission-name">
-						Proof of Use
-					</div>
-					<div class="mission-status disabled">Upcoming</div>
-					<div class="mission-status-icon disabled">
-						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
-					</div>											
-				</div>
+				<!-- PROOF OF RECEIVE -->
+				<!-- user have to finish proof_of_knowledge first -->
+				<!-- add in with proof_of_receive=false to simulate available mission -->
+
+				{% with name="2. Proof of Receive"  %}
+
+					{% if not proof_of_knowledge  %}
+						<!-- User can not this mission yet -->
+						{% include 'quadraticlands/dashboard/mission_item.html' with message="locked" locked="true" %}
+					{% else %}
+
+						<!-- User can Play -->
+						{% if not proof_of_receive %}
+							{% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/receive" %}
+						{% else %}
+							{% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
+						{% endif %}	
+
+					{% endif %}
+
+				{% endwith %}
 
 
-				<div class="col">
-					<div class="mission-name">
-						<!-- render a href just on active / repeatable missions -->
-						<a href="/quadraticlands/sybilhunt">SybilHunt</a>
-					</div>
-					<div class="mission-status active">Active</div>
-					<div class="mission-status-icon active">
-						{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
-					</div>											
-				</div>
+				<!-- PROOF OF USE -->
+				<!-- user have to finish proof_of_receive first -->
+				<!-- add in with proof_of_use=false to simulate available mission -->
+
+				{% with name="3. Proof of Use" %}
+
+					{% if not proof_of_receive  %}
+						<!-- User can not this mission yet -->
+						{% include 'quadraticlands/dashboard/mission_item.html' with message="locked" locked="true" %}
+					{% else %}
+
+						<!-- User can Play -->
+						{% if not proof_of_use %}
+							{% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available"  url="/quadraticlands/mission/use" %}
+						{% else %}
+							{% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
+						{% endif %}
+
+					{% endif %}
+
+				{% endwith %}
+
+
+				<!-- DUMMY -->
+
+				{% with name="SybilHunt Dummy Mission" %}
+					{% include 'quadraticlands/dashboard/mission_item.html' with message="soon" locked="true" %}
+				{% endwith %}
+
+				<!-- DUMMY -->
+
+				{% with name="SybilHunt Dummy Mission 2" %}
+					{% include 'quadraticlands/dashboard/mission_item.html' with message="soon" locked="true" %}
+				{% endwith %}
+
 
 		
 			</div>

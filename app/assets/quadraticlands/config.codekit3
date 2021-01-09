@@ -1597,6 +1597,19 @@
 		"oS": 3,
 		"sct": 0
 		},
+	"/scss/quest/quest-setup.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/quest-setup.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
 	"/scss/quest/quest-video.scss": {
 		"aP": 0,
 		"bl": 0,

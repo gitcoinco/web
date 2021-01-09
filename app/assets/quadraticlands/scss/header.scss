@@ -14,20 +14,45 @@ header{
 
 
 
-	.logo{
-		height: 48px;
-		width: 48px;
+	.logos{
+
 		margin: auto;
+		display: flex;
+
+		.gitcoin{
+			margin-right: 15px;
+			img, svg{
+				width: 31.64px;
+				height:40px;
+				display: block;
+			}
+		}
+
+		.arrow{
+			margin: auto;
+			margin-right: 15px;
+			img, svg{
+				width: 10px;
+				height:15px;
+				display: block;
+			}
+		}
+
+		.quadraticlands{
+			img, svg{ 
+				height:40px;
+				width: 40px;
+				display: block;
+			}
+		}
 
 		z-index: 9999;
-		
 
-		img, svg{
-			height: 100%;
-			width: 100%;
-			display: block;
-		}
 	}
+
+
+
+
 
 	nav{
 		align-self: center;

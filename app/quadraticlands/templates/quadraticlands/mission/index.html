@@ -15,23 +15,18 @@
 {% block 'content' %}
 
 
-<!-- headline-->
-<section class="column centered">
-	<h1>Mission</h1>
-</section>
+
+<section class="column centered"><h1>Token Distribution Missions</h1></section>
 
 
-
-<!--missions-->
+<!--token distribution missions-->
 <section class="mission">
-
-
 
 	<!-- PROOF OF KNOWLEDGE CARD -->
 	<!-- no dependencies in other missions -->
 	<!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-	{% with name="1. Proof of Knowledge" %}
+	{% with name="1. Proof of Knowledge"%}
 
 		{% if not proof_of_knowledge %}
 			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}
@@ -97,7 +92,15 @@
 	{% endwith %}
 
 
+</section>
 
+
+
+
+<section class="column centered"><h1>Upcoming Missions</h1></section>
+
+<!-- upcoming missions-->
+<section class="mission">
 
 	<!-- SYBIL -->
 
@@ -112,10 +115,13 @@
 	{% with name="SybilHunt Dummy Mission" %}
 		{% include 'quadraticlands/mission/card.html' with message="soon" svg="back-card.svg" url="/quadraticlands/mission/use" locked="true" %}
 	{% endwith %}
-	
 
 
 </section>
+
+
+
+
 
 
 

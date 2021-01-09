@@ -27,7 +27,6 @@
 
 
 	<!-- quest-intro : text -->
-	<!-- kevin talked about having not text intro but video intro
 	<main id="intro" class="hide">
 		<div class="wrapper">
 			<div class="quest-intro glass">
@@ -37,10 +36,11 @@
 			</div>
 		</div>
 	</main>
-	-->
+	
 
 
 	<!-- quest-intro : video  -->
+	<!--
 	<main id="intro" class="hide">
 		<div class="wrapper">
 			<div class="quest-video">
@@ -48,20 +48,28 @@
 			</div>
 		</div>
 	</main>
+	-->
 	
 
 	<!-- quest-vote -->
 	<main id="voting" class="hide">
-		<div class="wrapper">
+		<div class="wrapper scrollable">
+
+			<h1>What is Gitcoin’s core values ?</h1>
+
 			<div class="quest-vote">
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Self Reliance" %}
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Collaboration" %}
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Intellectual Honesty" %}
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Empathy" %}
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Stress Reducers" %}
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Inclusivity" %}
-				{% include 'quadraticlands/components/quest-vote-option.html' with name="Giving First" %}
+
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Self Reliance" %}
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Collaboration" %}
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Intellectual Honesty" %}
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Empathy" %}
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Stress Reducers" %}
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Inclusivity" %}
+				{% include 'quadraticlands/mission/use/vote_item.html' with name="Giving First" %}
+
 			</div>
+
+
 		</div>
 	</main>
 
@@ -144,7 +152,7 @@ document.addEventListener("DOMContentLoaded",function(){
 	/*********** VIEW ON LOAD - right now i skip the intro - and load voting instant for faster testing 
 	but later it will initialy just load "intro"  */
 	updateInterface("intro")
-	updateInterface("voting")
+	//updateInterface("voting")
 
 
 

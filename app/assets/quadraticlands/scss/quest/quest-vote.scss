@@ -25,12 +25,19 @@
 			font-weight: 600;
 			color: var(--white);
 			margin: 0em 1em;
+			//background-color: green;
+			word-break: break-all;
+
 		}
 
 		div{
 			display: flex;
-			margin: 0em 1em;
+			//margin: 0em 1em;
+			margin-right: 0.5em;
 			margin-left: auto;
+			//background-color: red;
+			width: auto;
+
 
 			input, span{
 				display: inline;
@@ -47,12 +54,14 @@
 				color: var(--aqua);
 				font-size: 100%;
 				font-weight: 600;
-				width: 100px;
+				width: 30px;
 				height: 80px;
 				text-align: right;
 				margin-right: 0.1em;
 				margin-left: 1em;	
 				cursor: pointer;
+
+				//background-color: green;
 
 				-moz-appearance: textfield;
 
@@ -107,8 +116,21 @@
 
 
 
+
+
+
+
+
+
+
 @media #{$phone} { 
 	.quest-vote{
+
+		grid-template-columns: 1fr;
+
+		.option{
+			
+		}
 
 		.intro{
 			padding: 2em 1em;
@@ -116,16 +138,6 @@
 		}
 
 
-		.voting{
-			grid-template-columns: 1fr;
-			padding: 0;
-			margin: 0em 1em;
-			grid-gap: 0.2em;
-
-			.option{
-				height: 80px;
-			}
-		}
 
 
 	}

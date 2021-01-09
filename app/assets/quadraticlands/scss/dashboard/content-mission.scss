@@ -16,8 +16,11 @@ section.dashboard .content-mission{
 	.mission-status{
 		margin-left: auto;
 		color: var(--stone);
-		&.active{ color: var(--aqua_light); }
-		&.disabled{ color: var(--smoke); }
+
+		&.playable { color: var(--pink_light); }
+		&.locked { color: var(--smoke); }
+		&.done { color: var(--aqua_light);  }
+
 	}
 
 	.mission-status-icon{
@@ -29,8 +32,11 @@ section.dashboard .content-mission{
 			width: 17px;
 			display: block;
 		}
-		&.active{ svg{ fill: var(--aqua_light); } }
-		&.disabled{ svg{ fill: var(--smoke); } }
+
+		&.playable { svg{ fill: var(--pink_light); } }
+		&.locked { svg{ fill: var(--smoke); } }
+		&.done { svg{ fill: var(--aqua_light); }   }
+
 	}
 
 

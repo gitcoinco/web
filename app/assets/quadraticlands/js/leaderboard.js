@@ -158,7 +158,7 @@ function render(data){
 
 			// account
 			var account = document.createElement("td");
-			account.innerHTML = '<a href="/quadraticlands/profile/'+col.account+'">'+shortenAdress(col.account)+'</a>'
+			account.innerHTML = '<a target="_blank" href="https://etherscan.io/address/'+col.account+'">'+shortenAdress(col.account)+'</a>'
 			tr.appendChild(account)
 
 

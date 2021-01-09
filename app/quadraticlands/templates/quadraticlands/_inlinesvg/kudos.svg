@@ -1,4 +1,11 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M55 44.7171V18.2829L32.0659 5L9 18.2829V44.7171L32.0659 58L55 44.7171Z" stroke="#F579A6" stroke-width="2" stroke-miterlimit="10" stroke-linejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M47 40.2283V22.7717L32.043 14L17 22.7717V40.2283L32.043 49L47 40.2283Z" stroke="#5BF1CD" stroke-width="2" stroke-miterlimit="10" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="64px" height="64px" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#F35890;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st1{fill:none;stroke:#02E2AC;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M55,44.7V18.3L32.1,5L9,18.3v26.4L32.1,58L55,44.7z"/>
+<path class="st1" d="M47,40.2V22.8L32,14l-15,8.8v17.5L32,49L47,40.2z"/>
 </svg>
