@@ -155,7 +155,7 @@
               </div>
               <div class="mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Github Issue Url <span class="badge badge-greylight text-capitalize">Required</span></label>
-                <input class="form-control" name='issueURL' id="issueURL" v-model="form.issueUrl" type="url" placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails(form.issueUrl)" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
+                <input class="form-control" name='issueURL' id="issueURL" v-model="form.issueUrl" type="url" placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails('{{ issueURL }}')" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
                 <img v-if="filterOrgSelected" :src="filterOrgSelected" class="position-absolute" :alt="orgSelected" :title="orgSelected" height="32" style="margin-top: -35px; right: 18px;">
 
                 <div class="text-danger" v-if="errors.issueDetails">
