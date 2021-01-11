@@ -29,9 +29,9 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
-    Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
-    TribesSubscription, UserAction, UserVerificationModel,
+    Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -295,6 +295,15 @@ class TipAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "halve_tip" in request.POST:
+            obj.amount = obj.amount / 2
+            obj.metadata['max_redemptions'] = obj.metadata.get("max_redemptions", 1) * 2
+            obj.metadata['override_send_amount'] = True
+            obj.username = ''
+            obj.save()
+            self.message_user(request, f"Tip has been halved and can now be redeemed {obj.metadata['max_redemptions']} times.")
+            return redirect(obj.admin_url)
+
         if "_reset_tip_redemption" in request.POST:
             if not obj.receive_txid:
                 self.message_user(request, f"Cannot reset tip! This tip has not been marked as receieved")
@@ -585,6 +594,10 @@ class ProfileVerificationAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
 
 
+class MediaFileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'file', 'filename']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -627,3 +640,4 @@ admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
 admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)
+admin.site.register(MediaFile, MediaFileAdmin)

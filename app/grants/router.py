@@ -85,6 +85,10 @@ class GrantViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def report(self, request):
+        return Response({'error': 'reports temporarily offline'})
+
+    @action(detail=False)
+    def report_real(self, request):
         """Generate Grants report for an ethereum address"""
 
         grants_queryset = Grant.objects.all()

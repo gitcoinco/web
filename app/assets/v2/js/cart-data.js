@@ -9,6 +9,7 @@ class CartData {
   }
 
   static cartContainsGrantWithId(grantId) {
+    grantId = String(grantId);
     const cart = this.loadCart();
     const idList = cart.map(grant => {
       return grant.grant_id;
@@ -90,7 +91,20 @@ class CartData {
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'ZEC';
       }
-
+    } else if (grantData.tenants.includes('CELO')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'CELO';
+      }
+    } else if (grantData.tenants.includes('ZIL')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ZIL';
+      }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;
@@ -123,6 +137,8 @@ class CartData {
   }
 
   static removeIdFromCart(grantId) {
+    grantId = String(grantId);
+
     let cartList = this.loadCart();
 
     const newList = cartList.filter(grant => grant.grant_id !== grantId);

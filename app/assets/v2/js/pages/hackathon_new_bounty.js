@@ -62,6 +62,11 @@ Vue.mixin({
       });
 
     },
+    getBinanceSelectedAccount: async function() {
+      let vm = this;
+
+      vm.form.funderAddress = await binance_utils.getSelectedAccount();
+    },
     getAmount: function(token) {
       let vm = this;
 
@@ -177,6 +182,10 @@ Vue.mixin({
         case '58':
           // polkadot
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
           break;
         case '1000':
           // harmony

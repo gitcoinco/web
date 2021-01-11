@@ -112,7 +112,6 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
-    'chat',
     'quests',
     'faucet',
     'tdi',
@@ -150,7 +149,6 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
-    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -183,7 +181,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -523,7 +521,6 @@ CELERY_ROUTES = [
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
-    ('chat.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
     ('townsquare.tasks.*', {'queue': 'default'}),
     ('kudos.tasks.*', {'queue': 'default'}),
@@ -611,14 +608,6 @@ OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
 
-# Chat
-CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
-CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
-CHAT_SERVER_URL = env('CHAT_SERVER_URL', default='chat')  # location of where mattermost is hosted
-CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
-GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
-GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
-GITCOIN_LEADERBOARD_CHANNEL_ID = env('GITCOIN_LEADERBOARD_CHANNEL_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -854,6 +843,7 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_BLOCKED_REGION = { 'country_code': 'US', 'region': 'NY' }
 PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
 PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
 PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x75589C2e56095c80f63EC773509f033aC595c34e')
@@ -867,18 +857,6 @@ if PTOKEN_ABI_PATH:
 if PTOKEN_FACTORY_ABI_PATH:
     with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
         PTOKEN_FACTORY_ABI = json.load(f)
-
-HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
-        'INDEX_NAME': 'haystack',
-    },
-}
-# Update Search index in realtime (using models.db.signals)
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
@@ -894,3 +872,11 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+
+# Idena
+IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
+IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min
+
+# Match Payouts contract
+MATCH_PAYOUTS_ABI = '[ { "inputs": [ { "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "address", "name": "_funder", "type": "address" }, { "internalType": "contract IERC20", "name": "_dai", "type": "address" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [], "name": "Finalized", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Funded", "type": "event" }, { "anonymous": false, "inputs": [], "name": "FundingWithdrawn", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutAdded", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutClaimed", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "_recipient", "type": "address" } ], "name": "claimMatchPayout", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "dai", "outputs": [ { "internalType": "contract IERC20", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "enablePayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "finalize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "funder", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "", "type": "address" } ], "name": "payouts", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "components": [ { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" } ], "internalType": "struct MatchPayouts.PayoutFields[]", "name": "_payouts", "type": "tuple[]" } ], "name": "setPayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "state", "outputs": [ { "internalType": "enum MatchPayouts.State", "name": "", "type": "uint8" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdrawFunding", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]'
+MATCH_PAYOUTS_ADDRESS = '0xf2354570bE2fB420832Fb7Ff6ff0AE0dF80CF2c6'

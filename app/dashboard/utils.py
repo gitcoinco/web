@@ -37,6 +37,7 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
 )
+from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
@@ -553,7 +554,10 @@ def sync_payout(fulfillment):
             sync_filecoin_payout(fulfillment)
 
     elif fulfillment.payout_type == 'polkadot_ext':
-         sync_polkadot_payout(fulfillment)
+        sync_polkadot_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'binance_ext':
+        sync_binance_payout(fulfillment)
 
     elif fulfillment.payout_type == 'harmony_ext':
         sync_harmony_payout(fulfillment)
@@ -1188,3 +1192,11 @@ def set_hackathon_event(type, event):
         'display_showcase': event.display_showcase,
         'show_results': event.show_results,
     }
+
+
+def tx_id_to_block_explorer_url(txid, network):
+    if network == 'xdai':
+        return f"https://explorer.anyblock.tools/ethereum/poa/xdai/tx/{txid}"
+    if network == 'mainnet':
+        return f"https://etherscan.io/tx/{txid}"
+    return f"https://{network}.etherscan.io/tx/{txid}"

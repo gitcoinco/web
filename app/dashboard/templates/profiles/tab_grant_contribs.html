@@ -71,11 +71,11 @@
       </div>
     {% endfor %}
 
-    <h2 class="font-body mt-3 mb-3 ml-0 pb-3 title">Grants Created ({{profile.grant_admin.count}})</h3>
+    <h2 class="font-body mt-3 mb-3 ml-0 pb-3 title">Grants Funded ({{profile.grant_admin.count}})</h3>
 
     {% if not profile.grant_admin.count %}
       <p>
-        No Grants Created. <a href=grants/new>Create a Grant &gt;</a>
+        No Grants Funded. <a href=grants/new>Create a Grant &gt;</a>
       </p>
     {% endif %}
 

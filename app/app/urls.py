@@ -28,7 +28,6 @@ from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
 import bounty_requests.views
-import chat.views
 import credits.views
 import dashboard.embed
 import dashboard.gas_views
@@ -71,7 +70,6 @@ urlpatterns = [
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
     path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
     path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
-    re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
     # inbox
@@ -97,6 +95,7 @@ urlpatterns = [
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
     re_path(r'^kudos/about/?$', kudos.views.about, name='kudos_about'),
+    re_path(r'^kudos/sync/?$', kudos.views.sync, name='kudos_sync'),
     re_path(r'^kudos/marketplace/?$', kudos.views.marketplace, name='kudos_marketplace'),
     re_path(r'^kudos/mint/?$', kudos.views.mint, name='kudos_mint'),
     re_path(r'^kudos/send/?$', kudos.views.send_2, name='kudos_send'),
@@ -152,25 +151,39 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
     url(
+        r'^api/v0.1/profile/(?P<handle>.*)/start_session_idena',
+        dashboard.views.start_session_idena,
+        name='start_session_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/authenticate_idena',
+        dashboard.views.authenticate_idena,
+        name='authenticate_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
+        dashboard.views.logout_idena,
+        name='logout_idena'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
+        dashboard.views.recheck_idena_status,
+        name='recheck_idena_status'
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
         dashboard.views.verify_user_twitter,
         name='verify_user_twitter'
-    ),    
+    ),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap',
-        dashboard.views.verify_user_poap,
-        name='verify_user_poap'
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
-    url(
-        r'^api/v0.1/profile/verify_user_google',
-        dashboard.views.verify_user_google,
-        name='verify_user_google'
-    ),
+    url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -204,9 +217,8 @@ urlpatterns = [
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
     url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
+    url(r'^api/v1/file_upload/', dashboard.views.file_upload, name='file_upload'),
 
-    # chat
-    url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -665,7 +677,6 @@ urlpatterns = [
         faucet.views.process_faucet_request,
         name='process_faucet_request'
     ),
-    re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
     re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'

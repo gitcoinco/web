@@ -1,4 +1,4 @@
-/* eslint-disable no-loop-func */
+/* eslint-disable no-loop-func, no-prototype-builtins */
 (function($) {
 
   $('body').on('click', '.btn', function(e) {
@@ -933,7 +933,6 @@
         hackathonSponsors: document.hackathonSponsors,
         prizeFounders: document.prizeFounders,
         hackathonProjects: [],
-        chatURL: document.chatURL,
         hackHasEnded: document.displayShowcase,
         isSponsor: document.is_sponsor
       })

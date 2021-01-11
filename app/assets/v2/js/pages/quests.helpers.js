@@ -10,7 +10,15 @@ var trim_dots = function(_str, _chars) {
 };
 
 var show_prize = function() {
-  var kudos_html = "<div class='tl prize'><span>🏆Quest Prize🏅</span><img src=" + document.kudos_reward['img'] + '></div>';
+  var prize_info = '';
+
+  if (document.reward_tip['token_amount']) {
+    prize_info = '<strong>' + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>';
+  } else {
+    prize_info = '<img src=' + document.kudos_reward['img'] + '>';
+  }
+
+  var kudos_html = "<div class='tl prize'><span>🏆Quest Prize🏅</span>" + prize_info + '</div>';
 
   $('#gameboard').append(kudos_html);
 };
@@ -37,9 +45,10 @@ var random_taunt_effect = function(ele) {
 };
 
 var post_state = async(data) => {
-  const location = document.location.href.replace('#', '');
+  const location = document.location.href.replace('#', '') + '?answers=' + JSON.stringify(data);
   const settings = {
     method: 'POST',
+    cache: 'no-cache',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'

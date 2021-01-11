@@ -17,7 +17,14 @@
 
     <section class="container mt-5 pb-5 loader-container">
       <div class="row justify-content-between p-3">
-        <div class="">{{listings.count}} Kudos available on <strong>{{ network }}</strong></div>
+        <div class="">{{listings.count}} Kudos available on <strong>{{ network }}</strong>
+          {% if network == 'mainnet' %}
+            <a href="/kudos/marketplace?q={{q}}&network=xdai">(Switch to xdai)
+          {% endif %}
+          {% if network == 'xdai' %}
+            <a href="/kudos/marketplace?q={{q}}&network=mainnet">(Switch to mainnet)
+          {% endif %}
+        </div>
         {% if listings %}
         <div>
           <label for="">{% trans 'Sort by:' %}</label>

@@ -551,18 +551,6 @@ def about(request):
             True
         ),
         (
-            "Dan Lipert",
-            "Engineering",
-            "danlipert",
-            "danlipert",
-            "EIP 1337",
-            "Tantan Ramen",
-            "dan",
-            "Blockchain Artificer",
-            "dan_lipert",
-            True
-        ),
-        (
             "Connor O'Day",
             "DevRel",
             "connoroday",
@@ -575,15 +563,15 @@ def about(request):
             True
         ),
         (
-            "jdorfman",
-            "DevRel SuperStar",
-            "jdorfman",
+            "solexplorer",
+            "Wannabe community Star",
+            "solexplorer",
             '',
-            "Weekly Mint",
-            "Thai",
+            "Community",
+            "Pizza",
             "",
-            "Open Source Paladin",
-            "jdorfman",
+            "Community leader",
+            "rachid_eth",
             True
         ),
         (
@@ -656,6 +644,18 @@ def about(request):
             "",
             "Rainbow Unicorn",
             "",
+            True
+        ),
+        (
+            "Kyle Weiss",
+            "People, Product and Value Capture",
+            "kweiss",
+            "kweiss",
+            "The Community",
+            "Porkbelly Ramen",
+            "",
+            "",
+            "kweiss",
             True
         ),
         (

@@ -69,8 +69,13 @@ def get_next_time_available(key):
     if key == 'monthly':
         month = int(d.strftime('%m'))
         year = int(d.strftime('%Y'))
-        year += 1 if month > 11 else 0
-        month += 1
+
+        if month == 12:
+            year += 1
+            month = 1
+        else:
+            month += 1
+
         d = timezone.datetime(year=year, month=month, day=1)
     return d
 
@@ -528,10 +533,6 @@ def api(request, activity_id):
             comment_dict['handle'] = comment.profile.handle
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             # perf - 0.3s on a 150 comment thread
-            comment_dict['last_chat_status'] = comment.profile.last_chat_status
-            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
-            comment_dict['last_chat_status_title'] = comment_dict['last_chat_status'].title()
-            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)
@@ -751,7 +752,7 @@ def offer_go(request, offer_id, offer_slug):
 
     try:
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', False)
         return redirect(offer.url)
     except:
@@ -763,7 +764,7 @@ def offer_decline(request, offer_id, offer_slug):
     try:
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', False)
         return redirect('/')
     except:
@@ -779,7 +780,7 @@ def offer_view(request, offer_id, offer_slug):
             offers = offers.current()
         offer = offers.get(pk=offer_id)
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         if not is_debugging_offers:

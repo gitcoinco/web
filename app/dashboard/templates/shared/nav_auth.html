@@ -62,10 +62,6 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
-        <a class="dropdown-item" href="{% url "dashboard" %}">
-          <i class="fas fa-tachometer-alt"></i>
-          {% trans "Dashboard" %}
-        </a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url "new_funding" %}">
           <i class="fab fa-ethereum"></i>
@@ -88,9 +84,9 @@
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
         </a>
-        <a class="dropdown-item" href="/wiki">
-          <i class="fas fa-question-circle"></i>
-          {% trans "Wiki" %}
+        <a class="dropdown-item" href="{% url "dashboard" %}">
+          <i class="fas fa-tachometer-alt"></i>
+          {% trans "My Dashboard" %}
         </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
@@ -140,9 +136,6 @@
   </div>
   <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
    data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
-  </a>
-  <a href="/chat">
-    {% include 'profiles/presence_indicator.html' with show_even_if_offline=1  suppress_click=1 last_chat_status=last_chat_status show_even_if_no_chat_id=1 %}
   </a>
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">

@@ -27,8 +27,8 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantCollection, GrantStat, GrantType,
-    MatchPledge, PhantomFunding, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 
 
@@ -86,9 +86,9 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'migrated_to',
+        'migrated_to', 'region',
         'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
-        'amount_received', 'monthly_amount_subscribed',
+        'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
@@ -96,7 +96,7 @@ class GrantAdmin(GeneralAdmin):
         'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
-        'zcash_payout_address'
+        'zcash_payout_address', 'celo_payout_address','zil_payout_address'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -389,8 +389,8 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active', 'link']
-
+    list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
+    raw_id_fields = ['owner']
 
     def link(self, instance):
         try:
@@ -401,9 +401,22 @@ class GrantCLRAdmin(admin.ModelAdmin):
         except:
             return "N/A"
 
+    def response_change(self, request, obj):
+        if "_recalculate_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            for grant in obj.grants:
+                recalc_clr.delay(grant.pk)
+            self.message_user(request, "submitted recaclulation to queue")
+        return redirect(obj.admin_url)
+
+
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
     raw_id_fields = ['profile', 'grants', 'curators']
+
+
+class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
@@ -419,3 +432,4 @@ admin.site.register(GrantCategory, GrantCategoryAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
 admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
+admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
