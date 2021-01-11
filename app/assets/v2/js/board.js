@@ -23,12 +23,6 @@ Vue.mixin({
     };
   },
   methods: {
-    messageUser: function(handle) {
-      let vm = this;
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
-
-      chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
-    },
     getTokenByName: function(name) {
       if (name === 'ETH') {
         return {
@@ -710,7 +704,6 @@ if (document.getElementById('gc-board')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-board',
     data: {
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       network: document.web3network,
       user_has_token: document.user_has_token,
       bounties: bounties,

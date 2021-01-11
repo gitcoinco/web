@@ -74,6 +74,11 @@ Vue.mixin({
       });
 
     },
+    getBinanceSelectedAccount: async function() {
+      let vm = this;
+
+      vm.form.funderAddress = await binance_utils.getSelectedAccount();
+    },
     getAmount: function(token) {
       let vm = this;
 
@@ -678,6 +683,10 @@ Vue.mixin({
     chainId: async function(val) {
       if (!provider && val === '1') {
         await onConnect();
+      }
+
+      if (val === '56') {
+        this.getBinanceSelectedAccount();
       }
 
       this.getTokens();

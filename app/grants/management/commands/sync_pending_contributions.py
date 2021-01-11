@@ -39,12 +39,14 @@ class Command(BaseCommand):
             tx_cleared = False
         )
 
-        zcash_pending_contributions = pending_contribution.filter(subscription__tenant='ZCASH')
-        if zcash_pending_contributions:
-            # Auto expire pending transactions
-            timeout_period = timezone.now() - timedelta(minutes=60)
+        # Auto expire pending transactions
+        timeout_period = timezone.now() - timedelta(minutes=60)
 
-            contrib_to_be_expired = zcash_pending_contributions.filter(created_on__lt=timeout_period)
+        tenants = ['ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY']
+
+        for tenant in tenants:
+            tenant_pending_contributions = pending_contribution.filter(subscription__tenant=tenant)
+            contrib_to_be_expired = tenant_pending_contributions.filter(created_on__lt=timeout_period)
             contrib_to_be_expired.update(
                 success=False,
                 tx_cleared=False
@@ -52,5 +54,5 @@ class Command(BaseCommand):
             for contribution in contrib_to_be_expired:
                 update_grant_metadata.delay(contribution.subscription.grant.pk)
 
-            for contribution in zcash_pending_contributions.all():
+            for contribution in tenant_pending_contributions.all():
                 sync_payout(contribution)
