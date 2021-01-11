@@ -23,6 +23,35 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class Proposal(models.Model):
+    '''Table for storing quadlands proposals'''
+    created_on = models.DateTimeField(auto_now=True)
+    start_block = models.BigIntegerField(blank=False)
+    end_block = models.BigIntegerField(blank=False)
+    title = models.TextField(default='', blank=True)
+    question = models.TextField(default='', blank=True)
+    choices = JSONField(default=dict)
+    ipfs_hash = models.CharField(max_length=256, default='', blank=True)
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.question}'
+
+# need to sort out on_delete here, not sure if we want to nuke user ref or not, maybe we have to?
+class Ballot(models.Model):
+    '''Table for storing user ballots/votes against a proposals'''
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='ballot', on_delete=models.CASCADE
+    )
+    proposal_id = models.ForeignKey(
+        'Proposal', related_name='proposal', on_delete=models.CASCADE
+    )
+    votes = JSONField(default=dict)
+    ipfs_hash = models.CharField(max_length=256, default='', blank=True)
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.question}'
+
+
 class QuadLandsFAQ(models.Model):
     '''Table for storing quadlands FAQ items'''
     position = models.IntegerField(blank=False, unique=True)
