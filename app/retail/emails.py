@@ -74,7 +74,6 @@ TRANSACTIONAL_EMAILS = [
 
 
 NOTIFICATION_EMAILS = [
-    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
     ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
