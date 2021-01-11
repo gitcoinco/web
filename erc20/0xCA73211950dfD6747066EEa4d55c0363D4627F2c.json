@@ -1,0 +1,23 @@
+{
+  "symbol": "DLTC",
+  "address": "0xCA73211950dfD6747066EEa4d55c0363D4627F2c",
+  "overview":{
+    "en": "DLTC (difilteoin), which will subvert the traditional big data industry model and establish an advanced, safe and unique decentralized big data industry ecology, hopes to promote the rapid flow and change of information in the whole industry through a series of open and fair rules and standards, optimize the composition of the current industrial structure, allocate resources reasonably, and finally realize the formation of a new industry by using blockchain technology The DLTC protocol is a decentralized platform for nodes, and will eventually become a top-level big data industry platform serving the world.",
+    "zh": "DLTC（DIFILITECOIN），其将颠覆传统大数据产业模式，建立一个先进、安全、独特的去中心化大数据产业生态，DLTC 希望通过一系列公开公正的规则标准，促进整个产业信息快速流动变更，优化当前产业结构组成、对资源进行合理分配，最终实现利用区块链技术形成以 DLTC 协议为节点的去中心化平台，最终打造成为一个服务全球的顶级大数据产业平台。"
+  },
+  "email": "difilitecoin@gmail.com",
+  "website": "http://www.dltc.cc/",
+  "whitepaper": "http://www.dltc.cc/img/white.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-12-24",
+  "initial_price":{
+    "ETH":"0.003 ETH",
+    "USD":"12 USD",
+    "BTC":"0.00008 BTC"
+  },
+  "links": {
+    "tencent": "https://page.om.qq.com/page/O45w4nO3mxerw1E2NfNHkJmw0",
+    "sohu": "https://www.sohu.com/a/439816216_100258984",
+    "toutiao": "https://www.toutiao.com/i6909009789494526467/"
+  }
+}
