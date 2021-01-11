@@ -26,14 +26,15 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import connection
-from django.http import Http404
-from django.shortcuts import redirect, render
+from django.http import Http404, HttpResponse  # reminder to remove http response after testing
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from quadraticlands.helpers import get_FAQ, get_initial_dist, get_mission_status, wake_the_ESMS
+from quadraticlands.models import Proposal  # move to helpers once it's working
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -104,3 +105,9 @@ def mission_answer(request, mission_name, question_num, answer):
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)
+
+def proposal(request, proposal_id):
+    '''Used to load view for a given proposal'''
+    proposal = get_object_or_404(Proposal, pk=proposal_id)
+    response = "You're looking at proposcal %s."
+    return HttpResponse(response % proposal)
