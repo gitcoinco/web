@@ -1,0 +1,17 @@
+{
+    "symbol": "NLC",
+    "address": "0xB69F79c42aB79F40932faB3c7B415af76093f2Fb",
+    "overview":{
+          "en": "NLC is a joint platform built with the dual support of big data and blockchain. It can break data islands, release data value, build a credible data platform, and provide data support for related business scenarios.",
+          "zh": "NLC是以大数据与区块链为双重支撑构建的联合平台，可以打破数据孤岛，释放数据价值，构建可信的数据平台，并为相关业务场景提供数据支撑。"
+    },
+    "email": "ninelinkchain@gmail.com",
+    "website": "http://www.nine-linkchain.space/",
+    "whitepaper": "http://www.nine-linkchain.space/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2021-01-06",
+    "links": {
+        "telegram": "https://t.me/ninelinkchain",
+        "twitter": "https://twitter.com/jsaXGfzNd4nHXlW"
+      }
+}
