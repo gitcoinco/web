@@ -111,7 +111,7 @@ Vue.component('grantsCartEthereumZksync', {
     },
 
     // When network changes we need to update zkSync config, fetch new balances, etc.
-    network: { 
+    network: {
       immediate: true,
       async handler() {
         await this.setupZkSync();
@@ -197,7 +197,7 @@ Vue.component('grantsCartEthereumZksync', {
 
       this.user.address = (await web3.eth.getAccounts())[0];
       this.ethersProvider = ethers.getDefaultProvider(network, {
-        infura: document.contxt.INFURA_V3_PROJECT_ID,
+        infura: document.contxt.INFURA_V3_PROJECT_ID
         // etherscan: YOUR_ETHERSCAN_API_KEY,
         // alchemy: YOUR_ALCHEMY_API_KEY,
         // pocket: YOUR_POCKET_APPLICATION_KEY

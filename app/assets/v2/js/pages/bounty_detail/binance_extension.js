@@ -3,7 +3,7 @@ const payWithBinanceExtension = (fulfillment_id, to_address, vm, modal) => {
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
   const from_address = vm.bounty.bounty_owner_address;
-  
+ 
   binance_utils.transferViaExtension(
     amount * 10 ** vm.decimals,
     to_address,
