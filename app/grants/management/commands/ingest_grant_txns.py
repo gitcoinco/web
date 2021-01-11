@@ -147,6 +147,7 @@ class Command(BaseCommand):
             contrib.tx_cleared=True
             contrib.tx_override=True
             contrib.validator_comment = validator_comment
+            contrib.created_on = created_on
             contrib.save()
             print(f"ingested {subscription.pk} / {contrib.pk}")
 
