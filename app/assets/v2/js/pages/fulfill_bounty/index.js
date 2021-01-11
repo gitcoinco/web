@@ -8,7 +8,7 @@ if (bountyChainId !== '58') {
     }
     $('#payoutAddress').val(selectedAccount);
     $('#payoutAddress').attr('readonly', true);
-  }
+  };
 
   window.addEventListener('dataWalletReady', function(e) {
     if (is_bounties_network || web3_type === 'web3_modal') {
@@ -41,7 +41,7 @@ window.onload = function() {
       let data = {};
 
       if (typeof ga !== 'undefined') {
-        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter')
+        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter');
       }
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;

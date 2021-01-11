@@ -50,6 +50,9 @@
           {% endif %}
 
           {% if is_member %}
+            {% if not project_obj.grant_url %}
+              <a :href="`/grants/new?title=${project.name}&description_rich=${project.summary}&reference_url=${project.work_url}&github_project_url=${project.work_url}&related_hackathon_project_id=${project.id}`" target="_blank" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-plus mr-2"></i>CONVERT TO GRANT</a>
+            {% endif %}
             <button @click="$emit('project:edit')" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
           {% endif %}
         </div>

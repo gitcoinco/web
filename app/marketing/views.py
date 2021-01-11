@@ -41,7 +41,6 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from chat.tasks import update_chat_notifications
 from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -304,8 +303,6 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
-            if email_type == 'chat' and profile:
-                update_chat_notifications(profile, 'email', False)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -350,9 +347,6 @@ def email_settings(request, key):
                     key = email_tuple[0]
                     if key not in form.keys():
                         form[key] = False
-
-                if form['chat'] and profile:
-                    update_chat_notifications(profile, 'email', False)
 
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')
@@ -485,7 +479,7 @@ def export_earnings_csv(earnings, export_type):
     writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'txid', 'token_name', 'token_value', 'url'])
     for earning in earnings:
         writer.writerow([earning.pk,
-            earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
+            earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
             earning.from_profile.handle if earning.from_profile else '*',
             earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
             earning.to_profile.handle if earning.to_profile else '*',
@@ -711,7 +705,7 @@ def tax_settings(request):
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
-        
+
     # location  dict is not empty
     location = ''
     if profile.location:
@@ -751,15 +745,15 @@ def tax_settings(request):
                     location += ', ' + country_code
                 else:
                     location += country_code
-    
+
     #address is not empty
     if profile.address:
-        address = profile.address   
+        address = profile.address
     else:
         address = ''
-    
+
     g_maps_api_key = "AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ"
-        
+
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'home',
@@ -892,9 +886,9 @@ def leaderboard(request, key=''):
                   'type': 'line',
                   'stacking': False
                   },
-                'terms': 
+                'terms':
                     ['amount']
-                
+
             }],
             chart_options =
               {'legend': {

@@ -32,7 +32,11 @@ from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.celo import sync_celo_payout
+from grants.sync.harmony import sync_harmony_payout
+from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.zcash import sync_zcash_payout
+from grants.sync.zil import sync_zil_payout
 from perftools.models import JSONStore
 from PIL import Image, ImageDraw, ImageOps
 
@@ -41,6 +45,14 @@ logger = logging.getLogger(__name__)
 block_codes = ('▖', '▗', '▘', '▙', '▚', '▛', '▜', '▝', '▞', '▟')
 emoji_codes = ('🎉', '🎈', '🎁', '🎊', '🙌', '🥂', '🎆', '🔥', '⚡', '👍')
 
+
+tenant_payout_mapper = {
+    'ZCASH': sync_zcash_payout,
+    'CELO': sync_celo_payout,
+    'ZIL': sync_zil_payout,
+    'HARMONY': sync_harmony_payout,
+    'POLKADOT': sync_polkadot_payout
+}
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
@@ -288,5 +300,4 @@ def sync_payout(contribution):
     if not subscription:
         return None
 
-    if subscription.tenant == 'ZCASH':
-        sync_zcash_payout(contribution)
+    tenant_payout_mapper[subscription.tenant](contribution)

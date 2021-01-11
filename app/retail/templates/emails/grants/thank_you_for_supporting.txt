@@ -9,9 +9,9 @@
 
 {{ subscription.grant.description }}
 
-{% trans "You have agreed to give" %}
+{% trans "You have contributed" %}
 
-{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
 
 {% trans "You can view the transaction" %} at
 {% if subscription.token_symbol == 'ZEC' %}

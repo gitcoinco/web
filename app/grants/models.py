@@ -317,6 +317,30 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The zcash wallet address where subscription funds will be sent.'),
     )
+    celo_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The celo wallet address where subscription funds will be sent.'),
+    )
+    zil_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The zilliqa wallet address where subscription funds will be sent.'),
+    )
+    polkadot_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The polkadot wallet address where subscription funds will be sent.'),
+    )
+    harmony_payout_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The harmony wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -327,19 +351,19 @@ class Grant(SuperModel):
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The amount received in DAI this round.'),
+        help_text=_('The amount received in USD this round.'),
     )
     monthly_amount_subscribed = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The monthly subscribed to by contributors USDT/DAI.'),
+        help_text=_('The monthly subscribed to by contributors USD.'),
     )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The total amount received for the Grant in USDT/DAI.'),
+        help_text=_('The total amount received for the Grant in USD.'),
     )
     # TODO-GRANTS: remove
     token_address = models.CharField(
@@ -527,6 +551,14 @@ class Grant(SuperModel):
             tenants.append('ETH')
         if self.zcash_payout_address and self.zcash_payout_address != '0x0':
             tenants.append('ZCASH')
+        if self.celo_payout_address and self.celo_payout_address != '0x0':
+            tenants.append('CELO')
+        if self.zil_payout_address and self.zil_payout_address != '0x0':
+            tenants.append('ZIL')
+        if self.polkadot_payout_address and self.polkadot_payout_address != '0x0':
+            tenants.append('POLKADOT')
+        if self.harmony_payout_address and self.harmony_payout_address != '0x0':
+            tenants.append('HARMONY')
 
         return tenants
 
@@ -756,6 +788,10 @@ class Grant(SuperModel):
             'clr_round_num': self.clr_round_num,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
+            'celo_payout_address': self.celo_payout_address,
+            'zil_payout_address': self.zil_payout_address,
+            'polkadot_payout_address': self.polkadot_payout_address,
+            'harmony_payout_address': self.harmony_payout_address
         }
 
     def repr(self, user, build_absolute_uri):
@@ -806,6 +842,10 @@ class Grant(SuperModel):
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
                 'zcash_payout_address': self.zcash_payout_address or '',
+                'celo_payout_address': self.celo_payout_address,
+                'zil_payout_address': self.zil_payout_address,
+                'polkadot_payout_address': self.polkadot_payout_address,
+                'harmony_payout_address': self.harmony_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
@@ -854,7 +894,11 @@ class Subscription(SuperModel):
 
     TENANT = [
         ('ETH', 'ETH'),
-        ('ZCASH', 'ZCASH')
+        ('ZCASH', 'ZCASH'),
+        ('CELO', 'CELO'),
+        ('ZIL', 'ZIL'),
+        ('POLKADOT', 'POLKADOT'),
+        ('HARMONY', 'HARMONY')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
@@ -1459,7 +1503,7 @@ class Donation(SuperModel):
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The donation amount converted to USDT/DAI at the moment of donation.'),
+        help_text=_('The donation amount converted to USD at the moment of donation.'),
     )
     tx_id = models.CharField(
         max_length=255,
@@ -1511,7 +1555,11 @@ class Contribution(SuperModel):
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
         ('eth_zksync', 'eth_zksync'),
-        ('zcash_std', 'zcash_std')
+        ('zcash_std', 'zcash_std'),
+        ('celo_std', 'celo_std'),
+        ('zil_std', 'zil_std'),
+        ('polkadot_std', 'polkadot_std'),
+        ('harmony_std', 'harmony_std')
     ]
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))

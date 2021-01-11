@@ -87,7 +87,7 @@ def sync_filecoin_payout(fulfillment):
             fulfillment.payout_tx_id = txn['cid']
             fulfillment.save()
 
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_filecoin_txn_status(fulfillment)
 
         if txn_status == 'success':

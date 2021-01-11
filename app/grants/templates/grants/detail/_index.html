@@ -179,7 +179,7 @@
                               </p>
                             </div>
                           </div>
-                          <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin">
+                          <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin && transaction.subscription.amount_per_period_to_gitcoin != 0">
                             (+[[transaction.subscription.amount_per_period_to_gitcoin| decimals | formatNumber]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
                           </div>
                         </div>

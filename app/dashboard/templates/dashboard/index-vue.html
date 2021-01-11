@@ -807,7 +807,6 @@
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.prizeFounders = JSON.parse(document.getElementById('prize-founders').textContent);
       document.activePanel = parseInt({{panel | safe}});
-      document.chatURL = "{{ chat_url | safe}}";
       document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }};
       document.is_sponsor = {{ is_sponsor|yesno:"true,false" }}
 
