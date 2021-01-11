@@ -418,7 +418,7 @@
                             </div>
                             <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
                             {% if is_staff %}
-                              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 alpha-warning">
                                 <span class="font-weight-bold">[[ numUsers ]]</span> users found
                               </p>
                               <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
@@ -540,7 +540,7 @@
                       <div>
                         <h1 class="font-bigger-4 font-weight-bold">Events Schedule</h1>
                         {% if is_staff %}
-                          <a href="https://www.addevent.com/calendars/{{ hackathon.calendar_id }}/event/new" class="btn btn-lg gc-border-blue">Add event</a>
+                          <a href="https://www.addevent.com/calendars/{{ hackathon.calendar_id }}/event/new" class="btn btn-lg gc-border-blue ">Add event</a>
                         {% endif %}
                         <hr style="color: black; height: 3px">
                          <div class="d-flex justify-content-between my-5" v-for="event in events">
