@@ -90,7 +90,6 @@ django-oauth-toolkit
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
-pandas
 wiki
 django-bulk-update
 pdfrw
