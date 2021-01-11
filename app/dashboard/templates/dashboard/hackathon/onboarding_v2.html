@@ -1,0 +1,109 @@
+{% load static %}
+<div id="onboarding_v2">
+<b-modal v-model="showOnboarding" size="lg">
+    <template #modal-header>
+    <div class="block text-center">
+        <h3 class="font-weight-bold">How to Earn in a Gitcoin Hackahton </h3>
+        <h5 class="font-weight-semibold">Gitcoin helps you earn by building opensource development projects and participating in hackathons</h5>
+    </div>
+    </template>
+
+    <div class="d-flex justify-content-between text-center steps" style="font-size: .85em; font-weight: bold;">
+        <small>
+        [[ getOnboardingState() ]] = 
+            Pick a hackathon 
+            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-01-pick.svg'%}" class="d-block mx-auto" />
+        </small>
+        <small>
+           Register to participate
+            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-02-register.svg'%}" class="d-block mx-auto" />
+        </small>
+        <small>
+            Choose price & build
+            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-03-choose.svg'%}" class="d-block mx-auto" />
+        </small>
+        <small>
+            Meet great devs & workshops
+            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-04-meet.svg'%}" class="d-block mx-auto" />
+        </small>
+        <small>
+            Submit work & get paid
+            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-05-submit.svg'%}" class="d-block mx-auto" />
+        </small>
+    </div>
+
+    <template #modal-footer>
+        <div class="w-100 ">
+            <h5>Benefits</h5>
+            <b-row style="color: #757087; font-size: .95em;">
+                <b-col cols="5">
+                    <p class="d-flex"><span class="fa fa-smile fa-2x" style="width: 48px;"></span> <span class="mt-1"> Meet great devs</span></p>
+                    <p class="d-flex"><span class="fa fa-trophy fa-2x"  style="width: 48px;"></span><span class="mt-1"> Build great portfolio </span></p>
+                    <p class="d-flex"><span class="fa fa-key fa-2x"  style="width: 48px;"></span> <span class="mt-1"> Learn about Ethereum</span></p>
+                </b-col>
+                <b-col cols="7">
+                    <p class="d-flex"><span class="fa fa-building fa-2x"  style="width: 48px;"></span> <span class="mt-1"> Build with great companies</span></p>
+                    <p class="d-flex"><span class="fa fa-american-sign-language-interpreting fa-2x"  style="width: 48px;"></span><span class="mt-1"> Work alongside great founders </span></p>
+                    <p class="d-flex"><span class="fa fa-heart fa-2x"  style="width: 48px;"></span> <span class="mt-1"> Receive project support from the community</span></p>
+                </b-col>
+            </b-row>
+            <b-list-group flush style="color: #757087; font-size: .85em;">
+                <b-list-group-item>You’ll need a Github account to work on Gitcoin</b-list-group-item>
+                <b-list-group-item>Common languages used in our hackathons: HTML, CSS, Python, Go, JavaScript.</b-list-group-item>
+                <b-list-group-item>Read the rules of a Gitcoin hackathon here</b-list-group-item>
+                <b-list-group-item>New to Ethereum or need help understanding wallets? Learn more.</b-list-group-item>
+            </b-list-group> 
+
+           <div class="py-5">
+                <b-row>
+                    <b-col  cols="3"> 
+                         <img  src="{% static 'v2/images/hackathon/onboarding_v2/avatar.svg'%}" class="d-block mx-auto rounded-circle" />
+                         <p class="mt-2 font-weight-semibold">Alisa March
+                             <small class="d-block" style="color: #9498AB"> Lead Designer </small>
+                         </p>
+
+                     </b-col>
+                    <b-col cols="9">
+                        Cras feugiat felis in est placerat, in varius magna aliquet. Duis blandit tempor feugiat. Fusce ultrices nec nisi vitae lacinia. Nullam efficitur erat a lectus gravida, quis laoreet ex iaculis. Phasellus metus enim, semper ut ex quis, varius blandit ex.
+                    </b-col>
+                </b-row>
+           </div>
+           <b-form-checkbox
+                id="hide-hackaton-onboarding"
+                class="d-block mx-auto text-center py-2 pb-5"
+                v-model="hideNextTime"
+                >
+                Got it! Don’t show me again
+            </b-form-checkbox>
+           <button class="button button--primary px-5 d-block mx-auto" @click="dismiss">I’m ready to explore hackathons!</button>
+
+        </div>
+    </template>
+
+    
+
+</b-modal>
+</div>
+
+<script type="text/javascript" defer>
+new Vue({
+    el: "#onboarding_v2",
+    delimiters: ['[[', ']]'],
+    data() {
+        return {
+            showOnboarding: this.getOnboardingState(),
+            hideNextTime: false,
+            storageKey: "onboarding-v2-modal-visibility"
+        }
+    },
+    methods: {
+        dismiss () {
+            window.localStorage.setItem(this.storageKey, this.hideNextTime)
+            this.showOnboarding = false
+        },
+        getOnboardingState () {
+            return !(window.localStorage.getItem(this.storageKey) === "true")
+        }
+    }
+})
+</script>

@@ -115,6 +115,7 @@
       </div>
       {% include 'shared/hackathon-list.html' %}
     </div>
+
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
@@ -122,4 +123,6 @@
     {% block 'scripts' %}
     <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
     {% endblock %}
+    {% include "dashboard/hackathon/onboarding_v2.html"%}
+
   </body>
