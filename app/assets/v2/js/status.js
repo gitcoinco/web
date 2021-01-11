@@ -407,7 +407,7 @@ $(document).ready(function() {
     } else if (len > 4) {
       $('#btn_post').attr('disabled', false);
       $(this).removeClass('red');
-      if ($('#textarea').is(':focus') && !e.shiftKey && e.keyCode == 13) {
+      if ($('#textarea').is(':focus') && e.shiftKey && e.keyCode == 13) {
         submitStatusUpdate();
         e.preventDefault();
       }
