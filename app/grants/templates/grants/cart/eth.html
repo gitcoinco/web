@@ -277,6 +277,7 @@
                 @zksync-data-updated="onZkSyncUpdate"
                 :current-tokens="currentTokens"
                 :donation-inputs="donationInputs"
+                :max-cart-items="maxCartItems"
                 :grants-by-tenant="grantsByTenant"
                 :network="network"
               >
@@ -285,7 +286,7 @@
                   <button
                     @click="zksync.showModal = true"
                     class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
-                    :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > cart.maxItems"
+                    :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems"
                     id='js-zkSyncfundGrants-button'
                     v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
                   >
@@ -380,19 +381,27 @@
               {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
               </div>
             <div class="col-auto">
-              <button v-if="!isZkSyncDown" class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+              <button v-if="!isZkSyncDown" class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button'
+                @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems" 
+                v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
+              >
                 Standard Checkout
               </button>
-              <button v-else class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-fundGrants-button' @click="standardCheckout" :disabled="isCheckoutOngoing" v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'">
+              <button v-else class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-fundGrants-button'
+                @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems" 
+                v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
+              >
                 Standard Checkout
               </button>
             </div>
           </div>
-          <p v-if="isZkSyncDown" class="font-smaller-1 mt-2">
-            zkSync is down at the moment, so if you'd like to checkout now you'll have to use standard checkout!
+          <p v-if="grantsByTenant.length > maxCartItems" class="font-smaller-1 mt-2">
+            Cart must have a maximum of [[maxCartItems]] items, but has [[ grantsByTenant.length ]] items.
+            Please remove [[ grantsByTenant.length - maxCartItems ]] item<span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
+            from your cart to continue checkout.
           </p>
-          <p v-else-if="grantsByTenant.length > zkSyncMaxCartItems" class="font-smaller-1 mt-2">
-            Must have a maximum of [[zkSyncMaxCartItems]] items in your cart to checkout with zkSync
+          <p v-else-if="isZkSyncDown" class="font-smaller-1 mt-2">
+            zkSync is down at the moment, so if you'd like to checkout now you'll have to use standard checkout!
           </p>
         </div>
       </div>

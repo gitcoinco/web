@@ -61,10 +61,10 @@ Vue.component('grants-cart', {
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
+      maxCartItems: 40, // Max supported items by zkSync, defaults to 45 unless zkSync component says otherwise
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      zkSyncMaxCartItems: 45, // Max supported items by zkSync, defaults to 45 unless zkSync component says otherwise
       isZkSyncDown: false, // disable zkSync when true
       // verification
       isFullyVerified: false,
@@ -341,7 +341,6 @@ Vue.component('grants-cart', {
     onZkSyncUpdate: function(data) {
       this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
-      this.zkSyncMaxCartItems = data.zkSyncMaxCartItems;
     },
 
     tabChange: async function(input) {
