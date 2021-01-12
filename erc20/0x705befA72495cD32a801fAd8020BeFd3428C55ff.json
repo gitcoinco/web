@@ -1,0 +1,19 @@
+{
+  "symbol": "PAC",
+  "address": "0x705befA72495cD32a801fAd8020BeFd3428C55ff",
+  "overview":{
+        "en": "PACMAN is proficient in the specified branch of DeFi -- GameFi, which is deemed to be the future trend of DeFi.",
+        "zh": "PACMAN深耕于DeFi细分领域 —— GameFi。GameFi被认为将称为DeFi未来的新趋势。"
+  },
+  "email": "pacmanfinance@outlook.com",
+  "website": "https://www.pacman.top/",
+  "whitepaper": "https://www.pacman.top/",
+  "state": "NORMAL",
+  "published_on": "2020-12-09",
+  "links": {
+    "twitter": "https://twitter.com/Pacman_Finance",
+    "telegram": "https://t.me/PacmanTop",
+    "github": "https://github.com/pacman-defi-project",
+    "medium": "https://pacmanfinance.medium.com"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "TSLT",
+    "address": "0x9c30a5c7560e71b77626419d3f04a9E9048cDC9c",
+    "overview":{
+          "en": "TSLT Energy Chain is a distributed data storage protocol based on blockchain technology. Strive to build a blockchain asset platform based on energy data to promote energy conservation, environmental protection and efficient energy trading.",
+          "zh": "TSLT能源链是一种基于区块链技术的分布式数据存储协议。力图打造一个基于能源数据的区块链资产平台，以促进节能环保和能源的高效交易。"
+    },
+    "email": "tsltblocker@gmail.com",
+    "website": "http://www.tslt.vip/",
+    "whitepaper": "http://www.tslt.vip/TSLTEN.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-12-24",
+    "links": {
+        "telegram": "https://t.me/tsltgroup",
+        "twitter": "https://twitter.com/TeslaEnergy5"
+      }
+}
