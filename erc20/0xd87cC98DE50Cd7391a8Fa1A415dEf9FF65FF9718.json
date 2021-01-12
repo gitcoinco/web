@@ -1,0 +1,17 @@
+{
+    "symbol": "EBC",
+    "address": "0xd87cC98DE50Cd7391a8Fa1A415dEf9FF65FF9718",
+    "overview":{
+          "en": "Based on the design principle of blockchain technology and decentralized anonymity, EBC has built an independent internet on distributed nodes for all the public to use, creating a decentralized e-commerce financial system.",
+          "zh": "EBC基于区块链技术以非中心化匿名为设计原则，在分布式节点上构建了一个独立互联网，供所有公众使用，打造去中心化电商金融体系。"
+    },
+    "email": "ebcblocker@gmail.com",
+    "website": "http://www.ebaycoin.link/",
+    "whitepaper": "http://www.ebaycoin.link/ebc.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-12-24",
+    "links": {
+        "telegram": "https://t.me/ebaycoingroup",
+        "twitter": "https://twitter.com/ebaycoin1"
+      }
+}
