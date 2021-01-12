@@ -145,7 +145,7 @@
             {% endif %}
           </div>
           {% if is_staff %}
-          <div class="form-group">
+          <div class="form-group alpha-warning">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>

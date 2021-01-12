@@ -24,7 +24,7 @@
 {% if not hidden and is_owner_or_staff %}
 <div class="alpha-warning font-caption mb-0" style=" text-align: right;">
   {% if is_staff %}
-  <span class="font-weight-bold">Staff only</span> |
+  <span class="font-weight-bold alpha-warning">Staff only</span> |
   <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
   {% endif %}
   {% if is_staff or is_owner %}
