@@ -813,7 +813,7 @@ def products(request):
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
-            'link': 'https://hackathons.gitcoin.co',
+            'link': 'https://gitcoin.co/hackathons',
             'img': static('v2/images/products/graphics-hackathons.png'),
             'logo': static('v2/images/top-bar/hackathons-symbol-neg.svg'),
             'service_level': 'Full Service',
