@@ -36,8 +36,10 @@
 <p>Start Block: {{start_block}}</p>
 <p>End Block: {{end_block}}</p>
 <p>Question: {{question}}</p>
-<p>Choices: {{choices}}</p>
-
+<p>Choices:</p>
+{% for key, value in choices.items %}
+    {{key}} - {{value}} </br>
+{% endfor %}
 
 {% endblock %}
 
