@@ -29,27 +29,31 @@ class Proposal(models.Model):
     start_block = models.BigIntegerField(blank=False)
     end_block = models.BigIntegerField(blank=False)
     title = models.TextField(default='', blank=True)
-    question = models.TextField(default='', blank=True)
-    choices = JSONField(default=dict)
     ipfs_hash = models.CharField(max_length=256, default='', blank=True)
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.question}'
+        return f'{self.title}'
 
-# need to sort out on_delete here, not sure if we want to nuke user ref or not, maybe we have to?
-class Ballot(models.Model):
-    '''Table for storing user ballots/votes against a proposals'''
-    profile = models.ForeignKey(
-        'dashboard.Profile', related_name='ballot', on_delete=models.CASCADE
-    )
+class Question(models.Model):
+    '''Table for storing proposal questions'''
     proposal_id = models.ForeignKey(
         'Proposal', related_name='proposal', on_delete=models.CASCADE
     )
-    votes = JSONField(default=dict)
-    ipfs_hash = models.CharField(max_length=256, default='', blank=True)
+    question_text = models.CharField(max_length=200)
+    # ipfs_hash = models.CharField(max_length=256, default='', blank=True)
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.question}'
+        return f'{self.question_text}'
+
+class Choice(models.Model):
+    '''Table for storing proposal question choices'''
+    question_id = models.ForeignKey(
+        'Question', related_name='question', on_delete=models.CASCADE
+    )
+    choice_text = models.CharField(max_length=200)
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.choice_text}'
 
 
 class QuadLandsFAQ(models.Model):

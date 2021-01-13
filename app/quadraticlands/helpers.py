@@ -40,10 +40,30 @@ from django.views.decorators.http import require_http_methods
 import requests
 from dashboard.models import Profile
 from eth_utils import is_address, is_checksum_address, to_checksum_address
-from quadraticlands.models import InitialTokenDistribution, MissionStatus, QuadLandsFAQ
+from quadraticlands.models import Choice, InitialTokenDistribution, MissionStatus, Proposal, QuadLandsFAQ, Question
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
+
+def get_proposal(request, proposal_id):
+    '''get proposal, question, and choices'''
+
+    # TODO wrap in TRYs
+    p = Proposal.objects.get(pk=proposal_id)
+    q = Question.objects.select_related().get(id=proposal_id)
+    c = Choice.objects.filter(question_id=q.id)
+
+    # TODO break down choices into more managable object 
+    proposal = {
+        "title" : p.title,
+        "start_block" : p.start_block,
+        "end_block" : p.end_block,
+        "question" : q.question_text,
+        "choices" : c,
+    }
+
+    return proposal
+
 
 def get_FAQ(request):
     '''Get FAQ objects from the db and bundle them up to be added to faq context'''
