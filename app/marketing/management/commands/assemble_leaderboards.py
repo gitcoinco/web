@@ -223,15 +223,18 @@ def grant_index_terms(gc):
 
 
 def add_element(key, index_term, amount):
-    index_term = index_term.replace('@', '')
-    if not index_term or index_term == "None":
-        return
-    if index_term not in ranks[key].keys():
-        ranks[key][index_term] = 0
-    if index_term not in counts[key].keys():
-        counts[key][index_term] = 0
-    ranks[key][index_term] += round(float(amount), 2)
-    counts[key][index_term] += 1
+    try:
+        index_term = index_term.replace('@', '')
+        if not index_term or index_term == "None":
+            return
+        if index_term not in ranks[key].keys():
+            ranks[key][index_term] = 0
+        if index_term not in counts[key].keys():
+            counts[key][index_term] = 0
+        ranks[key][index_term] += round(float(amount), 2)
+        counts[key][index_term] += 1
+    except:
+        pass
 
 
 def sum_bounty_helper(b, time, index_term, val_usd):
