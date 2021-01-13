@@ -69,6 +69,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
         btc = BulkTransferCoupon.objects.create(
             token=quest.kudos_reward,
             tag='quest',
+            quest_pk=quest,
             num_uses_remaining=1,
             num_uses_total=1,
             current_uses=0,
