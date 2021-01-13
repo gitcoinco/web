@@ -183,7 +183,7 @@
       <div class="grant-item__footer">
           <div class="clr mb-3">
             <div class="match__round pb-1 pt-2 mb-2">
-              <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num && grant.is_clr_eligible">
+              <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num && grant.is_clr_eligible && !grant.opt_out_clr">
                 <span class="text-capitalize">[[grant.clr_round_num]]</span>
                 CLR MATCH ROUND
               </h2>
@@ -202,7 +202,7 @@
             </div>
             <div class="col-6" v-if="grant.clr_round_num">
 
-              <template v-if="grant.is_clr_eligible">
+              <template v-if="grant.is_clr_eligible && !grant.opt_out_clr">
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
                   [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]
                   USD
@@ -221,7 +221,7 @@
             </div>
           </div>
 
-          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active && grant.clr_round_num">
+          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && !grant.opt_out_clr && grant.is_clr_active && grant.clr_round_num">
             {% include 'grants/components/clr_estimate.html' %}
           </div>
 

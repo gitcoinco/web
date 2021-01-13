@@ -49,7 +49,7 @@
           <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
             Cannot match own grant
           </div>
-          <div v-else-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
+          <div v-else-if="grant.is_clr_eligible == true && grant.opt_out_clr == false" class="clr-match-box d-flex flex-nowrap align-items-center">
             <div class="mr-2">[[grant.grant_donation_clr_match]] DAI</div>
             <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
             width="20">

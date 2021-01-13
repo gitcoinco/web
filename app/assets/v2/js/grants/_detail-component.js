@@ -72,7 +72,8 @@ Vue.mixin({
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'celo_payout_address': vm.grant.celo_payout_address,
         'zil_payout_address': vm.grant.zil_payout_address,
-        'region': vm.grant.region?.name || undefined
+        'region': vm.grant.region?.name || undefined,
+        'opt_out_clr': vm.grant.opt_out_clr || undefined
       };
 
       if (vm.logo) {
@@ -377,7 +378,7 @@ Vue.mixin({
 
       // Claim payout
       matchPayouts.methods.claimMatchPayout(recipient)
-        .send({from: user})
+        .send({ from: user })
         .on('transactionHash', async function(txHash) {
           waitingState(false);
           $('#match-payout-section').hide();
@@ -392,7 +393,7 @@ Vue.mixin({
   computed: {
     teamFormatted: {
       get() {
-        return this.grant.team_members.map((user)=> {
+        return this.grant.team_members.map((user) => {
           if (!user?.fields) {
             return user;
           }
@@ -491,7 +492,7 @@ Vue.component('grant-details', {
             container: [
               [ 'bold', 'italic', 'underline' ],
               [{ 'align': [] }],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
               [ 'link', 'code-block', 'image', 'video' ],
               ['clean']
             ],
@@ -518,15 +519,15 @@ Vue.component('grant-details', {
         placeholder: 'Give a detailed desciription about your Grant'
       },
       grantRegions: [
-        { 'name': 'north_america', 'label': 'North America'},
-        { 'name': 'oceania', 'label': 'Oceania'},
-        { 'name': 'latin_america', 'label': 'Latin America'},
-        { 'name': 'europe', 'label': 'Europe'},
-        { 'name': 'africa', 'label': 'Africa'},
-        { 'name': 'middle_east', 'label': 'Middle East'},
-        { 'name': 'india', 'label': 'India'},
-        { 'name': 'east_asia', 'label': 'East Asia'},
-        { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+        { 'name': 'north_america', 'label': 'North America' },
+        { 'name': 'oceania', 'label': 'Oceania' },
+        { 'name': 'latin_america', 'label': 'Latin America' },
+        { 'name': 'europe', 'label': 'Europe' },
+        { 'name': 'africa', 'label': 'Africa' },
+        { 'name': 'middle_east', 'label': 'Middle East' },
+        { 'name': 'india', 'label': 'India' },
+        { 'name': 'east_asia', 'label': 'East Asia' },
+        { 'name': 'southeast_asia', 'label': 'Southeast Asia' }
       ]
     };
   },

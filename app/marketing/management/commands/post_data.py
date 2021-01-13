@@ -388,7 +388,7 @@ def grants():
         active_rounds_allocation[key] = 0
         active_rounds.append(key)
 
-        grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, hidden=False)
+        grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, opt_out_clr=False, hidden=False)
         for grant in grants:
             try:
                 active_rounds_allocation[key] += float(grant.clr_prediction_curve[0][1])

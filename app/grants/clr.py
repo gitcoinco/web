@@ -291,7 +291,7 @@ def fetch_data(clr_round, network='mainnet'):
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 
-    grants = Grant.objects.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+    grants = Grant.objects.filter(network=network, hidden=False, active=True, is_clr_eligible=True, opt_out_clr=False, link_to_new_grant=None)
 
     if grant_filters:
         # Grant Filters (grant_type, category)

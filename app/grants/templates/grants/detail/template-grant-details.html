@@ -134,7 +134,7 @@
       </div>
 
       <div class="grant-checkout rounded shadow-sm bg-white p-3 border">
-        <div v-if="grant.clr_round_num && grant.is_clr_eligible" class="">
+        <div v-if="grant.clr_round_num && grant.is_clr_eligible && !grant.opt_out_clr" class="">
           <div class="d-flex justify-content-between mb-2">
             <div class="flex-fill mr-2">
               <div class="clr-label label font-caption font-weight-semibold mb-1 p-1">
@@ -490,6 +490,15 @@
               <span class="font-weight-semibold">[[ option.label ]]</span>
             </template>
           </v-select>
+        </div>
+
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_clr">CLR Matching</label>
+
+          <div>
+            <input name="grant_opt_out_clr" id="grant_opt_out_clr" type="checkbox" value="1" required="" v-model="grant.opt_out_clr">
+            <label for="grant_opt_out_clr">Opt Out of CLR Matching</label>
+          </div>
         </div>
 
         <div class="col-12 mb-3 text-right">

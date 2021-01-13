@@ -1634,6 +1634,10 @@ def grant_edit(request, grant_id):
         if region:
             grant.region = region
 
+        opt_out_clr = request.POST.get('opt_out_clr', None)
+        if opt_out_clr:
+            grant.opt_out_clr = opt_out_clr
+
         team_members = request.POST.getlist('team_members[]', None)
         if team_members:
             save_team_members = []
@@ -1823,6 +1827,10 @@ def grant_new(request):
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
         }
+
+        opt_out_clr = request.POST.get('opt_out_clr', None)
+        if opt_out_clr:
+            grant_kwargs['opt_out_clr'] = True
 
         grant = Grant.objects.create(**grant_kwargs)
 

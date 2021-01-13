@@ -221,7 +221,7 @@ class GrantCLR(SuperModel):
     @property
     def grants(self):
 
-        grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, opt_out_clr=False, link_to_new_grant=None)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
         if self.subscription_filters:
@@ -275,6 +275,7 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    opt_out_clr = models.BooleanField(default=False, help_text="Did Grant opt out of CLR matching")
     region = models.CharField(
         max_length=30,
         null=True,
@@ -531,7 +532,7 @@ class Grant(SuperModel):
                 self.in_active_clrs.remove(this_clr_round)
 
         # create_grant_clr_cache
-        if self.in_active_clrs.count() > 0 and self.is_clr_eligible:
+        if self.in_active_clrs.count() > 0 and self.is_clr_eligible and not self.opt_out_clr:
             clr_round = self.in_active_clrs.first()
 
         if clr_round:
@@ -785,6 +786,7 @@ class Grant(SuperModel):
             'grant_clr_prediction_curve': self.clr_prediction_curve,
             'grant_image_css': self.image_css,
             'is_clr_eligible': self.is_clr_eligible,
+            'opt_out_clr': self.opt_out_clr,
             'clr_round_num': self.clr_round_num,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
@@ -835,6 +837,7 @@ class Grant(SuperModel):
                 'positive_round_contributor_count': self.positive_round_contributor_count,
                 'monthly_amount_subscribed': self.monthly_amount_subscribed,
                 'is_clr_eligible': self.is_clr_eligible,
+                'opt_out_clr': self.opt_out_clr,
                 'slug': self.slug,
                 'url': self.url,
                 'contract_version': self.contract_version,

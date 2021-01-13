@@ -52,7 +52,7 @@
         {% comment %} CLR Match Amount {% endcomment %}
 
         <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <div v-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
+          <div v-if="grant.is_clr_eligible == true && grant.opt_out_clr == false" class="clr-match-box d-flex flex-nowrap align-items-center">
             <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
             <img src="{% static 'v2/images/chains/zcash.svg' %}" alt="Diamonds high-fiving"
             width="15">

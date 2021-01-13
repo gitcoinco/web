@@ -117,7 +117,7 @@ class Command(BaseCommand):
         for gclr in gclrs:
             pks += gclr.grants.values_list('pk', flat=True)
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
-        grants = Grant.objects.filter(active=True, network='mainnet', is_clr_eligible=True, link_to_new_grant__isnull=True, pk__in=pks)
+        grants = Grant.objects.filter(active=True, network='mainnet', is_clr_eligible=True, opt_out_clr=False, link_to_new_grant__isnull=True, pk__in=pks)
         print(f"got {grants.count()} grants")
 
         # Finalize rankings ------------------------------------------------------------------------

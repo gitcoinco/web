@@ -165,7 +165,8 @@ Vue.mixin({
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
         'network': form.network,
-        'region': form.region
+        'region': form.region,
+        'opt_out_clr': form.opt_out_clr
       };
 
       console.log(params);
@@ -313,6 +314,7 @@ if (document.getElementById('gc-new-grant')) {
           description_rich: '',
           team_members: [],
           region: null,
+          opt_out_clr: null,
           twitter_handle_1: '',
           twitter_handle_2: '',
           github_project_url: '',

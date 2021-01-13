@@ -94,7 +94,7 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
+        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'opt_out_clr', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address'
     ]
@@ -104,7 +104,7 @@ class GrantAdmin(GeneralAdmin):
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
     ]
-    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
+    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'opt_out_clr', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
 

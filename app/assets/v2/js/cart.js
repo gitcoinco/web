@@ -1229,7 +1229,7 @@ Vue.component('grants-cart', {
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
 
-          if (this.grantData[i].is_clr_eligible === 'true' || this.grantData[i].is_clr_eligible === 'True') {
+          if (this.grantData[i].is_clr_eligible.toLowerCase() === 'true') {
             this.$set(this.grantData[i], 'is_clr_eligible', true);
           }
           if (

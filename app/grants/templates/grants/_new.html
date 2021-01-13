@@ -173,13 +173,11 @@
                 </div>
               </div>
 
-
               <!-- Github -->
               <div class="col-12 mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
                 <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="150" type="url" placeholder="https://github.com/humanfund"/>
               </div>
-
 
               <!-- Region -->
               <div class="col-12 mb-3">
@@ -190,6 +188,16 @@
                     <span class="font-weight-semibold">[[ option.label ]]</span>
                   </template>
                 </v-select>
+              </div>
+
+              <!-- CLR Matching -->
+              <div class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_clr">CLR Matching</label>
+
+                <div>
+                  <input name="grant_opt_out_clr" id="grant_opt_out_clr" type="checkbox" value="1" required="" v-model="form.opt_out_clr">
+                  <label for="grant_opt_out_clr">Opt Out of CLR Matching</label>
+                </div>
               </div>
 
               <!-- Chain -->
