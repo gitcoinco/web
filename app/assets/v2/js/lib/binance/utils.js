@@ -60,7 +60,7 @@ binance_utils.getAddressTokenBalance = async (address, tokenContractAddress) => 
     ['balanceOf(address)']
   );
   const method_id = methodSignature.substr(0, 10);
-  const address = address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
+  address = address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
   const params = [
     {
@@ -166,7 +166,9 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
 
     } else if (token_name === 'BUSD') {
 
-      const account_balance = await binance_utils.getAddressTokenBalance(from_address);
+      const busd_contract_address = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
+
+      const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
 
       if (Number(account_balance) < amount ) {
         reject(`transferViaExtension: insufficent balance in address ${from_address}`);
@@ -185,7 +187,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
           const params = [
             {
               from: from_address,
-              to: '0xe9e7cea3dedca5984780bafc599bd69add087d56', // BUSD token contract address
+              to: busd_contract_address,
               data: method_id + to_address + amount
             },
           ]

@@ -259,7 +259,19 @@ Vue.mixin({
         await vm.getUser(null, params.get('reserved'), true);
       }
 
+      let url;
 
+      if (params.has('url')) {
+        url = params.get('url');
+        vm.form.issueUrl = url;
+        vm.getIssueDetails(url);
+      }
+
+      if (params.has('source')) {
+        url = params.get('source');
+        vm.form.issueUrl = url;
+        vm.getIssueDetails(url);
+      }
     },
     showQuickStart: function(force) {
       let quickstartDontshow = localStorage['quickstart_dontshow'] ? JSON.parse(localStorage['quickstart_dontshow']) : false;

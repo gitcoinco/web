@@ -115,6 +115,15 @@ def preprocess(request):
 
         ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
 
+    # Check if user's location supports pTokens
+    try:
+        current_location = profile.locations[-1]
+        is_location_blocked_for_ptokens = current_location['country_code'] == settings.PTOKEN_BLOCKED_REGION['country_code'] \
+            and current_location['region'] == settings.PTOKEN_BLOCKED_REGION['region']
+    except:
+        # If user is not logged in
+        is_location_blocked_for_ptokens = False
+
     # handles marketing callbacks
     if request.GET.get('cb'):
         callback = request.GET.get('cb')
@@ -181,6 +190,7 @@ def preprocess(request):
         'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI,
         'ptoken_address': ptoken.token_address if ptoken else '',
         'ptoken_id': ptoken.id if ptoken else None,
+        'is_location_blocked_for_ptokens': is_location_blocked_for_ptokens,
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
     }

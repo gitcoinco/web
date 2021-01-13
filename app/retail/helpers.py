@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 
 
 def get_ip(request):
@@ -24,4 +25,5 @@ def get_ip(request):
         ip_addr = forward_for.split(',')[0]
     else:
         ip_addr = request.META.get('REMOTE_ADDR')
-    return ip_addr
+    # Docker uses private IP addresses, so hardcode a real one for development
+    return '24.210.224.38' if settings.DEBUG else ip_addr
