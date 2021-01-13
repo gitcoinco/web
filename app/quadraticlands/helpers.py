@@ -40,10 +40,46 @@ from django.views.decorators.http import require_http_methods
 import requests
 from dashboard.models import Profile
 from eth_utils import is_address, is_checksum_address, to_checksum_address
-from quadraticlands.models import InitialTokenDistribution, MissionStatus, QuadLandsFAQ
+from quadraticlands.models import Choice, InitialTokenDistribution, MissionStatus, Proposal, QuadLandsFAQ, Question
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
+
+def get_proposal(request, proposal_id):
+    '''get proposal, question, and choices'''
+    
+    # hit the DB for proposal objects 
+    try: 
+        p = Proposal.objects.get(pk=proposal_id)
+        q = Question.objects.select_related().get(id=proposal_id)
+        c = Choice.objects.filter(question_id=q.id)
+    except Exception as e:
+        logger.error(f'QuadLands: There was an issue retrieving proposal {proposal_id} from db: {e}')
+        empty_proposal = {
+            "title" : '',
+            "start_block" : '',
+            "end_block" : '',
+            "question" : '',
+            "choices" : '',
+        }
+        return empty_proposal 
+        
+    # no error, lets craft and return proposal 
+    choices = {}
+    count = 1
+    for choice in c:
+        choices[str(count)] = choice
+        count +=1
+
+    proposal = {
+        "title" : p.title,
+        "start_block" : p.start_block,
+        "end_block" : p.end_block,
+        "question" : q.question_text,
+        "choices" : choices,
+    }
+    return proposal
+
 
 def get_FAQ(request):
     '''Get FAQ objects from the db and bundle them up to be added to faq context'''
@@ -83,7 +119,6 @@ def get_mission_status(request):
     '''Retrieve mission status/state from the DB'''
     if request.user.is_authenticated:        
         profile = get_profile_from_username(request)
-        # TODO - probably want to wrap this in try/except just in case
         try: 
             mission_status = MissionStatus.objects.get(profile=profile)
             game_state = {
@@ -110,10 +145,7 @@ def get_mission_status(request):
 @login_required
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def set_mission_status(request):
-    '''
-    When a mission is completed, the UI will POST here to flip game state completed True for a given mission
-    '''
-
+    '''When a mission is completed, the UI will POST here to flip game state completed True for a given mission'''
     if request.user.is_authenticated:
         try: 
             mission_name = request.POST.get('mission')
@@ -152,9 +184,7 @@ def set_mission_status(request):
         
 
 def get_initial_dist(request):
-    '''
-    Accpets request, returns initial dist info from the DB in units WEI & GTC 
-    '''
+    '''Accpets request, returns initial dist info from the DB in units WEI & GTC'''
     no_claim = {"total_claimable_gtc": 0, "total_claimable_wei": 0}
     if not request.user.is_authenticated:
         return no_claim
@@ -282,9 +312,7 @@ def claim(request):
         raise Http404
 
 def create_sha256_signature(key, message):
-    '''
-    Given key & message, returns HMAC digest of the message 
-    '''
+    '''Given key & message, returns HMAC digest of the message'''
     try:
         byte_key = binascii.unhexlify(key)
         message = message.encode()
