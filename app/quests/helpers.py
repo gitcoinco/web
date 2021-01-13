@@ -188,7 +188,7 @@ def get_or_create_prize_url(quest, profile):
         btcs = BulkTransferCoupon.objects.filter(
             token=quest.kudos_reward,
             tag='quest',
-            quest_pk=quest.pk,
+            quest_pk=quest,
             metadata__recipient=profile.pk)
         if btcs.exists():
             btc = btcs.first()
