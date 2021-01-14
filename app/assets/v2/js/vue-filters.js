@@ -154,7 +154,7 @@ Vue.filter('formatNumber', number => {
 Vue.filter('formatNumberWithDecimal', number => {
   if (!number)
     return number;
-  const numberFormat = new Intl.NumberFormat('en-US',{maximumSignificantDigits: 3});
+  const numberFormat = new Intl.NumberFormat('en-US', {maximumSignificantDigits: 3});
 
   return numberFormat.format(number);
 });
