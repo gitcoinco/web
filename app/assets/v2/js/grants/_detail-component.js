@@ -73,7 +73,7 @@ Vue.mixin({
         'celo_payout_address': vm.grant.celo_payout_address,
         'zil_payout_address': vm.grant.zil_payout_address,
         'region': vm.grant.region?.name || undefined,
-        'opt_out_clr': vm.grant.opt_out_clr || undefined
+        'opt_out_clr': vm.grant.opt_out_clr ? '1' : '0'
       };
 
       if (vm.logo) {

@@ -166,7 +166,7 @@ Vue.mixin({
         'categories[]': form.grant_categories,
         'network': form.network,
         'region': form.region,
-        'opt_out_clr': form.opt_out_clr
+        'opt_out_clr': form.opt_out_clr ? '1' : '0'
       };
 
       console.log(params);
