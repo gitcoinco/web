@@ -55,47 +55,46 @@
           </div>
         </div>
       </div>
-    </header>
-
-    <section class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="bg-white rounded border my-4">
-            <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-              <template v-if="!user_has_token">
-                <div>
-                  Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
-                </div>
-                <div id="showCreationSuccessModal" hidden data-toggle="modal" data-target="#createTokenSuccessModal"></div>
-                <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
-                  Create
-                </button>
-              </template>
-              <template v-else-if="pToken.tx_status === 'pending'">
-                <div>Please wait for your transaction to be confirmed</div>
-                <button class="btn btn-sm  m-2" type="button" disabled>
-                  <span class="spinner-border btn-gc-green spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Mining...
-                </button>
-              </template>
-              <template v-else-if="pToken.tx_status === 'success'">
-                <div>Modify your Personal Token</div>
-                <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#editpTokenModal">
-                  Edit
-                </button>
-              </template>
-              <template v-else>
-                <div>An error occurred trying to create your pToken</div>
-                <button class="btn btn-sm btn-gc-outline-red m-2" data-toggle="modal" data-target="#createTokenModal">
-                  Please try again or contact support@gitcoin.co
-                </button>
-              </template>
-
-            </div>
+    </div>
+  </header>
+  <section v-if="has_ptoken_auth" class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
+          <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+            <template v-if="!user_has_token">
+              <div>
+                Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
+              </div>
+              <div id="showCreationSuccessModal" hidden data-toggle="modal" data-target="#createTokenSuccessModal"></div>
+              <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
+                Create
+              </button>
+            </template>
+            <template v-else-if="pToken.tx_status === 'pending'">
+              <div>Please wait for your transaction to be confirmed</div>
+              <button class="btn btn-sm  m-2" type="button" disabled>
+                <span class="spinner-border btn-gc-green spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Mining...
+              </button>
+            </template>
+            <template v-else-if="pToken.tx_status === 'success'">
+              <div>Modify your Personal Token</div>
+              <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#editpTokenModal">
+                Edit
+              </button>
+            </template>
+            <template v-else>
+              <div>An error occurred trying to create your pToken</div>
+              <button class="btn btn-sm btn-gc-outline-red m-2" data-toggle="modal" data-target="#createTokenModal">
+                Please try again or contact support@gitcoin.co
+              </button>
+            </template>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
     <section class="container">
       <div class="row">
