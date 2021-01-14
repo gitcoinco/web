@@ -33,7 +33,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from quadraticlands.helpers import get_FAQ, get_initial_dist, get_mission_status, wake_the_ESMS
+from quadraticlands.helpers import get_FAQ, get_initial_dist, get_mission_status, get_proposal, wake_the_ESMS
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -104,3 +104,8 @@ def mission_answer(request, mission_name, question_num, answer):
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)
+
+def proposal(request, proposal_id):
+    '''Used to load view for a given proposal quadraticlands/proposal/<id>'''
+    context = get_proposal(request, proposal_id)
+    return TemplateResponse(request, 'quadraticlands/proposal/index.html', context)  
