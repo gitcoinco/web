@@ -108,4 +108,4 @@ def mission_answer(request, mission_name, question_num, answer):
 def proposal(request, proposal_id):
     '''Used to load view for a given proposal quadraticlands/proposal/<id>'''
     context = get_proposal(request, proposal_id)
-    return TemplateResponse(request, 'quadraticlands/proposal/index.html', context)  
+    return TemplateResponse(request, 'quadraticlands/proposal/vote.html', context)  
