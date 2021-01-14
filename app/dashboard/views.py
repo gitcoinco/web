@@ -4979,6 +4979,7 @@ def board(request):
     """Handle the board view."""
 
     user = request.user if request.user.is_authenticated else None
+    has_ptoken_auth = user.has_perm('auth.user.add_pToken_auth')
     keywords = user.profile.keywords
     ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 
@@ -4991,6 +4992,7 @@ def board(request):
         'avatar_url': static('v2/images/helmet.png'),
         'keywords': keywords,
         'ptoken': ptoken,
+        'has_ptoken_auth': has_ptoken_auth,
     }
     return TemplateResponse(request, 'board/index.html', context)
 
