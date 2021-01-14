@@ -104,11 +104,10 @@ document.addEventListener("DOMContentLoaded",function(){
   // wallet found
   window.addEventListener("dataWalletReady", () => {
     const current_gtc = document.querySelector("#current_gtc span");
-
-    // write 44444 to the dom's element
-    // need to be replaced with the "real data"
-    current_gtc.innerHTML = "44444"
-    console.debug("CURRENT_GTC found")
+    getTokenBalances(gtc_address()).then(function(result) {
+      current_gtc.innerHTML = result.balance;
+		});
+  
   });
 
 });

@@ -19,13 +19,36 @@
 	<script>
 		function web3Ready() {
 		  console.debug('WEB3 version from script', web3.version);
-		  // some tests
-		  // i'm working with Octo on best way to dynamical set contract addys and will update soon to avoid hardcoded contract addy
-		  let tokenAddress = '0x7676BB604Cf8174515107c1b35D6C9A87931B4BC';
-		  getTokenBalances(tokenAddress).then(function(result) {
+		  // some examples of getting data from the GTC and tokenDist contracts 
+		  // get token balance - using generic ERC20 function from Octos wallet file
+		  getTokenBalances(gtc_address()).then(function(result) {
 				 console.debug('ERC20 TokenBalance:', result.balance);
+		  });
+
+		  // get current votes 
+		  getCurrentVotez(gtc_address()).then(function(result) { 
+			  console.debug('Current GTC Votes:', result);
 		  });
 		}
 	    document.addEventListener("dataWalletReady", web3Ready);
 	</script>
+
+    <script>
+		/**
+		*  * Gets the current votes balance for an address from GTC Token contract.
+		*  * @param {string} tokenAddress - the ERC20 token address
+		*  */
+		async function getCurrentVotez(tokenAddress) {
+		
+		// Get GTC Token contract instance
+		let GTCContract = new web3.eth.Contract(gtc_token_abi, tokenAddress);
+		
+		// Call getCurrentVotes function
+		current_votes = GTCContract.methods.getCurrentVotes(selectedAccount).call({from: selectedAccount})
+		return current_votes;
+
+		}
+	</script>
+
+
 {% endblock %}
