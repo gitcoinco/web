@@ -7,30 +7,59 @@
         <h5 class="font-weight-semibold">Gitcoin helps you earn by building opensource development projects and participating in hackathons</h5>
     </div>
     </template>
-
-    <div class="d-flex justify-content-between text-center steps" style="font-size: .85em; font-weight: bold;">
-        <small>
-            Pick a hackathon 
-            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-01-pick.svg'%}" class="d-block mx-auto" />
-        </small>
-        <small>
-           Register to participate
-            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-02-register.svg'%}" class="d-block mx-auto" />
-        </small>
-        <small>
-            Choose price & build
-            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-03-choose.svg'%}" class="d-block mx-auto" />
-        </small>
-        <small>
-            Meet great devs & workshops
-            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-04-meet.svg'%}" class="d-block mx-auto" />
-        </small>
-        <small>
-            Submit work & get paid
-            <img src="{% static 'v2/images/hackathon/onboarding_v2/icon-05-submit.svg'%}" class="d-block mx-auto" />
-        </small>
-    </div>
-
+    <b-list-group style="font-size: .85em; font-weight: bold; width: 100%;" class="d-flex justify-content-between text-lg-center" width="100%" horizontal="lg" >
+        <b-list-group-item class="py-1 border-lg-0 border-left-0 border-right-0">
+            <b-row>
+                <b-col cols="3" lg="12" order-lg="2">
+                    <b-img fluid src="{% static 'v2/images/hackathon/onboarding_v2/icon-01-pick.svg'%}" class="d-block mx-auto p-0" style="max-width: 60%;" /> 
+                </b-col>
+                <b-col cols="9" lg="12" order-lg="1"  class="py-3">
+                    Pick a hackathon
+                </b-col>
+            </b-row>
+        </b-list-group-item>
+        <b-list-group-item class="py-1 border-lg-0 border-left-0 border-right-0">
+            <b-row>
+                <b-col cols="3" lg="12" order-lg="2">
+                    <b-img fluid src="{% static 'v2/images/hackathon/onboarding_v2/icon-02-register.svg'%}" class="d-block mx-auto p-0" style="max-width: 60%;"/>
+                </b-col>
+                <b-col cols="9" lg="12" order-lg="1"  class="py-3">
+                    Register to participate
+                </b-col>
+            </b-row>
+        </b-list-group-item>
+        <b-list-group-item class="py-1 border-lg-0 border-left-0 border-right-0">
+            <b-row>
+                <b-col cols="3" lg="12" order-lg="2">
+                    <b-img fluid src="{% static 'v2/images/hackathon/onboarding_v2/icon-03-choose.svg'%}" class="d-block mx-auto p-0" style="max-width: 60%;" />
+                </b-col>
+                <b-col col="9" lg="12" order-lg="1" class="py-3">
+                    Choose price & build
+                </b-col>
+            </b-row>
+        </b-list-group-item>
+        <b-list-group-item class="py-1 border-lg-0 border-left-0 border-right-0">
+            <b-row>
+                <b-col cols="3" lg="12" order-lg="2">
+                    <b-img fluid src="{% static 'v2/images/hackathon/onboarding_v2/icon-04-meet.svg'%}" class="d-block mx-auto p-0" style="max-width: 60%;" />
+                </b-col>
+                <b-col cols="9" lg="12" order-lg="1"  class="py-3">
+                    Meet great devs & workshops
+                </b-col>
+            </b-row>
+        </b-list-group-item>
+        <b-list-group-item class="py-1 border-lg-0 border-left-0 border-right-0">
+            <b-row>
+                <b-col cols="3" lg="12" order-lg="2">
+                    <b-img fluid src="{% static 'v2/images/hackathon/onboarding_v2/icon-05-submit.svg'%}" class="d-block mx-auto p-0" style="max-width: 60%;" />
+                </b-col>
+                <b-col cols="9" lg="12" order-lg="1"  class="py-3">
+                    Submit work & get paid
+                </b-col>
+            </b-row>
+        </b-list-group-item>
+    </b-list-group>
+   
     <template #modal-footer>
         <div class="w-100 ">
             <h5>Benefits</h5>

@@ -1,0 +1,9 @@
+@media only screen and (min-width: 960px) {
+    .border-lg-0 {
+        border: 0;
+    }
+
+    .text-lg-center {
+         text-align: center !important;
+    }
+}
