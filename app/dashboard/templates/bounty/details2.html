@@ -164,7 +164,7 @@
                 <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
                   Submit Work
                 </a>
-                <button v-if="canStopWork(contxt.github_handle)" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
                   Stop Work
                 </button>
               </template>
@@ -852,12 +852,12 @@
                         <i class="fas fa-times mr-1 font-caption"></i> Reject
                       </a>
                     </template>
-                    <template v-else-if="isOwner && canStopWork(interest.profile.handle)">
+                    <template v-else-if="isOwner">
                       <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner)">
                         <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
                       </button>
                     </template>
-                    <template v-if="interest.profile.handle === contxt.github_handle && canStopWork(interest.profile.handle)">
+                    <template v-if="interest.profile.handle === contxt.github_handle">
                       <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork()">
                         <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Work
                       </button>
