@@ -37,6 +37,7 @@
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
+    <link rel="stylesheet" href="{% static "v2/css/onboarding_v2.css" %}" />
 
     <style type="text/css">
       .hackathon-logo {
@@ -783,6 +784,8 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+    {% include "dashboard/hackathon/onboarding_v2.html"%}
+
     <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
     <script type="text/x-template" id="select2-template">
       <select>
