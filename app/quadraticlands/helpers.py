@@ -45,6 +45,10 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
+def get_all_proposals(request):
+    '''get all propsoals and questions'''
+    return True
+
 def get_proposal(request, proposal_id):
     '''get proposal, question, and choices'''
     
@@ -79,8 +83,7 @@ def get_proposal(request, proposal_id):
         "choices" : choices,
     }
     return proposal
-
-
+    
 def get_FAQ(request):
     '''Get FAQ objects from the db and bundle them up to be added to faq context'''
     faq_dict = {}
