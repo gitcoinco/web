@@ -33,7 +33,9 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from quadraticlands.helpers import get_FAQ, get_initial_dist, get_mission_status, get_proposal, wake_the_ESMS
+from quadraticlands.helpers import (
+    get_all_proposals, get_FAQ, get_initial_dist, get_mission_status, get_proposal, wake_the_ESMS,
+)
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -54,6 +56,9 @@ def base(request, base):
     context.update(game_status)
     if base == 'faq':
         context.update(get_FAQ(request))
+    if base == 'proposal':
+        context = get_all_proposals(request)
+        print(f'CONTEXT! {context}')
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 def mission_index(request):

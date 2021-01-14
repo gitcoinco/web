@@ -45,6 +45,29 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
+def get_all_proposals(request):
+    '''get all proposals and questions'''
+    proposal_container ={}
+    context = {}
+    try:
+        all_proposals = Proposal.objects.all()
+        for p in all_proposals :
+            q = Question.objects.select_related().get(id=p.id)
+            proposal = {
+                "title" : p.title,
+                "start_block" : p.start_block,
+                "end_block" : p.end_block,
+                "question" : q.question_text,
+            }
+            proposal_container[p.id] = proposal
+        context['all_proposals'] = proposal_container
+        return context 
+
+    except Exception as e:
+        logger.error(f'QuadLands: There was an error getting proposals {e}')
+        return {'proposals': 'false'}
+    
+
 def get_proposal(request, proposal_id):
     '''get proposal, question, and choices'''
     
@@ -79,8 +102,7 @@ def get_proposal(request, proposal_id):
         "choices" : choices,
     }
     return proposal
-
-
+    
 def get_FAQ(request):
     '''Get FAQ objects from the db and bundle them up to be added to faq context'''
     faq_dict = {}
