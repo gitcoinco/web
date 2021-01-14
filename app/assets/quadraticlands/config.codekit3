@@ -1285,7 +1285,7 @@
 		"oS": 3,
 		"sct": 0
 		},
-	"/scss/dashboard/content-delegation.scss": {
+	"/scss/dashboard/content-governance.scss": {
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
@@ -1293,7 +1293,7 @@
 		"ft": 4,
 		"ma": 1,
 		"oA": 1,
-		"oAP": "/scss/css/content-delegation.css",
+		"oAP": "/scss/css/content-governance.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0

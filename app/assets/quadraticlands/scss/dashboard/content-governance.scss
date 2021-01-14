@@ -1,0 +1,67 @@
+section.dashboard .content-governance{
+
+	.wrapper{
+		margin: auto;
+		max-width: 900px;
+	}
+
+	.text{
+		
+		text-align: center;
+		margin: auto;
+		margin-bottom: 2em;
+	}
+
+	.delegate{
+		margin: auto;
+		text-align: center;
+
+
+		input{
+			padding:0.66rem 1.66em;
+			font-size: 100%;
+			font-weight: 600;
+			color : var(--space);
+			font-family: 'Space Mono', monospace;
+			background-color: var(--aqua);
+			border: none;
+			outline: none;
+			text-align: center;
+
+			width: 600px;
+
+			&:focus{
+				border: none;
+			}
+		}
+
+		a{
+
+		}
+
+	}
+
+
+
+}
+
+
+
+
+@media #{$tablet} { 
+	section.dashboard .content-governance{
+		.delegate{
+			input{
+				width: 100%;
+				margin-bottom: 1em;
+			}
+		}
+	}
+}
+
+@media #{$phone} { 
+
+}
+
+
+

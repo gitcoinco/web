@@ -7,7 +7,10 @@ section.dashboard{
 	grid-gap: 1em;
 
 	.section{
-		background-color: var(--space_light_alpha);
+
+		&.full{
+			grid-column: 1 / span 2;
+		}
 	}
 
 	.header{
@@ -33,5 +36,10 @@ section.dashboard{
 @media #{$tablet} { 
 	section.dashboard{
 		grid-template-columns: 1fr;
+		.section{
+			&.full{
+				grid-column: initial;
+			}
+		}
 	}
 }
