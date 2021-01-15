@@ -2,7 +2,7 @@
 // if (document.contxt.github_handle && document.contxt.env === 'prod') {
 //   mtcId
 // }
-document.addEventListener('mauticPageEventDelivered', function(e) {
+document.addEventListener('mauticPageEventDelivered', function (e) {
   console.log(e)
   if (document.contxt.github_handle && mtcId && !document.contxt.mautic_id) {
     //   mtcId
@@ -34,10 +34,10 @@ document.addEventListener('mauticPageEventDelivered', function(e) {
 // }
 
 
-const saveMauticId = function(mauticId) {
+const saveMauticId = function (mauticId) {
   console.log(mauticId)
   let url = `api/v1/mautic_profile_save/`;
-  const postData = fetchData(url, 'POST', {'mtcId': mauticId});
+  const postData = fetchData(url, 'POST', { 'mtcId': mauticId });
 
   $.when(postData).then((response) => {
 
@@ -90,7 +90,7 @@ class MauticEvent {
 
   static send(data) {
     let contactApi = `api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`
-    let dataMock = this.dataMock(data)
+    // let dataMock = this.dataMock(data)
 
     fetch(contactApi, {
       method: 'PUT',
@@ -98,21 +98,79 @@ class MauticEvent {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(dataMock)
+      body: JSON.stringify(data)
     }).then(function (response) {
       return response.json();
     })
-    .then(function (result) {
+      .then(function (result) {
         console.log(result);
-    })
-    .catch (function (error) {
+      })
+      .catch(function (error) {
         console.log('Request failed', error);
-    });
+      });
 
   }
 
   static product(data) {
     // MauticEvent.product({'product':'bounties', 'persona': 'bounty-hunter'})
-    this.send({'email': document.contxt.email, 'product': data.product, 'persona': data.persona})
+    this.send(this.dataMock({ 'email': document.contxt.email, 'product': data.product, 'persona': data.persona }))
+  }
+
+  static createEvent(...obj) {
+    /*
+      Send multiple custom objects
+
+      MauticEvent.createEvent({
+        "alias": "hackathon",
+        "data": [
+          {
+            "name": "test3",
+            "attributes": {
+              "hackathon-slug": "test3"
+            }
+          }
+        ]
+      },
+      {
+        "alias": "products",
+        "data": [
+          {
+            "name": "product",
+            "attributes": {
+              "product": "hackathon",
+              'persona': 'hackathon-hunter'
+            }
+          }
+        ]
+      },
+      {
+        ...
+      })
+    */
+    let baseObj = {
+      "email": document.contxt.email,
+      "customObjects": {}
+    }
+    console.log(baseObj)
+
+    baseObj.customObjects['data'] = obj
+    // console.log(objSend)
+    this.send(baseObj)
+
+  }
+
+  static updateUser(userData) {
+    // { "tags": ['mytag','yourtag']}
+    let baseObj = {
+      "email": document.contxt.email,
+    }
+    let merged = {...baseObj, ...userData}
+
+    this.send(merged)
   }
 }
+
+
+// MauticEvent.create('hackathon', 'hackathon', {'hackathon-slug':'hackathon-event'})
+// MauticEvent.create('products', 'product', {'product':'bounties', 'persona': 'bounty-hunter'})
+
