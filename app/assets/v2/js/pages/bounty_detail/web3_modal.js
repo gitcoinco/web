@@ -1,7 +1,14 @@
 const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
-  
+
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
+
+  if (!provider) {
+    modal.closeModal();
+    return onConnect().then(() => {
+      modal.openModal();
+    });;
+  }
 
   if (token_name == 'ETH') {
     web3.eth.sendTransaction(
@@ -34,7 +41,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
       _alert({ message: gettext('Unable to payout bounty. Please try again.') }, 'error');
       console.log(error);
     } else {
-      
+
       const payload = {
         payout_type: 'web3_modal',
         tenant: 'ETH',

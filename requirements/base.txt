@@ -67,7 +67,7 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-django-cacheops==4.0.7
+django-cacheops==5.1
 django-redis==4.10.0
 collectfast==0.6.2
 django-health-check==3.7.0
@@ -90,7 +90,6 @@ django-oauth-toolkit
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
-pandas
 wiki
 django-bulk-update
 pdfrw

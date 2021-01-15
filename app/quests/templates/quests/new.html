@@ -136,16 +136,16 @@
               <input name=reward type="hidden" value={{package.reward}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+                {% include 'shared/add_kudos.html' with kudos_network='xdai' name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F"  %}
               </div>
             {% elif package.reward_tip %}
               Tip Reward, N/A
             {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+              {% include 'shared/add_kudos.html' with kudos_network='xdai' name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
           {% if is_staff %}
-          <div class="form-group">
+          <div class="form-group alpha-warning">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>

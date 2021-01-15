@@ -33,6 +33,8 @@
             <input type="submit" value="Post Activity Feed" name="_post_flag" value="1">
         {% elif 'grants/grant/' in request.build_absolute_uri %}
             <input type="submit" value="Recalculate CLR" name="_calc_clr" value="1">
+        {% elif 'grantclr/' in request.build_absolute_uri %}
+            <input type="submit" value="Recalculate CLR" name="_recalculate_clr" value="1">
         {% elif 'kudos/token/' in request.build_absolute_uri %}
             <input type="submit" value="Make into Bulk Transfer Coupon" name="btc_coupon" value="1">
         {% elif 'grants/contribution' in request.build_absolute_uri %}

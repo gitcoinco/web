@@ -23,7 +23,6 @@ import html
 import json
 import logging
 import re
-import pytz
 import time
 from decimal import Decimal
 
@@ -48,6 +47,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import pytz
 import requests
 import tweepy
 from app.services import RedisService
@@ -1359,9 +1359,16 @@ def grant_details(request, grant_id, grant_slug):
         # If the user viewing the page is team member or admin, check if grant has match funds available
         # to withdraw
         is_match_available_to_claim = False
-        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2020, 12, 30, 12, 0).replace(tzinfo=pytz.utc)
+        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 1, 30, 12, 0).replace(tzinfo=pytz.utc)
         is_staff = request.user.is_authenticated and request.user.is_staff
-        if is_within_payout_period_for_most_recent_round:
+
+        # Check if this grant needs to complete KYC before claiming match funds
+        clr_matches = grant.clr_matches.filter(round_number=8)
+        is_blocked_by_kyc = clr_matches.exists() and not clr_matches.first().ready_for_payout
+
+        # calculate whether is available
+        # TODO - do this asyncronously so as not to block the pageload
+        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc:
             if is_team_member or is_staff or is_admin:
                 w3 = get_web3(grant.network)
                 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
@@ -1369,9 +1376,6 @@ def grant_details(request, grant_id, grant_slug):
                 match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
                 amount_available = match_payouts.functions.payouts(grant.admin_address).call()
                 is_match_available_to_claim = True if amount_available > 0 else False
-
-        # Check if this grant needs to complete KYC before claiming match funds
-        is_blocked_by_kyc = hasattr(grant, 'clr_matches') and not grant.clr_matches.filter(round_number=8).first().ready_for_payout
 
         # Determine if we should show the claim match button on the grant details page
         should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
