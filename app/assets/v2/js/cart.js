@@ -374,7 +374,7 @@ Vue.component('grants-cart', {
         case 'ZIL':
           vm.chainId = '102';
           break;
-        case 'HAROMONY':
+        case 'HARMONY':
           vm.chainId = '1000';
           break;
       }
