@@ -14,13 +14,15 @@
 	<script src="/static/quadraticlands/js/app.js"></script>
 	<!-- this page NEEDS a Wallet and will force the Web3Modal -->
 	<script src="/static/quadraticlands/js/forceWallet.js"></script>
-	<!-- ABIs -->
-    <script src="{% static "v2/js/abi.js" %}"></script>
+	<!-- contract ABIs & address info-->
+	<script src="{% static "v2/js/abi.js" %}"></script>
+	<script src="/static/quadraticlands/js/web3-samples.js"></script>
 	<script>
 		function web3Ready() {
 		  console.debug('WEB3 version from script', web3.version);
 		  // some examples of getting data from the GTC and tokenDist contracts 
-		  // get token balance - using generic ERC20 function from Octos wallet file
+
+		  // get token balance - (using generic ERC20 function from Octos wallet file)
 		  getTokenBalances(gtc_address()).then(function(result) {
 				 console.debug('ERC20 TokenBalance:', result.balance);
 		  });
@@ -30,7 +32,7 @@
 			  console.debug('Current GTC Votes:', result);
 		  });
 
-		 // get current votes 
+		 // get prior votes by block number 
 		 block_number = 4242424
 		 getPriorVotes(gtc_address(), selectedAccount, block_number).then(function(result) { 
 			  console.debug('Current GTC Votes:', result);
@@ -46,13 +48,17 @@
 		*  */
 		async function getCurrentVotes(tokenAddress) {
 		
-		// Get GTC Token contract instance
-		let GTCContract = new web3.eth.Contract(gtc_token_abi, tokenAddress);
-		
-		// Call getCurrentVotes function
-		current_votes = GTCContract.methods.getCurrentVotes(selectedAccount).call({from: selectedAccount})
-		return current_votes;
-
+			// Get GTC Token contract instance
+			let GTCContract = new web3.eth.Contract(gtc_token_abi, tokenAddress);
+			
+			// Call getCurrentVotes function
+			try {
+			    current_votes = GTCContract.methods.getCurrentVotes(selectedAccount).call({from: selectedAccount})
+			} catch(e) {
+				console.log('Could not get prior votes: ', e);
+				return
+			}
+			return current_votes;
 		}
 
        	/**
@@ -61,13 +67,17 @@
 		*  */
 		async function getPriorVotes(tokenAddress, account, block_number) {
 		
-		// Get GTC Token contract instance
-		let GTCContract = new web3.eth.Contract(gtc_token_abi, tokenAddress);
-		
-		// Call getCurrentVotes function
-		past_votes = GTCContract.methods.getPriorVotes(account, block_number).call({from: selectedAccount})
-		return past_votes;
-
+			// Get GTC Token contract instance
+			let GTCContract = new web3.eth.Contract(gtc_token_abi, tokenAddress);
+			
+			// Call getPriorVotes function
+			try {
+				past_votes = GTCContract.methods.getPriorVotes(account, block_number).call({from: selectedAccount})
+			} catch (e) {
+			    console.log('Could not get prior votes: ', e);
+				return;
+			}
+			return past_votes;
 		}
 
 	</script>
