@@ -1,0 +1,40 @@
+{
+    "symbol": "MATIC",
+    "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+    "overview":{
+          "en": "1. Take part in Network Security by Staking Matic and earning ~30% APR. In addition to the network returns, Matic stakers are constantly receiving benefits and airdrops for securing the network. In the last two months, Matic stakers have received airdrops from Marlin Protocol, [AUDIT.ONE](http://audit.ONE) and many other validators and partners. You can also use your staked position in Matic to farm tokens from other projects like Marlin Protocol.
+
+          2. Used for Transactions on Matic Network, holding Matic allows you to interact and use the plethora of Dapps on Matic, without high gas fees burning a hole in your pocket!
+          
+          3. As collateral on Partner Networks: You will be able to use Matic as an asset on multiple partner networks, eg. Derivatives trading using Matic, Prediction Markets for Matic, Yield Farming on Quickswap, etc.
+          
+          4. Participation in exclusive funding rounds: Select projects collaborating with Matic Network will take place exclusively in MATIC tokens. Marlin Protocol and Cere Network were the first project to raise funds on Matic Network, as part of the Matic Ecosystem Initiative, and many more are in the pipeline to do the same.",
+          
+          "zh": "1.通过参加Matic并获得约30％的年利率来参与网络安全。除了网络收益外，Matic利益相关者还不断获得收益和空投以保护网络。在过去的两个月中，Matic涉众从Marlin协议，[AUDIT.ONE]（http://audit.ONE）以及许多其他验证者和合作伙伴处收到了空投。您还可以使用Matic中的抵押头寸来获取其他项目（如Marlin Protocol）的代币。
+
+          2.用于在Matic网络上进行交易时，持有Matic可以使您在Matic上进行交互和使用过多的Dapps，而无需支付高昂的汽油费，却会在口袋里烧一个洞！
+          
+          3.作为合作伙伴网络的抵押品：您将能够将Matic用作多个合作伙伴网络上的资产，例如。使用Matic进行的衍生产品交易，Matic的预测市场，Quickswap上的收益农业等
+          
+          4.参与独家融资回合：与Matic Network合作的特定项目将仅以MATIC代币进行。 Marlin Protocol和Cere Network是第一个在Matic Network上筹集资金的项目，这是Matic生态系统计划的一部分，并且还有更多项目正在筹划中。"
+    },
+    "email": "info@matic.network",
+    "website": "https://matic.network/",
+    "whitepaper": "https://matic.network/matic-litepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-04-24",
+    "initial_price":{
+          "ETH":"0.000015348 ETH",
+          "USD":"0.00263 USD",
+          "BTC":"0.0000004720 BTC"
+    },
+    "links": {
+      "blog": "https://blog.matic.network/",
+      "twitter": "https://twitter.com/maticnetwork",
+      "telegram": "https://t.me/maticnetwork",
+      "github": "https://github.com/maticnetwork",
+      "facebook": "https://www.facebook.com/maticnetwork/",
+      "reddit": "https://www.reddit.com/r/maticnetwork/",
+      "medium": "https://medium.com/matic-network"
+    }
+  }
