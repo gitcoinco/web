@@ -62,11 +62,6 @@ Vue.mixin({
       });
 
     },
-    getBinanceSelectedAccount: async function() {
-      let vm = this;
-
-      vm.form.funderAddress = await binance_utils.getSelectedAccount();
-    },
     getAmount: function(token) {
       let vm = this;
 
