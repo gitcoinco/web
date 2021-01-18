@@ -294,6 +294,7 @@ class Bounty(SuperModel):
         ('polkadot_ext', 'Polkadot Ext'),
         ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
+        ('rsk_ext', 'RSK Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1410,6 +1411,7 @@ class BountyFulfillment(SuperModel):
         ('polkadot_ext', 'polkadot_ext'),
         ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
+        ('rsk_ext', 'rsk_ext'),
         ('manual', 'manual')
     ]
 
@@ -1424,6 +1426,7 @@ class BountyFulfillment(SuperModel):
         ('BINANCE', 'BINANCE'),
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
+        ('RSK', 'RSK'),
         ('OTHERS', 'OTHERS')
     ]
 
