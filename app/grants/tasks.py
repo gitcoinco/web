@@ -13,7 +13,10 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
+from marketing.mails import (
+    new_grant, new_grant_admin, new_supporter, thank_you_for_supporting,
+    batch_thank_you_for_supporting
+)
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
@@ -159,13 +162,14 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=1)
-def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, retry: bool = True) -> None:
+def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, send_supporter_mail:bool = True, retry: bool = True):
     """
     :param self:
     :param grant_id:
     :param grant_slug:
     :param profile_id:
     :param package:
+    :param send_supporter_mail:
     :return:
     """
     from grants.views import record_subscription_activity_helper
@@ -252,8 +256,34 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         new_supporter(grant, subscription)
 
         # emails to contributor
-        thank_you_for_supporting(grant, subscription)
+        if send_supporter_mail:
+            thank_you_for_supporting(grant, subscription)
+
         update_grant_metadata.delay(grant_id)
+        return grant, subscription
+
+
+@app.shared_task(bind=True, max_retries=1)
+def batch_process_grant_contributions(self, grants_with_payload, profile_id, retry: bool = True) -> None:
+    """
+    :param self:
+    :param grants_with_payload: list of dicts with grant_id, grant_slug and payload
+    :param profile_id:
+    :return:
+    """
+    grants_with_subscription = []
+    for grant_with_payload in grants_with_payload:
+        grant_id = grant_with_payload["grant_id"]
+        grant_slug = grant_with_payload["grant_slug"]
+        payload = grant_with_payload["payload"]
+        grant, subscription = process_grant_contribution(
+            grant_id, grant_slug, profile_id, payload, send_supporter_mail=False, retry=retry
+        )
+        grants_with_subscription.append({
+            "grant": grant,
+            "subscription": subscription
+        })
+    batch_thank_you_for_supporting(grants_with_subscription)
 
 
 @app.shared_task(bind=True, max_retries=1)

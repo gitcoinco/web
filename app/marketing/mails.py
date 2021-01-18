@@ -48,7 +48,7 @@ from retail.emails import (
     render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
     render_tax_report, render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
     render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
-)
+    render_batch_thank_you_for_supporting_email)
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
 from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
@@ -315,6 +315,28 @@ def thank_you_for_supporting(grant, subscription):
     try:
         setup_lang(to_email)
         html, text, subject = render_thank_you_for_supporting_email(grant, subscription)
+
+        if not should_suppress_notification_email(to_email, 'thank_you_for_supporting'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def batch_thank_you_for_supporting(grants_with_subscription):
+    positive_subscriptions = list(filter(lambda gws: not gws["subscription"].negative, grants_with_subscription))
+    if len(positive_subscriptions) == 0:
+        return
+
+    from_email = settings.CONTACT_EMAIL
+    to_email = positive_subscriptions[0]["subscription"].contributor_profile.email
+    if not to_email:
+        to_email = positive_subscriptions[0]["subscription"].contributor_profile.user.email
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_batch_thank_you_for_supporting_email(grants_with_subscription)
 
         if not should_suppress_notification_email(to_email, 'thank_you_for_supporting'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
