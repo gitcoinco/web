@@ -32,41 +32,20 @@
     <div class="container-fluid">
     <h1>Donate/Bequest to Science and Free Software or Climate</h1>
     <p style="color: red;">Contracts are not yet audited and deployed.</p>
-    <p>This is a clone of <a href="https://vporton.github.io/future-salary/#/">that app</a>.</p>
+    <p><em>It is to implement <a target="_blank" href="https://github.com/gitcoinco/web/issues/8183">this PR</a>.
+      This is a work-in-progress clone of <a href="https://vporton.github.io/future-salary/#/">that app</a>.</em></p>
+
     <p>
-        <a href="{% url 'future_donate' %}">Donate/bequest for science, free software, or climate.</a>
-        <br/> 
-        <small>Just bequest all your funds here.</small>
+      See also: <a href="{% url 'future_donate' %}">Donate/bequest for science, free software, or climate.</a>
+      <br/> 
+      <small>Just bequest all your funds here.</small>
     </p>
-    <p>
-        <small>Free software authors, scientists/inventors, and science/software publishers:</small>
-    </p>
-    <p>
-        <button className="donateButton" onclick={register}>Register for a salary</button>
-        <br/>
-        <small>
-        After you have been registered, see TODO to improve your rating.
-        <br/>
-        Remember, if you publish open source, your rating will tend to improve.
-        </small>
-    </p>
-    <p>
-        <small>
-        Registration is free (except of an Ethereum network fee). The earlier you register, the more money you get.
-        </small>
-        <br/>
-        <small>
-        No matter what happens, you will receive 1 token per second since the moment of registration till you die
-        (or go inopt for corporations).
-        <br/>
-        Your salary exchange rate will be "calculated" by free market based on future predictions of your performance,
-        such as your expected citations count in the future.
-        </small>
-    </p>
+    <donations-register></donations-register>
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    <script src="{% static "future/future.js" %}"></script>
+    <script src="{% static 'donations-widget-vue-binary/Register/donations-register.min.js' %}"></script>
   </body>
 </html>

@@ -30,79 +30,23 @@
     </div>
 
     <div class="container-fluid">
-    <h1>Donate/Bequest to Science and Free Software or Climate</h1>
-    <p style="color: red;">Contracts are not yet audited and deployed.</p>
-    <p>This is a clone of <a href="https://vporton.github.io/future-salary/#/">that app</a>.</p>
+    <h1>Donate/Bequest to Common Goods: Science and Free Software or Climate</h1>
+    <p><em>It is to implement <a target="_blank" href="https://github.com/gitcoinco/web/issues/8183">this PR</a>.
+        This is a work-in-progress clone of <a href="https://vporton.github.io/future-salary/#/">that app</a>.</em></p>
     <p>
-        <small>Free software authors, scientists/inventors, and science/software publishers:</small>
-        <a href="{% url 'future_register' %}">{% trans "Register for a salary" %}</a>
-        <br/>
-        <small>Registration is free (except of an Ethereum network fee). The earlier you register, the more money you get.</small>
+      <small>Free software authors, scientists/inventors, science/software publishers,
+        carbon accounters, and other common good producers:</small>
+      <br/>
+      <a href="{% url 'future_donate' %}">Register for a salary.</a>
+      <br/>
+      <small>Registration is free (except of an Ethereum network fee). The earlier you register, the more money you get.</small>
     </p>
-    <p>
-        Donate for:
-        <label><input type="radio" name="donateFor" onclick="setDonateFor('science')"/> Science and free software</label>
-        <label><input type="radio" name="donateFor" onclick="setDonateFor('climate')"/> Climate</label>
-    </p>
-    <p>
-        <label>
-        <input type="radio" name="paymentKind" onclick="setPaymentKind('donate')"/>
-        Donate a sum
-        </label>
-        <label>
-        <input type="radio" name="paymentKind" onclick="setPaymentKind('bequestTokens')"/>
-        Donate but allow me to take money back
-        </label>
-        <label>
-        <input type="radio" name="paymentKind" onclick="setPaymentKind('bequestGnosis')"/>
-        Bequest all funds on a Gnosis Safe smart wallet
-        </label>
-    </p>
-    <p>
-        Donation in:
-        <label><input type="radio" name="tokenKind" onclick="setTokenKind('erc1155')"/> ERC-1155</label>
-        <small>(recommended)</small>
-        <label><input type="radio" name="tokenKind" onclick="setTokenKind('erc20')"/> ERC-20</label>
-        <br/>
-        <small>(Don't use stablecoins for long-time funding.)</small>
-    </p>
-    <p>
-        <span>Wallet address:</span>
-        <span>Token address:</span>
-        <input name="text" onchange="await setTokenAddress(event.target.value)"/>
-    </p>
-    <p>
-        Token ID:
-        <input value="" onchange="await setTokenId(event.target.value)"/>
-    </p>
-    <p>
-        <span>
-        The donation can be taken back before:
-        </span>
-        <span>
-        The bequest can be taken after:
-        </span>
-        <span></span>
-        <span>
-        <br/>
-        <span>
-        </span>
-        </span>
-    </p>
-    <div>
-        <p>
-        Donation amount:
-        <input type="text" value="" onchange="await setAmount(event.target.value)"/>
-        <button onclick="donate()" disabled="donateButtonDisabled()">Donate</button>
-        </p>
-    </div>
-    <p>
-        <button className="donateButton" disabled="bequestButtonDisabled()" onclick="bequestAll()">Bequest!</button>
-    </p>
+    <donations-donate></donations-donate>
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-
+    <script src="{% static 'donations-widget-vue-binary/Donate/donations-donate.min.js' %}"></script>
   </body>
 </html>

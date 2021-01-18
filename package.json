@@ -28,6 +28,8 @@
     "stylelint-config-recommended": "^2.2.0"
   },
   "dependencies": {
-    "redux": "^4.0.5"
+    "@vporton/donations-widget-vue-binary": "^0.0.10",
+    "redux": "^4.0.5",
+    "vue-custom-element": "^3.2.14"
   }
 }

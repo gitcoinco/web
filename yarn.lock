@@ -350,6 +350,11 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
+"@vporton/donations-widget-vue-binary@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.0.10.tgz#8ed76b469083c62191064f459f4c5d66f6aacbc1"
+  integrity sha512-KUBJUBSDZz8YNyGdbDJbCW+BqOiegDVHLDCl/EyDy4wsOtY0t2TyXCqb6p5LSsbFzfcC6GNgg1N3zmBInyZjvQ==
+
 acorn-jsx@^5.3.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.1.tgz#fc8661e11b7ac1539c47dbfea2e72b3af34d267b"
@@ -3991,6 +3996,11 @@ vfile@^3.0.0:
     replace-ext "1.0.0"
     unist-util-stringify-position "^1.0.0"
     vfile-message "^1.0.0"
+
+vue-custom-element@^3.2.14:
+  version "3.2.14"
+  resolved "https://registry.yarnpkg.com/vue-custom-element/-/vue-custom-element-3.2.14.tgz#fc4987ed4e1742bcb4e70a669d5060fc2c42bc25"
+  integrity sha512-IZYYsqyF1wC7hFm2g6gkf7lXp9hFau+po6dL0JTaMvSglsAgnowcbkpaOUl8exC7Bs6Ir9smJSXmKGFapml6TA==
 
 which@^1.2.9, which@^1.3.1:
   version "1.3.1"
