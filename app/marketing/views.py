@@ -39,6 +39,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
+from git.utils import get_github_primary_email
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
@@ -107,6 +108,16 @@ def settings_helper_get_auth(request, key=None):
     is_logged_in = bool(request.user.is_authenticated)
     es = EmailSubscriber.objects.none()
 
+    # check if user's email has changed
+    if request.user.is_authenticated:
+        current_email = get_github_primary_email(request.user.profile.github_access_token)
+        if current_email != request.user.profile.email:
+            request.user.profile.email = current_email
+            request.user.profile.save()
+        if current_email != request.user.email:
+            request.user.email = current_email
+            request.user.save()
+
     # find the user info
     if key is None or not EmailSubscriber.objects.filter(priv=key).exists():
         email = request.user.email if request.user.is_authenticated else None
@@ -115,6 +126,9 @@ def settings_helper_get_auth(request, key=None):
         if hasattr(request.user, 'profile'):
             if request.user.profile.email_subscriptions.exists():
                 es = request.user.profile.email_subscriptions.first()
+                if es.email != request.user.profile.email:
+                    es.email = request.user.profile.email
+                    es.save()
             if not es or es and not es.priv:
                 es = get_or_save_email_subscriber(
                     request.user.email, 'settings', profile=request.user.profile)
