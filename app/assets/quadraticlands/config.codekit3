@@ -90,11 +90,71 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/background/_old/claim.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/claim.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/claimed.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/claimed.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/claiming.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/claiming.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
 	"/images/background/_old/dopamine.svg": {
 		"ft": 2097152,
 		"miP": 0,
 		"oA": 2,
 		"oAP": "/images/background/_old/dopamine.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/right.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/right.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/timeout.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/timeout.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/wrong.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/wrong.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -193,7 +253,7 @@
 	"/images/background/claim.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/claim.svg",
 		"oF": 0,
 		"opt": 0,
@@ -203,7 +263,7 @@
 	"/images/background/claimed.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/claimed.svg",
 		"oF": 0,
 		"opt": 0,
@@ -213,7 +273,7 @@
 	"/images/background/claiming.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/claiming.svg",
 		"oF": 0,
 		"opt": 0,
@@ -251,7 +311,7 @@
 	"/images/background/timeout.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/timeout.svg",
 		"oF": 0,
 		"opt": 0,
@@ -281,7 +341,7 @@
 	"/images/background/wrong.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/wrong.svg",
 		"oF": 0,
 		"opt": 0,
@@ -1285,7 +1345,7 @@
 		"oS": 3,
 		"sct": 0
 		},
-	"/scss/dashboard/content-delegation.scss": {
+	"/scss/dashboard/content-governance.scss": {
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
@@ -1293,7 +1353,7 @@
 		"ft": 4,
 		"ma": 1,
 		"oA": 1,
-		"oAP": "/scss/css/content-delegation.css",
+		"oAP": "/scss/css/content-governance.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
@@ -1766,19 +1826,6 @@
 		"oS": 3,
 		"sct": 0
 		},
-	"/scss/section_leaderboard.scss": {
-		"aP": 0,
-		"bl": 0,
-		"dP": 10,
-		"ec": 1,
-		"ft": 4,
-		"ma": 1,
-		"oA": 1,
-		"oAP": "/css/section_leaderboard.css",
-		"oF": 0,
-		"oS": 3,
-		"sct": 0
-		},
 	"/scss/section_mission.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1788,6 +1835,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/css/section_mission.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/section_table.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/section_table.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0

@@ -24,11 +24,8 @@
 <!--dashboard 2 column grid that include sub templates-->
 <section class="dashboard">
 
-	<!-- Wallet -->
-	{% include 'quadraticlands/dashboard/wallet.html' %}
-
 	<!-- Delegation -->
-	{% include 'quadraticlands/dashboard/delegation.html' %}
+	{% include 'quadraticlands/dashboard/governance.html' %}
 
 	<!-- Mission -->
 	{% include 'quadraticlands/dashboard/mission.html' %}
@@ -57,6 +54,11 @@
 	<script src="/static/quadraticlands/js/particles.js"></script>
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
 	<script src="/static/quadraticlands/js/app.js"></script>
+
+	<!-- this page NEEDS a Wallet and will force the Web3Modal -->
+	<script src="/static/quadraticlands/js/forceWallet.js"></script>
+
+
 	
 {% endblock %}
 

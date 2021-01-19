@@ -142,7 +142,7 @@ class Particle {
     this.size = Math.random() * (config.size.max - config.size.min) + config.size.min
     config.shuffle = false
     init()
-    console.log("SHUFFLE")      
+    //console.log("SHUFFLE")      
     }
   }
 
@@ -261,8 +261,8 @@ particleAttract.forEach(link => {
   link.onmouseover = () => {
 
     particlesArrayPast = particlesArray
-    console.log("PAST")
-    console.log(particlesArrayPast)
+    //console.log("PAST")
+    //console.log(particlesArrayPast)
 
     box = link.getBoundingClientRect()
 
@@ -278,7 +278,7 @@ particleAttract.forEach(link => {
     }
 
 
-    console.log(particlesArray)
+    //console.log(particlesArray)
 
 
   };

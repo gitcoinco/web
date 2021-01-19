@@ -1,4 +1,4 @@
-section.leaderboard{
+section.table{
 
 	margin: 0em 1.5em;
 
@@ -53,6 +53,10 @@ section.leaderboard{
 			white-space: nowrap;
 			text-align: center;
 			padding: 1em;
+
+			a{
+				text-decoration: none;
+			}
 		}
 
 	}
@@ -66,7 +70,7 @@ section.leaderboard{
 
 @media #{$tablet} {
 
-	section.leaderboard{
+	section.table{
 
 		margin: 0em 0em;
 		overflow: hidden;

@@ -28,7 +28,6 @@ from quadraticlands.views import (
 app_name = 'quadraticlands'
 
 urlpatterns = [
-    
     path('', index, name='quadraticlands'),
     path('/', index, name='quadraticlands'),
     path('mission', mission_index, name='mission'),
