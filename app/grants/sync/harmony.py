@@ -38,7 +38,6 @@ def find_txn_on_harmony_explorer(contribution):
                     tx['from'] == from_address.lower() and
                     tx['to'] == to_address.lower() and
                     tx['value'] ==  float(amount) * 10 ** 18 and
-                    # is_txn_done_recently() and
                     not txn_already_used(tx['hash'], token_symbol)
                 ):
                     return tx

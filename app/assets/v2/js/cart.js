@@ -91,7 +91,6 @@ Vue.component('grants-cart', {
     },
     grantsCountByTenant() {
       let vm = this;
-      let tenants = [ 'ETH', 'ZCASH', 'CELO', 'ZIL' ];
 
       var grantsTentantsCount = vm.grantData.reduce(function(result, grant) {
         var currentCount = result[grant.tenants] || 0;
@@ -228,7 +227,7 @@ Vue.component('grants-cart', {
           grant_title: 'Gitcoin Grants Round 8 + Dev Fund',
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
-          isAutomatic: true // we add this field to help properly format the POST requests
+          isAutomatic: true // we add this field to help properly format the POST requests,
         };
 
         // Only add to donation inputs array if donation amount is greater than 0
@@ -302,7 +301,7 @@ Vue.component('grants-cart', {
 
         } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
           return accumulator + 450000; // cDAI donation gas estimate
-        
+
         } else if (tokenAddr === '0x3472A5A71965499acd81997a54BBA8D852C6E53d'.toLowerCase()) {
           return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
 
@@ -330,6 +329,10 @@ Vue.component('grants-cart', {
       const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
 
       return { name: 'zkSync', savingsInGas, savingsInPercent };
+    },
+
+    isHarmonyExtInstalled() {
+      return window.onewallet && window.onewallet.isOneWallet;
     }
   },
 
@@ -369,6 +372,9 @@ Vue.component('grants-cart', {
           break;
         case 'ZIL':
           vm.chainId = '102';
+          break;
+        case 'HARMONY':
+          vm.chainId = '1000';
           break;
       }
     },
@@ -429,6 +435,15 @@ Vue.component('grants-cart', {
         vm.$set(grant, 'loading', false);
       });
     },
+    contributeWithExtension: function(grant, tenant) {
+      let vm = this;
+
+      switch (tenant) {
+        case 'HARMONY':
+          contributeWithHarmonyExtension(grant, vm);
+          break;
+      }
+    },
     loginWithGitHub() {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
@@ -462,6 +477,20 @@ Vue.component('grants-cart', {
       this.$forceUpdate();
 
       // $('input[type=textarea]').focus();
+    },
+
+    updatePaymentStatus(grant_id, step = 'waiting', txnid) {
+      let vm = this;
+      let grantData = vm.grantData;
+
+      grantData.forEach((grant, index) => {
+        if (grant.grant_id == grant_id) {
+          vm.grantData[index].payment_status = step;
+          if (txnid) {
+            vm.grantData[index].txnid = txnid;
+          }
+        }
+      });
     },
 
     /**
