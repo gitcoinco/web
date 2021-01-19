@@ -1,0 +1,25 @@
+{
+  "symbol": "SPA",
+  "address": "0x9631483f28B7f5CBf7D435Ab249Be8f709215bC3",
+  "overview":{
+        "en": "Sperax ecosystem issues two tokens: SPA as the network token on BDLS and sCOIN the native stablecoin. Sperax is the first decentralised system with a native stablecoin.SPA is the governance token for the protocol.SPA has a fixed five billion supply. There will not be inflation in the future.",
+        "zh": "Sperax发行两种代币：BDLS共识层的区块链治理币SPA，金融服务层的原生稳定币sCOIN。 Sperax区块链是首个具备原生稳定币的去中心化系统。SPA是协议的治理代币。SPA的固定供应量为50亿个。未来不会有通货膨胀。"
+  },
+  "email": "contact@sperax.io",
+  "website": "https://sperax.io",
+  "whitepaper": "https://github.com/Sperax/docs/blob/master/Paper/SperaxWhitepaper_Aug3.pdf",
+  "state": "NORMAL",
+  "published_on": "2020.03.23",
+  "initial_price":{
+        "ETH":" 0.00005028 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.0000017 BTC"
+  },
+  "links": {
+    "twitter": "http://twitter.com/sperax_io",
+    "telegram": "http://t.me/sperax",
+    "github": "https://github.com/Sperax",
+    "facebook": "http://facebook.com/SperaX-1465830513569601",
+    "medium": "http://medium.com/sperax"
+  }
+}
