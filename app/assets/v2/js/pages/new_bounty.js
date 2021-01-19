@@ -28,6 +28,11 @@ Vue.mixin({
         return;
       }
 
+      if (url.indexOf('/pull/') > 0) {
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url and not a PR');
+        return;
+      }
+
       let ghIssueUrl = new URL(url);
 
       vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
