@@ -38,7 +38,7 @@
             <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
             <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
             {% if is_staff %}
-            <a class="nav-item nav-link nav-line " id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Personal Tokens</a>
+            <a class="nav-item nav-link nav-line alpha-warning" id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Personal Tokens</a>
             {% endif %}
           </div>
         </nav>
@@ -64,6 +64,7 @@
     {% endif %}
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script>
+      document.has_ptoken_auth = {{ has_ptoken_auth|yesno:"true,false"}};
       document.user_has_token = {{ ptoken|yesno:"true,false" }};
       {% if ptoken %}
       document.ptoken = {

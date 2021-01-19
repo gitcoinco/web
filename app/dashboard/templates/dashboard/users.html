@@ -127,7 +127,7 @@
             </div>
             <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
             {% if is_staff %}
-              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 alpha-warning">
                 <span class="font-weight-bold">[[ numUsers ]]</span> users found
               </p>
               <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
