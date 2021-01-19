@@ -428,7 +428,7 @@ Vue.mixin({
         case 'binance_ext':
           payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
-          
+
         case 'harmony_ext':
           payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
@@ -847,7 +847,35 @@ var show_interest_modal = function() {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
+
+          MauticEvent.createEvent({
+            "alias": "hackathon",
+            "data": [
+                  {
+                    "name": "interest",
+                    "attributes": {
+                      "hackathon-slug": document.result.event.slug,
+                      "hackathon-action": "interest"
+                    }
+                  }
+                ]
+              },
+            {
+            "alias": "products",
+            "data": [
+              {
+                "name": "product",
+                "attributes": {
+                  "product": "hackathon",
+                  'persona': 'hackathon-hunter',
+                  'action': 'interest'
+                }
+              }
+            ]
+          })
+
         });
+
 
         return;
       }

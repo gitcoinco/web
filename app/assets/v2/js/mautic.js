@@ -36,7 +36,7 @@ document.addEventListener('mauticPageEventDelivered', function (e) {
 
 const saveMauticId = function (mauticId) {
   console.log(mauticId)
-  let url = `api/v1/mautic_profile_save/`;
+  let url = `/api/v1/mautic_profile_save/`;
   const postData = fetchData(url, 'POST', { 'mtcId': mauticId });
 
   $.when(postData).then((response) => {
@@ -89,7 +89,7 @@ class MauticEvent {
   }
 
   static send(data) {
-    let contactApi = `api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`
+    let contactApi = `/api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`
     // let dataMock = this.dataMock(data)
 
     fetch(contactApi, {

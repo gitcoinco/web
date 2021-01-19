@@ -477,6 +477,31 @@
 
           $('[data-registration]').attr('disabled', true);
           $.when(sendRegister).then((response) => {
+
+            MauticEvent.createEvent({
+              "alias": "hackathon",
+              "data": [
+                    {
+                      "name": "registration",
+                      "attributes": {
+                        "hackathon-slug": name
+                      }
+                    }
+                  ]
+                },
+              {
+              "alias": "products",
+              "data": [
+                {
+                  "name": "product",
+                  "attributes": {
+                    "product": "hackathon",
+                    'persona': 'hackathon-hunter',
+                    'action': 'register'
+                  }
+                }
+              ]
+            })
             _alert('You have now registered for this hackathon.', 'success');
             document.location.href = response.redirect;
           })
