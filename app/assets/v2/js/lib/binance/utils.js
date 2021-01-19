@@ -55,11 +55,7 @@ binance_utils.getAddressTokenBalance = async (address, tokenContractAddress) => 
   if (!isConnected || !address || !tokenContractAddress)
     return;
 
-  const methodSignature = await jsonRpcRequest(
-    'web3_sha3',
-    ['balanceOf(address)']
-  );
-  const method_id = methodSignature.substr(0, 10);
+  const method_id = "0x70a08231";
   address = address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
   const params = [
@@ -176,11 +172,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
 
       if (chainVerbose.addressType === 'eth') {
         try {
-          const methodSignature = await jsonRpcRequest(
-            'web3_sha3',
-            ['transfer(address, uint256)']
-          );
-          const method_id = methodSignature.substr(0, 10);
+          const method_id = "0xa9059cbb";
           const amount = amount.toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
           const to_address = to_address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
