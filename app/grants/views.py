@@ -3173,3 +3173,16 @@ def contribute_to_grants_v1(request):
             'message': 'grant contributions recorded'
         }
     return JsonResponse(response)
+
+@login_required
+def ingest_missing_contributions_view(request):
+    context = {
+        'title': 'Add missing contributions',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+    if not request.user.is_authenticated:
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    response = TemplateResponse(request, 'grants/ingest-contributions.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
