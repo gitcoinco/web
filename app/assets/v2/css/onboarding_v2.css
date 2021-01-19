@@ -45,7 +45,7 @@
   }
 }
 
-@media only screen and (min-width: 960px) {
+@media only screen and (min-width: 992px) {
   .border-lg-0 {
     border: 0;
   }
@@ -78,7 +78,7 @@
   }
 
   .testimonial img {
-    height: 96px;
-    width: 96px;
+    height: 126px;
+    width: 126px;
   }
 }
