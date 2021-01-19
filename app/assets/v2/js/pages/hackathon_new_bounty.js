@@ -396,6 +396,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        funderAddressFallback: false,
         terms: false,
         hackathonSlug: document.hackathon.slug,
         hackathonEndDate: document.hackathon.endDate,
