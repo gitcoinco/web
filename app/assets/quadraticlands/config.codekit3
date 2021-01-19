@@ -90,6 +90,36 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/background/_old/claim.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/claim.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/claimed.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/claimed.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/background/_old/claiming.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/background/_old/claiming.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
 	"/images/background/_old/dopamine.svg": {
 		"ft": 2097152,
 		"miP": 0,
@@ -223,7 +253,7 @@
 	"/images/background/claim.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/claim.svg",
 		"oF": 0,
 		"opt": 0,
@@ -233,7 +263,7 @@
 	"/images/background/claimed.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/claimed.svg",
 		"oF": 0,
 		"opt": 0,
@@ -243,7 +273,7 @@
 	"/images/background/claiming.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/background/claiming.svg",
 		"oF": 0,
 		"opt": 0,
