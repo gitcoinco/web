@@ -465,7 +465,41 @@
 
         return true;
       }
+      const sendMtcEvent = (slug, cb) => {
+        console.log(slug)
 
+        MauticEvent.createEvent({
+          "alias": "hackathon",
+          "data": [
+                {
+                  "name": "registration",
+                  "attributes": {
+                    "hackathon-slug": slug,
+                    "hackathon-action": 'register',
+
+                  }
+                }
+              ]
+            },
+          {
+          "alias": "products",
+          "data": [
+            {
+              "name": "product",
+              "attributes": {
+                "product": "hackathon",
+                'persona': 'hackathon-hunter',
+                'action': 'register'
+              }
+            }
+          ]
+        })
+
+        if (cb) {
+          return cb();
+        }
+
+      }
       const register = (name, referer) => {
         if (is_registered) {
           return;
@@ -478,30 +512,7 @@
           $('[data-registration]').attr('disabled', true);
           $.when(sendRegister).then((response) => {
 
-            MauticEvent.createEvent({
-              "alias": "hackathon",
-              "data": [
-                    {
-                      "name": "registration",
-                      "attributes": {
-                        "hackathon-slug": name
-                      }
-                    }
-                  ]
-                },
-              {
-              "alias": "products",
-              "data": [
-                {
-                  "name": "product",
-                  "attributes": {
-                    "product": "hackathon",
-                    'persona': 'hackathon-hunter',
-                    'action': 'register'
-                  }
-                }
-              ]
-            })
+            sendMtcEvent(name)
             _alert('You have now registered for this hackathon.', 'success');
             document.location.href = response.redirect;
           })
@@ -522,6 +533,7 @@
 
             $('#poll-submit').attr('disabled', true);
             $.when(sendRegister).then((response) => {
+              sendMtcEvent(name)
               _alert('You have now registered for this hackathon.', 'success');
               console.log(response)
               document.location.href = response.redirect;
