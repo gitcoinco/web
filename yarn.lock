@@ -355,10 +355,10 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@vporton/donations-widget-vue-binary@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.8.tgz#eee632c091cd30af354e9af5969fed6c4d75b1f0"
-  integrity sha512-5l72D3Q0dy/WdNMJ8I7rKFQas4BK9yGJ1UGWJI5/bQUUaTcpFbA7Q/Wu1+sFSBdEUpTYhZnCxQ4SZc4AstFXiw==
+"@vporton/donations-widget-vue-binary@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.9.tgz#f548d4ae9bf980eb72f46ef020b28bfecfb4935a"
+  integrity sha512-8/FuowI+aMlWcVigTUZrozgT5NI8YSWUIFpkas0f/Wfx12dhKdS9fkoCsJvW3EfvV54ecd+JGOg201LXFCLR1g==
   dependencies:
     "@vporton/future-contracts" "^0.1.0"
 
