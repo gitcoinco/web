@@ -41,7 +41,7 @@
       <small>Just bequest all your funds here.</small>
     </p>
     <!-- FIXME: Modify the component to return the conditionId and store it into the GitCoin DB. -->
-    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}"/>
+    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}" @conditionCreated="console.log"/>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}

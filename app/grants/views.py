@@ -23,7 +23,6 @@ import html
 import json
 import logging
 import re
-import pytz
 import time
 from decimal import Decimal
 
@@ -48,6 +47,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import pytz
 import requests
 import tweepy
 from app.services import RedisService

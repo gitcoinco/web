@@ -306,6 +306,11 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@openzeppelin/contracts@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.3.0.tgz#ffdb693c5c349fc33bba420248dd3ac0a2d7c408"
+  integrity sha512-AemZEsQYtUp1WRkcmZm1div5ORfTpLquLaziCIrSagjxyKdmObxuaY1yjQ5SHFMctR8rLwp706NXTbiIRJg7pw==
+
 "@types/glob@^7.1.1":
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.3.tgz#e6ba80f36b7daad2c685acd9266382e68985c183"
@@ -350,10 +355,25 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@vporton/donations-widget-vue-binary@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.4.tgz#775cc361031fe0a8180ee9eb5e38f95b31d503be"
-  integrity sha512-ydsk+ZmDw+Cc/n9cuamHH8rJMTwhcLvLeDLsbf1Z2ieXcNMaCSF6hEQ/fbgcNirOjTOZEpmQdf8Vp8StO98gPw==
+"@vporton/donations-widget-vue-binary@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.8.tgz#eee632c091cd30af354e9af5969fed6c4d75b1f0"
+  integrity sha512-5l72D3Q0dy/WdNMJ8I7rKFQas4BK9yGJ1UGWJI5/bQUUaTcpFbA7Q/Wu1+sFSBdEUpTYhZnCxQ4SZc4AstFXiw==
+  dependencies:
+    "@vporton/future-contracts" "^0.1.0"
+
+"@vporton/future-contracts@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@vporton/future-contracts/-/future-contracts-0.1.0.tgz#1c00ec538c5356b31ad3527ef501e3da8834670f"
+  integrity sha512-u1e9ey2bj7KofFFnNm9SlWrfOFJANifDmztxPQ37QW3ENEpBRvzpaxbjOWJe9EZIjsxJEV7HMKMo43d+ed413Q==
+  dependencies:
+    "@openzeppelin/contracts" "^3.3.0"
+    abdk-libraries-solidity "^2.4.0"
+
+abdk-libraries-solidity@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/abdk-libraries-solidity/-/abdk-libraries-solidity-2.4.0.tgz#4a9ed6baa2017c0a18118c804e8c9258017d4a35"
+  integrity sha512-C6RpN6hdi5sHNIKt5SGt8pGQAmmGdPIe3Cf95JBiZ+iTO5wushwkDC0r+38fSjsC/uA9rhpl/THyyZuvZv8c6g==
 
 acorn-jsx@^5.3.1:
   version "5.3.1"

@@ -2941,6 +2941,7 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+    future_salary_token = models.BigIntegerField(null=True)  # 64-bit integer
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
