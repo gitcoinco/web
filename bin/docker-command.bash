@@ -47,10 +47,6 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     fi
 
     if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
-        rm -rf assets/donations-widget-vue-binary
-        cp -a ../node_modules/@vporton/donations-widget-vue-binary assets/
-        rm -rf assets/vue-custom-element
-        cp -a ../node_modules/vue-custom-element/dist assets/vue-custom-element
         python3 manage.py collectstatic --noinput -i other &
     fi
 
