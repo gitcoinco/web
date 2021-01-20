@@ -563,6 +563,45 @@ Vue.mixin({
             "You\'ve stopped the user from working on this bounty ?" :
             "You\'ve stopped work on this bounty";
 
+          let product = document.result.event ? 'hackathons' : 'bounties';
+          let productPersona = document.result.event ? 'hackathon' : 'bounty';
+          let persona = isOwner ? 'funder' : 'hunter';
+          let mtcPersona = `${productPersona}-${persona}`;
+
+          let stopEvent = {
+            "alias": "products",
+            "data": [
+              {
+                "name": "product",
+                "attributes": {
+                  "product": product,
+                  'persona': mtcPersona,
+                  'action': 'stop'
+                }
+              }
+            ]
+          }
+
+
+          if (document.result.event) {
+            let stopHackathonEvent = {
+              "alias": "hackathon",
+              "data": [
+                {
+                  "name": "stop",
+                  "attributes": {
+                    "hackathon-slug": document.result.event.slug,
+                    "hackathon-action": "stop"
+                  }
+                }
+              ]
+            }
+            stopEvent = [stopEvent, stopHackathonEvent]
+
+          }
+
+          MauticEvent.createEvent(stopEvent)
+
           _alert(text, 'success');
         } else {
           _alert('Unable to stop work on bounty. Please try again later', 'error');
@@ -895,6 +934,19 @@ var show_interest_modal = function() {
         }).then(success => {
           if (success) {
             appBounty.fetchBounty();
+            MauticEvent.createEvent({
+              "alias": "products",
+              "data": [
+                {
+                  "name": "product",
+                  "attributes": {
+                    "product": "bounties",
+                    'persona': 'bounty-hunter',
+                    'action': 'interest'
+                  }
+                }
+              ]
+            })
             modals.bootstrapModal('hide');
 
             if (document.result.event) {
