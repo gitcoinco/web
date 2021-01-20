@@ -350,10 +350,10 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@vporton/donations-widget-vue-binary@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.0.10.tgz#8ed76b469083c62191064f459f4c5d66f6aacbc1"
-  integrity sha512-KUBJUBSDZz8YNyGdbDJbCW+BqOiegDVHLDCl/EyDy4wsOtY0t2TyXCqb6p5LSsbFzfcC6GNgg1N3zmBInyZjvQ==
+"@vporton/donations-widget-vue-binary@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.4.tgz#775cc361031fe0a8180ee9eb5e38f95b31d503be"
+  integrity sha512-ydsk+ZmDw+Cc/n9cuamHH8rJMTwhcLvLeDLsbf1Z2ieXcNMaCSF6hEQ/fbgcNirOjTOZEpmQdf8Vp8StO98gPw==
 
 acorn-jsx@^5.3.1:
   version "5.3.1"
