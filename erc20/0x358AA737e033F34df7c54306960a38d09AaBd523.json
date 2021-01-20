@@ -1,0 +1,22 @@
+{
+  "symbol": "ARES",
+  "address": "0x358AA737e033F34df7c54306960a38d09AaBd523",
+  "overview":{
+        "en": "The first chain-verified decentralized cross-chain oracle service protocol to provide secure and reliable data services for the interconnection of the chain and the digital economy..",
+        "zh": ""
+  },
+  "email": "kericfrank@aresprotocol.com",
+  "website": "https://www.aresprotocol.com/",
+  "whitepaper": "https://docs.aresprotocol.com/#/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2020-11-28",
+  "initial_price":{
+        "USD":"0.015 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/AresProtocol",
+    "telegram": "https://t.me/Aresprotocols",
+    "github": "https://github.com/aresprotocols",
+    "medium": "https://aresprotocol.medium.com/"
+  }
+}
