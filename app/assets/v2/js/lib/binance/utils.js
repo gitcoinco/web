@@ -173,8 +173,8 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
       if (chainVerbose.addressType === 'eth') {
         try {
           const method_id = "0xa9059cbb";
-          const amount = amount.toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
-          const to_address = to_address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
+          amount = amount.toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
+          to_address = to_address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
           const params = [
             {
