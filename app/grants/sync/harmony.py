@@ -23,7 +23,7 @@ def find_txn_on_harmony_explorer(contribution):
     from_address = subscription.contributor_address
     amount = subscription.amount_per_period
 
-    url = f'https://explorer.harmony.one:8888/address?id={to_address}&pageIndex=0&pageSize=20'
+    url = f'https://explorer.hmny.io:8888/address?id={to_address}&pageIndex=0&pageSize=20'
 
     response = requests.get(url).json()
     if (
@@ -38,7 +38,6 @@ def find_txn_on_harmony_explorer(contribution):
                     tx['from'] == from_address.lower() and
                     tx['to'] == to_address.lower() and
                     tx['value'] ==  float(amount) * 10 ** 18 and
-                    # is_txn_done_recently() and
                     not txn_already_used(tx['hash'], token_symbol)
                 ):
                     return tx
@@ -59,7 +58,7 @@ def get_harmony_txn_status(contribution, network='mainnet'):
     from_address = subscription.contributor_address
     amount = subscription.amount_per_period
 
-    url = f'https://explorer.harmony.one:8888/tx?id={txnid}'
+    url = f'https://explorer.hmny.io:8888/tx?id={txnid}'
 
 
     response = requests.get(url).json()
