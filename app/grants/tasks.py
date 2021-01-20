@@ -14,8 +14,7 @@ from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
 from marketing.mails import (
-    new_grant, new_grant_admin, new_supporter, thank_you_for_supporting,
-    batch_thank_you_for_supporting
+    new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
 )
 from marketing.models import Stat
 from perftools.models import JSONStore
@@ -257,7 +256,11 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         # emails to contributor
         if send_supporter_mail:
-            thank_you_for_supporting(grant, subscription)
+            grants_with_subscription = [{
+                'grant': grant,
+                'subscription': subscription
+            }]
+            thank_you_for_supporting(grants_with_subscription)
 
         update_grant_metadata.delay(grant_id)
         return grant, subscription
@@ -283,7 +286,7 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
-    batch_thank_you_for_supporting(grants_with_subscription)
+    thank_you_for_supporting(grants_with_subscription)
 
 
 @app.shared_task(bind=True, max_retries=1)
