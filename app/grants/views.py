@@ -47,6 +47,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import dateutil.parser
 import pytz
 import requests
 import tweepy
@@ -65,7 +66,7 @@ from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
-from economy.utils import convert_amount
+from economy.utils import convert_amount, convert_token_to_usdt
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
@@ -3175,7 +3176,7 @@ def contribute_to_grants_v1(request):
     return JsonResponse(response)
 
 @login_required
-def ingest_missing_contributions_view(request):
+def ingest_contributions_view(request):
     context = {
         'title': 'Add missing contributions',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
@@ -3186,3 +3187,236 @@ def ingest_missing_contributions_view(request):
     response = TemplateResponse(request, 'grants/ingest-contributions.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
+
+@login_required
+def ingest_contributions(request):
+    """Ingest missing contributions"""
+    if request.method != 'POST':
+        raise Http404
+
+    profile = request.user.profile
+    txHash = request.POST.get('txHash')
+    userAddress = request.POST.get('userAddress')
+    network = request.POST.get('network')
+    ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
+
+    def get_token(w3, network, address):
+        if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
+            # 0xEeee... is used to represent ETH in the BulkCheckout contract
+            address = '0x0000000000000000000000000000000000000000'
+        try:
+            # First try checksum
+            address_checksum = w3.toChecksumAddress(address)
+            return FTokens.objects.filter(network=network, address=address_checksum, approved=True).first().to_dict
+        except AttributeError as e:
+            address_lowercase = address.lower()
+            return FTokens.objects.filter(network=network, address=address_lowercase, approved=True).first().to_dict
+
+    def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type):
+        """
+        Creates contribution and subscription and saves it to database if no matching one exists
+        """
+        currency = symbol
+        amount = value_adjusted
+        usd_val = amount * convert_token_to_usdt(symbol)
+
+        # Check that subscription with these parameters does not exist
+        existing_subscriptions = Subscription.objects.filter(
+            grant__pk=grant.pk, contributor_profile=profile, split_tx_id=txid, token_symbol=currency
+        )
+        for existing_subscription in existing_subscriptions:
+            tolerance = 0.01  # 1% tolerance to account for floating point
+            amount_max = amount * (1 + tolerance)
+            amount_min = amount * (1 - tolerance)
+
+            if (
+                existing_subscription.amount_per_period_minus_gas_price > amount_min
+                and existing_subscription.amount_per_period_minus_gas_price < amount_max
+            ):
+                # Subscription exists
+                print("Subscription exists, exiting function\n")
+                return
+
+        # No subscription found, so create subscription and contribution
+        try:
+            # create objects
+            validator_comment = f"created by ingest grant txn script"
+            subscription = Subscription()
+            subscription.is_postive_vote = True
+            subscription.active = False
+            subscription.error = True
+            subscription.contributor_address = "N/A"
+            subscription.amount_per_period = amount
+            subscription.real_period_seconds = 2592000
+            subscription.frequency = 30
+            subscription.frequency_unit = "N/A"
+            subscription.token_address = "0x0"
+            subscription.token_symbol = currency
+            subscription.gas_price = 0
+            subscription.new_approve_tx_id = "0x0"
+            subscription.num_tx_approved = 1
+            subscription.network = network
+            subscription.contributor_profile = profile
+            subscription.grant = grant
+            subscription.comments = validator_comment
+            subscription.amount_per_period_usdt = usd_val
+            subscription.created_on = created_on
+            subscription.last_contribution_date = created_on
+            subscription.next_contribution_date = created_on
+            subscription.split_tx_id = txid
+            subscription.save()
+
+            # Create contribution and set the contribution as successful
+            contrib = subscription.successful_contribution(
+                '0x0', # subscription.new_approve_tx_id,
+                True, # include_for_clr
+                checkout_type=checkout_type
+            )
+            contrib.success=True
+            contrib.tx_cleared=True
+            contrib.tx_override=True
+            contrib.validator_comment = validator_comment
+            contrib.created_on = created_on
+            contrib.save()
+            print(f"ingested {subscription.pk} / {contrib.pk}")
+
+            metadata = {
+                "id": subscription.id,
+                "value_in_token": str(subscription.amount_per_period),
+                "value_in_usdt_now": str(round(subscription.amount_per_period_usdt, 2)),
+                "token_name": subscription.token_symbol,
+                "title": subscription.grant.title,
+                "grant_url": subscription.grant.url,
+                "num_tx_approved": subscription.num_tx_approved,
+                "category": "grant",
+            }
+            kwargs = {
+                "profile": profile,
+                "subscription": subscription,
+                "grant": subscription.grant,
+                "activity_type": "new_grant_contribution",
+                "metadata": metadata,
+            }
+
+            Activity.objects.create(**kwargs)
+            print("Saved!\n")
+
+        except Exception as e:
+            print(e)
+            print("\n")
+
+    def process_bulk_checkout_tx(w3, txid, profile, network, do_write):
+        # Make sure tx was successful
+        receipt = w3.eth.getTransactionReceipt(txid)
+        if receipt.status == 0:
+            raise Exception("Transaction was not successful")
+
+        # Parse tx logs
+        bulk_checkout_contract = w3.eth.contract(address=settings.BULK_CHECKOUT_ADDRESS, abi=settings.BULK_CHECKOUT_ABI)
+        parsed_logs = bulk_checkout_contract.events.DonationSent().processReceipt(receipt)
+
+        # Return if no donation logs were found
+        if len(parsed_logs) == 0:
+            raise Exception("No DonationSent events found in this transaction")
+
+        # Get transaction timestamp
+        block_info = w3.eth.getBlock(receipt['blockNumber'])
+        created_on = pytz.UTC.localize(datetime.datetime.fromtimestamp(block_info['timestamp']))
+
+        # For each event in the parsed logs, create the DB objects
+        for (index,event) in enumerate(parsed_logs):
+            print(f'\nProcessing {index + 1} of {len(parsed_logs)}...')
+            # Extract contribution parameters from events
+            token_address = event["args"]["token"]
+            value = event["args"]["amount"]
+            token = get_token(w3, network, token_address)
+            decimals = token["decimals"]
+            symbol = token["name"]
+            value_adjusted = int(value) / 10 ** int(decimals)
+            to = event["args"]["dest"]
+
+            # Find the grant
+            try:
+                print(to)
+                grant = (
+                    Grant.objects.filter(admin_address__iexact=to)
+                    .order_by("-positive_round_contributor_count")
+                    .first()
+                )
+                print(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+            except Exception as e:
+                print(e)
+                print(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                print("Skipping unknown grant\n")
+                continue
+
+            if do_write:
+                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std')
+        return
+
+    def handle_ingestion(profile, network, identifier, do_write):
+        # Determine how to process the contributions
+        if len(identifier) == 42:
+            # An address was provided, so we'll use the zkSync API to fetch their transactions
+            ingestion_method = 'zksync_api'
+        elif len(identifier) == 66:
+            # A transaction hash was provided, so we look for BulkCheckout logs in the L1 transaction
+            ingestion_method = 'bulk_checkout'
+        else:
+            raise Exception('Could not ingest: Invalid identifier')
+
+        # Setup web3 and get user profile
+        PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
+        w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+        
+        # Handle ingestion
+        if ingestion_method == 'bulk_checkout':
+            # We were provided an L1 transaction hash, so process it
+            txid = identifier
+            process_bulk_checkout_tx(w3, txid, profile, network, True)
+
+        elif ingestion_method == 'zksync_api':
+            # Get history of transfers from this user's zkSync address using the zkSync API: https://zksync.io/api/v0.1.html#account-history
+            user_address = identifier
+            base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
+            r = requests.get(f"{base_url}/account/{user_address}/history/older_than") # gets last 100 zkSync transactions
+            r.raise_for_status()
+            transactions = r.json()  # array of zkSync transactions
+
+            for transaction in transactions:
+                # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
+                if transaction["tx"]["type"] != "Transfer":
+                    continue
+
+                # Extract contribution parameters from the JSON
+                symbol = transaction["tx"]["token"]
+                value = transaction["tx"]["amount"]
+                token = FTokens.objects.filter(network=network, symbol=transaction["tx"]["token"], approved=True).first().to_dict
+                decimals = token["decimals"]
+                symbol = token["name"]
+                value_adjusted = int(value) / 10 ** int(decimals)
+                to = transaction["tx"]["to"]
+
+                # Find the grant
+                try:
+                    grant = Grant.objects.filter(admin_address__iexact=to).order_by("-positive_round_contributor_count").first()
+                    print(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                except Exception as e:
+                    print(e)
+                    print(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                    print("Skipping unknown grant\n")
+                    continue
+
+                if do_write:
+                    txid = transaction['hash']
+                    created_on = dateutil.parser.parse(transaction['created_at'])
+                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync')
+
+    if txHash != '':
+        handle_ingestion(profile, network, txHash, True)
+        ingestion_types.append('L1')
+    if userAddress != '':
+        handle_ingestion(profile, network, userAddress, True)
+        ingestion_types.append('L2')
+
+    return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })

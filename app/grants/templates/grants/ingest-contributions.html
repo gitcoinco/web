@@ -111,6 +111,9 @@
             <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
               Please verify forms errors and try again
             </div>
+            <div class="col-12 text-center" v-else-if="submitted">
+              Processing your contributions. This may take a minute or two...
+            </div>
           </div>
         </div>
 
