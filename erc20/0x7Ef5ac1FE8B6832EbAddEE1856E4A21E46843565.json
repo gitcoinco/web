@@ -1,0 +1,17 @@
+{
+  "symbol": "DOI",
+  "address": "0x7Ef5ac1FE8B6832EbAddEE1856E4A21E46843565",
+  "overview":{
+    "en": "Daoswap is a global community, started by develpers and domain experts from Dubai, US, Canda and other regions joining, started from 2020. Working togather the community focus on the Automatic Market Maker (AMM) algorithm, trying to optimize both from tech and Defi Mode."
+  },
+  "email": "contact@daoswap.global",
+  "website": "https://www.daoswap.global",
+  "whitepaper": "https://www.daoswap.global/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-03",
+  "links": {
+    "twitter": "https://twitter.com/SwapDao",
+    "telegram": "https://t.me/daoswap",
+    "github": "https://github.com/daoswap-tech"
+  }
+} 
