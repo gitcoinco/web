@@ -2,29 +2,27 @@
 // if (document.contxt.github_handle && document.contxt.env === 'prod') {
 //   mtcId
 // }
-document.addEventListener('mauticPageEventDelivered', function (e) {
-  console.log(e)
+document.addEventListener('mauticPageEventDelivered', function(e) {
+  console.log(e);
   if (document.contxt.github_handle && mtcId && !document.contxt.mautic_id) {
     //   mtcId
-    saveMauticId(mtcId)
+    saveMauticId(mtcId);
   }
 
-})
-
-
+});
 
 // `api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`
 // let product = {
-//   "email": "octavioamuchastegui@gmail.com",
-//   "customObjects": {
-//       "data": [
+//   'email': 'octavioamuchastegui@gmail.com',
+//   'customObjects': {
+//       'data': [
 //           {
-//               "alias": "products",
-//               "data": [
+//               'alias': 'products',
+//               'data': [
 //                   {
-//                       "name": "Kernel",
-//                       "attributes": {
-//                           "product": "kernel"
+//                       'name': 'Kernel',
+//                       'attributes': {
+//                           'product': 'kernel'
 //                       }
 //                   }
 //               ]
@@ -33,10 +31,9 @@ document.addEventListener('mauticPageEventDelivered', function (e) {
 //   }
 // }
 
-
-const saveMauticId = function (mauticId) {
-  console.log(mauticId)
-  let url = `/api/v1/mautic_profile_save/`;
+const saveMauticId = function(mauticId) {
+  console.log(mauticId);
+  let url = '/api/v1/mautic_profile_save/';
   const postData = fetchData(url, 'POST', { 'mtcId': mauticId });
 
   $.when(postData).then((response) => {
@@ -47,7 +44,7 @@ const saveMauticId = function (mauticId) {
     _alert('Unable to save your profile. Please login again', 'error');
   });
 
-}
+};
 
 class MauticEvent {
   /**
@@ -63,16 +60,16 @@ class MauticEvent {
 
   static dataMock(data) {
     let obj = {
-      "email": data.email,
-      "customObjects": {
-        "data": [
+      'email': data.email,
+      'customObjects': {
+        'data': [
           {
-            "alias": "products",
-            "data": [
+            'alias': 'products',
+            'data': [
               {
-                "name": "product",
-                "attributes": {
-                  "product": data.product
+                'name': 'product',
+                'attributes': {
+                  'product': data.product
                 }
               }
             ]
@@ -80,8 +77,9 @@ class MauticEvent {
         ]
       }
     };
+
     if (data.persona) {
-      obj.customObjects.data[0].data[0].attributes.persona = data.persona
+      obj.customObjects.data[0].data[0].attributes.persona = data.persona;
     }
 
     return obj;
@@ -89,7 +87,7 @@ class MauticEvent {
   }
 
   static send(data) {
-    let contactApi = `/api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`
+    let contactApi = `/api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`;
     // let dataMock = this.dataMock(data)
 
     fetch(contactApi, {
@@ -99,13 +97,13 @@ class MauticEvent {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
-    }).then(function (response) {
+    }).then(function(response) {
       return response.json();
     })
-      .then(function (result) {
+      .then(function(result) {
         console.log(result);
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log('Request failed', error);
       });
 
@@ -113,7 +111,7 @@ class MauticEvent {
 
   static product(data) {
     // MauticEvent.product({'product':'bounties', 'persona': 'bounty-hunter'})
-    this.send(this.dataMock({ 'email': document.contxt.email, 'product': data.product, 'persona': data.persona }))
+    this.send(this.dataMock({ 'email': document.contxt.email, 'product': data.product, 'persona': data.persona }));
   }
 
   static createEvent(...obj) {
@@ -121,23 +119,23 @@ class MauticEvent {
       Send multiple custom objects
 
       MauticEvent.createEvent({
-        "alias": "hackathon",
-        "data": [
+        'alias': 'hackathon',
+        'data': [
           {
-            "name": "test3",
-            "attributes": {
-              "hackathon-slug": "test3"
+            'name': 'test3',
+            'attributes': {
+              'hackathon-slug': 'test3'
             }
           }
         ]
       },
       {
-        "alias": "products",
-        "data": [
+        'alias': 'products',
+        'data': [
           {
-            "name": "product",
-            "attributes": {
-              "product": "hackathon",
+            'name': 'product',
+            'attributes': {
+              'product': 'hackathon',
               'persona': 'hackathon-hunter'
             }
           }
@@ -148,25 +146,26 @@ class MauticEvent {
       })
     */
     let baseObj = {
-      "email": document.contxt.email,
-      "customObjects": {}
-    }
-    console.log(baseObj)
+      'email': document.contxt.email,
+      'customObjects': {}
+    };
 
-    baseObj.customObjects['data'] = obj
+    console.log(baseObj);
+
+    baseObj.customObjects['data'] = obj;
     // console.log(objSend)
-    this.send(baseObj)
+    this.send(baseObj);
 
   }
 
   static updateUser(userData) {
-    // { "tags": ['mytag','yourtag']}
+    // { 'tags': ['mytag','yourtag']}
     let baseObj = {
-      "email": document.contxt.email,
-    }
-    let merged = {...baseObj, ...userData}
+      'email': document.contxt.email
+    };
+    let merged = {...baseObj, ...userData};
 
-    this.send(merged)
+    this.send(merged);
   }
 }
 

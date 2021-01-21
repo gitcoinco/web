@@ -569,38 +569,38 @@ Vue.mixin({
           let mtcPersona = `${productPersona}-${persona}`;
 
           let stopEvent = {
-            "alias": "products",
-            "data": [
+            'alias': 'products',
+            'data': [
               {
-                "name": "product",
-                "attributes": {
-                  "product": product,
+                'name': 'product',
+                'attributes': {
+                  'product': product,
                   'persona': mtcPersona,
                   'action': 'stop'
                 }
               }
             ]
-          }
-
+          };
 
           if (document.result.event) {
             let stopHackathonEvent = {
-              "alias": "hackathon",
-              "data": [
+              'alias': 'hackathon',
+              'data': [
                 {
-                  "name": "stop",
-                  "attributes": {
-                    "hackathon-slug": document.result.event.slug,
-                    "hackathon-action": "stop"
+                  'name': 'stop',
+                  'attributes': {
+                    'hackathon-slug': document.result.event.slug,
+                    'hackathon-action': 'stop'
                   }
                 }
               ]
-            }
-            stopEvent = [stopEvent, stopHackathonEvent]
+            };
+
+            stopEvent = [ stopEvent, stopHackathonEvent ];
 
           }
 
-          MauticEvent.createEvent(stopEvent)
+          MauticEvent.createEvent(stopEvent);
 
           _alert(text, 'success');
         } else {
@@ -888,30 +888,30 @@ var show_interest_modal = function() {
           });
 
           MauticEvent.createEvent({
-            "alias": "hackathon",
-            "data": [
-                  {
-                    "name": "interest",
-                    "attributes": {
-                      "hackathon-slug": document.result.event.slug,
-                      "hackathon-action": "interest"
-                    }
-                  }
-                ]
-              },
-            {
-            "alias": "products",
-            "data": [
+            'alias': 'hackathon',
+            'data': [
               {
-                "name": "product",
-                "attributes": {
-                  "product": "hackathon",
+                'name': 'interest',
+                'attributes': {
+                  'hackathon-slug': document.result.event.slug,
+                  'hackathon-action': 'interest'
+                }
+              }
+            ]
+          },
+          {
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'hackathon',
                   'persona': 'hackathon-hunter',
                   'action': 'interest'
                 }
               }
             ]
-          })
+          });
 
         });
 
@@ -935,18 +935,18 @@ var show_interest_modal = function() {
           if (success) {
             appBounty.fetchBounty();
             MauticEvent.createEvent({
-              "alias": "products",
-              "data": [
+              'alias': 'products',
+              'data': [
                 {
-                  "name": "product",
-                  "attributes": {
-                    "product": "bounties",
+                  'name': 'product',
+                  'attributes': {
+                    'product': 'bounties',
                     'persona': 'bounty-hunter',
                     'action': 'interest'
                   }
                 }
               ]
-            })
+            });
             modals.bootstrapModal('hide');
 
             if (document.result.event) {
