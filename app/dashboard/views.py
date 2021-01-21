@@ -6500,10 +6500,15 @@ def future_donate(request):
     return TemplateResponse(request, 'future/donate.html')
 
 
+@login_required
 def future_register_for_salary(request):
-    return TemplateResponse(request, 'future/register.html')
+    profile = request.user.profile
+    return TemplateResponse(request, 'future/register.html',
+                            {'alreadyRegistered': profile.future_salary_token is not None})
 
 
+@csrf_exempt
+@require_POST
 def future_do_register_for_salary(request):
     if request.user.is_authenticated and getattr(request.user, 'profile', None):
         with transaction.atomic():
@@ -6511,7 +6516,7 @@ def future_do_register_for_salary(request):
             if profile.future_salary_token is not None:
                 return JsonResponse(
                     {'error': _('You have already created a condition!')},
-                    status=401)
+                    status=409)
             profile.future_salary_token = request.POST['conditionId']
             profile.save()
     else:

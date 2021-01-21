@@ -43,20 +43,26 @@
 
     <script>
       // TODO: Display a notification that a condition is being created.
-      function onConditionCreated(conditonId) {
-        console.log("EEE")
-        $.post("{% url 'future_do_register' %}", {conditonId})
-          .then(() => reload())
-          .catch(console.log);
+      function onConditionCreated(conditionId) {
+        $.post("{% url 'future_do_register' %}", {conditionId})
+          .then(console.log)
+          .catch(e => alert(e.responseJSON.error)); // better alert
       }
     </script>
 
-    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}" @customEvent="onConditionCreated()"/>
+    {% if alreadyRegistered %}
+    <p><strong>You are already registered.</strong></p>
+    {% else %}
+    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}" conditionCreated="onConditionCreated"/>
+    {% endif %}
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     <script src="{% static 'donations-widget-vue-binary/Register/donations-register.min.js' %}"></script>
+    <script>
+      window.registerComponent.addRegisterCallback(onConditionCreated);
+    </script>
   </body>
 </html>
