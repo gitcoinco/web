@@ -27,9 +27,15 @@
   <script src="/static/landingpage/sal.js"></script>
   <script src="/static/landingpage/gitcoin.js"></script>
   <script src="/static/landingpage/animations.js"></script>
+  <script src="/static/v2/js/lib/bootstrap.min.js" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
+{% with next="/hackathon-list" hideModal="True" %}
+    {% include "dashboard/hackathon/onboarding_v2.html"%}
+  {% endwith %}
+
   <!-- fixed logo-->
   <div id="logo">
     <a href="#">
@@ -134,7 +140,7 @@
           Ethereum and other tokens. Find mentorship by connecting with
           talented developers and leaders of Ethereum’s top companies.
         </p>
-        <a class="btn fe-pulse" href="/hackathon-list"><span>Join a Hackathon</span></a>
+        <a class="btn fe-pulse" onclick="loadOnboardingModal()"><span>Join a Hackathon</span></a>
         <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
         <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
       </div>
