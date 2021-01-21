@@ -256,7 +256,8 @@ def helper_contributions_to_earnings(_contributions):
         )
 
 def helper_earnings_to_addr_list(earnings):
-    items = earnings.values_list('history__payload__from', flat=True)
+    ids = earnings.values_list('source_id', flat=True)
+    items = Contribution.objects.filter(pk__in=ids).values_list('subscription__contributor_address', flat=True)
     return list(items)
 
 def helper_grants_output(request, meta_data, earnings):
