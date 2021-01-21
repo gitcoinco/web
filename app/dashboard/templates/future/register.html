@@ -40,8 +40,18 @@
       <br/> 
       <small>Just bequest all your funds here.</small>
     </p>
-    <!-- FIXME: Modify the component to return the conditionId and store it into the GitCoin DB. -->
-    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}" @conditionCreated="console.log"/>
+
+    <script>
+      // TODO: Display a notification that a condition is being created.
+      function onConditionCreated(conditonId) {
+        console.log("EEE")
+        $.post("{% url 'future_do_register' %}", {conditonId})
+          .then(() => reload())
+          .catch(console.log);
+      }
+    </script>
+
+    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}" @customEvent="onConditionCreated()"/>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}

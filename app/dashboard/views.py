@@ -37,6 +37,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 from django.db.models import Avg, Count, Prefetch, Q, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -6501,3 +6502,20 @@ def future_donate(request):
 
 def future_register_for_salary(request):
     return TemplateResponse(request, 'future/register.html')
+
+
+def future_do_register_for_salary(request):
+    if request.user.is_authenticated and getattr(request.user, 'profile', None):
+        with transaction.atomic():
+            profile = request.user.profile
+            if profile.future_salary_token is not None:
+                return JsonResponse(
+                    {'error': _('You have already created a condition!')},
+                    status=401)
+            profile.future_salary_token = request.POST['conditionId']
+            profile.save()
+    else:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+             status=401)
+    return JsonResponse({'success': True})

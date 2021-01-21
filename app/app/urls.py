@@ -333,6 +333,7 @@ urlpatterns = [
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
     re_path(r'^future/donate/?', dashboard.views.future_donate, name='future_donate'),
     re_path(r'^future/register/?', dashboard.views.future_register_for_salary, name='future_register'),
+    re_path(r'^future/do-register$', dashboard.views.future_do_register_for_salary, name='future_do_register'),
     re_path(
         r'^contributor/?(?P<tech_stack>.*)/?',
         retail.views.contributor_bounties_redirect,
