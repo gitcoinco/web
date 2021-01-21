@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,9 +13,12 @@
 
   {% include 'shared/cards.html' %} {% include 'shared/favicon.html' %}
 
-  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/v2/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/v2/css/fontawesome-all.min.css" as="style">
 
-  <link href="/static/landingpage/app.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="/static/landingpage/app.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" href="{% static "v2/css/onboarding_v2.css" %}" />
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 

@@ -1,9 +1,9 @@
 {% load static %}
-<div class="modal" id="onboarding_v2" tabindex="-1" role="dialog" >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" size="lg" class="onboarding_modal" header-class="border-0" footer-class="border-0">
-      <div class="modal-header" class="border">
-        <div class="modal-title block text-center mt-5">
+<div class="modal" style="color: #212529;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" >
+      <div class="modal-header border-0">
+        <div class="modal-title block text-center">
           <h3 class="font-weight-bold">How to Earn in a Gitcoin Hackathon </h3>
           <h5 class="font-weight-semibold mt-4">Gitcoin helps you earn by building open source development projects and
             participating in hackathons</h5>
@@ -13,13 +13,13 @@
       <hr class="mx-3 d-none d-lg-block"/>
 
       <div class="modal-body">
-        <div style="font-size: .85em; font-weight: bold; width: 100%;"
-                      class="list-group container d-flex justify-content-between text-lg-center" width="100%" horizontal="lg">
+        <div style="font-size: 10pt; font-weight: bold; width: 100%;"
+                      class="list-group list-group-horizontal-lg d-flex justify-content-between text-lg-center" width="100%" horizontal="lg">
           <div class="list-group-item py-1 border-lg-0 border-left-0 border-right-0">
             <div class="row">
               <div class="col col-3 col-lg-12 order-lg-12">
                 <img class="img-fluid" src="{% static 'v2/images/hackathon/onboarding_v2/icon-01-pick.svg'%}"
-                      class="d-block mx-auto p-0" style="max-width: 60%;"/>
+                      class="d-block mx-auto p-0" style="max-width: 60%; display: block; margin: auto;"/>
               </div>
               <div class="py-3 col col-9 col-lg-12 order-lg-1">
                 Pick a hackathon
@@ -30,7 +30,7 @@
             <div class="row">
               <div class="col col-3 col-lg-12 order-lg-2">
                 <img class="img-fluid" src="{% static 'v2/images/hackathon/onboarding_v2/icon-02-register.svg'%}"
-                      class="d-block mx-auto p-0" style="max-width: 60%;"/>
+                      class="d-block mx-auto p-0" style="max-width: 60%; display: block; margin: auto;"/>
               </div>
               <div class="py-3 col col-9 col-lg-12 order-lg-1">
                 Register to participate
@@ -41,7 +41,7 @@
             <div class="row">
               <div class="col col-3 col-lg-12 order-lg-2">
                 <img class="img-fluid" src="{% static 'v2/images/hackathon/onboarding_v2/icon-03-choose.svg'%}"
-                      class="d-block mx-auto p-0" style="max-width: 60%;"/>
+                      class="d-block mx-auto p-0" style="max-width: 60%; display: block; margin: auto;"/>
               </div>
               <div class="col col-9 col-lg-12 order-lg-1 py-3">
                 Choose prize & build
@@ -52,7 +52,7 @@
             <div class="row">
               <div class="col col-3 col-lg-12 order-lg-2">
                 <img class="img-fluid" src="{% static 'v2/images/hackathon/onboarding_v2/icon-04-meet.svg'%}"
-                      class="d-block mx-auto p-0" style="max-width: 60%;"/>
+                      class="d-block mx-auto p-0" style="max-width: 60%; display: block; margin: auto;"/>
               </div>
               <div class="py-3 col col-9 col-lg-12 order-lg-1">
                 Meet great devs & workshop
@@ -63,7 +63,7 @@
             <div class="row">
               <div class="col col-3 col-lg-12 order-lg-2">
                 <img class="img-fluid" src="{% static 'v2/images/hackathon/onboarding_v2/icon-05-submit.svg'%}"
-                      class="d-block mx-auto p-0" style="max-width: 60%;"/>
+                      class="d-block mx-auto p-0" style="max-width: 60%; display: block; margin: auto;"/>
               </div>
               <div class="py-3 col col-9 col-lg-12 order-lg-1">
                 Submit work & get paid
@@ -74,10 +74,10 @@
       </div>
       <hr class="mx-3 d-none d-lg-block"/>
 
-      <div class="modal-footer">
-        <div class="w-100 container">
+      <div class="modal-footer border-0">
+        <div class="container">
           <h5 class="mx-3 mt-0 d-flex justify-content-center justify-content-md-start">Benefits</h5>
-          <div class="row ml-2 benefits" style="color: #757087; font-size: .95em;">
+          <div class="row ml-2 benefits" style="color: #757087; font-size: 12pt;">
             <div class="col col-6 col-lg-5 order-lg-0">
               <p><span class="fa fa-smile fa-2x "></span> <span class="mt-1"> Meet great devs</span></p>
             </div>
@@ -99,7 +99,7 @@
                 class="mt-1"> Receive project support from the community</span></p>
             </div>
           </div>
-          <div class="list-group" flush style="color: #757087; font-size: .85em;">
+          <div class="list-group list-group-flush" style="color: #757087; font-size: .85em;">
             <div class="list-group-item ">You’ll need a Github account to work on Gitcoin</div>
             <div class="list-group-item truncate-lg">
             Common languages used in our hackathons: JavaScript, HTML, Python, CSS, Java, C++, TypeScript, PHP, Shell, C.
@@ -130,7 +130,7 @@
             </div>
           </div>
 
-          <div class="py-5 container">
+          <div class="py-5">
             <div class="row px-4">
               <div class="col col-12 col-lg-3 testimonial">
                 <div>
@@ -148,13 +148,17 @@
               </div>
             </div>
           </div>
-          <div class="d-block mx-auto text-center py-2 custom-control custom-checkbox">
+          {% if next %}
+          <a href="{{ next }}">Continue</button>
+          {% else %}
+          <div class="d-block mx-auto text-center pt-2 custom-control custom-checkbox">
             <input onchange="hideNextTime(this)" type="checkbox" class="custom-control-input" id="hide-hackaton-onboarding">
             <label class="custom-control-label" for="hide-hackaton-onboarding">Got it! Don’t show me again</label>
           </div>
           <button class="button button--primary px-5 mb-5 d-block mx-auto"  onclick="dismiss()">I’m ready to explore
             hackathons!
           </button>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -164,28 +168,34 @@
 <script type="text/javascript" defer>
 
   let showOnboarding = true
+  let hideModal = false
   const storageKey = "onboarding-v2-modal-visibility"
 
   const hideNextTime = (checkbox) => {
-    return checkbox.checked ? true : false
+    hideModal = checkbox.checked ? true : false
   }
 
-  const dismiss = ()=>{
-    window.localStorage.setItem(storageKey, hideNextTime ? 0 : 1)
+  const dismiss = () => {
+    window.localStorage.setItem(storageKey, hideModal ? 0 : 1)
     showOnboarding = false
     $('.jquery-modal').remove()
-    $('body').css({"overflow": "visible"})
-    $('#onboarding_v2').remove();
+    $('#onboarding_v2').modal('hide');
   }
 
-  $(window).on('load',function(){
+  const loadOnboardingModal = () => {
     if (showOnboarding) {
       $('#onboarding_v2').modal('show');
-      $('#onboarding_v2').css({"overflow": "scroll"})
+      $('#onboarding_v2').css({"overflow-y": "scroll"})
     }
+  }
+
+  $(window).on('load', function () {
+    {% if not hideModal %}
+    loadOnboardingModal()
+    {% endif %}
   });
 
-  $(document).on('readystatechange', ()=>{
+  $(document).on('readystatechange', () => {
     const status = window.localStorage.getItem(storageKey)
       if (status !== null) {
         showOnboarding = Boolean(+status)
