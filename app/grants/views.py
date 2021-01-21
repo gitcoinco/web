@@ -3181,8 +3181,6 @@ def ingest_contributions_view(request):
         'title': 'Add missing contributions',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
     }
-    if not request.user.is_authenticated:
-        return redirect('/login/github?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/ingest-contributions.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
