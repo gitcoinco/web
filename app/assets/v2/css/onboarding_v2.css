@@ -41,10 +41,11 @@
 @media only screen and (max-width:960px) {
   .testimonial img {
     height: 64px;
+    width: 64px;
   }
 }
 
-@media only screen and (min-width: 960px) {
+@media only screen and (min-width: 992px) {
   .border-lg-0 {
     border: 0;
   }
@@ -70,5 +71,14 @@
 
   .benefits>div {
     border: 0 !important;
+  }
+
+  .truncate-lg {
+    text-overflow: ellipsis; overflow: hidden; white-space: nowrap
+  }
+
+  .testimonial img {
+    height: 126px;
+    width: 126px;
   }
 }
