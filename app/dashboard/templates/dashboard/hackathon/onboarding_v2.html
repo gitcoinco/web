@@ -149,7 +149,8 @@
             </div>
           </div>
           {% if next %}
-          <a href="{{ next }}">Continue</button>
+            <a class="btn fe-pulse" href="{{ next }}" style="display: block; margin: auto; padding: 8px 14px;">I’m ready to explore
+            hackathons!</a>
           {% else %}
           <div class="d-block mx-auto text-center pt-2 custom-control custom-checkbox">
             <input onchange="hideNextTime(this)" type="checkbox" class="custom-control-input" id="hide-hackaton-onboarding">
