@@ -57,7 +57,10 @@
     {% if alreadyRegistered %}
     <p><strong>You are already registered.</strong></p>
     {% else %}
-    <donations-register prefix="{% static 'donations-widget-vue-binary/' %}" conditionCreated="onConditionCreated"/>
+    <donations-register
+      prefix="{% static 'donations-widget-vue-binary/' %}"
+      conditionCreated="onConditionCreated"
+      :initialConditionId="{{ conditionId }}"/>
     {% endif %}
 
     {% include 'shared/bottom_notification.html' %}

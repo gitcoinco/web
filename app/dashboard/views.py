@@ -6504,7 +6504,8 @@ def future_donate(request):
 def future_register_for_salary(request):
     profile = request.user.profile
     return TemplateResponse(request, 'future/register.html',
-                            {'alreadyRegistered': profile.future_salary_token is not None})
+                            {'alreadyRegistered': profile.future_salary_token is not None,
+                             'conditionId': profile.future_salary_token})
 
 
 @csrf_exempt
