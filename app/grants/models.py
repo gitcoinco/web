@@ -320,24 +320,28 @@ class Grant(SuperModel):
     )
     celo_payout_address = models.CharField(
         max_length=255,
+        default='0x0',
         null=True,
         blank=True,
         help_text=_('The celo wallet address where subscription funds will be sent.'),
     )
     zil_payout_address = models.CharField(
         max_length=255,
+        default='0x0',
         null=True,
         blank=True,
         help_text=_('The zilliqa wallet address where subscription funds will be sent.'),
     )
     polkadot_payout_address = models.CharField(
         max_length=255,
+        default='0x0',
         null=True,
         blank=True,
         help_text=_('The polkadot wallet address where subscription funds will be sent.'),
     )
     harmony_payout_address = models.CharField(
         max_length=255,
+        default='0x0',
         null=True,
         blank=True,
         help_text=_('The harmony wallet address where subscription funds will be sent.'),

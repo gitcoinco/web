@@ -83,7 +83,7 @@ class CartData {
     }
 
     grantData.uuid = get_UUID();
-    console.log(grantData.tenants, grantData.tenants.includes('ZCASH'));
+
     if (grantData.tenants.includes('ZCASH')) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 0.01;
@@ -105,6 +105,14 @@ class CartData {
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'ZIL';
       }
+    } else if (grantData.tenants.includes('HARMONY')) {
+
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ONE';
+      }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;
@@ -119,6 +127,8 @@ class CartData {
       grantData.grant_donation_currency = 'ETH';
     }
 
+    grantData.payment_status = 'waiting';
+    grantData.txnid = null;
 
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 0;

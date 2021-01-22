@@ -28,6 +28,11 @@ Vue.mixin({
         return;
       }
 
+      if (url.indexOf('/pull/') > 0) {
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url and not a PR');
+        return;
+      }
+
       let ghIssueUrl = new URL(url);
 
       vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
@@ -77,7 +82,11 @@ Vue.mixin({
     getBinanceSelectedAccount: async function() {
       let vm = this;
 
-      vm.form.funderAddress = await binance_utils.getSelectedAccount();
+      try {
+        vm.form.funderAddress = await binance_utils.getSelectedAccount();
+      } catch (error) {
+        vm.funderAddressFallback = true;
+      }
     },
     getAmount: function(token) {
       let vm = this;
@@ -719,6 +728,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        funderAddressFallback: false,
         checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
         expandedGroup: {'reserve': [], 'featuredBounty': []},
         errors: {},
