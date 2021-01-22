@@ -1,0 +1,21 @@
+{
+  "symbol": "GFC",
+  "address": "0xe3F4006ee7d620D4195089Ce89aE8567b5CE7d4E",
+  "overview":{
+        "en": "Galaxy Finance Coin.",
+        "zh": ""
+  },
+  "email": "",
+  "website": "https://www.galaxyfinance.top",
+  "whitepaper": "https://www.galaxyfinance.top/#/whitePaper",
+  "state": "NORMAL",
+  "initial_price":{
+        "ETH":"0.00002666666667 ETH"
+  },
+  "links": {
+    "blog": "",
+    "twitter": "https://twitter.com/Jacob_GFC",
+    "telegram": "https://t.me/joinchat/SC49oRYe5SjeQO1A",
+    "github": "https://github.com/GFC-Eco/gfc-doucuments/blob/main/Start-GFCIntro.md"
+  }
+}
