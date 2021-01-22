@@ -6,7 +6,7 @@
   :root {
     --device: "laptop"; } }
 
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   :root {
     --device: "tablet"; } }
 
@@ -76,7 +76,7 @@ p {
   html {
     font-size: 120%; } }
 
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   html {
     font-size: 110%; } }
 
@@ -622,7 +622,7 @@ section#intro {
     section#intro figure .hidden {
       display: none; }
 
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   section#intro {
     height: inherit;
     grid-template-columns: 1fr;
@@ -631,7 +631,18 @@ section#intro {
       grid-row: 2; }
     section#intro figure {
       grid-row: 1;
-      margin-top: 8em; } }
+      margin-top: 8em; } 
+      h1 {
+        font-size: 150%;
+        font-weight: 800;
+        line-height: 1.3em;
+        margin-bottom: 1rem; }
+      
+      h2 {
+        font-size: 90%;
+        font-weight: 800;
+        line-height: 1.3em;
+        margin-bottom: 1rem; } }
 
 @media (max-width: 688px) {
   section#intro {
@@ -760,7 +771,7 @@ section#twitter {
       color: var(--cosmicteal);
       font-weight: 800; }
 
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   section#twitter div.grid {
     grid-template-columns: repeat(2, 1fr); } }
 
