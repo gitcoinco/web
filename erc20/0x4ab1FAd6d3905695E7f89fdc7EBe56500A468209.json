@@ -1,0 +1,16 @@
+{
+  "symbol": "PSUNT",
+  "address": "0x4ab1FAd6d3905695E7f89fdc7EBe56500A468209",
+  "overview":{
+        "zh": "PSUNT全称“Pool Sunex value Token”中文简称“赛塔矿权”，是“100sunex 阳光壹佰”数字资产交易平台发行的平台通证SUNT矿池开采全的证明。拥有该通证可以根据PSS算法和模型进行挖矿。"
+  },
+  "email": "sunex-bd@hotmail.com",
+  "website": "https://100sunex.com/",
+  "whitepaper": "https://sunpool.bqailab.com/vue/100SunEX-生态白皮书.pdf",
+  "state": "NORMAL",
+  "links": {
+    "blog": "https://weibo.com/u/6938435533",
+    "github": "https://github.com/100SunEX",
+    "facebook": "https://www.facebook.com/100052038411726/posts/112799360464677/"
+  }
+}
