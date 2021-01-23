@@ -355,16 +355,16 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@vporton/donations-widget-vue-binary@^0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.23.tgz#e214d0c77b1d92824347ed2df61371fcfe772c42"
-  integrity sha512-fIin63xNhOOKAxtkcf2OE/m0FBd31L/gQeNq3aMQPkeKmk+nt9Wg++KgY4+xou3nta3fMqTLC90yg5nuGTZUIg==
+"@vporton/donations-widget-vue-binary@^0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.24.tgz#109fc9353a8abc4afbfa1110c2baa693ef4d9013"
+  integrity sha512-8Y3ZvWGYMY5p8soHrmjjyeZ4aAcDMdRAEvZpfg/UAjekm11+U7CKF9CuA8fdcz3/cepjZgOOzVlWjlbQkhBa8w==
   dependencies:
     "@vporton/future-contracts" "git+ssh://git@github.com/vporton/future-contracts.git"
 
 "@vporton/future-contracts@git+ssh://git@github.com/vporton/future-contracts.git":
   version "0.1.0"
-  resolved "git+ssh://git@github.com/vporton/future-contracts.git#75971a8ffb8c80a4638da99663e0a2cfa12a8456"
+  resolved "git+ssh://git@github.com/vporton/future-contracts.git#9f095dbf72f860fb5638b062c70e0e34324bd02d"
   dependencies:
     "@openzeppelin/contracts" "^3.3.0"
     abdk-libraries-solidity "^2.4.0"

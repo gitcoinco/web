@@ -60,7 +60,7 @@
     <donations-register
       prefix="{% static 'donations-widget-vue-binary/' %}"
       conditionCreated="onConditionCreated"
-      :initialConditionId="{{ conditionId }}"/>
+      initialConditionId="{% if conditionId != None %}{{ conditionId }}{% endif %}"/>
     {% endif %}
 
     {% include 'shared/bottom_notification.html' %}
