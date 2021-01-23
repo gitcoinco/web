@@ -56,8 +56,7 @@
 
     <donations-register
       prefix="{% static 'donations-widget-vue-binary/' %}"
-      conditionCreated="onConditionCreated"
-      initialConditionId="{% if conditionId != None %}{{ conditionId }}{% endif %}"/>
+      initialconditionid="{% if conditionId != None %}{{ conditionId }}{% endif %}"/>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
