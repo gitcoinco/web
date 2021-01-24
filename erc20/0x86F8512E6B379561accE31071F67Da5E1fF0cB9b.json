@@ -1,0 +1,20 @@
+{
+  "symbol": "bdm",
+  "address": "0x86F8512E6B379561accE31071F67Da5E1fF0cB9b",
+  "overview": {
+    "en": "BDM Protocol: A decentralized global open financial application platform based on blockchain and cryptocurrency. The BDM ecosystem covers financial services, culture and entertainment, IP copyright, Internet of Things, sharing economy and other scenarios. Holding BDM can participate in community governance and ecological agent elections. It will soon be listed on the top 10 exchanges in the world-ZB.",
+    "zh": "BDM Protocol：基于区块链和密码货币的去中心化全球开放式的金融应用平台。BDM生态圈涵盖金融服务、文化娱乐、IP版权、物联网、共享经济等场景，持有BDM，能参与社区治理和生态代理人选举，即将首发登陆全球前10的交易所——ZB"
+  },
+  "email": "bdmpro@protonmail.com",
+  "website": "https://bdmprotocol.com",
+  "whitepaper": "https://bdmprotocol.com/BDM.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-01-20",
+  "initial_price": {
+    "USD": "1.2 USD"
+    },
+  "links": {
+    "twitter": "https://twitter.com/bdm_protocol",
+    "medium": "https://m.jinse.com/news/blockchain/942172.html?source=m"
+  }
+}
