@@ -355,10 +355,10 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@vporton/donations-widget-vue-binary@^0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.28.tgz#7f4848937f099fb1ee7fe3dfcefa8ecae1c96cfc"
-  integrity sha512-gnXfIaQOFes9U5LbK2EJ9Uzvh2NMgqzUZIsnWyYR1GnCra7SbrlCOZLM4lxLWX9nDnTdiGERTl7QlRkRj/bh4g==
+"@vporton/donations-widget-vue-binary@^0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@vporton/donations-widget-vue-binary/-/donations-widget-vue-binary-0.1.29.tgz#663b82caf6c33190d8286de2a9c1326778435f4b"
+  integrity sha512-stS7qszG28rX/ZiIsF30NX008ZG/hEks7z3OexwCN7tCXI8FvwaKU99HnooPR0D3/QXlvXufum4njjJtixeC2w==
   dependencies:
     "@vporton/future-contracts" "git+ssh://git@github.com/vporton/future-contracts.git"
 
