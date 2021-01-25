@@ -12,21 +12,21 @@ def forwards(apps, schema_editor):
             token=attempt.quest.kudos_reward,
             metadata__recipient=attempt.profile.pk
         ).first()
-        if btc is not None and btc.quest_pk is None:
-            btc.quest_pk=attempt.quest
+        if btc is not None and btc.associated_quest is None:
+            btc.associated_quest=attempt.quest
             btc.save()
 
 def backwards(apps, schema_editor):
     btcs = apps.get_model('kudos', 'BulkTransferCoupon')
 
     for btc in btcs.objects.all():
-        btc.quest_pk=None
+        btc.associated_quest=None
         btc.save()
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kudos', '0020_bulktransfercoupon_quest_pk'),
+        ('kudos', '0020_bulktransfercoupon_associated_quest'),
     ]
 
     operations = [

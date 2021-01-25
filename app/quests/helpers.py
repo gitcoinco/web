@@ -69,7 +69,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
         btc = BulkTransferCoupon.objects.create(
             token=quest.kudos_reward,
             tag='quest',
-            quest_pk=quest,
+            associated_quest=quest,
             num_uses_remaining=1,
             num_uses_total=1,
             current_uses=0,
@@ -189,7 +189,7 @@ def get_or_create_prize_url(quest, profile):
         btcs = BulkTransferCoupon.objects.filter(
             token=quest.kudos_reward,
             tag='quest',
-            quest_pk=quest,
+            associated_quest=quest,
             metadata__recipient=profile.pk)
         if btcs.exists():
             btc = btcs.first()
@@ -197,7 +197,7 @@ def get_or_create_prize_url(quest, profile):
             btc = BulkTransferCoupon.objects.create(
                 token=quest.kudos_reward,
                 tag='quest',
-                quest_pk=quest,
+                associated_quest=quest,
                 num_uses_remaining=1,
                 num_uses_total=1,
                 current_uses=0,

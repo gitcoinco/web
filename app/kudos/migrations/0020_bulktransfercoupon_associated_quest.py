@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='bulktransfercoupon',
-            name='quest_pk',
-            field=models.ForeignKey(blank=True, help_text='ForeignKey linking the btc to a Quest (to allow the same Kudos to be rewarded from multiple Quests)', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='bulk_transfers', to='quests.Quest'),
+            name='associated_quest',
+            field=models.ForeignKey(blank=True, help_text='Associate a Quest to the Coupon so that we can track how/why it was rewarded', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='bulk_transfers', to='quests.Quest'),
         ),
     ]
