@@ -3,7 +3,6 @@
 //   mtcId
 // }
 document.addEventListener('mauticPageEventDelivered', function(e) {
-  console.log(e);
   if (document.contxt.github_handle && mtcId && !document.contxt.mautic_id) {
     //   mtcId
     saveMauticId(mtcId);
@@ -32,7 +31,6 @@ document.addEventListener('mauticPageEventDelivered', function(e) {
 // }
 
 const saveMauticId = function(mauticId) {
-  console.log(mauticId);
   let url = '/api/v1/mautic_profile_save/';
   const postData = fetchData(url, 'POST', { 'mtcId': mauticId });
 
@@ -150,12 +148,8 @@ class MauticEvent {
       'customObjects': {}
     };
 
-    console.log(baseObj);
-
     baseObj.customObjects['data'] = obj;
-    // console.log(objSend)
     this.send(baseObj);
-
   }
 
   static updateUser(userData) {

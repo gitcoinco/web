@@ -47,7 +47,8 @@ Vue.mixin({
       });
     },
     eventParams: function() {
-      let searchParams = new URLSearchParams(window.location.search)
+      let searchParams = new URLSearchParams(window.location.search);
+
       if (searchParams.has('mutate_worker_action')) {
         let action = searchParams.get('mutate_worker_action');
         let product = document.result.event ? 'hackathons' : 'bounties';
@@ -87,7 +88,7 @@ Vue.mixin({
         }
 
         MauticEvent.createEvent(bountyEvent);
-        window.history.pushState({}, document.title, window.location.pathname)
+        window.history.pushState({}, document.title, window.location.pathname);
 
       }
 
