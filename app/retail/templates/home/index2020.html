@@ -12,6 +12,8 @@
   {% include 'shared/cards.html' %} {% include 'shared/favicon.html' %}
 
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet" />
+  
+  <link href="/static/v2/css/bootstrap.min.css" rel="stylesheet" />
 
   <link href="/static/landingpage/app.css" type="text/css" rel="stylesheet" media="screen,projection" />
 
@@ -121,26 +123,40 @@
   <!-- what is gitcoin -->
 
   <section id="whatisgitcoin">
-    <div class="grid">
-      <div>
-        <h2>Here to Earn?</h2>
-        <p>
-          Build exciting projects and upskill on development while earning
-          Ethereum and other tokens. Find mentorship by connecting with
-          talented developers and leaders of Ethereum’s top companies.
-        </p>
-        <a class="btn fe-pulse" href="/hackathon-list"><span>Join a Hackathon</span></a>
-        <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
-        <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Here to Earn?</h2>
+          <p>
+            Build exciting projects and upskill on development while earning
+            Ethereum and other tokens. Find mentorship by connecting with
+            talented developers and leaders of Ethereum’s top companies.
+          </p>
+          <div class="actions">
+          <a class="btn fe-pulse" href="/hackathon-list"><span>Join a Hackathon</span></a>
+          <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
+          <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h2>Here to Support?</h2>
+          <p>
+            Discover great open source projects working hard to impact the
+            ecosystem. Get involved by funding, supporting, or mentoring
+            projects to help push the Ethereum forward.
+          </p>
+          <a class="btn fe-pulse actions" href="/grants"><span>Support Grant Projects</span></a>
+        </div>
       </div>
-      <div>
-        <h2>Here to Support?</h2>
-        <p>
-          Discover great open source projects working hard to impact the
-          ecosystem. Get involved by funding, supporting, or mentoring
-          projects to help push the Ethereum forward.
-        </p>
-        <a class="btn fe-pulse" href="/grants"><span>Support Grant Projects</span></a>
+      <div class="row actions-reverse">
+        <div class="col-md-6">
+          <a class="btn fe-pulse" href="/hackathon-list"><span>Join a Hackathon</span></a>
+          <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
+          <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
+        </div>
+        <div class="col-md-6">
+          <a class="btn fe-pulse" href="/grants"><span>Support Grant Projects</span></a>
+        </div>
       </div>
     </div>
     <figure>

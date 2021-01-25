@@ -638,6 +638,10 @@ section#intro {
     margin-left: 1.5em;
     margin-right: 1.5em; } }
 
+section#whatisgitcoin .actions {
+  display: none
+}
+
 section#whatisgitcoin {
   margin: 0em;
   margin-top: 12em; }
@@ -659,6 +663,12 @@ section#whatisgitcoin {
       margin-right: 26px; }
 
 @media (max-width: 688px) {
+  section#whatisgitcoin .actions {
+    display: block;
+  }
+  section#whatisgitcoin .actions-reverse {
+    display: none;
+  }
   section#whatisgitcoin div.grid {
     grid-template-columns: 1fr;
     margin-left: 1.5em;
