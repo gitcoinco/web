@@ -1,0 +1,27 @@
+{
+  "symbol": "FRECNX",
+  "address": "0xd8B8E1Eca89dA014E67fDbc2014eaA8E171079bF",
+  "overview":{
+    "en": "Freldo (FRECNX) – fully functional global network linking service providers and clients to eliminate fraud reviews and provide lower prices for customers. Our goal is to make a revolution in the services market by implementing blockchain technology to the business-client relationship, providing small business with the tools of large networks and companies. FRECNX is utility token and can be used as a means of payment within the Freldo business platform. Freldo Inc. registered in Toronto, Canada in 2011",
+    "zh": "Freldo（FRECNX） - 全功能的全球網絡連接服務提供商和客戶，以消除欺詐審查並為客戶提供更低的價格。 我們的目標是通過將區塊鏈技術應用於業務 - 客戶關係，為小型企業提供大型網絡和公司的工具，從而在服務市場上實現革命。 FRECNX是實用程序令牌，可用作Freldo業務平台內的支付手段。 Freldo Inc.於2011年在加拿大多倫多註冊"
+  },
+  "email": "support@freldo.com",
+  "website": "https://ico.freldo.com/",
+  "whitepaper": "https://ico.freldo.com/wp-content/uploads/2018/06/WP-Freldo.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-01-01",
+  "initial_price":{
+    "ETH":"0.00200648 ETH",
+    "USD":"0.37 USD",
+    "BTC":"0.0000363 BTC"
+  },
+  "links": {
+    "blog": "https://bitcointalk.org/index.php?topic=4577663.0",
+    "twitter": "https://twitter.com/FreldoGroup",
+    "telegram": "https://t.me/FreldoChat",
+    "github": "https://github.com/FreldoZL/FreldoCoinX",
+    "facebook": "hhttps://www.facebook.com/FreldoGroup/",
+    "reddit": "https://www.reddit.com/user/FreldoICO",
+    "medium": "https://medium.com/@freldo"
+  }
+}

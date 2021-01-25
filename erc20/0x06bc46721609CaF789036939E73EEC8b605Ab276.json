@@ -1,0 +1,20 @@
+{
+  "symbol": "5GX",
+  "address": "0x06bc46721609CaF789036939E73EEC8b605Ab276",
+  "overview":{
+        "en": "5GX creates value ecology of 5G application.",
+        "zh": "5GX创建5G应用的价值生态."
+  },
+  "email": "service@5gx.vip",
+  "website": "http://www.5gx.vip/",
+  "whitepaper": "http://www.5gx.vip/5GX%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf", 
+  "published_on": "2019-11-10",
+  "initial_price":{
+        "ETH":"0.00001 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/service5gx",
+    "telegram": "https://t.me/joinchat/AAAAAFiqngAhqGGe5HR_KA",   
+    "facebook": "https://www.facebook.com/yaqi.tong.73"   
+  }
+}

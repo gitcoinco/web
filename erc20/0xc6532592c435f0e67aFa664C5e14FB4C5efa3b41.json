@@ -1,0 +1,16 @@
+{
+  "symbol": "MAY",
+  "address": "0xc6532592c435f0e67aFa664C5e14FB4C5efa3b41",
+  "overview":{
+    "en": "MAY is the abbreviation of MAY Token, whose full name is MAY global certificate. MAY is a decentralized digital asset based on ethereum, issued by MAY digital asset trading platform. MAY can be used in multiple scenarios within the MAY trading ecosystem. MAY applies to a variety of applications in MAY exchange's global business and global ecosystem. The holder shall enjoy the corresponding rights of the whole ecology of MAY. In addition, I was awarded the zoon certificate and enjoyed the increase of scarcity value brought by MAY's continuous buyback and destruction.",
+    "zh": "MAY为MAY Token的简称，全名为五月全球通证，MAY是基于以太坊的去中心化数字资产，由MAY数字资产交易平台发行。MAY可在MAY交易生态体系下的多场景中使用。MAY应用到MAY交易所全球业务与全球生态体系的各类应用中。持有者享受MAY全生态的相应权益。并得到生态子通证奖励，以及享受MAY持续回购销毁带来的稀缺性价值提升。"
+  },
+  "email": "contact@btcmay.com",
+  "website": "http://www.btcmay.cc/",
+  "state": "NORMAL",
+  "published_on": "2019-10-08",
+  "initial_price":{
+    "ETH":"0.0002 ETH",
+    "USD":"0.05 USD"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "XCN",
+    "address": "0x298EEC9bF09B0beDe1937e21F1b134a3371b99C7",
+    "overview": {
+        "en": "The goal of XCN is to build a completely anonymous and untraceable encryption public chain and token payment system, to build a general, well-supported, high-performance, rich application scenarios, easy to use, user experience public chain system and related infrastructure, and to build block chain 4.0 to support applications on various anonymous public chains Ecosystem.",
+        "zh": "XCN 的目标是全力打造一款完全匿名和无法跟踪的加密公链及token支付体系，构建一个通用、支撑功能完善、性能高、应用场景丰富、易于使用、用户体验好公链体系及相关的基础设施，打造支撑各类匿名公链上应用的区块链4.0生态系统。"
+    },
+    "email": "spf.chengpy@gmail.com",
+    "website": "https://www.xcncoin.vip/",
+    "whitepaper": "https://www.xcncoin.vip/wp-content/uploads/2019/09/XCN-匿名81白皮书-V1.0.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-09-25",
+    "initial_price": {
+        "USD": "1.0 USD"
+    },
+    "links": {}
+}

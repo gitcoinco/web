@@ -1,0 +1,25 @@
+{
+    "symbol": "ADE",
+    "account_name": "cadeositoken",
+    "overview": {
+    "en": "We are developing a real time processing Computer Aided Design (CAD) and a Product Lifecycle Management (PLM) platform based on EOS blockchain architecture. It provides the best real time design tools to the community, including data sharing.",
+    "zh": "我们正在开发基于EOS区块链架构的实时处理计算机辅助设计（CAD）和产品生命周期管理（PLM）平台。 它为社区提供最佳的实时设计工具，包括数据共享，视频通话，即时通讯和屏幕共享，以获得最佳协作体验，显示项目管理工作的进度并帮助发展您的网络。"
+    },
+
+  "email": "g.galindo@cadeos.io",
+  "website": "https://cadeos.io",
+  "whitepaper": "https://img1.wsimg.com/blobby/go/9fb3d7c5-55d5-44e3-883a-433d76c3433d/downloads/1d31l2084_602940.pdf?ver=1561950686711",
+  "published_on": "2019-06-01",
+  "initial_price": {
+        "EOS": "0.000016 EOS",
+        "USD": "0.007 USD"
+  },
+
+  "links": {
+    "telegram": "https://t.me/cadeos",
+    "medium": "https://medium.com/cadeos-io",
+    "facebook": "https://web.facebook.com/cadeos.io",
+    "github": "https://github.com/CADEOS",
+    "twitter": "https://twitter.com/CadeosI"
+  }
+}

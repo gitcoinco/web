@@ -1,0 +1,16 @@
+{
+  "symbol": "SNX",
+  "address": "0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F",
+  "overview":{
+        "en": "The Synthetix Network Token (SNX) is the native token of Synthetix, a synthetic asset (Synth) issuance protocol built on Ethereum. The SNX token is used as collateral to issue Synths, ERC-20 tokens that track the price of assets like Gold, Silver, Oil and Bitcoin."
+  },
+  "email": "info@synthetix.io",
+  "website": "https://www.synthetix.io/",
+  "state": "NORMAL",
+  "links": {
+    "blog": "https://blog.synthetix.io/",
+    "twitter": "https://twitter.com/synthetix_io",
+    "github": "https://github.com/Synthetixio",
+    "reddit": "https://reddit.com/r/synthetix_io"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "symbol": "DX",
+  "address": "0x973e52691176d36453868D9d86572788d27041A9",
+  "overview":{
+        "en": "World's first decentralized big data and machine learning network powered by a computing-centric blockchain",
+        "zh": "世界上首个去中心化的大数据和机器学习，以计算为中心驱动的区块链平台"
+  },
+  "email": "support@dxchain.com",
+  "website": "https://dxchain.com/",
+  "whitepaper": "https://dxchain.com/static/assets/docs/DxChain-Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-03",
+  "initial_price":{
+        "USD":"0.0014 USD"
+  },
+  "links": {
+    "blog": "https://blog.dxchain.com/",
+    "twitter": "https://twitter.com/DxChainNetwork",
+    "telegram": "https://t.me/dxchain",
+    "github": "https://github.com/DxChainNetwork",
+    "facebook": "https://www.facebook.com/DxChainNetwork",
+    "reddit": "https://www.reddit.com/user/DxChainNetwork",
+    "medium": "https://medium.com/dxchainglobal"
+  }
+}

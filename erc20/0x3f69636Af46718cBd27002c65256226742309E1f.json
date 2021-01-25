@@ -1,0 +1,16 @@
+{
+  "symbol": "BCOL",
+  "address": "0x3f69636Af46718cBd27002c65256226742309E1f",
+  "overview":{
+    "en": "BCOL (erc-20) is based on the integration contract created by Ethereum. It is a decentralized blockchain digital asset issued in Ethereum network. The total amount of bcol issued is 100 million (the total amount of \"pre mining\") and will never be increased. The generation of new generation integration will follow the mechanism of PMV in the main chain of the choice of the opportunity of the Blocol, and obtain through contribution node data, verification node, community contribution, etc..",
+    "zh": "BCOL（ERC-20）是基於以太坊創建的代積分合約，是在以太坊網路發行的去中心化區塊鏈數字資產， BCOL發行總量為1億，（“礦前”總量），永不增發。新代積分的產生將在Blocol的择机选择在主鏈上遵循PMV的機制，通過貢獻節點數據、驗證節點、社區貢獻等獲得。\n"
+  },
+  "email": "foundation@blocol.net",
+  "website": "http://www.blocol.net/",
+  "whitepaper": "http://blocol-doc.hkjcsvd.cn/Blocol%20Whitepaper_TraditionalChinese_v1.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-04-13",
+  "initial_price":{
+    "USD":"0.014 USD"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "symbol": "DNT",
+  "address": "0x1Ab6d32A52047DF43a63B02cbE5a81e83d632572",
+  "overview":{
+        "en": "Deep Network (Deep Network Chain) is an anonymous encrypted currency based on Mimblewimble protocol, which has strong privacy, substitution and scalability. Deep Network takes user assets and privacy security as its primary task, its goal is to build a distributed ecological structure around the blockchain technology framework, which is based on digital assets and digital identity, and directly links the participants in the whole ecological chain to form a decentralized anonymous network platform. In the anonymous network platform of Deep Network, the transaction is anonymous, the chat is secret, and all the transaction records of the user can only be seen by themselves. New nodes to join the network do not need to synchronize the entire transaction history, can request synchronization only contains the system state of the compressed history and block head, so as to achieve fast synchronization!",
+        "zh": "Deep Network是基于MimbleWimble协议开发的具有高度隐私的去中心化加密货币。借助安全的多方计算技术，不同方能够对分布式存储的数据运行计算程序并得到正确结果，而无需访问原始数据本身。Deep Network(DNT)具有隐私性和匿名性，在Deep Network生态系统中用于支付现实服务和交易。"
+  },
+  "email": "DeepNetworkDNT@gmail.com",
+  "website": "http://www.deepnetwork.info",
+  "whitepaper": "http://www.deepnetwork.info/qfy-content/uploads/2019/10/e9f4b2273f8ead8a71abbfcde6177bee.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-20",
+  "initial_price":{
+        "USD":"0.01 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DeepNetwork3",
+    "telegram": "https://t.me/joinchat/Ogyz4BRHRW0MeUNHo6PHDA"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "symbol": "DOS",
+  "address": "0x0A913beaD80F321E7Ac35285Ee10d9d922659cB7",
+  "overview":{
+        "en": "DOS Network is a scalable layer-2 network that implements Decentralized Oracle Service, providing real-world data and computing power to mainstream blockchains. It connects smart contracts with real-world data and provides verifiable computing power to blockchains, enabling more application scenarios to be landed on blockchains. DOS Network can support a variety of mainstream blockchains, such as Ethereum, EOS, TRON, ThunderCore and etc.",
+        "zh": "DOS Network是一个实现了去中心化预言机的可扩展的二层网络，旨在为主流区块链提供数据上链服务和计算力。它将区块链智能合约与真实世界的数据和事件连接起来，还为区块链提供可验证的计算能力，从而使更多应用场景能够在区块链上实现。可支持各种主流区块链，如Ethereum、EOS、TRON、ThunderCore等。"
+  },
+  "email": "info@dos.network",
+  "website": "https://dos.network",
+  "whitepaper": "https://docsend.com/view/ak3rdft",
+  "state": "NORMAL",
+  "published_on": "2019-03-14",
+  "initial_price":{
+        "ETH":"0.00008824 ETH",
+        "USD":"0.012 USD"
+  },
+  "links": {
+    "blog": "https://medium.com/dos-network",
+    "twitter": "https://twitter.com/DosNetwork",
+    "telegram": "https://t.me/dosnetwork_en",
+    "github": "https://github.com/DOSNetwork",
+    "reddit": "https://www.reddit.com/r/DOSNetwork",
+    "medium": "https://medium.com/dos-network"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "symbol": "EXO",
+  "address": "0x8DD70c183CFa4F077B1711442Ae3D54DBA279367",
+  "overview": {
+    "en": "EXO(Exodus computing power Token) is issued by mining from public chain, also served as the crypto currency on the computing power platform. it is now only realeased by several channels. The EXO token can be divided and trade.",
+    "zh": "EXO 是 EXODUS NETWORK公链的挖矿产物，也是EXODUS算力平台的价值流通载体，目前仅由限定渠道发放，可分割，支持交易。"
+  },
+  "email": "ExodusComputeNet@outlook.com",
+  "website": "https://www.exodusnetwork.io/",
+  "whitepaper": "https://www.exodusnetwork.io/Files/Exodus_Network_ENG_version.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-04-27",
+  "initial_price":{
+        "ETH":"0.00023 ETH",
+        "USD":"0.05 USD",
+        "BTC":"0. 0000054 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Exodusnet",
+    "telegram": "https://t.me/exodusnet",
+    "github": "https://github.com/exodusnet",
+    "facebook": "https://www.facebook.com/exo.dus.7902",
+  }
+}

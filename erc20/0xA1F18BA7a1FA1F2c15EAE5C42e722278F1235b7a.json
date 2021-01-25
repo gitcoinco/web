@@ -1,0 +1,23 @@
+{
+  "symbol": "ESCX",
+  "address": "0xA1F18BA7a1FA1F2c15EAE5C42e722278F1235b7a",
+  "overview":{
+        "en": "ESCX is a token that focuses on educational projects in the field of Cryptocurrency,which will automatically be the key for everyone before plunging directly into the world of Cryptocurrency. We will provide,all matters of education related to Cryptocurrency broadly. Of course,this will greatly facilitate and beneficial for people who want to learn Cryptocurrency."
+  },
+  "email": "support@escx.co.id",
+  "website": "https://token.escx.co.id/",
+  "whitepaper": "https://drive.google.com/file/d/1qf9TXe5PkTdPT_wPZzV1R_NrdHTYpyee/view",
+  "state": "NORMAL",
+  "published_on": "2019-09-28",
+  "initial_price":{
+        "ETH":"0.00008000 ETH",
+        "USD":"0.007 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/EscxOfficial",
+    "telegram": "https://t.me/ESCXGLOBAL",
+    "github": "https://github.com/Expertstudent",
+    "facebook": "https://www.facebook.com/ESCXProject/",
+    "medium": "https://medium.com/@expertstudentclass/edukasi-digital-aset-indonesia-ltd-f059b8738201"
+  }
+}

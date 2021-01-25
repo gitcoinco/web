@@ -1,0 +1,26 @@
+{
+  "symbol": "GOSS",
+  "address": "0x06Ee5a52AaA96074e9A6fEaEcD9fcE6809d9aE39",
+  "overview":{
+        "en": "Goss is a decentralized cloud storage system based on blockchain ecological application.",
+        "zh": "Goss是一个基于区块链生态应用的去中心化云存储系统."
+  },
+  "email": "admin@gossiptoken.io",
+  "website": "https://gossiptoken.io",
+  "whitepaper": "https://gossiptoken.io/download/download-73-773.html", 
+  "published_on": "2020-10-31",
+  "initial_price":{
+        "ETH":"0.001 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/Gossiptokenio",
+    "telegram": "https://t.me/Gossiptokenio_en",   
+    "facebook": "https://facebook.com/Gossiptokenio"   
+  }
+}
+
+
+
+
+
+

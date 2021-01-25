@@ -1,0 +1,12 @@
+{
+  "symbol": "ESTT",
+  "address": "0x3522feDe7c4239Bf440a13876820c38d52490871",
+  "overview":{
+        "en": "ESTT is a peer-to-peer digital currency that enables you to send and receive funds at a lower cost due to its fully decentralised blockchain system. ESTT is tied through a smart contract to Tether (USDT), providing you with the flexibility to exchange between ESTT and USDT any time when you need them, as low as 1 ESTT = 1 USDT.",
+        "zh": "ESTT 是一种以点对点技术开发的加密货币，其去中心化区块链系统使发送和接收资金的成本得以降至最低。为提高兑换灵活性，ESTT通过智能合约与Tether(USDT)连接，让您在ESTT和USDT之间随时进行兑换的，兑换率低至1 ESTT=1 USDT。"
+  },
+  "email": "support@estt.io",
+  "website": " https://app.estt.io/",
+  "state": "NORMAL",
+  "published_on": "2020-06-30"
+}

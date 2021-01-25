@@ -1,0 +1,18 @@
+{
+    "symbol": "NTC",
+    "address": "0xBaACCd12A980bb01Fbbdb4f41462B5CeC49671A0",
+    "overview":{
+          "en": "NeutronChain is a vertical ecological platform of AI, IOT and 5G built based on blockchain technology. NeutronChain team independently develops the underlying POW public chain. Investors, miners and users in NeutronChain ecology are able to convert their output value into the NeutronChain certificate NTC for circulation.",
+          "zh": "中子链NeutronChain是基于区块链技术打造的AI、IOT、5G的垂直生态平台，NeutronChain团队自主研发的底层POW公链，中子链生态中的投资者、矿工与用户都能够让自己产出的价值，转化为中子链通证NTC进行流通。"
+    },
+    "email": "ntc@neutroncoin.io",
+    "website": "http://www.neutroncoin.io",
+    "whitepaper": "https://www.neutroncoin.io/ntc_whitebook.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-23",
+    "links": {
+        "twitter": "https://twitter.com/NeutronChain",
+        "facebook": "https://www.facebook.com/NeutronCoin/",
+        "telegram": "https://t.me/NeutronCoinNTC"
+      }
+}

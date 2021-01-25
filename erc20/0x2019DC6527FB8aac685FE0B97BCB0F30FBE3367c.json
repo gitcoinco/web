@@ -1,0 +1,19 @@
+{
+  "symbol": "MYAI",
+  "address": "0x2019DC6527FB8aac685FE0B97BCB0F30FBE3367c",
+  "overview":{
+        "en": "AI Workshop is a global distributed crowdsourcing platform based on blockchain + artificial intelligence. Based on the most cutting-edge Swarm Intelligence discipline, it uses blockchain technology as a bridge to link communities, artificial intelligence, and data. Make full use of the power of the community to solve the painful point of lack of real and effective data in the AI industry. Through high-performance independent research and development of the public chain, ensure the efficient and safe transmission of data, and achieve steadily improve AI performance.AI Workshop provide reliable, safe, efficient and friendly low-cost artificial intelligence services based on blockchain, and popularize artificial intelligence in all walks of life through effective resource restructuring.",
+        "zh": "AI工场是基于区块链+人工智能的全球分布式众包平台，以最前沿的群体智能（Swarm Intelligence）学科为基础，以区块链技术为桥梁，链接社群、人工智能、数据。充分利用社群的力量解决AI行业缺乏真实、有效数据的痛点，通过高性能自主研发公链，确保数据高效、安全地传输，实现AI性能的稳步提升。AI工场提供可靠、安全、高效、友好的基于区块链的低成本人工智能服务，并通过有效的资源重组将人工智能普及各行各业。"
+  },
+  "email": "COCOchen0755@gmail.com",
+  "website": "https://myai.work/",
+  "whitepaper": "https://myai.work/MYAI.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-28",
+  "initial_price":{
+        "USD":"0.0333 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/joinchat/OFpNIxYYF7ApdG-Du4I67A"
+  }
+}

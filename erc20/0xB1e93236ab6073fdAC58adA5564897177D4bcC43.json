@@ -1,0 +1,24 @@
+{
+    "symbol": "Seele",
+    "address": "0xB1e93236ab6073fdAC58adA5564897177D4bcC43",
+    "overview": {
+        "en": "The birth and development of Seele, with 'healthcare', 'finance', and 'trade' as the main application scenarios, conducts global transactions for 'data, knowledge, and algorithmic assets'. ",
+        "zh": "Seele的诞生和发展，以“医疗”、“金融”、“贸易”为主要应用场景，针对“数据、知识与算法类资产”进行全球化交易。"
+    },
+    "email": "contact@seelen.pro",
+    "website": "https://seelen.pro",
+    "whitepaper": "https://seelen.pro/pdf/zh/Seele_White_Paper_CN_v3.1.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-24",
+    "initial_price": {
+        "ETH": "0.00002000 ETH",
+        "USD": "0.0044 USD",
+        "BTC": "0.00000047 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@seelen",
+        "twitter": "https://twitter.com/n_seele",
+        "telegram": "https://t.me/seelenseelen2020",
+        "github": "https://github.com/seeleteam"
+    }
+}

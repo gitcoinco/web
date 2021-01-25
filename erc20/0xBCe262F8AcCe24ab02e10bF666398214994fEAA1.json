@@ -1,0 +1,19 @@
+{
+	"symbol": "CMNC",
+	"address": "0xBCe262F8AcCe24ab02e10bF666398214994fEAA1",
+	"overview": {
+		"en": "CMNC cumulus chain technology and ecology include the underlying blockchain architecture module, middle blockchain smart contract and consensus module, upper layerDapp and the exchange application module are three layers,and form the basic framework,combined with the CMNC cumulus chain economic model and consensus mechanism,looping through the upper,middle and lower layers,using CMNC cumulus chain pass to achieve the transmission of information and value.",
+		"zh": "CMNC积云链 技术与生态包含底层区块链架构模块，中层区块链智能合约与共识模块、上层Dapp 与交易所应用模块三层， 并构成基础框架， 结合 CMNC积云链 经济模型和共识机制， 循环贯通于上中下三层， 使用 CMNC积云链 通证实现信息与价值的传递。 "
+	},
+	"email": "lingbiwang@foxmail.com",
+	"website": "http://cumuluschain.pro",
+	"state": "NORMAL",
+	"published_on": "2019-11-01",
+	"whitepaper": "http://cumuluschain.pro/22.pdf",
+	"initial_price": {
+		"USD": "$0.001USD"
+	},
+	"links": {
+		"website": "http://cumuluschain.pro"
+	}
+}

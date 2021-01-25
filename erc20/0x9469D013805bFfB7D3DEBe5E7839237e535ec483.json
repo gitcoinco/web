@@ -2,12 +2,12 @@
     "symbol": "RING",
     "address": "0x9469D013805bFfB7D3DEBe5E7839237e535ec483",
     "overview": {
-        "en": "RING is the global token of Evolution Land, a cross chain game world.",
-        "zh": "RING是进化星球的通证，进化星球是一个基于跨链的区块链游戏"
+        "en": "The native token for the Darwinia Network is RING, RING can be used as gas for transactions. Gas include transaction fees, contract execution fees, network bandwidth charges, storage fees, and more.",
+        "zh": "RING是达尔文网络的原生资产，RING可以作为交易的燃料费。燃料费包括交易费用，合约执行费用，网络带宽费用，存储费用等等。"
     },
-    "email": "hello@evolution.land",
-    "website": "https://www.evolution.land",
-    "whitepaper": "https://www.evolution.land/whitepaper_cn.pdf",
+    "email": "hello@darwinia.network",
+    "website": "https://darwinia.network",
+    "whitepaper": "https://evolution.l2me.com/darwinia/Darwinia_Genepaper_ZH_200430.pdf",
     "state": "NORMAL",
     "published_on": "2018-07-14",
     "initial_price": {
@@ -16,10 +16,10 @@
         "BTC": "0.00000025 BTC"
     },
     "links": {
-        "blog": "https://medium.com/@evolutionland9",
-        "twitter": "https://twitter.com/evolutionland9",
-        "telegram": "https://t.me/evolutionland9",
-        "github": "https://github.com/evolutionlandorg",
-        "medium": "https://medium.com/@evolutionland9"
+        "blog": "https://medium.com/@DarwiniaNetwork",
+        "twitter": "https://twitter.com/DarwiniaNetwork",
+        "telegram": "https://t.me/DarwiniaNetwork",
+        "github": "https://github.com/darwinia-network",
+        "medium": "https://medium.com/@DarwiniaNetwork"
     }
 }

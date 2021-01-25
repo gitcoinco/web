@@ -1,0 +1,22 @@
+{
+    "symbol":"QUSD",
+    "address":"0x59d4CCC94A9C4C3d3b4bA2Aa343a9bDF95145DD1",
+    "overview":{
+        "en":"QUSD is the first kind of stablecoin of QIAN protocol. In the future, QIAN will launch QHKD, QEUR and other stable assets.",
+        "zh":"QUSD 是 QIAN 协议的第一种稳定币，未来 QIAN 还将推出 QHKD、QEUR 等稳定资产"
+    },
+    "email":"committee@qian.finance",
+    "website":"https://qian.finance",
+    "whitepaper":"https://qian.finance/qian_whitepaper_zh.pdf",
+    "state":"NORMAL",
+    "published_on":"2020-10-23",
+    "initial_price":{
+        "USD":"1 USD"
+    },
+    "links":{
+        "twitter":"https://twitter.com/QIAN_Stablecoin",
+        "github":"https://github.com/QIAN-Protocol/QIAN",
+        "discord":"https://discord.com/invite/MYKm35s",
+        "medium":"https://medium.com/qian-stablecoin"
+    }
+}

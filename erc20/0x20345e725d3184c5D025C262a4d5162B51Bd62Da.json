@@ -1,0 +1,24 @@
+{
+    "symbol": "HID",
+    "address": "0x20345e725d3184c5D025C262a4d5162B51Bd62Da",
+    "overview": {
+        "en": "The HIDE ME network provides smart contracts for encrypted information transmission and API access. Every HID community member can develop next-generation encrypted communication applications based on HID's existing encrypted communication protocol.",
+        "zh": "HIDE ME网络提供关于加密信息传输，API访问的智能合约，每个HID社区成员都可以基于HID现有的加密通讯协议开发下一代的加密通讯应用。"
+    },
+    "email": "support@hideme.finance",
+    "website": "https://www.hideme.finance/",
+    "whitepaper": "https://www.hideme.finance/HID_White_Paper_English.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-01",
+    "initial_price": {
+        "USD": "0.5 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/hideme85766545",
+		"Telegram": "https://t.me/hidemetoken",
+		"facebook": "https://www.facebook.com/HID-121580276370860/?modal=admin_todo_tour",
+		"bitcointalk": "https://bitcointalk.org/index.php?topic=5279693.new#new",
+		"pinterest": "https://www.pinterest.com/hideme00100/_saved/",
+		"youtube": "https://www.youtube.com/channel/UCtTHyODMHchxK4JXSaLPKXA?view_as=subscriber"
+    }
+}

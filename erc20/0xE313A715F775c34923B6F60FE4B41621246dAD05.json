@@ -1,0 +1,17 @@
+{
+    "symbol": "WT",
+    "address": "0xE313A715F775c34923B6F60FE4B41621246dAD05",
+    "overview":{
+          "en": "WT, the Taiwan dollar of the WBEX exchange, has a total of 100 million units of issue and is guaranteed never to issue more.",
+          "zh": "WT是WBEX交易所的平台币，发行总量为1亿枚，且保证永不增发。"
+    },
+    "email": "wbexvip@163.com",
+    "website": "http://www.wbex.vip/",
+    "whitepaper": "http://www.wbex.vip/file/1578900065815bc7100de-e394-4fd7-94d0-0aade164fee9.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-01-10",
+    "links": {
+        "telegram": "https://t.me/wbexgroup",
+        "twitter": "https://twitter.com/WBEX4"
+      }
+}

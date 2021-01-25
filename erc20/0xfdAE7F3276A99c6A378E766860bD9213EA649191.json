@@ -1,0 +1,12 @@
+{
+  "symbol": "HP",
+  "address": "0xfdAE7F3276A99c6A378E766860bD9213EA649191",
+  "overview":{
+        "zh": "HotPotChain注重用区块链、互联网、大数据、供应链等提升食品监管效能，加快实现全程留痕、信息可追溯，让消费者买得放心、吃得安全。HotPotChain作为一项以去中心化为核心的技术，相关数据在交易各方间公开透明，从而有效形成一条信息和价值共享的链条。由于区块链具有数据不可篡改的特性，数据一经上传，就无法更改，因此更容易做到食品来源可查、去向可追，真正实现食品溯源。"
+  },
+  "email": "service@hotpot.ink",
+  "website": "http://hotpot.ink",
+  "whitepaper": "http://hotpot.ink/HotPotChainWhitePaperV2.2.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-06-20"
+}

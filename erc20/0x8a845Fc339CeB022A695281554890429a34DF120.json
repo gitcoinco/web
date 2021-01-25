@@ -1,0 +1,20 @@
+{
+  "symbol": "MGP",
+  "address": "0x8a845Fc339CeB022A695281554890429a34DF120",
+  "overview":{
+    "en": "Mango chain is a blockchain network ecosystem that establishes a wide range of digital trust, free circulation of assets and public shared applications.",
+    "zh": "MangoChain是建立广泛数字信任、资产自由流通、大众共有应用的区块链网络生态。"
+  },
+  "email": "Mgpchain2020@gmail.com",
+  "website": "http://mangochain.io/",
+  "whitepaper": "https://mgpchain.com/whitePaper/MGP_WhitePaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-01-09",
+  "initial_price":{
+    "USD":"0.2 USD"
+  },
+  "links": {
+    "github": "https://github.com/mgpchain2020"
+
+  }
+}

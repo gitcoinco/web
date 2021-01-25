@@ -1,0 +1,10 @@
+{
+  "symbol": "SFC",
+  "address": "0x0062BFfE15B3840F9d1eC81911FEfaf440b3Abc2",
+  "overview":{
+        "en": "SFC is a POC-based storage hard disk mining distributed application public chain, SFC is committed to the storage and distribution of valuable content, in the form of mining, to reward miners for contributing unused bandwidth and storage space, SFC's mission is to connect all unused storage space, any storage device that can connect to the Internet can participate in mining, the formation of a powerful distributed data service system, SFC distributed ecology. The full name is Shared File. in a nutshell, Shared File Ecology, or SFC, is a super cloud system based on distributed storage content sharing. 1,000,000 SFCs are issued, 100,000,000 are released upfront, and 900,000,000 SFCs are mined out later.",
+        "zh": "SFC是一条基于POC的存储硬盘挖矿的分布式应用公链，SFC致力于存储分发有价值的内容，以挖矿的形式，奖励矿工贡献闲置带宽以及存储空间。SFC的使命是连接一切闲置存储空间，凡可以连接上网的存储设备都可以参与挖矿，形成强大的分布式数据服务系统，SFC分布式生态全名Shared File。概括而言，Shared File生态，即SFC就是基于分布式存储内容共享的超级云系统。SFC发行1000000000枚，前期释放100000000枚SFC，后期900000000枚SFC都通过挖矿产出。"
+  },
+  "website": "http://sharedfile.ink/",
+  "whitepaper": "http://sharedfile.ink/pdf/Shared%20File.pdf"
+}

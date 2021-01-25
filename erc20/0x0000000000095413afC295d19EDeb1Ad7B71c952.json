@@ -1,0 +1,18 @@
+{
+  "symbol": "LON",
+  "address": "0x0000000000095413afC295d19EDeb1Ad7B71c952",
+  "overview":{
+        "en": "LON is a utility token issued by Tokenlon, used to align all parties involved in the ecosystem andincentivize participation and expansion of the ecosystem.Token UtilitiesLON tokens have the following two main use cases :1) Fee discount: Tokenlon currently charges a standard 0.30% fee for most transactions.By holding LON, users can get corresponding fee discounts based on the number oftokens held. 2) Governance: LON will give the community the right to participate in the governance ofTokenlon. LON holders can improve Tokenlon by initiating Tokenlon ImprovementProposal (TIP) proposals and voting, such as determining the use of the treasury, feeparameters, buyback parameters, supporting assets, product features, etc.",
+        "zh": "LON 是 Tokenlon 发行的应用型代币，用于激励网络生态中参与的各方，确保各方能够参与并协力推动生态的发展。LON 代币有以下两个主要用途：1)费率折扣：Tokenlon 目前对大部分交易收取 0.3% 的标准手续费。通过持有 LON，用户可以根据持有数量获得相应的手续费折扣。2）治理：LON 将赋予社区参与 Tokenlon 治理的权利，LON 持有者可以通过发起 Tokenlon Improvement Proposal (TIP) 提案和投票来改进 Tokenlon，例如决定财库的用途、手续费参数、回购参数、支持资产、产品功能等。"
+  },
+  "email": "support@tokenlon.im",
+  "whitepaper": "https://tokenlon.im/files/Tokenlon-litepaper_en-us.pdf",
+  "website": "https://tokenlon.im",
+  "state": "NORMAL",
+  "published_on": "2020-12-23",
+  "links": {
+    "discord": "https://discord.com/invite/ZFf4Cye",
+    "twitter": "https://twitter.com/tokenlon",
+    "medium": "https://medium.com/@tokenlon"
+  }
+}

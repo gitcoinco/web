@@ -1,0 +1,17 @@
+{
+    "symbol": "ACU",
+    "address": "0xE954f355D4367A66BbF78B1eCC1A29F1D572d2e8",
+    "overview": {
+        "zh": "亚元ACU是基于亚洲金融一体化构架的亚洲区域性通用货币，由亚洲数字货币有限公司于 2019年于香港发行推出，亚元 ACU 发行总量为 1 万亿枚。亚元ACU选择离岸人民币的汇率作为其兑换汇率，按照离岸人民币 1:1 兑付。亚元 ACU 致力推动成为亚洲货币一体化与人民币国际化的桥梁，打造成为亚洲区统一货币。亚元ACU将开创性地运用区块链金融技术，以数字货币的形式发行、流通、兑换、结算，并使用“黄金”作为主储备资产，弥补数字货币和信用货币的缺陷。"
+    },
+    "email": "jiangnan@tacu.com",
+    "website": "http://www.acudc.com/",
+    "whitepaper": "http://www.acudc.com/亞元白皮書.pdf",
+    "published_on": "2019-08-15",
+    "initial_price": {
+        "USD": "0.134 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/JwKmd1sFJbq9itg"
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "UVU",
+  "address": "0xc163EaDe1a642D8ccEf1046bAE2569A00cB647Ed",
+  "overview":{
+        "en": "UVU is a token issued by Comunion whitch is a DAO , UVU is called by Universal Value Units, as capitalization for manpower.",
+        "zh": "UVU 是去中心化自治组织 Comunion 发行的代币全称为 Universal Value Units, 即全民价值单位。是劳动价值资本化的一种量化形式。"
+  },
+  "email": "contact@comunion.io",
+  "website": "https://comunion.io/",
+  "whitepaper": "https://comunion.io/Comunion%20WhitePaper%202.0%20EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-31",
+  "initial_price":{
+        "USD":"0.13 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/comunion8",
+    "telegram": "https://t.me/Comunion",
+    "github": "https://github.com/comunion-io",
+    "reddit": "https://www.reddit.com/user/comunion",
+    "medium": "https://medium.com/@bigdaoio"
+  }
+}

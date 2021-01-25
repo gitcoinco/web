@@ -1,0 +1,13 @@
+{
+    "symbol": "BTC",
+    "account_name": "issue.newdex",
+    "overview": {
+        "en": "Newdex platform Ecological Token, an ecological Token that was issued based on the EOS main net, which can be applied to many scenarios on Newdex. The total volume of NDX distributions is limited to 10 billion and will never be issued again. The value of Newdex platform ecological Token includes: repurchase and destruction, staking concessions, Token airdrop, advertise bidding, independent listing, etc.",
+        "zh": "Newdex平台生态通证，是基于EOS主网发行的生态通证，可应用于Newdex平台的众多场景。NDX发行总量限定为100亿，而且永不增发。Newdex平台生态通证价值包括：回购销毁、抵押优惠、糖果空投、广告竞价、自主上币等。"
+    },
+    "email": "support@newdex.zendesk.com",
+    "website": "https://newdex.io",
+    "links": {
+        "twitter": "https://twitter.com/NewdexOfficial"
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "BGA",
+  "address": "0xc668715818831645CDF0Eee3A9b84590Fa979E65",
+  "overview":{
+        "en": "B-Games Alliance,BGA is a blockchain game alliance. We set up global game developer alliance, distribution alliance system and game player alliance. The distribution alliance system and  game player system help to expand the market share of online blockchain games so that we can achieve win-win for all parties.",
+        "zh": "BGA(B-Games Alliance) 区块链游戏联盟，BGA是一个区块链游戏联盟，通过搭建全球游戏开发者联盟，分销联盟体系和游戏玩家联盟，由分销联盟体系和游戏玩家联盟帮助游戏开发者扩大在线区块链游戏市场份额，实现多方共赢。"
+  },
+  "email": "bbgagit@gmail.com",
+  "website": "https://miraclekingdom.io/",
+  "whitepaper": "https://www.miraclekingdom.io/static/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-01",
+  "initial_price":{
+        "USD":"0.005 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BGamesAlliance1"
+  }
+}

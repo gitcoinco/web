@@ -1,0 +1,19 @@
+{
+  "symbol": "AT",
+  "address": "0x3cde7802290b4CaA03a166b6dAbb497af7Ced8AD",
+  "overview":{
+        "en": "AIOT Trusted Collaboration Environment (AT), which is based on DAG and graph database and supports edge architecture of highly available distributed accounts, is committed to building a credible Internet of Things collaboration and transaction execution environment.",
+        "zh": "AIOT Trusted (简称AT), 基于DAG和图数据库开发并支持边缘架构的高可用分布式账本，致力于构建一个可信的物联网协作以及交易执行环境。"
+  },
+  "email": "attoken@outlook.com",
+  "website": "https://at.supplies",
+  "whitepaper": "https://at.supplies/AT-white-paper-zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-23",
+  "initial_price":{
+        "USD":"0.2 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/joinchat/At_Shequ"
+  }
+}

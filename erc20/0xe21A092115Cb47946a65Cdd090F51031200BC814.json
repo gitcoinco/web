@@ -1,0 +1,15 @@
+{
+    "symbol": "VDZ",
+	"address": "0xe21A092115Cb47946a65Cdd090F51031200BC814",
+    "overview": {
+        "en": "VDZ-PayToken payment pass is about to create an area with no boundary block chain Payment system.",
+        "zh": "VDZ-PayToken支付通证即将创建一个无边界区块链领域支付宝。"
+    },
+    "email": "service@vdztoken.org",
+    "website": "http://vdztoken.org/",
+    "whitepaper": "http://vdztoken.org/pdf/VDZwhitepaper1.1.pdf",
+    "published_on": "2019-11-01",
+    "initial_price": {
+        "USD": "0.0042 USD"
+    }
+}

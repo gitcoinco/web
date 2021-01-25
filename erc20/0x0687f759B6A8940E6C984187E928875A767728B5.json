@@ -1,0 +1,15 @@
+{
+    "symbol": "EMP",
+    "address": "0x0687f759B6A8940E6C984187E928875A767728B5",
+    "overview": {
+          "en": "EMP, full name empowrment authorization, license. It is a sharing token serving the consumption value-added ecological industry, and its core value is to help the development of the whole alliance community.",
+          "zh": "EMP，全称EMPOWRMENT授权，许可。是服务于消费增值生态产业的共享通证，其核心价值是帮助整个联盟社区的发展。"
+    },
+    "website": "http://api.starrysky.vip/",
+    "whitepaper": "http://empvideo.oss-cn-beijing.aliyuncs.com/docunment/EMP%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-10",
+    "initial_price": { 
+          "USD": "0.01 USD"
+    }
+}

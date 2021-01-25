@@ -1,0 +1,26 @@
+{
+  "symbol": "DRC",
+  "address": "0xa150Db9b1Fa65b44799d4dD949D922c0a33Ee606",
+  "overview":{
+        "en": "Digital Reserve Currency was designed to become a decentralized digital store of value with a limited supply and a zero inflation rate. It was created during the COVID-19 crisis when fiscal and monetary policies have exposed serious vulnerabilities in the current financial system. The concept of the Digital Reserve Currency was developed by Maxim Nurov, founder of Digital Finance, Washington, DC, financial company that specializes exclusively in the Bitcoin market.",
+        "zh": "数字储备货币（DRC）旨在成为去中心化的数字价值储藏，其供应有限且通货膨胀率为零。它是在新冠病毒危机期间创建的，因为当时财政和货币政策暴露了目前金融体系中的严重漏洞。数字储备货币的概念是由专门从事比特币市场的华盛顿特区数字金融公司创始人马克西姆·努罗夫（Maxim Nurov）提出的。"
+  },
+  "email": "drc",
+  "website": "drcglobal.org/",
+  "whitepaper": "https://drcglobal.org/white-paper-1/",
+  "state": "NORMAL",
+  "published_on": "2020-10-05",
+  "initial_price":{
+        "ETH":"0.0000000045 ETH",
+        "USD":"0.0000015379 USD",
+        "BTC":"0.0000000001 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/@digitalreservecurrency",
+    "twitter": "https://twitter.com/DRCToken",
+    "telegram": "https://t.me/DigitalReserveCurrency",
+    "github": "https://github.com/digitalreserve/DRC",
+    "reddit": "https://www.reddit.com/r/DRCToken/",
+    "medium": "https://medium.com/@digitalreservecurrency"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "FK",
+    "address": "0xF6Fe745e5647298639072D942E0eb4f2E3930ECB",
+    "overview":{
+          "en": "FK is the Taiwan dollar of the FKEx exchange, with a total issue of 900 million pieces, and is guaranteed never to issue more.",
+          "zh": "FK是FKEx交易所的平台币，发行总量为9亿枚，且保证永不增发。"
+    },
+    "email": "service@fkex.co",
+    "website": "https://fkex.co/",
+    "whitepaper": "https://fkex.co/files/whitepaper/FKEX.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-31",
+    "links": {
+        "telegram": "https://t.me/FKExOfficial",
+        "twitter": "https://twitter.com/fkex9"
+      }
+}

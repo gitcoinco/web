@@ -1,0 +1,19 @@
+{
+  "symbol": "KAR",
+  "address": "0xd9E24d0f97AB29d23734d5122f87e333A371321b",
+  "overview":{
+        "en": "Karlbenz is a data market based on blockchain technology. It is a smart car era blockchain infrastructure for car users, manufacturers and service providers that can share and exchange car data. In this platform based on blockchain technology, all the big data generated around the car will be certified, and we will spare no effort to empower the automotive industry. A new model of disruptive automotive business will be born. In the new trillion-dollar market of smart cars, Karlbenz is expected to become the industry leader.",
+        "zh": "卡尔本茨(KAR、Karl Benz) 是一个基于区块链技术的数据市场,它是一个面向汽车用户、制造商和服务提供商,提供可共享和交换汽车数据的智能汽车时代区块链基础设施。在这个基于区块链技术的平台中,所有围绕汽车所产生的大数据都将通证化，我们为赋能汽车产业而不遗余力。一种颠覆性的汽车商业新模式将由此诞生,在智能汽车这个万亿美元级的新市场中,卡尔本茨有望成为行业领跑者。"
+  },
+  "email": "Karlbenzcoin@gmail.com",
+  "website": "http://www.karlbenz.io/",
+  "whitepaper": "http://www.karlbenz.io/assets/whitePaper/KarlBenz.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-11",
+  "initial_price":{
+        "USD":"1.2782 USD"
+  },
+  "links": {
+    "BiYong": "https://0.plus/KarlBenzCoin"
+  }
+}

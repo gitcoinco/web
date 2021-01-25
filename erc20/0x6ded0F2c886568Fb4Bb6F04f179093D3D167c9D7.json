@@ -1,0 +1,20 @@
+{
+  "symbol": "DFL",
+  "address": "0x6ded0F2c886568Fb4Bb6F04f179093D3D167c9D7",
+  "overview":{
+        "en": "DFL is the platform token of the decentralized lending platform DeFIL, which has the dividend rights of platform loan interest and platform governance rights.",
+        "zh": "DFL是去中心化借贷平台DeFIL的平台通证，其具有平台借贷利息的分红权益及平台治理权益。"
+  },
+  "email": "DF2020110020201109@163.com",
+  "website": "https://defil.org/dfl",
+  "whitepaper": "https://defil.org/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-20",
+  "initial_price":{
+        "USD":"0.142 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DeFIL_DFL",
+    "github": "https://github.com/DeFIL-org"
+  }
+}

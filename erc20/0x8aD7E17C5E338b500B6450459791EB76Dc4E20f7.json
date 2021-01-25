@@ -1,0 +1,21 @@
+{
+  "symbol": "Energy Aggregator",
+  "address": "0x8aD7E17C5E338b500B6450459791EB76Dc4E20f7",
+  "overview":{
+        "en": "Energy Aggregator Chain is a complex multi-network flow system with closed-loop operation, which is based on energy system, Internet and other advanced information technology, Distributed Renewable Energy and closely coupled with other systems such as natural gas network and transportation network. The new energy block chain system will change the traditional parallel flow of electricity, heat, cold and gas, realize the coupling of production, transportation, storage, consumption and other links, make different forms of energy can be transformed into each other in many links, and realize the coordinated operation of multi-stream network. The new energy block chain system can be applied not only in industrial systems, but also in residential areas and even households.",
+        "zh": "EA区块链系统是以能源系统为核心，互联网及其它前沿信息技术为基础，分布式可再生能源为主，与天然气网络、交通网络等其它系统紧密耦合而形成的闭环运行的复杂多网流系统。新能源区块链系统将改变传统的电、热、冷、气等能源“平行流动”的状况，实现在生产、输送、存储、消费等各个环节的耦合，使得不同形式能源在诸多环节可相互转化，实现多流网络的协同运行。新能源区块链系统不仅可在工业系统中应用，也可在居民区甚至家庭内实施。"
+  },
+  "email": "neo19861015@gmail.com",
+  "website": "http://eachain.pro",
+  "whitepaper": "http://eachain.pro/EnergyAggregator_writepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-30",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    
+  }
+}

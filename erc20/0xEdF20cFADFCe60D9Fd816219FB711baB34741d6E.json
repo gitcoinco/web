@@ -1,0 +1,23 @@
+{
+  "symbol": "TB",
+  "address": "0xEdF20cFADFCe60D9Fd816219FB711baB34741d6E",
+  "overview":{
+        "en": "TB is a global universal point issued and managed by TokenBetter exchange based on Ethereum, with a constant total issuance of 5 billion. TB relies on TokenBetter's global business and global ecosystem, and is also the 'source power' of the entire system. In order to further reward users, holders will enjoy more priority in the trading system. At the same time, the platform will also ensure its value and scarcity by improving rules.",
+        "zh": "TB是TokenBetter交易所基于以太坊发行和管理的全球通用积分，恒定发行总量50亿枚。TB依托于TokenBetter全球业务与全球生态体系，也是整个体系的'源动力'。为进一步回馈用户，持有者在交易体系中将享有更多优先权。同时，平台也将通过完善规则保证其价值及稀缺性。"
+
+  },
+  "email": "bd@tokenbetter.com",
+  "website": "https://www.tokenbetter.com/",
+  "state": "NORMAL",
+  "published_on": "2020-04-20",
+  "initial_price":{
+        "USD":"0.001 USD"
+  },
+  "links": {
+    "blog": "https://www.weibo.com/u/3514649433",
+    "twitter": "https://twitter.com/tokenbetter",
+    "telegram": "https://t.me/tokenbetter",
+    "facebook": "https://www.facebook.com/Token-Better-108422600824176/",
+    "reddit": "https://www.reddit.com/user/TokenBetter"
+  }
+}

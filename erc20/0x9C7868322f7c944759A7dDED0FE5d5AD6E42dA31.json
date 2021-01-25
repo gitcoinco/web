@@ -1,0 +1,24 @@
+{
+  "symbol": "NEC",
+  "address": "0x9C7868322f7c944759A7dDED0FE5d5AD6E42dA31",
+  "overview":{
+        "en": "Nectar also known as NEC, is a digital asset base on ERC20. Nectar is the only official token issued by Bitbee Global exchange, Nectar powers the Bitbee Global Ecosystem,as the native coin of bitbee,Nec has multiple usage, reduce transaction fee, in-store payment,voting and many more. ",
+        "zh": "Nectar又称花粉币，是一个基于ERC20所发行的数字资产。Nectar是币蜂全球站官方唯一发行的手续费通证，并支持币蜂全球站的全球业务，包含交易挖矿手续费折抵，落地生态应用及币蜂活动和业务等"
+  },
+  "email": "admin@bitbeeex.com",
+  "website": "http://bitbeeex.com/",
+  "whitepaper": "http://bitbeeex.com/img/nec%20whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-04-30",
+  "initial_price":{
+        "ETH":"0.00054920 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00001407 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/bitbeeG",
+    "telegram": "https://t.me/joinchat/bitbeeglobalchat",
+    "github": "https://github.com/bitbee-global",
+    "facebook": "https://www.facebook.com/Bitbee-Global-106409134284360/",
+  }
+}

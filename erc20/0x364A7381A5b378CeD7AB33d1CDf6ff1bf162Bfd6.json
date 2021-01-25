@@ -1,0 +1,20 @@
+{
+  "symbol": "TGX",
+  "address": "0x364A7381A5b378CeD7AB33d1CDf6ff1bf162Bfd6",
+  "overview":{
+        "en": "DeFi-X is a cross-chain compatible synthetic asset issuance and trading protocol designed to build a full-stack, open, decentralized financial ecosystem.\nThe entire system of DeFi-X consists of the following main functional modules: the X Foundry, DeFi-XSwap, Collateral Pool, Fee Pool, Prophecy Machine, and Liquidity Mining. The X Mint Factory (a minting center for minting and destroying XUSD), DeFi-XSwap (a decentralized exchange for trading synthetic assets), and the Prophecy Machine are the core of the entire system.\nDeFi-X uses a collateral pool model, which allows unlimited minting of synthetic assets as long as there is sufficient value to support it and stable prophecy machine prices are provided, eliminating the need for real-time counterparties. This feature solves the illiquidity and slippage problems in DEX, while breaking down the barriers between the various types of financial markets in traditional financial markets.\n\nCreate a new financial ecology\n• Redefining decentralized finance\n• Redefining digital currency\n• Redefining the infinite possibilities of redefining blockchains",
+        "zh": "DeFi-X是一种跨链兼容的合成资产发行与交易协议， 旨在构建一个全栈开放的去中心化金融生态。\nDeFi-X整个系统主要功能模块包括：X铸造工厂、DeFi-XSwap、抵押池、费用池、预言机、流动性挖矿。其中X铸造工厂（铸造和销毁XUSD的铸币中心）、DeFi-XSwap（交易合成资产的去中心化交易所）、预言机是整个系统的核心。\nDeFi-X采用抵押池模型，只要有足够的价值支撑及稳定的预言机价格提供就可无限制铸造合成资产，无需实时交易对手，解决了DEX中流动性不足及滑点问题，同时也打破了传统金融市场中各类金融市场之间的壁垒。\n\n打造一种全新金融生态\n• 重新定义去中心化金融\n• 重新定义数字货币\n• 重新区块链的无限可能"
+  },
+  "email": "cs@defix.finance",
+  "website": "https://www.defix.finance/",
+  "state": "NORMAL",
+  "published_on": "2020-10",
+  "initial_price":{
+        "USD":"0.19 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DeFiXFinance",
+    "telegram": "https://t.me/joinchat/Rl3J_BTb3XHiH85lSOkO_A",
+    "medium": "https://defixfinance.medium.com/"
+  }
+}

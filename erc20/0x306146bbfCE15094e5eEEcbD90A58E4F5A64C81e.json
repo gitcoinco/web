@@ -1,0 +1,18 @@
+{
+  "symbol": "BCHK",
+  "address": "0x306146bbfCE15094e5eEEcbD90A58E4F5A64C81e",
+  "overview": {
+    "zh": "BCHK Token 是 BCHK 云挖矿生态系统平台基于以太坊发行的 ERC-20 代币，发行总量为 21 亿枚。在云算力平台进行 Kyc 认证的用户都拥有唯一的链上 ID 与个人相对应，ID 表示了用户在 BCHK 生态中的的虚拟身份，用户在云算力平台中的所有行为数据，例如购买矿机，发放收益，都被有效记录在区块中。同时，购买矿机的用户都将按购买的先后顺序等比例获赠 BCHK Token，此 Token 可在二级市场流通。云算力平台会将手续费及后续收入进行回购"
+  },
+  "email": "zhengjun@bchkmi.com",
+  "website": "http://mkkj.easywxk.com/index.html/",
+  "whitepaper": "http://u179289.weizhan1.com/News",
+  "state": "NORMAL",
+  "published_on": "2020-05-25",
+  "initial_price": {
+    "USD": "0.15 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/bchkmi"
+  }
+}

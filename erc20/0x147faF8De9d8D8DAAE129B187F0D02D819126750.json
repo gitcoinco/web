@@ -1,0 +1,23 @@
+{
+  "symbol": "GEO",
+  "address": "0x147faF8De9d8D8DAAE129B187F0D02D819126750",
+  "overview":{
+        "en": "GEO (GeoDB Coin) is the fungible token of GeoDB, a decentralized peer-to-peer data sharing ecosystem powered by blockchain technologies.",
+        "zh": "作为一个分布式点对点的大数据共享生态系统，GeoDB会将价值回馈给生产者及用户。"
+  },
+  "email": "hello@geodb.com",
+  "website": "https://geodb.com/",
+  "whitepaper": "https://geodb.com/src/sections/assets/documents/GeoDB_White_Paper_2.065fe7839ce1fc08eb5900913aa78ce4a.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-29",
+  "initial_price":{
+        "USD":"0.05 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/GeoDataBlock",
+    "telegram": "https://t.me/GeoDBgroup",
+    "github": "https://github.com/devgeodb",
+    "facebook": "https://www.facebook.com/GeoDataBlock/",
+    "medium": "https://medium.com/your-awesome-project"
+  }
+}

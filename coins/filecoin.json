@@ -1,0 +1,17 @@
+{
+  "symbol": "FIL",
+  "address": "filecoin",
+  "overview":{
+        "en": "Filecoin coin is the original token IPFS the interstellar file system,Interoplanetary File System IPFS (InterPlanetary File System) is a global, point-to-point distributed version of the file system, the goal is to supplement (even replace) the current Internet governance Hypertext Transfer Protocol (HTTP), will have the same file system Of computing devices connected together.",
+        "zh": "Filecoin币是IPFS星际文件系统的原生代币，星际文件系统是一个面对全世界的、点到点的分布式版本文件系统，意义是为了填补（甚至是取代）现阶段统治互联网的超文本传输协议（HTTP），将所有具备同样文件系统的计算设备连接在一块。"
+  },
+  "email": "contact@protocol.ai",
+  "website": "https://filecoin.io",
+  "state": "NORMAL",
+  "published_on": "2017-12-14",
+  "links": {
+    "twitter": "https://twitter.com/protocollabs",
+    "github": "https://github.com/ipfs",
+    "facebook": "https://www.facebook.com/minefilecoin"
+  }
+}

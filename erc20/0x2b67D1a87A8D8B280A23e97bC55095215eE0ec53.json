@@ -1,0 +1,19 @@
+{
+    "symbol": "CPI",
+    "address": "0x2b67D1a87A8D8B280A23e97bC55095215eE0ec53",
+    "overview": {
+        "en": "The Crypto Price Index’s powered using a complex, yet trusted algorithm, to extract the market conditions of the top market cap crypto assets at a glance, and reflect them in the CPI-ecosystem.",
+        "zh": "加密价格指数使用复杂但可信的算法，可以一目了然地提取市值最高的加密资产的市场状况，并通过CPI API反映出来。"
+    },
+    "email": "contact@cpiindex.io",
+    "website": "https://cpiindex.io/",
+    "whitepaper": "https://www.cpiindex.io/img/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-09",
+    "links": {
+        "blog": "https://medium.com/@cpi.index2019",
+        "twitter": "https://twitter.com/cpi_blockchain",
+        "facebook": "https://www.facebook.com/cryptopriceindex/",
+        "medium": "https://medium.com/@cpi.index2019"
+    }
+}

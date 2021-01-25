@@ -1,0 +1,23 @@
+{
+  "symbol": "AWO",
+  "address": "0x634a7272021AC2d42586dCC00187d82C6f34F110",
+  "overview":{
+        "en": "Aworld wants to be a fully community driven decentralized exchange, with community users holding 100% of the platform token AWO.",
+        "zh": ""
+  },
+  "email": "support@aworld.vc",
+  "website": "https://www.aworld.vc/",
+  "whitepaper": "https://www.aworld.vc/media/Aworld-litepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-09",
+  "initial_price":{
+        "ETH":"0.00211654 ETH",
+        "USD":"1.0 USD",
+        "BTC":"0.00005650 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Aworldvc",
+    "telegram": "https://t.me/Aworldvc",
+    "medium": "https://aworldvc.medium.com/"
+  }
+}

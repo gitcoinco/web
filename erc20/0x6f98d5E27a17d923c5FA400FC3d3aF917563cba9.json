@@ -1,0 +1,24 @@
+{
+  "symbol": "ECC",
+  "address": "0x6f98d5E27a17d923c5FA400FC3d3aF917563cba9",
+  "overview":{
+    "en": "E-commerce China will build the first of world's  blockchain e-commerce application currency. ECC will be use  to blockchain technology to complete the value distribution, commodity traceability, transaction transparency, data security, user privacy and other solutions of the e-commerce industry",
+    "zh": "E-Commerce China打造全球首个区块链电商应用币， ECC将利用区块链技术完成电商行业的价值分配、商品溯源、交易透明、数据安全、用户隐私等解决方案。未来将在底层搭建、加密算法和商品溯源领域为电商行业的厂商提供高效率的服务，为用户提供安全、保障的交易体验"
+  },
+  "email": "ecommercechina@126.com",
+  "website": "http://www.ecommercechinatop.com/",
+  "whitepaper": "http://www.ecommercechinatop.com/file/whiteBook.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-04-20",
+  "initial_price":{
+    "ETH":"0.0002 ETH",
+    "USD":"0.03 USD",
+    "BTC":"0.00000294 BTC"
+  },
+  "links": {
+    "blog": "https://your-awesome-project.com/blog",
+    "金色财经": "https://m.jinse.com/blockchain/696811.html?source=m",
+    "火星财经": "https://m.huoxing24.com/newsdetailShare/20200530094719972678.html",
+    "微博地址": "https://weibo.com/u/7460536143"
+  }
+}

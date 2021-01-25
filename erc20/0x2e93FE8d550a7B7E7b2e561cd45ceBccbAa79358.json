@@ -1,0 +1,20 @@
+{
+  "symbol": "GXC",
+  "address": "0x2e93FE8d550a7B7E7b2e561cd45ceBccbAa79358",
+  "overview": {
+    "en": "GXChain is a fundamental blockchain for the global data economy, designed to build a trusted data internet of value.Benefiting from DPoS based Graphene underlying architecture, GXChain possesses functions including G-ID, GVM, BaaS and Blockcity, which are convenient for application development. GXChain based DApp-Blockcity has more than two million verified users and provides abundant data for other DApps and strategic partners. GXChain launched decentralized data marketplace as well which is serving hundreds of Chinese enterprises. GXChain team independently developed its main net and launched it in June 2017. Based on decentralization, cryptography, and smart token design, GXChain provides a leading solution for the data economy by developing multiple trusted data modules. Data uploading, storage, computation, and exchange has been gradually realized with many commercialized applications.",
+    "zh": "公信链（GXChain）是一条为全球数据经济服务的基础链，旨在打造可信数据的价值网络。公信链具有基于DPoS共识机制的石墨烯底层架构的性能优势，同时具备G-ID、GVM、BaaS、Blockcity pay等链上配套功能，方便各类应用开发。基于公信链的Dapp布洛克城已经拥有百万级实名用户，为链上应用和合作伙伴提供丰富的数据资源；面向企业服务的公信宝数据交易所也已上线，服务企业数量超过数百家。公信链基于区块链的分布式特性、密码学等技术手段和通证设计，为数据经济的发展提供了全新的区块链解决思路，引领了数据服务的新变革。公信链开发了丰富的可信数据组件，逐渐打通数据上链、数据储存、数据计算、数据交换的各个环节，并且已经有了众多落地的应用和实践。"
+  },
+  "email": "bd@gxb.io",
+  "website": "https://www.gxchain.org",
+  "state": "NORMAL",
+  "published_on": "2017-06-15",
+  "initial_price": {
+    "USD": "$0.1142 USD"
+  },
+  "links": {
+    "github": "https://github.com/gxchain",
+    "twitter": "https://twitter.com/GXChainGlobal",
+    "telegram": "https://t.me/GXChain_international"
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "symbol": "DRAGON",
+    "account_name": "eosdragontkn",
+    "overview": {
+        "en": "Dragon Option - The first binary option game on EOS with verifiable fairness.",
+        "zh": "飞龙期权一首款EOS双选期权游戏。"
+    },
+    "email": "info@dragonoption.io",
+    "website": "https://dragonoption.io",
+    "published_on": "2019-04-07",
+    "links": {
+        "twitter": "https://twitter.com/dragon_option",
+        "telegram": "https://t.me/dragonoption",
+        "medium": "https://medium.com/@dragonoption"
+    }
+}

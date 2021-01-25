@@ -1,0 +1,21 @@
+{
+    "symbol": "HOS",
+    "address": "0x769Be7890828D0c3211CB9bC1F1E66cE8D6B3Cf1",
+    "overview": {
+        "zh": "HOS致力于解决数字资产不互通的矛盾关系，通过底层的虫洞协议和合约层的星际汇款合约、星际借贷合约，通过HOS多币种钱包应用，完美解决数字资产不互通和数字资产应用流动性低的历史难题，实现数字货币的真实支付和流通。"
+    },
+    "email": "maketoken@hotmail.com",
+    "website": "http://usdt.be",
+    "whitepaper": "http://usdt.be/paper/hos.pdf",
+    "published_on": "2020-07-20",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.0024 USD",
+        "BTC": "0.000000262 BTC"
+    },
+    "links": {
+        "github": "https://github.com/hoscoin/token-profile",
+	"telegram": "https://t.me/hoscapital" ,
+	"facebook": "https://www.facebook.com/hoscapital"   
+    }
+}

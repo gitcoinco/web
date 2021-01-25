@@ -1,0 +1,22 @@
+{
+  "symbol": "NB",
+  "token_name": "NBChainAsset",
+  "address": "0xBA46d5085447B433B68DD474889F376f0E43D0b9",
+  "total_supply": "100000000000",
+  "suggested_gas_limit_setting": "60000",
+  "overview":{
+        "en": "NB is a cryptocurrency used for the game of NewbieStyle",
+        "zh": "NB积分是新加坡NEWBIE STYLE基金会发行的的游戏积分。【NEWBIE STYLE】是基于区块链技术发展出的为区块链行业生态量身打造的全新游戏平台,目的是为了加强区块链普及教育,提示 金融投资风险,寓教于乐。作为基于区块链技术的卡牌类游戏(CCG),有别于其他区块链游戏的最主要特色,就是身份(势力、阵营)系统。"
+  },
+  "email": "kf@jcsd.vip",
+  "website": "http://www.jcsd.vip/",
+  "state": "NORMAL",
+  "published_on": "2020-04-17",
+  "initial_price":{
+        "USDT":"0.0014 USDT"
+  },
+  "links": {
+    "media_publications": "https://m.jinse.com/blockchain/700037.html",
+    "etherscan_link": "https://etherscan.io/address/0xba46d5085447b433b68dd474889f376f0e43d0b9"
+  }
+}

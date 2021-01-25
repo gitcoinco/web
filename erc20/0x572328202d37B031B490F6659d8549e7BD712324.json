@@ -1,0 +1,17 @@
+{
+    "symbol": "WXB",
+    "address": "0x572328202d37B031B490F6659d8549e7BD712324",
+    "overview":{
+          "en": "WXChain builds a new retail business credit economic ecology based on blockchain. Through the use of blockchain technology, a supply chain traceability, quantifiable credit, open and transparent data, and the integration of consumer shopping, membership services, precision marketing, and centralized procurement are formed to form online e-commerce transactions and offline shopping experiences To build a new retail ecosystem with multiple parties participating and benefiting from multiple parties.",
+          "zh": "雾星链构建基于区块链的新零售商业信用经济生态。通过区块链技术，打造成一个供应链可追溯、信用可量化，数据公开透明，集消费购物，会员服务，精准营销，集中采购等场景于一体，形成线上电商交易、线下购物体验，构建多方参与、多方受益的新零售生态。"
+    },
+    "email": "wxb@wxb.link",
+    "website": "http://www.wxb.link/",
+    "whitepaper": "http://www.wxb.link/user/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-01-19",
+    "links": {
+        "telegram": "https://t.me/wxchaingroup",
+        "twitter": "https://twitter.com/wxchain"
+      }
+}

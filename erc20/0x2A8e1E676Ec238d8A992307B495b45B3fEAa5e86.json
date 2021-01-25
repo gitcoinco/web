@@ -1,0 +1,27 @@
+{
+  "symbol": "OUSD",
+  "address": "0x2A8e1E676Ec238d8A992307B495b45B3fEAa5e86",
+  "overview": {
+    "en": "Origin Dollar (OUSD) is the first stablecoin that earns a yield while it's still in your wallet.",
+    "zh": "首个在您的钱包中赚取收益的稳定币",
+    "ko": "지갑에 있는동안 수익을 만들어 내는 최초의 스테이블 코인"
+  },
+  "email": "info@originprotocol.com",
+  "website": "https://ousd.com/",
+  "whitepaper": "https://docs.ousd.com",
+  "state": "NORMAL",
+  "published_on": "2020-09-22",
+  "initial_price": {
+    "USD":"1.0 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/originprotocol",
+    "telegram": "https://t.me/originprotocol",
+    "github": "https://github.com/originprotocol",
+    "facebook": "https://www.facebook.com/originprotocol",
+    "reddit": "https://www.reddit.com/r/originprotocol",
+    "discord": "http://originprotocol.com/discord",
+    "medium": "https://medium.com/originprotocol"
+  }
+}
+ 

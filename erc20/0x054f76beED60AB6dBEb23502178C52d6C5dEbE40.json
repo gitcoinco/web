@@ -1,0 +1,24 @@
+{
+  "symbol": "FIN",
+  "address": "0x054f76beED60AB6dBEb23502178C52d6C5dEbE40",
+  "overview": {
+    "en": "Put Your Crypto Assets To Work",
+    "zh": "灵活运用您的加密数字资产"
+  },
+  "email": "admin@definer.org",
+  "website": "https://definer.org/",
+  "whitepaper": "https://github.com/DeFinerOrg/whitepaper/wiki/DeFiner-Whitepaper",
+  "state": "NORMAL",
+  "published_on": "2020-09-09",
+  "initial_price": {
+    "USD": "0.6 USD"
+  },
+  "links": {
+    "blog": "https://blog.definer.org/",
+    "twitter": "https://twitter.com/definerorg",
+    "telegram": "https://t.me/DeFiner",
+    "github": "https://github.com/DeFinerOrg",
+    "facebook": "https://www.facebook.com/DeFinerOrg",
+    "medium": "https://medium.com/definerorg"
+  }
+}

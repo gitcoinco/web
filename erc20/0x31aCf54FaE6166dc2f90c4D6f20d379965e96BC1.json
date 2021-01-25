@@ -1,0 +1,25 @@
+{
+    "symbol": "RFII",
+    "address": "0x31aCf54FaE6166dc2f90c4D6f20d379965e96BC1",
+    "overview": {
+      "en": "RFII is a fork of the well received RFI [Reflect.finance] project. RFII looks to contribute to the RFI economy by providing lottery farms and lossless farms for RFI, RFII and RFY, paid out in RFY and the respective staking token (which is another RFI fork).",
+      "zh": "RFII是广受欢迎的RFI项目的一个分支。RFII希望为RFI经济做出贡献，为RFI、RFII和RIFI提供彩票农场和无损农场，通过质押各自的币得到RFV（这是另一个RFI分叉）。"
+    },
+    "email": "rfyrfy@rfy.finance",
+    "website": "https://rfy.finance/",
+    "whitepaper": "https://rfiifinance.medium.com/rfii-finance-layer-2-rfi-45470b4f1562",
+    "state": "NORMAL",
+    "published_on": "2020-12-08",
+    "initial_price":{
+          "ETH":"0.0000709 ETH",
+          "USD":"0.04 USD",
+          "BTC":"0.00000212 BTC"
+    },
+    "links": {
+      "blog": "https://rfiifinance.medium.com/",
+      "twitter": "https://twitter.com/FinanceRfii",
+      "telegram": "https://t.me/reflectyield",
+      "github": "https://github.com/rfyrfy/rfii-rfy",
+      "medium": "https://rfiifinance.medium.com/"
+    }
+  }

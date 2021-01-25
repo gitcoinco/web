@@ -1,0 +1,18 @@
+{
+  "symbol": "GMAT",
+  "address": "0xB13dE094Cc5CEe6C4cC0A3737bf0290166D9Ca5D",
+  "overview": {
+    "en": "GoWithMi aims to build a distributed map ecosystem through blockchain, AI and GIS (Geographic Information System) technology, which enables anyone (any node) to initiate and autonomously perform use, update and maintenance of maps without depending on any centralization organization in the entire process.",
+    "zh": "GoWithMi 旨在打造一个通过区块链技术、AI 技术和 GIS（地理信息系 统）技术实现的分布式地图生态系统，它使得地图的使用、更新和维护可以由 任何人（节点）发起并自治执行，全部过程不依赖于任何中心化机构。"
+  },
+  "website": "https://www.gowithmi.com/",
+  "whitepaper": "https://image.gowithmi.com/en/whitepaper.pdf",
+  "published_on": "2019-12-19",
+  "links": {
+    "Twitter": "https://twitter.com/GoWithMi_GL",
+    "Telegram": "https://t.me/gowithmi_en",
+    "Github": "https://github.com/GoWithMi",
+    "Facebook": "http://www.facebook.com/gowithmi.fans",
+    "Medium": "https://medium.com/@gowithmigl"
+  }
+}

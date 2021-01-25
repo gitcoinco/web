@@ -1,0 +1,19 @@
+{
+  "symbol": "IMO",
+  "address": "0xbAe226690D7DCe1Da1823f0BF811529b8229134a",
+  "overview": {
+    "en": " IMO Token is the platform token of IMO ecosystem, which enables the project to obtain investment in stages through continuous limited private sales. The project will continue to be privately funded with development progress and stage results. The general private sale periods are divided into 3 months, 6 months, 1 year or even longer. IMO uses a variety of advanced mathematical models to control the private sales and market at different stages. During the private sale period, the exchange and investors will observe the development of the project and decide whether to invest or not. Invest or withdraw. Phased batch-to-batch investments will greatly reduce investor’s risk. At the same time, it also gives encouragement and benign supervision to the project team, so that the project can develop healthily and ultimately return to investors. The IMO platform will strictly screen and check the quality of each project and take certain measures to ensure the interests of investors.",
+    "zh": " IMO Token是IMO生态中的平台币，通过不断地限量私募，能让项目阶段性的获得投资，项目随着开发进展和阶段成果而不断地进行私募，一般私募活动为3个月、6个月、1年甚至更长。IMO采用各种先进的数学模型（Model），在不同阶段对项目的私募和市场宏观把控，在私募活动期间里，交易所和投资者随着项目的进展，观察项目的发展情况并决定是否投资或者退出。阶段性的分批次投资大大降低投资者的风险。同时也给予项目方以鼓励和良性监督，使得项目能健康发展，最终回报投资人。IMO生态平台则会严格筛选把关，确保每个项目都需要足够优秀，并采取一定的措施，保证投资者的利益。"
+  },
+  "email": "contact@imoex.top",
+  "website": "https://www.imoex.top/",
+  "state": "NORMAL",
+  "published_on": "2019-08-16",
+  "initial_price": {
+    "ETH": "0.0002 ETH",
+    "USD": "0.003 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/imoexchange"
+  }
+}

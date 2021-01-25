@@ -1,0 +1,20 @@
+{
+    "symbol": "DXIN",
+    "address": "0x74af3Edb70eBFE952B0Eda60344e15C891c5CEd0",
+    "overview": {
+        "zh": "Dicexin (带信)团队分布在新加坡、北京、杭州，核心成员平均超过十年互联网产品开发经验，是国内早期互联网领域成熟的技术团队，连续创业者。阮惠（Wendy）在 2018 年在新加坡创建 Dicexin ，Dicexin 是 Mixin Network 上一个简单、快速、公平、非常棒的小游戏。可以支持超过 3 万种 token及数十条公链，游戏在将来会上线多个币种，首期上线 10 个主流币种。将是最受全球投资者喜爱的数字资产小游戏。",
+        "en": "Dicexin (with letter) team is distributed in Singapore, Beijing and Hangzhou. Its core members have more than ten years of Internet product development experience on average. It is a mature technology team in the early Internet field in China and a continuous entrepreneur. Wendy founded dicexin in Singapore in 2018. Dicexin is a simple, fast, fair and great game on mixin network. It can support more than 30000 tokens and dozens of public chains. In the future, the game will launch multiple currencies, and the first phase will launch 10 mainstream currencies. It will be the most popular digital asset game for global investors."
+    },
+    "email": "bingjim811481@163.com",
+    "website": "https://dicexin.one",
+    "whitepaper": "https://dicexin.one",
+    "state": "NORMAL",
+    "published_on": "2020-03-12",
+    "initial_price": {
+        "USD": "0.05 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/dicexin",
+        "telegram": "https://t.me/dicexin"
+    }
+}

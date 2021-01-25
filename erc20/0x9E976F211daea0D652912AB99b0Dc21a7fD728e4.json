@@ -1,0 +1,22 @@
+{
+  "symbol": "MAP",
+  "address": "0x9E976F211daea0D652912AB99b0Dc21a7fD728e4",
+  "overview":{
+        "en": "MAP Protocol is an open, fully decentralized, chain-to-chain interoperation protocol that enables the interoperability of multiple independently verifiable consensus blockchains without a relay chain. MAP Protocol expects to construct a future inter-chain-net, which is interoperable and chain-to-chain based. The ecosystem built on MAP Protocol can provide a solid infrastructure for DeFi, DEX, AI, IoT, traceability, and governance filed by cross-chain communication, privacy computation, shared storage, etc.",
+        "zh": ""
+  },
+  "email": "cooperation@maplabs.io",
+  "website": "https://www.maplabs.io",
+  "whitepaper": "https://files.maplabs.io/pdf/mapprotocol_whitepaper_en.pdf",
+  "state": "NORMAL",
+  "initial_price":{
+        "USD":"0.015 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/marcopologlobal",
+    "telegram": "https://t.me/MarcoPoloMAP",
+    "github": "https://github.com/mapprotocol",
+    "reddit": "https://www.reddit.com/r/MarcoPoloProtocol",
+    "medium": "https://medium.com/marcopolo-protocol"
+  }
+}

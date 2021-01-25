@@ -1,0 +1,18 @@
+{
+    "symbol": "ASAM",
+    "address": "0x7AeE312E115493A510144348769681340E2BdfFf",
+    "overview":{
+          "en": "The monetary protocol automatically adjusts the supply of ASAM across all user wallets based on price. This means the number of ASAM you own changes based on market conditions. When price is high wallet balances automatically increase. When price is low wallet balances automatically decrease. This supply adjustment operation happens once per day and is called a rebase.This daily rebase operation is applied universally and proportionally across every wallet’s balance. This means ASAM is non-dilutive. Like Bitcoin, if you own 1% of the overall network you will always own 1% unless you actively make a transfer.",
+          "zh": "Asam是 A Stabilization agreement团队开发的基于以太ERC20和DeFi机制的稳定数字代币。其根据市场供需，将币价平衡于1USDT附近，当价格高于目标区域，合约通过增加代币供应，以使币价降低到目标区域；当价格低于目标区域，合约通过缩减代币供应，以使币价升高到目标区域。"
+    },
+    "email": "asamlinkofficial@gmail.com",
+    "website": "http://asam.cc/",
+    "whitepaper": "http://asam.cc/AsamWhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-8-18",
+    "links": {
+        "facebook": "https://www.facebook.com/ASam",
+        "Telegram": "https://t.me/pcasam",
+        "Twitter": "https://twitter.com/ASam"
+      }
+}

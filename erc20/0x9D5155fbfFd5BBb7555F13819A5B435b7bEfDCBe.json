@@ -1,0 +1,18 @@
+{
+  "symbol": "Trister",
+  "address": "0x9D5155fbfFd5BBb7555F13819A5B435b7bEfDCBe",
+  "overview":{
+        "zh": "Trister's Light是全球首個基於POS+POT共識的公鏈平臺，基於該共識機制構建的全新信任體系為用戶打造了一個真正公開、公平、透明的區塊鏈交易平臺。"
+  },
+  "email": "tristerslight@gmail.com",
+  "website": "https://trister.io/",
+  "whitepaper": "https://www.trister.io/white_paper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-05-12",
+  "links": {
+    "twitter": "https://twitter.com/TristersLight",
+    "telegram": "https://t.me/Trister_CHN",
+    "github": "https://github.com/TristersLight",
+    "facebook": "https://www.facebook.com/Tristers-The-Daylight-103865007965481/"
+  }
+}

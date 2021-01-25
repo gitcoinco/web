@@ -1,0 +1,17 @@
+{
+    "symbol": "EA",
+    "address": "0x90b41986deC3Ae43354fE2C1aFb0cb3bFfAEd257",
+    "overview":{
+          "en": "The GSTEA open financial system platform aims to develop a complete cross-chain decentralized financial ecosystem, creating a decentralized wallet, lending, financing, trading, prediction and other DeFi technology facilities integrated, cross-chain technology and financial services ecology.",
+          "zh": "GSTEA开放式金融系统平台，旨在开发一个完备跨链的去中心化金融生态系统，打造去中心化钱包、借贷、融资、交易、预言等DeFi技术设施为一体、跨链的科技金融服务生态。"
+    },
+    "email": "gstainode@outlook.com",
+    "website": "http://gstea.club/",
+    "whitepaper": "http://gstea.club/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-12",
+    "links": {
+        "telegram": "https://t.me/joinchat/QFeZqgv9aaG2IxjaHehqSw",
+        "twitter": "https://twitter.com/GST79298884"
+      }
+}

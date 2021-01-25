@@ -1,0 +1,16 @@
+{
+  "symbol": "KSM",
+  "address": "kusama",
+  "overview":{
+        "en": "Kusama is an early, unaudited and unrefined release of Polkadot. Kusama will serve as a proving ground, allowing teams and developers to build and deploy a parachain or try out Polkadot’s governance, staking, nomination and validation functionality in a real environment.",
+        "zh": "Kusama 是波卡早期的、未经审计的版本。Kusama 将作为一个试验场，允许团队和开发人员构建和部署平行链，或者在实际环境中尝试波卡的治理、抵押、提名和验证功能。"
+  },
+  "email": "hello@polkadot.network",
+  "website": "https://kusama.network",
+  "state": "NORMAL",
+  "published_on": "2019-06",
+  "links": {
+    "twitter": "https://twitter.com/kusamanetwork",
+    "telegram": "https://t.me/kusamanetworkofficial"
+  }
+}

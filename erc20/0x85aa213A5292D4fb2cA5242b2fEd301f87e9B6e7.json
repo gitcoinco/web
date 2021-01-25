@@ -1,0 +1,17 @@
+{
+    "symbol": "MGP",
+    "address": "0x85aa213A5292D4fb2cA5242b2fEd301f87e9B6e7",
+    "overview":{
+          "en": "MGP is a distributed game ecosystem platform based on block chain technology. With a decentralized structure, it directly links the constituent molecules in the whole game ecological chain to realize the direct docking, lossless circulation and safe storage of individual value.",
+          "zh": "MGP是基于区块链技术打造的分布式游戏生态平台。它以去中心化的结构，直接将整个游戏生态链上的组成分子有机地链接起来，实现个体价值的直接对接、无损流通和安全存储。"
+    },
+    "email": "blocker@marsgame.top",
+    "website": "http://www.marsgame.top/",
+    "whitepaper": "http://www.marsgame.top/files/Whitepaper-zh.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-30",
+    "links": {
+        "telegram": "https://t.me/mgpgroup",
+        "twitter": "https://twitter.com/MGPOfficial2"
+      }
+}

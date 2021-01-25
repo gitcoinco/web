@@ -1,0 +1,14 @@
+{
+    "symbol": "EURET",
+    "address": "0x150C666F0B04868e865A047Db46aF5a4CfB0e077",
+    "overview": {
+        "en": "Euro Linked StableCoin (EURET) is the first stable coin to be listed on the Zurich Crypto Exchange, a platform of LWH FinTech (Swiss) AG (‘LWH AG’). It is a virtual currency that linked a cryptocurrency to a legal currency, the Euro. Each EURET is symbolically associated with a government-backed legal tender, a virtual currency that is kept in a foreign exchange reserve account and supported by fiat currency. This method can effectively prevent the price of cryptocurrency from fluctuating greatly. The EURET is based on the stable value currency Euro, 1EURET = 1 Euro, and strictly a 1:1 reserve guarantee, that is, for every EURET issued, the bank account will have a guarantee of 1 Euro. Users can use 1:1 for EURET and EUR at any time.",
+        "zh": "Euro Linked StableCoin (EURET)是苏黎世数字资产交易所（龙华行金融科技（瑞士）公众有限公司（下称“LWH AG”）推出的交易平台）将会发行的首个稳定币，是一种将加密货币与法定货币欧元挂钩的虚拟货币。每一个EURET都会象征性的与政府支持的法定货币关联，是一种保存在外汇储备账户、获得法定货币支持的虚拟货币。该种方式可以有效的防止加密货币出现价格大幅波动，EURET基于稳定价值货币欧元，1EURET=1欧元，严格遵守1：1的准备金保证，即每发行1个EURET，其银行账户都会有1欧元的资金保障。用户可以随时使用EURET与EUR进行1:1兑换。"
+    },
+    "email": "admin@euretstable.com",
+    "website": "http://www.euretstable.com",
+    "whitepaper": "http://www.euretstable.com/EURET_White_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-09-11"
+    
+}

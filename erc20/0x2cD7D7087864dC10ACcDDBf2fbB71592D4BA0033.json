@@ -1,0 +1,21 @@
+{
+    "symbol": "QT",
+    "address": "0x2cD7D7087864dC10ACcDDBf2fbB71592D4BA0033",
+    "overview": {
+        "zh": "QT是一家全新概念的区块链资产交易、增值服务平台，由华尔街及新加坡顶尖技术团队发起，联合区块链资深从业者通过去中心化自组织形式创立的一个专注于区块链资产交易与增值的平台."
+    },
+    "email": "qextoken@163.com",
+    "website": "http://www.qex.life",
+    "whitepaper": "http://www.qex.life/QT.pdf",
+    "published_on": "2020-08-01",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.15 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "links": {
+        "blog": "http://www.qex.life",
+        "github": "https://github.com/qextoken/token-profile"
+        
+    }
+}

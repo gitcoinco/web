@@ -1,0 +1,16 @@
+{
+    "symbol": "EPD",
+    "address": "0x3596839661A32d50AbF20521C4473737Dea0C22F",
+    "overview":{
+          "en": "The EPD ecological cycle network uses the blockchain technology to newly dataize the traditional power generation industry. Through the update of traditional power plants to microbial power stations, the Mark Biocycle System is used to create economic value for users. Contribute to environmental protection.",
+          "zh": "EPD生态循环网络通过区块链技术，将传统发电产业数据化新兴化，通过传统电厂到微生物发电站的更新，利用马克生物循环系统，为用户创造经济价值，同时也为新能源产业发展与世界环保做出贡献。"
+    },
+    "email": "epdgermany@gmail.com",
+    "website": "http://epd-ger.com/",
+    "whitepaper": "http://epd-ger.com/1-191220092H3.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-16",
+    "links": {
+        "twitter": "https://twitter.com/EpdGermany"
+      }
+}

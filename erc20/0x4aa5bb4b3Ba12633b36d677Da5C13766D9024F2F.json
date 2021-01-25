@@ -1,0 +1,23 @@
+{
+    "symbol": "AAPL",
+    "address": "0x4aa5bb4b3Ba12633b36d677Da5C13766D9024F2F",
+    "overview": {
+        "en": "Aaplforth, The price information reflected by the nominal exchange rate is transmitted to the supply through the upper layer agreement. The agreement actively seeks the equilibrium point between price and supply, and automatically enters the dynamic range before achieving the balance. Due to the unique architecture design and incentive mechanism of Aapforth protocol, the existing price oriented trading strategy can not meet the transaction demand, so a new transaction strategy with comprehensive consideration of supply must be adopted. In view of this, Aapforth will show a unique way of volatility.",
+        "zh": "Aaplforth，通过上层协议把名义汇率反应出的价格信息传导至供应量。协议主动寻找价格与供应量之间的平衡点，并且在实现平衡之前自动进入动态区间。Aaplforth 协议独特的架构设计与激励机制导致现有的价格导向型交易策略无法满足交易需求，必须采取综合考虑供应量的全新交易策略。有鉴于此，Aaplforth将会展现出独一无二的波动方式。"
+    },
+    "email": "aaplforth@outlook.com",
+    "website": "https://aapl.cloud",
+    "whitepaper": "https://aapl.cloud/aapl-whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-04",
+    "initial_price": {
+        "ETH": "0.00312265ETH",
+        "USD": "1.24711 USD",
+        "BTC": "0.00010693 BTC"
+    },
+    "links": {
+        "blog": "https://finance.yahoo.com/news/rise-decentralized-stablecoins-aapleforth-174500910.html",
+        "github": "https://github.com/aaplforth",
+        "medium": "https://www.yahoo.com/news/rise-decentralized-stablecoins-aapleforth-174500910.html"
+    }
+}

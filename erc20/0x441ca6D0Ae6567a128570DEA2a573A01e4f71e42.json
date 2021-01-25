@@ -1,0 +1,11 @@
+{
+    "symbol": "LIN",
+    "address": "0x441ca6D0Ae6567a128570DEA2a573A01e4f71e42",
+    "overview": {
+        "en": "Lin is the platform token of lionex digital asset exchange, a decentralized blockchain digital asset based on Ethereum, with a total issuance of 2 billion.",
+        "zh": "LIN是LionEX数字资产交易所的平台通证，是基于Ethereum的去中心化的区块链数字资产，发行总量恒定为20亿枚。"
+    },
+    "state": "NORMAL",
+	"website": "http://www.lionex.pro",
+	"published_on": "2020-01-13"
+}

@@ -1,0 +1,17 @@
+{
+  "symbol": "BAL",
+  "address": "0xba100000625a3754423978a60c9317c58a424e3D",
+  "overview": {
+    "en": "Balancer is a non-custodial portfolio manager, liquidity provider, and price sensor",
+    "zh": "Balancer 协议是非托管型的投资组合经理、流动性提供者和价格传感器"
+  },
+  "email": "contact@balancer.finance",
+  "website": "https://balancer.finance/",
+  "whitepaper": "https://balancer.finance/whitepaper",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/BalancerLabs",
+    "discord": "https://discord.gg/ARJWaeF",
+    "github": "https://github.com/balancer-labs"
+  }
+}

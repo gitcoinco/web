@@ -1,0 +1,19 @@
+{
+  "symbol": "ETY",
+  "address": "0x37DB56E0FbA0BE2cbf96e3de3BFF8096b6D59179",
+  "overview":{
+        "en": "Ethereum Cloud Technology (ETY) is a new generation of intelligent contract platform initiated by Costello Longman, an American CFA , based on ETH.",
+        "zh": "以太云，简称：ETY，是由美籍的全球著名金融分析师科斯特洛·朗曼基于以太坊发起的新一代智能合约平台."
+  },
+  "email": "ety369@etheryun.net",
+  "website": "http://www.etheryun.net/",
+  "whitepaper": "http://www.etheryun.net/WhitePaper.pdf", 
+  "published_on": "2018-11-28",
+  "initial_price":{
+        "ETH":"0.000001 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/EthereumCloud",
+    "telegram": "https://t.me/EthereumCloud"   
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "CSO",
+  "address": "0x4321853dEDc763416F4b3FFa269Ca553F7Dd54C7",
+  "overview": {
+    "en": "CSO(CRYSTO Token) is the CRYSTO global cultural trading ecosystem token，one of the CRYSTO's double tokens.CSO token is the bridge that connects culture project’s token, cultural shopping malls, Promoters and users.",
+    "zh": "CSO 是水晶CRYSTO全球文化交易生态通证，是水晶CRYSTO双通证之一，CSO是连接文化项目Token、水晶商城、推广者、生态用户之间的纽带。"
+  },
+  "email": "admin@crysto.io",
+  "website": "https://crysto.io/",
+  "whitepaper": "https://crysto.io/whitepaper/CRYSTO_whitepaper_cn_v1.1.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-22",
+  "initial_price":{
+        "ETH":"0.000314 ETH",
+        "USD":"0.06 USD",
+        "BTC":"0.00000593 BTC"
+  },
+  "links": {
+    "twitter": "https://mobile.twitter.com/CRYSTO_official",
+    "telegram": "https://t.me/crysto_official",
+    "facebook": "https://www.facebook.com/profile.php?id=100008353142639"
+  }
+}

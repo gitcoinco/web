@@ -1,0 +1,20 @@
+{
+    "symbol":"CNYT",
+    "address":"0x50350870ccf4601c4eC9477C9B2F6f2105c85Ce3",
+    "overview":{
+        "en":"CNYT is a decentralized stable digital currency issued by Libra Xs Foundation, and its value is pegged with CNY at a ratio of 1:1. Issuance based on blockchain technology and smart contract technology ensures transparency and allows audits to be efficient and convenient",
+        "zh":"CNYT是由Libra Xs Foundation发行的去中心化稳定数字货币，其价值与人民币1：1锚定。基于区块链技术和智能合约技术发行，保证了透明度，让审计能够高效便捷"
+    },
+    "email":"marketing@cnyt.com",
+    "website":"cnyt.com",
+    "state":"NORMAL",
+    "published_on":"2020-06-02",
+    "gas_limit":"60000",
+    "initial_price":{
+        "CNY":"1"
+    },
+    "links":{
+        "twitter": "Twitter：https://mobile.twitter.com/CNYT81818931",
+        "金色财经":"https://m.jinse.com/blockchain/702654.html?source=m&from=singlemessage",
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "symbol": "AICC",
+  "address": "0xa68cc3720c5547c1c4f79ff12e22d43e7cd605a9",
+  "overview":{
+        "en": "Angle International Capital Chain.",
+        "zh": "AICC是Angel International Capital Chain的官方通证，AICC力图打造一个结合互联网、区块链、信托、基金管理、资产管理以及并购重组的创新化非金融机构运营模式，以此帮助全球创业者更加高效且低成本地实现孵化成果。"
+  },
+  "email": "aiccchain@gmail.com",
+  "website": "https://www.aiccchain.io/",
+  "whitepaper": "https://www.aiccchain.io/white.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-02-24",
+  "links": {
+  }
+}

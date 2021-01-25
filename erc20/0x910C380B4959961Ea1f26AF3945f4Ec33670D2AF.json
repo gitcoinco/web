@@ -1,0 +1,24 @@
+{
+    "symbol":"ALPT",
+    "address":"0x910C380B4959961Ea1f26AF3945f4Ec33670D2AF",
+    "overview":{
+        "en":"ALPT token",
+        "zh":"阿尔法平台币"
+    },
+    "website":"http://www.genfi.io/",
+    "whitepaper":"http://www.genfi.io/GenFi_WhitePaper.pdf",
+    "state":"NORMAL",
+    "published_on":"2020-03-21",
+    "initial_price":{
+        "ETH":"0.00046876 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00001015 BTC"
+    },
+    "links":{
+        "blog":"https://weibo.com/GenFiLab",
+        "twitter":"https://twitter.com/GenFiOfficial",
+        "telegram":"https://t.me/Alphaofficial888",
+        "github":"https://github.com/your-awesome-project",
+        "facebook":"https://www.facebook.com/genfi.lab.12"
+    }
+}

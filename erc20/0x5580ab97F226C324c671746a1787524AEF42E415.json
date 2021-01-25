@@ -1,0 +1,21 @@
+{
+  "symbol": "JUL",
+  "address": "0x5580ab97F226C324c671746a1787524AEF42E415",
+  "overview": {
+    "en": "The JustLiquidity DeFi is not merely a better way to trade and earn on Uniswap with ETH, but also a DeFi which can execute a Liquidity Token Sale with a token."
+	},
+  "email": "support@justliquidity.org",
+  "website": "https://justliquidity.org/",
+  "whitepaper": "https://docdro.id/DyOuQZr",
+  "state": "LOCKED",
+  "published_on": "2020-08-29",
+  "initial_price":{
+        "ETH":"0.0286 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/JustLiquidity",
+    "telegram": "https://t.me/justliquidity",
+    "github": "https://github.com/JustLiquidity",
+    "medium": "https://medium.com/@justliquidity",
+  }
+}

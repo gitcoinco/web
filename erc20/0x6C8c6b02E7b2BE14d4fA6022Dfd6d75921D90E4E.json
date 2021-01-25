@@ -1,0 +1,17 @@
+{
+  "symbol": "cBAT",
+  "address": "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",
+  "overview":{
+        "en": "cBAT is like an instant BAT savings account. By Compound.",
+        "zh": "cBAT 由 Compound 发行，类似于一个即时的 BAT 存储账户。 "
+  },
+  "website": "https://app.compound.finance/asset/cBAT",
+  "whitepaper": "https://compound.finance/documents/Compound.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "links": {
+    "blog": "https://medium.com/compound-finance",
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance/compound-protocol"
+  }
+}

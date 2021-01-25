@@ -1,0 +1,25 @@
+{
+    "symbol": "SKE",
+    "address": "0x57D21f2B0ff6d6Ac2aC13FDAF7f1B3A1AE7E4DA2",
+    "overview": {
+        "zh": "Skeyer Chain是一个基于区块链技术的分布式内容集成服务平台。它通过区块链技术解决了当前内容产业的痛点。为内容产业参与者提供安全、稳定、可靠的内容发布和获取环境。",
+        "en": "Skeyer Chain is a decentralized content integration service platform based on blockchain technology. It solves the current content industry pain points through blockchain technology.  To provide participants in the content industry with a safe, stable and reliable content publishing and acquisition environmentand."
+    },
+    "email": "skeyertoken@skeyer.io",
+    "website": "https://skeyer.io/",
+    "whitepaper": "https://skeyer.io/file/SKEYER%20English%20WhitePaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-09-02",
+    "initial_price": {
+        "ETH":"0.00011834 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.00000211 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/SkeyerChain",
+        "telegram": "https://t.me/SkeyerChainOfficial",
+        "facebook": "https://www.facebook.com/skeyer.chain",
+        "reddit": "https://www.reddit.com/user/SkeyerChain/",
+        "medium": "https://medium.com/@skeyerchai"
+    }
+}

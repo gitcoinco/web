@@ -1,0 +1,17 @@
+{
+    "symbol": "BBCT",
+    "address": "0x2B4d6B484D49234321292Ccc1adCA02Ea2bFcb95",
+    "overview":{
+          "en": "BBCT is an ecological platform based on the blockchain financial industry, with a complex business model and a blockchain financial ecosystem that is applied in one.",
+          "zh": "BBCT是一个基于区块链金融行业的生态平台,具备复合商业模式和落地应用于一体的区块链金融生态系统。"
+    },
+    "email": "bbctchain@gmail.com",
+    "website": "https://www.bbct.cc/",
+    "whitepaper": "https://www.bbct.cc/BBCTS.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-24",
+    "links": {
+        "telegram": "https://t.me/bbctgroup",
+        "twitter": "https://twitter.com/bbctofficial"
+      }
+}

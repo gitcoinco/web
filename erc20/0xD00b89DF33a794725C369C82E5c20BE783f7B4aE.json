@@ -1,0 +1,23 @@
+{
+    "symbol": "YAA",
+    "address": "0xD00b89DF33a794725C369C82E5c20BE783f7B4aE",
+    "overview": {
+        "en": "YAA is a decentralized finance (DeFi) platform, which aims to build aggregate liquidity pools and other functional platforms.",
+        "zn": "YAA 是 一个去中心化金融（DeFi）平台，其旨在建立聚合流动性池，及其他功能型平台。"
+    },
+    "email": "eoshonda@gmail.com",
+    "website": "http://yaa.link/wordpress",
+    "whitepaper": "http://yaa.link/wordpress/logo/pdf/YAA-Whitepaper-0xD00b89DF33a794725C369C82E5c20BE783f7B4aE.pdf",
+    "logo": "http://yaa.link/wordpress/logo/0xd00b89df33a794725c369c82e5c20be783f7b4ae_200.png",
+    "state": "NORMAL",
+    "published_on": "2020-08-31",
+    "initial_price":{
+        "ETH":"0.0023 ETH",
+        "USD":"1 USD",
+        "BTC":"0.000086 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/YAA16779407",
+        "facebook": "https://www.facebook.com/defi.yaa.7"
+    }
+}

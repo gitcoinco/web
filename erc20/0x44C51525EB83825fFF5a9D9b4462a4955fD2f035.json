@@ -1,0 +1,18 @@
+{
+  "symbol": "VEK",
+  "address": "0x44C51525EB83825fFF5a9D9b4462a4955fD2f035",
+  "overview":{
+        "zh": "Vehicle Chain是以汽车数据为核心的汽车后市场垂直公链，由区块链、汽车保险、汽车金融、互联网计算机以及5G物联网等行业资深人士共同研发打造，致力于打造一个系统化的全球汽车后市场服务生态链。Vehicle Chain 链接全球多个国家汽车后市场高端服务资源，拥有领先的汽车行业运营方式和开创性的通证资本投资思路，通过不断完善汽车后市场服务生态的建设，探索区块链模式下汽车数据等一系列落地应用与通证经济结合的可能性，并最终布局全球汽车后市场行业，服务全球客户。"
+  },
+  "email": "vek@vekchain.com",
+  "website": "http://vekchain.com/",
+  "whitepaper": "http://vekchain.com/Vehicle%20Chain%20Chinese.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-01-15",
+  "initial_price":{
+        "USD":"0.01800000 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/vekchain"
+  }
+}

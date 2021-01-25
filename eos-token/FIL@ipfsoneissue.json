@@ -1,0 +1,13 @@
+{
+  "symbol": "FIL",
+  "account_name": "ipfsoneissue",
+  "overview": {
+    "zh": "IPFS One (FIL) 是全球领先的分布式存储网络的运营商；是分布式储存矿业市场的先行者；是IPFS网络的卓越贡献者。在IPFS主网正式上线前，IPFS One 开创性的针对检索挖矿开发了基于EOS网络的去中心化智能存储合约，采用节点质押挖矿的模式，产出FIL测试币用于测试网流通，上线后映射由IPFS自有矿机开采出的Filecoin代币，实现不用挖也能得币的参与模式。"
+  },
+  "website": "http://www.ipfsone.io",
+  "published_on": "2020-03-05",
+  "initial_price": {
+    "USD": "0.036 USD"
+  },
+  "email": "contact@ipfsone.io"
+}

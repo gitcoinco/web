@@ -1,0 +1,17 @@
+{
+    "symbol": "GSE",
+    "address": "0x0Eb0317fC8796D73Fa04eC0126691198051582e2",
+    "overview": {
+        "en": "The kinglist Token Economy System has its own token mechanism, GSE. Owning GSE means having the right to use the kinglist distributed token economy system. Currently issued only by official channels and inseparable.",
+        "zh": "小呗排行榜通证经济系统拥有自己的代币机制——GSE，拥有GSE才意味着有权使用小呗排行榜分布式通证经济系统。目前仅由官方渠道发放，不可分割。"
+    },
+    "email": "738516662@qq.com",
+    "website": "http://www.kinglist.cn/",
+    "whitepaper": "http://www.kinglist.cn/HD.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-01-01",
+    "initial_price": {
+        "USD": "0.01453 USD"
+    },
+    "links": {}
+}

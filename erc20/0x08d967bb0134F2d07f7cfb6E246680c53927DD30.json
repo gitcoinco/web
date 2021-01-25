@@ -1,0 +1,22 @@
+{
+    "symbol": "MATH",
+    "address": "0x08d967bb0134F2d07f7cfb6E246680c53927DD30",
+    "overview": {
+        "en": "MATH is a one stop crypto solution platform which contains MathWallet, MathInsure, Math dAppStore, MathDEX, MathPool, MathPay, MathID, MathChain, etc.",
+        "zh": "MATH是数字化开放金融一站式解决方案平台，旗下产品包括：麦子钱包、VPOS矿池、MathDEX、Math ID、MATH dApp Store、MathChain等。"
+    },
+    "email": "hello@mathwallet.org",
+    "website": "http://mathwallet.org",
+    "whitepaper": "http://mathwallet.oss-cn-hangzhou.aliyuncs.com/whitepaper/MATH-Whitepaper-CN.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-09-27",
+    "initial_price": {
+        "USD": "0.2 USD"
+    },
+    "links": {
+        "blog": "http://blog.mathwallet.net",
+        "twitter": "https://twitter.com/Mathwallet",
+        "telegram": "https://t.me/mathwalletCN",
+        "github": "https://github.com/mathwallet"
+    }
+}

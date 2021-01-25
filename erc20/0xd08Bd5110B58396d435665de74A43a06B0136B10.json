@@ -1,0 +1,14 @@
+{
+  "symbol": "OTG",
+  "address": "0xd08Bd5110B58396d435665de74A43a06B0136B10",
+  "overview": {
+    "zh": "OTG是奥莱国际公链（PARALLEL OUTLETS GLOBAL CHAIN）的官方电子通证。奥莱国际致力于重塑全球奢侈品商业格局，为奢侈品行业提供区块链底层架构支持，解决行业真假难辨、跨境支付、供应链管理核心问题，同时还可以给国家、机构、企业提供组织公平、诚信、透明的奢侈品产业提供一站式解决方案。OTG为全球性奢侈品的资产提供永久、匿名和值得信赖的物产凭证。构建链接品牌和所有者之间的创新性枢纽。通过区块链的可追溯性，搭建一个高端奢侈品的溯源应用系统，打造一个聚合数据存储、数据处理及公链开发的双底层智能商业生态。",
+    "en": "OTG is the token of PARALLEL OUTLETS GLOBAL CHAIN. OTG is committed to remolding the global luxury business pattern, providing block chain infrastructure support for the luxury industry, and solving the core issues of industry authenticity, cross-border payment and supply chain management. At the same time, it can also provide one-stop solutions for countries, institutions and enterprises to provide fair, honest and transparent luxury industry."
+  },
+  "website": "http://www.otgglobal.org",
+  "whitepaper": "http://www.otgglobal.org/upload/file/OTG.pdf",
+  "links": {
+    "facebook": "https://www.facebook.com/outlets.parallel"
+  },
+  "state": "NORMAL"
+}

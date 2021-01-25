@@ -1,0 +1,17 @@
+{
+    "symbol": "BSGT",
+    "address": "0x11218d13C92cFAC1fDa041EcA844215662A7D96d",
+    "overview":{
+          "en": "The origin of SINGULARITY is a distributed storage application public chain based on distributed storage technology. SINGULARITY is committed to providing a point-to-point distributed data management system for global users, linking all idle storage resources, allowing all network storage devices to participate in mining, forming a powerful distributed data storage network service system, and reconstructing the data storage network structure. Joint internal and external ecological development to build a super cloud computing platform.",
+          "zh": "SINGULARITY 奇点起源是基于分布式存储技术开发的分布式存储应用公链。SINGULARITY致力于面向全球用户提供点对点的分布式数据管理系统，链接一切闲置存储资源，让所有网络存储设备都可以参与挖矿，形成强大的分布式数据存储网络服务系统，重构数据存储网络结构，联合内外部生态发展，共建超级云计算平台。"
+    },
+    "email": "bsgt1314@yeah.net",
+    "website": "http://www.bsgt.top/",
+    "whitepaper": "http://www.bsgt.top/white-paper/en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-17",
+    "links": {
+        "telegram": "https://t.me/singularityto",
+        "twitter": "https://twitter.com/Cynthia08325859"
+      }
+}

@@ -1,0 +1,23 @@
+{
+    "symbol": "TRUST",
+    "address": "0x0EE815F8BE0B0259E2657C8b8d1E57Bd3D60F26b",
+    "overview":{
+          "en": "Harmony Block Capital is a tokenized crypto hedge fund and a distributed autonomous fund with a distributed autonomous organizational structure. The fund uses tokens and smart contracts to participate in financial management. The position information, transaction record, portfolio and asset curve are all integrated in the crypto audit system, open and transparent to the query and supervision of the fund holders and the public, and the assets will be recorded on the Ethereum blockchain. TRUST token is a tokenized fund share, which is a negotiable proof of community governance and rights. It is used for fund profit distribution, unit net value calculation, share transfer and circulation, community governance and fund operation cost settlement.TRUST is issued by pledge ETH at the time of subscription, and is exchanged and circulated with ETH through subscription pledge and redemption, and TRUST anchors fund performance against ETH price.",
+          "zh": "Harmony Block Capital是通证化的加密对冲基金，是分布式自治组织结构的分布式自治基金。基金采用通证和智能合约参与财务管理。基金持仓信息、交易记录、投资组合和资产曲线都整合在加密审计系统中，公开透明接受基金持有人和公众的查询和监督，基金的资产将记录在以太坊区块链上。TRUST Token是通证化的基金份额，是可流通的社区治理和权益证明凭证。用于基金利润分配、单位净值计算、份额的转让流通、社区治理以及基金运营成本结算。TRUST由申购时质押ETH担保发行，与ETH通过申购质押和赎回方式双向兑换流通，TRUST兑ETH价格锚定基金业绩。"
+    },
+    "email": "capital@swhyfund.com",
+    "website": "https://www.swhyfund.com/",
+    "whitepaper": "https://www.swhyfund.com/files/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-26",
+    "initial_price":{
+          "ETH":"0.01743541 ETH",
+          "USD":"2.2 USD",
+          "BTC":"0.00030422 BTC"
+    },
+    "links": {
+      "twitter": "https://twitter.com/nuaapioneer",
+      "telegram": "https://t.me/Harmony_Block_Capital",
+      "github": "https://github.com/nuaapioneer/Harmony-Block-Capital"
+    }
+  }

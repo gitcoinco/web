@@ -1,0 +1,25 @@
+{
+    "symbol": "LTB",
+    "address": "0xa105C740BC012A43a342Ab4A0Ef40143452C8E89",
+    "overview": {
+        "en": "LTB is a token that issued by Litbinex exchange and it will be used to process payments worldwide, pay dividends on Litbinex Exchange, pay for transactions fee, and used for voting rights on Litbinex Exchange. LTB uses peer-to-peer technology to operate with no central authority or banks.",
+        "zh": "LTB是Litbinex交易所發行的代幣，將用於處理全球付款，在Litbinex交易所支付股息，支付交易費以及在Litbinex交易所獲得投票權。 LTB使用對等技術在沒有中央機構或銀行的情況下進行操作。"
+    },
+    "email": "admin@litbinex.com",
+    "website": "http://litbinex.com/",
+    "whitepaper": "https://litbinex.com/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2019-10-10",
+    "initial_price": {
+        "ETH": "0.000005 ETH",
+        "USD": "0.001 USD",
+        "BTC": "0.0000001 BTC"
+    },
+    "links": {
+        "blog": "https://medium.com/@litbinex",
+        "twitter": "https://twitter.com/Litbinex",
+        "telegram": "https://t.me/Litbinex",
+        "github": "https://github.com/litbinex",
+        "facebook": "https://facebook.com/Litbinex"
+    }
+}

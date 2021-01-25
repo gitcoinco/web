@@ -1,0 +1,21 @@
+{
+  "symbol": "SDE",
+  "address": "0xE0e9EDE8A01aa6F7F0e23945738a6c6173ADc3a0",
+  "overview":{
+        "en": "SardineChain Token (SDE).",
+        "zh": "沙丁链Token (SDE)。"
+  },
+  "email": "developer@sardinechain.org",
+  "website": "https://www.sardinechain.org",
+  "whitepaper": "https://www.sardinechain.org/file/SardineChain1.5.EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-29",
+  "links": {
+    "blog": "https://www.weibo.com/7187835462",
+    "twitter": "https://twitter.com/SardineChain", 
+    "github": "https://github.com/SardineChain ",
+    "facebook": "https://www.facebook.com/ch.sardine.5",
+    "reddit": "https://www.reddit.com/user/SardineChain",
+    "medium": "https://medium.com/@SardineChain"
+  }
+}

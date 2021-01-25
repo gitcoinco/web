@@ -1,0 +1,15 @@
+{
+  "symbol": "XTZ",
+  "address": "tezos",
+  "overview":{
+        "en": "Tezos is an open-source platform for assets and applications backed by a global community of validators, researchers, and builders.",
+        "zh": "Tezos是一个资产和应用程序的开源平台，由全球验证者，研究人员和建造者共同支持。"
+  },
+  "website": "https://tezos.com/",
+  "state": "NORMAL",
+  "published_on": "2016-06",
+  "links": {
+    "twitter": "https://twitter.com/tezos",
+    "facebook": "https://www.facebook.com/tezosledger"
+  }
+}

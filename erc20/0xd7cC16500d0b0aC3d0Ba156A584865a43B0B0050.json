@@ -1,0 +1,16 @@
+{
+    "symbol": "TEP",
+    "address": "0xd7cC16500d0b0aC3d0Ba156A584865a43B0B0050",
+    "overview": {
+        "en": "Tepleton, a new financial solution built upon cross-chain technology, is a blockchain-based value network that primarily serves for the finance industry and empowers cutting-edge financial services, such as Trust, Banking, Insurance, Security and Rental. Tepleton combines Byzantine Fault Tolerance (BFT) with Delegated Proof of Stake (DPoS) as consensus mechanism widely applied within the network. This design not only guarantees fast transfers of information and value on the chain, but also, with inner isolations among Centers and Areas, well protects the network from malicious attacks. The properties of strong security, high performance and permanent consistency are simultaneously met. Tepleton team is the first team in the world who innovatively launches the idea of FinBlockchain, the combination of Finance and Blockchain. They define it as a new blockchain-based financial era that is open, reliable, efficient and decentralized.",
+        "zh": "Tepleton，基于底层跨链技术的区块链新金融解决方案，结合拜占庭容错安全共识的DPoS共识机制，既能有效保证主链上信息和交易快速流通传递，也能通过Center与分区隔离保证主链不会受恶意破坏者的攻击，兼具安全性、高性能、一致性的特性。"
+    },
+    "email": "info@bitvalue.info",
+    "website": "https://tepleton.com",
+    "whitepaper": "http://www.bitvalue.info/wpen/EN.pdf",
+    "state": "NORMAL",
+    "links": {
+        "telegram": "https://t.me/joinchat/OFtSbUuTb3MLQBwPBmDSRA",
+        "twitter": "https://twitter.com/tepleton"
+    }
+}

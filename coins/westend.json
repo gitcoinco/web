@@ -1,0 +1,15 @@
+{
+  "symbol": "WND",
+  "address": "westend",
+  "overview":{
+        "en": "Westend testnet token",
+        "zh": "Westend 测试网通证"
+  },
+  "email": "hello@polkadot.network",
+  "website": "polkadot.network",
+  "state": "NORMAL",
+  "published_on": "2019-07",
+  "links": {
+    "twitter": "https://twitter.com/polkadotnetwork",
+  }
+}

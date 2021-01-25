@@ -1,0 +1,23 @@
+{
+    "symbol": "IBT",
+    "address": "0x38574F6a9b00790cd901597Fb3CAedf652d4a452",
+    "overview":{
+          "en": "As a platform token of the i8 exchange, IBT can be used in multiple scenarios within the i8ex exchange and under the i8ex ecosystem, and has become an important circulation hub of the ie8ex ecosystem. Users holding IBT can enjoy the corresponding rights and interests of i8ex entire ecology and enjoy the scarcity and value enhancement brought by the continuous repurchase and destruction of IBT.",
+          "zh": "IBT是I8 Blockchain Token的简称，是基于i网平台全生态场景应用发行的区块链生态通证，是i网价值和权益的承载。作为i网的平台通证，可在i网内部以及i网生态体系下的多场景使用，成为i网生态体系的重要流通枢纽。持有IBT的用户可享受i网全生态的相应权益以及享受i网持续回购销毁带来的稀缺性和价值提升。"
+    },
+    "email": "service@i8ex.com",
+    "website": "https://www.i8ex.com/",
+    "whitepaper": "http://mydjexchange.oss-cn-hongkong.aliyuncs.com/infodownload/i8exwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-04-21",
+    "initial_price":{
+          "IBT":"0.02USDT"
+    },
+    "links": {
+      "blog": "https://www.weibo.com/u/7434913048",
+      "twitter": "https://twitter.com/I8English",
+      "telegram": "https://t.me/i8exchangeCH",
+      "facebook": "https://www.facebook.com/i8English/",
+      "reddit": "https://www.reddit.com/r/your-awesome-project/"
+    }
+}

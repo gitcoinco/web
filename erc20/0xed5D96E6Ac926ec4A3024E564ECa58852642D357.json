@@ -1,0 +1,16 @@
+{
+  "symbol": "DFNC",
+  "address": "0xed5D96E6Ac926ec4A3024E564ECa58852642D357",
+  "overview":{
+    "en": "DFNC bats and chain wants to use block chain unique tamper-resistant distributed books recording feature, to build industry chain, through the ground project of sub chain corresponding DAPP pain points on the informationization of vertical industry enterprises, for the development of technology developers to provide efficient set of cloud services, and thus to build a new ecological system, the bat and chain block chain, as the future value of optional Internet transmission protocol, and the practicability of the whole block chain industry, ease of use, one step further, so as to make enterprise application landing and chain.",
+    "zh": "DFNC 蝙蝠公链希望利用区块链独特的不可篡改的分布式账本记录特性， 构建行业生态链， 通过落地项目的子链对应 DAPP 来解决垂直行业企业在信息化上的痛点，为技术开发者提供快捷高效的开发云服务集合， 并由此构建一个全新的区块链生态系 统 —— 蝙蝠公链， 作为未来世界可选的互联网价值传输协议， 并把整个区块链行业的实用性、易用性向前推进一步， 从而打造企业级落地应用公链。"
+  },
+  "email": "contact@dfncoin.top",
+  "website": "http://www.dfncoin.top/",
+  "state": "NORMAL",
+  "published_on": "2019-10-10",
+  "initial_price":{
+    "ETH":"0.00034 ETH",
+    "USD":"0.085 USD"
+  }
+}

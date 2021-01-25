@@ -1,0 +1,21 @@
+{
+  "symbol": "DCS",
+  "address": "0x53d47C83fCB0af1BB307736d288c75307A6abcD5",
+   "overview": {
+   "en": "DCS builds a one-stop platform for digital copyright confirmation, authorization and infringement protection services through distributed storage up-link and intelligent contract technology to solve users'privacy and security problems. Through the digital commodity copyright chain to promote the circulation of transactions, enabling the B and C terminals, stimulate the creation and distribution capacity of the vast number of CPs, and drive the prosperity of the Internet content industry. Under the background that digital economy is becoming the new momentum of global economic growth and the new engine of improving economic quality and efficiency, DCS platform shares economic achievements with technology and content builders of digital economy to achieve multilateral win-win situation. DCS is committed to providing a data storage infrastructure for block chains and de-centralized applications. On this infrastructure platform, it provides de-centralized cloud database storage and access capabilities, and DCS provides high-speed trading capabilities based on horizontal scalability and fragmentation technology. It is validated by relay chain technology and cross-chain transactions. It provides the ability of cross-chain transaction and data access and validation in the system, and provides the ability of cross-chain communication with other chain systems through the support of BCP protocol. By providing a series of basic capabilities such as infinitely scalable block storage, file storage, object storage, and fast network transmission (rsync), DCS makes it easy for distributed applications to generate, calculate, transfer, store and retrieve data. Through attribute encryption and proxy encryption technology, we protect the privacy of data. Moreover, DCS project has the characteristics of flexible data structure, powerful programming interface and efficient backup.",
+    "zh": "DCS通过分布式存储上链和智能合约等技术,搭建数字版权确权、授权和侵权保护服务的一站式平台，解决用户隐私及安全问题。通过数字商品版权上链促进交易流通，赋能B端和C端，激发广大CP的创作和发行能力，驱动互联网内容产业的繁荣。在数字经济正成为全球经济增长的新动能和经济提质增效的新引擎的背景下，DCS平台与数字经济的技术、平台内容建设者共享经济成果，实现多边共赢。DCS致力于为区块链和去中心化应用提供一个数据存储基础设施，在此基础设施平台之上，提供去中心化的云数据库存储和访问能力，并且DCS基于水平可扩展性和分片技术，提供了高速的交易能力;通过中继链技术和跨链交易验证，提供了系统内的跨链交易和数据访问及验证能力，通过对BCP协议的支持，提供和其他链系统的跨链通信能力。通过提供可无限扩展的块存储、文件存储、对象存储、以及快速网络传输(rsync)在内的一系列基础能力服务，DCS 使分布式应用可以轻松完成数据的生成、计算、传输、存储、检索。通过属性加密和代理加密技术，我们对数据的隐私性提供了保护。不仅如此，DCS项目还具有数据结构灵活、编程接口强大、高效备份等特点。"
+  },
+   "email": "dcs52594@163.com",
+   "website": "www.dcscoin.com",
+   "whitepaper": "http://www.dcscoin.com/assets/file/DCS_whitepaper_en.pdf",
+   "state": "NORMAL",
+   "published_on": "2019-08-26",
+   "initial_price":{ 
+        "USD":"0.2 USD"
+  },
+  "links": {
+    "blog": "https://weibo.com/dcscoin",
+    "telegram": "https://web.telegram.org/#/im?p=@btc_blocknew",
+    "facebook": "https://www.facebook.com/dcs.brown.5"
+  }
+}

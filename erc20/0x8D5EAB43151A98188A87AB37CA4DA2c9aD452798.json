@@ -1,0 +1,17 @@
+{
+    "symbol": "GCT999",
+    "address": "0x8D5EAB43151A98188A87AB37CA4DA2c9aD452798",
+    "overview":{
+          "en": "GCAC is a public chain based on the DDPOS consensus mechanism. In the future, it will create a blockchain-wide ecosystem that covers the global gold light luxury goods trading platform + mining alliance digital exchange + mining alliance digital bank.",
+          "zh": "GCAC是一条基于DDPOS共识机制的公有链，未来将打造涵盖全球黄金轻奢品交易平台+矿业联盟数字交易所+矿业联盟数字银行的区块链全领域生态。"
+    },
+    "email": "gcacblocker@gmail.com",
+    "website": "http://www.gcac.club/",
+    "whitepaper": "http://www.gcac.club/GCAC%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-04-25",
+    "links": {
+        "telegram": "https://t.me/gcacgroup",
+        "twitter": "https://twitter.com/gcac_gct"
+      }
+}

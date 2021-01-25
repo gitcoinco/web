@@ -1,0 +1,22 @@
+{
+  "symbol": "DSC",
+  "address": "0x358280cCFA8BA3419B24f9cB240A0821a43FaFE0",
+  "overview":{
+        "en": "DSCoin - Make users more focused on trading. Providing secure and reliable digital asset trading and asset management services to millions of users worldwide",
+        "zh": "DSCoin - 让用户更专注交易. 为全球数百万用户提供安全、可信赖的数字资产交易及资产管理服务"
+  },
+  "email": "business@dscoin.cc",
+  "website": "http://www.dscoin.cc/",
+  "whitepaper": "http://www.luandou0.cn",
+  "state": "NORMAL",
+  "published_on": "2019-08-19",
+  "initial_price":{
+        "ETH":"0.0001538 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.0000018 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/dscoinex",
+    "telegram": "https://t.me/dscoinex"
+  }
+}

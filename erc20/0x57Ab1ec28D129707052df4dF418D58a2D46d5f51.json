@@ -1,0 +1,16 @@
+{
+  "symbol": "sUSD",
+  "address": "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+  "overview":{
+        "en": "A synthetic asset issued by the Synthetix protocol which tracks the price of the United States Dollar (USD). sUSD can be traded on Synthetix.Exchange for other synthetic assets through a peer-to-contract system with no slippage."
+  },
+  "email": "info@synthetix.io",
+  "website": "https://www.synthetix.io/",
+  "state": "NORMAL",
+  "links": {
+    "blog": "https://blog.synthetix.io/",
+    "twitter": "https://twitter.com/synthetix_io",
+    "github": "https://github.com/Synthetixio",
+    "reddit": "https://reddit.com/r/synthetix_io"
+  }
+}

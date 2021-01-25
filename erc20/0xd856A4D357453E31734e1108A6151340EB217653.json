@@ -1,0 +1,17 @@
+{
+    "symbol": "NBN",
+    "address": "0xd856A4D357453E31734e1108A6151340EB217653",
+    "overview":{
+          "en": "The NBN is a public chain of anonymous privacy jointly built by the German geek team and more than a dozen top professors of German cryptography. NBN is a completely anonymous and untraceable encryption public chain and token application of the new payment system. The public chain system and related infrastructure support all kinds of blockchain 4.0 ecosystem connected to applications on side chains with perfect supporting functions, high performance, rich application scenarios, easy to use and good user experience.",
+          "zh": "NBN是由德国极客团队，联合十余位德国密码学顶级教授联合打造的匿名隐私公链。NBN是一款完全匿名和无法跟踪的加密公链及token应用的全新支付体系。支撑功能完善、性能高、应用场景丰富、易于使用、用户体验好公链体系及相关的基础设施，支撑各类侧链上应用接入的区块链4.0生态系统。"
+    },
+    "email": "nbnofficial@163.com",
+    "website": "http://www.nbn.world/",
+    "whitepaper": "http://www.nbn.world/testphp/public/static/img/NBNwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-09",
+    "links": {
+        "facebook": "https://www.facebook.com/NBNOfficialGroup",
+        "telegram": "https://t.me/NBNOfficialGroup"
+      }
+}

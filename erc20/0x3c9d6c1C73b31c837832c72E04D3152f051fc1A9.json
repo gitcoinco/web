@@ -1,0 +1,24 @@
+{
+    "symbol": "BOR",
+    "address": "0x3c9d6c1C73b31c837832c72E04D3152f051fc1A9",
+    "overview": {
+        "en": "BoringDAO is a decentralized bridge that connects all blockchain assets, we offer users a safe way to maximize their utilization rate of crypto assets.",
+        "zh": "BoringDAO 是一个去中心化的资产桥，它使用隧道机制来进行代币跨链,并提供一个安全的途径来最大化加密资产的收益。"
+    },
+    "email": "info@boringdao.com",
+    "website": "https://www.boringdao.com/",
+    "whitepaper": "https://boringdao-prod.oss-accelerate.aliyuncs.com/BoringDAO_WhitepaperV2.4.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-23",
+    "initial_price": {
+        "ETH": "0.36407766 ETH",
+        "USD": "150 USD",
+        "BTC": "0.01162791 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BoringDAO_Defi",
+        "telegram": "https://t.me/boringDAO",
+        "github": "https://github.com/BoringDAO",
+        "medium": "https://boringdao-defi.medium.com/"
+    }
+}

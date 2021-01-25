@@ -1,0 +1,26 @@
+{
+    "symbol": "NDN",
+    "address": "0x6Ec47a178A9d50d4ec4683003d8324f19Ca35382",
+    "overview":{
+          "en": "NDN Link aims to initiate a future network technology Naming Data Network (NDN) which relies on the National Science Foundation. NDN Link aims to build a content-centric next generation of network technology with a mission of promoting the development of a next-generation of Internet applications and services. NDN Link combines NDN (Named Data Networking) and blockchain technology to achieve breakthroughs in many directions such as data naming as a whole, proof of work on data routing. Hence, it builds a content-centric next-generation internet communication technology infrastructure to commercialize NDN technology and return to the beginning vision of the Internet.",
+          "zh": ""
+    },
+    "email": "allen@ndn.link",
+    "website": "https://www.ndn.link/#/",
+    "whitepaper": "https://www.ndn.link/download/NDN%20Link%20Whitepaper-English.PDF",
+    "state": " NORMAL",
+    "published_on": "2019-01-01",
+    "initial_price":{
+         
+          "USD":"0.018 USD"
+         
+    },
+    "links": {
+      "blog": "https://ndnlink.zendesk.com/hc/en-us",
+      "twitter": "https://twitter.com/ndnlink",
+      "telegram": "https://t.me/ndnlinkglobal", 
+      "youtube": "https://www.youtube.com/channel/UCftktrI67XQBv6ucNTRT1Vg",
+      "facebook": "https://www.facebook.com/ndnlink/",
+      "medium": "https://medium.com/ndn-link-official"
+    }
+  }

@@ -1,0 +1,17 @@
+{
+  "symbol": "BCH",
+  "address": "bitcoincash",
+  "overview":{
+        "en": "Bitcoin Cash brings sound money to the world, fulfilling the original promise of Bitcoin as Peer-to-Peer Electronic Cash.",
+        "zh": "比特币现金为全世界带来一种健全的货币，实现比特币作为一种“点对点电子现金”的初衷。"
+  },
+  "website": "https://www.bitcoincash.org",
+  "whitepaper": "https://www.bitcoincash.org/zh-CN/bitcoin.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-07",
+  "links": {
+    "telegram": "https://t.me/BitcoinCashUpdates",
+    "github": "https://github.com/bitcoincashorg/bitcoincash.org",
+    "facebook": "https://www.facebook.com/bitcoincashorg"
+  }
+}

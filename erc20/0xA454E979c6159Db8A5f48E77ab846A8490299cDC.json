@@ -1,0 +1,17 @@
+{
+    "symbol": "MOCC",
+    "address": "0xA454E979c6159Db8A5f48E77ab846A8490299cDC",
+    "overview":{
+          "en": "MOCC is committed to creating the world's first truly equipped cmposite business model and landing application Blockchain cross-border financial ecological payment system,Based on point-to-point network technology,blockchain and smart contract technology bilding a new form of global payments,Closely combine cashless, cardless transactions and digital assets to create an unlimited payment platform.",
+          "zh": "MOCC致力于打造全球首款真正具备复合商业模式和落地应用于一体的区块链跨境金融生态支付系统，在点对点网络技术的基础上，基于区块链和智能合约技术构建全球支付新形态，把无现金、无卡交易和数字资产三者紧密结合，打造一个无界限的支付平台。"
+    },
+    "email": "moleculechain@gmail.com",
+    "website": "http://moccs.cc",
+    "whitepaper": "http://moccs.cc/src/MOCC.EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-28",
+    "links": {
+        "telegram": "https://t.me/moccgroup",
+        "twitter": "https://twitter.com/molecule_chain"
+      }
+}

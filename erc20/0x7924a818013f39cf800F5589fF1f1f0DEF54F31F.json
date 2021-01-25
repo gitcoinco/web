@@ -1,0 +1,17 @@
+{
+  "symbol": "UNI-V2 LON/ETH LP",
+  "address": "0x7924a818013f39cf800F5589fF1f1f0DEF54F31F",
+  "overview":{
+        "en": "UNI-V2 token represents a share in the Uniswap LON/ETH Pool. Liquidity providers earn 0.3% fee on every trade made through the protocol. The fees are then split proportionally to your share of the pool. Own share of the pool, you become a liquidity provider of the Uniswap LON/ETH Pool.",
+        "zh": "UNI-V2 代币代表 Uniswap LON/ETH 池中的份额,流动性提供者通过该协议进行的每笔交易赚取0.3% 的费用,然后根据您在池中的份额按比例分配费用;拥有该池的份额，您就是 Uniswap LON/ETH 池的流动性提供者。"
+  },
+  "email": "",
+  "website": "https://uniswap.org",
+  "state": "NORMAL",
+  "published_on": "2020-12-23",
+  "links": {
+    "blog": "https://uniswap.org/blog/uni/",
+    "twitter": "https://twitter.com/UniswapProtocol",
+    "medium": ""
+  }
+}

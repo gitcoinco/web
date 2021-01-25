@@ -1,0 +1,21 @@
+{
+  "symbol": "BBT",
+  "address": "0x0Ed1b543B88866D316a4512B1a5C904513fDA6B9",
+  "overview": {
+    "en": "BBT （Babel Token）is BABEL's full platform application pass, currently used on the Babelex exchange as exchange platform token, distributed by the official POCS mechanism, and traded at Babelex. The future will map to tokens of BabelChain..",
+    "zh": "BBT是BABEL的全平台应用通证,目前应用于Babelex交易所，作为交易所代币，由官方按照POCS机制分发，并可于Babelex交易。未来将映射为BabelChain的代币。"
+  },
+  "email": "babeliopro@gmail.com",
+  "website": "https://www.bblex.net",
+  "whitepaper": "https://download.bblex.net/babel.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-05-25",
+  "initial_price":{
+    "ETH":"0.00014285 ETH",
+    "USD":"0.03 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/Babelexiopro/ ",
+    "reddit": "https://www.reddit.com/u/Babel-Io/"
+  }
+}

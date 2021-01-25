@@ -1,0 +1,10 @@
+{
+  "symbol": "HTP",
+  "address": "0x0469B5BE3D08413DE884Bae18AfB886Ee4521c25",
+  "overview":{
+        "en": "HTP consists of data layer,networlayer,consensus layer,incentive layer, contract layer and application layer.",
+		"zh": "火链系统由数据层、网络层、共识层、激励层、合约层和应用层组成"
+  },
+  "website": "https://huotop.cc/",
+  "whitepaper": "https://github.com/HTPhuotop/white-paper/blob/master/HTP%20white-paper.pdf"
+}

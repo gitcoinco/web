@@ -1,0 +1,12 @@
+{
+    "symbol": "TCASH",
+    "address": "0x9D3A8A7dF2a81B38A7f3d2f682B0aBA1e65DE7F8",
+    "overview": {
+        "en": "Tcash Token (TCASH) is the Tcash Foundation Ecological Token.Tcash Foundation developed Tcash based on the token system issued and managed through blockchain and it can be used inside Tcash Foundation as well as the multiple scenarios of Tcash Foundation ecosystem.Tcash holders shall enjoy the corresponding benefits of the whole ecosystem of Tcash Foundation and get the discount on fees.",
+        "zh": "Tcash令牌（铁矿石）是Tcash基金会的生态令牌，Tcash基金会基于通过区块链发行和管理的令牌系统开发了Tcash，它可以在Tcash基金会内部以及Tcash基金会生态系统的多种场景中使用，Tcash持有者应享有基金会整个生态系统的相应收益，并获得费用折扣。"
+    },
+    "website": "https://tcash.org/",
+    "whitepaper": "https://tcash.org/pdf/tcash_whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-02"
+}

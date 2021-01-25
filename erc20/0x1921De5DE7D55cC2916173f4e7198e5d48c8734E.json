@@ -1,0 +1,16 @@
+{
+    "symbol": "IGC",
+    "address": "0x1921De5DE7D55cC2916173f4e7198e5d48c8734E",
+    "overview": {
+        "en": "IGC general chain developed by Jiangsu Hongtong Block Chain Technology Co., LTD.  enables servers around the world to conduct point-to-point financial transactions through the establishment of a distributed P2P clearing network, with decentralized management, without middlemen or any complicated exchange procedures, providing strong liquidity for cross-border payments.",
+        "zh": "IGC通用链由江苏鸿通区块链科技有限公司研发，通过建立一个分布式的P2P清算网络，让全世界服务器互相进行点对点金融交易，去中心化管理，无须中间人，也无须任何繁杂的兑换手续，为跨界支付提供极强流动性"
+    },
+    "website": "http://www.igcworld.online",
+    "whitepaper": "http://www.igcworld.online/igc/igc.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-04-26",
+    "links": {
+        "telegram": "",
+        "github": ""
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "BDCC",
+    "address": "0x5BD0C6FBf9728ae55A6978eefe61804315e32Eb4",
+    "overview":{
+          "en": "BDCC big data chain is the world's first big data application ecological chain based on big data and relying on blockchain technology. And based on the underlying technology of the blockchain, the BDCC chain is applied to various fields such as government and enterprise, finance, consumption, transportation, education, medical care, manufacturing, retail and wholesale, and organically integrates it.",
+          "zh": "BDCC大数据链是以大数据为主体，区块链技术为依托，打造的全球首个大数据应用生态链。并基于区块链底层技术，将BDCC链应用到政企、金融、消费、交通、教育、医疗、制造业、零售批发等各个领域，并将其有机的整合。"
+    },
+    "email": "service@big-data-chain.org",
+    "website": "https://www.big-data-chain.org/",
+    "whitepaper": "https://www.big-data-chain.org/Public/BDCC.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-31",
+    "links": {
+        "telegram": "https://t.me/BD_Chain",
+        "twitter": "https://twitter.com/BD_Chain"
+      }
+}

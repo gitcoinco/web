@@ -1,0 +1,25 @@
+{
+    "symbol":  "Cle",
+    "address":  "0x3b07416eF96f55C947B747464fa59a77b1167c6d",
+    "overview":  {
+        "en":  "Cle(Celare  Token)  is  the  world's  first  cross-chain  and  anonymous  solutions  for  all  digital  assets  that  combines  security,  privacy  and  cross-chain.",
+        "zh":  "Celare是世界首个结合安全、隐私和跨链的数字资产的跨链和匿名解决方案。"
+    },
+    "email":  "Celare2020@outlook.com",
+    "website":  "http://www.celare.io",
+    "whitepaper":  "http://www.celare.io/#/pc/whitePaper",
+    "state":  "NORMAL",
+    "published_on":  "2020-03-18",
+    "initial_price":{
+                "ETH":"0.666  ETH",
+                "USD":"0.666  USD",
+                "BTC":"0.666  BTC", 
+    },
+    "links":  {
+        "twitter":  "https://twitter.com/CelareCommunity?s=05",
+        "telegram":  "https://t.me/celarecommunity_en",
+        "reddit":  "https://www.reddit.com/u/Celarecommunity",
+        "github":  "https://github.com/Celaregithub",
+        "medium":  "https://medium.com/@yuaza4"
+    }
+}

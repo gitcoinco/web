@@ -1,0 +1,25 @@
+{
+  "symbol": "LTE",
+  "address": "0x8f1459743dF07b81aE11A58C5ac6f2fB5fC8F095",
+  "overview":{
+        "en": "Littrade is the native security token of the Littradex Exchange. LTE Token holders can qualify for discounted trading fees."
+  },
+  "email": "support@littradex.com",
+  "website": "http://littradex.com/",
+  "whitepaper": "https://littradex.com/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2019-30-09",
+  "initial_price":{
+        "ETH":"0.00041000 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00000800 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/@littradex",
+    "twitter": "https://twitter.com/Littradex",
+    "facebook": "https://m.facebook.com/Littradex",
+    "reddit": "https://www.reddit.com/r/Littradex",
+    "linkedin": "https://www.linkedin.com/company/littradex",
+    "telegram": "https://t.me/Littradex"
+  }
+}

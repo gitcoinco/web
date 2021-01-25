@@ -1,0 +1,26 @@
+{
+	"symbol": "ABEL",
+	"address": "0x2f1364d1aF83aFA748A452579b09D69Ee83e8C86",
+	"overview": {
+		"en": "ABEL allows people to maximize their social capital in the most efficient way. ABEL aspires to create a “non-discriminatory distribution of work” for all, where each ABEL participant is entitled to regular income from his or her own efforts, without the need to invest any capital.",
+		"zh": "ABEL通过构建 全新的生产关系，让人们以最有效的途径来最大化自己的社会资本。 ABEL 立志为所有人创造“无差别按劳分配”，让每个 ABEL 的参与者都能有权通过自己的 努力定期获得收入，而不需要投入任何资本"
+	},
+	"email": "abelclubtest@gmail.com",
+	"website": "http://www.abel.beer/index.html",
+	"whitepaper": "http://download.jamtpfm.cn/upload/abelpaper_cn.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-03-20",
+	"initial_price": {
+		"USD": "0.1 USD"
+	},
+	"links": {
+		"blog": "",
+		"twitter": "Mark Harrison",
+		"telegram": "https://t.me/abelcluboversea",
+		"reddit": "",
+		"github": "",
+		"facebook": "",
+		"slack": "",
+		"medium": ""
+	}
+}

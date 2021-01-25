@@ -1,0 +1,24 @@
+{
+  "symbol": "TRUMP",
+  "address": "0xCE7895C567Dcf7b950890dEA3360872524EECA41",
+  "overview": {
+    "en": "TrumpSwap takes \"everyone should benefit from the development of the crypto economy\" as its core mission ,mainly focuses on decentralized finance(DeFi) business, contributing in decentralized trading, funds, stocks, insurance, lending, etc. TrumpSwap creates the world’s first share mining mechanism. Every participant who shares TrumpSwap can get the dividends brought by the development of the project. In TrumpSwap, you don’t have to participate in mining or provide liquidity for TrumpSwap, share TrumpSwap to your friends, When your friends start mining and produce TRUMP, you can get rewarding TRUMP.",
+    "zh": "TrumpSwap以“人人都应从加密经济的发展中受益”为己任，专注于去中心化金融（DeFi）业务，TrumpSwap在去中心化交易、基金、股票、保险、借贷等方向综合发力，不断推动DeFi经济的向前发展。TrumpSwap在全球首创共享挖矿机制，每个共享TrumpSwap的参与者都能获得项目发展带来的红利，在TrumpSwap里，您不需要参与挖矿，不需要为TrumpSwap提供流动性，您只需与您的朋友分享TrumpSwap，当您的朋友开始挖矿并产出后，您就可以获得TRUMP收益。"
+  },
+  "email": "beerswap@outlook.com",
+  "website": "https://trumpswap.finance",
+  "whitepaper": "https://medium.com/@trumpswap/trumpswap-you-share-you-mine-you-mine-you-earn-fc18b31bcee0",
+  "state": "NORMAL",
+  "published_on": "2020-09-21",
+  "initial_price":{
+        "ETH":"0.00262 ETH",
+        "USD":"1 USD",
+        "BTC":"0.00009615 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/TRUMPSWAP__FI",
+    "telegram": "https://t.me/TrumpSwap https://t.me/TrumpSwapcn",
+    "github": "https://github.com/TrumpSwap",
+    "medium": "https://medium.com/@trumpswap/trumpswap-you-share-you-mine-you-mine-you-earn-fc18b31bcee0"
+  }
+}

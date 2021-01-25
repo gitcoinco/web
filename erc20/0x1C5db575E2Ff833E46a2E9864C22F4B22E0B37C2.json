@@ -1,0 +1,16 @@
+{
+  "symbol": "renZEC",
+  "address": "0x1C5db575E2Ff833E46a2E9864C22F4B22E0B37C2",
+  "overview":{
+        "en": "renZEC is a one-for-one representation of ZEC on Ethereum via RenVM."
+  },
+  "website": "https://renproject.io/",
+  "whitepaper": "https://github.com/renproject/ren/wiki",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/renprotocol",
+    "telegram": "https://t.me/renproject",
+    "github": "https://github.com/renproject",
+    "reddit": "https://www.reddit.com/r/RenProject"
+  }
+}

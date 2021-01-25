@@ -283,7 +283,7 @@ const checkWrongDirectoryItem = (directory, filename) => {
     }
 
   } else if (directory === './images') {
-    if (['bitcoin.png', 'eos.png', 'ethereum.png', 'omni_31.png', 'atom.png', 'cosmos.png'].indexOf(filename) === -1 &&
+    if (['bitcoin.png', 'eos.png', 'ethereum.png', 'omni_31.png', 'atom.png', 'cosmos.png', 'litecoin.png','tron.png','bitcoincash.png','nervos.png','polkadot.png','westend.png','kusama.png','filecoin.png','tezos.png'].indexOf(filename) === -1 &&
       !isEthAddressPng(filename) &&
       !isEosTokenPng(filename)) {
       // temporality not throw

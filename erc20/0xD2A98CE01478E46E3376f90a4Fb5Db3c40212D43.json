@@ -1,0 +1,20 @@
+{
+    "symbol": "pETH",
+    "address": "0xD2A98CE01478E46E3376f90a4Fb5Db3c40212D43",
+    "overview":{
+        "en": "pETH(MetaPool Finance), aim to build the DeFi world.In addition to the MetaBoard, Metapool, and Metadao, there will be other Meta: stable coins, DEX, derivatives, NFT, insurance, Cross links, privacy, and more.",
+        "zh": "pETH，在MetaPool Finance合约中1:1锚定ETH。"
+    },
+    "email": "metapool1@hotmail.com",
+    "website": "https://metapool.finance/",
+    "whitepaper": "https://metapool.finance/static/pdf//MetaPoolWhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-10-15",
+    "links": {
+        "Website" : "https://metapool.finance/",
+        "Telegram": "https://t.me/metapoolfinance",
+        "Medium" : "https://medium.com/@metapool1",
+        "Twitter" : "https://twitter.com/metapool1",
+        "Report" : "http://www.ymxbxkr.com/FlashNews/7682.html"
+    }
+  }

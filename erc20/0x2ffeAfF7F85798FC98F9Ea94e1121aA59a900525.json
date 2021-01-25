@@ -1,0 +1,24 @@
+{
+	"symbol": "TZVC",
+	"address": "0x2ffeAfF7F85798FC98F9Ea94e1121aA59a900525",
+	"overview": {
+		"en": "ZVChain is a multi-layered blockchain solutions designed for high performance, throughput rates, scalable and efficient blockchain infrastructure for enterprise use. Built on top of the Chiron consensus algorithm.TZVC is a buyback option for ZVC in Genesis staking program, users of Genesis staking program will receive  TZVC accordingly to their borrowing fees in ZVC. 9 months after the date of Mainnet launch, the Genesis miners may choose to exercise a 0.21USDT from the Foundation with 1 ZVC+  1 equivalent TZVC = 0.21 usdt.",
+		"zh": "ZVChain是高安全高性能的DEFI公链， 基于去中心化账户体系构建灵活的金融工具集。 TZVC 是伴随 ZVChain 创世矿工计划推出的看跌期权， 参与创世矿工计划的用户， 每参投1个ZVC即可获赠一个TZVC， 主网上线9个月后即为TZVC的到期日， 创世矿工可选择用1个ZVC + 1 个等量TZVC向基金会行使1个0 .21 USDT的看跌权利。"
+	},
+	"email": "info@zvchain.io",
+	"website": "https://www.zvchain.io",
+	"whitepaper": "https://www.zvchain.io/zvChainWhitepaper.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-09-30",
+	"initial_price": {
+		"USD": "0 USD"
+	},
+	"links": {
+		"blog": "https://medium.com/zvchain",
+		"twitter": "https://twitter.com/zv_chain",
+		"telegram": "https://t.me/ZVChain_Official",
+		"github": "https://github.com/zvchain",
+		"facebook": "https://www.facebook.com/ZVCHAIN/",
+		"medium": "medium.com/zvchain"
+	}
+}

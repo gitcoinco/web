@@ -1,0 +1,23 @@
+{
+  "symbol": "ETVR",
+  "address": "0x786a105D6B23592a4a16c19E8785c5689db7C926",
+  "overview": {
+    "en": "ETVR is a digital token used in the field of VR. ETVR is used for settlement in VR games, VR movies and other sectors.",
+    "zh": "ETVR是应用于VR领域的数字通证，在VR游戏、VR影视等板块采用ETVR进行结算。"
+  },
+  "email": "hzc92312@gmail.com",
+  "website": "www.etvr.us",
+  "whitepaper": "http://www.etvr.us/wp-content/uploads/2020/01/ETVR-White-Paper-English-Vision-1.04.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-02-03",
+  "initial_price": {
+        "ETH": "0 ETH",
+        "USD": "0 USD",
+        "BTC": "0 BTC"
+     },
+  "links": {
+    "twitter": "https://twitter.com/NicolasKim20",
+    "Facebook":"https://www.facebook.com/nicolas.kim.568632",
+    "github": "https://github.com/EthanVR-GitHub"
+  }
+}

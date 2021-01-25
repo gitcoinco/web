@@ -1,0 +1,19 @@
+{
+    "symbol": "AET",
+    "address": "0x41d8be1122609874e12d5ec25f826a429ededd74",
+    "overview": {
+        "en": "AEROTOKEN (AET) is an inflationary crypto-token, operating on the Ethereum blockchain (ERC-20 standard token) which can be used as a currency, a store of value or an investment. Each time an AET is transferred, 1% of the transaction is increased. Hyper inflationary approach is more economical way to mine cryptocurrency. Now you do not need high energy, elaborate computers and multi-million dollars to set up a mining farm. Aerotoken can be mined by completing just one transaction. 1% increase can not be achieved setting up all tech together, but with AET you have a game changer. Aerotoken is compartible with Imtoken, Trust wallets, etc.",
+        "zh": "AEROTOKEN（AET）是一种通货膨胀加密令牌，在以太坊区块链（ERC-20标准令牌）上运作，可用作货币，价值储存或投资。 每次转移AET时，交易的1％都会增加。 超通胀方法是挖掘加密货币的更经济的方法。 现在你不需要高能量，精心设计的计算机和数百万美元来建立采矿场。 Aerotoken可以通过完成一笔交易来开采。 设置所有技术无法实现1％的增长，但是使用AET可以改变游戏规则。 Aerotoken可与Imtoken，Trust钱包等隔开。"
+    },
+    "email": "info@aerotoken.org",
+    "website": "http://www.aerotoken.org",
+    "whitepaper": "http://www.aerotoken.org/aerowhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-09-17",
+    "links": {
+        "telegram": "https://t.me/aero_token",
+      "github": "https://github.com/aerotoken",
+      "twitter": "https://twitter.com/aero_token",
+       "medium": "https://medium.com/@aerotoken328"
+    }
+}

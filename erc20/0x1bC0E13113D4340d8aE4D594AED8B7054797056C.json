@@ -1,0 +1,21 @@
+{
+  "symbol": "SEAL",
+  "address": "0x1bC0E13113D4340d8aE4D594AED8B7054797056C",
+  "overview":{
+        "en": "SealSC is a middleware cloud platform that links the Internet and blockchain networks and provides Oracle services through its own public chain. The aim is to enable users/enterprises to build DApps without barriers, interoperate with current public chains, and realize business scenarios such as cross-chain convergence, value circulation and data exchange.",
+        "zh": "SealSC是链接互联网和区块链网络的中间件云平台，并通过自有公链提供Oracle服务。旨在实现让用户/企业无门槛搭建DApp，互通目前各大公链，实现跨链融合、价值流通和数据交换等业务场景。"
+  },
+  "email": "support@sealsc.com",
+  "website": "https://www.sealsc.com",
+  "whitepaper": "https://github.com/SealSC/whitepaper/blob/master/SealSC%20Whitepaper-v1.9.3.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-01-05",
+  "initial_price":{
+        "USD":"0.08 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SealSC_Cloud",
+    "telegram": "https://t.me/sealsc",
+    "github": "https://github.com/SealSC"
+  }
+}

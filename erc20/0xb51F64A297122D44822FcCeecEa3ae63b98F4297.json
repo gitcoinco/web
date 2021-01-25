@@ -1,0 +1,21 @@
+{
+  "symbol": "AIB",
+ "address": "0xb51F64A297122D44822FcCeecEa3ae63b98F4297",
+  "overview": {
+  "en": "AIB (AI coin) is a decentralized trading platform with high liquidity for real-time trading and exchange of digital assets (various crypto tokens, such as Ethereum and its erc20 token, bitcoin and zcash, etc.). In order to realize seamless payment between different tokens for all users, AIB will provide rich payment API and a new generation of contract wallet to expand the overall trading capacity of AIB.
+AIB (AI coin) will establish a decentralized shopping mall, marriage, game, live broadcast and marketing system, and will serve a large number of online and offline users. AIB (AI coin) is committed to the research of VR artificial intelligence human-computer interaction, which will show great market value in 3-5 years",
+    "zh": "AIB（艾币）是一个具备高流动性的数字资产（各种加密代币，例如以太币及其ERC20代币，比特币和ZCash等）即时交易和兑换的去中心化交易平台。为了实现所有用户在不同代币之间的无缝支付，AIB（艾币）将提供丰富的支付API以及新一代的合约钱包，来扩展AIB（艾币）的整体交易能力。
+AIB（艾币）将建立去中心化的商城、婚恋、游戏、直播和营销系统，并将服务于线上线下海量用户，AIB（艾币）致力于VR人工智能人机交互研究，必将在3到5年内展现出巨大的市场价值"
+  },
+  "email": "services@aibgpf.com",
+  "website": "http://www.aibgpf.com/",
+  "whitepaper": "http://www.aibgpf.com/images/AIB_Chain_Whitepaper_CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-04",
+  "initial_price":{
+        "USDT":"2 USDT",       
+  },
+  "links": {
+    "github": "https://github.com/lovejseaa",
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "symbol": "Dswap",
+  "address": "0x3f344C88d823F180Fb8b44A3C7Cfc4edc92dFa35",
+  "overview":{
+        "en": "Definex is focused on providing platforms that support trading and swapping cryptocurrencies in faster, safer, simpler, and more secure In addition, the Definex ecosystem has the ability to expand into the fields and services of Smart-contract, P2P, IEO.",
+  },
+  "email": "info@mydefinex.com",
+  "website": "https://dswap.mydefinex.com/",
+  "whitepaper": "https://dswap.mydefinex.com/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-01",
+  "initial_price":{
+        "ETH":"0.0016 ETH",
+        "USD":"1 USD",
+        "BTC":"0.0000512 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/MyDefinex",
+    "telegram": "https://t.me/mydefinexgroup",
+    "github": "https://github.com/mydefinex",
+    "facebook": "https://www.facebook.com/MyDefinex",
+    "medium": "https://medium.com/@MyDefinex"
+  }
+}

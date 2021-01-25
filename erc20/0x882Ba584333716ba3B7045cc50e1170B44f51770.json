@@ -1,0 +1,23 @@
+{
+  "symbol": "YOA",
+  "address": "0x882Ba584333716ba3B7045cc50e1170B44f51770",
+  "overview":{
+        "en": "YOA(YOA Token) aims to be the most useful and secured token which is completed by combining the perfect plan with real business, has the advantage of scarcity of limited circulation and the only connection cryptocurrency to YOA-S(The World's First CDS Token).",
+        "zh": "YOA代币（YOA  Token）通过实体经济与完美无缺的使用计划相结合，致力于打造的最实用、最安全的代币，YOA代币具有可以交换成为YOA-S代币（世界首推的CDS-信用违约互换代币）的优势，是平台功能的拓展、多项权益的实现和生态价值回报的重要组成部分。"
+  },
+  "email": "info@yoacoin.io",
+  "website": "https://yoacoin.io",
+  "whitepaper": "https://www.yoacoin.io/assets/whitepaper/[WP_EN]%20YOA%20PROJECT_EN_V.6.1.pdf",
+  "published_on": "2019-09-07",
+  "initial_price":{
+        "ETH":"0.001 ETH",
+        "USD":"0.2 USD",
+        "BTC":"0.00002 BTC"
+  },
+  "links": {
+        "blog": "https://yoacoin.ghost.io",
+        "twitter": "https://twitter.com/ProjectYoa",
+        "github": "https://github.com/YOACOIN",
+        "facebook": "https://www.facebook.com/YoaProject"
+    }
+}

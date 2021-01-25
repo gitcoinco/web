@@ -1,0 +1,17 @@
+{
+  "symbol": "ASN",
+  "address": "0xcF666DF5e64236791f692CD52EAeE3F91a6D4D43",
+  "overview":{
+        "en": "ASN (Alternative Swift Network) is the world’s first Defi featured decentralized network which can facilitate cross-border B2B financial transactions without using traditional Swift system. It aims to make cross-border B2B financial transactions be processed in a frictionless, cost-efficient, and faster manner compared to the existing Swift system and related clearing and settlement facilities."
+  },
+  "email": "hello@asn.plus",
+  "website": "http://asn.plus/",
+  "whitepaper": "http://asn.plus/uploads/soft/200922/ASNwhitepaperEnglish.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-9-01",
+  "links": {
+    "twitter": "https://twitter.com/AsnCommittee",
+    "github": "https://github.com/ASNchain",
+    "facebook": "https://www.facebook.com/asn.plus.3"
+	}
+}	

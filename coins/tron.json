@@ -1,0 +1,18 @@
+{
+  "symbol": "TRX",
+  "address": "tron",
+  "overview":{
+        "en": "The TRON Protocol, one of the largest blockchain-based operating systems in the world, offers public blockchain support of high throughput, high scalability, and high availability for all Decentralized Applications (DApps) in the TRON ecosystem. ",
+        "zh": "波场协议（the TRON Protocol）是世界上最大的基于区块链的操作系统之一，为波场 TRON 生态系统内的去中心化应用（DApps）提供具有高吞吐量、高可扩展性和的高可靠性的公链支持。"
+  },
+  "email": "service@tron.network",
+  "website": "https://tron.network",
+  "whitepaper": "https://tron.network/static/doc/white_paper_v_2_0.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-08",
+  "links": {
+    "twitter": "https://twitter.com/Tronfoundation",
+    "facebook": "https://www.facebook.com/tronfoundation",
+    "medium": "https://medium.com/tron-foundation"
+  }
+}

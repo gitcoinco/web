@@ -1,0 +1,13 @@
+{
+  "symbol": "LOVE",
+  "address": "0x80bf1E3e00741AE15419472fd46e81a4e86D17B1",
+  "overview": {
+        "en": "LOVE Chain uses blockchain technology to link the upstream and downstream business of the marriage and love industry, and build a complete and effective marriage and love ecosystem system, so that the value of quality users can be freely transferred in different businesses.",
+        "zh": "LOVE Chain利用区块链技术将婚恋产业的上下游业务链起来，构建一个完整有效的婚恋生态链系统，让优质用户的价值能够在不同的业务中自由流转。"
+  },
+  "email": "lovechain2019@163.com",
+  "website": "http://lchain.me/",
+  "whitepaper": "http://lchain.me/Public/Home/images/new5/GKCwhitebook.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-23"
+} 

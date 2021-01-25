@@ -2,17 +2,17 @@
     "symbol": "HLC",
     "address": "0x58c69ed6cd6887c0225d1fccecc055127843c69b",
     "overview": {
-        "en": "HalalChain is the first public blockchain company that focuses on serving Muslim countries and regions. By implementing blockchain technology into the Halal supply chain and Islamic financial industry they will help to increase transparency and traceability in Islamic financial products and services, traceability of halal and healthy products, Zakat donations, heritage and property registration, cultural communication etc.HalalChain is built on the new distributed ledger Directed Acyclic Graph (DAG). This underlying technology, guarantees security and decentralization by achieving “High Throughput”. By combining the advance DAG technology with unique application scenarios we are able to build across the multi-layer payment system within the Islamic economy ecosystem.",
-        "zh": "HalalChain - 全球第一条专注服务穆斯林国家及地区的公有链，应用于伊斯兰金融产品及服务、清真产品溯源、天课捐赠、产权与遗产登记、文化教育等领域。基于新型分布式账本DAG（有向无环）为底层技术，在保证安全性和去中心化的前提下实现高频并发交易，先进技术与独特应用场景相结合，以此构建一个跨穆斯林国家的多层支付系统。"
+        "en": "Qitmeer is the next generation-public chain based on Block DAG,Metrics among the security, openness, fairness and scalability.Qitmeer adopts a classic POW consensus and UTXO data model and designs a unique asset issuing mechanism which requires the reserve of base currency.HLC is ERC20 token of Qitmeer network.",
+        "zh": "Qitmeer是以BlockDAG技术为支撑的全球新一代公链，也是第一条专注普惠金融和伦理金融的公链。BLOCKDAG的合作记账模型实现了安全性、开放性、公平性、可扩展性四者的合理平衡，采用经典POW共识和UTXO数据模型，独创的以底层币为基础价值且需审核的通证发行机制，契合了平等金融的哲学。HLC是Qitmeer主网发行的一个ERC20token。"
     },
-    "email": "Support@hlc.com",
-    "website": "https://hlc.com/",
-    "whitepaper": "https://hlc.com/whitepaper.pdf",
+    "email": "support@hlc.com",
+    "website": "https://www.qitmeer.io",
+    "whitepaper": "https://github.com/HalalChain/whitepaper/releases",
     "state": "NORMAL",
     "published_on": "2017-12-30",
     "initial_price": {
         "ETH": "0.00066 ETH",
-        "USD": "0.65 USD",
+        "USD": "0.35 USD",
         "BTC": "0.000041 BTC"
     },
     "links": {

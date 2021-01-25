@@ -1,0 +1,16 @@
+{
+  "symbol": "BMPL",
+  "address": "0x5eBDd407FE6D47eC4af2DbBEf7d790100C567aB6",
+  "overview": {
+    "en": "Bmpl Payment System",
+    "zh": "Bmpl付款系統"
+  },
+  "email": "bmplvip@gmail.com",
+  "website": "https://bmpl.fun/",
+  "whitepaper": "https://bmpl.fun/WP_BMPL_CHI.pdf",
+  "state": "NORMAL",
+  "published_on": "20-07-20",
+  "links": {
+        "github": "https://github.com/BMPLdev"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "POW",
+    "account_name": "powhcontract",
+    "overview": {
+        "en": "Proof of Weak Hands (POWh) is an EOS based exchange that shares benefits from activity on the platform (token buys, sells or transfers) to all POW token holders in transparent and verifiable manner. Price setting mechanics is defined in a smart contract. Exchange operates under a perfect economic simulation where each POW token grants you a stake of all cryptocurrency volume."
+    },
+    "email": "info@powh.fund",
+    "website": "https://powh.fund",
+    "published_on": "2019-05-28",
+    "links": {
+        "medium": "https://medium.com/@powhfund",
+        "twitter": "https://twitter.com/powhfund",
+        "telegram": "https://t.me/powhfund",
+        "github": "https://github.com/powhfund",
+        "weibo": "https://weibo.com/powhfund"
+    }
+} 

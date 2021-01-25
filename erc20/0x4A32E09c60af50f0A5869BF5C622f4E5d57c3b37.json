@@ -1,0 +1,19 @@
+{
+  "symbol": "UDAO",
+  "address": "0x4A32E09c60af50f0A5869BF5C622f4E5d57c3b37",
+   "overview":{
+        "en": "UnionDAO is a transparent and sustainable financial system that provides stable currencies, mortgages and decentralized governance. UDAO is a functional token for UnionDAO for exchange services and community autonomy.",
+        "zh": "UnionDAO是一个透明，可持续的金融体系，提供稳定币、抵押贷款和去中心化治理。 UDAO是UnionDAO用于交换服务和社区自治的功能令牌。"
+  },
+  "email": "foundation@uniondao.com",
+  "website": "https://uniondao.com",
+  "whitepaper": "https://uniondao.com/uniondao-whitepaper-zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-02",
+  "initial_price":{
+        "USD":"1.0 USD"
+  },
+  "links": {
+    "github": "https://github.com/uniondao"
+  }
+}

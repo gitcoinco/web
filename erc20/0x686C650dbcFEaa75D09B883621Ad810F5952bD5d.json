@@ -1,0 +1,26 @@
+{
+	"symbol": "AAB",
+	"address": "0x686C650dbcFEaa75D09B883621Ad810F5952bD5d",
+	"overview": {
+		"en": "AAB is not only a stock exchange, but also an organic part of AAX Exchange. It provides users with exclusive rights and interests, and is also a booster for the development of exchanges.AAB was originally built as a bridge between digital and traditional assets, individual and professional traders, price receivers and market makers, exchanges and their partners.In addition, AAB will be deeply integrated with AAX's upcoming products.We regard AAB as a digital fresher.It catalyzes an extra touch,a deeper flavor and an indescribable level that makes everything just as delicious as it should be.AAB will be issued on the ethereum blockchain in the form of erc - 20 tokens,with a total issuance of 50 million pieces and an initial unit price of 1 USDT.",
+		"cn": "AAB不仅具有通证属性，也是AAX交易所的有机组成部分，它为用户提供专属权益，也是交易所发展的助推剂。构建AAB的初衷，是将其打造为数字资产和传统资产、个人交易者和专业交易者、价格接受者和做市商、交易所及其合作伙伴之间的沟通桥梁。此外，AAB将与AAX即将推出的产品进行深度融合。我们将AAB视为数字化增鲜剂。 它催化了额外的触觉， 更深层次的风味和难以形容的境界， 让一切都恰如其份的更加美味。 AAB将以ERC - 20 代币的形式在以太坊区块链上发行， 发行总量为5,000 万枚， 初始单价1USDT。 "
+	},
+	"email": "email",
+	"website": "https://aab.aax.com/cn/",
+	"whitepaper": "https://aab.aax.com/vendor/whitepaper_cn.pdf",
+	"state": "NORMAL",
+	"published_on": "2020-04-14",
+	"initial_price": {
+		"ETH": "0.00259034 ETH",
+		"USD": "1 USDT",
+		"BTC": "0.00009119 BTC"
+	},
+	"links": {
+		"blog": "https://weibo.com/AAXExchang",
+		"twitter": "https://twitter.com/AAXExchange",
+		"telegram": "https://t.me/aax_cn",
+		"reddit": "https://www.reddit.com/r/AAXExchange/",
+		"facebook": "https://www.facebook.com/AAXExchange",
+		"youtube": "https://www.youtube.com/channel/UCUpkrnlJmPwQOFcb2GxKHxA"
+	}
+}

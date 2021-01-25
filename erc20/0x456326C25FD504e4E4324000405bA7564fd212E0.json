@@ -1,0 +1,18 @@
+{
+    "symbol": "CI",
+    "address": "0x456326C25FD504e4E4324000405bA7564fd212E0",
+    "overview": {
+	    "en":"",
+        "zh": "云智能(Cloud Intelligence)，简称 CI。即研究云计算，大数据，人工智能，区块链等基础技术组合。采用分布式架构，将实现系统机器代码安全，不可更改；点对点数据传输保证数据安全隐私；智能服务按需求定制；机器人时刻连接云智能平台数据，机器人时刻主动与人类交互，实现让CI机器人时刻为你工作。"
+    },
+    "email": "ciosbc@sina.com",
+    "website": "http://ci.bi/",
+    "whitepaper": "http://ci.bi/src/CI_Whitepaper.pdf/",
+    "state": "NORMAL",
+    "published_on": "2019-12-23",
+    "initial_price":{
+    },	
+    "links": {
+        "github": "https://github.com/ci-bi/"
+    }
+}

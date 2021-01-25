@@ -1,0 +1,23 @@
+{
+  "symbol": "WOO",
+  "address": "0x4691937a7508860F876c9c0a2a617E7d9E945D4B",
+  "overview":{
+        "en": "Built by industry leading quantitative trading firm Kronos Research, WOOTRADE offers greatly improved liquidity, spreads, and fees (the abolishment of). It is the next evolution in crypto trading.",
+        "zh": ""
+  },
+  "email": "support@woo.network",
+  "website": "https://woo.network/",
+  "whitepaper": "https://woo.network/Litepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-10-30",
+  "initial_price":{
+        "USDT":"0.03 USDT",
+  },
+  "links": {
+    "blog": "https://woo.network/blog",
+    "twitter": "https://twitter.com/wootraderS",
+    "telegram": "https://t.me/wootrade",
+    "facebook": "https://www.facebook.com/Wootrade",
+    "medium": "https://medium.com/wootrade"
+  }
+}

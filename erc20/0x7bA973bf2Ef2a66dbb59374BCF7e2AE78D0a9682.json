@@ -1,0 +1,17 @@
+{
+    "symbol": "EHT",
+    "address": "0x7bA973bf2Ef2a66dbb59374BCF7e2AE78D0a9682",
+    "overview":{
+          "en": "EHT integrates ethereum and builds secure and reliable free services on top of it, making large and complex smart contracts economically viable and sustainable. Combined with the high expansibility realized by the master node network and real-time transaction feedback, a large number of users have provided excellent interactive experience, which will change the impression that the waiting time for blockchain transaction confirmation is extremely long in people's consciousness. ",
+          "zh": "以太黄金融合了以太坊，并在其基础上打造了安全可靠的免费服务，使得大型复杂的智能合约在经济上拥有了可行性和延续性。结合主节点网络实现的高扩展性和实时交易反馈更为大量用户提供了极佳的交互体验，将一改人们意识中区块链交易确认等待时间超长的印象。"
+    },
+    "email": "postmaster@ehtcooperative.com",
+    "website": "http://ehtcooperative.com",
+    "whitepaper": "http://ehtcooperative.com/files/ehtwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-10",
+    "links": {
+        "blog": "https://weibo.com/EHTOfficialGroup",
+        "telegram": "https://t.me/EHTOfficialGroup"
+      }
+}

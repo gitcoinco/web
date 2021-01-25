@@ -1,0 +1,20 @@
+{
+    "symbol": "CWT",
+    "address": "0x374155FC5bEF18827e209002906c1BF5FaC6bF0F",
+    "overview": {
+        "en": "The first decentralized order-copy finance community rights token.",
+        "zh": "首家去中心化跟单理财社区权益通证。"
+    },
+    "email": "service@clonewinner.com",
+    "website": "https://clonewinner.com/",
+    "whitepaper": "https://clonewinner.com/CWT_whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-22",
+    "initial_price": {
+        "USD": "1.0 USD"
+    },
+    "links": {
+        "twitter": "",
+        "telegram": ""
+    }
+}

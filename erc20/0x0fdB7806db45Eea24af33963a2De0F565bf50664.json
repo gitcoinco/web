@@ -1,0 +1,16 @@
+{
+  "symbol": "AMIGO",
+  "address": "0x0fdB7806db45Eea24af33963a2De0F565bf50664",
+  "overview":{
+        "en": "Amigo uses the economic incentive system to accelerate the production and circulation of high-quality content, and uses the credit system to make contribution pricing and equity return for the content production field.",
+        "zh": "AMIGO 使用经济激励体系加速高质量内容的产生和流通，使用信誉系统为内容生产领域进行贡献定价和权益回报。"
+  },
+  "email": "tynn111@163.com",
+  "website": "http://amigo.run",
+  "whitepaper": "http://amigo.run/amigo.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-23",
+  "links": {
+    "telegram": "https://t.me/joinusAMIGOCHAIN",
+  }
+}

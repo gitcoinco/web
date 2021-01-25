@@ -1,0 +1,19 @@
+{
+    "symbol": "LAR",
+    "address": "0x6226caA1857AFBc6DFB6ca66071Eb241228031A1",
+    "overview": {
+        "en": "LinkArt aims to build a decentralized platform to track and manage the entire life cycle of the art, and to record the unique value of each piece of art with a record that cannot be tampered with. Presenting the charm of art in a variety of ways, splitting the value of art from multiple dimensions, using technology as a support, opening up more conceivable space for art. Create a cross-border, cross-cultural ecology, providing a platform for all art creators, art lovers, art collectors and investors to communicate and trade. In the economics of the art market, the art market will enhance the recognition and mobility of art, and let art works feed back artistic creation, thus promoting the prosperity and development of the entire industry.",
+        "zh": "LinkArt旨在搭建一个去中心化的平台，对艺术品全生命周期进行链上追踪与管理，以不可篡改的链上记录为每一件艺术品独一无二的价值背书。以多种方式呈现艺术品的魅力，从多个维度拆分艺术品的价值，以技术为支撑，为艺术打开更大可想空间。打造跨国界、跨文化生态，为所有艺术创作者、艺术爱好者、艺术品收藏者与投资者提供无障碍交流与交易的平台。以通证经济赋能艺术品市场，提高艺术品的认知度与流动性，让艺术作品反哺艺术创作，从而推动整个行业的繁荣发展。"
+    },
+    "email": "danny.fn@aliyun.com",
+    "website": "http://linkart.io/",
+    "whitepaper": "http://linkart.io/skin/pdf.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-06-04",
+    "links": {
+        "telegram": "https://t.me/LinkArtCN",
+		"weibo":"http://weibo.com/LinkArtLAR",
+		"twitter":"https://twitter.com/LinkArt_LAR",
+		"facebook":"https://www.facebook.com/linkartchain",
+    }
+}

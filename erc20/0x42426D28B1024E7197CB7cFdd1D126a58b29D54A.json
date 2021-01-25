@@ -1,0 +1,17 @@
+{
+    "symbol": "BMN",
+    "address": "0x42426D28B1024E7197CB7cFdd1D126a58b29D54A",
+    "overview":{
+          "en": "BMN Chain is a fair, convenient, efficient and safe new commercial ecological public chain based on the underlying technology of block chain. As an ecosystem of disparate applications, it will build a chain alliance that will provide basic services for parallel chains of unlimited scale, ecology and performance.",
+          "zh": "BMN Chain是基于区块链底层技术，为服务商业领域打造的公平、便捷、高效、安全的全新商业生态公链。作为一个由一系列分散应用程序组成的生态系统，它将打造一个公链联盟，为各条平行公链提供基础服务，无限拓展规模、生态和性能。"
+    },
+    "email": "bmnchain@gmail.com",
+    "website": "http://bmnchain.vip/",
+    "whitepaper": "http://bmnchain.vip/files/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-09",
+    "links": {
+        "telegram": "https://t.me/bmngroup/",
+        "twitter": "https://twitter.com/BmnChain"
+      }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "DAC",
+  "address": "0x8Cb64095206bEbC4390f7E6374144a2231Eed6A7",
+  "overview":{
+        "en": "DAC will join the new blockchain ecosystem that DAM(DApp Contents Maket Platform) will draw, lead the successful launch of DApp, and seek a platform that distributes the economic value obtained to the members more fairly and transparently. In addition, we will grow into a platform where all members can enjoy win-win values by matching various internal motivations between ecosystem members and preventing mutual interests from colliding.",
+        "zh": "DAC将加入DAM（DApp Contents Maket Platform）将绘制的新区块链生态系统，引领DApp的成功发布，并寻求一个平台，以更公平和透明的方式向成员分配所获得的经济价值。 此外，我们将成长为一个平台，所有成员都可以通过匹配生态系统成员之间的各种内部动机和防止共同利益相互冲突来享受双赢的价值。"
+  },
+  "email": "kc@blackholegames.co.kr",
+  "website": "http://www.dappcoin.biz/",
+  "whitepaper": "http://www.dappcoin.biz/DAC%EB%B0%B1%EC%84%9C_v0.2.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-30",
+  "initial_price":{
+        "USD":"0 USD"
+  },
+  "links": {
+    "github": "https://github.com/bhg0605/dac"
+  }
+}

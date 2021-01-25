@@ -1,0 +1,26 @@
+{
+  "symbol": "DiBi",
+  "address": "0x02922B267d831AE672e70480d3DE48743711dB28",
+  "overview":{
+        "en": "",
+        "zh": "DiBi Token是由新加坡非盈利机构DIBI SECURITY FOUNDATION LTD.基于以太坊公链而发行的数字资产。DiBi Global交易平台为了推进整个生态的去中心化进程、实现去中心化应用场景的不断落地，将DiBi Token定义为整个生态平台的聚合纽带。持有DiBi Token不仅能换取DiBi生态体系中的各项权益，而且通过自身独有的交易规则和多重去中心化的手段，采用回购销毁、销毁即上涨的机制，确保了DiBi Token的价值空间，为整个DiBi生态的健康和可持续性发展提供了有力保障。"
+  },
+  "email": "admin@dibic.net",
+  "website": "https://www.dibic.net/",
+  "whitepaper": "https://www.dibic.net/#/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2020-05-02",
+  "initial_price":{
+        "USD":"0.001 USD"
+  },
+  "links": {
+    "blog": "",
+    "twitter": "https://twitter.com/DibiGlobal",
+    "telegram": "https://t.me/dibi_cn",
+    "github": "",
+    "facebook": "https://www.facebook.com/dibiglobal",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}

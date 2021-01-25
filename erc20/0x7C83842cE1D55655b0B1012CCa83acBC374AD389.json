@@ -1,0 +1,13 @@
+{
+  "symbol": "OLY",
+  "address": "0x7C83842cE1D55655b0B1012CCa83acBC374AD389",
+  "overview":{
+        "en": "The total amount of OLY issued is 600 million, and will never be issued. OLY is a decentralized blockchain digital asset based on the encrypted digital algorithm programming platform Ethereum (Ethereum). It is a standard token based on the Ethereum blockchain. OLY is the Olympic star AY coin, which is used to intelligently produce the coin OLY through its own AY computing power value.",
+        "zh": "OLY 发行总量为 6 亿枚，永不增发。OLY 是基于加密数字算 法编程平台以太坊（Ethereum）发行的去中心化的区块链数字资产， 它是基于以太坊区块链的标准代币。OLY 为奥运之星 AY 子币，用 来通过自身 AY 算力值智能产出子币 OLY。"
+  },
+  "email": "olympicgamess@163.com",
+  "website": "http://www.olympicgame.top/index.html",
+  "whitepaper": "http://www.olympicgame.top/whitepaper.pdf",
+  "state": "NORMAL" 
+}
+

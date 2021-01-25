@@ -1,0 +1,22 @@
+{
+  "symbol": "BSX",
+  "address": "0x7Ce00DB61654271C3cE45099b654508a65d16945",
+  "overview":{
+        "en": "BoShengHuiXin is a group of blockchain enthusiasts who founded a public welfare organization in June 2019. At present, they mainly organize and implement projects through the Internet, and introduce blockchain technology to ensure the transparency of public welfare undertakings. BSX project is also known as the collection project. According to the survey statistics, there are 500,000 children with autism in China, and nearly 5 million children under the age of 14 with various intellectual problems. Children with mental retardation are a vulnerable group in the society, who need the attention, care and help from the society. With the progress of The Times and the continuous promotion of harmonious society construction, people with mental retardation are understood and accepted by more and more people.",
+        "zh": "BoShengHuiXin是一群区块链爱好者于2019年6月成立公益组织，目前主要通过互联网进行项目的组织和落实，且引入区块链技术保障该各项公益事业的公开透明程度。BSX工程也被成为集善工程，据调查统计，在我国儿童孤独症患儿有50万人，14岁以下有各种智力问题的孩子也接近500多万人。智力儿童本身是个社会弱势群体，特别需要社会的关注、关心和帮助，随着时代的进步以及和谐社会建设的不断推动之下，智障人士被越来越多的人所了解和接受。"
+  },
+  "email": "2010104726@qq.com",
+  "website": "http://www.boshenghx.com",
+  "whitepaper": "http://20359508.s21d-20.faiusrd.com/0/2/ABUIABA9GAAg8_b58gUorLvrygI?f=BSX%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf&v=1583248243
+",
+  "state": "NORMAL",
+  "published_on": "2019-12-12",
+  "initial_price":{
+        "ETH":"0.001 ETH",
+        "USD":"0.14 USD",
+        "BTC":"0.00002 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/blockchain?s=20"
+  }
+}

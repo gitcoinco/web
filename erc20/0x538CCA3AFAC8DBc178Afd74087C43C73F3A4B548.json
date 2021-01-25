@@ -1,0 +1,19 @@
+{
+    "symbol": "CBD",
+    "address": "0x538CCA3AFAC8DBc178Afd74087C43C73F3A4B548",
+    "overview": {
+        "en": "Computing blockchain development is based on the value circulation integral issued by the cloud computing mine project, and also the ecological incentive integral applied to the blockchain mining industry. Based on the consensus of real assets and value, cloud computing CBD will build the world's first and complete blockchain mining ecosystem.",
+        "zh": "Computing Blockchain Development，是基于云算矿场项目所发行的价值流通积分，也是应用于区块链矿业行业的生态激励积分，云算CBD的基于实体资产和价值共识，将构建全球第一个完备的区块链矿业生态体系."
+    },
+    "email": "coincbd@gmail.com",
+    "website": "http://www.yscbd.io/",
+    "whitepaper": "http://www.yscbd.io/cbdwhitepaper.pdf",
+    "published_on": "2020-03-09",
+	"state": "NORMAL",
+    "initial_price":{
+          "USD":"0.1416 USD"
+    },
+	"links": {
+    "telegram": "https://t.me/cbdchain"
+  }
+}

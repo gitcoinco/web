@@ -1,0 +1,21 @@
+{
+  "symbol": "XLDZ",
+  "address": "0x2F5cDC81a729B750F3B733Cb95660E788441c71E",
+  "overview":{
+    "en": "LD2.zero is a silver-backed stablecoin. Each LD2.zero token issued is a warehouse receipt for one Troy ounce .999 fine silver, securely stored in a fully insured vault, and is fully redeemable. As the token holder, you can simply pay for shipping, and the depository will send you your silver.",
+    "zh": "LD2.zero是银支持的稳定币。发行的每个LD2.zero令牌都是一张仓库收据，代表一盎司的纯银，已安全地存储在完全保险的保险库中，并且可以完全赎回。作为代币持有者，您只需支付运输费用，托存处就会向您发送白银。"
+  },
+  "email": "info@ld2coin.io",
+  "website": "https://ld2coin.io/",
+  "whitepaper": "https://ld2coin.io/wp-content/uploads/2018/05/LD2_White_Paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-14",
+  "initial_price":{
+        "USD":"35 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Ld2Coin",
+    "telegram": "http://t.me/libertydollar2",
+    "facebook": "https://www.facebook.com/LD2Coin/"
+  }
+}

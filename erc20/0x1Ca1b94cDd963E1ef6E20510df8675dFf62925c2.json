@@ -1,0 +1,12 @@
+{
+  "symbol": "FUL",
+  "address": "0x1Ca1b94cDd963E1ef6E20510df8675dFf62925c2",
+  "overview":{
+        "zh": "FUL目标是打造一个更加开放、快速、安全的互联网，利用分布式哈希表解决数据的传输和定位问题，把点对点的单点传输改变成P2P（多点对多点）的传输，其中存储数据的结构是哈希链。"
+  },
+  "email": "ax6060@qq.com",
+  "website": "https://www.juemz.top",
+  "whitepaper": "https://www.juemz.top/wp.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-12"
+}

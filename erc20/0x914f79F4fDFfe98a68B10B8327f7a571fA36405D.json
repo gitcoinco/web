@@ -1,0 +1,21 @@
+{
+  "symbol": "YLB",
+  "address": "0x914f79F4fDFfe98a68B10B8327f7a571fA36405D",
+  "overview":{
+        "en": "Launched in 2017, T Net as cryptocurrency exchange is obligated to provide issue and circulation service for Token. Aiming to create an ecosystem that balances risk, right, and income. This system covers Buyers&Sellers, Brokers(include other independent 3rd party) and Tokencan(independent forth platform), Besides there is a complete set of effective regulation and rules. T Net will collaborate with all members to create a credible exchange, abides by the principle of self-discipline, to lead a rational communication, positive cooperation and stable development with both partners and worldwide regulators.",
+        "zh": "T网于2017年上线，是一个为通证（Token）提供发行及流动性服务的加密数字资产交易平台。T网目标打造一个风险平衡、权利平衡、收益平衡的生态体系。这个生态由交易双方、票行（包括其他独立第三方机构），以及Tokencan（独立第四方平台）的架构，以及一套行之有效的规章制度构成。T网将协同生态成员共同打造一个具有公信力的交易所；秉持自律的原则，无论是与合作伙伴，还是与各国监管机构，理性沟通，友善交流，积极配合，稳妥发展。"
+  },
+  "email": "service@tokencan.com",
+  "website": "https://www.tokencan.co/",
+  "whitepaper": "https://tokencan-img.oss-cn-hongkong.aliyuncs.com/upload/20201023182502800.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-09-02",
+  "initial_price":{
+        "USD":"0.14 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/tokencan",
+    "telegram": "https://t.me/tokencanEN",
+    "weibo": "https://weibo.com/6384551331/profile?topnav=1&wvr=6"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "symbol": "GOFi",
+  "address": "0xBAA4ccA9319DCf73517033384ea9F3f83869D7Cf",
+  "overview":{
+        "en": "Green orange Finance (Chinese name, green orange finance, token Name: gofi), is the world's first cross chain aggregate mortgage lending platform. Gofi can be understood as a decentralized inclusive financial aggregation platform and an open financial ecosystem.",
+        "zh": "Green Orange Finance（中文名，青橙金融，代币名称：GOFi），是全球首个跨链聚合抵押借贷平台。可以将GOFi理解为一个去中心化的普惠金融聚合平台，是个开放式的金融生态圈。"
+  },
+  "email": "greenorangefinance@gmail.com",
+  "website": "https://www.greenorange.finance",
+  "whitepaper": "https://98a6d482-6e7d-401e-8599-04c5fd66002a.filesusr.com/ugd/545f35_dedb8af6d46942f89f1d7c51d5eab519.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-01",
+  "initial_price":{
+        "ETH":"0.00604887 ETH",
+        "USD":"2.5 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/GreenorangeGOF/",
+    "telegram": "https://t.me/greenorangefinance",
+    "facebook": "https://www.facebook.com/greenorangefinance"
+  }
+}

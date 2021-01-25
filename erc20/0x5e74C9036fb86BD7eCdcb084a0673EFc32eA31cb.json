@@ -1,0 +1,16 @@
+{
+  "symbol": "sETH",
+  "address": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
+  "overview":{
+        "en": "A synthetic asset issued by the Synthetix protocol which tracks the price of Ether (ETH). ETH is the native digital currency of the Ethereum blockchain, a smart contract platform that enables developers to build decentralized applications."
+  },
+  "email": "info@synthetix.io",
+  "website": "https://www.synthetix.io/",
+  "state": "NORMAL",
+  "links": {
+    "blog": "https://blog.synthetix.io/",
+    "twitter": "https://twitter.com/synthetix_io",
+    "github": "https://github.com/Synthetixio",
+    "reddit": "https://reddit.com/r/synthetix_io"
+  }
+}

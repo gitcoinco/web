@@ -1,0 +1,26 @@
+{
+  "symbol": "HAT",
+  "address": "0x1F1dADFA39759436DF35be8752A2467E20609343",
+  "overview":{
+        "en": "Health Alliance Token (abbreviated as HAT) is the only value circulation token in the HAC health alliance chain.Health Alliance Chain (HAC for short) is based on blockchain, cloud computing, big data and other technologies, with the token economy as the underlying logic, and ‘consensus, co-creation, sharing’ as the core concept, with the mission of ‘Building a new value chain for the global health industry’ to create a digital economy value-added service platform for the global health industry.",
+        "zh": "Health Alliance Token（简称HAT），健康联盟通证，是HAC健康联盟链中的唯一价值流通通证。Health Alliance Chain（简称HAC），健康联盟链，是以区块链、云计算、大数据等技术为基础，以通证经济为底层逻辑、以‘共识、共创、共享’为核心理念、以’构建全球大健康产业的新价值链‘为使命，打造的全球大健康产业数字经济增值服务平台。"
+  },
+  "email": "hat082201@163.com",
+  "website": "http://www.hachain.org/",
+  "whitepaper": "http://www.hachain.org/pi_en.pdf",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2020-05-10",
+  "initial_price":{
+        "ETH":"0.0003 ETH",
+        "USD":"0.1428 USD",
+        "BTC":"0.00001225 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/7424686581/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1",
+    "twitter": "https://twitter.com/ChainHac",
+    "telegram": "https://t.me/HAT_blockchain",
+    "github": "https://github.com/HealthAllianceChain",
+    "facebook": "https://www.facebook.com/HealthAllianceChain/?modal=admin_todo_tour",
+    "reddit": "https://www.reddit.com/user/Healthalliancechain"
+  }
+}

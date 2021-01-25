@@ -1,0 +1,13 @@
+{
+  "symbol": "AICC",
+  "address": "0xBbF45465CE51e2E5a6bb858597dD0079b0809483",
+  "overview":{
+        "en": "AICC Intelligent Cloud chain foundation was founded in Singapore in April 2019. It is an official authorized licensed institution aiming at developing the underlying public chain of Ai Ai Ai application, building the whole ecology of AICC and promoting the development of blockchain industry.",
+        "zh": "AICC智能云链基金会于2019年4月成立于新加坡，是一家以开发AI人工智能应用底层公链、打造AICC全生态、促进区块链产业发展为目标的官方授权持牌机构。"
+  },
+  "email": "service@becoin.com.cn",
+  "website": "https://www.aicc.xin",
+  "whitepaper": "https://www.aicc.xin/web/file/f1.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-01"
+}

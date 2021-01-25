@@ -1,0 +1,16 @@
+{
+"symbol": "renBTC",
+"address": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
+"overview": {
+  "en": "A ERC20 BTC on Ethereum network",
+  "zh": "BTC 在以太坊上的 ERC20 代币"
+},
+"email": "support@renproject.io",
+"website": "https://renproject.io/",
+"whitepaper": "https://github.com/renproject/ren/wiki/Introduction",
+"state": "NORMAL",
+"links": {
+  "twitter": "https://twitter.com/renprotocol",
+  "Github": "https://github.com/renproject"
+}
+}

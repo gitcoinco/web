@@ -1,0 +1,20 @@
+{
+  "symbol": "IP5G",
+  "address": "0x3F559bcD8e69b35E23e62446b13f6a53E795fDAC",
+  "overview":{
+        "en": "IP5G is a high-tech public chain based on blockchain technology jointly created by the world's top blockchain technology team and 5G technology team. At the same time, it is a global and open blockchain ecosystem with blockchain technology as the bottom layer. system.",
+        "zh": "IP5G，是由世界顶尖的区块链技术团队与5G技术团队联合打造一款基于区块链技术的高科技公链，同时是以区块链技术为底层的全球化、开放式区块链生态系统。"
+  },
+  "email": "",
+  "website": "http://www.tok2137ip5g.cn",
+  "whitepaper": "http://oss.tokenimcoin3133.com/IP5G_whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-11",
+  "initial_price":{
+        "ETH":"0.078280708 ETH"
+  },
+  "links": {
+    "twitter": "",
+    "facebook": ""
+  }
+}

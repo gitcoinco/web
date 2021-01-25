@@ -1,0 +1,17 @@
+{
+  "symbol": "MSK",
+  "address": "0x6954874e3E9cCb527d0CaA602BE5502dB2A1D76a",
+  "overview":{
+        "zh": "MaskDAO是一个完全去中心化社区治理协议，MSK作为生态治理币，打造一个深层次多生态DEX（去中心化交易所）Maskswap(面具交易所)。Mask是面具的意思，寓意匿名者协议，即Defi去中心化金融。DAO是一个完全自治的组织，它不由个体管理，而是通过代码进行管理。代码是基于智能合约运行的，使得DAO能够取代传统机构的典型运作模式."
+  },
+  "email": "maskdaoyeah@gmail.com",
+  "website": "http://maskdao.finance/",
+  "whitepaper": "http://maskdao.finance/MaskDAO.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-07",
+  "links": {
+    "twitter": "https://twitter.com/DaoMask",
+    "telegram": "https://t.me/MaskDAO",
+    "facebook": "https://www.facebook.com/Maskdao-103180304867592"
+  }
+}

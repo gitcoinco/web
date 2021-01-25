@@ -1,0 +1,23 @@
+{
+    "symbol": "vkf",
+    "address": "0xABDd716B7E262e3c2D0CfD7b7DC5d35bEEa17Bb4",
+    "overview":{
+          "en": "The VKF aims to change transaction type of every digital asset to decentralized transaction without restrict. The network participants consist of only third-party issuers and users. The issuer issues the existing digital asset or newly issued digital asset on the VKF network in the form of a token, and sends VKF coins and tokens to smart contract to provide liquidity. Users can hold digital assets in token form, exchange them for other digital assets, exchange them for VKF coins, or exchange them for legal currency."
+    },
+    "email": "vkfdev@gmail.com",
+    "website": "https://vkfs.io",
+    "whitepaper": "https://vkfs.io/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-18",
+    "initial_price":{
+          "ETH":"0.000250 ETH",
+          "USD":"0.085400 USD",
+          "BTC":"0.0000080 BTC"
+    },
+    "links": {
+      "KakaoTalk": "https://open.kakao.com/o/gxbKjsxc",
+      "github": "https://github.com/vkfdev/VKF-project",
+      "exchange" : "https://www.foblgate.com/"
+    }
+  }
+  

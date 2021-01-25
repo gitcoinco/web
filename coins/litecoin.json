@@ -1,0 +1,17 @@
+{
+  "symbol": "LTC",
+  "address": "litecoin",
+  "overview":{
+        "en": "Litecoin is a peer-to-peer Internet currency that enables instant, near-zero cost payments to anyone in the world.",
+        "zh": "莱特币加密货币是一款点对点的分布式网络货币系统。"
+  },
+  "email": "contact@litecoin.org",
+  "website": "https://litecoin.org",
+  "state": "NORMAL",
+  "published_on": "2011-10-07",
+  "links": {
+    "twitter": "https://twitter.com/LitecoinProject",
+    "reddit": "https://www.reddit.com/r/litecoin/",
+    "telegram": "https://t.me/Litecoin"
+  }
+}

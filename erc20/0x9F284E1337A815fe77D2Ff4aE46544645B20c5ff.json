@@ -2,22 +2,22 @@
     "symbol": "KTON",
     "address": "0x9F284E1337A815fe77D2Ff4aE46544645B20c5ff",
     "overview": {
-        "en": "KTON is the voting token of Evolution Land",
-        "zh": "KTON是进化星球的投票和权益通证，进化星球是一个基于跨链的区块链游戏"
+        "en": "KTON is essentially a derivative token of RING, which encourages long-term lock and commitment. The initial supply of KTON is 0, and it can only be obtained by locking RING. There is no other distribution channel. ",
+        "zh": "KTON 本质上是 RING 的衍生通证，是为了鼓励用户进行长期锁定和承诺投入。KTON 的初始供应量为零，只能通过系统中锁定 RING 获得，没有其他的任何分发渠道。"
     },
-    "email": "hello@evolution.land",
-    "website": "https://www.evolution.land",
-    "whitepaper": "https://www.evolution.land/whitepaper_cn.pdf",
+    "email": "hello@darwinia.network",
+    "website": "https://darwinia.network",
+    "whitepaper": "https://evolution.l2me.com/darwinia/Darwinia_Genepaper_ZH_200430.pdf",
     "state": "NORMAL",
     "published_on": "2018-07-14",
     "initial_price": {
-        "ETH": "0.00001 ETH"
+        "ETH": "0 ETH"
     },
     "links": {
-        "blog": "https://medium.com/@evolutionland9",
-        "twitter": "https://twitter.com/evolutionland9",
-        "telegram": "https://t.me/evolutionland9",
-        "github": "https://github.com/evolutionlandorg",
-        "medium": "https://medium.com/@evolutionland9"
+        "blog": "https://medium.com/@DarwiniaNetwork",
+        "twitter": "https://twitter.com/DarwiniaNetwork",
+        "telegram": "https://t.me/DarwiniaNetwork",
+        "github": "https://github.com/darwinia-network",
+        "medium": "https://medium.com/@DarwiniaNetwork"
     }
 }

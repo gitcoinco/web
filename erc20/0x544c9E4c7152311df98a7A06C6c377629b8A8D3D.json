@@ -1,0 +1,21 @@
+{
+  "symbol": "GEC",
+  "address": "0x544c9E4c7152311df98a7A06C6c377629b8A8D3D",
+  "overview": {
+    "en": "GEC (GeneCoin) is a token mining pool project of the Lodecoin platform. As a connection medium, it integrates token exchange, platform functions, industrial functions, and user communities to forming a new industrial circle using tokens",
+    "zh": "GEC(GeneCoin) 是 Lodecoin 生态中最重要的矿池机制生态系统项目，以投入计算产出GEC通証。GEC作为连接媒介，将通证交换、平台功能、产业功能、⽤户社区融为⼀体，形成全新的运用通证的产业生态圈。"
+  },
+  "email": "info@lodecoin.io",
+  "website": "https://lodecoin.io",
+  "whitepaper": "https://img1.wsimg.com/blobby/go/6416823c-c0dd-4717-a622-98a9ac3cefa8/downloads/Lodecoin%E5%BF%83%E7%99%BD%E7%9A%AE%E4%B9%A6%EF%BC%880303002%EF%BC%89.pdf?ver=1583613848530",
+  "state": "NORMAL",
+  "published_on": "2020-03-30",
+  "initial_price":{        
+        "USD":"0.88 USD"
+  },
+  "links": {
+    "github": "https://github.com/lodecoin888/genecoin/",
+    "facebook": "https://www.facebook.com/Lodecoin-109181857367597",
+    "twitter": "https://twitter.com/CoinLode"
+  }
+}

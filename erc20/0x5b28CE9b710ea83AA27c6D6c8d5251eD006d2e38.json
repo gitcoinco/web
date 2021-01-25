@@ -1,0 +1,20 @@
+{
+    "symbol": "glex",
+    "address": "0x5b28CE9b710ea83AA27c6D6c8d5251eD006d2e38",
+    "overview":{"en": "GLEX is a crypto currency that is distributed open source for privacy. GLEX aims to maintain transmission between each other and to support fast transactions that are checked within seconds by the master nodes without going through unnecessary several steps, such as the formation of blocks. The network of GLEX is a very large network vertically with high availability, high data reliability. Also continuous scale-up is possible."},
+    "email": "glexteams@gmail.com",
+    "website": "http://glexcoin.com/",
+    "whitepaper" : "http://glexcoin.com/down/GLEX_whitepaper_eng.pdf?ver=1.2",
+    "state": "NORMAL",
+    "published_on":"2020-01-09",
+    "initial_price":{
+        "ETH":"0.00003726 ETH",
+        "USD":"0.006 USD"
+    },
+    "links": {
+        "blog": "",
+        "twitter": "",
+        "telegram": "",
+        "github": "https://github.com/glexteam/glex"
+    }
+}

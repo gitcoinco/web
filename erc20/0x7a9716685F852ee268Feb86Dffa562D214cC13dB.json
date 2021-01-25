@@ -1,0 +1,14 @@
+{
+    "symbol": "FBT",
+    "address": "0x7a9716685F852ee268Feb86Dffa562D214cC13dB",
+    "overview": {
+        "zh": "返币（Fanbi.com）是全球领先的数字资产节点理财交易平台， 融合了交易、理财、钱包等功能，服务项目从诞生到成熟，依托于 出色的市场能力，实现让项目扩大参与群体、缩减流通比率，让用户享受优质项目的高息存币理财收益。 返币主要包括 Staking 挖矿、存币理财、C2C 挂单交易、指定 交易、营销活动、流量中心、FBT 平台通证等功能版块。"
+    },
+    "email": "support@fanbi.com",
+    "website": "https://www.fanbi.com",
+    "state": "NORMAL",
+    "published_on": "2019-10-12",
+    "initial_price": {
+        "USD": "0.0085 USD"
+    }
+}

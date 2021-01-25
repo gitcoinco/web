@@ -1,0 +1,22 @@
+{
+  "symbol": "ZT",
+  "address": "0xFE39e6a32AcD2aF7955Cb3D406Ba2B55C901f247",
+  "overview": {
+    "en": "ZBG is a wholly-owned subsidiary platform of ZB.COM, one of the world's top five exchanges. ZBG is positioned as a light and fast global trading platform. ZT is the platform currency of the ZBG trading platform.",
+    "zh": "ZBG是全球前五的交易所ZB.COM全资控股子平台，ZBG全新定位于轻盈快捷的全球化交易平台，不仅在技术上是ZB的集大成者，在经营理念上也有众多创新。ZT是ZBG交易平台的平台币。"
+  },
+  "email": "sp@zbg.com",
+  "website": "https: //www.zbg.com/",
+  "whitepaper": "https: //zbgapp.oss-cn-beijing.aliyuncs.com/zbg%20white%20paper%200905.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-24",
+  "initial_price": {
+    "USD": "0.35 USD"
+  },
+  "links": {
+    "twitter": "https: //twitter.com/ZBGLOBLE",
+    "telegram": "https: //t.me/ZBGofficial",
+    "facebook": "https: //www.facebook.com/zbg.rus.35",
+    "medium": "https: //medium.com/@ZBGofficial"
+  }
+}

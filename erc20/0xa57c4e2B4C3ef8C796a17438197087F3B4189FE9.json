@@ -1,0 +1,15 @@
+{
+    "symbol": "HOP",
+    "address": "0xa57c4e2B4C3ef8C796a17438197087F3B4189FE9",
+    "overview": {
+        "en": "According to the laboratory's announcement, the Super Orchid Protocol proposes a solution to secure the use of Internet traffic at the bottom, and focuses on providing a practical reference solution for the network landing use of 5G and Starlink, providing a good solution path for the real popularization and application of 5G and Starlink in the future. This shows that the third Internet claimed by the laboratory is not unrealistic.",
+        "zh": "根据超级兰花协议实验室的公告，超级兰花协议是一个基础的硬件解决方案，可以提高互联网使用的安全性，并为5G基站和starlink项目提供流量共享计费能力，这使得第三代互联网的落地成为可能。"
+    },
+    "email": "hyperorchid@outlook.com",
+    "website": "http://hyperorchid.com/",
+    "state": "NORMAL",
+    "published_on": "2019-10-07",
+    "links": {
+        "github": "https://github.com/hyperorchidlab"
+    }
+}

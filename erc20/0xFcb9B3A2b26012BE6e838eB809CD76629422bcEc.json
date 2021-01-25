@@ -1,0 +1,19 @@
+{
+  "symbol": "TRSU",
+  "address": "0xFcb9B3A2b26012BE6e838eB809CD76629422bcEc",
+  "overview":{
+       "en": "TreasureChain aims to build a decentralized platform, the world's first blockchain jewelry, antiques and other treasure goods digital asset service platform: straight-through treasure ecosystem, credible treasure digital industry service platform, through the TreasureChain shared treasure industry ecosystem, with the non-tamper chain record for each treasure unique value endorsement. 。 Then, the operation mechanism of treasure asset digitization: TreasureChain combines 5G, AI and blockchain technology to present the charm of treasure in many ways, to split the value of treasure from multiple dimensions, to support the technology, to open a larger conceivable space for treasure; to use block chain identity is the only characteristic to bind collectors and each treasure; to write information on the block chain collector. Identify each item with a certain amount of treasure corresponding to a certain amount of TRU.",
+       "zh": "TRU珍宝链旨在搭建一个去中心化的平台，全球第一家区块链珠宝、古董等 珍宝品数字资产服务平台：直通式珍宝生态系统，有公信力的珍宝数字产业服务 平台，通过TRU珍宝链共享珍宝产业的生态系统，以不可篡改的链上记录为每一 件珍宝品独一无二的价值背书。 那么，珍宝资产数字化的运行机制：TRU珍宝链结合5G、AI及区块链技术， 以多种方式呈现珍宝品的魅力，从多个维度拆分珍宝品的价值，以技术为支撑， 为珍宝打开更大可想空间；利用区块链身份是唯一的特点绑定收藏家和每个珍宝 品；把信息写在区块链上收藏家；为每个珍宝品确定身份；用一定数量的珍宝品 对应一定量的TRU。"
+  },
+  "email": "chaintreasure@outlook.com",
+  "website": "https://www.trucoin.vip/",
+  "whitepaper": "https://www.trucoin.vip/treasure-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-11-03",
+  "initial_price": {
+      "USD":"0.01USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/chaintreasure1"
+  }
+}

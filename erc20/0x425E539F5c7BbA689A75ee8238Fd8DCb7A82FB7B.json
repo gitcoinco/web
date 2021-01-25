@@ -1,0 +1,19 @@
+{
+  "symbol": "RAB",
+  "address": "0x425E539F5c7BbA689A75ee8238Fd8DCb7A82FB7B",
+  "overview":{
+    "en": "Robin Advertisement Blockchain (RAB) Through blockchain technology, ecosystems can be made transparent, advertising fraud can be reduced, user image accuracy can be improved, and more importantly, pricing can be given to users' attention, and the interests of the original complicated advertising system intermediary can be divided. The new ecosystem may develop from the purchase channel. As a platform for the flow of the party, it will no longer sell advertising to earn income. Instead, it will improve the value of its ecosystem through the operation and maintenance of the ecosystem, thus making the generation used in the ecology. The currency appreciates to generate income.",
+    "zh": "Robin Advertisement Blockchain (RAB)通过区块链技术，可以使得生态系统透明化，减少广告欺诈,提高用户画像准确度，更重要的是，可以对用户的关注度给予定价, 瓜分原有繁杂的广告系统中介方的利益。新的生态系统可能会从购买渠道进行发展， 作为流量方平台，不再进行广告售卖来赚取收入，而是通过生态系统的运营维护，提升自身生态系统价值，从而使生态中所使用的代币升值来创造收入。"
+  },
+  "email": "rabproglobal@gmail.com",
+  "website": "http://rabpro.uk/",
+  "whitepaper": "http://rabpro.uk/download/RAB-Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-22",
+  "initial_price":{
+    "ETH":"22.3 ETH",
+    "USD":"0.123 USD",
+    "BTC":"1127.03793 BTC"
+  },
+  "links": {}
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "GC",
+  "address": "0x7EDf1c7a7Dca94f6e93E69089B219070967A4Bb0",
+  "overview":{
+        "en": "GameChain is a vertical public blockchain specialize the gaming field based on peer-to-peer blockchain technology, which covering the entire ecology of the gaming industry.By utilizing the GC token as ecological bridge at the same time providing more transparent, open, and fair gaming environment. A more reasonable and competitive incentive system thatengaging the gaming development Industry a easy and faster way to access into the world of blockchain system, maximize the possibilities of blockchain gaming.",
+        "zh": "GameChain是基于点对点区块链技术的游戏领域垂直公链，将覆盖游戏行业全生态，利用 GC通证作为生态桥梁,提供更透明公平的游戏环境、更合理有竞争力的激励制度，帮助游戏开发商快速接入区块链系统，以最大程度促进区块链游戏落地。它采用BPoS-PBFT共识机制 ，实现区块链性能和安全的最佳平衡点，并利用通过主链-平行子链架构，让每一个游戏方都 能快速部署匹配自身的子链，并让游戏内的数字资产通过交易链完成全球流动。"},
+  "email": "gamechainpro@gmail.com",
+  "website": "http://www.gamechain.com",
+  "whitepaper": "http://www.gamechain.com.cn/whitepaper_en1.3.pdf",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2020-05-19",
+  "initial_price":{
+        "ETH":"0.00005 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.0000019 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Gamechainpro",
+    "telegram": "https://t.me/gamechain2019",
+    "github": "https://github.com/gamechainpro/gamechain",
+    "reddit": "https://www.reddit.com/user/GameChainpro/"
+  }
+} 

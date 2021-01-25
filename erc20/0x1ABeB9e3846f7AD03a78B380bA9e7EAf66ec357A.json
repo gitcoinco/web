@@ -1,0 +1,17 @@
+{
+  "symbol": "CAME",
+  "address": "0x1ABeB9e3846f7AD03a78B380bA9e7EAf66ec357A",
+  "overview":{
+        "en": "'Crazy Miner' is the first blockchain game aggregation platform in the world. It drives the ecological value with innovative games and will become the Steam of the blockchain game industry in the future.",
+        "zh": "“疯狂矿工”是世界上第一个区块链游戏聚合平台。它通过创新游戏来推动生态价值，并将在未来成为区块链游戏行业的动力。"
+  },
+  "email": "cames.io@hotmail.com",
+  "website": "https://app.cames.io/",
+  "whitepaper": "https://www.cames.io/CrazyMiner.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-06",
+  "links": {
+    "twitter": "https://twitter.com/CrazyMiner8",
+    "telegram": "https://t.me/CrazyMinerenglish"
+  }
+}

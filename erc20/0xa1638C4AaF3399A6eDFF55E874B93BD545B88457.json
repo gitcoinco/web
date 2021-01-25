@@ -1,0 +1,22 @@
+{
+  "symbol": "GECT",
+  "address": "0xa1638C4AaF3399A6eDFF55E874B93BD545B88457",
+  "overview":{
+        "en": "GECT was based on block chain technology; it can monitor the whole process of renewable energy supply chain. It can not only solve the problem of fund supply during construction period, but also enable participants to monitor the whole process and truly prevent fraud. At the same time, each GECT has equity value because it is linked to real new energy assets. It can not only circulate in the digital world, but also bring bonus candy to holders every year.",
+        "zh": "GECT以区块链技术为基础，监控可再生能源供应链的整个过程，不仅可以解决建设期资金供应的问题，还可以让参与者能监督整个过程，真正做到防欺诈。同时，由于与实体新能源资产挂钩，每一枚GECT都具有权益价值，不但可以在数字世界进行流通，还将每年为持有者带来红利糖果。"
+  },
+  "email": "service@gectoken.cn",
+  "website": "http://www.gectoken.cn/",
+  "whitepaper": "http://www.gectoken.cn/pdf/gect-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-28",
+  "initial_price":{
+        "USD":"0.08 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/EnGect",
+    "telegram": "https://t.me/GECTCN",
+    "github": "https://github.com/GECToken",
+    "facebook": "https://www.facebook.com/GECTme-100822157942920/"
+  }
+}

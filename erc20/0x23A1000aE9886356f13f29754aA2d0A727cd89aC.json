@@ -1,0 +1,26 @@
+{
+  "symbol": "DNFT",
+  "address": "0x23A1000aE9886356f13f29754aA2d0A727cd89aC",
+  "overview":{
+    "en": "DNFT.",
+    "zh": "DNFT."
+  },
+  "email": "dnftofficial@gmail.com",
+  "website": "https://dnft.io/",
+  "whitepaper": "",
+  "state": "NORMAL",
+  "published_on": "2020-12-15",
+  "initial_price":{
+    "ETH":"0.00005 ETH"
+  },
+  "links": {
+    "blog": "",
+    "twitter": "https://twitter.com/DNFTofficial",
+    "telegram": "https://t.me/DnftFinance",
+    "github": "https://github.com/Fatman2080",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}

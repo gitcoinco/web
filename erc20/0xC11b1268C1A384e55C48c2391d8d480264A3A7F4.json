@@ -1,0 +1,17 @@
+{
+  "symbol": "cWBTC",
+  "address": "0xC11b1268C1A384e55C48c2391d8d480264A3A7F4",
+  "overview":{
+        "en": "cWBTC is like an instant WBTC savings account. By Compound.",
+        "zh": "cWBTC 由 Compound 发行，类似于一个即时的 WBTC 存储账户。 "
+  },
+  "website": "https://app.compound.finance/asset/cWBTC",
+  "whitepaper": "https://compound.finance/documents/Compound.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "links": {
+    "blog": "https://medium.com/compound-finance",
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance/compound-protocol"
+  }
+}

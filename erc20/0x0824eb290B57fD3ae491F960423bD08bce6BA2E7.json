@@ -1,0 +1,28 @@
+{
+    "symbol": "YES",
+    "address": "0x0824eb290B57fD3ae491F960423bD08bce6BA2E7",
+    "overview": {
+        "en": "Yes chain is one of Boca ecological builders, focusing on cross chain transactions of assets, especially virtual assets such as game props. Boca does the infrastructure layer, and other businesses are delivered to the community. Yeschain is positioned as a cross chain hub of digital assets. One of the goals is to make yesbank, a truly decentralized exchange based on Boca, to realize centralized exchange by using real cross chain. It is not like BTS with centralized gateway, not like Ethereum or EOS, It can only trade tokens based on eth platform or EOS platform, and can achieve a block time of 1-2s and a final deterministic delay within 10s.Yeschain uses multi chain architecture to solve the congestion problem. The transaction is confirmed in one second to meet the high performance and low delay required by the game. At the same time, it uses the method of mapping other public chain data and making secondary confirmation to realize safe cross chain interaction, which can support the game docking of various public chains.",
+        "zh": "YesChain是波卡生态建设者之一,专注资产跨链特别是游戏道具等虚拟资产的跨链交易。波卡做的是基础架构层，其他业务就是交由社区实现，而YesChain的定位是成为数字资产的跨链枢纽，其中一个目标是基于波卡做真正的去中心化交易所YesBank，利用真正的跨链去实现中心化交易所，不是像BTS拥有中心化网关，不是像以太坊或者EOS上的去中心化交易，只能交易基于ETH平台或者基于EOS平台的代币，而且能做到1-2s 的出块时间，10s 以内的最终确定性延迟。YesChain采用多链架构解决拥堵问题， 交易一秒确认， 满足游戏所需的高性能低延迟， 同时采用映射其他公链数据并作二次确认的方式实现安全的跨链交互， 可支持各类公链的游戏对接。 "
+    },
+    "email": "yeschaindao@gmail.com",
+    "website": "yeschain.io",
+    "whitepaper": "http://yeschain.io/white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-07-14",
+    "initial_price": {
+        "ETH": "0.01785714 ETH",
+        "USD": "5 USD",
+        "BTC": "0.00052776 BTC"
+    },
+    "links": {
+        "blog": "https://twitter.com/YeschainF",
+        "twitter": "https://twitter.com/YeschainF",
+        "telegram": "https://t.me/joinchat/your-awesome-project",
+        "github": "https://github.com/YesChain",
+        "facebook": "fb.me/mobiusdao",
+        "reddit": "https://www.reddit.com/user/mobiusdao",
+        "slack": "https://join.slack.com/t/mobiusfoundation/shared_invite/zt-flkx1o4y-eblYjtSJlqj08jU0gAyKxA",
+        "medium": "https://link.medium.com/eN9BNkHgQ7"
+    }
+}

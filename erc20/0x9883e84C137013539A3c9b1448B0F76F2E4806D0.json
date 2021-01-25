@@ -1,0 +1,16 @@
+{
+  "symbol": "MM",
+  "address": "0x9883e84C137013539A3c9b1448B0F76F2E4806D0",
+  "overview": {
+    "en": "1. MM is the insurance pass issued by mymex contract insurance exchange. It is an exchange platform pass issued based on blockchain technology, and has the functions of platform currency and insurance currency. It is equivalent to that the exchange provides a set of \"insurance\" business for the users who participate in the contract transaction. It reduces the risk in the process of contract transaction and protects the interests of users by the method of loss sharing. 2. MM releases according to the platform's contract trading volume, with the release ratio of 200usdt (trading volume): 1mm; truly match the demand with the circulation, and the circulation with the value. 3. MM total issuance: 1 billion;",
+    "zh": "1. MM是MYMEX 合约保险交易交易所推出的平台保险通证 ，它是基于区块链技术发行的交易所平台通证，同时具备平台币和保险币的功能。相当于交易所为参与合约交易的用户提供了一套“保险”业务，它以损失分摊的方法，降低合约交易过程中的风险性，保障用户利益。2. MM 根据平台合约交易量释放，释放比例 200USDT(交易量)：1MM；真正做到需求与发行量，发行量与价值的匹配。3. MM发行总量：10 亿枚；"
+  },
+  "email": "Service@mymex.co",
+  "website": "https://mymex.co/",
+  "whitepaper": "https://mymex.zendesk.com/hc/zh-cn/articles/360034935031-%E5%85%B3%E4%BA%8EMM",
+  "state": "NORMAL",
+  "published_on": "2019-10-22",
+  "links": {
+    "telegram": "https://t.me/MymexOffice"
+  }
+}

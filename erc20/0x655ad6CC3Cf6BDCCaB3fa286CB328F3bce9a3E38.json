@@ -1,0 +1,27 @@
+{
+    "symbol": "CRU18",
+    "address": "0x655ad6CC3Cf6BDCCaB3fa286CB328F3bce9a3E38",
+    "overview":{
+          "en": "CRUST provides a decentralized storage network of Web3 ecosystem. It supports multiple storage layer protocols such as IPFS, and exposes storage interfaces to application layer. Crust's technical stack is also capable of supporting a decentralized computing layer. It is designed to build a decentralized cloud ecosystem that values data privacy and ownership. CRU18 is the locked token of CRU.",
+          "zh": "Crust 提供了 Web3 生态系统的去中心化存储网络，支持包括 IPFS 在内的多种存储层协议，并对应用层提供接口。Crust 的技术栈还能够支持去中心化计算层。Crust 旨在构建一个重视数据隐私和所有权的分散式云生态系统。CRU18会Crust主网上线后18个月内线性释放。"
+    },
+    "email": "CrustNetwork@gmail.com",
+    "website": "https://crust.network",
+    "whitepaper": "https://crust.network/download/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-11-30",
+    "initial_price":{
+          "ETH":"0.002666 ETH",
+          "USD":"1.0 USD",
+          "BTC":"0.000073 BTC"
+    },
+    "links": {
+      "blog": "https://medium.com/crustnetwork/",
+      "twitter": "https://twitter.com/CrustNetwork",
+      "telegram": "https://t.me/CrustNetwork",
+      "reddit": "https://www.reddit.com/r/CrustNetwork/",
+      "github": "https://github.com/crustio",
+      "facebook": "https://www.facebook.com/CrustNetwork/",
+      "medium": "https://medium.com/crustnetwork/"
+    }
+  }

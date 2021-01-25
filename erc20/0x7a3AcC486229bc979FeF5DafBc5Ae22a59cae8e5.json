@@ -1,0 +1,16 @@
+{
+    "symbol": "GZT",
+    "address": "0x7a3AcC486229bc979FeF5DafBc5Ae22a59cae8e5",
+    "overview":{
+          "en": "GZT(J.Golden Zone Token) is a community membership credit,issued by J.Golden Zone Services Pvt. Ltd. It's non-divisible, non-tradable and only distributed through official channels.GZT will not launch an ICO or IEO.",
+          "zh": "GZT 是由 J.Golden Zone Services Pvt. Ltd发行的社区积分凭证。目前仅由官方渠道发放，其不可分割，不支持交易。GZT不参与ICO、IEO及其他任何形式的融资。"
+    },
+    "email": "kf@jgz.com",
+    "website": "https://www.jgz.com/",
+    "state": "NORMAL",
+    "published_on": "2020-3-27",
+    "links": {
+        "facebook": "https://www.facebook.com/JGoldenZone",
+        "weibo": "https://weibo.com/jgzdata",
+      }
+}

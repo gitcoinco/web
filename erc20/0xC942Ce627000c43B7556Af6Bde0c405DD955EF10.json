@@ -1,0 +1,17 @@
+{
+    "symbol": "TAK",
+    "address": "0xC942Ce627000c43B7556Af6Bde0c405DD955EF10",
+    "overview":{
+          "en": "TAK develops decentralized public chain of value based on the application characteristics of the Internet of things industry, supports a variety of industrial applications, provides hardware intelligent chip, SDK and other adaptive schemes, combines cryptography technology, distributed architecture, adopts the main chain of DPOA consensus, and constructs a secure, decentralized and high-concurrency block chain network.",
+          "zh": "TAK基于物联网行业应用特性开发去中心化价值公有链，并支持多种行业应用，提供硬件智能芯片、SDK等多种适应方案，结合密码学技术，分布式架构，采用DPOA共识的主链，构建安全、去中心化的、支持高并发的区块链网络。"
+    },
+    "email": "blocker@takchain.com",
+    "website": "http://takchain.com/",
+    "whitepaper": "http://takchain.com/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-12-20",
+    "links": {
+        "facebook": "https://www.facebook.com/takchain",
+        "telegram": "https://t.me/takchaingroup"
+      }
+}

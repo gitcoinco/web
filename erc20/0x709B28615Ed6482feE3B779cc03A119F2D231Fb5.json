@@ -1,0 +1,24 @@
+{
+  "symbol": "PT",
+  "address": "0x709B28615Ed6482feE3B779cc03A119F2D231Fb5",
+  "overview":{
+        "en": "POLIES is a decentralized financial system based on blockchain. The main financial markets of the Polies protocol are Polies Money Market, Polies ETF Market and Polies Fund Market. Supported by the Polies oracle, Polies data, Polies information and Polies community, Polies builds a bridge between the decentralized ecosystem and the community.",
+        "zh": ""
+  },
+  "email": "blockchain@polies.store",
+  "website": "https://polies.store/",
+  "whitepaper": "http://www.polies.store/polies.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-10",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/PoliesO",
+    "telegram": "https://t.me/poliesofficial0",
+    "github": "https://github.com/ptthink/PoliesProject",
+    "medium": "https://medium.com/@polies.official/polies-the-defi-protocol-and-related-ecosystem-2fc3bbd9b31t"
+  }
+}

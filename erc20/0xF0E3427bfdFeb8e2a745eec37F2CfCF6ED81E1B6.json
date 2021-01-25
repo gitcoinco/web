@@ -1,0 +1,15 @@
+{
+  "symbol": "ADS",
+  "address": "0xF0E3427bfdFeb8e2a745eec37F2CfCF6ED81E1B6",
+  "overview":{
+        "zh": "ADS（AcidsToken）的愿景是构建全球游戏公有应用链中的第一链。它是Acids生态中所有区块应用的唯一通行证。ADS不但可以在Big Pirate公链游戏中进行流通、消耗、权益兑换、商业化投放等诸多环节，还可在整个Acids社区中进行价值交互，从而实现POS_OCPC共识机制的跨生态流通。"
+  },
+  "email": "AcidsToken@gmail.com",
+  "website": "https://acidstoken.com/",
+  "whitepaper": "https://acidstoken.com/ads/AcidsToken.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-07-01",
+  "links": {
+    "金色财经": "https://www.jinse.com/blockchain/486739.html"
+  }
+}

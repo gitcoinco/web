@@ -1,0 +1,20 @@
+{
+    "symbol": "ODY",
+    "address": "0x026f8D523D49F36db657e012C96488465d8d88f9",
+    "overview": {
+        "en": "Odyssey project combines the core advantages of blockchain with driverless technology, aiming to build a transparent, efficient, safe and open decentralized driverless travel platform, improve the overall performance of driverless, build the infrastructure of the next generation of intelligent transportation, and lead the transformation and development of the entire driverless field.",
+        "zh": "奥德赛 (Odyssey) 项目将区块链核心优势结合无人驾驶技术，旨在打造一个透明、高效、安全、 开放的去中心化无人驾驶出行平台，提升无人驾驶的整体性能，打造下一代智能交通的基础设施， 从而引领整个无人驾驶领域的变革和发展。"
+    },
+    "email": "odyssey.ser@gmail.com",
+    "website": "https://odysseia.top",
+    "whitepaper": "http://odysseia.top/Odysseywp.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-29",
+    "initial_price": {
+        "ETH": "0.0007 ETH"
+    },
+    "links": {
+        "twitter": "https://www.twitter.com/OdyCommunity",
+        "facebook": "https://www.facebook.com/OdysseyEcosystem/?modal=admin_todo_tour"
+    }
+}

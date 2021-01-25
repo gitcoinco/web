@@ -1,0 +1,17 @@
+{
+  "symbol": "CST",
+  "address": "0xBeA202a291f633c12EdBbD51e04af985b2670500",
+  "overview":{
+        "en": "CST(CoinSmart Token) is a platform token issued by CoinSmart team, and holders can enjoy the quantitative investment and wealth management services provided by the platform.",
+        "zh": "CST 是 CoinSmart 团队推出的平台通证, 持有者可享受平台提供的量化投资与理财等特色服务。"
+  },
+  "email": "master@coinsmart365.com",
+  "website": "https://www.coinsmart365.com/",
+  "whitepaper": "https://business.coinsmart365.com/whitePaper-v1.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-23",
+  "links": {
+    "twitter": "https://twitter.com/CstToken",
+    "telegram": "https://t.me/joinchat/HjLY2R2Sv0DnpztYzYaQjQ"
+  }
+}

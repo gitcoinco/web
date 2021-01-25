@@ -1,0 +1,17 @@
+{
+    "symbol": "LFC",
+    "address": "0x73468010eFda36A42662F000fce2c2A4Ef175097",
+    "overview":{
+          "en": "LiFe Chain is a decentralized digital medical network system developed based on blockchain technology. It is committed to solving the problems encountered by medical industry practitioners and institutions, and provides individuals, institutions with safe, convenient, and stable underlying network technology.",
+          "zh": "LiFe Chain是基于区块链技术开发的去中心化数字医疗网络系统，致力于解决目前医疗行业从业者、机构所遇到的问题，为个人及机构提供安全、便捷、稳定的底层网络技术。"
+    },
+    "email": "lifechain0@gmail.com",
+    "website": "http://www.lfc.world/",
+    "whitepaper": "http://www.lfc.world/white-paper/cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-08-05",
+    "links": {
+        "telegram": "https://t.me/lifechainc",
+        "twitter": "https://twitter.com/lifechain1"
+      }
+}

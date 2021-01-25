@@ -1,0 +1,21 @@
+{
+  "symbol": "SEL",
+  "address": "0x2974963051F3A3237e16841dEa7126250098D8F5",
+  "overview":{
+        "en": "STEMC stem cell medical ecological platform hereinafter referred to as STEMC stem cell platform, is a smart medical platform based on biological cytology with blockchain technology through the five functional modules of Oread, Otrade, Oeducation, Oresearch and Oinsure. The Oinsure module is designed by STEMC to further improve the shortcomings of stem cell therapy. According to the concept of “One is sick, all will pay equally”, it has created a community of mutual assistance, creating a “Global Access” mutual medical insurance with high cost-effective, inclusive, inheritable and no geographical restrictions. In the STEMC ecosystem, the value of all commodities is measured by SEL. Transaction in the five functional modules of Oread, Otrade, Oeducation, Oresearch, and Oinsure are all settled with SEL. The deposits paid by the settled merchants and mutual assistance must be in the form of SEL.",
+        "zh": "STEMC干细胞医疗生态平台，以下简称STEMC干细胞平台，是基于区块链技术的以生物细胞学为基础科学的智慧医疗平台。通过Oread、Otrade、Oeducation、Oresearch、Oinsure五个功能模块为用户、医疗机构、科研机构及行业周边的第三方提供服务。其中Oinsure模块，是STEMC为了进一步改善干细胞治疗所面临的短板，按照“一人患病，众人均摊”的设计，创造了一个互帮互助的社群，打造高性价比、普惠性、可传承、无地域限制的“全球通”互助医疗保险。在STEMC生态中，所有商品的价值均用SEL来度量。Oread、Otrade、Oeducation、Oresearch、Oinsure五个功能模块中的交易均用SEL来结算。所有入驻商户缴纳的保证金，互助等需要用SEL作为通证。"
+  },
+  "email": "support@stemc.ltd",
+  "website": "http://www.stemc.ltd/",
+  "whitepaper": "http://www.stemc.ltd/stemcwhitepaperz.pdf",
+  "state": "LOCKED",
+  "published_on": "2019-06",
+  "initial_price": {
+      "BTC": "0.000000823 BTC",
+      "USD": "0.008429 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/STEMC11041000",
+    "telegram": "https://t.me/stemcvip"
+  }
+}

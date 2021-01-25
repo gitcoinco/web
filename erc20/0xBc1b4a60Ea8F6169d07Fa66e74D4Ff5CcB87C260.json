@@ -1,0 +1,19 @@
+{
+  "symbol": "ELS",
+  "address": "0xBc1b4a60Ea8F6169d07Fa66e74D4Ff5CcB87C260",
+  "overview":{
+        "en": "ETPlan is based on the application of the block chain technology, the birth of decentralized global Buddhist culture-related digital communication. It can effectively break through the barriers of related industries, realize the communication and exchange of the globalization of Buddhist culture and realize the global circulation of the certificate of Buddhist culture-related industries through the low-level technology of weak centralization, openness and transparency, distributed bookkeeping and global convenient trading channels.",
+        "zh": "ETPlan是基于区块链技术应用而诞生的去中心化全球佛教文化相关领域数字通证。它能有效打通相关产业壁垒，通过弱中心化、公开透明、分布式记账的底层技术及全球性的便捷交易途径，实现佛教文化全球化的传播交流，实现佛教文化相关产业通证的全球流通。"
+  },
+  "email": "etplan@etplan.org",
+  "website": "https://etplan.org/",
+  "whitepaper": "https://etplan.org/ELS%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-10-22",
+  "initial_price":{
+  	  "ETH":"0.002 ETH",
+      "USD":"1.5 USD"
+  },
+  "links": {
+  }
+} 

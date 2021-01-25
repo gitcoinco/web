@@ -1,0 +1,15 @@
+{
+  "symbol": "TAUC",
+  "address": "0xd0F12A5D6D74c92E0600ce4274AC19Ec6E7fE6AE",
+  "overview":{
+    "zh": "Taurus是一个点对点的数字交易平台，为企业提供了与以往中心化交易(如支付宝等第三方平台)全然不同的解决方案。Taurus基于区块链技术，数据交易双方可以直接进行点对点的数据交易和交换，拥有不缓存数据、保护隐私和数据 版权、遏制造假等优势。"
+  },
+  "email": "Taurus66688@gmail.com",
+  "website": "http://www.tauccoin.com/",
+  "state": "NORMAL",
+  "published_on": "2019-10-07",
+  "links": {
+    "twitter": "https://twitter.com/Taurustoken",
+    "telegram": "https://t.me/imTokenGroup"
+  }
+}

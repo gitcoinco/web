@@ -1,0 +1,12 @@
+{
+  "symbol":"WTCC",
+ "address":"0x7A0E227B009E27Fa68ffAb9Ff8DBCFCCA6FB571B",
+ "overview":{"en":"WTCC is a kind of community stable token with convenient payment developed by world chain team. Its purpose is to improve the efficiency of international trade.",
+             "zh":"WTCC是World Chain团队开发的一种便捷支付的社区稳定型代币，宗旨在于提高国际贸易的效率。"
+            },
+ "email":"nihaowsc@gmail.com",
+ "website":"http://www.okwtcc.com/",
+ "whitepaper":"http://www.okwtcc.com/wtcc.pdf",
+ "state": "NORMAL",
+ "published_on":"2019-10-24"
+}

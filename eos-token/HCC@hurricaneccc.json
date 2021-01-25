@@ -1,0 +1,20 @@
+{
+    "symbol": "HCC",
+    "account_name": "hurricaneccc",
+    "overview": {
+        "en": "Hurricane Chain An underlying infrastructure for distributed data storage,processing,and application development."
+    },
+    "email": "support@hcc.fund",
+    "website": "https://hcc.fund/",
+    "whitepaper": "https://hcc-1255754479.cos.ap-hongkong.myqcloud.com/Hurricane%20chain%20whitepaper%20V1.0-EN.pdf",
+    "published_on": "2019-05-20",
+    "initial_price": {
+        "EOS": "0.0621 EOS",
+        "USD": "0.29 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ChainHurricane",
+        "telegram": "https://t.me/hccfund",
+        "github": "https://github.com/hccadmin1213/token-profile"
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "symbol": "GPO",
+  "address": "0x5CF501E64786444E025C5b24025f98399538ea5d",
+  "overview":{
+        "en": "GalaxyPool(GPO) are committed to building the largest, most stable, efficient and productive storage pools in Asia and even the world.",
+        "zh": "银河矿池致力于构建分布于亚洲乃至全球最大最稳定、高效、高产的存储矿池。"
+  },
+  "email": "postmaster@galaxypool.top",
+  "website": "https://galaxypool.top/",
+  "whitepaper": "https://galaxypool.top/GPO_whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-12-13",
+  "initial_price":{
+        "USD":"0.035USD"
+  },
+  "links": {
+    "twitter": "https://mobile.twitter.com/0qPG6qUTmS72SC4",
+    "github": "https://github.com/moonbeamwang/galaxypool",
+  }
+}

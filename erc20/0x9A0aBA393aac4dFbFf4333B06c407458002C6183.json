@@ -1,0 +1,24 @@
+{
+    "symbol": "AC",
+    "address": "0x9A0aBA393aac4dFbFf4333B06c407458002C6183",
+    "overview":{
+          "en": "The AC token serves as the fundamental driver for community governance by incentivizing stakeholders for participation and sound decision making. Ecosystem incentives are designed to compensate users and community Governors for their efforts on driving growth, stability and sustainability of the acBTC ecosystem. ",
+          "zh": "AC 代币作为治理代币，用于激励社区人员参与并作出高效决策来进行社区治理。生态系统奖励旨在嘉奖用户和社区管理者为推动acBTC 生态系统的发展、稳定和可持续性方面所作出的贡献。"
+    },
+    "email": "hello@nuts.finance",
+    "website": "https://acbtc.fi/",
+    "whitepaper": "",
+    "state": "NORMAL",
+    "published_on": "2020-10-01",
+    "initial_price":{
+          "USD":"1 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/NUTSFinance/",
+      "telegram": "https://t.me/NUTS_Finance/",
+      "github": "https://github.com/nutsfinance/acBTC",
+      "discord": "https://discord.com/invite/mvANFYe/",
+      "medium": "https://medium.com/nuts-foundation"
+    }
+  }
+

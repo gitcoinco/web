@@ -1,0 +1,10 @@
+{
+  "symbol": "YLB",
+  "address": "0x7f3630ce620FD15DE7367207dBFfB085a3F7d118",
+  "overview":{
+    "en": "YLB consists of data layer,networlayer,consensus layer,incentive layer, contract layer and application layer.",
+    "zh": "幽灵链链系统由数据层、网络层、共识层、激励层、合约层和应用层组成"
+  },
+  "website": "http://ylb.qjkqm.cn/",
+  "whitepaper": "http://ylb.qjkqm.cn/YLB-white-paper.pdf"
+}

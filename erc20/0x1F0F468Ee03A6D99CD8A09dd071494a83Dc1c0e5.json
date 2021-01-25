@@ -1,0 +1,19 @@
+{
+  "symbol": "SAT",
+  "address": "0x1F0F468Ee03A6D99CD8A09dd071494a83Dc1c0e5",
+  "overview":{
+        "en": "SmartX is a decentralized social entertainment platform powered by blockchain technology. By using a blockchain network to resolve the issue of centralization, while ensuring that performance is not bottlenecked by token circulation, SmartX links social entertainment service providers and users around the world and uses social entertainment as a gateway to build a trustworthy and secure social entertainment ecosystem of the future.",
+        "zh": "SmartX 是基于区块链的去中心化社交娱乐平台。通过区块链网络解决中心化问题的同时让性能不在成为代币流通的瓶颈，链接全球社交娱乐服务商与用户，以社交娱乐为切入口构建基于可信任并且安全的未来社交娱乐生态。"
+  },
+  "email": "social@smartx.one",
+  "website": "https://smartx.one",
+  "whitepaper": "https://smartx.one/Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-01",
+  "links": {
+    "twitter": "https://twitter.com/SmartXOne",
+    "telegram": "https://t.me/smartx_en",
+    "github": "https://github.com/smartx-core",
+    "facebook": "https://www.facebook.com/SmartX.OneOfficial/"
+  }
+}

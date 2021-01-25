@@ -1,0 +1,26 @@
+{ 
+ "symbol": "DIMT", 
+ "address": "0x81246a3F5fab7Aa9f4F625866105F3CAfFc67686", 
+ "overview":{ 
+ "en": "DIM is an open source project of decentralized instant messaging protocol, as well as the name of the open communication platform built on top of this protocol. DIM has a wide usage from building a social network product, exchanging data between blockchains or enterprises, to bridging programs in Internet of Things. This is achieved by combining many innovations, such as asymmetric cryptography, extensible and high-performance service nodes, and the address naming service. DIM is the new generation of communication standard to drive the future internet.", 
+ "zh": "DIM是一个开源的去中心化即时通讯协议，也是一个由众多服务提供商共同构建的开放的通讯平台。其协议框架在国内亦称作“点讯”。 DIM的应用前景十分广阔，不仅可以作为社交产品的搭建基础，也可以做成跨链、跨企业的数据交换工具，还可以应用到物联网通讯。DIM结合了众多创新，包括由非对称密码生成的通讯地址、可扩展的通讯节点、以及完全去中心化的地址名称目录，可望成为驱动万物互联的新一代底层通讯技术及网络。" 
+ }, 
+ "email": "contact@dim.chat", 
+ "website": "https://dim.chat/", 
+ "whitepaper": "https://dim.chat/download/whitepaper_en/", 
+ "state": "NORMAL", 
+ "published_on": "2019-08-15", 
+ "initial_price":{ 
+ "ETH":"0.00000912 ETH", 
+ "USD":"0.0017 USD", 
+ "BTC":"0.00000017 BTC" 
+ }, 
+ "links": { 
+ "blog": "https://dim.chat/", 
+ "twitter": "https://twitter.com/32UzcUhdbrdrzZe", 
+ "telegram": "https://t.me/dim_official", 
+ "github": "https://github.com/dimchat", 
+ "facebook": "https://www.facebook.com/DIM-page-102406244517536", 
+ "medium": "https://medium.com/@apisjobs" 
+ } 
+ } 

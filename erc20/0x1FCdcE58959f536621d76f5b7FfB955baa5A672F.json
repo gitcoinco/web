@@ -1,17 +1,23 @@
 {
-    "symbol": "FOR",
-    "address": "0x1FCdcE58959f536621d76f5b7FfB955baa5A672F",
-    "overview": {
-        "en": "The Force Protocol is the infrastructure for distributed cyptofinance, and is a blockchain open platform that provides developers with a one-stop solution.",
-        "zh": "原力协议是分布式加密数字金融服务协议的基础设施，是一个向开发者提供一站式解决方案的区块链开放平台。"
-    },
-    "email": "support@theforceprotocol.com",
-    "website": "https://www.theforceprotocol.com",
-    "whitepaper": "https://theforceprotocol.com/theforceprotocol_whitepaper.pdf",
-    "state": "NORMAL",
-    "published_on": "2018-11-14",
-    "links": {
-        "telegram": "https://t.me/theforceprotocol666",
-        "github": "https://github.com/theforceprotocolgroup"
-    }
+  "symbol": "FOR",
+  "address": "0x1FCdcE58959f536621d76f5b7FfB955baa5A672F",
+  "overview": {
+    "en": "ForTube is the leading global DeFi lending platform launched by The Force Protocol. It is committed to providing decentralized lending services for cryptoasset enthusiasts around the world, supporting most of the world's popular assets. ForTube is based on smart contracts and automated algorithm technology. Users can deposit tokens to earn interest, pledge to borrow tokens and pay interests. ForTube's interest rate is determined by market supply and demand. Assets are controlled by users. ForTube allows users to deposit and withdraw anytime, borrow and repay anytime globally.",
+    "zh": "ForTube是原力协议推出的全球领先的DeFi借贷平台，致力于为全球的加密数字资产爱好者提供去中心化的借贷服务，支持全球绝大部分热门资产。ForTube基于智能合约和自动化算法技术，用户可以存币获得利息，抵押借币支付利息。ForTube的利率由市场供需决定，资产由用户掌握，在全球支持随存随取、随借随还。"
+  },
+  "email": "support@for.tube",
+  "website": "https://for.tube",
+  "whitepaper": "https://for.tube/ForTube_whitepaper_zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-22",
+  "initial_price":{
+    "USD":"0.02 USD"
+  },
+  "links": {
+    "blog": "https://medium.com/@fortube",
+    "twitter": "https://twitter.com/ForTubeFi",
+    "telegram": "https://t.me/theforceprotocol666",
+    "reddit": "https://www.reddit.com/r/The_Force_Protocol/",
+    "github": "https://github.com/thefortube"
+  }
 }

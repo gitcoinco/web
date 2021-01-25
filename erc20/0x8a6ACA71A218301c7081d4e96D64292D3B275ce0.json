@@ -1,0 +1,26 @@
+{
+  "symbol": "SFG",
+  "address": "0x8a6ACA71A218301c7081d4e96D64292D3B275ce0",
+  "overview":{
+        "en": "Stable Finance Governance Token",
+        "zh": "S.finance治理代币"
+  },
+  "email": "market@s.finance",
+  "website": "https://s.finance/",
+  "whitepaper": "https://www.yuque.com/docs/share/c760fce0-b6cf-44b9-9ede-b856d7089156",
+  "state": "NORMAL",
+  "published_on": "2020-9-23",
+  "initial_price":{
+        "ETH":"0.00285714 ETH",
+        "USD":"1 USD",
+        "BTC":"0.00009333 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SFinanceEx",
+    "telegram": "https://t.me/SFinanceCN",
+    "github": "https://github.com/s-finance-org/",
+    "yuque": "https://www.yuque.com/mudui/sfin",
+    "discord": "https://discord.gg/rc49Dzu",
+    "medium": "https://medium.com/s-finance"
+  }
+}

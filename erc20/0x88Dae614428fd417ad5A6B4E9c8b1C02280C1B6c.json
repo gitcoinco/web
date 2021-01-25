@@ -1,0 +1,16 @@
+{
+  "symbol": "BSQ",
+  "address": "0x88Dae614428fd417ad5A6B4E9c8b1C02280C1B6c",
+  "overview":{
+        "en": "BlueStone Quant Token ",
+        "zh": "蓝石量化通证"
+  },
+  "email": "service001@bsquant.ai",
+  "website": "https://bsquant.ai/",
+  "whitepaper": "https://bsquant.ai/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-01",
+  "initial_price":{
+        "USD":"0.15 USD"
+  }
+}

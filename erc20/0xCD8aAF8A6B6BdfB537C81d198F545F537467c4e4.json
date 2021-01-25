@@ -1,0 +1,20 @@
+{
+  "symbol": "RBSC",
+  "address": "0xCD8aAF8A6B6BdfB537C81d198F545F537467c4e4",
+  "overview":{
+    "en": "RBSC is a digital pass that circulates in the blockchain health industry platform.",
+    "zh": "RBSC是流通于区块链大健康产业平台的一种数字通行证。"
+  },
+  "email": "rbscchain@gmail.com",
+  "website": "http://www.rbscchain.com",
+  "whitepaper": "http://www.rbscchain.com/static/RBSC-WhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-20",
+  "initial_price":{
+    "USD":"1 USD"
+  },
+  "links": {
+    "github": "https://github.com/RBSC-2019",
+    "facebook": "https://www.facebook.com/vc.rbsc.7"
+  }
+}

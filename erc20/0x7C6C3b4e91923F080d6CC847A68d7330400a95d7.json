@@ -1,0 +1,19 @@
+{
+  "symbol": "UNDT",
+  "address": "0x7C6C3b4e91923F080d6CC847A68d7330400a95d7",
+   "overview":{
+        "en": "UNDT (Union Network Dollar Token) is an encrypted currency with price stability. It is linked to the value of US dollar and issued by pledging stable currency assets under UNIONDAO agreement.It belongs to the stable assets on the chain and is a kind of dollar digital unit.",
+        "zh": "UNDT（Union Network Dollar Token）是一种具有价格稳定特性的加密货币，与美元价值挂钩，在UNIONDAO协议下通过质押稳定币资产而发行。属于链上资产担保型稳定资产，是一种美元数字单位。"
+  },
+  "email": "foundation@uniondao.com",
+  "website": "https://uniondao.com",
+  "whitepaper": "https://uniondao.com/uniondao-whitepaper-zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-02",
+  "initial_price":{
+        "USD":"1.0 USD"
+  },
+  "links": {
+    "github": "https://github.com/uniondao"
+  }
+}

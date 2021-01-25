@@ -1,0 +1,21 @@
+{
+  "symbol": "SDU",
+  "address": "0xF24daa2911edf5F0E03AB520704091aB69B8225b",
+  "overview":{
+        "en": "SDU is a pass of the Six Dimention Universe game. There is no pre-excavation in advance, and it is automatically airdropped to players in the form of fee refund, and can be freely circulated in the secondary market. ",
+        "zh": "SDU是六度宇宙游戏通证，没有前期预挖，以手续费返还形式自动空投给玩家，可自由在二级市场流通。"
+  },
+  "email": "developer@6du.one",
+  "website": "https://www.6du.one/",
+  "whitepaper": "https://www.6du.one/books/whitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-01-01",
+  "initial_price":{
+        "ETH":"0.00068ETH",
+        "USD":"0.007USD",
+        "BTC":"0.0000042BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/SixDimentionUniverse"
+  }
+}

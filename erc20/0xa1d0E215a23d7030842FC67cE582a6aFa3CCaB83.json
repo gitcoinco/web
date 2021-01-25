@@ -1,0 +1,25 @@
+ 
+{
+    "symbol": "YFII",
+    "address": "0xa1d0E215a23d7030842FC67cE582a6aFa3CCaB83",
+    "overview":{
+          "en": "YFII Finance is a community-owned DeFi infrastructure where its users determine what products they want and enjoy the yields. It's permissionless for all the people to join. Currently it has two pools that yield YFII tokens as well as CRV and possibly BAL rewards. The killer product of YFII is the Vault which allows retail investors to enjoy the highest APR for yield farming with just one click.",
+          "zh": "YFII是由社区依据YIP-8提案对YFI进行分叉的创新项目，旨在通过减半挖矿机制进行更公平的代币分发。从创世至今，经社区的共同努力和探索，YFII开发出了一系列新的业务模式，其中机枪池(Vault)产品最受DeFi用户欢迎，任何人无需许可即可加入机枪池进行农耕(Yield Farming)，由YFII社区投票选择收益最高的耕种策略，并由智能合约自动完成作物收获。YFII的愿景是成为一个由社区拥有、社区驱动并为普通人服务的去中心化金融基础设施。"
+    },
+    "email": "N/A",
+    "website": "https://dfi.money/",
+    "whitepaper": "https://docs.yfii.finance/",
+    "state": "NORMAL",
+    "published_on": "2020-07-27",
+    "initial_price":{
+          "ETH":"0.32 ETH",
+          "USD":"100 USD",
+          "BTC":"0.0098 BTC"
+    },
+    "links": {
+      "twitter": "https://twitter.com/DfiMoney",
+      "telegram": "https://t.me/yfiifinance",
+      "github": "https://github.com/yfii",
+      "medium": "https://medium.com/@dfi.money"
+    }
+  }

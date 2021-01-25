@@ -1,0 +1,21 @@
+{
+  "symbol": "SVT",
+  "account_name": "svt.best",
+  "overview": {
+    "en": "SVT is a Spinach chain travel platform that has invested heavily in various blockchain exchanges to decentralize the consensus society's full ecological future cryptocurrency.",
+    "zh": "SVT是Spinach链游平臺斥鉅資在各大區塊鏈交易所上架，去中心化共识社会全生态未来加密货币。"
+  },
+  "email": "Chestnut0@protonmail.com",
+  "website": "https://dappspinach.com/dapp/index.html",
+  "whitepaper": "https://dappspinach.blob.core.windows.net/download/DappSpinach.pdf",
+  "published_on": "2019-10-13",
+  "initial_price": {
+    "EOS": "0.3000 EOS",
+    "USD": "1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SVTbest1",
+    "telegram": "https://t.me/joinchat/NiZsOxWXLN8o7liUzGtJrg",
+    "github": "https://github.com/spinach-dapp"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "ROC",
+  "address": "0x92ad813bb975135336dF14C0a043fFAd0aab168f",
+  "overview":{
+        "en": "ROCKET aims to create the first e-sports vertical public chain, dedicated to the establishment of a decentralized ecological and industrial chain, reshaping the business model and operation of the industry. Create a completely open, ROCKET -19 - transparent and fair game ecosystem for developers, players, and participants. ROCKET has a clear and clear strategic plan for the target industry.",
+        "zh": "ROCKET旨在打造首个电子竞技垂直区块链，致力于建立去中心化的生态和产业链条，重塑产业的商业模式和运作方式。为开发者、玩家、参与方建立一个完全公开透明公平公正的游戏生态。同时，ROCKET还是一个立足于电竞+娱乐直播产业的去中心化解决方案，可针对各项竞技赛事、电竞网剧、所有电竞玩家、电竞明星、直播平台、电竞真人秀、跨境合作者等所共同打造的一个生态系统。其核心是一套基于区块链技术的去中心化的账号和预测系统，使用ROC为结算代币，打造一个在各个项目中流通的数字代币，以此连接各层级之间的用户关系，形成一个新型的区块链生态。 "
+  },
+  "email": "rocket201900@yahoo.com",
+  "website": "https://rocketchain.org",
+  "whitepaper": "https://rocketchain.org/files/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-27",
+  "initial_price":{
+        "USD":"0.01 USD"
+  },
+  "links": {
+    "blog": "https://rocketchain.org/newsList.html?lg=0"
+  }
+}

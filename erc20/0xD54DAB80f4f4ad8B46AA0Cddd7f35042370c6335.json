@@ -1,0 +1,16 @@
+{
+    "symbol": "MAC",
+    "address": "0xD54DAB80f4f4ad8B46AA0Cddd7f35042370c6335",
+    "overview": {
+        "en": "MAC chain makes use of the non-tampering and decentralization of block chain data to realize the traceability of commodities and eradicate the problem of fake and inferior commodities in the process of commodity circulation. Every commodity, transaction and comment is recorded in the blockchain ledger, which is open, true and transparent. We call this new block chain e-commerce-chain business! On the chain business platform, users and users are a node, linked together to form a community. The MAC chain of the node can be calculated as a measurement system by comprehensively evaluating the index of credit, manpower and computing power of the node. Compared with traditional e-commerce, on the chain retail platform, users' shopping, promotion, investment and other behaviors can be motivated by MAC chain. MAC chain on behalf of the user to hold the number of the platform's equity, chain stock dual holding, chain stock with the right!",
+        "zh": "MAC链，利用区块链数据不可篡改和去中心化等特质，实现商品的溯源，根除商品流转过程中的假冒伪劣问题。每件商品、每笔交易、每个评论都以区块链账本记录，公开、真实、透明。我们把这种新型的区块链电商称之为--链商！链商平台上，用户和用户之间都是一个节点，链接在一起，形成社群。通过综合评价节点的信用、人力、算力等指标，可计算出节点的MAC链作为度量体系。与传统电商相比，在链商零售平台上，用户购物、 推广、投资等行为都能获得MAC链激励。MAC持链量又代表用户持有平台的股权数量，链股双持，链股同权！"
+    },
+    "website": "http://www.mac-world.online",
+    "whitepaper": "http://www.mac-world.online/mac/mac.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-05",
+    "links": {
+        "telegram": "",
+        "github": ""
+    }
+}

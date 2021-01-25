@@ -1,0 +1,15 @@
+{
+    "symbol": "RCT",
+    "address": "0xe9f1c9b407c0ec1E3Fe67b5ebfF195e7Da77B887",
+    "overview": {
+        "zh": "睿支链是一种双通证模态的底层公链，主要服务于艺术品、奢侈品、文物、古董等贵重物品的验真、防伪、交易和交割。通过区块链完成信息采集、录入、溯源等工作，促进高净值商品的流通。"
+    },
+    "email": "billwood4943@gmail.com",
+    "website": "http://www.risechaintoken.com",
+    "whitepaper": "http://www.risechaintoken.com/img/risewp.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-23",
+    "initial_price": {
+        "USD": "0.01 USD"
+    }
+}

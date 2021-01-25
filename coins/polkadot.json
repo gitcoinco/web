@@ -1,0 +1,19 @@
+{
+  "symbol": "DOT",
+  "address": "polkadot",
+  "overview":{
+        "en": "It consists of many parachains with potentially differing characteristics which can make it easier to achieve anonymity or formal verification. On approximately August 21st at 13:15 UTC (block number 1,248,328), the DOT token will undergo a redenomination from its original sale. The New DOT balance will be 100x higher than your DOT (old) and the New DOT price will be 100x lower. So, your wallet will show the following two tokens: 1) First, you will see DOT (old) token which is the earlier DOT; 2) Later, after block 1,248,328, your wallet shows New DOT which is now 100x bigger with the same total $ value.",
+        "zh": "Polkadot是一个由多条区块链，异构组成的区块链集合。大约在新加坡时间 8 月 21 日 21:15，波卡区块高度 1,248,328，波卡官方将拆分 DOT 面额至原来的 100 倍。这将与其原始销售时有所不同，为了帮助大家区分变更前后的代币，社区统一采用 DOT (old) 和 New DOT 来标记。1) DOT (old) 代表当前 DOT 还未完成面值变更；2) New DOT 代表当前 DOT 已完成面值变更。"
+  },
+  "email": "hello@polkadot.network",
+  "website": "https://polkadot.network",
+  "whitepaper": "https://polkadot.network/Polkadot-lightpaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-31",
+  "links": {
+    "twitter": "https://twitter.com/polkadotnetwork",
+    "telegram": "https://t.me/PolkadotOfficial",
+    "github": "https://github.com/polkadot-io/polkadotpaper",
+    "reddit": "https://www.reddit.com/r/polkadot_market/",
+  }
+}

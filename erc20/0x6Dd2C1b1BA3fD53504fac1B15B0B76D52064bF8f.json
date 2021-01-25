@@ -1,0 +1,26 @@
+{
+  "symbol": "BGM",
+  "address": "0x6Dd2C1b1BA3fD53504fac1B15B0B76D52064bF8f",
+  "overview":{
+        "en": "BGM Digital virtual city Block Game City Token.",
+        "zh": "BGM 数字虚拟城市布洛克娱乐城通证."
+  },
+  "email": "admin@blockgame.one",
+  "website": "http://blockgame.one/",
+  "whitepaper": "http://blockgame.one/bgmpaper.pdf", 
+  "published_on": "2020-03-23",
+  "initial_price":{
+        "ETH":"0.00002 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/tDeLgW3L3IlHsgk",
+    "telegram": "https://t.me/blockgameone",   
+    "facebook": "https://www.facebook.com/blockgameone2020"   
+  }
+}
+
+
+
+
+
+

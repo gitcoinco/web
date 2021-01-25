@@ -1,0 +1,25 @@
+{
+    "symbol": "VERK",
+    "address": "0xb6B82b314809261E665711D738A1e2d84f173b5b",
+    "overview": {
+        "en": "The primary goal of BitVerk® is to create a leverage capable on-chain swap protocol, which among others supports the world´s first fully decentralized order book and real-time order matching on the Ethereum blockchain."
+    },
+    "email": "support@bitverk.com",
+    "website": "http://www.bitverk.com/",
+    "whitepaper": "https://www.bitverk.com/docWP",
+    "state": "NORMAL",
+    "published_on": "2020-05-25",
+    "links": {
+        "twitter": "https://twitter.com/bitverk",
+        "facebook": "https://www.facebook.com/bitverk",
+        "linkedin": "https://www.linkedin.com/company/bitverk",
+        "telegram": "https://t.me/bitverk",
+        "github": "https://github.com/bitverk",
+        "discord": "https://discord.com/invite/4CRxCUf",
+        "reddit": "https://www.reddit.com/r/bitverk/",
+        "youtube": "https://www.youtube.com/channel/UCrdCE2kLTmxPNwRRndycNBw",
+        "instagram": "https://www.instagram.com/bitverk",
+        "medium": "https://www.medium.com/bitverk",
+        "slack": "https://bitverk.slack.com"
+    }
+}

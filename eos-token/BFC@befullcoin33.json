@@ -1,0 +1,21 @@
+{
+    "symbol": "BFC",
+    "account_name": "befullcoin33",
+    "overview": {
+        "en": "BFC（BeFullCoin) is the official token of BeFull Community , the world’s largest EOS-based Chinese community.",
+        "zh": "BFC（BeFullCoin)是全球最大的EOS华语社区——BeFull社区的通证"
+    },
+    "email": "befullc@gmail.com",
+    "website": "http://www.befullc.com",
+    "whitepaper": "http://whitepaper.fupin.pro/BeFullWhitePaper-ZH.pdf",
+    "published_on": "2019-03-28",
+    "initial_price": {
+        "EOS": "0.0095 EOS",
+        "USD": "0.052 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BEFULL7/followers",
+        "telegram": "https://t.me/Befull_community",
+        "github": "https://github.com/befullc"
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "symbol": "MXT",
+  "address": "0x6251E725CD45Fb1AF99354035a414A2C0890B929",
+  "overview":{
+        "en": "MixTrust is committed to creating an open, distributed, and decentralized and integrated DeFi ecosystem. It synergizes diverse financial derivatives through the MXT DeFi ecosystem, through distributed networks, smart contracts, cross-chain protocols, and finance.  Dapp tool to build an integrated financial ecological service platform with distributed financial infrastructure and native digital financial services, bringing new value changes to the financial sector and DeFi Finance.  To achieve decentralized digital asset cross-chain transactions and cross-chain mortgage loans, anyone can conduct seamless asset synthesis, cross-chain transactions, cross-chain mortgage loans and governance through the chain.  Provide a more free and safer transaction and mortgage DeFi financial platform for global users and participants, thus creating a new DeFi open financial ecology.",
+        "zh": "MixTrust 致力于打造一个开放式、分布式、去中心化融合的 DeFi 生态体系，将多样性的金融衍生品，通过 MXT DeFi 生态体系下进行协同，通过分布式网络、智能合约、跨链协议、 金融 Dapp 工具，构建以分布式金融基础设施、原生数字金融服务的一体化金融生态服务平台，为金融领域与 DeFi 金融带来全新的价值变革。实现去中心化数字资产跨链交易、跨链抵押借贷，任何人都可以通过链上进行无缝资产合成、跨链交易、跨链抵押借贷与治理。为全球用户与参与者提供一个更自由、更安全的交易、抵押借贷DeFi金融平台，从而打造一个DeFi开放式金融新生态。"
+  },
+  "email": "mixtrust.info@gmail.com",
+  "website": "http://www.mixtrust.exchange/",
+  "whitepaper": "http://www.mixtrust.exchange/uploads/file/200706-0227.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-05-16",
+  "initial_price":{
+        "USD":"0.0043USDT"
+  },
+  "links": {
+    "twitter": "https://twitter.com/MixtrustMXT",
+    "telegram": "https://t.me/Mixtrusteng",
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "symbol": "HD",
+  "address": "0x6ce654aC973D326F89f0685E7459542641410eD9",
+  "overview":{
+        "en": "HubDAO is an ERC-20 token designed for building a Decentralized Financial Autonomous Organization ecosystem"
+  },
+  "email": "contact@hubdao.org",
+  "website": "https://hubdao.org",
+  "whitepaper": "https://hubdao.org/images/HubDAOWP2.1EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-01",
+  "initial_price":{
+    "USD":"0.5 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/hub_dao",
+    "telegram": "https://t.me/hub_DAO_Community",
+    "github": "https://github.com/hub-dao",
+    "medium": "https://medium.com/@Hub_DAO"
+  }
+}
+

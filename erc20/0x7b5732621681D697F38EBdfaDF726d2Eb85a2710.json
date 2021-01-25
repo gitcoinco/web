@@ -1,0 +1,20 @@
+{
+    "website": "https://www.dnasp.io/index",
+    "published_on": "2020-05-27",
+    "links": {
+        "telegram": "https://t.me/DNAsp",
+        "twitter": "https://twitter.com/dna_spiral"
+    },
+    "overview": {
+		"en": "HBO (H-bond) is used for private placement according to the plan 10%, subscribed by Genesis nodes; 5% is used for operation promotion; 10% is held by the foundation; 5% is held by the technology development team; Ecological application and mining.",
+		"cn": "HBO（H-bond）根据规划10%用于私募，由创世节点认购；5%用于运营推广；10%由基金会持有；5%由技术开发团队持有；剩余70%则用于生态应用及挖矿。"
+	},
+    "symbol": "HBO",
+    "initial_price": {
+        "ETH": "0.0004 ETH",
+        "USD": "0.1 USD"
+    },
+        "whitepaper": "https://www.dnasp.io/data/upload/admin/20200529/5ed0cf54bbd05.pdf",
+    "address": "0x7b5732621681D697F38EBdfaDF726d2Eb85a2710",
+    "email": "support@dnasp.io"
+}

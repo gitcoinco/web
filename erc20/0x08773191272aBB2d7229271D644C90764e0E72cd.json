@@ -1,0 +1,15 @@
+{
+  "symbol": "EFT",
+  "address": "0x08773191272aBB2d7229271D644C90764e0E72cd",
+  "overview":{
+        "zh": "EFT是教育培训+区块链技术碰撞结合的产物，是将区块链技术应用于教育培训领域，致力于学习轨迹的溯源，从根本上解决培训、认证、证书造假的问题，从而打造一个贯穿于整个教育领域多场景多生态的、去中心化的分布式落地应用平台。"
+  },
+  "email": "xueyou2015@163.com",
+  "website": "http://www.eft.fund/",
+  "whitepaper": "http://www.eft.fund/edufriend_ecology.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-11-11",
+  "initial_price":{
+        "USDT":"0.1 USDT"
+  }
+}

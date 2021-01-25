@@ -1,0 +1,23 @@
+{
+    "symbol": "OM",
+    "address": "0x2baEcDf43734F22FD5c152DB08E3C27233F0c7d2",
+    "overview": {
+        "en": "MANTRA DAO is a community-governed DeFi platform focusing on Staking, Lending, and Governance. MANTRA DAO leverages the wisdom of the crowd to create a community-governed, transparent, and decentralized ecosystem for web 3.0. Built on Parity Substrate for the Polkadot ecosystem, MANTRA DAO gives financial control back to the people to grow wealth together.",
+        "zh": "MANTRA DAO运用大众的智慧来创建一个社区自主自治管理，透明和去中心化的web3.0生态系统。同时，建立在Parity Substrate上的波卡（Polkadot）生态系统。MANTRA DAO专注于质押和借贷并把金融和控制权归属于大众并共同增长财富。"
+    },
+    "email": "contact@mantradao.com",
+    "website": "https://mantradao.com/",
+    "state": "NORMAL",
+    "whitepaper": "https://mantradao.com/files/MANTRA_DAO_Whitepaper_v1.1.pdf",
+    "published_on": "2020-08-17",
+    "initial_price": {
+        "USD": "$0.07 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/MANTRADAO",
+        "facebook": "https://m.facebook.com/mantradao/",
+        "twitter": "https://twitter.com/MANTRADAO",
+        "github": "https://github.com/Mantradao",
+        "medium": "https://medium.com/@mantradao"
+    }
+}

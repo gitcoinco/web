@@ -1,0 +1,17 @@
+{
+    "symbol": "ABA",
+    "address": "0x3435503b252009477c011b02fBb92BF6d48b94Dc",
+    "overview":{
+          "en": "ABAcoin is a decentralized asset protocol based on the blockchain, which is a cross-chain compatible and decentralized asset protocol.",
+          "zh": "ABAcoin一个基于区块链上分散式资产协议，是一个跨链兼容，分散式的资产协议。"
+    },
+    "email": "abacoinone@gmail.com",
+    "website": "http://www.abacoin.one",
+    "whitepaper": "http://www.abacoin.one/whitepaper-en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-09-16",
+    "links": {
+        "telegram": "https://t.me/abacoinone",
+        "twitter": "https://twitter.com/AAcoinone"
+      }
+}

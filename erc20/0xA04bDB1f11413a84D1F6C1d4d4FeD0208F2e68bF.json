@@ -1,0 +1,27 @@
+{
+  "symbol": "CHEESE",
+  "address": "0xA04bDB1f11413a84D1F6C1d4d4FeD0208F2e68bF",
+  "overview":{
+        "en": "Cheese Bank is an autonomous digital bank based on a decentralized protocol on Ethereum which helps investors to manage asset, including lending, fund management, insurance services etc. Innovative Defi lending service will be launched as the first step.",
+        "zh": "Cheese Bank 是基于以太坊上的一个去中心化协议，用于帮助所有数字货币用户进行资产管理，包括但不局限于借贷、理财、合成资产等资管服务的去中心化自治数字银行。Cheese Bank 将从Defi借贷开始革命性实践，发布创新的Cheese借贷协议。"
+  },
+  "email": "marketing@cheesebank.io",
+  "website": "https://cheesebank.io/",
+  "whitepaper": "https://docs.cheesebank.io/",
+  "state": "NORMAL",
+  "published_on": "2020-09-30",
+  "initial_price":{
+        "ETH":"0.00134 ETH",
+        "USD":"0.5 USD"
+  },
+  "links": {
+    "blog": "",
+    "twitter": "https://twitter.com/CheeseBank2020",
+    "telegram": "",
+    "github": "https://github.com/cheese-bank",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": "https://medium.com/@cheesebank2020"
+  }
+}

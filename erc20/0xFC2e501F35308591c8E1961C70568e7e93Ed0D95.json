@@ -1,0 +1,17 @@
+{
+    "symbol": "GGL",
+    "address": "0xFC2e501F35308591c8E1961C70568e7e93Ed0D95",
+    "overview":{
+          "en": "The silicon valley chain aims to build a next-generation blockchain platform with artificial intelligence capability, which provides AIaaS service for DApp of each blockchain network, so that DApp of each blockchain network can have artificial intelligence capability, and DBot ecology of silicon valley chain network can flourish.",
+          "zh": "硅谷链旨在构建具备人工智能能力的下一代区块链平台，该平台提供人工智能即服务(AIaaS)，为各个区块链网络的DApp服务，使各个区块链网络的DApp具备人工智能能力，使硅谷链网络的DBot生态繁荣。"
+    },
+    "email": "postmaster@guigulian.com",
+    "website": "http://www.guigulian.com/",
+    "whitepaper": "http://www.guigulian.com/templet/qukuai/img/gglwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-26",
+    "links": {
+        "blog": "https://weibo.com/GGLOfficialGroup",
+        "facebook": "https://www.facebook.com/GGLOfficialGroup"
+      }
+}

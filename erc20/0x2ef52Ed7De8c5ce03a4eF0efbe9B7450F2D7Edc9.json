@@ -1,0 +1,23 @@
+{
+    "symbol": "REV",
+    "address": "0x2ef52Ed7De8c5ce03a4eF0efbe9B7450F2D7Edc9",
+    "overview": {
+        "en": "Revain is blockchain-based review platform. Since 2018 we accumulated the biggest number of user feedback on crypto on the Internet.",
+        "zh": "Revain是基于区块链的评论平台。 自2018年以来，我们在互联网上积累了大量区块链项目的用户反馈。"
+    },
+    "email": "contact@revain.org",
+    "website": "https://revain.org/",
+    "whitepaper": "https://revain.org/assets/en-wp.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-08-21",
+    "initial_price": {
+        "USD": "0.04 USD",
+        "BTC": "0.000011 BTC"
+    },
+   "links": {
+        "telegram": "https://t.me/revainofficial",
+        "twitter": "https://twitter.com/Revain_org",
+        "github": "https://github.com/Revain/REVETHToken",
+        "facebook": "https://www.facebook.com/revain.org/"
+    }
+ }

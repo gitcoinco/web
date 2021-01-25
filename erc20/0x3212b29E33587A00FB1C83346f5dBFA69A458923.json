@@ -1,0 +1,19 @@
+{
+  "symbol": "imBTC",
+  "address": "0x3212b29E33587A00FB1C83346f5dBFA69A458923",
+  "overview":{
+        "en": "The Interest Bearing Bitcoin",
+        "zh": "持币生息的比特币"
+  },
+  "email": "support@tokenlon.im",
+  "website": "https://gto.tokenlon.im/imbtc",
+  "state": "NORMAL",
+  "published_on": "2019-11-01",
+  "initial_price":{
+        "BTC":"1 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/tokenlon",
+    "medium": "https://medium.com/@tokenlon"
+  }
+}

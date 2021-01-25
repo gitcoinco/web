@@ -1,0 +1,28 @@
+{
+  "symbol": "JOB",
+  "address": "0xdfbc9050F5B01DF53512DCC39B4f2B2BBaCD517A",
+  "overview":{
+        "en": "Jobchain is an ecosystem that enables anybody to find jobs or hire personnel anytime, anywhere while earning salary in cryptocurrency.",
+        "es": "Jobchain es un ecosistema que permite encontrar trabajo y contratar a cualquier persona, en cualquier momento, y en cualquier lugar, y percibir el salario en cryptomonedas.",
+        "de": "Jobchain ist eine auf der Blockchain basierende Plattform, die es jedem und jeder ermöglicht Jobs zu finden, oder gezielt Personal anzuwerben. Werde in Kryptowährung ausbezahlt, jederzeit und überall.",
+        "ru": "Jobchain - это экосистема, построенная на блокчейне, которая позволит любому найти работу или нанять персонал в любое время и в любом месте, зарабатывая зарплату в криптовалюте."
+  },
+  "email": "contact@jobchain.com",
+  "website": "https://www.jobchain.com",
+  "whitepaper": "https://www.jobchain.com/Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-01-23",
+  "initial_price":{
+        "USD":"0.00001 USD",
+        "BTC":"0.00000001 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/jobchain",
+    "telegram": "https://t.me/JobchainOfficial",
+    "facebook": "https://www.facebook.com/JobchainOfficial/",
+    "reddit": "https://www.reddit.com/r/Jobchain/",
+    "discord": "https://discord.gg/jb6rFgE",
+    "instagram": "https://www.instagram.com/jobchain",
+    "linkedin": "https://www.linkedin.com/company/JobchainOfficial"
+  }
+}

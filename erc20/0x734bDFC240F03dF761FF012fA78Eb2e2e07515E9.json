@@ -1,0 +1,27 @@
+{
+    "symbol": "prot",
+    "address": "0x734bDFC240F03dF761FF012fA78Eb2e2e07515E9",
+    "overview":{
+          "en": "PROT is a crypto currency that is distributed open source for privacy. PROT aims to maintain transmission between each other and to support fast transactions that are checked within seconds by the master nodes without going through unnecessary several steps, such as the formation of blocks. The network of PROT is a very large network vertically with high availability, high data reliability. Also continuous scale-up is possible."
+    },
+    "email": "teamprot@protonmail.com",
+    "website": "https://prot-dev.com/",
+    "whitepaper": {
+        "korean" : "https://prot-dev.com/docs/PROT_whitepaper.pdf?ver=1.4",
+        "english" : "https://prot-dev.com/docs/PROT_whitepaper_eng.pdf?ver=1.4"
+    },
+    "state": "NORMAL",
+    "published_on": "2020-02-12",
+    "initial_price":{
+          "ETH":"0.00130811 ETH",
+          "USD":"0.32 USD"
+    },
+    "links": {
+        "Telegram"  : "https://t.me/PROTMasterNodechat",
+        "Facebook"  : "https://www.facebook.com/PROTmasternode/",
+        "Instagram" : "https://www.instagram.com/prot_masternode/",
+        "twitter" : "https://twitter.com/PROTmasternode",
+        "youtube" : "https://www.youtube.com/channel/UCdXpwFNBVX_I8aY_PUKKQTQ",
+        "medium"  : "https://medium.com/@PROTMASTERNODE",
+    }
+  }

@@ -1,0 +1,23 @@
+{
+  "symbol": "GOF",
+  "address": "0x488E0369f9BC5C40C002eA7c1fe4fd01A198801c",
+  "overview":{
+        "en": "Golff is positioned as a one-stop services encrypted bank, committed to creating a light, open and free financial world. GOF is the only governance token in the Golff DeFi open financial system, which has 100 million. The profits generated from commissions, handling fees, and management fees in all products within the Golff System will be used to repurchase GOF in the secondary market. Also, holding GOF can participate in liquidity mining within the Golff system. In terms of governance, Golff is a new financial world that requires a large number of users to participate in the construction. Therefore, GOF holders need to govern together to determine the expansion and growth of the system. Vote to determine liquidity mining parameters, product conversion, behavioral incentive parameters, token economic model parameters, etc.",
+        "zh": "Golff定位于一站式加密银行，致力于打造轻量、开放、自由的金融世界。GOF是Golff DeFi开放金融体系中的唯一治理代币，总量为一亿枚。GOF持有者在有权参与治理的同时还可以共享平台利润。Golff 开放金融体系内的所有产品中的佣金、手续费和管理费等产生的利润都会在二级市场回购GOF。此外，持有GOF还可以参与Golff 体系内的流动性挖矿。在治理方面，Golff是一个需要庞大用户共同参与去搭建的新型金融世界，因此需要持币者共同治理决定这一体系的扩张与成长。GOF持币者可通过质押参与投票决定流动性挖矿参数、产品迭代、行为激励参数、代币经济模型参数等。"
+  },
+  "email": "contact@golff.finance",
+  "website": "https://golff.finance/",
+  "whitepaper": "https://golff.finance/papers/Golff_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-07",
+  "initial_price": {
+    "USD": "0.6 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/GolffProtocol",
+    "telegram": "https://t.me/GolffProtocol",
+    "reddit": "https://www.reddit.com/user/GolffProtocol",
+    "github": "https://github.com/golff-protocol",
+    "medium": "https://medium.com/@GolffProtocol"
+  }
+}

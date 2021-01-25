@@ -1,0 +1,26 @@
+{
+  "symbol": "ODE",
+  "address": "0x46a295e4D5aafbF926Cb0CF2df2c1b00CceB7D0E",
+  "overview":{
+        "en": "",
+        "zh": "ODE（Origin Digital Ecology）-起源，致力于服务未来“加密数字经济社会”，激活“百亿规模庞大市场”，以数字经济的时代发展理念和区块链领先的分布式存储、加密传输、点对点交易、数据上链等前沿技术为切入点，推动传统产业，企业及个体的转型链改步伐。"
+  },
+  "email": "odeex@protonmail.com",
+  "website": "www.odeex.plus",
+  "whitepaper": "www.odeex.plus/ODEEX_WHITEPAPER.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-08-10",
+  "initial_price":{
+        "USDT":"1 USDT",  
+  },
+  "links": {
+    "blog": "",
+    "twitter": "",
+    "telegram": "",
+    "github": "",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}

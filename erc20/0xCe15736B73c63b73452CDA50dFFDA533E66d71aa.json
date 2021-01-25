@@ -1,0 +1,20 @@
+{
+  "symbol": "BACC",
+  "address": "0xCe15736B73c63b73452CDA50dFFDA533E66d71aa",
+  "overview":{
+    "en": "BACC is a decentralized content community based on POA consensus mechanism. Make full use of the advantages and characteristics of block chain and AI technically, through intelligent screening and promotion of high-quality content for users, and ultimately return the rights and interests of content ownership, revenue rights, contribution to the community to users, so as to realize the promotion of personal benefits and the fission of influence. The goal of BACC is to integrate industry resources such as global content carriers, opinion leaders, communities and institutions, to build a high-quality content community ecosystem through block chains and AI technology, to introduce users and to transform them into a large user community according to their interpersonal relationships, and to build a sustainable development ecosystem.",
+    "zh": "BACC是一个基于POA共识机制的去中心化内容社区。在技术上充分利用区块链和AI的优势和特点，通过为用户智能筛选和推送优质内容，最终将内容的所有权、收益权，对社区的贡献等权益回归用户，实现个人收益的提升及影响力的裂变。BACC 的目标是整合全球内容载体、意见领袖、社群、机构等行业资源， 通过区块链和AI技术构建优质内容社区生态，引入用户并根据用户人际关系裂变形成庞大用户社群，构建永续发展的生态系统。"
+  },
+  "email": "blockchainacc18@gmail.com",
+  "website": "http://bacc.work/",
+  "whitepaper": "http://bacc.work/BACC%E7%99%BD%E7%9A%AE%E4%B9%A6V1.0-0825.pdf?v=1",
+  "state": "NORMAL",
+  "published_on": "2019-08-13",
+  "initial_price":{
+    "USD":"0.003 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BACC73269457",
+    "facebook": "https://www.facebook.com/profile.php?id=100011268094957"
+  }
+}

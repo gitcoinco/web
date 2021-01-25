@@ -1,0 +1,23 @@
+{
+  "symbol": "AMPL",
+  "address": "0xD46bA6D942050d489DBd938a2C909A5d5039A161",
+  "overview":{
+        "en": "AMPL(Ampleforth) is an independent commodity-money, like Bitcoin or gold, but with near-perfect supply elasticity, like fiat. It is the first sound money with elastic supply.",
+        "zh": "Ampleforth(代码AMPL)是一种全新的加密货币，由于它独特创新的协议机制，让AMPL不仅仅拥有比特币和黄金一样的商品资产类属性，同时拥有代币供应量自身可随市场通胀通缩的特性。"
+  },
+  "email": "info@ampleforth.org",
+  "website": "https://ampleforth.org/",
+  "whitepaper": "https://ampleforth.org/paper",
+  "state": "NORMAL",
+  "published_on": "2019-05-20",
+  "initial_price":{
+  },
+  "links": {
+    "twitter": "https://twitter.com/ampleforthorg",
+    "telegram": "https://t.me/Ampleforth",
+    "github": "https://github.com/ampleforth",
+    "facebook": "https://www.facebook.com/ampleforthprotocol",
+    "reddit": "https://www.reddit.com/r/AmpleforthCrypto/",
+    "medium": "https://medium.com/ampleforth"
+  }
+}

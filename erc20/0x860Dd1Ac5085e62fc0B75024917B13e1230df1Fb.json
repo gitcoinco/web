@@ -1,0 +1,20 @@
+{
+  "symbol": "HCE",
+  "address": "0x860Dd1Ac5085e62fc0B75024917B13e1230df1Fb",
+  "overview": {
+    "en": "The vision of the HCE platform is to combine the blockchain technology to create an innovative digital healthcare ecosystem that combines blockchain with medical big data to address many of the current problems in the medical big data industry. The HCE platform gives users the highest level of authority to manage their own data, allowing users to control their own medical information, including who has access, what information to access and the time limit for access, and the entire process is based on security and transparency. To avoid unauthorized access, use, disclosure,destruction, modification, destructi.",
+    "zh": "HCE 平台的愿景是结合区块链技术建立一个创新数字医疗健康生态，将区块链与医疗大数据进行结合，解决目前医疗大数据行业存在的诸多问题。HCE 平台给予用户最高的权限去管理他们自己的数据，让用户控制自己医疗信息的权限，包括谁能有权限访问，访问什么信息及访问的时限，并且整个流程都建立在安全透明的基础上，以避免受未经授权的访问、使用、披露、破坏、修改、销毁等。更重要的是，在整个过程中，个人隐私将不会被泄漏。"
+  },
+  "email": "contact@hecp.io",
+  "website": "http://hcep.io/index.php",
+  "whitepaper": "http://hcep.io/img/(CN)Health%20Care%20Ecosystem(HCE)Platform_whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-16",
+  "initial_price": {
+    "ETH": "0.0002 ETH",
+    "USD": "0.04 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/imoexchange"
+  }
+}

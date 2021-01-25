@@ -1,0 +1,21 @@
+{
+    "symbol": "FNX",
+    "address": "0xeF9Cd7882c067686691B6fF49e650b43AFBBCC6B",
+    "overview": {
+        "en": "FinNexus is building a suite of open finance protocol clusters that will power hybrid marketplaces trading both decentralized and traditional financial products. The headline product to be released is a fully decentralized bitcoin (and other cryptocurrencies) options model that will live on both Wanchain and Ethereum.",
+        "zh": "FinNexus是指为满足投资多样性、便捷性、以及价值基础三方面需求，运用区块链技术，构建实现资产、用户以及不同的服务商之间的交互的”开放金融连接器”的协议簇；从落地方面我们将衍生品赛道作为重点，并落地于去中心化期权。FinNexus将通过去中心化期权产品和创新的抵押流动池模式以更高的纬度切入赛道，并基于保证金抵押池和围绕FNX的生态价值纠缠设计，逐步开发出更多DeFi衍生品和其他创新型的DeFi金融产品，跻身DeFi衍生品赛道的头部。"
+    },
+    "email": "info@finnexus.io",
+    "website": "https://www.finnexus.io",
+    "whitepaper": "https://github.com/FinNexus/Pdfs/blob/master/FinNexus_Whitepaper_en.pdf",
+    "state": "NORMAL",
+    "links": {
+        "medium": "https://medium.com/finnexus",
+        "github": "https://github.com/FinNexus/",
+        "twitter": "https://twitter.com/fin_nexus",
+        "telegram": "https://t.me/FinNexusOfficial",
+        "facebook": "https://www.facebook.com/FinNexus/",
+        "linkedin": "https://www.linkedin.com/company/finnexus/",
+        "discord": "https://discord.gg/bCDMHN7"
+    }
+}

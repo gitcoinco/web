@@ -1,0 +1,19 @@
+{
+    "symbol": "UNI",
+    "address": "0x2730d6FdC86C95a74253BefFaA8306B40feDecbb",
+    "overview": {
+        "en": "UNI aims to create a non-probable cross-chain environment. It builds the UNI main chain and the Phoenix cross-chain system. The UNI main chain uses the unique consensus algorithm RAFT. Compared with other consensus algorithms, RAFT can adjust the log data update cycle time, which makes RAFT can be adjusted for different application scenarios. TPS. The main chain has a variety of functional modules, enabling user account management, cross-chain asset flashing, and multi-chain wallet management. When the user is playing the main chain DApp, it only needs to exchange the assets of different chains through the flash built in the main chain, switch between different assets without affecting, and play DApps on different public chains.",
+        "zh": "UNI 旨在打造一个无感化的跨链环境。它搭建了UNI主链和Phoenix跨链系统，UNI 主链采用特有的共识算法RAFT， 与其他共识算法相比，RAFT可以调整日志数据更新周期时间，这使得RAFT可以针对不同应用场景可以调整不同的TPS。主链具有多种功能模块，实现了用户账户管理，跨链资产闪兑、多链钱包管理。当用户在玩该主链DApp时，只需要通过主链内置的闪兑兑换不同链的资产，无感化地切换不同资产，以及玩不同公链上的DApp。"
+    },
+    "email": "unicornofficial@foxmail.com",
+    "website": "https://unicorn.cm/",
+    "whitepaper": "https://unicorn.cm/static/Unicorn.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-08-18",
+    "initial_price": {
+        "USD": "0.0008 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/unicorn_unx"
+    }
+}

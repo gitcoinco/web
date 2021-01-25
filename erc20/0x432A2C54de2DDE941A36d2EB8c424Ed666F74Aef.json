@@ -1,0 +1,25 @@
+{
+  "symbol": "MVP",
+  "address": "0x432A2C54de2DDE941A36d2EB8c424Ed666F74Aef",
+  "overview": {
+    "en": "Powered by blockchain technology, Merculet empowering new business models by creating a new generation of efficient growth solutions for enterprises. Merculet enables companies, IPs, and communities to quickly build a system of tokenized operations. By establishing value proposition and community users through unique strategic branding, Merculet enables users to actively participate in the joint construction of enterprises and achieve explosive growth in a legal and compliant manner. Meanwhile, Merculet has established an extensive network of coverage of Internet companies and users through the B2B2C model—bringing new users, budgets and enterprise-level participants—to the blockchain world.",
+    "zh": "Merculet依托区块链技术，为企业打造新一代高效增长解决方案，赋能全新商业形态。Merculet帮助企业，IP，社群迅速搭建通证化运营体系 ，建立独有的品牌价值及用户社群，让用户积极参与企业共建，以合法合规的方式实现爆发式增长。同时，Merculet通过B2B2C的模式，建立起对互联网企业和用户的规模化覆盖，为区块链世界带来全新的用户，预算和企业级参与者。"
+  },
+  "email": "contact@merculet.io",
+  "website": "http://www.merculet.io",
+  "whitepaper": "https://www.merculet.io/static/pdf/Merculet_Whitepaper-EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-28",
+  "initial_price": {
+    "ETH": "0.00001429 ETH",
+    "USD": "0.0093 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Merculet_io",
+    "telegram": "https://t.me/merculet",
+    "github": "https://github.com/merculet",
+    "facebook": "https://www.facebook.com/merculet",
+    "reddit": "https://www.reddit.com/r/Merculet/",
+    "medium": "https://medium.com/merculet"
+  }
+}

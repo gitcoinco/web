@@ -1,0 +1,22 @@
+{
+	"symbol": "SMT",
+	"address": "0x8879976f936019C896Ff1183BeC34D171FbE8cbf",
+	"overview": {
+		"en": "A token for smart medicine,for trade.Drive scientific and technological development."
+	},
+	"email": "smt@smt001.co",
+	"website": "http://www.smt001.co/",
+	"whitepaper": "http://www.smt001.co/whitepaper/SMT-Witmed_EN.pdf",
+	"published_on": "2020-09-15",
+	"initial_price": {
+		"ETH": "0.00166666 ETH",
+		"USD": "0.7 USD",
+		"BTC": "0.00004137 BTC"
+	},
+	"links": {
+		"blog": "https://medium.com/SMT-Witmed",
+		"twitter": "https://twitter.com/SMT-Witmed",
+		"telegram": "https://t.me/joinchat/SMT-Witmed",
+		"github": "https://github.com/prideqx/token-profile"
+	}
+}

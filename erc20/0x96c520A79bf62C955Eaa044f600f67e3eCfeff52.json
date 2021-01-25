@@ -1,0 +1,15 @@
+{
+  "symbol": "LAND",
+  "address": "0x96c520A79bf62C955Eaa044f600f67e3eCfeff52",
+  "overview": {
+    "en": "LAND is the official pass of the LaNd platform, with an initial total of 100 million. Every game under LaNd will destroy LAND during its operation until the total amount of LAND is destroyed to only 10,000.",
+    "zh": "LAND是LaNd平台的官方通证，初始总量为1亿枚，LaNd旗下的每款游戏，在运行过程中都会销毁LAND，直至LAND总量销毁到只剩1万为止。"
+  },
+  "email": "hold@each.land",
+  "website": "https://each.land",
+  "state": "NORMAL",
+  "published_on": "2020-10-14",
+  "links": {
+    "github": "https://github.com/holdeachland"
+  }
+}
