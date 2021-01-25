@@ -1,6 +1,7 @@
 {% load static %}
-<div class="modal" style="color: #212529;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal height-auto" style="color: #212529;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+  <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement.svg'%}" class="achievement-img"/>
+  <div class="modal-dialog modal-lg mb-0" role="document">
     <div class="modal-content" >
       <div class="modal-header border-0">
         <div class="modal-title block text-center">
@@ -74,7 +75,7 @@
       </div>
       <hr class="mx-3 d-none d-lg-block"/>
 
-      <div class="modal-footer border-0">
+      <div class="modal-footer border-0 pb-0">
         <div class="container">
           <h5 class="mx-3 mt-0 d-flex justify-content-center justify-content-md-start">Benefits</h5>
           <div class="row ml-2 benefits" style="color: #757087; font-size: 12pt;">
@@ -186,7 +187,7 @@
   const loadOnboardingModal = () => {
     if (showOnboarding) {
       $('#onboarding_v2').modal('show');
-      $('#onboarding_v2').css({"overflow-y": "scroll"})
+      {% comment %} $('#onboarding_v2').css({"overflow-y": "scroll"}) {% endcomment %}
     }
   }
 

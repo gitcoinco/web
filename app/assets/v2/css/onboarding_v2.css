@@ -38,6 +38,22 @@
   display: block;
 }
 
+.modal {
+  margin-top: 256px;
+}
+
+.height-auto {
+  overflow: visible;
+  height: auto !important;
+}
+
+.achievement-img{
+  position: absolute;
+  top: -206px;
+  width: 128px;
+  right: calc(50% - 64px);
+}
+
 @media only screen and (max-width:960px) {
   .testimonial img {
     height: 64px;
@@ -71,10 +87,6 @@
 
   .benefits>div {
     border: 0 !important;
-  }
-
-  .truncate-lg {
-    text-overflow: ellipsis; overflow: hidden; white-space: nowrap
   }
 
   .testimonial img {
