@@ -1,0 +1,26 @@
+{
+    "symbol": "MATIC",
+    "address": "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+    "overview":{
+      "en": "Used for Transactions on Matic Network, holding Matic allows you to interact and use the plethora of Dapps on Matic, without high gas fees burning a hole in your pocket!",
+       "zh": "用于在Matic网络上进行交易时，持有Matic可以使您在Matic上进行交互和使用过多的Dapps，而无需支付高昂的汽油费，就可以在口袋里挖洞！ Yòng yú zài Matic wǎngluò shàng jìnxíng jiāoyì shí, chí yǒu Matic kěyǐ shǐ nín zài Matic shàng jìnxíng jiāohù hé shǐyòngguò duō de Dapps, ér wúxū zhīfù gāo'áng de qìyóu fèi, jiù kěyǐ zài kǒudài lǐ wā dòng!" },
+    "email": "info@matic.network",
+    "website": "https://matic.network/",
+    "whitepaper": "https://matic.network/matic-litepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-04-24",
+    "initial_price":{
+          "ETH":"0.000015348 ETH",
+          "USD":"0.00263 USD",
+          "BTC":"0.0000004720 BTC"
+    },
+    "links": {
+      "blog": "https://blog.matic.network/",
+      "twitter": "https://twitter.com/maticnetwork",
+      "telegram": "https://t.me/maticnetwork",
+      "github": "https://github.com/maticnetwork",
+      "facebook": "https://www.facebook.com/maticnetwork/",
+      "reddit": "https://www.reddit.com/r/maticnetwork/",
+      "medium": "https://medium.com/matic-network"
+    }
+  }
