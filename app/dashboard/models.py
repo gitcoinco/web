@@ -397,6 +397,7 @@ class Bounty(SuperModel):
         default=False, help_text=_('This bounty will be part of the hypercharged bounties')
     )
     hyper_next_publication = models.DateTimeField(null=True, blank=True)
+    is_pro = models.BooleanField(help_text=_('Is this use upgraded to pro?'))
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
