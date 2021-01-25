@@ -47,14 +47,14 @@ Vue.mixin({
       });
     },
     eventParams: function() {
-      let searchParams = new URLSearchParams(window.location.search);
+      const searchParams = new URLSearchParams(window.location.search);
 
       if (searchParams.has('mutate_worker_action')) {
-        let action = searchParams.get('mutate_worker_action');
-        let product = document.result.event ? 'hackathons' : 'bounties';
-        let productPersona = document.result.event ? 'hackathon' : 'bounty';
-        let persona = this.isOwner ? 'funder' : 'hunter';
-        let mtcPersona = `${productPersona}-${persona}`;
+        const action = searchParams.get('mutate_worker_action');
+        const product = document.result.event ? 'hackathons' : 'bounties';
+        const productPersona = document.result.event ? 'hackathon' : 'bounty';
+        const persona = this.isOwner ? 'funder' : 'hunter';
+        const mtcPersona = `${productPersona}-${persona}`;
         let bountyEvent = {
           'alias': 'products',
           'data': [

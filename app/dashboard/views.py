@@ -6499,18 +6499,26 @@ def file_upload(request):
 
 @csrf_exempt
 def mautic_api(request, endpoint=''):
-    print(request.GET)
+
+    if request.user.is_authenticated:
+        response = mautic_proxy(request, endpoint)
+        return response
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+
+def mautic_proxy(request, endpoint=''):
     params = request.GET
     credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
     token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
     headers = {"Authorization": f"Basic {token}"}
-    print(headers)
-    print(endpoint)
-    print(request.body)
+
     if request.body:
         body_unicode = request.body.decode('utf-8')
         payload = json.loads(body_unicode)
-        print(payload)
 
     url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
     if request.method == 'GET':
@@ -6527,6 +6535,7 @@ def mautic_api(request, endpoint=''):
     return JsonResponse(response)
 
 
+
 @csrf_exempt
 @require_POST
 def mautic_profile_save(request):
@@ -6538,7 +6547,6 @@ def mautic_profile_save(request):
                 { 'error': _('You must be authenticated') },
                 status=401
             )
-        print(request.POST)
         mautic_id = request.POST.get('mtcId')
         profile.mautic_id = mautic_id
         profile.save()

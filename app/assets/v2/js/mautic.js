@@ -30,8 +30,8 @@ document.addEventListener('mauticPageEventDelivered', function(e) {
 //   }
 // }
 
-const saveMauticId = function(mauticId) {
-  let url = '/api/v1/mautic_profile_save/';
+const saveMauticId = (mauticId) => {
+  const url = '/api/v1/mautic_profile_save/';
   const postData = fetchData(url, 'POST', { 'mtcId': mauticId });
 
   $.when(postData).then((response) => {
