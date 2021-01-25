@@ -2023,7 +2023,7 @@ def cancel_grant_v1(request, grant_id):
         response['message'] = 'error: grant cannot be found'
         return JsonResponse(response)
 
-    if not is_grant_team_member(grant, profile):
+    if not is_grant_team_member(grant, profile) and not request.user.is_staff:
         response['message'] = 'error: grant cancellation can be done only by grant owner'
         return JsonResponse(response)
 
