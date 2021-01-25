@@ -1,0 +1,19 @@
+{
+  "symbol": "COCOS",
+  "address": "0xc4c7Ea4FAB34BD9fb9a5e1B1a98Df76E26E6407c",
+  "overview":{
+        "en": "The platform for the next generation of digital game economy Cocos-BCX' , fully named 'Cocos BlockChain Expedition', aims to create an integrated multi-platform runtime environment for games, providing developers with the convenience and completeness in game development, while bringing users a whole new gaming experience, unprecedented gaming status, and with all the assets obtained in the games being wholly owned by the users.",
+        "zh": "Cocos-BCX下一代游戏数字经济平台 Cocos BlockChain Expedition，简称'Cocos-BCX'，它的目标是打造一个完整的多平台游戏运行环境，即为区块链游戏开发者提供开发过程中的便利性和完善性，同时也为区块链游戏用户带来全新的游戏体验和超越以往的游戏形态，所有在游戏内获得的资产将完全属于用户。"
+  },
+  "email": "dev@cocosbcx.io",
+  "website": "https://www.cocosbcx.io/",
+  "whitepaper": "https://www.cocosbcx.io/static/Whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-01-05",
+  "links": {
+    "twitter": "https://twitter.com/CocosBCX",
+    "telegram": "https://t.me/cocosbcxen",
+    "github": "https://github.com/cocos-bcx",
+    "medium": "https://medium.com/cocosbcx"
+  }
+}
