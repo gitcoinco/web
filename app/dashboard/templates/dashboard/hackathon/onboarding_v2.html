@@ -1,11 +1,11 @@
 {% load static %}
-<div class="modal height-auto" style="color: #212529;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
-  <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement.svg'%}" class="achievement-img"/>
-  <div class="modal-dialog modal-lg mb-0" role="document">
-    <div class="modal-content" >
+<div class="modal no-bg height-auto" style="color: #212529; font-size: 12pt;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content height-auto" >
+      <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement.svg'%}" class="achievement-img"/>
       <div class="modal-header border-0">
         <div class="modal-title block text-center">
-          <h3 class="font-weight-bold">How to Earn in a Gitcoin Hackathon </h3>
+          <h3>How to Earn in a Gitcoin Hackathon </h3>
           <h5 class="font-weight-semibold mt-4">Gitcoin helps you earn by building open source development projects and
             participating in hackathons</h5>
         </div>
@@ -100,7 +100,7 @@
                 class="mt-1"> Receive project support from the community</span></p>
             </div>
           </div>
-          <div class="list-group list-group-flush" style="color: #757087; font-size: .85em;">
+          <div class="list-group list-group-flush" style="color: #757087; font-size: 10pt;">
             <div class="list-group-item ">You’ll need a Github account to work on Gitcoin</div>
             <div class="list-group-item truncate-lg">
             Common languages used in our hackathons: JavaScript, HTML, Python, CSS, Java, C++.
@@ -150,7 +150,7 @@
             </div>
           </div>
           {% if next %}
-            <a class="btn fe-pulse" href="{{ next }}" style="display: block; margin: auto; padding: 8px 14px;">I’m ready to explore
+            <a class="btn fe-pulse mb-3" href="{{ next }}" style="display: block; margin: auto; padding: 8px 14px;">I’m ready to explore
             hackathons!</a>
           {% else %}
           <div class="d-block mx-auto text-center pt-2 custom-control custom-checkbox">
@@ -187,7 +187,6 @@
   const loadOnboardingModal = () => {
     if (showOnboarding) {
       $('#onboarding_v2').modal('show');
-      {% comment %} $('#onboarding_v2').css({"overflow-y": "scroll"}) {% endcomment %}
     }
   }
 

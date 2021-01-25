@@ -38,13 +38,12 @@
   display: block;
 }
 
-.modal {
+.modal-content {
   margin-top: 256px;
 }
 
-.height-auto {
-  overflow: visible;
-  height: auto !important;
+.no-bg {
+  background: none !important;
 }
 
 .achievement-img{
@@ -90,7 +89,7 @@
   }
 
   .testimonial img {
-    height: 126px;
-    width: 126px;
+    height: 100px;
+    width: 100px;
   }
 }
