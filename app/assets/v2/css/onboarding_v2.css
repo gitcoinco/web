@@ -53,6 +53,10 @@
   right: calc(50% - 64px);
 }
 
+.height-auto {
+  height: auto;
+}
+
 @media only screen and (max-width:960px) {
   .testimonial img {
     height: 64px;

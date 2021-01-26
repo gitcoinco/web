@@ -1,11 +1,11 @@
 {% load static %}
 <div class="modal no-bg height-auto" style="color: #212529; font-size: 12pt;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
   <div class="modal-dialog modal-lg " role="document">
-    <div class="modal-content height-auto" >
+    <div class="modal-content" >
       <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement.svg'%}" class="achievement-img"/>
       <div class="modal-header border-0">
         <div class="modal-title block text-center">
-          <h3>How to Earn in a Gitcoin Hackathon </h3>
+          <h1>How to Earn in a Gitcoin Hackathon </h1>
           <h5 class="font-weight-semibold mt-4">Gitcoin helps you earn by building open source development projects and
             participating in hackathons</h5>
         </div>
@@ -181,6 +181,7 @@
     window.localStorage.setItem(storageKey, hideModal ? 0 : 1)
     showOnboarding = false
     $('.jquery-modal').remove()
+    $('body').css('overflow', 'scroll')
     $('#onboarding_v2').modal('hide');
   }
 
