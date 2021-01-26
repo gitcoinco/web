@@ -1015,36 +1015,6 @@
 		"sC": 0,
 		"tS": 0
 		},
-	"/js/background-min.js": {
-		"bF": 0,
-		"ft": 64,
-		"ma": 1,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "/js/background-min-min.js",
-		"oF": 0,
-		"sC": 0,
-		"tS": 0
-		},
-	"/js/background-min.js.map": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 0,
-		"oAP": "/js/background-min.js.map",
-		"oF": 0
-		},
-	"/js/background.js": {
-		"bF": 0,
-		"ft": 64,
-		"ma": 1,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "/js/background-min.js",
-		"oF": 0,
-		"sC": 0,
-		"tS": 0
-		},
 	"/js/cookielaw-min.js": {
 		"bF": 0,
 		"ft": 64,

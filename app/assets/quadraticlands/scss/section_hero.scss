@@ -50,6 +50,7 @@ section.hero{
 
 /* hover knight rider effect for floor on start page */
 
+/*
 section.hero svg #floor{
 
 	polygon, path {
@@ -68,6 +69,25 @@ section.hero svg #floor{
 	}
 
 }
+*/
+
+
+
+/* lights for buildings */
+
+/*
+section.hero svg .light{
+
+	fill: var(--aqua);
+	pointer-events: visible;
+	transition: all 700ms ease;
+
+	&:hover{
+		fill: var(--pink);
+	};
+
+}
+*/
 
 
 
