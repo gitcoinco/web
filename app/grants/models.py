@@ -804,7 +804,8 @@ class Grant(SuperModel):
             'celo_payout_address': self.celo_payout_address,
             'zil_payout_address': self.zil_payout_address,
             'polkadot_payout_address': self.polkadot_payout_address,
-            'harmony_payout_address': self.harmony_payout_address
+            'harmony_payout_address': self.harmony_payout_address,
+            'binance_payout_address': self.binance_payout_address
         }
 
     def repr(self, user, build_absolute_uri):
@@ -859,6 +860,7 @@ class Grant(SuperModel):
                 'zil_payout_address': self.zil_payout_address,
                 'polkadot_payout_address': self.polkadot_payout_address,
                 'harmony_payout_address': self.harmony_payout_address,
+                'binance_payout_address': self.binance_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
