@@ -1623,7 +1623,12 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: enter your twitter handle e.g @georgecostanza'
             return JsonResponse(response)
 
-        grant.twitter_handle_1 = twitter_handle_1
+        if grant.twitter_handle_1 != twitter_handle_1:
+            grant.twitter_verified = False
+            grant.twitter_verified_by = None
+            grant.twitter_verified_at = None
+            grant.twitter_handle_1 = twitter_handle_1
+            
         grant.twitter_handle_2 = twitter_handle_2
 
         reference_url = request.POST.get('reference_url', None)
