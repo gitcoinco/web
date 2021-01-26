@@ -60,8 +60,8 @@
             Not Eligible for CLR
           </div>
         </div>
-        <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button :disabled=!isPolkadotExtInstalled class="btn btn-gc-blue px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'POLKADOT)" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
+        <div class="align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
+          <b-button :disabled="!isPolkadotExtInstalled" class="btn btn-gc-blue px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'POLKADOT')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
             Payout
           </b-button>
         </div>
