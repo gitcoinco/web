@@ -345,6 +345,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The harmony wallet address where subscription funds will be sent.'),
     )
+    binance_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The binance wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -1563,7 +1570,8 @@ class Contribution(SuperModel):
         ('celo_std', 'celo_std'),
         ('zil_std', 'zil_std'),
         ('polkadot_std', 'polkadot_std'),
-        ('harmony_std', 'harmony_std')
+        ('harmony_std', 'harmony_std'),
+        ('binance_std', 'binance_std')
     ]
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
