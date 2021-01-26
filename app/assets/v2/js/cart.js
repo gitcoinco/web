@@ -380,6 +380,12 @@ Vue.component('grants-cart', {
         case 'HARMONY':
           vm.chainId = '1000';
           break;
+        case 'KUSAMA':
+          vm.chainId = '59';
+          break;
+        case 'POLKADOT':
+          vm.chainId = '58';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
