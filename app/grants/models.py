@@ -570,6 +570,8 @@ class Grant(SuperModel):
             tenants.append('POLKADOT')
         if self.harmony_payout_address and self.harmony_payout_address != '0x0':
             tenants.append('HARMONY')
+        if self.binance_payout_address and self.binance_payout_address != '0x0':
+            tenants.append('BINANCE')
 
         return tenants
 
@@ -909,7 +911,8 @@ class Subscription(SuperModel):
         ('CELO', 'CELO'),
         ('ZIL', 'ZIL'),
         ('POLKADOT', 'POLKADOT'),
-        ('HARMONY', 'HARMONY')
+        ('HARMONY', 'HARMONY'),
+        ('BINANCE', 'BINANCE')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
