@@ -1,0 +1,19 @@
+{
+  "symbol": "GBC",
+  "address": "0x854BE83A0b5C6badBAA34652486fE4F56b5614e9",
+  "overview":{
+        "en": "GBC token is an Ethereum ERC20 token.",
+        "zh": "GBC Token，是基于以太坊智能合约ERC20开发的数字货币。"
+  },
+  "email": "scarlettxuhan@gmail.com",
+  "website": "https://gbc.esesport.com/about.html",
+  "whitepaper": "https://gbc.esesport.com/Gbc_white_paper_zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-28",
+  "initial_price":{
+        "USD":"0.01 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/gbc80757704"
+  }
+}
