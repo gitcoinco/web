@@ -1,0 +1,20 @@
+{
+	"symbol": "OGT",
+	"address": "0xB81aaBd91528a02136F194be78F93E640B2BE5c3",
+	"overview": {
+		"en": "OGT, Origin Chain Pass, is a decentralized digital asset issued on the basis of Ethereum and issued by the Origin Chain Foundation.",
+		"zh": "OGT为Origin chain token 的简称暨起源链通证，是基于以太坊发行的去中心化数字资产，由Origin chain基金会发行。"
+	},
+	"email": "bd@originchain.com",
+	"website": "http://www.originchain.com/",
+	"whitepaper": "http://www.originchain.com/bps.pdf",
+	"state": "NORMAL",
+	"published_on": "2020-09-10",
+	"initial_price": {
+		"USD": "0.0724 USD"
+	},
+	"links": {
+		"twitter": "https://twitter.com/originchain1",
+		"telegram": "https://t.me/originchaintoken"
+	}
+}
