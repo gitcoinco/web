@@ -3232,7 +3232,7 @@ def ingest_contributions(request):
                 and existing_subscription.amount_per_period_minus_gas_price < amount_max
             ):
                 # Subscription exists
-                print("Subscription exists, exiting function\n")
+                logger.info("Subscription exists, exiting function\n")
                 return
 
         # No subscription found, so create subscription and contribution
@@ -3276,7 +3276,7 @@ def ingest_contributions(request):
             contrib.validator_comment = validator_comment
             contrib.created_on = created_on
             contrib.save()
-            print(f"ingested {subscription.pk} / {contrib.pk}")
+            logger.info(f"ingested {subscription.pk} / {contrib.pk}")
 
             metadata = {
                 "id": subscription.id,
@@ -3297,11 +3297,11 @@ def ingest_contributions(request):
             }
 
             Activity.objects.create(**kwargs)
-            print("Saved!\n")
+            logger.info("Saved!\n")
 
         except Exception as e:
-            print(e)
-            print("\n")
+            logger.exception(e)
+            logger.info("\n")
 
     def process_bulk_checkout_tx(w3, txid, profile, network, do_write):
         # Make sure tx was successful
@@ -3323,7 +3323,7 @@ def ingest_contributions(request):
 
         # For each event in the parsed logs, create the DB objects
         for (index,event) in enumerate(parsed_logs):
-            print(f'\nProcessing {index + 1} of {len(parsed_logs)}...')
+            logger.info(f'\nProcessing {index + 1} of {len(parsed_logs)}...')
             # Extract contribution parameters from events
             token_address = event["args"]["token"]
             value = event["args"]["amount"]
@@ -3335,17 +3335,16 @@ def ingest_contributions(request):
 
             # Find the grant
             try:
-                print(to)
                 grant = (
                     Grant.objects.filter(admin_address__iexact=to)
                     .order_by("-positive_round_contributor_count")
                     .first()
                 )
-                print(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
             except Exception as e:
-                print(e)
-                print(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
-                print("Skipping unknown grant\n")
+                logger.exception(e)
+                logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                logger.warning("Skipping unknown grant\n")
                 continue
 
             if do_write:
@@ -3398,11 +3397,11 @@ def ingest_contributions(request):
                 # Find the grant
                 try:
                     grant = Grant.objects.filter(admin_address__iexact=to).order_by("-positive_round_contributor_count").first()
-                    print(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
                 except Exception as e:
-                    print(e)
-                    print(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
-                    print("Skipping unknown grant\n")
+                    logger.exception(e)
+                    logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                    logger.warning("Skipping unknown grant\n")
                     continue
 
                 if do_write:
