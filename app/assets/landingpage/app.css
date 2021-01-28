@@ -87,12 +87,16 @@ p {
 #logo {
   position: absolute;
   top: 3em;
+  margin-left: -1.5em;
+  margin-top: -2.5em;
   left: 3em; }
   #logo img {
     width: 200px; }
 
 @media (max-width: 688px) {
   #logo {
+    margin-left: -0.5em;
+    margin-top: -1.7em;
     top: 2em;
     left: 2em; }
     #logo img {
@@ -605,9 +609,9 @@ section#town {
 section#intro {
   height: 100vh;
   margin-left: 3em;
+  margin-right: -3em;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 3em; }
+  grid-template-columns: repeat(2, 1fr); }
   section#intro div {
     align-self: center;
     max-width: 700px; }
@@ -638,8 +642,20 @@ section#intro {
     margin-left: 1.5em;
     margin-right: 1.5em; } }
 
-section#whatisgitcoin .actions {
+section#intro .actions {
   display: none
+}
+
+section#intro .actions-reverse {
+  font-size: 52%;
+}
+
+section#intro h1 {
+  font-size: 120%;
+}
+
+section#intro .action-text {
+  font-size: 50%;
 }
 
 section#whatisgitcoin {
@@ -663,10 +679,10 @@ section#whatisgitcoin {
       margin-right: 26px; }
 
 @media (max-width: 688px) {
-  section#whatisgitcoin .actions {
+  section#intro .actions {
     display: block;
   }
-  section#whatisgitcoin .actions-reverse {
+  section#intro .actions-reverse {
     display: none;
   }
   section#whatisgitcoin div.grid {
