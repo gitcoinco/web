@@ -1557,13 +1557,13 @@ def grant_edit(request, grant_id):
         if not description_rich:
             description_rich = description
 
-        eth_payout_address = request.POST.get('eth_payout_address', '0x0') if request.POST.get('eth_payout_address') else '0x0'
-        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0') if request.POST.get('zcash_payout_address') else '0x0'
-        celo_payout_address = request.POST.get('celo_payout_address', '0x0') if request.POST.get('celo_payout_address') else '0x0'
-        zil_payout_address = request.POST.get('zil_payout_address', '0x0') if request.POST.get('zil_payout_address') else '0x0'
-        polkadot_payout_address = request.POST.get('polkadot_payout_address', '0x0') if request.POST.get('polkadot_payout_address') else '0x0'
-        harmony_payout_address = request.POST.get('harmony_payout_address', '0x0') if request.POST.get('harmony_payout_address') else '0x0'
-        binance_payout_address = request.POST.get('binance_payout_address', '0x0') if request.POST.get('binance_payout_address') else '0x0'
+        eth_payout_address = request.POST.get('eth_payout_address', '0x0')
+        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
+        celo_payout_address = request.POST.get('celo_payout_address', '0x0')
+        zil_payout_address = request.POST.get('zil_payout_address', '0x0')
+        polkadot_payout_address = request.POST.get('polkadot_payout_address', '0x0')
+        harmony_payout_address = request.POST.get('harmony_payout_address', '0x0')
+        binance_payout_address = request.POST.get('binance_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
