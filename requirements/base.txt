@@ -67,7 +67,7 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-django-cacheops==5.1
+-e git://github.com/gitcoinco/django-cacheops.git#egg=django-cacheops
 django-redis==4.10.0
 collectfast==0.6.2
 django-health-check==3.7.0
