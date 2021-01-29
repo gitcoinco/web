@@ -1,5 +1,5 @@
 body {
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 .none {
@@ -8,7 +8,7 @@ body {
 
 .explorer {
   margin-top: 2em;
-  color: #3E00FF;
+  color: #3e00ff;
 }
 
 .explorer i {
@@ -22,14 +22,14 @@ body {
 }
 
 .progress-bar {
-  background-color: #D8D8D8;
+  background-color: #d8d8d8;
   display: block;
   height: 2px;
   overflow: hidden;
 }
 
 .progress-bar .progress {
-  background-color: #0FCE7C;
+  background-color: #0fce7c;
   height: 2px;
   width: 50%;
 }
@@ -75,11 +75,11 @@ body {
 
 .quote-container .quote_text {
   font-size: 1.1rem;
-  color: #4A4A4A;
+  color: #4a4a4a;
 }
 
 .quote-container .quote_author {
-  color: #4A4A4A;
+  color: #4a4a4a;
   font-size: 1rem;
   font-style: italic;
 }
@@ -99,7 +99,7 @@ body {
 }
 
 #status {
-  color: #00A55E;
+  color: #00a55e;
   text-transform: uppercase;
   margin-bottom: 5px;
 }
@@ -126,7 +126,7 @@ body {
 
 .box {
   padding: 14px;
-  border-bottom: 1px solid #DBDBDB;
+  border-bottom: 1px solid #dbdbdb;
   border-radius: 3px;
   margin: 0;
 }
@@ -134,7 +134,7 @@ body {
 .box .empty {
   text-align: center;
   font-size: 16px;
-  color: #7A7A7A;
+  color: #7a7a7a;
   font-weight: 600;
 }
 
@@ -150,7 +150,7 @@ body {
 .contributor-box .fa-minus {
   font-size: 14px;
   margin: 0;
-  color: #7A7A7A;
+  color: #7a7a7a;
 }
 
 .bounty-heading {
@@ -162,7 +162,7 @@ body {
 }
 
 #description {
-  border-top: 1px solid #D4D4D4;
+  border-top: 1px solid #d4d4d4;
   margin-bottom: 2em;
 }
 
@@ -173,7 +173,7 @@ body {
 
 .bounty-text {
   font-size: 14px;
-  color: #3E00FF;
+  color: #3e00ff;
 }
 
 .issue_description {
@@ -191,7 +191,7 @@ body {
 }
 
 .bounty-info-heading {
-  color: #0D0764;
+  color: #0d0764;
   font-weight: 500;
   text-transform: capitalize;
 }
@@ -205,6 +205,10 @@ body {
 .bounty-info-text {
   color: #717171;
   text-transform: capitalize;
+}
+
+.break-line {
+  white-space: pre-line;
 }
 
 .funder-avatar,
@@ -256,7 +260,7 @@ body {
   text-align: center;
 }
 
-.transaction-status a{
+.transaction-status a {
   color: white;
   text-decoration: underline;
 }
@@ -272,7 +276,7 @@ body {
 }
 
 .red_warning a,
-#network a{
+#network a {
   color: #fb9470;
   font-weight: bold;
 }
@@ -291,7 +295,7 @@ body {
 }
 
 .contributor-box {
-  border-right: 1px solid #DBDBDB;
+  border-right: 1px solid #dbdbdb;
 }
 
 .contributor-box:last-child {
@@ -323,7 +327,7 @@ body {
 }
 
 #bounty_owner_github_username a {
-  color: #0D0764;
+  color: #0d0764;
   margin-bottom: 5px;
   font-weight: 600;
 }
@@ -345,9 +349,9 @@ a.btn {
 }
 
 #btn-white {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border: 1px solid #979797;
-  color: #0D0764;
+  color: #0d0764;
   border-radius: 3px;
   position: relative;
 }
@@ -358,7 +362,7 @@ a.btn {
 }
 
 .loading_img::before {
-  content: '';
+  content: "";
   width: 12rem;
   height: 12rem;
   background: #fff;
@@ -400,7 +404,7 @@ a.btn {
 
 .activity .activity-status i {
   margin-left: 10px;
-  color: #0ECF7C;
+  color: #0ecf7c;
 }
 
 .activity-kudos {
@@ -473,7 +477,7 @@ a.btn {
 .related-bounties .bounty-title,
 #funder_notif_info #bounty_funded_by,
 #funder_notif_info i {
-  color: #3E00FF;
+  color: #3e00ff;
 }
 
 #funder_notif_info img {
@@ -524,13 +528,12 @@ a.btn {
 }
 
 #moderator-admin-actions:not(:empty) {
-  background: #F2F6F9;
+  background: #f2f6f9;
   padding: 16px 0 10px;
   left: 0;
 }
 
 @media (max-width: 767px) {
-
   #title {
     padding-top: 1em;
   }
@@ -557,7 +560,7 @@ a.btn {
 
   .contributor-box {
     border-right: 0;
-    border-bottom: 1px solid #DBDBDB;
+    border-bottom: 1px solid #dbdbdb;
   }
 
   .contributor-box:last-child {
@@ -635,7 +638,8 @@ a.btn {
   margin-right: 25px;
 }
 
-.close:hover, .close:focus {
+.close:hover,
+.close:focus {
   box-shadow: none;
 }
 
@@ -668,7 +672,7 @@ a.btn {
 }
 
 .ethereum-issue {
-  width:100%;
+  width: 100%;
   color: #ffffff;
 }
 
@@ -723,7 +727,7 @@ a.btn {
 #cs1 {
   top: 14%;
   left: 10%;
-  transform: rotate(75deg)
+  transform: rotate(75deg);
 }
 
 #cs2 {
@@ -734,7 +738,7 @@ a.btn {
 #cs3 {
   top: 40%;
   right: 35%;
-  transform: rotate(25deg)
+  transform: rotate(25deg);
 }
 
 #cs4 {
@@ -759,7 +763,7 @@ a.btn {
   border-right: none;
   max-width: 12rem;
   outline: none;
-  color: #03B16B;
+  color: #03b16b;
 }
 
 .payout-input-amount-container input::-webkit-outer-spin-button,
@@ -773,7 +777,6 @@ a.btn {
 }
 
 @media (max-width: 575.98px) {
-
   #timer {
     margin-bottom: 10px;
   }
@@ -843,11 +846,11 @@ a.btn {
 }
 
 .payout-summary-container {
-  background: #F9F7FF;
+  background: #f9f7ff;
 }
 
 #submit_transaction .payout-tx-container {
-  border: 1px solid #D8D8D8;
+  border: 1px solid #d8d8d8;
   border-radius: 3px;
 }
 
@@ -870,20 +873,27 @@ a.btn {
 }
 
 @media (min-width: 1441px) and (max-width: 2560px) {
-
   .bounty_details .quote-container {
     margin-top: 1rem;
   }
 }
 
 @keyframes MoveUpDown {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-3rem); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-3rem);
+  }
 }
 
 @-webkit-keyframes MoveUpDown {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-3rem); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-3rem);
+  }
 }
 
 .qrcode {
