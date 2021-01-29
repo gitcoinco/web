@@ -37,7 +37,9 @@
 .testimonial>*>* {
   display: block;
 }
-
+.modal {
+  overflow: visible;
+}
 .modal-content {
   margin-top: 256px;
 }
@@ -74,10 +76,6 @@
 
   .modal-content {
     margin-top: 356px;
-  }
-
-  .modal {
-    overflow: visible;
   }
 }
 
