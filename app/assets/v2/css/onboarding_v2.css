@@ -46,21 +46,38 @@
   background: none !important;
 }
 
-.achievement-img{
+.achievement-img,
+.achievement-img-sm{
   position: absolute;
-  top: -206px;
-  width: 128px;
-  right: calc(50% - 64px);
+  top: -286px;
+  width: 170%;
+  right: -35%;
+  z-index: -1;
+}
+
+.achievement-img-sm {
+  top: -430px;
+  height: 600px;
+  width: 110vw;
+  right: calc(50% - 55vw);
 }
 
 .height-auto {
   height: auto;
 }
 
-@media only screen and (max-width:960px) {
+@media only screen and (max-width:992px) {
   .testimonial img {
     height: 64px;
     width: 64px;
+  }
+
+  .modal-content {
+    margin-top: 356px;
+  }
+
+  .modal {
+    overflow: visible;
   }
 }
 
