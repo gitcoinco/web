@@ -588,7 +588,7 @@ Vue.mixin({
       }
       return;
     },
-    stopWork: function(isOwner) {
+    stopWork: function(isOwner, handle) {
       let text = isOwner ?
         'Are you sure you would like to stop this user from working on this bounty ?' :
         'Are you sure you would like to stop working on this bounty ?';
@@ -603,9 +603,9 @@ Vue.mixin({
         'X-CSRFToken': csrftoken
       };
 
-      const apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
-
-      fetchData(apiUrlBounty, 'POST', {}, headers).then(response => {
+      let apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
+      
+      fetchData(apiUrlBounty, 'POST', {handle}, headers).then(response => {
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
           let text = isOwner ?

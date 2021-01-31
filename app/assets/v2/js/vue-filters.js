@@ -68,6 +68,7 @@ Vue.filter('stringReplace', function(activity_type) {
     new_bounty: gettext('Bounty Created'),
     start_work: gettext('Work Started'),
     stop_work: gettext('Work Stopped'),
+    stop_worker: gettext('Stopped worker'),
     work_submitted: gettext('Work Submitted'),
     work_done: gettext('Work Done'),
     worker_approved: gettext('Approved'),
