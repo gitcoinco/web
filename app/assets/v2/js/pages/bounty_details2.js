@@ -603,8 +603,8 @@ Vue.mixin({
         'X-CSRFToken': csrftoken
       };
 
-      let apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
-      
+      const apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
+
       fetchData(apiUrlBounty, 'POST', {handle}, headers).then(response => {
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
