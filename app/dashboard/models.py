@@ -2941,8 +2941,8 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+    is_pro = models.BooleanField(default=False, help_text=_('Is this user upgraded to pro?'))
     mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, help_text=_('Mautic id to be able to do api requests without user being logged'))
-
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
