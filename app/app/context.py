@@ -167,6 +167,7 @@ def preprocess(request):
         'fortmatic_test_key': settings.FORTMATIC_TEST_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
+        'is_pro': profile.is_pro if profile else False,
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
             'host': settings.JS_IPFS_HOST,
@@ -193,6 +194,7 @@ def preprocess(request):
         'is_location_blocked_for_ptokens': is_location_blocked_for_ptokens,
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
+        'mautic_id': profile.mautic_id if profile else None,
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

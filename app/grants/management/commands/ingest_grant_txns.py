@@ -362,4 +362,3 @@ class Command(BaseCommand):
 
         else:
             raise Exception('Invalid ingestion_method')
-
