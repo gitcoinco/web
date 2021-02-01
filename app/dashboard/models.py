@@ -2286,11 +2286,11 @@ class Activity(SuperModel):
         ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
-        # ptokens
-        ('create_ptoken', 'Create personal token'),
-        ('mint_ptoken', 'Mint personal token'),
-        ('edit_price_ptoken', 'Edit personal token price'),
-        ('buy_ptoken', 'Edit personal token price'),
+        # ptokens (formerly called personal tokens, now called time tokens)
+        ('create_ptoken', 'Create time token'),
+        ('mint_ptoken', 'Mint time token'),
+        ('edit_price_ptoken', 'Edit time token price'),
+        ('buy_ptoken', 'Edit time token price'),
         ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
         ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
         ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
