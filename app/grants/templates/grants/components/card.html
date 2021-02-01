@@ -134,11 +134,13 @@
       <div class="grant-item__content px-3">
         <h2 class="grant-item__title font-subheader">
           <a :href="grant.details_url" target="_blank">[[ grant.title | truncate(60) ]]</a>
-          <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
-             <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
-             <p>Grant owner has verified ownership of their twitter account.</p>
-             <a href="#">Learn more.</p>'
-            ><img width="13" clas="position-relative" style="top: -2px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+          <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" id="tooltip-verify">
+            <b-tooltip target="tooltip-verify" triggers="hover click" variant="light" placement="bottom">
+              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+              <p class="text-left">Grant owner has verified ownership of their twitter account.</p>
+              <a href="#">Learn more.</a>
+            </b-tooltip>
+            <img width="13" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
           </button>
         </h2>
         <p class="grant-item__pitch font-caption mb-2">[[ grant.description | truncate(145) ]]</p>

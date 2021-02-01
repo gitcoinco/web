@@ -43,7 +43,7 @@ google-api-python-client
 django-environ==0.4.5
 eth-utils==1.4.1
 jsondiff==1.1.1
-social-auth-app-django==3.1.0
+social-auth-app-django==4.0.0
 django-ipware==2.0.2
 geoip2==2.8.0
 django-silk==2.0.0
@@ -67,7 +67,7 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
--e git://github.com/gitcoinco/django-cacheops.git#egg=django-cacheops
+git+https://github.com/gitcoinco/django-cacheops.git#egg=django-cacheops
 django-redis==4.10.0
 collectfast==0.6.2
 django-health-check==3.7.0
