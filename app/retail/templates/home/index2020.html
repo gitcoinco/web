@@ -39,9 +39,12 @@
   </div>
   {% if not user.is_authenticated %}
   <div class="float-right pt-3 pr-4">
-    <a class="text-white" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
+    <!-- <a class="text-white" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
       <i class="fab fa-github"></i><span>&nbsp;&nbsp;{% trans "Log in" %}</span>
-    </a>
+    </a> -->
+      <a class="land-btn text-white nav-link login interior" href="{% url 'social:begin' 'github' %}?next=/townsquare" onclick="dataLayer.push({'event': 'login'});">
+        <i class="fab fa-github"></i><span class="nav-link__text">&nbsp;&nbsp;{% trans "Log in" %}</span>
+      </a>
   </div>
   {% endif %}
 

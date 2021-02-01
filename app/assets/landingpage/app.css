@@ -118,6 +118,7 @@ a.btn, button.btn {
   font-size: 100%;
   /* enhance to a 2col grid for icon */ }
   a.btn:hover, button.btn:hover {
+    color: white;
     filter: brightness(75%); }
   a.btn span, button.btn span {
     margin: auto;
@@ -648,6 +649,11 @@ section#intro .actions {
 
 section#intro .actions-reverse {
   font-size: 52%;
+}
+
+.land-btn:hover {
+  background-color: rgba(255,255,255,.15);
+  border-radius: 3px;
 }
 
 section#intro h1 {
