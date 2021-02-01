@@ -1,7 +1,7 @@
-<div class="form-row font-smaller-3 mt-3">
+<div class="form-row font-smaller-3 mt-3 mb-1">
   <div class="comment-option col-auto">
     <input v-model="grant.grant_comments" :id="`${grant.tenants[0]}-comment-${grant.grant_id}-blank`" value="" type="radio"
-      class="radio-input" :name="`comment-${grant.grant_id}`" :checked="grant.grant_comments === ''"
+      class="radio-input font-smaller-2" :name="`comment-${grant.grant_id}`" :checked="grant.grant_comments === ''"
     >
     <label :for="`${grant.tenants[0]}-comment-${grant.grant_id}-blank`" class="p-2 px-3 rounded-pill shadow-sm radio-label">
       + Add comment to owner
@@ -9,7 +9,7 @@
   </div>
   <div class="comment-option col-auto">
     <input v-model="grant.grant_comments" value="🙌 Great Job" :id="`${grant.tenants[0]}-comment-${grant.grant_id}-job`" type="radio"
-      class="radio-input" :name="`comment-${grant.grant_id}`" :checked="grant.grant_comments === '🙌 Great Job'"
+      class="radio-input font-smaller-2" :name="`comment-${grant.grant_id}`" :checked="grant.grant_comments === '🙌 Great Job'"
     >
     <label :for="`${grant.tenants[0]}-comment-${grant.grant_id}-job`" class="p-2 px-3 rounded-pill shadow-sm radio-label">
       🙌 Great Job
@@ -17,7 +17,7 @@
   </div>
   <div class="comment-option col-auto">
     <input v-model="grant.grant_comments" value="👍 i appreciate you" :id="`${grant.tenants[0]}-comment-${grant.grant_id}-appreciate`"
-      type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+      type="radio" class="radio-input font-smaller-2" :name="`comment-${grant.grant_id}`"
       :checked="grant.grant_comments === '👍 i appreciate you'"
     >
     <label :for="`${grant.tenants[0]}-comment-${grant.grant_id}-appreciate`" class="p-2 px-3 rounded-pill shadow-sm radio-label">
@@ -26,7 +26,7 @@
   </div>
   <div class="comment-option col-auto">
     <input v-model="grant.grant_comments" value="💪 keep up the great work" :id="`${grant.tenants[0]}-comment-${grant.grant_id}-work`"
-      type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+      type="radio" class="radio-input font-smaller-2" :name="`comment-${grant.grant_id}`"
       :checked="grant.grant_comments === '💪 keep up the great work'"
     >
     <label :for="`${grant.tenants[0]}-comment-${grant.grant_id}-work`" class="p-2 px-3 rounded-pill shadow-sm radio-label">
@@ -35,7 +35,7 @@
   </div>
   <div class="comment-option col-auto">
     <input v-model="grant.grant_comments" value="😍 love the mission of your project"
-      :id="`${grant.tenants[0]}-comment-${grant.grant_id}-love`" type="radio" class="radio-input" :name="`comment-${grant.grant_id}`"
+      :id="`${grant.tenants[0]}-comment-${grant.grant_id}-love`" type="radio" class="radio-input font-smaller-2" :name="`comment-${grant.grant_id}`"
       :checked="grant.grant_comments === '😍 love the mission of your project'"
     >
     <label :for="`${grant.tenants[0]}-comment-${grant.grant_id}-love`" class="p-2 px-3 rounded-pill shadow-sm radio-label">
@@ -43,6 +43,6 @@
     </label>
   </div>
 </div>
-<input v-if="grant.grant_comments !== undefined" class="form-control" v-model="grant.grant_comments"
+<input v-if="grant.grant_comments !== undefined" class="form-control font-smaller-2" v-model="grant.grant_comments"
   type="textarea" placeholder="Enter message"
 >

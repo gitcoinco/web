@@ -166,8 +166,8 @@
                           </div>
                           <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
                             <div class="tag tag-lg token">
-                              <p v-b-tooltip.hover.top="transaction.subscription.amount_per_period_minus_gas_price">
-                                [[transaction.subscription.amount_per_period_minus_gas_price | decimals | formatNumber]]
+                              <p v-b-tooltip.hover.top="transaction.subscription.amount_per_period">
+                                [[transaction.subscription.amount_per_period | formatNumberWithDecimal ]]
                                 <span>[[transaction.subscription.token_symbol]]</span>
                               </p>
                             </div>
@@ -175,12 +175,12 @@
                           <div class="col-2 my-auto tags font-caption">
                             <div class="tag tag-lg usd" v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
                               <p>
-                                ($ [[transaction.subscription.amount_per_period_usdt | decimals | formatNumber ]])
+                                ($ [[transaction.subscription.amount_per_period_usdt | formatNumberWithDecimal ]])
                               </p>
                             </div>
                           </div>
                           <div class="col-1 my-auto d-none d-xl-block tags font-caption" v-if="transaction.subscription.amount_per_period_to_gitcoin && transaction.subscription.amount_per_period_to_gitcoin != 0">
-                            (+[[transaction.subscription.amount_per_period_to_gitcoin| decimals | formatNumber]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
+                            (includes [[transaction.subscription.amount_per_period_to_gitcoin| formatNumberWithDecimal ]]  [[transaction.subscription.token_symbol ]] => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
                           </div>
                         </div>
                       </div>

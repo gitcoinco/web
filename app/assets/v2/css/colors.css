@@ -135,3 +135,7 @@ html.dark-mode {
 .text-black {
   color: #000;
 }
+
+.gc-alert-yellow {
+  background-color: #FFF4CB;
+}

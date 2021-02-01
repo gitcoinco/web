@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 
 from cacheops import CacheMiss, cache
@@ -50,7 +51,7 @@ COUNTRIES = 'countries'
 CITIES = 'cities'
 CONTINENTS = 'continents'
 
-TIMES = [ALL, WEEKLY, MONTHLY]
+TIMES = [WEEKLY, MONTHLY]
 BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, KUDOS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
 
 WEEKLY_CUTOFF = timezone.now() - timezone.timedelta(days=(30 if settings.DEBUG else 7))
@@ -427,6 +428,7 @@ def do_leaderboard_feed():
 def do_leaderboard():
     global ranks
     global counts
+    CUTOFF = MONTHLY_CUTOFF
 
     products = ['kudos', 'grants', 'bounties', 'tips', 'all']
     for product in products:
@@ -435,10 +437,12 @@ def do_leaderboard():
         counts = default_ranks()
         index_terms = []
 
+        print('---')
         if product in ['all', 'grants']:
             # get grants
-            grants = Contribution.objects.filter(subscription__network='mainnet')
+            grants = Contribution.objects.filter(subscription__network='mainnet').filter(created_on__gt=CUTOFF)
             # iterate
+            print(product, grants.count())
             for gc in grants:
                 try:
                     index_terms = grant_index_terms(gc)
@@ -449,7 +453,8 @@ def do_leaderboard():
 
         if product in ['all', 'bounties']:
             # get bounties
-            bounties = Bounty.objects.current().filter(network='mainnet')
+            bounties = Bounty.objects.current().filter(network='mainnet').filter(created_on__gt=CUTOFF)
+            print(product, bounties.count())
 
             # iterate
             for b in bounties:
@@ -461,7 +466,8 @@ def do_leaderboard():
 
         if product in ['all', 'tips']:
             # get tips
-            tips = Tip.objects.send_success().filter(network='mainnet')
+            tips = Tip.objects.send_success().filter(network='mainnet').filter(created_on__gt=CUTOFF)
+            print(product, tips.count())
 
             # iterate
             for t in tips:
@@ -472,13 +478,17 @@ def do_leaderboard():
 
         if product in ['all', 'kudos']:
             # kudos'
-            for kt in KudosTransfer.objects.send_success().filter(network='mainnet'):
+            kts = KudosTransfer.objects.send_success().filter(network='mainnet').filter(created_on__gt=CUTOFF)
+            print(product, kts.count())
+            for kt in kts:
                 sum_kudos(kt)
 
         # set old LR as inactive
         created_on = timezone.now()
         with transaction.atomic():
+            print(" - saving -")
             lrs = LeaderboardRank.objects.active().filter(product=product)
+            lrs = lrs.filter(Q(leaderboard__startswith=WEEKLY) | Q(leaderboard__startswith=MONTHLY))
             lrs.update(active=False)
 
             # save new LR in DB

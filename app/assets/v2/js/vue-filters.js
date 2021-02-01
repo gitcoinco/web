@@ -150,6 +150,15 @@ Vue.filter('formatNumber', number => {
   return numberFormat.format(number);
 });
 
+
+Vue.filter('formatNumberWithDecimal', number => {
+  if (!number)
+    return number;
+  const numberFormat = new Intl.NumberFormat('en-US', {maximumSignificantDigits: 3});
+
+  return numberFormat.format(number);
+});
+
 Vue.filter('slugify', (string) => {
   let slug;
 

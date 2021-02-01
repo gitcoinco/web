@@ -171,6 +171,9 @@ function tokenOptionsForGrant(grant) {
   } else if (grant.tenants && grant.tenants.includes('ZIL')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 102);
     tokenDefault = 'ZIL';
+  } else if (grant.tenants && grant.tenants.includes('HARMONY')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 1000);
+    tokenDefault = 'ONE';
   } else {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1);
   }

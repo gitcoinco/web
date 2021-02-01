@@ -40,10 +40,59 @@ Vue.mixin({
         vm.staffOptions();
         vm.fetchIfPendingFulfillments();
         vm.initChain();
+        vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
+    },
+    eventParams: function() {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      if (searchParams.has('mutate_worker_action')) {
+        const action = searchParams.get('mutate_worker_action');
+        const product = document.result.event ? 'hackathons' : 'bounties';
+        const productPersona = document.result.event ? 'hackathon' : 'bounty';
+        const persona = this.isOwner ? 'funder' : 'hunter';
+        const mtcPersona = `${productPersona}-${persona}`;
+        let bountyEvent = {
+          'alias': 'products',
+          'data': [
+            {
+              'name': 'product',
+              'attributes': {
+                'product': product,
+                'persona': mtcPersona,
+                'action': action
+              }
+            }
+          ]
+        };
+
+        if (document.result.event) {
+          let stopHackathonEvent = {
+            'alias': 'hackathon',
+            'data': [
+              {
+                'name': action,
+                'attributes': {
+                  'hackathon-slug': document.result.event.slug,
+                  'hackathon-action': action
+                }
+              }
+            ]
+          };
+
+          bountyEvent = [ bountyEvent, stopHackathonEvent ];
+
+        }
+
+        MauticEvent.createEvent(bountyEvent);
+        window.history.pushState({}, document.title, window.location.pathname);
+
+      }
+
+
     },
     getTransactionURL: function(token_name, txn) {
       let url;
@@ -428,7 +477,7 @@ Vue.mixin({
         case 'binance_ext':
           payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
-          
+
         case 'harmony_ext':
           payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
@@ -562,6 +611,45 @@ Vue.mixin({
           let text = isOwner ?
             "You\'ve stopped the user from working on this bounty ?" :
             "You\'ve stopped work on this bounty";
+
+          let product = document.result.event ? 'hackathons' : 'bounties';
+          let productPersona = document.result.event ? 'hackathon' : 'bounty';
+          let persona = isOwner ? 'funder' : 'hunter';
+          let mtcPersona = `${productPersona}-${persona}`;
+
+          let stopEvent = {
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': product,
+                  'persona': mtcPersona,
+                  'action': 'stop'
+                }
+              }
+            ]
+          };
+
+          if (document.result.event) {
+            let stopHackathonEvent = {
+              'alias': 'hackathon',
+              'data': [
+                {
+                  'name': 'stop',
+                  'attributes': {
+                    'hackathon-slug': document.result.event.slug,
+                    'hackathon-action': 'stop'
+                  }
+                }
+              ]
+            };
+
+            stopEvent = [ stopEvent, stopHackathonEvent ];
+
+          }
+
+          MauticEvent.createEvent(stopEvent);
 
           _alert(text, 'success');
         } else {
@@ -847,6 +935,33 @@ var show_interest_modal = function() {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
+
+          MauticEvent.createEvent({
+            'alias': 'hackathon',
+            'data': [
+              {
+                'name': 'interest',
+                'attributes': {
+                  'hackathon-slug': document.result.event.slug,
+                  'hackathon-action': 'interest'
+                }
+              }
+            ]
+          },
+          {
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'hackathon',
+                  'persona': 'hackathon-hunter',
+                  'action': 'interest'
+                }
+              }
+            ]
+          });
+
         });
 
         return;
@@ -867,6 +982,19 @@ var show_interest_modal = function() {
         }).then(success => {
           if (success) {
             appBounty.fetchBounty();
+            MauticEvent.createEvent({
+              'alias': 'products',
+              'data': [
+                {
+                  'name': 'product',
+                  'attributes': {
+                    'product': 'bounties',
+                    'persona': 'bounty-hunter',
+                    'action': 'interest'
+                  }
+                }
+              ]
+            });
             modals.bootstrapModal('hide');
 
             if (document.result.event) {

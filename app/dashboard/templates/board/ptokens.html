@@ -171,7 +171,7 @@
                     </div>
                   </div>
                   <div>
-                    <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" >Complete</button>
+                    <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" >Complete</button>
                     <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                   </div>
                 </div>

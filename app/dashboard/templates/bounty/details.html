@@ -466,7 +466,7 @@
           [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
             <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
               <p class="font-weight-bold mb-2">Work Plan</p>
-              <p class="mb-0">[[>issue_message.issue_message]]</p>
+              <p class="mb-0 break-line">[[>issue_message.issue_message]]</p>
             </div>
           [[/if]]
         </div>

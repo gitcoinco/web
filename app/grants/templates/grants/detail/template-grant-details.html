@@ -3,7 +3,7 @@
   <div>
     <slot></slot>
     <div class="container grid grid-template-sidebar mb-5">
-      <div class="grant-data">
+      <div class="grant-data w-100">
         <div class="d-flex align-items-baseline">
           <h1 class="h3">
             [[grant.title]]
@@ -50,6 +50,18 @@
                 </span>
               </a>
               <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zil_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('HARMONY') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://explorer.harmony.one/#/address/${grant.harmony_payout_address}`">
+                <span id="harmony-address" class="wallet-address" v-b-tooltip.hover.top="grant.harmony_payout_address">
+                  [[grant.harmony_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.harmony_payout_address"><i class="far fa-copy"></i></copy-clipboard>
             </div>
           </template>
 
