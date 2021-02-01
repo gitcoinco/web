@@ -67,18 +67,13 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
   vm.updatePaymentStatus(grant.grant_id, 'waiting');
 
   const amount = grant.grant_donation_amount;
-  const to_address = grant.harmony_payout_address;
 
-  let cc = {
-      'grant_id': grant.grant_id,
-      'contributor_address': from_address,
-      'token_symbol': grant.grant_donation_currency,
-      'to_address': to_address,
-      'tenant': tenant,
-      'comment': grant.grant_comments,
-      'amount_per_period': grant.grant_donation_amount
-  };
-  console.log(cc)
+  let to_address;
+  if (grant.grant_donation_currency == 'DOT') {
+    to_address = grant.polkadot_payout_address;
+  } else if (grant.grant_donation_currency == 'KSM') {
+    to_address = grant.kusama_payout_address;
+  }
 
   // step 2. balance check
   const account_balance = await polkadot_utils.getAddressBalance(from_address);
@@ -106,7 +101,12 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
       console.log(error);
     } else {
 
-      const tenant = grant_donation_currency == 'DOT' ? 'POLKADOT' : 'KUSAMA';
+      let tenant;
+      if (grant.grant_donation_currency == 'DOT') {
+        tenant = 'POLKADOT';
+      } else if (grant.grant_donation_currency == 'KSM') {
+        tenant = 'KUSAMA';
+      }
 
       const payload = {
         'contributions': [{
