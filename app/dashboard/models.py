@@ -1365,6 +1365,7 @@ class BountyEvent(SuperModel):
         ('cancel_bounty', 'Cancel Bounty'),
         ('submit_work', 'Submit Work'),
         ('stop_work', 'Stop Work'),
+        ('stop_worker', 'Worker stopped'),
         ('express_interest', 'Express Interest'),
         ('payout_bounty', 'Payout Bounty'),
         ('expire_bounty', 'Expire Bounty'),

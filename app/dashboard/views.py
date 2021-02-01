@@ -233,7 +233,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected', 'stop_worker'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
     elif event_name == 'worker_paid' and fulfillment:
         kwargs['metadata']['from'] = fulfillment.funder_profile.handle
@@ -578,6 +578,7 @@ def remove_interest(request, bounty_id):
 
     """
     profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    user_handle = request.POST.get('handle')
 
     access_token = request.GET.get('token')
     if access_token:
@@ -598,9 +599,16 @@ def remove_interest(request, bounty_id):
                             status=401)
 
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(request.user, 'stop_work', interest)
-        record_bounty_activity(bounty, request.user, 'stop_work')
+        if user_handle:
+            interest = Interest.objects.get(profile__handle=user_handle, bounty=bounty, bounty__bounty_owner_profile_id=profile_id)
+            activity_type = 'stop_worker'
+        else:
+            interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+            activity_type = 'stop_work'
+
+        record_user_action(request.user, activity_type, interest)
+        record_bounty_activity(bounty, request.user, activity_type, interest)
+
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
