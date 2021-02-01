@@ -5417,7 +5417,8 @@ def post_save_earning(sender, instance, created, **kwargs):
 
         from economy.utils import watch_txn
         if instance.txid:
-            watch_txn(instance.txid)
+            if instance.network == 'mainnet':
+                watch_txn(instance.txid)
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
