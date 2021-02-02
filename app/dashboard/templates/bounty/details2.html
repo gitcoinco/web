@@ -853,7 +853,7 @@
                       </a>
                     </template>
                     <template v-else-if="isOwner">
-                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner)">
+                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner, interest.profile.handle)">
                         <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
                       </button>
                     </template>
@@ -866,7 +866,7 @@
                   <div class="col-md-12 my-auto text-center text-md-left">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
                       <p class="font-weight-bold mb-2">Work Plan</p>
-                      <p class="mb-0">
+                      <p class="mb-0 break-line">
                         [[ interest.issue_message]]
                       </p>
                     </div>
@@ -919,7 +919,7 @@
                     <div v-if="activity.activity_type === 'new_kudos'">
                       show value
                     </div>
-                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
+                    <a v-if="activity.activity_type === 'worker_approved' || activity.activity_type === 'stop_worker'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ activity.metadata.worker_handle ]]

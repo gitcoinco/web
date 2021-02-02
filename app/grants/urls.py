@@ -27,8 +27,9 @@ from grants.views import (
     get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
     grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel,
     grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info,
-    grants_stats_view, invoice, leaderboard, manage_ethereum_cart_data, new_matching_partner, profile, quickstart,
-    remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
+    grants_stats_view, ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
+    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
+    toggle_grant_favorite, verify_grant,
 )
 
 app_name = 'grants'
@@ -63,6 +64,7 @@ urlpatterns = [
     re_path(r'^new/?$', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
+    path('ingest', ingest_contributions, name='ingest_contributions'),
     path('bulk-fund', bulk_fund, name='bulk_fund'),
     path('manage-ethereum-cart-data', manage_ethereum_cart_data, name='manage_ethereum_cart_data'),
     path('get-ethereum-cart-data', get_ethereum_cart_data, name='get_ethereum_cart_data'),
@@ -84,6 +86,7 @@ urlpatterns = [
     ),
     path('cart/bulk-add/<str:grant_str>', grants_bulk_add, name='grants_bulk_add'),
     path('cart', grants_cart_view, name='cart'),
+    path('add-missing-contributions', ingest_contributions_view, name='ingest_contributions_view'),
     path('get-interrupted-contributions', get_interrupted_contributions, name='get_interrupted_contributions'),
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),

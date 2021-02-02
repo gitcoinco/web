@@ -126,7 +126,9 @@ def settings_helper_get_auth(request, key=None):
         if hasattr(request.user, 'profile'):
             if request.user.profile.email_subscriptions.exists():
                 es = request.user.profile.email_subscriptions.first()
-                if es.email != request.user.profile.email:
+                profile_email = request.user.profile.email
+                if es.email != profile_email \
+                    and not EmailSubscriber.objects.filter(email=profile_email).exists():
                     es.email = request.user.profile.email
                     es.save()
             if not es or es and not es.priv:

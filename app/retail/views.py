@@ -788,10 +788,10 @@ def products(request):
             'traction': '100s of posts per day',
         },
         {
-            'name': 'Chat',
+            'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
-            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
-            'link': 'https://gitcoin.co/chat/landing',
+            'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
+            'link': 'https://discord.gg/jWUzf7b8Yr',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',

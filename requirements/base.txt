@@ -5,6 +5,7 @@ cryptography==2.3
 celery==4.4.0
 django-celery-beat==1.1.1
 django==2.2.4
+django-csp==3.7
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-haystack
@@ -67,7 +68,7 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-django-cacheops==5.1
+git+https://github.com/gitcoinco/django-cacheops.git#egg=django-cacheops
 django-redis==4.10.0
 collectfast==0.6.2
 django-health-check==3.7.0

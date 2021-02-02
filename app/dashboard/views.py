@@ -18,6 +18,7 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import base64
 import hashlib
 import html
 import json
@@ -232,7 +233,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected', 'stop_worker'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
     elif event_name == 'worker_paid' and fulfillment:
         kwargs['metadata']['from'] = fulfillment.funder_profile.handle
@@ -577,6 +578,7 @@ def remove_interest(request, bounty_id):
 
     """
     profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    user_handle = request.POST.get('handle')
 
     access_token = request.GET.get('token')
     if access_token:
@@ -597,9 +599,16 @@ def remove_interest(request, bounty_id):
                             status=401)
 
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(request.user, 'stop_work', interest)
-        record_bounty_activity(bounty, request.user, 'stop_work')
+        if user_handle:
+            interest = Interest.objects.get(profile__handle=user_handle, bounty=bounty, bounty__bounty_owner_profile_id=profile_id)
+            activity_type = 'stop_worker'
+        else:
+            interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+            activity_type = 'stop_work'
+
+        record_user_action(request.user, activity_type, interest)
+        record_bounty_activity(bounty, request.user, activity_type, interest)
+
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
@@ -6495,3 +6504,71 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
+
+@csrf_exempt
+def mautic_api(request, endpoint=''):
+
+    if request.user.is_authenticated:
+        response = mautic_proxy(request, endpoint)
+        return response
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+
+def mautic_proxy(request, endpoint=''):
+    params = request.GET
+    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+    headers = {"Authorization": f"Basic {token}"}
+
+    if request.body:
+        body_unicode = request.body.decode('utf-8')
+        payload = json.loads(body_unicode)
+
+    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+    if request.method == 'GET':
+        response = requests.get(url=url, headers=headers, params=params).json()
+    elif request.method == 'POST':
+        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PUT':
+        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PUT':
+        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PATCH':
+        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+
+    return JsonResponse(response)
+
+
+
+@csrf_exempt
+@require_POST
+def mautic_profile_save(request):
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            return JsonResponse(
+                { 'error': _('You must be authenticated') },
+                status=401
+            )
+        mautic_id = request.POST.get('mtcId')
+        profile.mautic_id = mautic_id
+        profile.save()
+
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+    return JsonResponse(
+        {
+            'success': True,
+            'msg': 'Data saved'
+        },
+        status=200
+    )
