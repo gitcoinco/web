@@ -536,6 +536,7 @@ Vue.component('grant-details', {
   },
   mounted: function() {
     let vm = this;
+
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
     if (vm.grant.description_rich_edited) {
