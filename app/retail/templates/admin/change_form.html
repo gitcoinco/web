@@ -5,6 +5,7 @@
     <div class="submit-row">
         {% if 'dashboard/profile' in request.build_absolute_uri %}
             <input type="submit" value="Impersonate" name="_impersonate" value="1">
+            <input type="submit" value="Block User" name="_block_user" value="1">
             {% if not original.squelches.exists %}
                 <input type="submit" value="Squelch Sybil" name="_squelch_sybil" value="1">
             {% else %}

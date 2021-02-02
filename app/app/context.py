@@ -98,6 +98,7 @@ def preprocess(request):
                 'useragent': request.META['HTTP_USER_AGENT'],
                 'referrer': request.META.get('HTTP_REFERER', None),
                 'path': request.META.get('PATH_INFO', None),
+                'session_key': request.session._session_key,
             }
             ip_address = get_ip(request)
             UserAction.objects.create(
