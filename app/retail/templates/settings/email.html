@@ -43,11 +43,11 @@
 <script>
 
   function changePreferences() {
-    let mauticObj = {
+    const mauticObj = {
       email:  document.contxt.email,
       github_handle: document.contxt.github_handle
     };
-    let newValues = $('#email-settings input.priv_checkbox').serializeArray()
+    const newValues = $('#email-settings input.priv_checkbox').serializeArray()
     let emailPref = {
       'new_bounty_notifications':true,
       'welcome_mail':true,
