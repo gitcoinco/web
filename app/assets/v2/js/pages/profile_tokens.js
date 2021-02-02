@@ -1,4 +1,9 @@
-// Personal token constants
+// Time token constants
+// Note: "Time Tokens" used to be called "Personal Tokens". To simplify the renaming process,
+// variables, classes, and contracts continue to use the old name, but user-facing text uses the
+// new name. Personal tokens and Time tokens are the same thing, so you will likely see those two
+// phrases used interchangeably throughout the codebase
+
 // Note that this address is also duplicated in board.js
 const factoryAddress = document.contxt.ptoken_factory_address;
 const purchaseTokenName = 'DAI';

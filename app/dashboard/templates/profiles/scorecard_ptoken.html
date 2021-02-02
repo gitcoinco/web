@@ -7,7 +7,7 @@
       {% trans "Token" %}
       <div id="tooltip" class="float-right mt-2">
         <i class='fa fa-info-circle' data-toggle="tooltip" data-html="true" data-delay="1000"
-          data-placement="bottom" title="{% if ptoken %}These tokens represent one hour of @{{ profile.handle }}‘s time. Open a redemption quest to use one today!{% else %}Personal Tokens represent an hour of this users time. To learn more, please reference this <a href='{% url "ptokens_faq" %}'>resource</a>.{% endif %} ">
+          data-placement="bottom" title="{% if ptoken %}These tokens represent one hour of @{{ profile.handle }}‘s time. Open a redemption quest to use one today!{% else %}Time Tokens represent an hour of this users time. To learn more, please reference this <a href='{% url "ptokens_faq" %}'>resource</a>.{% endif %} ">
         </i>
       </div>
     </div>
@@ -32,7 +32,7 @@
         <li id="ptoken-action" data-address="{{ ptoken.token_address }}" data-id="{{ ptoken.id }}">
           {% if is_my_profile %}
             {% if not ptoken  %}
-              <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" href="{% url 'ptoken_quickstart' %}">CREATE A PERSONAL TOKEN</a>
+              <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" href="{% url 'ptoken_quickstart' %}">CREATE A TIME TOKEN</a>
             {% endif %}
           {% else %}
             {% comment %} Buy button: Disable it if user holds no tokens or is not in a valid region {% endcomment %}
