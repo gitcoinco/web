@@ -2933,7 +2933,6 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['brightid_status'] = 'verified'
         if request.GET.get('pull_bright_id_status'):
             context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-
         try:
             context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
         except JSONStore.DoesNotExist:
@@ -3085,6 +3084,23 @@ def authenticate_idena(request, handle):
             "authenticated": True
         }
     })
+
+@login_required
+def recheck_brightid_status(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user'
+        })
+    
+    profile = profile_helper(handle, True)
+    user_brightid_status = get_brightid_status(profile.brightid_uuid)
+    profile.is_brightid_verified = user_brightid_status == 'verified'
+    profile.save(update_fields=['is_brightid_verified'])
+
+    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+    
 
 @login_required
 def recheck_idena_status(request, handle):
