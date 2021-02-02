@@ -1,0 +1,19 @@
+{
+  "symbol": "pETH",
+  "address": "0x27A94869341838D5783368a8503FdA5fbCd7987c",
+  "overview": {
+    "en": "WePiggy is an open source, non-custodial crypto asset lending market protocol.",
+    "zh": "WePiggy 是一个开源，非托管的加密资产借贷市场协议。"
+  },
+  "email": "contact@wepiggy.com",
+  "website": "https://wepiggy.com/",
+  "whitepaper": "https://www.yuque.com/zgryhn/fg3t76/qccll7f",
+  "state": "NORMAL",
+  "published_on": "2021-01-18",
+  "links": {
+    "blog": "https://wepiggy-com.medium.com/",
+    "twitter": "https://twitter.com/wepiggydotcom",
+    "telegram": "https://t.me/wepiggyannouncements",
+    "github": "https://github.com/WePiggy"
+  }
+}
