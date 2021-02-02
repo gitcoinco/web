@@ -9,11 +9,27 @@ const contributeWithBinanceExtension = async (grant, vm) => {
     _alert({ message: `Please ensure your Binance Chain Extension wallet is installed and enabled`}, 'error');
     return;
   }
-  const account_balance = await binance_utils.getAddressBalance(from_address);
 
-  if (Number(account_balance) < amount) {
-    _alert({ message: `Account needs to have more than ${amount} BNB for payout` }, 'error');
-    return;
+  if (!token_name) {
+    token_name = 'BNB';
+  }
+
+  if (token_name === 'BNB') {
+    const account_balance = await binance_utils.getAddressBalance(from_address);
+
+    if (Number(account_balance) < amount) {
+      _alert({ message: `Account needs to have more than ${amount} BNB for payout` }, 'error');
+      return;
+    }
+  } else if (token_name === 'BUSD') {
+    const busd_contract_address = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
+
+    const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
+
+    if (Number(account_balance) < amount ) {
+      _alert({ message: `Account needs to have more than ${amount} BUSD for payout` }, 'error');
+      return;
+    }
   }
 
   binance_utils.transferViaExtension(
