@@ -18,6 +18,7 @@ from django.utils.translation import gettext as _
 
 from retail.emails import premailer_transform
 
+
 """
     Note: "Time Tokens" used to be called "Personal Tokens". To simplify the renaming process,
     variables, classes, and contracts continue to use the old name, but user-facing text uses the
