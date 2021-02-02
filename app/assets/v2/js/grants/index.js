@@ -65,6 +65,8 @@ $(document).ready(() => {
 
     if (style.inline_css) {
       $('style').last().text(style.inline_css);
+    } else {
+      $('style').last().text('');
     }
    
   }
