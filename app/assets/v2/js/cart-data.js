@@ -106,12 +106,18 @@ class CartData {
         grantData.grant_donation_currency = 'ZIL';
       }
     } else if (grantData.tenants.includes('HARMONY')) {
-
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 1;
       }
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'ONE';
+      }
+    } else if (grantData.tenants.includes('BINANCE')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'BNB';
       }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {

@@ -1,4 +1,4 @@
-const contributeWithBinanceExtension = async (grant, vm, modal) => {
+const contributeWithBinanceExtension = async (grant, vm) => {
   const amount = grant.grant_donation_amount;
   const token_name = grant.grant_donation_currency;
   const to_address = grant.binance_payout_address;
@@ -50,7 +50,6 @@ const contributeWithBinanceExtension = async (grant, vm, modal) => {
         }]
       };
 
-      modal.closeModal();
       const apiUrlGrant = `v1/api/contribute`;
 
       fetchData(apiUrlGrant, 'POST', JSON.stringify(payload)).then(response => {
