@@ -5416,8 +5416,7 @@ def post_save_earning(sender, instance, created, **kwargs):
         instance.create_auto_follow()
 
         from economy.utils import watch_txn
-        if instance.txid:
-            if instance.network == 'mainnet':
+        if instance.txid and instance.network == 'mainnet':
                 watch_txn(instance.txid)
 
 def get_my_earnings_counter_profiles(profile_pk):
