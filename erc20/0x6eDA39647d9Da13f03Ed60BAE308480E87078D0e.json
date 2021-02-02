@@ -1,0 +1,19 @@
+{
+    "symbol": "WGX",
+    "address": "0x6eDA39647d9Da13f03Ed60BAE308480E87078D0e",
+    "overview": {
+        "en": "WGX (World Game Protocol) is an underlying protocol based on blockchain technology and token economic model issuance It is also a game value carrier and ecological circulation token that integrates the global game industry and DeFi decentralized finance. It is mainly used for the stimulation, circulation and application of WGX community ecology.WGX is committed to the efficient empowerment of the global game industry. Its unique new market relations of community autonomy, decentralization, supply and demand will maximize the demand for the game market under the trend of digital finance and ignite a new round of industrial explosions.",
+        "zh": "WGX（世界游戏协议）是基于区块链技术与通证经济模型发行的底层协议，同时也是全球游戏产业与DeFi去中心化金融两者相融合的游戏价值载体和生态流通代币，主要用于WGX社区生态的激励、流转以及应用等。WGX致力于高效赋能全球游戏行业，其独具特色的社区自治、去中心化、供需决定的新型市场关系，将在最大限度上激发数字金融趋势下的游戏市场需求，引燃新一轮的产业爆发式增长。"
+    },
+    "email": "asharee@foxmail.com",
+    "website": "http://www.wgxglobal.xyz",
+    "whitepaper": "http://www.wgxglobal.xyz/files/WGX.pdf",
+    "state": "NORMAL",
+    "published_on": "2021-01-05",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+	"links": {
+        "twitter": "https://twitter.com/wgxglobal"
+    }
+}
