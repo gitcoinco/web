@@ -65,6 +65,6 @@ def sync_polkadot_payout(contribution):
                 record_contribution_activity(contribution)
                 contribution.save()
             elif txn_status.get('status') == 'expired':
-                contribution.success = True
-                contribution.tx_cleared = False
+                contribution.tx_cleared = True
+                contribution.success = False
                 contribution.save()
