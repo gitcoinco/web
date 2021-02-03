@@ -640,6 +640,10 @@ class Grant(SuperModel):
             return 0
 
     @property
+    def is_grant_eligible_for_clr(self):
+        return self.is_clr_eligible == True and self.opt_out_clr == False
+
+    @property
     def contributions(self):
         pks = []
         for subscription in self.subscriptions.all():

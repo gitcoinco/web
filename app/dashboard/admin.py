@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
-    Activity, Answer, BlockedURLFilter, BlockedUser, BlockedIP, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    Activity, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
