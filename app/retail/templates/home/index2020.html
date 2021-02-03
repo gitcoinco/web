@@ -134,9 +134,9 @@
             talented developers and leaders of Ethereum’s top companies.
           </p>
           <div class="actions">
-          <a class="btn fe-pulse" href="/hackathon-list"><span>&nbsp;Join a Hackathon&nbsp;</span></a>
-          <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
-          <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
+          <a class="btn fe-pulse" href="{% url 'get_hackathons' %}"><span>&nbsp;Join a Hackathon&nbsp;</span></a>
+          <a class="btn fe-pulse" href="{% url 'explorer' %}"><span>Work on a Bounty</span></a>
+          <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
           </div>
         </div>
         <div class="col-md-4">
@@ -146,17 +146,17 @@
             ecosystem. Get involved by funding, supporting, or mentoring
             projects to help push the Ethereum ecosystem forward.
           </p>
-          <a class="btn fe-pulse actions" href="/grants"><span>Support Grant Projects</span></a>
+          <a class="btn fe-pulse actions" href="{% url 'grants:grants' %}"><span>Support Grant Projects</span></a>
         </div>
       </div>
       <div class="row actions-reverse">
         <div class="col-8">
-          <a class="btn fe-pulse" href="/hackathon-list"><span>Join a Hackathon</span></a>
-          <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
-          <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
+          <a class="btn fe-pulse" href="{% url 'get_hackathons' %}"><span>Join a Hackathon</span></a>
+          <a class="btn fe-pulse" href="{% url 'explorer' %}"><span>Work on a Bounty</span></a>
+          <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
         </div>
         <div class="col-4">
-          <a class="btn fe-pulse" href="/grants"><span>Support Grant Projects</span></a>
+          <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Support Grant Projects</span></a>
         </div>
       </div>
     </div>
