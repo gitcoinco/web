@@ -4920,8 +4920,19 @@ class BlockedUser(SuperModel):
     user = models.OneToOneField(User, related_name='blocked', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        """Return the string representation of a Bounty."""
+        """Return the string representation of a BlockedUser."""
         return f'<BlockedUser: {self.handle}>'
+
+class BlockedIP(SuperModel):
+    """Define the structure of the BlockedIP."""
+
+    addr = models.GenericIPAddressField(null=True, db_index=True)
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text=_('Is the block active?'))
+
+    def __str__(self):
+        """Return the string representation of a BlockedIP."""
+        return f'<BlockedIP: {self.ip_address}>'
 
 
 class Sponsor(SuperModel):
