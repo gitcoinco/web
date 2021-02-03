@@ -131,8 +131,8 @@ def render_new_supporter_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_thank_you_for_supporting_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_thank_you_for_supporting_email(grants_with_subscription):
+    params = {'grants_with_subscription': grants_with_subscription}
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
     subject = _("Thank you for supporting Grants on Gitcoin!")

@@ -41,6 +41,32 @@
 
 {% block scripts %}
 <script>
+
+  function changePreferences() {
+    const mauticObj = {
+      email:  document.contxt.email,
+      github_handle: document.contxt.github_handle
+    };
+    const newValues = $('#email-settings input.priv_checkbox').serializeArray()
+    let emailPref = {
+      'new_bounty_notifications':true,
+      'welcome_mail':true,
+      'roundup':true,
+      'important_product_updates':true,
+      'general':true,
+      'quarterly':true,
+      'grant_recontribute':true,
+    }
+
+    newValues.forEach((val) => {
+      return emailPref[val.name]= !Boolean(val.value)
+    })
+
+    Object.assign(mauticObj, emailPref)
+
+    mt('send', 'pageview', mauticObj);
+  }
+
   $(document).ready(function(){
     // select / deselect all
     $('#select_all').on('click', function(e) {
@@ -70,6 +96,10 @@
 
     Cookies.set('last_language_change', timestamp);
   });
+
+  $('#email-settings').on('submit', function(e) {
+    changePreferences();
+  })
 
 </script>
 {{ block.super }}
