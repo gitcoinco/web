@@ -913,6 +913,7 @@ class Subscription(SuperModel):
         ('CELO', 'CELO'),
         ('ZIL', 'ZIL'),
         ('POLKADOT', 'POLKADOT'),
+        ('KUSAMA', 'KUSAMA'),
         ('HARMONY', 'HARMONY')
     ]
 
