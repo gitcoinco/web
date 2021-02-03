@@ -1365,6 +1365,7 @@ class BountyEvent(SuperModel):
         ('cancel_bounty', 'Cancel Bounty'),
         ('submit_work', 'Submit Work'),
         ('stop_work', 'Stop Work'),
+        ('stop_worker', 'Worker stopped'),
         ('express_interest', 'Express Interest'),
         ('payout_bounty', 'Payout Bounty'),
         ('expire_bounty', 'Expire Bounty'),
@@ -2286,11 +2287,11 @@ class Activity(SuperModel):
         ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
-        # ptokens
-        ('create_ptoken', 'Create personal token'),
-        ('mint_ptoken', 'Mint personal token'),
-        ('edit_price_ptoken', 'Edit personal token price'),
-        ('buy_ptoken', 'Edit personal token price'),
+        # ptokens (formerly called personal tokens, now called time tokens)
+        ('create_ptoken', 'Create time token'),
+        ('mint_ptoken', 'Mint time token'),
+        ('edit_price_ptoken', 'Edit time token price'),
+        ('buy_ptoken', 'Edit time token price'),
         ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
         ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
         ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
@@ -2941,6 +2942,8 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+    is_pro = models.BooleanField(default=False, help_text=_('Is this user upgraded to pro?'))
+    mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, help_text=_('Mautic id to be able to do api requests without user being logged'))
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
@@ -4917,8 +4920,19 @@ class BlockedUser(SuperModel):
     user = models.OneToOneField(User, related_name='blocked', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        """Return the string representation of a Bounty."""
+        """Return the string representation of a BlockedUser."""
         return f'<BlockedUser: {self.handle}>'
+
+class BlockedIP(SuperModel):
+    """Define the structure of the BlockedIP."""
+
+    addr = models.GenericIPAddressField(null=True, db_index=True)
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text=_('Is the block active?'))
+
+    def __str__(self):
+        """Return the string representation of a BlockedIP."""
+        return f'<BlockedIP: {self.ip_address}>'
 
 
 class Sponsor(SuperModel):
@@ -5413,8 +5427,8 @@ def post_save_earning(sender, instance, created, **kwargs):
         instance.create_auto_follow()
 
         from economy.utils import watch_txn
-        if instance.txid:
-            watch_txn(instance.txid)
+        if instance.txid and instance.network == 'mainnet':
+                watch_txn(instance.txid)
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with

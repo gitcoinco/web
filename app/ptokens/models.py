@@ -53,7 +53,7 @@ FACTORY_ADDRESS = settings.PTOKEN_FACTORY_ADDRESS
 
 
 class PersonalTokenQuerySet(models.QuerySet):
-    """Handle the manager queryset for Personal Tokens."""
+    """Handle the manager queryset for Personal Tokens (now called Time Tokens)."""
 
     def visible(self):
         """Filter results down to visible tokens only."""
@@ -77,7 +77,14 @@ class PersonalTokenQuerySet(models.QuerySet):
 
 
 class PersonalToken(SuperModel):
-    """Define the structure of a Personal Token"""
+    """
+    Define the structure of a Time Token
+
+    Note: "Time Tokens" used to be called "Personal Tokens". To simplify the renaming process,
+    variables, classes, and contracts continue to use the old name, but user-facing text uses the
+    new name. Personal tokens and Time tokens are the same thing, so you will likely see those two
+    phrases used interchangeably throughout the codebase
+    """
 
     TOKEN_STATUS_CHOICES = [
         ('open', 'open'),
@@ -247,7 +254,7 @@ class PTokenEvent(SuperModel):
 
 
 class RedemptionToken(SuperModel):
-    """Define the structure of a Redemption PToken"""
+    """Define the structure of a Redemption Time token"""
 
     REDEMPTION_STATUS_CHOICES = [
         ('request', 'requested'),

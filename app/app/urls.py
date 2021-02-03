@@ -78,7 +78,7 @@ urlpatterns = [
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
-    # personal_tokens
+    # personal_tokens (now called Time Tokens)
     re_path(r'^ptoken/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
     re_path(r'^ptoken/faq/?', ptokens.views.faq, name='ptokens_faq'),
     path('ptokens/redemptions/<int:redemption_id>/', ptokens.views.ptoken_redemption, name='token_redemption'),
@@ -218,6 +218,8 @@ urlpatterns = [
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
     url(r'^api/v1/onboard_save/', dashboard.views.onboard_save, name='onboard_save'),
     url(r'^api/v1/file_upload/', dashboard.views.file_upload, name='file_upload'),
+    url(r'^api/v1/mautic/(?P<endpoint>.*)', dashboard.views.mautic_api, name='mautic_api'),
+    url(r'^api/v1/mautic_profile_save/', dashboard.views.mautic_profile_save, name='mautic_profile_save'),
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),

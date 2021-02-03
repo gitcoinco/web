@@ -97,6 +97,10 @@ Vue.mixin({
             vm.grant.description_rich = JSON.stringify(vm.$refs.myQuillEditor.quill.getContents());
             vm.grant.description = vm.$refs.myQuillEditor.quill.getText();
             vm.grant.image_css = `background-color: ${vm.logoBackground};`;
+            if (vm.grant_twitter_handle_1 != vm.grant.twitter_handle_1) {
+              vm.grant.verified = false;
+            }
+            vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -533,6 +537,7 @@ Vue.component('grant-details', {
   mounted: function() {
     let vm = this;
 
+    vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
     if (vm.grant.description_rich_edited) {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));

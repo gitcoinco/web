@@ -14,6 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
+
+  Note: "Time Tokens" used to be called "Personal Tokens". To simplify the renaming process,
+  variables, classes, and contracts continue to use the old name, but user-facing text uses the
+  new name. Personal tokens and Time tokens are the same thing, so you will likely see those two
+  phrases used interchangeably throughout the codebase
 {% endcomment %}
 {% load i18n static add_url_schema avatar_tags %}
 
@@ -64,7 +69,7 @@
           <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
             <template v-if="!user_has_token">
               <div>
-                Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
+                Create a time token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
               </div>
               <div id="showCreationSuccessModal" hidden data-toggle="modal" data-target="#createTokenSuccessModal"></div>
               <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
@@ -79,7 +84,7 @@
               </button>
             </template>
             <template v-else-if="pToken.tx_status === 'success'">
-              <div>Modify your Personal Token</div>
+              <div>Modify your Time Token</div>
               <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#editpTokenModal">
                 Edit
               </button>
@@ -171,7 +176,7 @@
                     </div>
                   </div>
                   <div>
-                    <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" >Complete</button>
+                    <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" >Complete</button>
                     <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                   </div>
                 </div>
