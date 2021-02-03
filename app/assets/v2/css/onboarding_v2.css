@@ -37,10 +37,10 @@
 .testimonial>*>* {
   display: block;
 }
-.modal {
+#onboarding_v2.modal {
   overflow: visible;
 }
-.modal-content {
+#onboarding_v2 .modal-content {
   margin-top: 256px;
 }
 
@@ -74,7 +74,7 @@
     width: 64px;
   }
 
-  .modal-content {
+  #onboarding_v2 .modal-content {
     margin-top: 356px;
   }
 }
