@@ -20,19 +20,39 @@
 <style>
 #header { background: none; }
 </style>
+  <img src="{% static 'v2/images/loading_v2.gif' %}" style="height: 80px; margin-bottom: 18px" />
 
 {% endblock %}
 
 {% block content %}
-<img src="{% static 'v2/images/loading_v2.gif' %}" style="height: 80px; margin-bottom: 18px" />
 <style type="text/css"> #outlook a{padding: 0;}.ReadMsgBody{width: 100%;}.ExternalClass{width: 100%;}.ExternalClass *{line-height: 100%;}body{margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}table, td{border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;}img{border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}p{display: block; margin: 13px 0;}</style> <style type="text/css"> .hidden{display: none !important; width: 0 !important; height: 0 !important; max-height: 0 !important;}@media all and (max-width: 480px){.mj-column-per-19{width: 100% !important;}.mj-column-per-32{width: 100% !important;}.mj-column-per-100{width: 100% !important;}.desktop-labels{display: none !important; width: 0 !important; height: 0 !important; max-height: 0 !important;}.opinionScale>table>tbody>tr>td{padding: 0px 25px !important;}.titleText div{font-size: 19px !important;}.description{padding: 0px !important;}.descriptionText{font-size: 14px !important;}.opinionScaleStep{padding: 5px 0px !important;}.opinionScaleStep a{line-height: 50px !important;}.opinionScaleStep table tbody tr td tbody tr td{font-size: 16px !important; border-right: 1px solid #94AE89 !important; border-radius: 2px !important;}.mobile-label{display: block !important; width: auto !important; height: auto !important; max-height: none !important; padding: 10px 0px 5px 0px !important;}}</style> <style type="text/css"> @media only screen and (min-width:480px){.mj-column-per-100{width: 100% !important;}.mj-column-per-19{width: 19.2% !important;}.mj-column-per-32{width: 32% !important;}}</style>
 <style>
-  body {
-    background-color: #E0FFF2 !important;
+
+  /* mine starts */
+  .section-header {
+    font-weight: 500;
+    text-transform: capitalize;
+    {% comment %} font-family: 'Libre Franklin'; {% endcomment %}
+    font-size: 24px;
+    margin-bottom: 0;
+    margin-top: 62px;
   }
-  .roundup {
+
+  .section-header+hr {
+    height: 4px;
+    background: #15EBB7;
+    width: 80px;
+    border: none;
+  }
+  /* mine ends */
+
+  body {
+    background-color: #FDFAFA !important;
+  }
+  .hackathon-summary {
     background: white;
     padding: 16px 32px;
+    padding-bottom: 72px;
   }
 
   .primary-content {
@@ -64,10 +84,6 @@
 
   .text-left {
     text-align: left;
-  }
-
-  text-center {
-    text-align: center;
   }
 
   .highlight li {
@@ -181,121 +197,121 @@
 
   .gen2-footer-links {
     display: flex;
-    max-width: 840px;
-    margin: auto;
     justify-content: space-around;
 
   }
-
-  .ratings {
-    display: flex;
-    width: 450px;
-    margin: auto;
-    justify-content: space-around;
-  }
-
-  .ratings > li {
-    border-radius: 50px;
-    border: 1px solid #02E2AC;
-    width: 64px;
-    height: 64px;
-    font-size: 2em;
-    box-sizing: border-box;
-    padding-top: 18px;
-    cursor: pointer;
-  }
-
 </style>
 
-<div class="roundup text-left" style="line-height: 1.5em">
+<div class="hackathon-summary" style="line-height: 1.5em">
+
   <center>
-    <img width="75%" class="mint-logo" style="border-style:none; vertical-align:middle; padding: 24px auto;" valign="middle"
-         src="{% static 'v2/images/emails/weekly-mint.svg' %}">
-    <h5>issue #{{ issue }} </h5>
+     <img width="55%" class="mint-logo" style="border-style:none; vertical-align:middle" valign="middle"
+      src="{% static 'v2/images/emails/daily-digest.svg' %}">
+    <br>
+    <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
 
-  </center>
 
-  <div>
-    <p>Hey all!</p>
-    <p>Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇</p>
-    <p>This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the News Submissions as well as the good and critical feedback. 🙏 It's been GR8. </p>😎
-    <p>Enjoy the rest of the email, and we'll catch you next week year.™</p>
-
-    <p>— Justin & The Gitcoin Team</p>
-  </div>
-  <br/><br/>
-  <h1 class="text-center">Blockchain News</h1>
-  <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
-  <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-    <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-    <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-    <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-  <a href="#" class="button">View Hackathon Bounties</a>
-
-  <h1 class="text-center" style="display: block; margin-top: 80px;">Gitcoin Hackathons</h1>
-  <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
-  <div style="display:block; margin: 16px 0 8px">
-    <h3>Goleem Network 2020 Hackathon --<h3>
-    <p style="font-weight: bold">January 5th, 2021</p>
-
-    <p>Scaling Baseline Hackathon 2020 Challenge
-    <b style="color: #11BC92; display: block;">3.402 ETH</b>
-    </p>
-    <p>
-    Enable A Finalized Baseline Workflow To Exit
-    <b style="color: #11BC92; display: block;">1.701 ETH</b>
-    </p>
-    <p>
-    Tokenization Of Baselined Records - Hackaton Challenge
-    <b style="color: #11BC92; display: block;">1.701 ETH</b>
-    </p>
-  </div>
-  <a href="#" class="button">View Hackathon Bounties</a>
+    <code class="text-center">issue #{{ issue }} · {{ release_date|date:"F j, Y" }}</code>
+    <div class="announcements">
+    <p class="text-center section-header">Announcements</p>
+    <hr />
+    <div class="announcement-content text-left">
+      <p>Hey all!</p>
   
-  <h5 style="margin-top: 60px" class="text-center">Rate this Issue</h5>
-  <ul class="ratings text-center">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-  </ul>
-  <h3>Join the conversation</h3>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>   
-  <a href="#" class="button">Join Gitcoin</a>
-  <br/>
-  <br/>
-  </div>
+      <p>Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than
+      Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇</p>
+  
+     <p> This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my
+      last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos
+      will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the
+      News Submissions as well as the good and critical feedback. 🙏 It's been GR8. 😎</p>
+  
+      <p>Enjoy the rest of the email, and we'll catch you next week year.™</p>
+  
+      <p>— Justin & The Gitcoin Team</p>
+    </div>
+    </div>
+  
+    <div class="upcoming">
+    <p class="text-center section-header">Save the date</p>
+    <hr />
+    <p class="text-left grey">Upcoming Hackatons!</p>
+    <div class="upcomings text-left">
+      <h4 class="upcoming-title text-left mb-0" style="padding-top: 0;">Chasing the GHOST networking event</h4>
+      <p style="margin-top: 0; margin-bottom: 0;">2020-08-11</p>
+      <a href="https:google.com" style="color: #1a0dab;">Read More</a>
+    </div>
+    <div class="upcomings text-left">
+      <h4 class="upcoming-title text-left mb-0" style="padding-top: 0;">Chasing the GHOST networking event</h4>
+      <p style="margin-top: 0; margin-bottom: 0;">2020-08-11</p>
+      <a href="https:google.com" style="color: #1a0dab;">Read More</a>
+    </div>
+
+  
+    <div class="trending text-center">
+      <p class="text-center section-header">Trending Avatar</p>
+      <hr>
+      <div style="margin-top: 25px; ">
+        <img class="quest-img-bottom mx-auto" style="max-width: 400px; height: 200px; border-radius: 100px;"
+        src={% static "v2/images/emails/trending.png"%}>
+        <!-- <a href="{{trending_avatar.url}}">
+          <img src='{{trending_avatar.img_url}}' style="max-width: 200px; height: 200px; border-radius: 100px;">
+        </a> -->
+      </div>
+      <div style="margin-top: 25px; ">
+        <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">Try Avatar</a>
+      </div>
+    </div>
+  
+    <div class="quest text-center">
+      <p class="section-header">Quests Daily</p>
+      <hr>
+      <img class="quest-img-bottom" style="margin: 24px auto; max-width: 400px; height: 200px;"
+        src="{% static "v2/images/emails/quest.png"%}">
+      <p style="font-weight: bold; margin-bottom:0">dxdaohackathon</p>
+      <p class="mx-auto " style="margin-top:0; width: 385px;">Considering the design elements / approaches to a very new world. How that approach can
+        heavily impact usability, accessibility, and repeatability.</p>
+      <div style="margin-top: 25px; ">
+        <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">Play Quest</a>
+      </div>
+    </div>
+  
+    <div class="earning text-center">
+      <p class="section-header">Start Earning</p>
+      <hr>
+  
+      <img class="quest-img-bottom" style="margin: 32px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
+        src="{% static "v2/images/emails/dimension-dev.png"%}">
+      <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">dimensiondev</p>
+      <p style="margin-top:0; margin-bottom: 0;">Bounty: Initial Offerings on Mesa</p>
+      <p style="color:#15ebb7; font-weight: 600; margin-top: 5px;">5000 USDC</p>
+      <div style="margin-top: 25px; ">
+        <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">View Bounty</a>
+      </div>
+      
+      <img class="quest-img-bottom" style="margin: 42px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
+        src="{% static "v2/images/emails/dxdao.png"%}">
+      <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">dxdaohackathon</p>
+      <p style="margin-top:0; margin-bottom: 0;">Bounty: Initial Offerings on Mesa</p>
+      <p style="color:#15ebb7; font-weight: 600; margin-top: 5px; margin-bottom: 5px;">5000 USDC</p>
+      <div style="margin-top: 12px; ">
+        <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">View Bounty</a>
+      </div>
+
+    </div>
+    </div>
+  </center>
+  
+
 {% endblock %}
 {% block payout %}
 {% endblock payout %}
 {% block bottom_logo %}{% endblock bottom_logo %}
 
 {% block footer %}
+  
+  <div style="height: 30px; background-color: #15ebb730;">payout wallet: 0x04282938283928392983828383</div>
+
 {% endblock footer %}
 
 
@@ -314,10 +330,9 @@
     <a href="mailto:team@gitcoin.co"><img class="" src="{% static "v2/images/emails/email-2.svg" %}"></a>
 
   </div>
-  <center style="margin-bottom: 80px;">
+
   <p>
     © 2021 Gitcoin. All Rights Reserved.
   </p> 
   <a href="/legal/privacy">Privacy Policy</a> | <a href="/legal/terms">Terms + Conditions</a>
-  </center>
 {% endblock %}

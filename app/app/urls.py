@@ -25,6 +25,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.decorators.cache import cache_page
 from django.views.i18n import JavaScriptCatalog
+from django.views.generic import TemplateView
 
 import avatar.views
 import bounty_requests.views
@@ -573,6 +574,31 @@ urlpatterns = [
     path(
         '_administration/email/new_bounty_daily',
         marketing.views.new_bounty_daily_preview,
+        name='admin_new_bounty_daily'
+    ),
+    path(
+        '_administration/email/daily_digest',
+        TemplateView.as_view(template_name="emails/daily_digest.html"),
+        name='admin_new_bounty_daily'
+    ),
+        path(
+        '_administration/email/hackathon_marketing',
+        TemplateView.as_view(template_name="emails/hackathon_marketing.html"),
+        name='admin_new_bounty_daily'
+    ),
+        path(
+        '_administration/email/hackathon_prize',
+        TemplateView.as_view(template_name="emails/hackathon_prize_listing.html"),
+        name='admin_new_bounty_daily'
+    ),
+        path(
+        '_administration/email/hackathon_summary',
+        TemplateView.as_view(template_name="emails/hackathon_summary.html"),
+        name='admin_new_bounty_daily'
+    ),
+        path(
+        '_administration/email/daily_digest',
+        TemplateView.as_view(template_name="emails/daily_digest.html"),
         name='admin_new_bounty_daily'
     ),
     path('_administration/email/', retail.views.admin_index, name='admin_index_emails'),
