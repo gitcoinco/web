@@ -1,0 +1,18 @@
+{
+    "symbol": "SFIL",
+    "address": "0x965b85D4674F64422c4898C8F8083187f02B32C0",
+    "overview": {
+        "en": " SFIL has created a broader Filecoin computing power market, allowing global compliance funds to enter and exit the market more freely and efficiently. Every SFIL minting means that the true and effective standard computing power of 0.01T Filecoin full deposit is invested in the Filecoin mining network, and the miners holding SFIL can conduct undifferentiated Filecoin mining.Since the price of SFIL anchors the real and effective Filecoin standard computing power, SFIL represents the potential mining capacity and future earnings. Therefore, in the secondary market, SFIL is a Token with no liquidation risk and high-value leverage.",
+        "zh": "SFIL创造了一个更为广阔的Filecoin算力市场，可以让全球范围内的合规资金都可以更加自由和高效地进出该市场。每1枚SFIL的铸造，都意味着真实有效的0.01TFilecoin满存标准算力投入到Filecoin挖矿网络，矿工持有SFIL即可进行无差别的Filecoin挖矿。由于SFIL的价格锚定真实有效的Filecoin标准算力，因此，SFIL代表着潜在的挖矿能力和未来收益，因此，在二级市场，SFIL是没有清算风险的且具备高价值杠杠能力的Token。"
+    },
+    "email": "master@sfil.io",
+    "website": "https://sfil.cybers.group/",
+    "whitepaper": "https://sfil.cybers.group/Filecoin%E6%A0%87%E5%87%86%E7%AE%97%E5%8A%9BSFIL%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "published_on": "2021-01-19",
+	"state": "NORMAL",
+    "initial_price":{
+          "USD":"2 USD"
+    },
+	"links": {
+  }
+}
