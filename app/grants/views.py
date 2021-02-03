@@ -2078,8 +2078,9 @@ def bulk_fund(request):
     successes = []
     failures = []
 
-    batch_grants_mail = []
     profile = get_profile(request)
+    grants_with_payload = []
+
     for (index, grant_id) in enumerate(grant_ids_list):
         try:
             grant = Grant.objects.get(pk=grant_id)
@@ -2124,7 +2125,6 @@ def bulk_fund(request):
         )
 
         try:
-            from grants.tasks import process_grant_contribution
             payload = {
                 # Values that are constant for all donations
                 'checkout_type': request.POST.get('checkout_type'),
@@ -2160,7 +2160,11 @@ def bulk_fund(request):
                 'token_symbol': request.POST.get('token_symbol').split(',')[index],
                 'include_for_clr': json.loads(request.POST.get('include_for_clr', 'true'))
             }
-            process_grant_contribution.delay(grant_id, grant.slug, profile.pk, payload)
+            grants_with_payload.append({
+                'grant_id': grant_id,
+                'grant_slug': grant.slug,
+                'payload': payload
+            })
         except Exception as e:
             failures.append({
                 'active': 'grant_error',
@@ -2174,13 +2178,13 @@ def bulk_fund(request):
 
         successes.append({
             'title': _('Fund - Grant Funding Processed Successfully'),
-            'grant':grant_id,
+            'grant': grant_id,
             'text': _('Funding for this grant was successfully processed and saved.'),
             'success': True
         })
-        batch_grants_mail.append(grant_id)
 
-    # thank_you_for_supporting(batch_grants_mail, profile)
+    from grants.tasks import batch_process_grant_contributions
+    batch_process_grant_contributions.delay(grants_with_payload, profile.pk)
 
     return JsonResponse({
         'success': True,

@@ -101,6 +101,8 @@
   }
 
 </style>
+{% for grant_with_subscription in grants_with_subscription %}
+{% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
 <div class="grant-header">
   <div class="left-grant-header">
     <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
@@ -145,4 +147,6 @@
   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
 </p>
 <hr>
+{% endwith %}
+{% endfor %}
 {% endblock %}

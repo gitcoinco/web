@@ -301,20 +301,21 @@ def new_supporter(grant, subscription):
         translation.activate(cur_language)
 
 
-def thank_you_for_supporting(grant, subscription):
-    if subscription and subscription.negative:
+def thank_you_for_supporting(grants_with_subscription):
+    positive_subscriptions = list(filter(lambda gws: not gws["subscription"].negative, grants_with_subscription))
+    if len(positive_subscriptions) == 0:
         return
 
     from_email = settings.CONTACT_EMAIL
-    to_email = subscription.contributor_profile.email
+    to_email = positive_subscriptions[0]["subscription"].contributor_profile.email
     if not to_email:
-        to_email = subscription.contributor_profile.user.email
+        to_email = positive_subscriptions[0]["subscription"].contributor_profile.user.email
 
     cur_language = translation.get_language()
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_thank_you_for_supporting_email(grant, subscription)
+        html, text, subject = render_thank_you_for_supporting_email(grants_with_subscription)
 
         if not should_suppress_notification_email(to_email, 'thank_you_for_supporting'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])

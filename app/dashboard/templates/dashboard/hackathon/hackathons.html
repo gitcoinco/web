@@ -23,6 +23,7 @@
     {% include 'shared/cards.html' %}
 
     <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/onboarding_v2.css" %}" />
     <style>
       .hackathon-logo-svg {
         height: 4.5rem;
@@ -115,6 +116,7 @@
       </div>
       {% include 'shared/hackathon-list.html' %}
     </div>
+
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
@@ -122,4 +124,6 @@
     {% block 'scripts' %}
     <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
     {% endblock %}
+    {% include "dashboard/hackathon/onboarding_v2.html"%}
+
   </body>

@@ -98,6 +98,7 @@ def preprocess(request):
                 'useragent': request.META['HTTP_USER_AGENT'],
                 'referrer': request.META.get('HTTP_REFERER', None),
                 'path': request.META.get('PATH_INFO', None),
+                'session_key': request.session._session_key,
             }
             ip_address = get_ip(request)
             UserAction.objects.create(
@@ -167,6 +168,7 @@ def preprocess(request):
         'fortmatic_test_key': settings.FORTMATIC_TEST_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
+        'is_pro': profile.is_pro if profile else False,
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
             'host': settings.JS_IPFS_HOST,
