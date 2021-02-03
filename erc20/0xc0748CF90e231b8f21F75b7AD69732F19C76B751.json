@@ -1,0 +1,21 @@
+{
+	"symbol": "DOTC",
+	"address": "0xc0748CF90e231b8f21F75b7AD69732F19C76B751",
+	"overview": {
+		"en": "DOTC, as the first ever decentralized digital asset OTC trading platform , official website www.dotc.pro (backup domain www.dotc.exchange) provides global users with secure, open and transparent OTC services. DOTC is purposed to facilitate the transformation of encrypted token market from centralization to decentralization, create a self-governed, secure and compliant OTC platform for blockchain digital assets and build a highly trusted, transparent, stable, robust and healthy trading ecosystem commited to providing infrastructure for decentralization finance.",
+		"zh": "DOTC是全球第一个去中心化数字资产场外交易平台，官方网址www.dotc.pro（备用域名www.dotc.exchange），为全球用户提供安全、开放、透明的场外交易服务。DOTC的宗旨是推动加密货币交易市场由中心化向去中心化变革， 为资产集中式托管引发的黑客攻击被盗、 平台资管不当、 法币黑产污染封卡导致用户资产遭受损失等行业现状提供解决方案， 致力于成为去中心化金融基础设施。 "
+	},
+	"email": "bd@dotc.pro",
+	"website": "https://www.dotc.pro/",
+	"whitepaper": "https://www.dotc.pro/whitePaper/DOTC-whitepaper.pdf",
+	"state": "NORMAL",
+	"published_on": "2020-11-4",
+	"initial_price": {
+		"ETH": "0.002 ETH"
+	},
+	"links": {
+		"twitter": "https://twitter.com/DotcDapp",
+		"telegram": "https://t.me/DOTCpro",
+		"github": "https://github.com/dotc-pro"
+	}
+}
