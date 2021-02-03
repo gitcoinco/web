@@ -78,7 +78,7 @@ urlpatterns = [
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
-    # personal_tokens
+    # personal_tokens (now called Time Tokens)
     re_path(r'^ptoken/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
     re_path(r'^ptoken/faq/?', ptokens.views.faq, name='ptokens_faq'),
     path('ptokens/redemptions/<int:redemption_id>/', ptokens.views.ptoken_redemption, name='token_redemption'),

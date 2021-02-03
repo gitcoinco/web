@@ -156,7 +156,7 @@ def create_notification(sender, **kwargs):
             activity.profile.user,
             activity.profile.absolute_url,
             'create_ptoken',
-            f'You <b>new personal token {activity.ptoken.token_symbol}</b> has been created!'
+            f'You <b>new time token {activity.ptoken.token_symbol}</b> has been created!'
         )
 
     if activity.activity_type == 'buy_ptoken':

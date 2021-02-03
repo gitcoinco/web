@@ -234,8 +234,6 @@ class TestAssembleLeaderboards(TestCase):
         sum_tips(self.tip, [self.tip_payer_handle])
 
         rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_payers',
-            'yearly_all', 'yearly_fulfilled', 'yearly_payers',
             'monthly_all', 'monthly_fulfilled', 'monthly_payers',
             'weekly_all', 'weekly_fulfilled', 'weekly_payers',
         ]
@@ -243,10 +241,6 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.tip_payer_handle] == self.tip_value
 
         rank_types_not_exists = [
-            'all_earners', 'all_orgs', 'all_tokens',
-            'all_countries', 'all_cities', 'all_continents',
-            'yearly_earners', 'yearly_orgs', 'yearly_tokens',
-            'yearly_countries', 'yearly_cities', 'yearly_continents',
             'monthly_earners', 'monthly_orgs', 'monthly_tokens',
             'monthly_countries', 'monthly_cities', 'monthly_continents',
             'weekly_earners', 'weekly_orgs', 'weekly_tokens',
@@ -260,8 +254,6 @@ class TestAssembleLeaderboards(TestCase):
         sum_tips(self.tip, [self.tip_earner_handle])
 
         rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_earners',
-            'yearly_all', 'yearly_fulfilled', 'yearly_earners',
             'monthly_all', 'monthly_fulfilled', 'monthly_earners',
             'weekly_all', 'weekly_fulfilled', 'weekly_earners',
         ]
@@ -269,10 +261,6 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.tip_earner_handle] == self.tip_value
 
         rank_types_not_exists = [
-            'all_payers', 'all_orgs', 'all_tokens',
-            'all_countries', 'all_cities', 'all_continents',
-            'yearly_payers', 'yearly_orgs', 'yearly_tokens',
-            'yearly_countries', 'yearly_cities', 'yearly_continents',
             'monthly_payers', 'monthly_orgs', 'monthly_tokens',
             'monthly_countries', 'monthly_cities', 'monthly_continents',
             'weekly_payers', 'weekly_orgs', 'weekly_tokens',

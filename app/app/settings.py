@@ -78,6 +78,7 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 
 # Application definition
 INSTALLED_APPS = [
+    'csp',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -152,6 +153,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -299,7 +301,8 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration(), CeleryIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()],
+        traces_sample_rate=0.35
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -741,6 +744,9 @@ MEDIA_CUSTOM_DOMAIN = env('MEDIA_CUSTOM_DOMAIN', default='c.gitcoin.co')
 AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
 if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
+
+CSP_DEFAULT_SRC = False
+CSP_FRAME_ANCESTORS = ("'self'")
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
