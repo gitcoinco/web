@@ -1,3 +1,4 @@
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,30 +14,42 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet"/>
 
-  <link href="/static/landingpage/app.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="{% static "v2/css/fontawesome-all.min.css" %}" rel="stylesheet">
+  
+  <link href="{% static "v2/css/bootstrap.min.css" %}" rel="stylesheet" />
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="{% static "landingpage/app.css" %}" type="text/css" rel="stylesheet" media="screen,projection" />
+  
 
-  <script src="/static/landingpage/town.js"></script>
-  <script src="/static/landingpage/txtRotate.js"></script>
-  <script src="/static/landingpage/sal.js"></script>
-  <script src="/static/landingpage/gitcoin.js"></script>
-  <script src="/static/landingpage/animations.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" %}"></script>
+
+  <script src="{% static "landingpage/town.js" %}"></script>
+  <script src="{% static "landingpage/txtRotate.js" %}"></script>
+  <script src="{% static "landingpage/sal.js" %}"></script>
+  <script src="{% static "landingpage/gitcoin.js" %}"></script>
+  <script src="{% static "landingpage/animations.js" %}"></script>
 </head>
 
 <body>
   <!-- fixed logo-->
   <div id="logo">
     <a href="#">
-      <img src="/static/landingpage/logo_animated.svg" alt="logo" />
+      <img src="{% static "landingpage/logo_animated.svg" %}" alt="logo" />
     </a>
   </div>
+  {% if not user.is_authenticated %}
+  <div class="float-right pt-3 pr-4">
+      <a class="land-btn text-white nav-link login interior" href="{% url 'social:begin' 'github' %}?next=/townsquare" onclick="dataLayer.push({'event': 'login'});">
+        <i class="fab fa-github"></i><span class="nav-link__text">&nbsp;&nbsp;{% trans "Log in" %}</span>
+      </a>
+  </div>
+  {% endif %}
 
   <!-- fixed signup button-->
   <!-- <div id="fixed-signup-button">
     <a class="btn icon fe-pulse"
       href="{% if not github_handle %}/login/github/?next=products{% else %}/townsquare{% endif %}">
-      <img src="/static/v2/images/helmet-white.svg" />
+      <img src="{% static "v2/images/helmet-white.svg" %}" />
       <span class="href"
         href="{% if not github_handle %}/login/github/?next=products{% else %}/townsquare{% endif %}">Enter
         Gitcoin</span>
@@ -47,104 +60,120 @@
 
   <section id="town">
     <figure data-height="10vh" data-speed="1">
-      <img src="/static/landingpage/town_house1.svg" />
+      <img src="{% static "landingpage/town_house1.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="1">
-      <img src="/static/landingpage/town_house2.svg" />
+      <img src="{% static "landingpage/town_house2.svg" %}" />
     </figure>
     <figure data-height="15vh" data-speed="1">
-      <img src="/static/landingpage/town_house3.svg" />
+      <img src="{% static "landingpage/town_house3.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="1">
-      <img src="/static/landingpage/town_house4.svg" />
+      <img src="{% static "landingpage/town_house4.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="1">
-      <img src="/static/landingpage/town_house5.svg" />
+      <img src="{% static "landingpage/town_house5.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="1">
-      <img src="/static/landingpage/town_house6.svg" />
+      <img src="{% static "landingpage/town_house6.svg" %}" />
     </figure>
 
     <figure data-height="20vh" data-speed="2">
-      <img src="/static/landingpage/town_house1.svg" />
+      <img src="{% static "landingpage/town_house1.svg" %}" />
     </figure>
     <figure data-height="20vh" data-speed="2">
-      <img src="/static/landingpage/town_house2.svg" />
+      <img src="{% static "landingpage/town_house2.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="2">
-      <img src="/static/landingpage/town_house3.svg" />
+      <img src="{% static "landingpage/town_house3.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="2">
-      <img src="/static/landingpage/town_house4.svg" />
+      <img src="{% static "landingpage/town_house4.svg" %}" />
     </figure>
     <figure data-height="10vh" data-speed="2">
-      <img src="/static/landingpage/town_house6.svg" />
+      <img src="{% static "landingpage/town_house6.svg" %}" />
     </figure>
 
     <figure data-height="20vh" data-speed="3">
-      <img src="/static/landingpage/town_house1.svg" />
+      <img src="{% static "landingpage/town_house1.svg" %}" />
     </figure>
     <figure data-height="30vh" data-speed="3">
-      <img src="/static/landingpage/town_house2.svg" />
+      <img src="{% static "landingpage/town_house2.svg" %}" />
     </figure>
     <figure data-height="40vh" data-speed="3">
-      <img src="/static/landingpage/town_house4.svg" />
+      <img src="{% static "landingpage/town_house4.svg" %}" />
     </figure>
 
     <figure data-height="30vh" data-speed="3">
-      <img src="/static/landingpage/town_animated_house1.svg" />
+      <img src="{% static "landingpage/town_animated_house1.svg" %}" />
     </figure>
   </section>
 
   <!-- section intro : this is the welcome area.-->
 
   <section id="intro">
-    <div>
-      <h1>
-        <!-- text carusell -->
-        <span class="txt-rotate" data-period="1500" data-rotate='[ "Learn", "Earn", "Network", "Build"]'>
-        </span>
-        at Gitcoin.<br />
-        Earn money while building open source decentralized applications,
-        learning new technologies and meeting like-minded developers.
-      </h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7">
+        <h1>
+          <!-- text carusell -->
+          <span class="txt-rotate" data-period="1500" data-rotate='[ "Learn", "Earn", "Network", "Build"]'>
+          </span>
+          at Gitcoin.<br />
+          Earn money while building open source decentralized applications,
+          learning new technologies, and meeting like-minded developers.
+        </h1>
+        </div>
+      </div><br><br>
+      <div class="row action-text">
+        <div class="col-md-8" style="align-self: start;">
+          <h2>Here to Earn?</h2>
+          <p>
+            Build exciting projects and upskill on development while earning
+            Ethereum and other tokens. Find mentorship by connecting with
+            talented developers and leaders of Ethereum’s top companies.
+          </p>
+          <div class="actions">
+          <a class="btn fe-pulse" href="{% url 'get_hackathons' %}"><span>&nbsp;Join a Hackathon&nbsp;</span></a>
+          <a class="btn fe-pulse" href="{% url 'explorer' %}"><span>Work on a Bounty</span></a>
+          <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h2>Here to Support?</h2>
+          <p>
+            Discover great open source projects working hard to impact the
+            ecosystem. Get involved by funding, supporting, or mentoring
+            projects to help push the Ethereum ecosystem forward.
+          </p>
+          <a class="btn fe-pulse actions" href="{% url 'grants:grants' %}"><span>Support Grant Projects</span></a>
+        </div>
+      </div>
+      <div class="row actions-reverse">
+        <div class="col-8">
+          <a class="btn fe-pulse" href="{% url 'get_hackathons' %}"><span>Join a Hackathon</span></a>
+          <a class="btn fe-pulse" href="{% url 'explorer' %}"><span>Work on a Bounty</span></a>
+          <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
+        </div>
+        <div class="col-4">
+          <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Support Grant Projects</span></a>
+        </div>
+      </div>
     </div>
 
     <figure>
-      <img id="introLearn" class="floating" src="/static/landingpage/introLearn_animation.svg" />
-      <img id="introEarn" class="floating hidden" src="/static/landingpage/introEarn_animation.svg" />
-      <img id="introNetwork" class="floating hidden" src="/static/landingpage/introNetwork_animation.svg" />
-      <img id="introBuild" class="floating hidden" src="/static/landingpage/introBuild_animation.svg" />
+      <img id="introLearn" class="floating" src="{% static "landingpage/introLearn_animation.svg" %}" />
+      <img id="introEarn" class="floating hidden" src="{% static "landingpage/introEarn_animation.svg" %}" />
+      <img id="introNetwork" class="floating hidden" src="{% static "landingpage/introNetwork_animation.svg" %}" />
+      <img id="introBuild" class="floating hidden" src="{% static "landingpage/introBuild_animation.svg" %}" />
     </figure>
   </section>
 
   <!-- what is gitcoin -->
 
   <section id="whatisgitcoin">
-    <div class="grid">
-      <div>
-        <h2>Here to earn?</h2>
-        <p>
-          Build exciting projects and upskill on development while earning
-          Ethereum and other tokens. Find mentorship by connecting with
-          talented developers and leaders of Ethereum’s top companies.
-        </p>
-        <a class="btn fe-pulse" href="/hackathon-list"><span>Join a Hackathon</span></a>
-        <a class="btn fe-pulse" href="/explorer"><span>Work on a Bounty</span></a>
-        <a class="btn fe-pulse" href="/grants"><span>Get Grant Funding</span></a>
-      </div>
-      <div>
-        <h2>Here to Support?</h2>
-        <p>
-          Discover great open source projects working hard to impact the
-          ecosystem. Get involved by funding, supporting, or mentoring
-          projects to help push the Ethereum forward.
-        </p>
-        <a class="btn fe-pulse" href="/grants"><span>Support Grant Projects</span></a>
-      </div>
-    </div>
     <figure>
-      <img loading="lazy" class="floating2" src="/static/landingpage/whatisgitcoin_animated.svg" />
+      <img loading="lazy" class="floating2" src="{% static "landingpage/whatisgitcoin_animated.svg" %}" />
     </figure>
   </section>
 
@@ -205,22 +234,22 @@
   <section id="partners">
     <div class="grid">
       <figure>
-        <img loading="lazy" src="/static/landingpage/partners/arweave.svg" />
+        <img loading="lazy" src="{% static "landingpage/partners/arweave.svg" %}" />
       </figure>
       <figure>
-        <img loading="lazy" src="/static/landingpage/partners/chainlink.svg" />
+        <img loading="lazy" src="{% static "landingpage/partners/chainlink.svg" %}" />
       </figure>
       <figure>
-        <img loading="lazy" src="/static/landingpage/partners/ethereumfoundation.svg" />
+        <img loading="lazy" src="{% static "landingpage/partners/ethereumfoundation.svg" %}" />
       </figure>
       <figure>
-        <img loading="lazy" src="/static/landingpage/partners/near.svg" />
+        <img loading="lazy" src="{% static "landingpage/partners/near.svg" %}" />
       </figure>
       <figure>
-        <img loading="lazy" src="/static/landingpage/partners/protocollabs.svg" />
+        <img loading="lazy" src="{% static "landingpage/partners/protocollabs.svg" %}" />
       </figure>
       <figure>
-        <img loading="lazy" src="/static/landingpage/partners/sia.svg" />
+        <img loading="lazy" src="{% static "landingpage/partners/sia.svg" %}" />
       </figure>
     </div>
   </section>
@@ -248,7 +277,7 @@
       <figure>
         <img loading="lazy" src="https://pbs.twimg.com/profile_images/1219463670431830019/o63Gb8v6_400x400.png" />
         <svg class="twitter-icon">
-          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use>
+          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg" %}#twitter"></use>
         </svg>
 
         <figcaption>
@@ -259,7 +288,7 @@
       <figure>
         <img loading="lazy" src="https://pbs.twimg.com/profile_images/977496875887558661/L86xyLF4_400x400.jpg" />
         <svg class="twitter-icon">
-          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use>
+          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg" %}#twitter"></use>
         </svg>
 
         <figcaption>
@@ -277,7 +306,7 @@
       <figure>
         <img loading="lazy" src="https://pbs.twimg.com/profile_images/1148059058710155264/m317XmT4_400x400.png" />
         <svg class="twitter-icon">
-          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use>
+          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg" %}#twitter"></use>
         </svg>
 
         <figcaption>
@@ -291,7 +320,7 @@
       <figure>
         <img loading="lazy" src="https://pbs.twimg.com/profile_images/1308739599368249344/BCdCYZ7k_400x400.jpg" />
         <svg class="twitter-icon">
-          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use>
+          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg" %}#twitter"></use>
         </svg>
 
         <figcaption>
@@ -316,7 +345,7 @@
       <figure>
         <img loading="lazy" src="https://pbs.twimg.com/profile_images/1228728801858854912/kAlqxuaP_400x400.jpg" />
         <svg class="twitter-icon">
-          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use>
+          <use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg" %}#twitter"></use>
         </svg>
 
         <figcaption>
@@ -409,7 +438,7 @@
   <section id="footerconsensys">
     <figure>
       <a href="https://consensys.net" target="_blank">
-        <img loading="lazy" src="/static/landingpage/consensys_white.svg" />
+        <img loading="lazy" src="{% static "landingpage/consensys_white.svg" %}" />
       </a>
     </figure>
   </section>
