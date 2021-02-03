@@ -174,6 +174,12 @@ function tokenOptionsForGrant(grant) {
   } else if (grant.tenants && grant.tenants.includes('HARMONY')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1000);
     tokenDefault = 'ONE';
+  } else if (grant.tenants && grant.tenants.includes('POLKADOT')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 58);
+    tokenDefault = 'DOT';
+  } else if (grant.tenants && grant.tenants.includes('KUSAMA')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 59);
+    tokenDefault = 'KSM';
   } else {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1);
   }

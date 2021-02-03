@@ -114,6 +114,7 @@ Vue.mixin({
       }
 
       switch (chainId) {
+        case '59':
         case '58': {
           let polkadot_endpoint;
 
@@ -222,8 +223,9 @@ Vue.mixin({
           // ethereum
           type = 'web3_modal';
           break;
+        case '59':
         case '58':
-          // polkadot
+          // 58 - polkadot, 59 - kusama
           type = 'polkadot_ext';
           break;
         case '56':

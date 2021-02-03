@@ -127,6 +127,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                   <!-- Checkout for Harmony Grants -->
                   {% include 'grants/cart/extension/harmony.html' %}
+
+                  <!-- Checkout for Polkadot Grants -->
+                  {% include 'grants/cart/extension/polkadot.html' %}
+
+                  <!-- Checkout for Kusama Grants -->
+                  {% include 'grants/cart/extension/kusama.html' %}
                 </b-tabs>
               </div>
               {% comment %} Cart total {% endcomment %}
@@ -213,6 +219,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
       <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
       <script src="{% static "v2/js/grants/cart/harmony_extension.js" %}"></script>
+    <!-- </template> -->
+
+    <!-- <template v-if="grantsCountByTenant.POLKADOT !== undefined || grantsCountByTenant.KUSAMA !== undefined"> -->
+      <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
+      <script src="{% static "v2/js/grants/cart/polkadot_extension.js" %}"></script>
     <!-- </template> -->
 
     <script src="{% static "v2/js/cart.js" %}"></script>

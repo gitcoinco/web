@@ -1578,6 +1578,7 @@ def grant_edit(request, grant_id):
         celo_payout_address = request.POST.get('celo_payout_address', '0x0') if request.POST.get('celo_payout_address') else '0x0'
         zil_payout_address = request.POST.get('zil_payout_address', '0x0') if request.POST.get('zil_payout_address') else '0x0'
         polkadot_payout_address = request.POST.get('polkadot_payout_address', '0x0') if request.POST.get('polkadot_payout_address') else '0x0'
+        kusama_payout_address = request.POST.get('kusama_payout_address', '0x0') if request.POST.get('kusama_payout_address') else '0x0'
         harmony_payout_address = request.POST.get('harmony_payout_address', '0x0') if request.POST.get('harmony_payout_address') else '0x0'
 
         if (
@@ -1586,6 +1587,7 @@ def grant_edit(request, grant_id):
             celo_payout_address == '0x0' and
             zil_payout_address == '0x0' and
             polkadot_payout_address == '0x0' and
+            kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
@@ -1612,6 +1614,9 @@ def grant_edit(request, grant_id):
 
         if polkadot_payout_address != '0x0':
             grant.polkadot_payout_address = polkadot_payout_address
+
+        if kusama_payout_address != '0x0':
+            grant.kusama_payout_address = kusama_payout_address
 
         if harmony_payout_address != '0x0':
             grant.harmony_payout_address = harmony_payout_address
@@ -1778,12 +1783,14 @@ def grant_new(request):
         celo_payout_address = request.POST.get('celo_payout_address', None)
         zil_payout_address = request.POST.get('zil_payout_address', None)
         polkadot_payout_address = request.POST.get('polkadot_payout_address', None)
+        kusama_payout_address = request.POST.get('kusama_payout_address', None)
         harmony_payout_address = request.POST.get('harmony_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
-            not polkadot_payout_address and not harmony_payout_address
+            not polkadot_payout_address and not kusama_payout_address and
+            not harmony_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1828,6 +1835,7 @@ def grant_new(request):
             'celo_payout_address': celo_payout_address if celo_payout_address else '0x0',
             'zil_payout_address': zil_payout_address if zil_payout_address else '0x0',
             'polkadot_payout_address': polkadot_payout_address if polkadot_payout_address else '0x0',
+            'kusama_payout_address': kusama_payout_address if kusama_payout_address else '0x0',
             'harmony_payout_address': harmony_payout_address if harmony_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
@@ -3114,7 +3122,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY']:
+        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA']:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'

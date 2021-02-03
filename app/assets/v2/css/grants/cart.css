@@ -68,6 +68,11 @@
   padding: 0.5rem 1rem;
 }
 
+.disabled-btn-address {
+  opacity: 0.8;
+  border-color: #eee;
+}
+
 .black {
   color: black;
 }
