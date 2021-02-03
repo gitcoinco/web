@@ -21,12 +21,15 @@ const initPolkadotConnection = async(grant, vm) => {
     format = 2;
   }
 
-  polkadot_utils.connect(polkadot_endpoint).then(res =>{
+  polkadot_utils.connect(polkadot_endpoint).then(() =>{
     polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
       initComplete(null, grant, vm);
     }).catch(err => {
       initComplete(err);
     });
+  }).catch(err => {
+    console.log(err);
+    _alert('Error connecting to polkadot network', 'error');
   });
 
   // step 3: allow user to select address on successful connection
@@ -123,8 +126,7 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
       const apiUrlBounty = `v1/api/contribute`;
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
-        console.log(response);
-        console.log(payload);
+
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
 
