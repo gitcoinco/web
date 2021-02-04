@@ -79,6 +79,7 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 # Application definition
 INSTALLED_APPS = [
     'csp',
+    'compressor',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -195,6 +196,16 @@ TEMPLATES = [{
         ],
     },
 }]
+
+# Sass set-up
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+]
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
