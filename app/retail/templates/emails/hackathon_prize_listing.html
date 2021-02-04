@@ -20,7 +20,7 @@ along with this program. If not, see
 {% block header %}
 <style>
   #header {
-    background: none;
+    background: none; padding-bottom: 0
   }
 </style>
 <img src="{% static 'v2/images/loading_v2.gif' %}" style="height: 80px; margin-bottom: 18px" />
@@ -318,6 +318,8 @@ along with this program. If not, see
   .gen2-footer-links {
     display: flex;
     justify-content: space-around;
+    max-width: 840px;
+    margin: auto;
 
   }
 </style>
@@ -329,24 +331,25 @@ along with this program. If not, see
     <br>
     <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
     <h1 class="text-left">New Prize Listed</h1>
-    <h4 class="text-left" style="padding-top: .5em; margin-top 24px; ">
+    <p class="text-left" style="padding-top: .5em; margin-top 24px; ">
       Lorem ipsLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
       dolore magna aliqua.
-    </h4>
+    </p>
     <div class="text-left">
       <h3 style="margin-bottom: 0;">Baseline Protocol 2020 Hackathon --</h3>
       <p style="margin-top: 0;">January 6th, 2021</p>
 
       <p style="margin-top: 0; margin-bottom: 0;">Scaling Baseline Hackathon 2020 Challenge</p>
-      <p style="margin-top: 0; color: aqua;">3.402 ETH</p>
+      <p style="margin-top: 0;color: #11BC92; font-weight 700;">3.402 ETH</p>
       <br>
       <a href="#" class="button" style="margin-top: 52px;">Read more</a>
       <br>
 
       <h2 style="margin-bottom: 0; margin-top: 52px;">Join hackathon now</h2>
-      <h4 class="text-left" style="padding-top: 12px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+      <p class="text-left" style="padding-top: 12px; font-weight normal; !important">Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
         dicta est, culpa quia facere eius eveniet doloribus ea illo iste molestiae at illum dolore asperiores vel
-        laborum quas sint laboriosam.</h4>
+        laborum quas sint laboriosam.</p>
+      <a href="#" class="button" style="margin-bottom: 40px; display: inline-block;"> Join Gitcoin </a>
     </div>
 
   </center>
@@ -361,28 +364,26 @@ along with this program. If not, see
   <div style="height: 30px; background-color: #15ebb730;">payout wallet: 0x04282938283928392983828383</div>
 
   {% endblock footer %}
-
-
-  {% block gen2_footer_links %}
+ 
+{% block gen2_footer_links %}
 
   <div class="gen2-footer-links">
 
-    <a href="https://www.facebook.com/GetGitcoin"><img class="" src="{% static " v2/images/emails/facebook-2.svg"
-        %}"></a>
+    <a href="https://www.facebook.com/GetGitcoin"><img class="" src="{% static "v2/images/emails/facebook-2.svg" %}"></a>
 
-    <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="" src="{% static "
-        v2/images/emails/youtube-2.svg" %}"></a>
+    <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="" src="{% static "v2/images/emails/youtube-2.svg" %}"></a>
 
-    <a href="https://www.twitter.com/gitcoin"><img class="" src="{% static " v2/images/emails/twitter-2.svg" %}"></a>
+    <a href="https://www.twitter.com/gitcoin"><img class="" src="{% static "v2/images/emails/twitter-2.svg" %}"></a>
 
-    <a href="http://github.com/gitcoinco/"><img class="" src="{% static " v2/images/emails/github-2.svg" %}"></a>
-
-    <a href="mailto:team@gitcoin.co"><img class="" src="{% static " v2/images/emails/email-2.svg" %}"></a>
+    <a href="http://github.com/gitcoinco/"><img class="" src="{% static "v2/images/emails/github-2.svg" %}"></a>
+    
+    <a href="mailto:team@gitcoin.co"><img class="" src="{% static "v2/images/emails/email-2.svg" %}"></a>
 
   </div>
-
+  <center style="margin-bottom: 80px;">
   <p>
     © 2021 Gitcoin. All Rights Reserved.
-  </p>
+  </p> 
   <a href="/legal/privacy">Privacy Policy</a> | <a href="/legal/terms">Terms + Conditions</a>
-  {% endblock %}
+  </center>
+{% endblock %}

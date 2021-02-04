@@ -1626,6 +1626,14 @@ def daily_digest(request):
     response_html = premailer_transform(render_to_string("emails/daily_digest.html", {}))
     return HttpResponse(response_html)
 
+def hackathon_prize(request):
+    response_html = premailer_transform(render_to_string("emails/hackathon_prize_listing.html", {}))
+    return HttpResponse(response_html)
+
+def hackathon_summary(request):
+    response_html = premailer_transform(render_to_string("emails/hackathon_summary.html", {}))
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def quarterly_roundup(request):

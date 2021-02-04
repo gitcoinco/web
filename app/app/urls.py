@@ -579,7 +579,7 @@ urlpatterns = [
     path(
         '_administration/email/daily_digest',
         retail.emails.daily_digest,
-        name='admin_new_bounty_daily'
+        name='admin_view_daily_digest'
     ),
         path(
         '_administration/email/hackathon_marketing',
@@ -588,13 +588,13 @@ urlpatterns = [
     ),
         path(
         '_administration/email/hackathon_prize',
-        TemplateView.as_view(template_name="emails/hackathon_prize_listing.html"),
-        name='admin_new_bounty_daily'
+        retail.emails.hackathon_prize,
+        name='admin_view_hackathon_prize'
     ),
         path(
         '_administration/email/hackathon_summary',
-        TemplateView.as_view(template_name="emails/hackathon_summary.html"),
-        name='admin_new_bounty_daily'
+        retail.emails.hackathon_prize,
+        name='admin_view_hackathon_summary'
     ),
         path(
         '_administration/email/daily_digest',
