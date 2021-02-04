@@ -1,0 +1,28 @@
+{
+  "symbol": "LIT",
+  "address": "0xb59490aB09A0f526Cc7305822aC65f2Ab12f9723",
+  "overview":{
+        "en": "Litentry is a decentralized identity aggregation protocol across multiple networks, featuring a Decentralized Identity (DID) indexing mechanism and a Substrate-based credit computation network.",
+        "zh": "Litentry是基于多网络的去中心化身份聚合协议，拥有去中心化身份（DID）索引机制和基于Substrate的信用计算网络。"
+  },
+  "email": "info@litentry.com",
+  "website": "https://www.litentry.com/",
+  "whitepaper": "https://8e05e2d3-ada2-45dd-8426-b69a066e9210.filesusr.com/ugd/760d3a_2801034aeb0e400bb0e5850d1240f53b.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-01-24",
+  "initial_price":{
+        "ETH":"0.0 ETH",
+        "USD":"0.25 USD",
+        "BTC":"0.0 BTC"
+  },
+  "links": {
+    "blog": "https://litentry.medium.com/",
+    "twitter": "https://twitter.com/litentry",
+    "telegram": "https://t.me/Litentry",
+    "github": "https://github.com/litentry",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": "https://litentry.medium.com/"
+  }
+}
