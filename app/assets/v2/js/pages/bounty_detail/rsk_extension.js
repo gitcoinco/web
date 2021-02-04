@@ -2,8 +2,6 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
-  const from_address = vm.bounty.bounty_owner_address;
-
 
   // 1. init rsk provider
   const rskHost = "https://public-node.testnet.rsk.co"
@@ -11,23 +9,33 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
-  
-  // 2. construct txn 
-  const tx_args = {
-    to: to_address.toLowerCase(),
-    from: from_address.toLowerCase(),
-    value: rskClient.utils.toWei(String(amount)),
-    gasPrice: '0x3938700',
-    gas: rskClient.utils.toHex(318730),
-    gasLimit: rskClient.utils.toHex(318730),
-    nonce: await rskClient.eth.getTransactionCount(from_address.toLowerCase())
-  };
 
-  // 3. sign transaction
-  rskClient.eth.sendTransaction(
-    tx_args,
-    (error, result) => callback(error, result)
-  );
+  // TODO: Prompt user to unlock wallet if ethereum.selectedAddress is not present
+
+
+  // 2. construct + sign txn via nifty
+  if (token_name == 'R-BTC') {
+    const tx_args = {
+      to: to_address.toLowerCase(),
+      from: ethereum.selectedAddress,
+      value: rskClient.utils.toWei(String(amount)), // TODO: Figure out
+      gasPrice: rskClient.utils.toHex(5 * Math.pow(10, 9)),
+      gas: rskClient.utils.toHex(318730),
+      gasLimit: rskClient.utils.toHex(318730)
+    };
+
+    ethereum.request(
+      {
+        method: 'eth_sendTransaction',
+        params: [tx_args],
+      },
+      (error, result) => callback(error, ethereum.selectedAddress, result)
+    );
+
+  } else {
+    // ERC 20 for RSK
+  }
+
 
   function callback(error, from_address, txn) {
     if (error) {
