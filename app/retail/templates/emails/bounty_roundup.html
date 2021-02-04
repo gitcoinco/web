@@ -187,25 +187,24 @@
     margin: auto;
     justify-content: space-around;
   }
+  @media only screen and (min-width:480px) {
 
-  .ratings {
-    display: flex;
-    width: 450px;
-    margin: auto;
-    justify-content: space-around;
+    .rate-link {
+      height: 60px !important;
+      width: 60px !important;
+      padding: 6px;
+    }
   }
 
-  .ratings > li {
-    border-radius: 50px;
+  
+  .rate-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
     border: 1px solid #02E2AC;
-    width: 64px;
-    height: 64px;
-    font-size: 1.2`em;
-    box-sizing: border-box;
-    padding-top: 18px;
-    cursor: pointer;
-    margin-top: .5em;
-    margin-bottom: .5em;
   }
 
 </style>
@@ -279,14 +278,21 @@
   </div>
   <a href="#" class="button">View Hackathon Bounties</a>
   
-  <h5 style="margin-top: 60px" class="text-center">Rate this Issue</h5>
-  <ul class="ratings text-center">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-  </ul>
+  <div class="market-rate" style="text-align: center;">
+    <div style="margin:0px auto;max-width:600px;background:#FFFFFF;">
+      <p>Was this email helpful?</p>
+      <a class="rate-link" href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=1" target="_blank">1</a>
+      <a class="rate-link" href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=2" target="_blank">2</a>
+      <a class="rate-link" href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=3" target="_blank">3</a>
+      <a class="rate-link" href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=4" target="_blank">4</a>
+      <a class="rate-link" href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=5" target="_blank">5</a>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin: 12px auto; max-width: 300px;">
+      <span>No</span>
+      <span>Yes</span>
+    </div>
+  </div>
+
   <h3>Join the conversation</h3>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>   
   <a href="#" class="button">Join Gitcoin</a>
