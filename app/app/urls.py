@@ -578,7 +578,7 @@ urlpatterns = [
     ),
     path(
         '_administration/email/daily_digest',
-        TemplateView.as_view(template_name="emails/daily_digest.html"),
+        retail.emails.daily_digest,
         name='admin_new_bounty_daily'
     ),
         path(

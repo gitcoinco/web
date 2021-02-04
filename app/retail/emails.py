@@ -1622,6 +1622,11 @@ def roundup(request):
     return HttpResponse(response_html)
 
 
+def daily_digest(request):
+    response_html = premailer_transform(render_to_string("emails/daily_digest.html", {}))
+    return HttpResponse(response_html)
+
+
 @staff_member_required
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats

@@ -18,9 +18,9 @@
 {% load i18n static humanize avatar_tags kudos_extras %}
 {% block header %}
 <style>
-#header { background: none; }
+#header { background: none; padding-bottom: 0; }
 </style>
-  <img src="{% static 'v2/images/loading_v2.gif' %}" style="height: 80px; margin-bottom: 18px" />
+  <img src="{% static 'v2/images/loading_v2.gif' %}" style="height: 80px; " />
 
 {% endblock %}
 
@@ -32,7 +32,6 @@
   .section-header {
     font-weight: 500;
     text-transform: capitalize;
-    {% comment %} font-family: 'Libre Franklin'; {% endcomment %}
     font-size: 24px;
     margin-bottom: 0;
     margin-top: 62px;
@@ -197,8 +196,9 @@
 
   .gen2-footer-links {
     display: flex;
+    max-width: 840px;
+    margin: auto;
     justify-content: space-around;
-
   }
 </style>
 
@@ -314,7 +314,7 @@
 
 {% endblock footer %}
 
-
+ 
 {% block gen2_footer_links %}
 
   <div class="gen2-footer-links">
@@ -330,9 +330,10 @@
     <a href="mailto:team@gitcoin.co"><img class="" src="{% static "v2/images/emails/email-2.svg" %}"></a>
 
   </div>
-
+  <center style="margin-bottom: 80px;">
   <p>
     © 2021 Gitcoin. All Rights Reserved.
   </p> 
   <a href="/legal/privacy">Privacy Policy</a> | <a href="/legal/terms">Terms + Conditions</a>
+  </center>
 {% endblock %}
