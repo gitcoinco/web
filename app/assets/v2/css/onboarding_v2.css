@@ -1,31 +1,3 @@
-.benefits {
-  margin: 16px 0 24px;
-}
-
-.benefits p>* {
-  display: block;
-  margin: auto;
-  text-align: center;
-}
-
-.benefits>div:nth-child(2n) {
-  border-left: 1px solid #ccc;
-}
-
-.benefits>div {
-  border-bottom: 1px solid #ccc;
-  padding: 16px 6px 8px;
-}
-
-.benefits>div:nth-child(5),
-.benefits>div:nth-child(6) {
-  border-bottom: 0;
-}
-
-.benefits .fa {
-  width: 48px;
-}
-
 .testimonial {
   display: flex;
   flex-wrap: wrap;
@@ -34,9 +6,38 @@
   align-items: center;
 }
 
-.testimonial>*>* {
+.testimonial > * > * {
   display: block;
 }
+
+.benefits {
+  margin: 16px 0 24px;
+}
+
+.benefits p > * {
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+
+.benefits > div {
+  border-bottom: 1px solid #ccc;
+  padding: 16px 6px 8px;
+}
+
+.benefits > div:nth-child(2n) {
+  border-left: 1px solid #ccc;
+}
+
+.benefits > div:nth-child(5),
+.benefits > div:nth-child(6) {
+  border-bottom: 0;
+}
+
+.benefits .fa {
+  width: 48px;
+}
+
 #onboarding_v2.modal {
   overflow: visible;
 }
@@ -85,7 +86,7 @@
   }
 
   .benefits p,
-  .benefits p>* {
+  .benefits p > * {
     display: flex;
     text-align: left;
   }
@@ -94,7 +95,7 @@
     text-align: center !important;
   }
 
-  .benefits p>* {
+  .benefits p > * {
     margin: 0;
   }
 
@@ -103,7 +104,7 @@
     width: 48px;
   }
 
-  .benefits>div {
+  .benefits > div {
     border: 0 !important;
   }
 
