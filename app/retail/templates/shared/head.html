@@ -33,9 +33,8 @@
 
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 <link rel="stylesheet" href="{% static "v2/css/search.css" %}">
-{% compress css %}
-  <link rel="stylesheet" type="text/x-scss" href="{% static 'v3/scss/bootstrap/bootstrap.scss' %}" />
-  <link rel="stylesheet" type="text/x-scss" href="{% static 'v3/scss/vue-select/vue-select.scss' %}" />
+{% compress css file libs %}
+  <link rel="stylesheet" type="text/x-scss" href="{% static 'v3/scss/lib/index.scss' %}" />
 {% endcompress %}
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
