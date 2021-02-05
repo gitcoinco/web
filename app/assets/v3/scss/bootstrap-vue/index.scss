@@ -1,0 +1,17 @@
+// --- BootstrapVue Custom SCSS ---
+
+// Requires at least the Bootstrap functions, variables and
+// mixins to be imported first
+
+// Include variables and utilities first
+@import "variables";
+@import "utilities";
+
+// General styling needed for special form controls
+@import "custom-controls";
+
+// Include custom SCSS for components
+@import "components/index";
+
+// Include custom SCSS for icons
+@import "icons/index";
