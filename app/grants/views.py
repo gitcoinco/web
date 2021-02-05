@@ -827,8 +827,8 @@ def get_bg(grant_type):
 def get_policy_state(policy, request):
     return {
         "url_pattern": policy.url_pattern,
-        "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else None,
-        "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else None,
+        "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else '',
+        "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else '',
         "inline_css": policy.inline_css
     }
 
