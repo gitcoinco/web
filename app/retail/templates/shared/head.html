@@ -15,11 +15,11 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static is_in_list matches %}
+{% load compress %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
 <link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
 <link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
 <link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
 <link rel="preload" href="{% static "v2/css/fontawesome-all.min.css" %}" as="style">
 <link rel="preload" href="{% static "v2/css/lib/typography.css" %}" as="style">
@@ -34,7 +34,9 @@
 
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 <link rel="stylesheet" href="{% static "v2/css/search.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+{% compress css %}
+  <link rel="stylesheet" type="text/x-scss" href="{% static 'v3/scss/bootstrap/bootstrap.scss' %}" />
+{% endcompress %}
 <link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
