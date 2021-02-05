@@ -10,7 +10,7 @@ const toggleStyle = function(style) {
 
   let banner;
 
-  if (style.bg) {
+  if (style && style.bg) {
     banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
   } else {
     banner = `url("${ style.banner_image }") center  no-repeat`;
