@@ -3,6 +3,11 @@ let grantsHasNext = false;
 let numGrants = '';
 
 const toggleStyle = function(style) {
+
+  if (!style) {
+    return;
+  }
+
   let banner;
 
   if (style.bg) {
