@@ -392,8 +392,19 @@ class Job(SuperModel):
         return f"{self.title}"
 
 
-class RoundupEmail(SuperModel):
+class DailyDigestEmail(SuperModel):
+    from_email = models.EmailField(max_length=255)
+    from_name = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
+    body = models.TextField(max_length=15000, blank=True)
+    bounties_spec = JSONField(default=dict, blank=True)
+    upcoming_hackathon_spec = JSONField(default=dict, blank=True)
+    release_date = models.DateField(default=datetime.now)
 
+    def __str__(self):
+        return self.subject
+
+class RoundupEmail(SuperModel):
     from_email = models.EmailField(max_length=255)
     from_name = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)

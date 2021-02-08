@@ -24,8 +24,13 @@ from django.utils.safestring import mark_safe
 from .models import (
     AccountDeletionRequest, Alumni, EmailEvent, EmailInventory, EmailSubscriber, EmailSupressionList, GithubEvent,
     GithubOrgToTwitterHandleMapping, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, RoundupEmail,
-    SlackPresence, SlackUser, Stat, UpcomingDate,
+    SlackPresence, SlackUser, Stat, UpcomingDate, DailyDigestEmail
 )
+
+
+class DailyDigestEmailAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class RoundupEmailAdmin(admin.ModelAdmin):
@@ -153,3 +158,4 @@ admin.site.register(SlackUser, SlackUserAdmin)
 admin.site.register(SlackPresence, SlackPresenceAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)
 admin.site.register(RoundupEmail, RoundupEmailAdmin)
+admin.site.register(DailyDigestEmail, DailyDigestEmailAdmin)
