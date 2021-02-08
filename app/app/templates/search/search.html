@@ -15,17 +15,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/users.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/default-innersearch-theme.min.css">
+    {% compress css file search %}
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-innersearch.scss" %} >
+    {% endcompress %}
   </head>
 
   <body id="{{ explore }}" class="interior {{active}} g-font-muli">
