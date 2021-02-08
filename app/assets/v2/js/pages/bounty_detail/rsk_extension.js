@@ -4,36 +4,52 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   const token_name = vm.bounty.token_name;
 
   // 1. init rsk provider
-  const rskHost = "https://public-node.testnet.rsk.co"
+  const rskHost = "https://public-node.testnet.rsk.co";
+  // const rskHost = "https://public-node.rsk.co";
   const rskClient = new Web3();
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
 
   // TODO: Prompt user to unlock wallet if ethereum.selectedAddress is not present
-
+  // TODO: Add check to see if balance is present
 
   // 2. construct + sign txn via nifty
   if (token_name == 'R-BTC') {
     const tx_args = {
       to: to_address.toLowerCase(),
       from: ethereum.selectedAddress,
-      value: rskClient.utils.toWei(String(amount)), // TODO: Figure out
-      gasPrice: rskClient.utils.toHex(5 * Math.pow(10, 9)),
+      value: rskClient.utils.toHex(rskClient.utils.toWei(String(amount))),
+      gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
       gas: rskClient.utils.toHex(318730),
       gasLimit: rskClient.utils.toHex(318730)
     };
 
-    ethereum.request(
+    const txHash = await ethereum.request(
       {
         method: 'eth_sendTransaction',
         params: [tx_args],
-      },
-      (error, result) => callback(error, ethereum.selectedAddress, result)
+      }
     );
+
+    callback(null, ethereum.selectedAddress, txHash)
 
   } else {
     // ERC 20 for RSK
+
+    // DOC - 18 - 0xe700691da7b9851f2f35f8b8182c69c53ccad9db
+    // RDOC - 18 - 0x2d919f19d4892381d58edebeca66d5642cef1a1f
+
+    const amountInWei = amount * 1.0 * Math.pow(10, vm.decimals);
+    const amountAsString = new rskClient.utils.BN(BigInt(amountInWei)).toString();
+    const token_contract = new rskClient.eth.Contract(token_abi, vm.bounty.token_address);
+
+    token_contract.methods.transfer(
+      to_address.toLowerCase(),
+      web3.utils.toHex(amountAsString)).send(
+      { from: ethereum.selectedAddress },
+      (error, result) => callback(error, result)
+    );
   }
 
 
