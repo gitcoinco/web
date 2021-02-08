@@ -28,6 +28,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from economy.models import SuperModel
+from grants.utils import get_upload_filename
 
 
 class Alumni(SuperModel):
@@ -400,6 +401,41 @@ class DailyDigestEmail(SuperModel):
     bounties_spec = JSONField(default=dict, blank=True)
     upcoming_hackathon_spec = JSONField(default=dict, blank=True)
     release_date = models.DateField(default=datetime.now)
+
+    def __str__(self):
+        return self.subject
+
+
+class HackathonMarketingEmail(SuperModel):
+    from_email = models.EmailField(max_length=255)
+    from_name = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
+    body = models.TextField(max_length=15000, blank=True)
+    image = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text=('Display image')
+    )
+    bounties_spec = JSONField(default=dict, blank=True)
+    release_date = models.DateField(default=datetime.now)
+
+
+    def __str__(self):
+        return self.subject
+
+class HackathonSummaryEmail(SuperModel):
+    from_email = models.EmailField(max_length=255)
+    from_name = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
+    body = models.TextField(max_length=15000, blank=True)
+    image = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text='Display image'
+    )
+    features = JSONField(default=dict, blank=True)
+    features_2 = JSONField(default=dict, blank=True)
+    upcoming_hackathon_spec = JSONField(default=dict, blank=True)
+    release_date = models.DateField(default=datetime.now)
+
 
     def __str__(self):
         return self.subject

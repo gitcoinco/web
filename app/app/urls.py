@@ -583,7 +583,7 @@ urlpatterns = [
     ),
         path(
         '_administration/email/hackathon_marketing',
-        TemplateView.as_view(template_name="emails/hackathon_marketing.html"),
+        retail.emails.hackathon_marketing,
         name='admin_new_bounty_daily'
     ),
         path(

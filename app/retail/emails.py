@@ -1629,6 +1629,13 @@ def daily_digest(request):
     return HttpResponse(response_html)
 
 
+
+def hackathon_marketing(request):
+    email = request.user.email if request.user.is_authenticated else 'test@123.com'
+    response_html, _, _, _, _ = render_hackathon_marketing_email(email)
+    return HttpResponse(response_html)
+
+
 def render_daily_digest(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
@@ -1673,10 +1680,54 @@ def render_daily_digest(to_email):
     return response_html, response_txt, subject, args.from_email, args.from_name
 
 
-
 def hackathon_prize(request):
     response_html = premailer_transform(render_to_string("emails/hackathon_prize_listing.html", {}))
     return HttpResponse(response_html)
+
+def render_hackathon_marketing_email(to_email):
+    from dashboard.models import Bounty
+    from marketing.models import HackathonMarketingEmail
+    args = HackathonMarketingEmail.objects.order_by('created_on').last()
+
+    subject = args.subject
+    if settings.DEBUG and False:
+        # for debugging email styles
+        email_style = 2
+    else:
+        offset = 2
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
+
+    intro = args.body
+    bounties_spec = args.bounties_spec
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.current().filter(
+                github_url__iexact=nb['url'],
+            ).order_by('-web3_created').first()
+            if bounty:
+                bounties.append({
+                    'obj': bounty,
+                    'primer': nb['primer']
+                })
+        except Exception as e:
+            print(e)
+    print(args.image)
+    params = {
+        'intro': intro,
+        'image': args.image,
+        'subject': args.subject,
+        'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
+        'release_date': args.release_date,
+        'bounties': bounties,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/hackathon_marketing.html", params))
+    response_txt = render_to_string("emails/daily_digest.txt", params)
+
+    return response_html, response_txt, subject, args.from_email, args.from_name
+
 
 def hackathon_summary(request):
     response_html = premailer_transform(render_to_string("emails/hackathon_summary.html", {}))

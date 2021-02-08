@@ -269,19 +269,19 @@
       <p class="section-header">Start Earning</p>
       <hr>
 
-      {% for bounty in bounties %}
-  
-        <img class="quest-img-bottom" style="margin: 32px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
-          src="{% static "v2/images/emails/dimension-dev.png"%}">
-        <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">{{ bounty.obj.bounty_owner_profile.handle }}</p>
-        <p style="margin-top:0; margin-bottom: 0;">{{ bounty.obj.title }}</p>
-        <p style="color:#15ebb7; font-weight: 600; margin-top: 5px;">{{ bounty.obj.value_in_usdt }} USDT</p>
-        <div style="margin-top: 25px; ">
-          <a class="button" style="text-decoration: none;" 
-          href="#">View Bounty</a>
-        </div>
-      
-      {% endfor %}
+        {% for bounty in bounties %}
+    
+          <img class="quest-img-bottom" style="margin: 32px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
+            src="{% static "v2/images/emails/dimension-dev.png"%}">
+          <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">{{ bounty.obj.bounty_owner_profile.handle }}</p>
+          <p style="margin-top:0; margin-bottom: 0;">{{ bounty.obj.title }}</p>
+          <p style="color:#15ebb7; font-weight: 600; margin-top: 5px;">{{ bounty.obj.value_in_usdt }} USDT</p>
+          <div style="margin-top: 25px; ">
+            <a class="button" style="text-decoration: none;" 
+            href="#">View Bounty</a>
+          </div>
+        
+        {% endfor %}
     
     </div>
     </div>

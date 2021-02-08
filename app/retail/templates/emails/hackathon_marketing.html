@@ -345,7 +345,8 @@ along with this program. If not, see
   .gen2-footer-links {
     display: flex;
     justify-content: space-around;
-
+    max-width: 840px;
+    margin: auto;
   }
 </style>
 
@@ -355,13 +356,13 @@ along with this program. If not, see
       src="{% static 'v2/images/emails/hackathons.svg' %}">
     <br>
     <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
-    <div class="feature-2">
+    <div class="feature-2" style="display: flex;">
       <div class="p-2">
-        <h1 class="text-left" style=" font-weight: 400;">Hey Hackers & Builders</h1>
-        <p class="text-left">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.</p>
+        <h1 class="text-left" style=" font-weight: 400;">{{ subject }}</h1>
+         <p style="white-space: pre-wrap;">{{ intro }} </p>
       </div>
-      <img src="/" class="mx-auto feature-img-2" />
+
+      <img src="{{ image.url }}" class="mx-auto feature-img-2" style="object-fit:cover;" />
     </div>
     <div class="text-left">
       <a href="#" class="button text-left">View Hackathon Bounties</a>
@@ -400,8 +401,8 @@ along with this program. If not, see
       <br>
     </div>
 
-    <div class="feature-2">
-      <img class="" src="{% static " v2/images/emails/quote.svg" %}" />
+    <div class="feature-2" style="display: flex; padding: 12px 64px;">
+      <img class="" src="{% static "v2/images/emails/quote.svg" %}" />
       <div style="text-align: left !important; padding: 10px 24px;">
         <h1 style="line-height: 1.6em;">My favorite way
           to track my hackathon
