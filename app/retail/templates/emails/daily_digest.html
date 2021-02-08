@@ -216,19 +216,8 @@
     <p class="text-center section-header">Announcements</p>
     <hr />
     <div class="announcement-content text-left">
-      <p>Hey all!</p>
-  
-      <p>Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than
-      Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇</p>
-  
-     <p> This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my
-      last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos
-      will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the
-      News Submissions as well as the good and critical feedback. 🙏 It's been GR8. 😎</p>
-  
-      <p>Enjoy the rest of the email, and we'll catch you next week year.™</p>
-  
-      <p>— Justin & The Gitcoin Team</p>
+         <p style="white-space: pre-wrap;">{{ intro }} </p>
+
     </div>
     </div>
   
@@ -279,38 +268,30 @@
     <div class="earning text-center">
       <p class="section-header">Start Earning</p>
       <hr>
-  
-      <img class="quest-img-bottom" style="margin: 32px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
-        src="{% static "v2/images/emails/dimension-dev.png"%}">
-      <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">dimensiondev</p>
-      <p style="margin-top:0; margin-bottom: 0;">Bounty: Initial Offerings on Mesa</p>
-      <p style="color:#15ebb7; font-weight: 600; margin-top: 5px;">5000 USDC</p>
-      <div style="margin-top: 25px; ">
-        <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">View Bounty</a>
-      </div>
-      
-      <img class="quest-img-bottom" style="margin: 42px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
-        src="{% static "v2/images/emails/dxdao.png"%}">
-      <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">dxdaohackathon</p>
-      <p style="margin-top:0; margin-bottom: 0;">Bounty: Initial Offerings on Mesa</p>
-      <p style="color:#15ebb7; font-weight: 600; margin-top: 5px; margin-bottom: 5px;">5000 USDC</p>
-      <div style="margin-top: 12px; ">
-        <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">View Bounty</a>
-      </div>
 
+      {% for bounty in bounties %}
+  
+        <img class="quest-img-bottom" style="margin: 32px auto; margin-bottom: 0; max-width: 120px; height: 50px;"
+          src="{% static "v2/images/emails/dimension-dev.png"%}">
+        <p style="font-weight: bold; margin-bottom:0; margin-top: 2px;">{{ bounty.obj.bounty_owner_profile.handle }}</p>
+        <p style="margin-top:0; margin-bottom: 0;">{{ bounty.obj.title }}</p>
+        <p style="color:#15ebb7; font-weight: 600; margin-top: 5px;">{{ bounty.obj.value_in_usdt }} USDT</p>
+        <div style="margin-top: 25px; ">
+          <a class="button" style="text-decoration: none;" 
+          href="#">View Bounty</a>
+        </div>
+      
+      {% endfor %}
+    
     </div>
     </div>
   </center>
   
 
 {% endblock %}
-{% block payout %}
-{% endblock payout %}
 {% block bottom_logo %}{% endblock bottom_logo %}
 
 {% block footer %}
-  
-  <div style="height: 30px; background-color: #15ebb730;">payout wallet: 0x04282938283928392983828383</div>
 
 {% endblock footer %}
 
