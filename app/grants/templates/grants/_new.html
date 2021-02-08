@@ -214,7 +214,7 @@
                 </label>
 
                 <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zilliqa'}">
-                  <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="20"> zilliqa
+                  <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="18"> zilliqa
                 </label>
 
                 <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'harmony'}">
@@ -223,6 +223,13 @@
 
                 <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'binance'}">
                   <input type="radio" name="grant_chain" id="binance_chain" value="binance" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="20"> binance
+
+                <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'polkadot'}">
+                  <input type="radio" name="grant_chain" id="polkadot_chain" value="polkadot" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> polkadot
+                </label>
+
+                <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'kusama'}">
+                  <input type="radio" name="grant_chain" id="kusama_chain" value="kusama" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="20"> kusama
                 </label>
                 {% endif %}
               </div>
@@ -329,7 +336,7 @@
                   <p class="text-black-60 font-caption mb-2">
                     This is where funds from contributors to this grant will be sent
                   </p>
-
+              
                   <input id="binance_payout_address" v-model="form.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
                   <div class="text-danger" v-if="errors.binance_payout_address">
@@ -337,6 +344,39 @@
                   </div>
                 </template>
 
+                <template v-if="chainId == 'polkadot'">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="polkadot_payout_address">
+                    Polkadot Recipient Wallet Address
+                  </label>
+                  <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                  <p class="text-black-60 font-caption mb-2">
+                    This is where funds from contributors to this grant will be sent
+                  </p>
+
+                  <input id="polkadot_payout_address" v-model="form.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                  <div class="text-danger" v-if="errors.polkadot_payout_address">
+                    [[errors.polkadot_payout_address]]
+                  </div>
+                </template>
+
+                <template v-if="chainId == 'kusama'">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="kusama_payout_address">
+                    Kusama Recipient Wallet Address
+                  </label>
+                  <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                  <p class="text-black-60 font-caption mb-2">
+                    This is where funds from contributors to this grant will be sent
+                  </p>
+
+                  <input id="kusama_payout_address" v-model="form.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                  <div class="text-danger" v-if="errors.kusama_payout_address">
+                    [[errors.kusama_payout_address]]
+                  </div>
+                </template>
               </div>
 
 

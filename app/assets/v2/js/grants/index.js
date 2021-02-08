@@ -2,6 +2,30 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
+const toggleStyle = function(style) {
+
+  if (!style) {
+    return;
+  }
+
+  let banner;
+
+  if (style.bg) {
+    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+  } else {
+    banner = `url("${ style.banner_image }") center  no-repeat`;
+  }
+  $('#grant-hero-img').css('background', banner);
+  if (style.background_image) {
+    $('#grant-background-image-mount-point').css('background-image', style.background_image);
+  }
+
+  if (style.inline_css) {
+    $('style').last().text(style.inline_css);
+  } else {
+    $('style').last().text('');
+  }
+};
 
 $(document).ready(() => {
   $('#sort_option').select2({
@@ -51,6 +75,7 @@ $(document).ready(() => {
 
   });
 
+  toggleStyle(document.current_style);
 });
 
 Vue.component('grant-sidebar', {
@@ -89,41 +114,7 @@ Vue.component('grant-sidebar', {
       return window.innerWidth < 576;
     },
     filterLink: function(params) {
-      if (params.type === this.type) {
-        this.filter_grants(params);
-      } else if (params.type === 'collections') {
-        const collections_query = {};
-
-        if (params.featured) {
-          collections_query.featured = true;
-        }
-
-        if (params.keyword) {
-          collections_query.keyword = params.keyword;
-        }
-
-        document.location.href = `/grants/collections?${$.param(collections_query)}`;
-      } else {
-        let target = `/grants/${params.type}`;
-
-        if (this.round_num) {
-          target = `/grants/clr/${this.round_num}?type=${params.type}`;
-
-          if (this.sub_round_slug && !this.customer_name) {
-            target = `/grants/clr/${this.round_num}/${this.sub_round_slug}?type=${params.type}`;
-          }
-
-          if (!this.sub_round_slug && this.customer_name) {
-            target = `/grants/clr/${this.customer_name}/${this.round_num}?type=${params.type}`;
-          }
-
-          if (this.sub_round_slug && this.customer_name) {
-            target = `/grants/clr/${this.customer_name}/${this.round_num}/${this.sub_round_slug}?type=${params.type}`;
-          }
-        }
-
-        document.location.href = target;
-      }
+      return this.filter_grants(params);
     },
     searchKeyword: function() {
       if (this.timeout) {
@@ -298,8 +289,12 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
+        let current_style;
 
         if (filters.type !== null && filters.type !== undefined) {
+          if (!current_style) {
+            current_style = document.all_type_styles[filters.type];
+          }
           this.current_type = filters.type;
           if (this.current_type === 'collections') {
             this.collection_id = null;
@@ -333,10 +328,15 @@ if (document.getElementById('grants-showcase')) {
         if (filters.type === 'collections') {
           this.collectionsPage = 1;
         }
-
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
+        const regex_style = document.all_routing_policies.find(policy => {
+          return new RegExp(policy.url_pattern).test(window.location.href);
+        });
+
+        toggleStyle(regex_style || current_style);
+
       },
       clearSingleCollection: function() {
         this.grants = [];

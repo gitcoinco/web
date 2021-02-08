@@ -1,4 +1,9 @@
-// Personal token constants
+// Time token constants
+// Note: "Time Tokens" used to be called "Personal Tokens". To simplify the renaming process,
+// variables, classes, and contracts continue to use the old name, but user-facing text uses the
+// new name. Personal tokens and Time tokens are the same thing, so you will likely see those two
+// phrases used interchangeably throughout the codebase
+
 // Note that this address is also duplicated in profile_tokens.js and app/ptokens/models.py
 const factoryAddress = document.contxt.ptoken_factory_address;
 
@@ -425,7 +430,7 @@ Vue.mixin({
               change_price(pTokenId, price, transactionHash, network);
               document.ptoken.price = price;
 
-              const successMsg = 'The price of your personal token has successfully been updated!';
+              const successMsg = 'The price of your time token has successfully been updated!';
               const errorMsg = 'Oops, something went wrong changing your token price. Please try again or contact support@gitcoin.co';
 
               await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
@@ -450,7 +455,7 @@ Vue.mixin({
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
 
-                const successMsg = 'The supply of your personal token has successfully been increased!';
+                const successMsg = 'The supply of your time token has successfully been increased!';
                 const errorMsg = 'Oops, something went wrong increasing your token supply. Please try again or contact support@gitcoin.co';
 
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
@@ -470,7 +475,7 @@ Vue.mixin({
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
 
-                const successMsg = 'The supply of your personal token has successfully been decreased!';
+                const successMsg = 'The supply of your time token has successfully been decreased!';
                 const errorMsg = 'Oops, something went wrong decreased your token supply. Please try again or contact support@gitcoin.co';
 
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
@@ -536,8 +541,8 @@ Vue.mixin({
 
         vm.user_has_token = true;
         console.log('Token saved in database', ptokenReponse);
-        const successMsg = 'Congratulations, your personal token has been created successfully!';
-        const errorMsg = 'Oops, something went wrong trying to create your personal token. Please try again or contact support@gitcoin.co';
+        const successMsg = 'Congratulations, your time token has been created successfully!';
+        const errorMsg = 'Oops, something went wrong trying to create your time token. Please try again or contact support@gitcoin.co';
 
         await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
       }).on('error', function(err) {

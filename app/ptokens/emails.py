@@ -19,12 +19,20 @@ from django.utils.translation import gettext as _
 from retail.emails import premailer_transform
 
 
+"""
+    Note: "Time Tokens" used to be called "Personal Tokens". To simplify the renaming process,
+    variables, classes, and contracts continue to use the old name, but user-facing text uses the
+    new name. Personal tokens and Time tokens are the same thing, so you will likely see those two
+    phrases used interchangeably throughout the codebase
+"""
+
+
 def render_ptoken_created(ptoken):
     params = {'ptoken': ptoken}
 
     response_html = premailer_transform(render_to_string("emails/ptoken_created.html", params))
     response_txt = render_to_string("emails/ptoken_created.txt", params)
-    subject = _("🎉 Your new personal token is ready 🎉")
+    subject = _("🎉 Your new time token is ready 🎉")
 
     return response_html, response_txt, subject
 

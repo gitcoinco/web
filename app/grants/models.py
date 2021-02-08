@@ -338,6 +338,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The polkadot wallet address where subscription funds will be sent.'),
     )
+    kusama_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The kusama wallet address where subscription funds will be sent.'),
+    )
     harmony_payout_address = models.CharField(
         max_length=255,
         default='0x0',
@@ -568,6 +575,8 @@ class Grant(SuperModel):
             tenants.append('ZIL')
         if self.polkadot_payout_address and self.polkadot_payout_address != '0x0':
             tenants.append('POLKADOT')
+        if self.kusama_payout_address and self.kusama_payout_address != '0x0':
+            tenants.append('KUSAMA')
         if self.harmony_payout_address and self.harmony_payout_address != '0x0':
             tenants.append('HARMONY')
         if self.binance_payout_address and self.binance_payout_address != '0x0':
@@ -805,7 +814,9 @@ class Grant(SuperModel):
             'zil_payout_address': self.zil_payout_address,
             'polkadot_payout_address': self.polkadot_payout_address,
             'harmony_payout_address': self.harmony_payout_address,
-            'binance_payout_address': self.binance_payout_address
+            'binance_payout_address': self.binance_payout_address,
+            'kusama_payout_address': self.kusama_payout_address,
+            'harmony_payout_address': self.harmony_payout_address
         }
 
     def repr(self, user, build_absolute_uri):
@@ -859,6 +870,7 @@ class Grant(SuperModel):
                 'celo_payout_address': self.celo_payout_address,
                 'zil_payout_address': self.zil_payout_address,
                 'polkadot_payout_address': self.polkadot_payout_address,
+                'kusama_payout_address': self.kusama_payout_address,
                 'harmony_payout_address': self.harmony_payout_address,
                 'binance_payout_address': self.binance_payout_address,
                 'token_address': self.token_address,
@@ -913,8 +925,9 @@ class Subscription(SuperModel):
         ('CELO', 'CELO'),
         ('ZIL', 'ZIL'),
         ('POLKADOT', 'POLKADOT'),
+        ('KUSAMA', 'KUSAMA'),
         ('HARMONY', 'HARMONY'),
-        ('BINANCE', 'BINANCE')
+        ('BINANCE', 'BINANCE'),
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))

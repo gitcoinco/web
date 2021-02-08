@@ -26,7 +26,7 @@ from django.utils.safestring import mark_safe
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
-    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    Activity, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
@@ -85,6 +85,9 @@ class BlockedUserAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
     list_display = ['created_on', '__str__']
 
+class BlockedIPAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 class ProfileViewAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -235,6 +238,24 @@ class ProfileAdmin(admin.ModelAdmin):
             obj.save()
             self.message_user(request, "Recalc done")
             return redirect(obj.admin_url)
+        if "_block_user" in request.POST:
+            bu = BlockedUser.objects.create(
+                handle=obj,
+                active=True,
+                user=obj.user,
+                comments=f"blocked by {request.user.username}"
+                )
+
+            # delete sessions for this user so they cant user their existin sessions
+            from django.contrib.sessions.models import Session
+            session_keys = [ele.metadata.get('session_key') for ele in obj.actions.filter(action='Visit')]
+            session_keys = [ele for ele in session_keys if ele]
+            num_sessions = len(session_keys)
+            sessions = Session.objects.filter(session_key__in=session_keys)
+            sessions.delete()
+
+            self.message_user(request, f"Block done + {num_sessions} sessions invalidated")
+            return redirect(bu.admin_url)
         if "_impersonate" in request.POST:
             return redirect(f"/impersonate/{obj.user.pk}/")
         return super().response_change(request, obj)
@@ -602,6 +623,7 @@ admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
+admin.site.register(BlockedIP, BlockedIPAdmin)
 admin.site.register(BlockedUser, BlockedUserAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)

@@ -2287,11 +2287,11 @@ class Activity(SuperModel):
         ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
-        # ptokens
-        ('create_ptoken', 'Create personal token'),
-        ('mint_ptoken', 'Mint personal token'),
-        ('edit_price_ptoken', 'Edit personal token price'),
-        ('buy_ptoken', 'Edit personal token price'),
+        # ptokens (formerly called personal tokens, now called time tokens)
+        ('create_ptoken', 'Create time token'),
+        ('mint_ptoken', 'Mint time token'),
+        ('edit_price_ptoken', 'Edit time token price'),
+        ('buy_ptoken', 'Edit time token price'),
         ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
         ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
         ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
@@ -4920,8 +4920,19 @@ class BlockedUser(SuperModel):
     user = models.OneToOneField(User, related_name='blocked', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        """Return the string representation of a Bounty."""
+        """Return the string representation of a BlockedUser."""
         return f'<BlockedUser: {self.handle}>'
+
+class BlockedIP(SuperModel):
+    """Define the structure of the BlockedIP."""
+
+    addr = models.GenericIPAddressField(null=True, db_index=True)
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text=_('Is the block active?'))
+
+    def __str__(self):
+        """Return the string representation of a BlockedIP."""
+        return f'<BlockedIP: {self.ip_address}>'
 
 
 class Sponsor(SuperModel):

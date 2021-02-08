@@ -51,24 +51,21 @@ along with this program. If not, see
 
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
+  <style></style>
 </head>
 
 <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
   {% include 'shared/tag_manager_2.html' %}
   {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'grants/nav.html' %}
-  <div class="container-fluid header dash grants_hero_img"
-      style="{% if grant_bg %} background: url({{ grant_bg.banner_image }}) center  no-repeat;
-      {% else %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
-  >
-
+  <div class="container-fluid header dash grants_hero_img" id="grant-hero-img">
     {% include 'shared/grant_thanks_modal.html' %}
     {% include 'grants/shared/landing_hero.html' %}
 
 
     <div class="row grants-details-parent" class="mx-0">
       <div id="grants-details" class="no-gutters w-100">
-        <div style="background-image: url('{% if grant_bg %} {{ grant_bg.background_image }} {% else %} /static/v2/images/bg/{{bottom_back}} {% endif %} '); background-size: contain;">
+        <div style="background-size: contain;" id="grant-background-image-mount-point">
           <div
             style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px;">
             {% if prev_grants.count %}
@@ -174,6 +171,26 @@ along with this program. If not, see
         document.sub_round_slug = "{{clr_round.sub_round_slug}}";
         document.customer_name = "{{clr_round.customer_name}}";
       {% endif %}
+      let base_style = {
+          bg: '/static/v2/images/bg/{{styles.bg}}',
+          size: "{{styles.bg_size}}",
+          color: "{{styles.bg_color}}",
+          background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
+        };
+
+      document.all_type_styles = {{ all_styles|safe }}
+      document.all_routing_policies = {{ all_routing_policies | safe}}
+      document.all_routing_policies.push(base_style)
+      {% if grant_bg %}
+        document.current_style = {
+          banner_image: "{{ grant_bg.banner_image }}",
+          background_image: " url('{{background_image }}')",
+          inline_css: "{{ inline_css }}"
+        }
+      {% else %}
+        document.current_style = base_style
+      {% endif %}
+
     </script>
     {% include 'shared/activity_scripts.html' %}
 

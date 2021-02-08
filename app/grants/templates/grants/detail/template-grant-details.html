@@ -74,6 +74,30 @@
                 </span>
               </a>
               <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.binance_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+             </div>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('POLKADOT') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://polkadot.subscan.io/account/${grant.polkadot_payout_address}`">
+                <span id="polkadot-address" class="wallet-address" v-b-tooltip.hover.top="grant.polkadot_payout_address">
+                  [[grant.polkadot_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.polkadot_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('KUSAMA') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://kusama.subscan.io/account/${grant.kusama_payout_address}`">
+                <span id="kusama-address" class="wallet-address" v-b-tooltip.hover.top="grant.kusama_payout_address">
+                  [[grant.kusama_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.kusama_payout_address"><i class="far fa-copy"></i></copy-clipboard>
             </div>
           </template>
 

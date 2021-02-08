@@ -301,7 +301,8 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration(), CeleryIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()],
+        traces_sample_rate=0.35
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,

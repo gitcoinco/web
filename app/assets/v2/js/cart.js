@@ -337,7 +337,10 @@ Vue.component('grants-cart', {
 
     isBinanceExtInstalled() {
       return window.BinanceChain && false;
+    },
 
+    isPolkadotExtInstalled() {
+      return polkadot_extension_dapp.isWeb3Injected;
     }
   },
 
@@ -383,6 +386,12 @@ Vue.component('grants-cart', {
           break;
         case 'BINANCE':
           vm.chainId = '56';
+          break;
+        case 'KUSAMA':
+          vm.chainId = '59';
+          break;
+        case 'POLKADOT':
+          vm.chainId = '58';
           break;
       }
     },
@@ -452,6 +461,14 @@ Vue.component('grants-cart', {
           break;
         case 'BINANCE':
           contributeWithBinanceExtension(grant, vm);
+          break;
+        case 'POLKADOT':
+        case 'KUSAMA':
+          if (data) {
+            contributeWithPolkadotExtension(grant, vm, data);
+          } else {
+            initPolkadotConnection(grant, vm);
+          }
           break;
       }
     },

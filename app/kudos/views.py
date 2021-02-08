@@ -927,7 +927,7 @@ def newkudos(request):
                 tags=request.POST['tags'].split(","),
                 to_address=request.POST['to_address'],
                 artwork_url=artwork_url,
-                network='mainnet',
+                network='xdai',
                 approved=False,
                 metadata={
                     'ip': get_ip(request),

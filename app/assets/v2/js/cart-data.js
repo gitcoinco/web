@@ -119,6 +119,20 @@ class CartData {
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'BNB';
       }
+    } else if (grantData.tenants.includes('POLKADOT')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'DOT';
+      }
+    } else if (grantData.tenants.includes('KUSAMA')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'KSM';
+      }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;
