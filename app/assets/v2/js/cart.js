@@ -336,7 +336,7 @@ Vue.component('grants-cart', {
     },
 
     isBinanceExtInstalled() {
-      return window.BinanceChain && false;
+      return window.BinanceChain || false;
     },
 
     isPolkadotExtInstalled() {
