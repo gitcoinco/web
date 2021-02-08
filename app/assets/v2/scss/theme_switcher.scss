@@ -1,0 +1,23 @@
+#theme-switcher{
+  align-items: center;
+  cursor: pointer;
+}
+
+.theme-switcher-svg {
+  width: 0.7em;
+  height: 0.7em;
+  display: inline-block;
+  font-size: 1.5rem;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  flex-shrink: 0;
+  user-select: none;
+  margin-right: 0.8em;
+}
+
+html:not(.dark-mode) .theme-switcher__dark {
+  display: none;
+}
+
+html.dark-mode .theme-switcher__light {
+  display: none;
+}

@@ -1,0 +1,55 @@
+.carousel {
+  overflow: hidden;
+}
+
+#slides {
+  transition: transform .75s ease-in-out;
+}
+
+.carousel .avatar {
+  width: 120px;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.carousel .author, .carousel .org {
+  font-size: 0.9rem;
+}
+
+.carousel .author a {
+  text-decoration: none;
+}
+
+.carousel .org {
+  color: #999;
+}
+
+.carousel .slide {
+  width: 100vw;
+  padding: 0 2rem;
+}
+.carousel .content {
+  max-width: 100%;
+}
+
+.testimonial {
+  max-width: 40rem;
+}
+
+.carousel .slide:hover {
+  box-shadow: none;
+}
+
+.showing {
+  opacity: 1;
+}
+
+.decorated-quote {
+  color: var(--gc-blue);
+  font-size: 6rem;
+  align-self: flex-start;
+  line-height: .6;
+}

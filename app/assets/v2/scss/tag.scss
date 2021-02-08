@@ -1,0 +1,196 @@
+.tag {
+  --usd-bg: #d6fbeb;
+  --usd-color: #00a55e;
+  --usd-hover-bg: #c6ebdb;
+
+  --network_warning-bg: #fbaf95;
+  --network_warning-color: #fff;
+  --network_warning-hover-bg: #fbaf95;
+
+  --warning-bg: #7e1518;
+  --warning-color: #fff;
+  --warning-hover-bg: #d3696c;
+
+  --success-bg: #216a12;
+  --success-color: #fff;
+  --success-hover-bg: #68b159;
+
+  --in-progress-bg: #162955;
+  --in-progress-color: #fff;
+  --in-progress-hover-bg: #4f628e;
+
+  --token-bg: #e7f0fa;
+  --token-color: var(--gc-blue);
+  --token-hover-bg: #d7e0ea;
+
+  --hiring-bg: #3a9ced;
+  --hiring-color: #fff;
+  --hiring-hover-bg: #3a9ced;
+
+  text-align: center;
+  border-radius: 2px;
+  margin: 4px;
+  padding: 3px 6px;
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dark-mode .tag{
+  --usd-bg: #00a55e;
+  --usd-color: #d6fbeb;
+  --usd-hover-bg: #1bbb76;
+
+  --network_warning-bg: #fbaf95;
+  --network_warning-color: #fff;
+  --network_warning-hover-bg: #fbaf95;
+
+  --warning-bg: #7e1518;
+  --warning-color: #fff;
+  --warning-hover-bg: #d3696c;
+
+  --success-bg: #216a12;
+  --success-color: #fff;
+  --success-hover-bg: #68b159;
+
+  --in-progress-bg: #162955;
+  --in-progress-color: #fff;
+  --in-progress-hover-bg: #4f628e;
+
+  --token-bg: var(--gc-blue);
+  --token-color: #e7f0fa;
+  --token-hover-bg: var(--gc-blue-hover);
+
+  --hiring-bg: #3a9ced;
+  --hiring-color: #fff;
+  --hiring-hover-bg: #3a9ced;
+}
+
+
+.tag-lg {
+  padding: 6px 16px;
+}
+
+.tag p {
+  margin-bottom: 1px;
+}
+
+/* usd */
+
+.tag.usd{
+  background-color: var(--usd-bg);
+  color: var(--usd-color);
+}
+
+.tag.usd:hover{
+  background-color: var(--usd-hover-bg);
+}
+
+/* usd */
+
+.tag.network_warning{
+  background-color: var(--network_warning-bg);
+  color: var(--network_warning-color);
+}
+
+.tag.network_warning:hover{
+  background-color: var(--network_warning-hover-bg);
+}
+
+/* usd */
+
+.tag.warning{
+  background-color: var(--warning-bg);
+  color: var(--warning-color);
+}
+
+.tag.warning:hover{
+  background-color: var(--warning-hover-bg);
+}
+
+/* usd */
+
+.tag.success{
+  background-color: var(--success-bg);
+  color: var(--success-color);
+}
+
+.tag.success:hover{
+  background-color: var(--success-hover-bg);
+}
+
+/* usd */
+
+.tag.in-progress{
+  background-color: var(--in-progress-bg);
+  color: var(--in-progress-color);
+}
+
+.tag.in-progress:hover{
+  background-color: var(--in-progress-hover-bg);
+}
+
+/* usd */
+
+.tag.token{
+  background-color: var(--token-bg);
+  color: var(--token-color);
+}
+
+.tag.token:hover{
+  background-color: var(--token-hover-bg);
+}
+
+.tag.token > a{
+  height: 0;
+  line-height: 1.5rem;
+  float: right;
+}
+
+/* hiring */
+
+.tag.hiring{
+  background-color: var(--hiring-bg);
+  color: var(--hiring-color);
+}
+
+.tag.hiring:hover{
+  background-color: var(--hiring-hover-bg);
+}
+
+
+.keyword-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag.keyword {
+  display: inline-block;
+  min-width: 0;
+  font-size: 11px;
+  background-color: #E7F0FA;
+  color: #6587AE;
+}
+
+.locations-tags {
+  color: white;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.locations-tags .filter-tag {
+  display: inline-block;
+  background-color: #1AB56D;
+  margin: 5px;
+  border-radius: 3px;
+  font-weight: bolder;
+  padding: 2px 10px 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.locations-tags .filter-tag i {
+  margin-right: 8px;
+}

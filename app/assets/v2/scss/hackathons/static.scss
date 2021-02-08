@@ -1,0 +1,194 @@
+h1 {
+  font-size: 4rem;
+  letter-spacing: 12px;
+  line-height: 72px;
+}
+
+h2 {
+  font-size: 3rem;
+  letter-spacing: 0;
+  line-height: 4rem;
+}
+
+h3 {
+  font-size: 2.5rem;
+  letter-spacing: 0;
+  line-height: 4rem;
+  font-weight: normal;
+}
+
+h4 {
+  font-size: 2rem;
+  letter-spacing: 0;
+  line-height: 4rem;
+  font-weight: normal;
+}
+
+.hackathon footer {
+  background: #000;
+}
+
+.hackathon footer img {
+  min-height: 3.5rem;
+}
+
+.info-links a {
+  text-decoration: underline;
+  color: inherit;
+  word-spacing: 0;
+}
+
+.powered-by img {
+  height: 3.5rem;
+}
+
+.hackathon .button {
+  border-radius: 55px;
+  font-size: var(--fs-title);
+  padding: 1.2rem 4rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+}
+
+.hackathon .banner-logo {
+  max-height: 18rem;
+  width: auto !important;
+}
+
+.hackathon .sponsors_gold img {
+  height: 6rem;
+}
+
+.hackathon .sponsors_silver img {
+  height: 3rem;
+}
+
+.hackathon .sponsors img,
+.hackathon footer img {
+  transition: all .2s ease-in-out;
+}
+
+.hackathon .sponsors img:hover,
+.hackathon footer img:hover {
+  transform: scale(1.1);
+}
+
+.hackathon .btn {
+  text-transform: uppercase;
+  letter-spacing: 6.4px;
+  font-size: 2rem;
+  border-radius: 52px;
+}
+
+.hackathon .section img {
+  max-height: 25rem;
+}
+
+.hackathon .section .border {
+  height: 0.55rem;
+  width: 15rem;
+}
+
+.hackathon .section p {
+  word-spacing: 5px;
+}
+
+/* color schema */
+
+.hk-white-bg {
+  background-color: #fff;
+}
+
+.hk-white-bg .border {
+  background-color: #121315;
+}
+
+.hk-black-bg {
+  background-color: #121315;
+  color: #fff;
+}
+
+.hk-blue-bg {
+  background-color: #0F0330;
+  color: #fff;
+}
+
+.hk-black-bg .border,
+.hk-blue-bg .border {
+  background-color: #fff;
+}
+
+.hk-white-f {
+  color: #fff
+}
+
+.hk-black-f {
+  color: #121315;
+}
+
+/* Eth Hack */
+
+.ethhk-banner-bg {
+  background-color: #180944;
+}
+
+.ethhk-pink-bg {
+  background-color: #F9016C;
+  color: #fff;
+}
+
+/* Beyond Blocks */
+
+.beyond_blocks .powered_by img:last-child {
+  min-height: 5.5rem;
+}
+
+.beyond_blocks footer a:last-child img {
+  min-height: 5.5rem;
+  height: 100%;
+}
+
+.beyond_blocks .sponsors_silver img {
+  height: 3.5rem;
+}
+
+.bb-banner-bg {
+  background-color: #121315;
+  text-align: center;
+}
+
+.bb-green-bg {
+  background-color: var(--gc-green);
+  color: #fff;
+}
+
+@media (min-width: 992px) {
+  .hackathon .sponsors-container {
+    padding-left: 8rem !important;
+    padding-right: 8rem !important;
+  }
+}
+
+
+@media (max-width: 575.98px) {
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h3 {
+    font-size: 2.25rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .hackathon .section p {
+    font-size: 1.5rem
+  }
+
+  .hackathon .sponsors img {
+    display: inline-block;
+  }
+}

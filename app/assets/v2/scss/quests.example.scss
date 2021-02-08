@@ -1,0 +1,9 @@
+body.quest_battle .footer,
+body.quest_battle .header, 
+body.quest_battle .bottom_notification,
+body.quest_battle .top-nav{
+  display: none !important;
+}
+body{
+  padding: 40px;
+}
