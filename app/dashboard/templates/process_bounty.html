@@ -15,15 +15,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/scroll-carousel.css" %}" />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% compress css file process_bounty %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tooltip_hover.scss" %} />
+    {% endcompress %}
 
     <style>
       /* TODO: remove duplication of alert with same styles in bounties merge */
@@ -35,7 +38,6 @@
         display: flex;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
   </head>
 
   <body class="interior {{active}} g-font-muli">
