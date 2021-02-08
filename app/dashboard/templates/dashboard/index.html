@@ -15,18 +15,20 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
-    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
+    {% compress css file dashboard_index %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+    {% endcompress %}
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -39,8 +41,9 @@
       {% endif %}
     </div>
     {% if hackathon %}
-      <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
-
+      {% compress css file dashboard_explorer %}
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
+      {% endcompress %}
       <style>
 
         .hackathon-banner {
