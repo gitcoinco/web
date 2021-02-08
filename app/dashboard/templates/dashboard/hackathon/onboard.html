@@ -510,9 +510,9 @@
           const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
           $('[data-registration]').attr('disabled', true);
-          $.when(sendRegister).then((response) => {
+          $.when(sendRegister).then(async(response) => {
 
-            sendMtcEvent(name)
+            await sendMtcEvent(name)
             _alert('You have now registered for this hackathon.', 'success');
             document.location.href = response.redirect;
           })
