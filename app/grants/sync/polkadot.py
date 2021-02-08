@@ -18,7 +18,7 @@ def get_polkadot_txn_status(contribution, network='mainnet'):
     subscription = contribution.subscription
     token_symbol = subscription.token_symbol
 
-    if subscription.tenant != 'POLKADOT':
+    if subscription.tenant not in ['POLKADOT', 'KUSAMA'] :
         return None
 
     if token_symbol not in ['DOT', 'KSM']:
@@ -53,7 +53,6 @@ def get_polkadot_txn_status(contribution, network='mainnet'):
         return response
 
 def sync_polkadot_payout(contribution):
-   
     if contribution.tx_id and contribution.tx_id != '0x0':
         txn_status = get_polkadot_txn_status(contribution)
 
@@ -65,6 +64,6 @@ def sync_polkadot_payout(contribution):
                 record_contribution_activity(contribution)
                 contribution.save()
             elif txn_status.get('status') == 'expired':
-                contribution.success = True
-                contribution.tx_cleared = False
+                contribution.tx_cleared = True
+                contribution.success = False
                 contribution.save()
