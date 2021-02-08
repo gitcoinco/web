@@ -35,6 +35,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     callback(null, ethereum.selectedAddress, txHash)
 
   } else {
+    // TODO: verify RSK
     // ERC 20 for RSK
 
     // DOC - 18 - 0xe700691da7b9851f2f35f8b8182c69c53ccad9db
@@ -46,7 +47,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
 
     token_contract.methods.transfer(
       to_address.toLowerCase(),
-      web3.utils.toHex(amountAsString)).send(
+      rskClient.utils.toHex(amountAsString)).send(
       { from: ethereum.selectedAddress },
       (error, result) => callback(error, result)
     );
