@@ -15,20 +15,21 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/users.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/explorer.css" %}>
-
+    {% compress css file dashboard_explorer %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/explorer.scss" %} />
+    {% endcompress %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
