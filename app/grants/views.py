@@ -1796,7 +1796,7 @@ def grant_new(request):
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
-            not harmony_payout_address not binance_payout_address
+            not harmony_payout_address and not binance_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
