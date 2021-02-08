@@ -1640,7 +1640,7 @@ def grant_edit(request, grant_id):
         if region:
             grant.region = region
 
-        grant.opt_out_clr = bool(int(request.POST.get('opt_out_clr')))
+        grant.opt_out_clr = json.loads(request.POST.get('opt_out_clr', 'false'))
 
         team_members = request.POST.getlist('team_members[]', None)
 
@@ -1831,7 +1831,7 @@ def grant_new(request):
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
-            'opt_out_clr': bool(int(request.POST.get('opt_out_clr')))
+            'opt_out_clr': json.loads(request.POST.get('opt_out_clr', 'false'))
         }
 
         grant = Grant.objects.create(**grant_kwargs)
@@ -2361,8 +2361,6 @@ def get_category_size(grant_type, category):
         return int(redis.get(key))
     except:
         return 0
-
-
 
 
 def grants_bulk_add(request, grant_str):

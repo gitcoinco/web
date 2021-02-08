@@ -33,6 +33,7 @@
                   tenants: {{ grant.obj.tenants |safe }},
                   is_clr_eligible: {{grant.obj.is_clr_eligible|yesno:"true,false"}},
                   opt_out_clr: {{grant.obj.opt_out_clr|yesno:"true,false"}},
+                  is_grant_eligible_for_clr: {{grant.obj.is_grant_eligible_for_clr|yesno:"true,false"}},
                   grant_donation_amount: "{{ grant.amount }}",
                   grant_donation_currency: "{{ grant.token.symbol }}",
                   token_local_id: "{{ grant.token.id }}",
