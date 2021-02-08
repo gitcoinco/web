@@ -213,70 +213,47 @@
   <center>
     <img width="75%" class="mint-logo" style="border-style:none; vertical-align:middle; padding: 24px auto;" valign="middle"
          src="{% static 'v2/images/emails/weekly-mint.svg' %}">
-    <h5>issue #{{ issue }} </h5>
+    <h5 style="font-size: .85em; color: #A0A0A0;">issue #{{ issue }} {{ release_date | date:'F d, Y'}} </h5>
 
   </center>
 
-  <div>
-    <p>Hey all!</p>
-    <p>Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇</p>
-    <p>This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the News Submissions as well as the good and critical feedback. 🙏 It's been GR8. </p>😎
-    <p>Enjoy the rest of the email, and we'll catch you next week year.™</p>
+  <div style="overl">
+    <p style="white-space: pre-wrap;">{{ intro }} </p>
 
-    <p>— Justin & The Gitcoin Team</p>
   </div>
-  <br/><br/>
-  <h1 class="text-center">Blockchain News</h1>
+  <h1 class="text-center;" style="display: block; margin-top: 40px; text-align: center;">Blockchain News</h1>
   <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
+  {% for article in news %}
   <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
+    <h3>{{ article.title }} </h3>
 
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
+    <p>{{ article.body }}
+    <br/>via <a href="{{ article.link }}" style="color: #3E00FF;">{{ article.link_text }}</a></p>
   </div>
-    <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-    <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-    <div style="display:block; margin: 16px 0 8px">
-    <h3>Xbox Will Now Use Blockchain For Gaming Rights And Royalties</h3>
-
-    <p>Expanded Xbox Enterprise Blockchain Platform can process 2m transactions per day
-    <br/>via <a href="#" style="color: #3E00FF;">@bild96 / News Submission Form</a></p>
-
-  </div>
-  <a href="#" class="button">View Hackathon Bounties</a>
+ 
+ {% endfor %}
 
   <h1 class="text-center" style="display: block; margin-top: 80px;">Gitcoin Hackathons</h1>
   <hr style="height: 4px; background: #15EBB7; width: 80px; border: none;" />
-  <div style="display:block; margin: 16px 0 8px">
-    <h3>Goleem Network 2020 Hackathon --<h3>
-    <p style="font-weight: bold">January 5th, 2021</p>
+  {% for bounty in bounties %}
+    <div style="display:block; margin: 16px 0 8px">
+      <h3>{{ bounty.obj.title }} --</h3>
+      <p style="font-weight: bold">{{ bounty.obj.created_on | date:'F d, Y'}}</p>
 
-    <p>Scaling Baseline Hackathon 2020 Challenge
-    <b style="color: #11BC92; display: block;">3.402 ETH</b>
-    </p>
-    <p>
-    Enable A Finalized Baseline Workflow To Exit
-    <b style="color: #11BC92; display: block;">1.701 ETH</b>
-    </p>
-    <p>
-    Tokenization Of Baselined Records - Hackaton Challenge
-    <b style="color: #11BC92; display: block;">1.701 ETH</b>
-    </p>
-  </div>
-  <a href="#" class="button">View Hackathon Bounties</a>
+      <p>Scaling Baseline Hackathon 2020 Challenge
+      <b style="color: #11BC92; display: block;">3.402 ETH</b>
+      </p>
+      <p>
+      Enable A Finalized Baseline Workflow To Exit
+      <b style="color: #11BC92; display: block;">1.701 ETH</b>
+      </p>
+      <p>
+      Tokenization Of Baselined Records - Hackaton Challenge
+      <b style="color: #11BC92; display: block;">1.701 ETH</b>
+      </p>
+    </div>
+    <a href="#" class="button">View Hackathon Bounties</a>
+  {% endfor %}
   
   <div class="market-rate" style="text-align: center;">
     <div style="margin:0px auto;max-width:600px;background:#FFFFFF;">
@@ -295,7 +272,7 @@
 
   <h3>Join the conversation</h3>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>   
-  <a href="#" class="button">Join Gitcoin</a>
+  <a href="https://gitcoin.co" class="button">Join Gitcoin</a>
   <br/>
   <br/>
   </div>

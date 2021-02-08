@@ -1322,7 +1322,11 @@ def render_new_bounty_roundup(to_email):
     params = {
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
+        'issue': args.issue,
+        'release_date': args.release_date,
         'bounties': bounties,
+        'news': args.news,
+        
         'leaderboard': leaderboard,
         'invert_footer': False,
         'hide_header': True,
@@ -1337,10 +1341,9 @@ def render_new_bounty_roundup(to_email):
         'new_kudos': new_kudos,
         'new_kudos_size_px': new_kudos_size_px,
         'videos': args.videos,
-        'news': args.news,
         'updates': args.updates,
-        'issue': args.issue,
-        'release_date': args.release_date
+        'arg': args
+       
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
