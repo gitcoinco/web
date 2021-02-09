@@ -35,22 +35,35 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     callback(null, ethereum.selectedAddress, txHash)
 
   } else {
-    // TODO: verify RSK
+    // TODO: figure out data format
     // ERC 20 for RSK
 
     // DOC - 18 - 0xe700691da7b9851f2f35f8b8182c69c53ccad9db
     // RDOC - 18 - 0x2d919f19d4892381d58edebeca66d5642cef1a1f
 
-    const amountInWei = amount * 1.0 * Math.pow(10, vm.decimals);
-    const amountAsString = new rskClient.utils.BN(BigInt(amountInWei)).toString();
+    const amountInWei = rskClient.utils.toHex(rskClient.utils.toWei(String(amount)));
+    const encoded_amount = new rskClient.utils.BN(BigInt(amountInWei)).toString();
     const token_contract = new rskClient.eth.Contract(token_abi, vm.bounty.token_address);
+    const data = token_contract.methods.transfer(to_address.toLowerCase(), encoded_amount).encodeABI();
 
-    token_contract.methods.transfer(
-      to_address.toLowerCase(),
-      rskClient.utils.toHex(amountAsString)).send(
-      { from: ethereum.selectedAddress },
-      (error, result) => callback(error, result)
+    const tx_args = {
+      to: to_address.toLowerCase(),
+      from: ethereum.selectedAddress,
+      value: '0x0',
+      gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
+      gas: rskClient.utils.toHex(318730),
+      gasLimit: rskClient.utils.toHex(318730),
+      data: data
+    };
+
+    const txHash = await ethereum.request(
+      {
+        method: 'eth_sendTransaction',
+        params: [tx_args],
+      }
     );
+
+    callback(null, ethereum.selectedAddress, txHash)
   }
 
 
