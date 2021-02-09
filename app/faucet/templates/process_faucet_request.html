@@ -17,9 +17,14 @@
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static compress %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+{% block extrastyle %}{{ block.super }}
+    {% compress css file admin_dashboard %}
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+    {% endcompress %}
+{% endblock %}
+
 <style>
   .d-none {
     display: none;
