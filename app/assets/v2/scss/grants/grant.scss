@@ -115,10 +115,10 @@
   cursor: text;
 }
 .announce_container img{
-    filter: grayscale(100%);
+  filter: grayscale(100%);
 }
 .announce_container:hover img{
-    filter: grayscale(0%);
+  filter: grayscale(0%);
 }
 .announce3:hover h4 {
   border-bottom: 3px solid #d0f9f4 !important;
@@ -524,47 +524,47 @@
 }
 
 .arrow_box {
-	position: relative;
+  position: relative;
   border: 1px solid #0FCE7C;
   border-radius: 3px;
 }
 
 .arrow_box:after, .arrow_box:before {
-	bottom: 100%;
-	left: 15%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
+  bottom: 100%;
+  left: 15%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
 }
 
 .arrow_box:after {
-	border-color: rgba(255, 255, 255, 0);
-	border-bottom-color: #fff;
-	border-width: 9px;
-	margin-left: -31px;
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: #fff;
+  border-width: 9px;
+  margin-left: -31px;
 }
 
 .arrow_box:before {
-	border-color: rgba(16, 205, 122, 0);
-	border-bottom-color: #0FCE7C;
-	border-width: 11px;
-	margin-left: -33px;
+  border-color: rgba(16, 205, 122, 0);
+  border-bottom-color: #0FCE7C;
+  border-width: 11px;
+  margin-left: -33px;
 }
 
 .grant-partners {
-background: linear-gradient(140deg, #659998 0%,#659998 0%,#659998 0%,#97dbca 37%,#97dbca 37%,#cbf3e0 98%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: linear-gradient(140deg, #659998 0%,#659998 0%,#659998 0%,#97dbca 37%,#97dbca 37%,#cbf3e0 98%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   animation: gradient 40s ease infinite;
   border-radius: 3px;
 }
 
 .media_grants .grant-partners {
-background: linear-gradient(11deg, #e99907 0%,#207cca 63%,#2989d8 99%,#110f22 100%,#2989d8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: linear-gradient(11deg, #e99907 0%,#207cca 63%,#2989d8 99%,#110f22 100%,#2989d8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 .tech_grants .grant-partners {
-background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 .grant-partners h2 {
   letter-spacing: 3px;
@@ -609,7 +609,7 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
   width: max-content;
 }
 
-.grant-partners .tab-content>.active {
+.grant-partners .tab-content > .active {
   display: inline-block;
 }
 

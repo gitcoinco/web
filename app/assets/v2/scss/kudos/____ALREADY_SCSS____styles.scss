@@ -280,16 +280,16 @@ a:hover {
     animation-play-state: paused;
   }
 }
-  #shape-hexagon {
-    animation: rotation 5s linear infinite;
-    animation-fill-mode: none;
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
+#shape-hexagon {
+  animation: rotation 5s linear infinite;
+  animation-fill-mode: none;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
 
-  }
-  #svg-text {
+}
+#svg-text {
 
-  }
+}
 
 @keyframes rotation {
   // stroke-dasharray: 300
@@ -635,7 +635,7 @@ a.cellarius-partner:before {
 
 .author-shape {
   -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 // kudos detail animations
@@ -728,7 +728,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     background: white;
     border-radius: .25rem;
     z-index: 2;
-  	transform: rotateY(0);
+    transform: rotateY(0);
   }
 
 

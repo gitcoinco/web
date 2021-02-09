@@ -1,12 +1,12 @@
 $blue: #0D0764;
 
 [data-rangeslider] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 2px;
-    background: $blue;
-    outline: none;
-    margin: 1rem 0;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background: $blue;
+  outline: none;
+  margin: 1rem 0;
   
   &::-webkit-slider-thumb {
     -webkit-appearance: none;

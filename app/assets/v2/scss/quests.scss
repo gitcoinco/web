@@ -472,7 +472,7 @@ body.quest_battle p {
 }
 
 #header {
-  background-color: rgb(21, 0, 62, 0.8);
+  background-color: rgba(21, 0, 62, 0.8);
   border-radius: 2px;
   font-weight: bold;
   width: 60%;
@@ -497,7 +497,7 @@ body.quest_battle p {
 }
 
 #desc {
-  background-color: rgb(21, 0, 62, 0.8);
+  background-color: rgba(21, 0, 62, 0.8);
   border-radius: 2px;
   width: 50%;
   text-align: center;
@@ -638,7 +638,7 @@ body.quest_battle .bottom_notification {
 }
 
 .tl {
-  background-color: rgb(21, 0, 62, 0.5);
+  background-color: rgba(21, 0, 62, 0.5);
   position: absolute;
   top: 10px;
   left: 0px;
@@ -646,7 +646,7 @@ body.quest_battle .bottom_notification {
 
 .br {
   border-radius: 2px;
-  background-color: rgb(21, 0, 62, 0.5);
+  background-color: rgba(21, 0, 62, 0.5);
   padding: 5px;
   position: absolute;
   bottom: 0px;
@@ -1162,7 +1162,7 @@ body.blue #desc li.selected {
 
 body.green #desc li:hover,
 body.green #desc li.selected {
-  background-color: rgb(0, 203, 86, 1);
+  background-color: rgb(0, 203, 86);
 }
 
 #breadcrumbs,
@@ -1189,77 +1189,77 @@ body.back1 #header,
 body.back1 #desc,
 body.back1 .br,
 body.back1 .tl {
-  background-color: rgb(15, 41, 70, 0.8);
+  background-color: rgba(15, 41, 70, 0.8);
 }
 
 body.back3 #header,
 body.back3 #desc,
 body.back3 .br,
 body.back3 .tl {
-  background-color: rgb(239, 72, 134, 0.6);
+  background-color: rgba(239, 72, 134, 0.6);
 }
 
 body.back14 #header,
 body.back14 #desc,
 body.back14 .br,
 body.back14 .tl {
-  background-color: rgb(239, 72, 134, 0.6);
+  background-color: rgba(239, 72, 134, 0.6);
 }
 
 body.back6 #header,
 body.back6 #desc,
 body.back6 .br,
 body.back6 .tl {
-  background-color: rgb(129, 166, 178, 0.6);
+  background-color: rgba(129, 166, 178, 0.6);
 }
 
 body.back7 #header,
 body.back7 #desc,
 body.back7 .br,
 body.back7 .tl {
-  background-color: rgb(14, 21, 30, 0.6);
+  background-color: rgba(14, 21, 30, 0.6);
 }
 
 body.back8 #header,
 body.back8 #desc,
 body.back8 .br,
 body.back8 .tl {
-  background-color: rgb(10, 6, 30, 0.6);
+  background-color: rgba(10, 6, 30, 0.6);
 }
 
 body.back9 #header,
 body.back9 #desc,
 body.back9 .br,
 body.back9 .tl {
-  background-color: rgb(28, 17, 53, 0.6);
+  background-color: rgba(28, 17, 53, 0.6);
 }
 
 body.red #header,
 body.red #desc,
 body.red .br,
 body.red .tl {
-  background-color: rgb(255, 0, 0, 0.6);
+  background-color: rgba(255, 0, 0, 0.6);
 }
 
 body.back20 #header,
 body.back20 #desc,
 body.back20 .br,
 body.back20 .tl {
-  background-color: rgb(156, 212, 244, 0.6);
+  background-color: rgba(156, 212, 244, 0.6);
 }
 
 body.back19 #header,
 body.back19 #desc,
 body.back19 .br,
 body.back19 .tl {
-  background-color: rgb(255, 0, 0, 0.6);
+  background-color: rgba(255, 0, 0, 0.6);
 }
 
 body.blue #header,
 body.blue #desc,
 body.blue .br,
 body.blue .tl {
-  background-color: rgb(0, 0, 255, 0.6);
+  background-color: rgba(0, 0, 255, 0.6);
 }
 
 body.green #header,
