@@ -89,7 +89,7 @@ class MauticEvent {
     // let dataMock = this.dataMock(data)
 
     fetch(contactApi, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
