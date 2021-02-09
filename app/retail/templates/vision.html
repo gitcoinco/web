@@ -16,7 +16,7 @@
     <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,7 +24,9 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Our Vision | Gitcoin">
     <meta name="description" content="We believe Blockchain is the TCP/IP of Money. The internet changed the way we exchange information; Blockchain changes the way we exchange value.">
-    <link rel="stylesheet" href="{% static "v2/css/vision.css" %}" />
+    {% compress css file vision %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vision.scss" %} />
+    {% endcompress %}
   </head>
 
   <body class="{{ active } g-font-muli">
