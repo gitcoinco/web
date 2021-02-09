@@ -15,22 +15,26 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block 'content' %}
-<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
+{% compress css file onepagesubmit %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
+{% endcompress %}
 <style type="text/css">
-.add_answer,
-.add_question,
-.close_question,
-.close_answer{
-  font-size: 12px;
-}
-.kudos-module .kudos-comment,
-.kudos-module .msg-alert{
-  display: none !important;
-}
+  .add_answer,
+  .add_question,
+  .close_question,
+  .close_answer{
+    font-size: 12px;
+  }
+  .kudos-module .kudos-comment,
+  .kudos-module .msg-alert{
+    display: none !important;
+  }
 </style>
-<link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
+{% compress css file onepagesubmit %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
+{% endcompress %}
 
 <div class="container-fluid">
   <div class="row">
