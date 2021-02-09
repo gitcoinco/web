@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load humanize %}
+{% load humanize compress %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -20,7 +20,11 @@
 
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}
+    {% compress css file admin_dashboard %}
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+    {% endcompress %}
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
