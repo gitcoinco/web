@@ -1,0 +1,22 @@
+{
+    "website": "https://eloncity.io/",
+    "published_on": "2020-11-21",
+    "links": {
+        "telegram": "https://t.me/Eloncity",
+        "twitter": "https://twitter.com/Eloncity_io",
+        "github": "https://github.com/developereloncity/eloncity",
+        "facebook": "https://www.facebook.com/ELONCITY/"
+        },
+    "overview": {
+        "en": "Empowering the Decentralization of Online Marketplaces.",
+        "zh": "Eloncity：全世界首个基于区块链的P2P电能交易系统"
+    },
+    "symbol": "ECT",
+    "initial_price": {
+        "ETH": "0.00014 ETH",
+        "USD": "$0.1"
+    },
+    "whitepaper": "https://eloncity.io/whitepaper",
+    "address": "0xD8DB55c5890ff7992615e4863216448288a81868",
+    "email": "contact@eloncity.io"
+}
