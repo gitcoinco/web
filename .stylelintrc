@@ -27,5 +27,8 @@
       "vmin",
       "fr"
     ]
-  }
+  },
+  "plugins": [
+    "stylelint-scss"
+  ],
 }

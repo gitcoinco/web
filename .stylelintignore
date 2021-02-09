@@ -4,3 +4,7 @@ app/assets/v2/css/bootstrap-vue.min.css
 app/assets/v2/js/lib/tweenlite.js
 app/assets/v2/js/abi.js
 app/assets/v2/css/lib/*
+
+app/assets/v2/scss/jquery.select2.min.scss
+app/assets/v2/scss/vue-innersearch.scss
+app/assets/v2/scss/lib/*
