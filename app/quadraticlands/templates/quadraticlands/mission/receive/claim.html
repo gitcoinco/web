@@ -257,16 +257,12 @@ async function setupGTCTokenClaim(emss_response) {
     const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, '');
 
 	try {
-		// who will send the transaction? (active user wallet account)
-		// this should always be the same as the claim address
-		// what if user has two accounts connected?! This will break probably... ZW needs to fix this
-		// this should always be the same as the claim address 
+        // zak TODO - make sure we only get first address, not array 
 		[user] = await web3.eth.getAccounts();
 
-		// ZW TODO - move token contract addy to env or standard abi.js file, added new Rinkeby tokendist contract 10/29/2020
 		const tokenDistributor = await new web3.eth.Contract(
 			token_distributor_abi,
-			'0x5D9aBdA108De232a971D3bF5a72237920D7Fb61d'
+			token_distributor_address()
 		);
 
 		const claimGTCtokens = () => {
