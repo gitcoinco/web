@@ -393,6 +393,9 @@ Vue.component('grants-cart', {
         case 'POLKADOT':
           vm.chainId = '58';
           break;
+        case 'EDGEWARE':
+          vm.chainId = '60';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
@@ -464,6 +467,7 @@ Vue.component('grants-cart', {
           break;
         case 'POLKADOT':
         case 'KUSAMA':
+        case 'EDGEWARE':
           if (data) {
             contributeWithPolkadotExtension(grant, vm, data);
           } else {

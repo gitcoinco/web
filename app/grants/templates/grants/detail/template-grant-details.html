@@ -101,6 +101,18 @@
             </div>
           </template>
 
+          <template v-if="grant.tenants && grant.tenants.indexOf('EDGEWARE') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/edgeware.png' %}" alt="" width="16">
+              <a target="_blank" :href="`https://edgeware.subscan.io/account/${grant.edgeware_payout_address}`">
+                <span id="edgeware-address" class="wallet-address" v-b-tooltip.hover.top="grant.edgeware_payout_address">
+                  [[grant.edgeware_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.edgeware_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
         </div>
         <div class="grant-description mt-4 mb-5">
           <render-quill :delta="grant.description_rich"></render-quill>

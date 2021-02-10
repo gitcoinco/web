@@ -123,6 +123,10 @@ Vue.mixin({
           url = `https://kusama.subscan.io/extrinsic/${txn}`;
           break;
 
+        case 'EDG':
+          url = `https://edgeware.subscan.io/extrinsic/${txn}`;
+          break;
+
         case 'FIL':
           url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
           break;
@@ -175,6 +179,10 @@ Vue.mixin({
 
         case 'KSM':
           url = `https://kusama.subscan.io/account/${address}`;
+          break;
+
+        case 'EDG':
+          url = `https://edgeware.subscan.io/account/${address}`;
           break;
 
         case 'FIL':
@@ -395,6 +403,7 @@ Vue.mixin({
 
         case 'DOT':
         case 'KSM':
+        case 'EDG':
           tenant = 'POLKADOT';
           break;
 
@@ -737,6 +746,8 @@ Vue.mixin({
             polkadot_endpoint = KUSAMA_ENDPOINT;
           } else if (token == 'DOT') {
             polkadot_endpoint = POLKADOT_ENDPOINT;
+          } else if (token == 'EDG') {
+            polkadot_endpoint = EDGEWARE_ENDPOINT;
           }
 
           polkadot_utils.connect(polkadot_endpoint).then(res =>{

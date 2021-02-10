@@ -55,6 +55,7 @@ tenant_payout_mapper = {
     'POLKADOT': sync_polkadot_payout,
     'BINANCE': sync_binance_payout,
     'KUSAMA': sync_polkadot_payout,
+    'EDGEWARE': sync_polkadot_payout
 }
 
 def get_upload_filename(instance, filename):

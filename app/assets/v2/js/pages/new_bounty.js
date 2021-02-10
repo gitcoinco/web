@@ -193,9 +193,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '60':
         case '59':
         case '58':
-          // 58 - polkadot, 59 - kusama
+          // 58 - polkadot, 59 - kusama, 60 - edgeware
           type = 'polkadot_ext';
           break;
         case '56':

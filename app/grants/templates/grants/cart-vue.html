@@ -140,6 +140,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <!-- Checkout for Kusama Grants -->
                   {% include 'grants/cart/extension/kusama.html' %}
+
+                  <!-- Checkout for Edgeware Grants -->
+                  {% include 'grants/cart/extension/edgeware.html' %}
                 </b-tabs>
               </div>
               {% comment %} Cart total {% endcomment %}
@@ -228,7 +231,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <script src="{% static "v2/js/grants/cart/harmony_extension.js" %}"></script>
     <!-- </template> -->
 
-    <!-- <template v-if="grantsCountByTenant.POLKADOT !== undefined || grantsCountByTenant.KUSAMA !== undefined"> -->
+    <!-- <template v-if="grantsCountByTenant.POLKADOT !== undefined || grantsCountByTenant.KUSAMA !== undefined" || grantsCountByTenant.EDGEWARE !== undefined"> -->
       <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
       <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
       <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>

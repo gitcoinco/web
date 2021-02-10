@@ -183,6 +183,9 @@ function tokenOptionsForGrant(grant) {
   } else if (grant.tenants && grant.tenants.includes('KUSAMA')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 59);
     tokenDefault = 'KSM';
+  } else if (grant.tenants && grant.tenants.includes('EDGEWARE')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 60);
+    tokenDefault = 'EDG';
   } else {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1);
   }

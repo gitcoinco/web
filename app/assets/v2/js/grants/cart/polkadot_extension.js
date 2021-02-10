@@ -19,6 +19,10 @@ const initPolkadotConnection = async(grant, vm) => {
     polkadot_endpoint = POLKADOT_ENDPOINT;
     decimals = 10;
     format = 2;
+  } else if (grant.grant_donation_currency == 'EDG') {
+    polkadot_endpoint = EDGEWARE_ENDPOINT;
+    decimals = 18;
+    format = 7;
   }
 
   polkadot_utils.connect(polkadot_endpoint).then(() =>{
@@ -64,6 +68,8 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
     decimals = 12;
   } else if (grant.grant_donation_currency == 'DOT') {
     decimals = 10;
+  } else if (grant.grant_donation_currency == 'EDG') {
+    decimals = 18;
   }
 
   // step 1. set modal to waiting state
@@ -76,6 +82,8 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
     to_address = grant.polkadot_payout_address;
   } else if (grant.grant_donation_currency == 'KSM') {
     to_address = grant.kusama_payout_address;
+  } else if (grant.grant_donation_currency == 'EDG') {
+    to_address = grant.edgeware_payout_address;
   }
 
   // step 2. balance check
@@ -109,6 +117,8 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
         tenant = 'POLKADOT';
       } else if (grant.grant_donation_currency == 'KSM') {
         tenant = 'KUSAMA';
+      } else if (grant.grant_donation_currency == 'EDG') {
+        tenant = 'EDGEWARE';
       }
 
       const payload = {

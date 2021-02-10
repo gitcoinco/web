@@ -3,6 +3,7 @@ var polkadot_utils = {};
 
 const KUSAMA_ENDPOINT = 'wss://kusama-rpc.polkadot.io/';
 const POLKADOT_ENDPOINT = 'wss://rpc.polkadot.io';
+const EDGEWARE_ENDPOINT = 'wss://mainnet1.edgewa.re';
 
 /**
  * connects to the polkadot provider based on the rpc provider
