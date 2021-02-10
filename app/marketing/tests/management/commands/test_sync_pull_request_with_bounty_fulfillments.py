@@ -77,7 +77,7 @@ class TestSyncPullRequestWithBountyFulfillments(TestCase):
         )
 
     @mock.patch('premailer.premailer.requests')
-    def test_handle_simple(self):
+    def test_handle_simple(self, mocked_requests):
         """Test command sync keywords."""
         start_time = timezone.now()
         mock.patch('marketing.management.commands.sync_pull_request_with_bounty_fulfillments.get_gh_issue_state', lambda x, y, z: 'closed').start()
