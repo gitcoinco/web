@@ -23,14 +23,12 @@
     {% compress css file admin_dashboard %}
         <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
     {% endcompress %}
-{% endblock %}
 
-<style>
-  .d-none {
-    display: none;
-  }
-</style>
-
+    <style>
+      .d-none {
+        display: none;
+      }
+    </style>
 {% endblock %}
 {% block coltype %}colMS{% endblock %}
 
