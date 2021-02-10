@@ -73,6 +73,7 @@
 
 {% if not slim %}
   {% compress js file jquery-old %}
+  <script src="{% static "v2/js/lib/jsrender.js" %}"></script>
   <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
   <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
   <script src="{% static "v2/js/lib/jquery.modal.min.js" %}"></script>
