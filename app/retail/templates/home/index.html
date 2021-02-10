@@ -322,29 +322,29 @@
     </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts_lite.html' with slim=1 %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script>
+      const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+      const videoTemplate = (url) => {
+        return `<iframe
+        class="video-frame"
+        frameborder="0"
+        allow=${options}
+        allowfullscreen="true"
+        src=${url}></iframe>`;
+      };
+
+      $('.video-preview').on('click', function(){
+        const url = $(this).data('url');
+        $(this).addClass('video-preview--video');
+        $(this).html(videoTemplate(url));
+      });
+
+      if(!localStorage['onboarded_funder']) {
+        $('#fund-issue').attr('href', '/onboard/funder/');
+      }
+    </script>
   </body>
-  <script src="{% static "v2/js/shared.js" %}"></script>
-  <script>
-    const options = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-    const videoTemplate = (url) => {
-      return `<iframe
-      class="video-frame"
-      frameborder="0"
-      allow=${options}
-      allowfullscreen="true"
-      src=${url}></iframe>`;
-    };
 
-    $('.video-preview').on('click', function(){
-      const url = $(this).data('url');
-      $(this).addClass('video-preview--video');
-      $(this).html(videoTemplate(url));
-    });
-
-    if(!localStorage['onboarded_funder']) {
-      $('#fund-issue').attr('href', '/onboard/funder/');
-    }
-  </script>
 </html>

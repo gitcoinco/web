@@ -166,11 +166,9 @@
       {% include 'bounties/funder/press.html' %}
       {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/footer_scripts_lite.html' with slim=1 %}
+
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/landing_page.js" %}"></script>
   </body>
-  {% include 'shared/analytics.html' %}
-  {% block scripts %}{% endblock %}
-  <script src="https://codefund.app/properties/189/funder.js" async="async"></script>
-
 </html>

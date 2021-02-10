@@ -105,22 +105,19 @@
   </div>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts_lite.html' %}
   {% include 'shared/footer.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
 
   {% include 'shared/current_profile.html' %}
+  <script>
+    document.pk = {{ pk }};
+    document.result = {{ result|safe }};
+    const token_address = '{{ token_address }}';
+  </script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </body>
-<script>
-  document.pk = {{ pk }};
-  document.result = {{ result|safe }};
-  const token_address = '{{ token_address }}';
-</script>
-<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/user-search.js" %}"></script>
-<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="/dynamic/js/tokens_dynamic.js"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>

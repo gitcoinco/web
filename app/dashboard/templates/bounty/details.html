@@ -521,10 +521,12 @@
       {% endif %}
     </script>
 
+    {% include 'shared/footer.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
+    <script src="{% static "v2/js/lib/jsrender.js" %}"></script>
+
   </body>
 
   {% include 'shared/current_profile.html' %}
