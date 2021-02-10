@@ -10,6 +10,7 @@ django-cors-headers==2.4.0
 django-filter==2.0.0
 django-haystack
 django-ratelimit==1.1.0
+django-libsass==0.8
 djangorestframework==3.9.1
 gitterpy
 gunicorn
