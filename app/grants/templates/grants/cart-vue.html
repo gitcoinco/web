@@ -128,6 +128,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   <!-- Checkout for Harmony Grants -->
                   {% include 'grants/cart/extension/harmony.html' %}
 
+                  <!-- Checkout for Binance Grants -->
+                  {% include 'grants/cart/extension/binance.html' %}
+
                   <!-- Checkout for Polkadot Grants -->
                   {% include 'grants/cart/extension/polkadot.html' %}
 
@@ -226,6 +229,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
       <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
       <script src="{% static "v2/js/grants/cart/polkadot_extension.js" %}"></script>
+    <!-- </template> -->
+
+    <!-- <template v-if="grantsCountByTenant.BINANCE !== undefined"> -->
+      <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
+      <script src="{% static "v2/js/grants/cart/binance_extension.js" %}"></script>
     <!-- </template> -->
 
     <script src="{% static "v2/js/cart.js" %}"></script>
