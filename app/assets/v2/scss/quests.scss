@@ -27,7 +27,7 @@
   bottom: -5px;
 }
 
-.btn {
+.btn:not(.btn-gc-blue) {
   width: 100px;
   position: relative;
   border: none;
