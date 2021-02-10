@@ -38,34 +38,30 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     // TODO: figure out data format
     // ERC 20 for RSK
 
-    // DOC - 18 - 0xe700691da7b9851f2f35f8b8182c69c53ccad9db
-    // RDOC - 18 - 0x2d919f19d4892381d58edebeca66d5642cef1a1f
+    let token_contract_address;
 
-    const amountInWei = rskClient.utils.toHex(rskClient.utils.toWei(String(amount)));
-    const encoded_amount = new rskClient.utils.BN(BigInt(amountInWei)).toString();
-    const token_contract = new rskClient.eth.Contract(token_abi, vm.bounty.token_address);
-    const data = token_contract.methods.transfer(to_address.toLowerCase(), encoded_amount).encodeABI();
+    if (token_name === 'DOC') {
+      token_contract_address = '0xe700691da7b9851f2f35f8b8182c69c53ccad9db';
+    } else if (token_name === 'RDOC') {
+      token_contract_address = '0x2d919f19d4892381d58edebeca66d5642cef1a1f';
+    } else if (token_name === 'tRIF') {
+      token_contract_address = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe';
+    }
+
+    const method_id = "0xa9059cbb"; // transfer method id
+    const amount = (amount * 10 ** vm.decimals).toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
+    to_address = to_address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
 
     const tx_args = {
-      to: to_address.toLowerCase(),
       from: ethereum.selectedAddress,
-      value: '0x0',
-      gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
-      gas: rskClient.utils.toHex(318730),
-      gasLimit: rskClient.utils.toHex(318730),
-      data: data
+      to: token_contract_address,
+      data: method_id + to_address + amount
     };
 
-    const txHash = await ethereum.request(
-      {
-        method: 'eth_sendTransaction',
-        params: [tx_args],
-      }
-    );
+    const txHash = await ethereum.request({ method: 'eth_sendTransaction', params: [tx_args] });
 
     callback(null, ethereum.selectedAddress, txHash)
   }
-
 
   function callback(error, from_address, txn) {
     if (error) {
