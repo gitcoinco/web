@@ -174,6 +174,9 @@ function tokenOptionsForGrant(grant) {
   } else if (grant.tenants && grant.tenants.includes('HARMONY')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1000);
     tokenDefault = 'ONE';
+  } else if (grant.tenants && grant.tenants.includes('BINANCE')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 56);
+    tokenDefault = 'BNB';
   } else if (grant.tenants && grant.tenants.includes('POLKADOT')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 58);
     tokenDefault = 'DOT';

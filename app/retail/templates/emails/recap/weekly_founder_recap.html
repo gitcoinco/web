@@ -62,13 +62,13 @@
       color: #C70018;
       border-color: #D2D2D2;
     }
-    
+
     .bold {
       font-weight: bold;
     }
     .header {
        /*width: 100%;*/
-       border-bottom: 1px solid; 
+       border-bottom: 1px solid;
        margin-top: 3em;
     }
     .leftAlign {
@@ -81,7 +81,7 @@
     .imgGitcoinStyle {
       max-height:50px; max-width:100%; border:2px solid #1AB56D; border-radius:100%;
     }
-    .contentOverall { 
+    .contentOverall {
       padding-bottom: 3em;
       padding-top: 1em;
     }
@@ -90,7 +90,7 @@
     }
     .section_row_entry {
       padding-bottom: 1.5em;
-      
+
     }
     body {
       background-color: #f2f6f9;
@@ -100,7 +100,7 @@
       justify-content: center; /* align horizontal */
       align-items: center; /* align vertical */
     }
-    
+
     @media (max-width: 576px) {
       .middlecenter-2 {
         display: flex;
@@ -109,7 +109,7 @@
       }
     }
     @media (min-width: 576px) {
-      
+
       .middlecenter-2 {
         text-align: left;
         align-items: left;
@@ -126,7 +126,7 @@
       <h2>{% trans "Your weekly bounties recap" %}</h2>
       <div>{{ select_params.to }} - {{ select_params.from }}</div>
       <div class="bold">{{profile.handle}}</div>
-    
+
       {% for section in sections %}
         <div class="{{section.header_css}} header leftAlign">
           <i class="g-icon g-icon__dot-circle"></i>&nbsp;{{section.header_name}}
