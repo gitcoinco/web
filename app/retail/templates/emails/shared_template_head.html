@@ -16,10 +16,6 @@
 {% endcomment %}
 {% load i18n static compress %}
 {% compress css inline %}
-  <!-- media="..." is a workaround for data-premailer="ignore" (because it wont match in premailers ctx) -->
-  <link rel="stylesheet" type="text/x-scss" media="all and (min-width: 1px)" href={% static "v2/scss/lib/typography.scss" %} />
-{% endcompress %}
-{% compress css inline %}
   <!-- updated to the shared version -->
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
