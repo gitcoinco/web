@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,14 +14,16 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet"/>
 
-  <link href="{% static "v2/css/fontawesome-all.min.css" %}" rel="stylesheet">
-  
-  <link href="{% static "v2/css/bootstrap.min.css" %}" rel="stylesheet" />
+
+  {% compress css file libs %}
+    <link href="{% static "v2/css/fontawesome-all.min.css" %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/x-scss" href="{% static 'v2/scss/lib/index.scss' %}" />
+  {% endcompress %}
 
   <link href="{% static "landingpage/app.css" %}" type="text/css" rel="stylesheet" media="screen,projection" />
-  
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" %}"></script>
+
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 
   <script src="{% static "landingpage/town.js" %}"></script>
   <script src="{% static "landingpage/txtRotate.js" %}"></script>
@@ -442,8 +444,14 @@
       </a>
     </figure>
   </section>
+  <script>
+    var static_url = "{{ STATIC_URL }}";
+    var media_url = "{{ MEDIA_URL }}";
+    document.contxt = {{ json_context|safe }};
+
+  </script>
+  {% include 'shared/tag_manager_2.html' %}
 </body>
 
 </html>
 
-{% include 'shared/tag_manager_2.html' %}
