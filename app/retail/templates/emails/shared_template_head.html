@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static compress %}
-{% compress css file typography %}
+{% compress css inline %}
   <!-- media="..." is a workaround for data-premailer="ignore" (because it wont match in premailers ctx) -->
   <link rel="stylesheet" type="text/x-scss" media="all and (min-width: 1px)" href={% static "v2/scss/lib/typography.scss" %} />
 {% endcompress %}
