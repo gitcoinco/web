@@ -337,7 +337,7 @@
                   <p class="text-black-60 font-caption mb-2">
                     This is where funds from contributors to this grant will be sent
                   </p>
-              
+
                   <input id="binance_payout_address" v-model="form.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
                   <div class="text-danger" v-if="errors.binance_payout_address">
@@ -437,7 +437,7 @@
     {% include 'shared/current_profile.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
-    {% include 'shared/footer_scripts.html' with vue=True ignore_inject_web3=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
 
     <script>
       document.grant_types = {{grant_types|safe}};

@@ -31,7 +31,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
     {% endcompress %}
-    
+
     <style>
       .plyr--video .plyr__controls {
         z-index: 2 !important;
@@ -177,7 +177,7 @@
     </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 vue=True %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
 
     {% include 'shared/current_profile.html' %}

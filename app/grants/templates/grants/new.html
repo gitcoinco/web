@@ -192,7 +192,7 @@
     {% include 'shared/current_profile.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
   </body>
 
   <script src="{% static "v2/js/abi.js" %}"></script>

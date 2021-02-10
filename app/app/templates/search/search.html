@@ -156,7 +156,7 @@
 
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
     <script src="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/innersearch.min.js"></script>
 
