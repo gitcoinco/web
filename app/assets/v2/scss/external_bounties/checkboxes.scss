@@ -20,6 +20,7 @@
   -webkit-transform: rotate(45deg) translate(-0.7em, -1.25em);
   -ms-transform: rotate(45deg) translate(-0.7em, -1.25em);
   transform: rotate(45deg) translate(-0.7em, -1.25em);
+  display: none;
 }
 
 .checkbox_container input {
@@ -44,10 +45,6 @@
   border: 1px solid #D3D3D3;
   border-radius: 2px;
   margin-right: 0.5em;
-}
-
-.checkbox_container label::after {
-  display: none;
 }
 
 .checkbox_container input:checked ~ label::before,

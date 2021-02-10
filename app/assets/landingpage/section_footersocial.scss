@@ -1,52 +1,52 @@
 section#footersocial{
 
-	margin-top: 0em;
+  margin-top: 0em;
 
-	margin-left: 3em;
-	margin-right: 3em;
+  margin-left: 3em;
+  margin-right: 3em;
 	
 	
 
-	display: grid;
-	grid-template-columns: repeat(7, 1fr);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 
-	justify-content: end;
+  justify-content: end;
 
 	
-	padding: 1.5em 0em;
+  padding: 1.5em 0em;
 
-	background-color: var(--vinuspurple);
+  background-color: var(--vinuspurple);
 
 
-	figure{
+  figure{
 
 		
 	
 		
-		margin: auto;
+    margin: auto;
 
 		
 
-		svg{
-			background-color: none;
-			stroke: var(--starwhite);
-			stroke-width: 2;
-			stroke-miterlimit: 5;
-			width: 64px;
-			height: 64px;
-			fill: none;
+    svg{
+      background-color: none;
+      stroke: var(--starwhite);
+      stroke-width: 2;
+      stroke-miterlimit: 5;
+      width: 64px;
+      height: 64px;
+      fill: none;
 
 
-			transition: all 500ms ease;
+      transition: all 500ms ease;
 
-			&:hover{
-				stroke: var(--milkywayblue);
-				stroke-width: 4;
-			};
-		}
+      &:hover{
+        stroke: var(--milkywayblue);
+        stroke-width: 4;
+      }
+    }
 
 
-	}
+  }
 
 
 }
@@ -56,15 +56,15 @@ section#footersocial{
 
 
 @media #{$phone} { 
-	section#footersocial{
+  section#footersocial{
 
-		grid-template-columns: repeat(3, 1fr);
-		grid-row-gap: 3em;
+    grid-template-columns: repeat(3, 1fr);
+    grid-row-gap: 3em;
 
-		margin-left: 1.5em;
-		margin-right: 1.5em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
 
-    }
+  }
 }
 
 

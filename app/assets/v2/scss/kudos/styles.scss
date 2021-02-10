@@ -179,11 +179,11 @@ header .kd-card .kd-name {
   display: block; }
 .kd-extended .sender-avatar {
   position: absolute;
-  width: 50px;
   border-radius: 50%;
   bottom: 1em;
   left: 7%;
-  width: 18%; }
+  width: 18%;
+}
 .kd-extended .sender-avatar.right {
   left: auto;
   right: 5%; }
@@ -308,7 +308,6 @@ header .kd-card .kd-name {
 .hexagon {
   background: red;
   width: 10rem;
-  display: block;
   margin: auto;
   height: 11.56rem;
   display: flex;
@@ -351,7 +350,6 @@ a:hover #shape-hexagon {
     fill: rgba(0, 68, 224, 0.6); } }
 .hexagon-group {
   width: 100%;
-  display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin: auto;
@@ -496,8 +494,8 @@ a.cellarius-partner:before {
   bottom: 3rem;
   width: 16%;
   height: 16%;
-  background-size: cover;
   background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+  background-size: cover;
   background-repeat: no-repeat; }
 
 .cellarius-badge {
@@ -505,8 +503,8 @@ a.cellarius-partner:before {
   bottom: 3rem;
   width: 16%;
   height: 16%;
-  background-size: cover;
   background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+  background-size: cover;
   background-repeat: no-repeat;
   background-color: #fff;
   border-radius: 50px; }
