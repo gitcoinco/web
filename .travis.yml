@@ -47,6 +47,7 @@ jobs:
         - pip install -r requirements/test.txt
         - npm run eslint
         - npm run stylelint
+        - (cd app; python3 ./manage.py collectstatic --noinput)
         - pytest -p no:ethereum -p no:warnings
         # Generate Markdown documentation and static docs page.
         - pydocmd build
