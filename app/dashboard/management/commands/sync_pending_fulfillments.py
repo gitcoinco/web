@@ -65,7 +65,7 @@ class Command(BaseCommand):
         if qr_pending_fulfillments:
             # Auto expire pending transactions
             timeout_period = timezone.now() - timedelta(minutes=20)
-            qr_pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+            qr_pending_fulfillments.filter(modified_on__lt=timeout_period).update(payout_status='expired')
 
             fulfillments = qr_pending_fulfillments.filter(payout_status='pending')
             for fulfillment in fulfillments.all():

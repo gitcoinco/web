@@ -335,6 +335,10 @@ Vue.component('grants-cart', {
       return window.onewallet && window.onewallet.isOneWallet;
     },
 
+    isBinanceExtInstalled() {
+      return window.BinanceChain || false;
+    },
+
     isPolkadotExtInstalled() {
       return polkadot_extension_dapp.isWeb3Injected;
     }
@@ -379,6 +383,9 @@ Vue.component('grants-cart', {
           break;
         case 'HARMONY':
           vm.chainId = '1000';
+          break;
+        case 'BINANCE':
+          vm.chainId = '56';
           break;
         case 'KUSAMA':
           vm.chainId = '59';
@@ -451,6 +458,9 @@ Vue.component('grants-cart', {
       switch (tenant) {
         case 'HARMONY':
           contributeWithHarmonyExtension(grant, vm);
+          break;
+        case 'BINANCE':
+          contributeWithBinanceExtension(grant, vm);
           break;
         case 'POLKADOT':
         case 'KUSAMA':
