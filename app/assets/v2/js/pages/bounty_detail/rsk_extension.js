@@ -3,7 +3,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
 
-  // 1. init rsk provider
+  // init rsk provider
   const rskHost = "https://public-node.testnet.rsk.co";
   // const rskHost = "https://public-node.rsk.co";
   const rskClient = new Web3();
@@ -12,9 +12,16 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   );
 
   // TODO: Prompt user to unlock wallet if ethereum.selectedAddress is not present
-  // TODO: Add check to see if balance is present
 
-  // 2. construct + sign txn via nifty
+  rbtcBalance = rskClient.utils.fromWei(
+    rskClient.eth.getBalance(ethereum.selectedAddress),
+    'ether'
+  );
+
+  if (Number(rbtcBalance) < amount) {
+    _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
+  }
+
   if (token_name == 'R-BTC') {
     const tx_args = {
       to: to_address.toLowerCase(),
@@ -35,30 +42,39 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     callback(null, ethereum.selectedAddress, txHash)
 
   } else {
-    // TODO: figure out data format
-    // ERC 20 for RSK
 
-    let token_contract_address;
+    let tokenContractAddress;
 
     if (token_name === 'DOC') {
-      token_contract_address = '0xe700691da7b9851f2f35f8b8182c69c53ccad9db';
+      tokenContractAddress = '0xe700691da7b9851f2f35f8b8182c69c53ccad9db';
     } else if (token_name === 'RDOC') {
-      token_contract_address = '0x2d919f19d4892381d58edebeca66d5642cef1a1f';
+      tokenContractAddress = '0x2d919f19d4892381d58edebeca66d5642cef1a1f';
     } else if (token_name === 'tRIF') {
-      token_contract_address = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe';
+      tokenContractAddress = '0x19f64674d8a5b4e652319f5e239efd3bc969a1fe';
+    }
+    
+    tokenContract = new rskClient.eth.Contract(token_abi, token_address);
+
+    balance = tokenContract.methods.balanceOf(
+      ethereum.selectedAddress).call({from: ethereum.selectedAddress});
+
+    amountInWei  = amount * 1.0 * Math.pow(10, vm.decimals);
+
+    if (Number(balance) < amountInWei) {
+      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
     }
 
-    const method_id = "0xa9059cbb"; // transfer method id
-    const amount = (amount * 10 ** vm.decimals).toString(16).padStart(64, '0'); // convert to hex and pad with zeroes
-    to_address = to_address.substr(2).padStart(64, '0'); // remove 0x and pad with zeroes
+    amountAsString = new rskClient.utils.BN(BigInt(amountInWei)).toString();
+    data = tokenContract.methods.transfer(to_address.toLowerCase(), amountAsString).encodeABI();
 
-    const tx_args = {
+    txArgs = {
+      to: to_address.toLowerCase(),
       from: ethereum.selectedAddress,
-      to: token_contract_address,
-      data: method_id + to_address + amount
+      gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
+      data: data
     };
 
-    const txHash = await ethereum.request({ method: 'eth_sendTransaction', params: [tx_args] });
+    const txHash = await ethereum.request({ method: 'eth_sendTransaction', params: [txArgs] });
 
     callback(null, ethereum.selectedAddress, txHash)
   }
