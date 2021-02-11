@@ -288,12 +288,6 @@
         </div>
       </div>
     </div>
-
-    {% if is_townsquare %}
-     <div class="nav-item interior ">
-       <a href="{% url "tribes" %}" class="gc-text-yellow nav-link selected">Looking for developers?</a>
-     </div>
-    {% endif %}
   </nav>
   <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}

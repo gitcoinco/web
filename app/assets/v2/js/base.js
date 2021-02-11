@@ -128,25 +128,6 @@ $(document).ready(function() {
     Cookies.set('last_github_auth_mutation', timestamp);
   });
 
-
-  // preload hover image
-  var url = $('#logo').data('hover');
-
-  $.get(url, function() {
-    // …
-  });
-
-  $('#logo').mouseover(function(e) {
-    $(this).attr('old-src', $(this).attr('src'));
-    var new_src = $(this).data('hover');
-
-    $(this).attr('src', new_src);
-    e.preventDefault();
-  });
-
-  $('#logo').mouseleave(function(e) {
-    $(this).attr('src', $(this).attr('old-src'));
-  });
   if (!$.fn.collapse) {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
