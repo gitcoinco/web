@@ -65,7 +65,6 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
       to: vm.bounty.token_address,
       from: ethereum.selectedAddress,
       gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
-      gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
       gas: rskClient.utils.toHex(318730),
       gasLimit: rskClient.utils.toHex(318730),
       data: data
@@ -74,7 +73,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     const txHash = await ethereum.request(
       {
         method: 'eth_sendTransaction',
-        params: [tx_args],
+        params: [txArgs],
       }
     );
 
