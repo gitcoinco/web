@@ -17,7 +17,7 @@ def find_txn_on_rsk_explorer(fulfillment):
     if token_name not in ['R-BTC', 'RDOC', 'DOC']:
         return None
 
-    url = f'https://blockscout.com/rsk/mainnnet/api?module=account&action=txlist&address={funderAddress}'
+    url = f'https://blockscout.com/rsk/mainnet/api?module=account&action=txlist&address={funderAddress}'
 
     response = requests.get(url).json()
 
