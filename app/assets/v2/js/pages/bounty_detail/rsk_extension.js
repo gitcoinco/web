@@ -13,16 +13,17 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
 
   // TODO: Prompt user to unlock wallet if ethereum.selectedAddress is not present
 
-  rbtcBalance = rskClient.utils.fromWei(
-    rskClient.eth.getBalance(ethereum.selectedAddress),
-    'ether'
-  );
-
-  if (Number(rbtcBalance) < amount) {
-    _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
-  }
-
   if (token_name == 'R-BTC') {
+
+    rbtcBalance = rskClient.utils.fromWei(
+      rskClient.eth.getBalance(ethereum.selectedAddress),
+      'ether'
+    );
+  
+    if (Number(rbtcBalance) < amount) {
+      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
+    }
+
     const tx_args = {
       to: to_address.toLowerCase(),
       from: ethereum.selectedAddress,
