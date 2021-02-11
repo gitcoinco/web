@@ -67,8 +67,8 @@
             {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
           </div>
         {% endif %}
-        {% else %}
-          {# Show some example queries to run, maybe query syntax, something else? #}
+      {% else %}
+        {# Show some example queries to run, maybe query syntax, something else? #}
       {% endif %}
     </form>
     {% endblock %}
