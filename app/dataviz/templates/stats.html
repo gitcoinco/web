@@ -17,9 +17,9 @@
 {% endcomment %}
 {% load i18n static compress %}
 {% block extrastyle %}{{ block.super }}
-    {% compress css file admin_dashboard %}
-        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-    {% endcompress %}
+  {% compress css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endcompress %}
 {% endblock %}
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
@@ -30,9 +30,9 @@
 <a href="..">&lt; back</a>
 <br>
 <style>
-.dashboard #content{
+  .dashboard #content{
     width: 100%;
-}
+  }
 </style>
 <a class="" href="{{filter_params}}&filter=">{% trans "All" %}</a> |
 <a class="" href="{{filter_params}}&filter=Activity">{% trans "Activity" %}</a> |

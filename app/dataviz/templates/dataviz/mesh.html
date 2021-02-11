@@ -17,9 +17,9 @@
 {% endcomment %}
 {% load i18n static compress %}
 {% block extrastyle %}{{ block.super }}
-    {% compress css file admin_dashboard %}
-        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-    {% endcompress %}
+  {% compress css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endcompress %}
 {% endblock %}
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}

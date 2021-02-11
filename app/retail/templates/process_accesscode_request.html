@@ -20,9 +20,9 @@
 {% load i18n static compress %}
 
 {% block extrastyle %}{{ block.super }}
-    {% compress css file admin_dashboard %}
-        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-    {% endcompress %}
+  {% compress css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endcompress %}
 {% endblock %}
 {% block coltype %}colMS{% endblock %}
 
@@ -34,7 +34,7 @@
 
 <h1>{% trans "Process" %} {{obj}}</h1>
 <form method=POST>
-    {% csrf_token %}
+  {% csrf_token %}
 <input type="text" name="subject" value="RE: Gitcoin Whitepaper Request for {{obj.email}}" style="width: 500px;">
 <textarea name="body" style="width: 500px; height: 300px;">
 {% blocktrans %}> New Whitepaper Request:
