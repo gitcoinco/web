@@ -289,13 +289,13 @@
       </div>
     </div>
   </nav>
-  <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
+  <nav class="navbar-nav d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
     {% include 'shared/notifications.html' %}
     {% include 'shared/search.html' %}
     {% include 'shared/cart_nav.html' %}
     {% endif %}
-  </div>
+  </nav>
 
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}

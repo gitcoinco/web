@@ -15,11 +15,11 @@ html.dark-mode {
   --badge-blue-text: white;
 }
 
-.navbar-nav .nav-link.notification__icon {
-  position: relative;
-  font-size: 18px;
-  color: white;
-}
+// .navbar-nav .nav-link.notification__icon {
+//   position: relative;
+//   font-size: 18px;
+//   color: white;
+// }
 
 .notification__icon.dropdown-toggle::after {
   content: none;
