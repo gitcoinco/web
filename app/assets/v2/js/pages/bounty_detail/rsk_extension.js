@@ -30,6 +30,8 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   }
 
   // 2. construct + sign txn via nifty
+  let txArgs;
+
   if (token_name == 'R-BTC') {
 
     rbtcBalance = rskClient.utils.fromWei(
@@ -42,7 +44,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
       return;
     }
 
-    const tx_args = {
+    txArgs = {
       to: to_address.toLowerCase(),
       from: ethereum.selectedAddress,
       value: rskClient.utils.toHex(rskClient.utils.toWei(String(amount))),
@@ -50,15 +52,6 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
       gas: rskClient.utils.toHex(318730),
       gasLimit: rskClient.utils.toHex(318730)
     };
-
-    const txHash = await ethereum.request(
-      {
-        method: 'eth_sendTransaction',
-        params: [tx_args],
-      }
-    );
-
-    callback(null, ethereum.selectedAddress, txHash)
 
   } else {
 
@@ -85,16 +78,16 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
       gasLimit: rskClient.utils.toHex(318730),
       data: data
     };
-
-    const txHash = await ethereum.request(
-      {
-        method: 'eth_sendTransaction',
-        params: [txArgs],
-      }
-    );
-
-    callback(null, ethereum.selectedAddress, txHash)
   }
+
+  const txHash = await ethereum.request(
+    {
+      method: 'eth_sendTransaction',
+      params: [txArgs],
+    }
+  );
+
+  callback(null, ethereum.selectedAddress, txHash)
 
   function callback(error, from_address, txn) {
     if (error) {
