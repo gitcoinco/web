@@ -2,7 +2,7 @@
 @import "./bootstrap/variables";
 @import "./bootstrap/mixins";
 // overwrite variables in this file
-@import "bootstrap-variables";
+@import "bootstrap-overwrites";
 @import "./bootstrap/root";
 @import "./bootstrap/reboot";
 @import "./bootstrap/type";

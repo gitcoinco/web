@@ -208,6 +208,7 @@ STATICFILES_FINDERS = [
 ]
 # number of demicals allowed in sass numbers
 LIBSASS_PRECISION = 8
+LIBSASS_ADDITIONAL_INCLUDE_PATHS = ['assets/v2/scss/lib/']
 # minify sass output in production (offline)
 if ENV not in ['local', 'test', 'staging', 'preview']:
     # compress offline (use './manage.py compress' to build manifest.json)
