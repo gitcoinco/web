@@ -17,22 +17,20 @@
 {% endcomment %}
 {% load i18n static compress %}
 {% block 'content' %}
-{% compress css file onepagesubmit %}
+{% compress css file quest_new %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
-{% endcompress %}
-<style type="text/css">
-  .add_answer,
-  .add_question,
-  .close_question,
-  .close_answer{
-    font-size: 12px;
-  }
-  .kudos-module .kudos-comment,
-  .kudos-module .msg-alert{
-    display: none !important;
-  }
-</style>
-{% compress css file onepagesubmit %}
+  <style type="text/css">
+    .add_answer,
+    .add_question,
+    .close_question,
+    .close_answer{
+      font-size: 12px;
+    }
+    .kudos-module .kudos-comment,
+    .kudos-module .msg-alert{
+      display: none !important;
+    }
+  </style>
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
 {% endcompress %}
 

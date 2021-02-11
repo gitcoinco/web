@@ -19,24 +19,24 @@
 {% block 'content' %}
 {% compress css file townsquare_new %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
+  <style type="text/css">
+    .add_answer,
+    .add_question,
+    .close_question,
+    .close_answer {
+      font-size: 12px;
+    }
+    .kudos-module .kudos-comment,
+    .kudos-module .msg-alert {
+      display: none !important;
+    }
+  
+    .new_quest_background.selected {
+      border: 2px solid #F9006C;
+    }
+  </style>
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
 {% endcompress %}
-<style type="text/css">
-  .add_answer,
-  .add_question,
-  .close_question,
-  .close_answer {
-    font-size: 12px;
-  }
-  .kudos-module .kudos-comment,
-  .kudos-module .msg-alert {
-    display: none !important;
-  }
-
-  .new_quest_background.selected {
-    border: 2px solid #F9006C;
-  }
-</style>
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
