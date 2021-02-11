@@ -4,14 +4,30 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   const token_name = vm.bounty.token_name;
 
   // 1. init rsk provider
-  const rskHost = "https://public-node.testnet.rsk.co";
-  // const rskHost = "https://public-node.rsk.co";
+  // const rskHost = "https://public-node.testnet.rsk.co";
+  const rskHost = "https://public-node.rsk.co";
   const rskClient = new Web3();
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
 
-  // TODO: Prompt user to unlock wallet if ethereum.selectedAddress is not present
+  // Prompt user to unlock wallet if ethereum.selectedAddress is not present
+  if (!provider) {
+    try {
+      console.log(ethereum.selectedAddress);
+    } catch (e) {
+      modal.closeModal();
+      _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'error');
+      return;
+    }
+    
+    if (!ethereum.selectedAddress) {
+      modal.closeModal();
+      return onConnect().then(() => {
+        modal.openModal();
+      });
+    }
+  }
 
   // 2. construct + sign txn via nifty
   if (token_name == 'R-BTC') {
