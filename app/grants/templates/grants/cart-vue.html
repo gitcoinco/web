@@ -87,12 +87,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   {% include 'grants/cart/extension/kusama.html' %}
 
                   <template #tabs-end>                    
-                    <div role="presentation" class="nav nav-item ml-auto">
-                      <li class="cursor-pointer align-self-center text-primary" @click="shareCart">
-                        Share cart <i class="fa fa-share-alt" aria-hidden="true"></i>
+                    <div role="presentation" class="nav nav-item ml-auto mt-2">
+                    <!-- d-none d-sm-block hides on screens sm or less-->
+                      <li class="cursor-pointer align-self-center text-primary d-none d-sm-block" @click="createCollection">
+                        <i class="far fa-heart" aria-hidden="true"></i> Save as collection
                       </li>
-                      <li class="cursor-pointer align-self-center text-danger ml-3" @click="confirmClearCart">
-                        Clear cart <i class="fa fa-times" aria-hidden="true"></i>
+                      <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
+                        <i class="fa fa-share-alt" aria-hidden="true"></i> Share cart
+                      </li>
+                      <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
+                        <i class="fa fa-times" aria-hidden="true"></i> Clear cart
                       </li>
                     </div>
                   </template>
