@@ -38,7 +38,7 @@ p{
 
 @media #{$desktop} {
     html{ 
-        font-size:130%;
+        font-size: calc(1vw + 1vh);
     }
 }
 

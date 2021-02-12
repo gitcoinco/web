@@ -68,9 +68,10 @@ p {
   line-height: 1.6em;
   margin-bottom: 1.6rem; }
 
+
 @media (min-width: 1313px) {
   html {
-    font-size: 130%; } }
+    font-size: calc(1vw + 1vh); } }
 
 @media (max-width: 1312px) {
   html {
@@ -91,7 +92,7 @@ p {
   margin-top: -2.5em;
   left: 3em; }
   #logo img {
-    width: 200px; }
+    width: 8.7rem; }
 
 @media (max-width: 688px) {
   #logo {
@@ -138,6 +139,7 @@ section.grid {
   section.grid div.grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    padding-top: 2rem;
     margin-bottom: 3em; }
     section.grid div.grid div {
       align-self: center;
@@ -612,12 +614,13 @@ section#intro {
   margin-left: 1em;
   width: 98%;
   display: grid;
-  grid-template-columns: repeat(2, 1fr); }
+  grid-template-columns: 1.5fr 1fr;
+  padding-top: 1rem; }
   section#intro div {
     align-self: center;
-    max-width: 700px; }
+    max-width: 100%; }
     section#intro div p {
-      max-width: 600px; }
+      max-width: 20rem; }
     section#intro div .big {
       font-size: 1.5em; }
   section#intro figure {
@@ -779,12 +782,12 @@ section#twitter {
     padding: 2em;
     padding-top: 0em; }
     section#twitter figure img {
-      width: 80px;
+      width: 3rem;
       height: auto;
-      border-radius: 80px;
+      border-radius: 3rem;
       margin: auto;
       position: relative;
-      top: -40px; }
+      top: -1.5rem; }
     section#twitter figure figcaption {
       color: var(--starwhite); }
     section#twitter figure a {
@@ -833,7 +836,12 @@ section#newsletter {
     padding: 0;
     display: block; }
   section#newsletter button.btn {
-    background-color: var(--vinuspurple); }
+    background-color: var(--vinuspurple);
+    margin-left: 0.5rem; }
+  section#newsletter .options input[type="radio"] {
+      border: 0px;
+      width: 0.6rem;
+      height: 0.6rem; }
 
 @media (max-width: 688px) {
   section#newsletter {
@@ -841,6 +849,11 @@ section#newsletter {
     margin-right: 1.5em; }
     section#newsletter h2 {
       padding: 0rem 1rem; }
+    section#newsletter div.inputs {
+      flex-direction: column; 
+      padding: 1rem; }  
+    section#newsletter button.btn {
+      margin-left: 0; }  
     section#newsletter span {
       display: block;
       margin-bottom: 1rem; }
@@ -887,8 +900,8 @@ section#footersocial {
       stroke: var(--starwhite);
       stroke-width: 2;
       stroke-miterlimit: 5;
-      width: 64px;
-      height: 64px;
+      width: 3rem;
+      height: 3rem;
       fill: none;
       transition: all 500ms ease; }
       section#footersocial figure svg:hover {
@@ -903,6 +916,6 @@ section#footersocial {
     margin-right: 1.5em; } }
 
 section#footerconsensys figure {
-  width: 200px;
+  width: 8rem;
   margin: auto;
   padding: 3em 0em; }
