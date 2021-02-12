@@ -3087,13 +3087,6 @@ def authenticate_idena(request, handle):
 
 @login_required
 def recheck_brightid_status(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user'
-        })
-    
     profile = profile_helper(handle, True)
     user_brightid_status = get_brightid_status(profile.brightid_uuid)
     profile.is_brightid_verified = user_brightid_status == 'verified'
