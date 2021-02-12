@@ -143,19 +143,21 @@ $(document).ready(function() {
     });
   }
 
+  // control display of #top_nav_notification
+  var $top_nav_notif = $('#top_nav_notification');
   var top_nav_salt = document.nav_salt;
   var remove_top_row = function() {
-    $('#top_nav_notification').parents('.row').remove();
+    $top_nav_notif.parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
-
-  if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
+  
+  // display (if it holds a message and hasn't been closed) or remove #top_nav_notification 
+  if (top_nav_salt == 0 || localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
+  } else {
+    $top_nav_notif.parents('.row').removeClass('d-none');
   }
-  if (top_nav_salt == 0) {
-    remove_top_row();
-  }
-  $('#top_nav_notification').click(remove_top_row);
+  $top_nav_notif.click(remove_top_row);
 
   // pulse animation on click
   $('.pulseClick').on('click', (event) => {
