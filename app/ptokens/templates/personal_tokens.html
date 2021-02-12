@@ -47,52 +47,54 @@
     </style>
   </head>
   <body class="interior {{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/minihero.html' with h1='Get started with Time tokens' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
-    </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/minihero.html' with h1='Get started with Time tokens' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+      </div>
 
-    <div class="container pt-5 font-body">
-      <div class="col-12 offset-lg-1 col-lg-10">
-        <div id="quickstart-tabs" class="tab-container mb-3">
-          <button type="button" id="personal" class="section-tab">{%trans "Introduction" %}</button>
-        </div>
+      <div class="container pt-5 font-body">
+        <div class="col-12 offset-lg-1 col-lg-10">
+          <div id="quickstart-tabs" class="tab-container mb-3">
+            <button type="button" id="personal" class="section-tab">{%trans "Introduction" %}</button>
+          </div>
 
-        <div id="quickstart-tabs-sections" class="tab-sections section mt-4">
-          <div id="section-personal" class="tab-section active">
-            <div class="container px-0">
-              <div class="row mb-3 py-2 px-md-0 mx-sm-0">
-                <div class="col-12 col-md-12 px-md-0">
-                  <h1 class="font-title">{%trans "Why Time Tokens?" %}</h1>
-                  <p class="my-4">
-                    {%trans "As a freelancer, time tokens enable pre-payment for future tasks or services. Issue time tokens and receive DAI today for work to be performed tomorrow." %} <br>
-                  </p>
-                  <p class="my-4">
-                    {%trans "Looking to secure top-tier talent for your next project? Buy a time token and redeem it for predefined uses from industry-leading professionals before they get booked up." %} <br>
-                  </p>
-                  <p class="my-4">
-                    {%trans "In an ecosystem largely dominated by trust, time tokens expedite value exchange to foster professional relationships in a truly distributed fashion." %} <br>
-                  </p>
+          <div id="quickstart-tabs-sections" class="tab-sections section mt-4">
+            <div id="section-personal" class="tab-section active">
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-md-0 mx-sm-0">
+                  <div class="col-12 col-md-12 px-md-0">
+                    <h1 class="font-title">{%trans "Why Time Tokens?" %}</h1>
+                    <p class="my-4">
+                      {%trans "As a freelancer, time tokens enable pre-payment for future tasks or services. Issue time tokens and receive DAI today for work to be performed tomorrow." %} <br>
+                    </p>
+                    <p class="my-4">
+                      {%trans "Looking to secure top-tier talent for your next project? Buy a time token and redeem it for predefined uses from industry-leading professionals before they get booked up." %} <br>
+                    </p>
+                    <p class="my-4">
+                      {%trans "In an ecosystem largely dominated by trust, time tokens expedite value exchange to foster professional relationships in a truly distributed fashion." %} <br>
+                    </p>
 
-                  <div class="pb-1">
-                    <h2 class="font-title">{%trans "What Are Time Tokens?" %}</h2>
-                    <p class="mt-3">
-                      {%trans "Time tokens are:" %}<br>
+                    <div class="pb-1">
+                      <h2 class="font-title">{%trans "What Are Time Tokens?" %}</h2>
+                      <p class="mt-3">
+                        {%trans "Time tokens are:" %}<br>
+                      </p>
+                    </div>
+                    <div class="mt-1">
+                      <p>- {%trans "Tokenized IOUs for Gitcoin users time" %}</p>
+                      <p>- {%trans "Used to redeem specialized skills" %}</p>
+                      <p>- {%trans "Unique to each account" %}</p>
+                    </div>
+                    <p class="my-3">{%trans "Curious to learn more? Dive in!" %}</p>
+                    <a class="btn btn-gc-blue" href="{% url "ptokens_faq" %}">{%trans "Quick Start" %}</a>
+
+                    <p class="my-4">
+                      <i>{% trans "Disclaimer: Gitcoin time tokens are currently in beta. Creators remain full control over whether or not the accept a redemption request. There is an inherent risk that your redemption may not be redeemed, so please purchase at your own risk with the knowledge that secondary liquidity may be limited." %}</i>
                     </p>
                   </div>
-                  <div class="mt-1">
-                    <p>- {%trans "Tokenized IOUs for Gitcoin users time" %}</p>
-                    <p>- {%trans "Used to redeem specialized skills" %}</p>
-                    <p>- {%trans "Unique to each account" %}</p>
-                  </div>
-                  <p class="my-3">{%trans "Curious to learn more? Dive in!" %}</p>
-                  <a class="btn btn-gc-blue" href="{% url "ptokens_faq" %}">{%trans "Quick Start" %}</a>
-
-                  <p class="my-4">
-                    <i>{% trans "Disclaimer: Gitcoin time tokens are currently in beta. Creators remain full control over whether or not the accept a redemption request. There is an inherent risk that your redemption may not be redeemed, so please purchase at your own risk with the knowledge that secondary liquidity may be limited." %}</i>
-                  </p>
                 </div>
               </div>
             </div>
