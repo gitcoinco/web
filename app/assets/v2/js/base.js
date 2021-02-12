@@ -151,7 +151,7 @@ $(document).ready(function() {
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
   
-  // display (if it holds a message and hasn't been closed) or remove #top_nav_notification 
+  // display (if it holds a message and hasn't been closed) or remove #top_nav_notification
   if (top_nav_salt == 0 || localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
   } else {
