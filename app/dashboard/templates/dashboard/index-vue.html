@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,18 +26,20 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
-    <link rel="stylesheet" href='{% static "v2/css/rating.css" %}' />
-    <link rel="stylesheet" href='{% static "v2/css/scroll-carousel.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
-    <link rel="stylesheet" href="{% static "v2/css/onboarding_v2.css" %}" />
+    {% compress css file dashboard_index_vue %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-vue-hackathon.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
+    {% endcompress %}
 
     <style type="text/css">
       .hackathon-logo {

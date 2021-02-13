@@ -15,14 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static matches %}
+{% load i18n static matches compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static 'v2/css/lib/quill-snow.css' %}">
-
+    {% compress css file quill_snow %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+    {% endcompress %}
     <style>
       .container {
         counter-reset: section;
@@ -419,7 +420,7 @@
     </div>
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
 
     <script>

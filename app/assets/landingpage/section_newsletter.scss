@@ -1,59 +1,56 @@
 section#newsletter{
 
 
-	margin: 0em 3em;
-	margin-top: 12em;
+  margin: 0em 3em;
+  margin-top: 12em;
 
-	text-align: center;
+  text-align: center;
 
-	border: 2px solid var(--vinuspurple);
-	padding-top: 1.5em;
-	padding-bottom: 1em;
-
-
-	h2{
-		margin-bottom: 1.5em;
-	}
+  border: 2px solid var(--vinuspurple);
+  padding-top: 1.5em;
+  padding-bottom: 1em;
 
 
+  h2 {
+    margin-bottom: 1.5em;
+  }
 
-	div.options{
-		margin-bottom: 1.5em;
+  div.options {
+    margin-bottom: 1.5em;
 
-	}
+  }
 
-	span{
-		padding-right: 0.3rem;
-	}
+  span {
+    padding-right: 0.3rem;
+  }
 
-	label{
-		padding: 0rem 0.3rem;
-	}
+  label {
+    padding: 0rem 0.3rem;
+  }
 
-	input[type=email]{
-		padding:1em 1.5em;
-		border-radius: 3px;
-		cursor: pointer;
-		margin-bottom: 1rem;
-		color: var(--polarisblue);
-		background-color: var(--starwhite);
-		border: 0;
-		outline: 0;
-		font-size: 100%;
-	}
+  input[type=email]{
+    padding:1em 1.5em;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    color: var(--polarisblue);
+    background-color: var(--starwhite);
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+  }
 
 
-	form{
-		margin:0;
-		padding:0;
-		display: block;
-	}
+  form{
+    margin:0;
+    padding:0;
+    display: block;
+  }
 
 	button.btn{
 		background-color: var(--vinuspurple);
 		margin-left: 0.5rem;
   }
-
 
 	.options input[type="radio"] {
 		border: 0px;
@@ -65,23 +62,21 @@ section#newsletter{
 }
 
 
-
-
-
 @media #{$phone} { 
-	section#newsletter{
+  section#newsletter {
 
 
-		h2{
-			padding: 0rem 1rem;
-		}
+    h2 {
+      padding: 0rem 1rem;
+    }
 
-		span{
-			display: block;
-			margin-bottom: 1rem;
-		}
+    span {
+      display: block;
+      margin-bottom: 1rem;
+    }
 
-		label{
+
+		label {
 			padding: 0rem 0rem;
 		}
 		
@@ -94,8 +89,8 @@ section#newsletter{
 			margin-left: 0; 
 		} 
 
-		margin-left: 1.5em;
-		margin-right: 1.5em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
 
 	}
 }

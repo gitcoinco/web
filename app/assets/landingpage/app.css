@@ -48,7 +48,8 @@ html {
   font-kerning: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility; }
+  text-rendering: optimizeLegibility; 
+  font-size: calc(1vw + 1vh); }
 
 h1 {
   font-size: 250%;

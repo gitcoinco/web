@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize static i18n %}
+{% load humanize static i18n compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,10 +24,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'>
-    <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'>
-    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'>
-    <link rel="stylesheet" href='{% static "v2/css/theme_switcher.css" %}'>
+    {% compress css file townsquare %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %}>
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %}>
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/theme_switcher.scss" %}>
+    {% endcompress %}
     <style>
       img.hackathon-card-logo{
         max-height: 5rem;
