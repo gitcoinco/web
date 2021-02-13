@@ -1,9 +1,10 @@
 html{
-  font-family: 'Mulish', sans-serif;
-  font-kerning: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+    font-family: 'Mulish', sans-serif;
+    font-kerning: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-size: calc(1vw + 1vh);
 }
 
 
@@ -31,11 +32,6 @@ p{
 
 
 
-
-
-
-
-
 @media #{$desktop} {
   html{ 
     font-size:130%;
@@ -47,6 +43,7 @@ p{
     font-size: 120%; 
   }
 }
+
 
 @media #{$tablet} { 
   html{  

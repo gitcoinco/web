@@ -2,32 +2,31 @@ section#intro{
 
   height: 100vh;
   margin-left: 3em;
+	display: grid;
+	grid-template-columns: 1.5fr 1fr;
+	padding-top: 1rem;
 
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 3em;
+	div {
+		align-self: center;
+		max-width: 100%;
 
-  div{
-    align-self: center;
-    max-width: 700px;
-
-    p{
-      max-width: 600px;
-    }
-    .big{
-      font-size: 1.5em;
-    }
+		p {
+			max-width: 20rem;
+		}
+		.big {
+			font-size: 1.5em;
+		}
   }
 
-  figure{
+  figure {
     align-self: center;
     //align-self: end;
 
-    img{
+    img {
       max-height: 100vh;
     }
 
-    .hidden{
+    .hidden {
       display: none;
     }
   }
