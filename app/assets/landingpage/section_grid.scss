@@ -13,6 +13,7 @@ section.grid{
 
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
+		padding-top: calc(3vh + 3vw);
 		margin-bottom: 3em;
 
 		div{
