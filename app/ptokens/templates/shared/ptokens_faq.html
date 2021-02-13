@@ -14,8 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static humanize i18n %}
-<link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+{% load static humanize i18n compress %}
+{% compress css file kudos_styles %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+{% endcompress %}
 <section class="container-fluid">
   <div class="container">
     <h3 id='faq' class="text-center my-5">FAQ</h3>
@@ -37,8 +39,8 @@
     <div class="mb-3 faq-item">
       <h5 class="accordion">How do I use a time token?</h5>
       <div class="panel">
-        <p>Once you’ve acquired a time token, you’ll need to submit a redemption request. 
-        This request can be used on any of the Creators listed uses, and only for those uses. 
+        <p>Once you’ve acquired a time token, you’ll need to submit a redemption request.
+        This request can be used on any of the Creators listed uses, and only for those uses.
         Please note that it’s up to the creator to determine whether or not your request is appropriate, so please give them 24-48 hours to respond to your request.</p>
       </div>
     </div>
@@ -56,5 +58,6 @@
         <p>Under each profile you’ll see a feedback score. This is the main place where we can see how a creator is holding up their end of the bargain. Please submit an appropriate overview on what happened and we’ll look to see if further action needs to be taken.</p>
       </div>
     </div>
+  </div>
 </section>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>

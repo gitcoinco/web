@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,14 +14,16 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet"/>
 
-  <link href="{% static "v2/css/fontawesome-all.min.css" %}" rel="stylesheet">
-  
-  <link href="{% static "v2/css/bootstrap.min.css" %}" rel="stylesheet" />
+  {% compress css file libs %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/fontawesome-all.min.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/index.scss" %} />
+  {% endcompress %}
 
-  <link href="{% static "landingpage/app.css" %}" type="text/css" rel="stylesheet" media="screen,projection" />
-  
+  {% compress css file app %}
+    <link rel="stylesheet" media="screen,projection" type="text/x-scss" href={% static "v2/scss/landingpage/app.scss" %} />
+  {% endcompress %}
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 
   <script src="{% static "landingpage/town.js" %}"></script>
   <script src="{% static "landingpage/txtRotate.js" %}"></script>
@@ -130,7 +132,7 @@
           <h2>Here to Earn?</h2>
           <p>
             Build exciting projects and upskill on development while earning
-            Ethereum and other tokens. Find mentorship by connecting with
+            ETH and other tokens. Find mentorship by connecting with
             talented developers and leaders of Ethereum’s top companies.
           </p>
           <div class="actions">
@@ -192,7 +194,7 @@
         <label for="work">work on bounties</label>
       </div>
 
-      <div>
+      <div class="inputs d-flex justify-content-center">
         <input type="email" name="EMAIL" placeholder="Enter your email" required />
 
         <button type="submit" class="btn fe-pulse">Subscribe</button>
@@ -398,7 +400,7 @@
 
   <!-- footer social icons -->
 
-  <section id="footersocial">
+  <section id="footersocial" class="d-flex justify-content-center">
     <figure>
       <a href="/fb">
         <svg class="fusion">
@@ -442,8 +444,14 @@
       </a>
     </figure>
   </section>
+  <script>
+    var static_url = "{{ STATIC_URL }}";
+    var media_url = "{{ MEDIA_URL }}";
+    document.contxt = {{ json_context|safe }};
+
+  </script>
+  {% include 'shared/tag_manager_2.html' %}
 </body>
 
 </html>
 
-{% include 'shared/tag_manager_2.html' %}

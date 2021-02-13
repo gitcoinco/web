@@ -65,6 +65,18 @@
             </div>
           </template>
 
+          <template v-if="grant.tenants && grant.tenants.indexOf('BINANCE') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://bscscan.com/address/${grant.binance_payout_address}`">
+                <span id="binance-address" class="wallet-address" v-b-tooltip.hover.top="grant.binance_payout_address">
+                  [[grant.binance_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.binance_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+             </div>
+          </template>
+
           <template v-if="grant.tenants && grant.tenants.indexOf('POLKADOT') > -1">
             <div class="d-flex align-items-center">
               <img class="mr-1" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16">

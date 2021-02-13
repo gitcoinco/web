@@ -1,66 +1,65 @@
 section#twitter{
 
-	margin: 0em 3em;
-	margin-top: 12em;
-	margin-bottom: 3em;
+  margin: 0em 3em;
+  margin-top: 12em;
+  margin-bottom: 3em;
 
 
-	h1{
-		text-align: center;
-		margin-bottom:2.5em;
-	}
+  h1{
+    text-align: center;
+    margin-bottom:2.5em;
+  }
 
-	div.grid{
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+  div.grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 
-		grid-row-gap: 4em;
-		grid-column-gap: 2em;
-	}
+    grid-row-gap: 4em;
+    grid-column-gap: 2em;
+  }
 
-	svg.twitter-icon{
-		position: absolute;
-		top:1rem;
-		right:1rem;
-		width: 46px;
-		height: 46px;
-		fill: var(--polarisblue);
-		stroke: none;
-	}
+  svg.twitter-icon{
+    position: absolute;
+    top:1rem;
+    right:1rem;
+    width: 46px;
+    height: 46px;
+    fill: var(--polarisblue);
+    stroke: none;
+  }
 
-	figure{
+  figure{
 
-		//background-color: var(--polarisblue);
+    //background-color: var(--polarisblue);
 
-		border: 2px solid var(--polarisblue);
+    border: 2px solid var(--polarisblue);
 
-		position: relative;
-		padding: 2em;
-		padding-top: 0em;
-
+    position: relative;
+    padding: 2em;
+    padding-top: 0em;
 
 		img{
-			width: 80px;
+			width: 3rem;
 			height: auto;
-			border-radius: 80px;
+			border-radius: 3rem;
 			margin: auto;
 			position: relative;
-			top: - 40px;
+			top: -1.5rem;
 		}
 
-		figcaption{		
-			color: var(--starwhite);
-		}
+    figcaption{		
+      color: var(--starwhite);
+    }
 
 
-		a{
-			text-decoration: none;
-			color: var(--cosmicteal);
-			font-weight: 800;
-		}
+    a{
+      text-decoration: none;
+      color: var(--cosmicteal);
+      font-weight: 800;
+    }
 
 
-	}
+  }
 
 
 }
@@ -69,28 +68,28 @@ section#twitter{
 
 
 @media #{$tablet} { 
-	section#twitter{
+  section#twitter{
 
-		div.grid{
-			grid-template-columns: repeat(2, 1fr);
-		}
-
+    div.grid{
+      grid-template-columns: repeat(2, 1fr);
     }
+
+  }
 }
 
 
 @media #{$phone} { 
-	section#twitter{
+  section#twitter{
 
-		margin-left: 1.5em;
-		margin-right: 1.5em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
 
-		div.grid{
-			grid-template-columns: 1fr;
+    div.grid{
+      grid-template-columns: 1fr;
 			
-		}
-
     }
+
+  }
 }
 
 

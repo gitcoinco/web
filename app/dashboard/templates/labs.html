@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list %}
+{% load i18n static is_in_list compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -29,9 +29,10 @@
     </div>
     <meta name="title" content="Labs | Gitcoin">
     <meta name="description" content="To keep you updated about latest research at Gitcoin">
-    <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/labs.css" %}" />
+    {% compress css file labs %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/card.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/labs.scss" %} />
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

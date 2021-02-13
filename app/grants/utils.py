@@ -32,6 +32,7 @@ from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.binance import sync_binance_payout
 from grants.sync.celo import sync_celo_payout
 from grants.sync.harmony import sync_harmony_payout
 from grants.sync.polkadot import sync_polkadot_payout
@@ -52,7 +53,8 @@ tenant_payout_mapper = {
     'ZIL': sync_zil_payout,
     'HARMONY': sync_harmony_payout,
     'POLKADOT': sync_polkadot_payout,
-    'KUSAMA': sync_polkadot_payout
+    'BINANCE': sync_binance_payout,
+    'KUSAMA': sync_polkadot_payout,
 }
 
 def get_upload_filename(instance, filename):
