@@ -47,16 +47,16 @@ section#newsletter{
     display: block;
   }
 
-	button.btn{
-		background-color: var(--vinuspurple);
-		margin-left: 0.5rem;
+  button.btn{
+    background-color: var(--vinuspurple);
+    margin-left: 0.5rem;
   }
 
-	.options input[type="radio"] {
-		border: 0px;
-		width: 0.6rem;
-		height: 0.6rem; 
-	}
+  .options input[type="radio"] {
+    border: 0px;
+    width: 0.6rem;
+    height: 0.6rem; 
+  }
 
 
 }
@@ -76,23 +76,23 @@ section#newsletter{
     }
 
 
-		label {
-			padding: 0rem 0rem;
-		}
+    label {
+      padding: 0rem 0rem;
+    }
 		
-		div.inputs {
-			flex-direction: column; 
-			padding: 1rem; 
-		}  
+    div.inputs {
+      flex-direction: column; 
+      padding: 1rem; 
+    }  
 
-		button.btn {
-			margin-left: 0; 
-		} 
+    button.btn {
+      margin-left: 0; 
+    } 
 
     margin-left: 1.5em;
     margin-right: 1.5em;
 
-	}
+  }
 }
 
 
