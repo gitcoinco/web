@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load humanize static i18n %}
+{% load humanize static i18n compress %}
 {% comment %}
 Copyright (C) 2018 Gitcoin Core
 
@@ -21,9 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block body %}
-<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/actions.css" %}" />
-
+{% compress css file townsquare_offer %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/actions.scss" %} />
+{% endcompress %}
 <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
   <div class="container">
     <img src="{{offer.persona.preview_img_url}}" />

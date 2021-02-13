@@ -15,15 +15,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static humanize %}
+{% load i18n static humanize compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-
-    <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/onboarding_v2.css" %}" />
+    {% compress css file dashboard_hackathons %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/home.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
+    {% endcompress %}
     <style>
       .hackathon-logo-svg {
         height: 4.5rem;
@@ -118,7 +119,7 @@
     </div>
 
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
 
     {% block 'scripts' %}
