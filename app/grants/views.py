@@ -326,6 +326,50 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
 
 @login_required
 @cached_view(timeout=3600)
+def contribution_info_from_grant_during_round_as_json(request, grant_id, round_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    query = f"""
+select 
+    md5(grants_subscription.id::varchar(255)) as id,
+    dashboard_profile.handle,
+    CONCAT('https://gitcoin.co/dynamic/avatar/', dashboard_profile.handle) as url,
+    comments
+    
+from grants_subscription
+INNER JOIN dashboard_profile on dashboard_profile.id = contributor_profile_id
+where 
+grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {grant_id}
+{hide_wallet_address_anonymized_sql}
+order by grants_subscription.id desc
+
+    """
+    print(query)
+    earnings = query_to_results(query)
+    
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+        'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
+@cached_view(timeout=3600)
 def contribution_addr_from_round_as_json(request, round_id):
 
     if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
