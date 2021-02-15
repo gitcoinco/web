@@ -11,22 +11,20 @@ section#newsletter{
   padding-bottom: 1em;
 
 
-  h2{
+  h2 {
     margin-bottom: 1.5em;
   }
 
-
-
-  div.options{
+  div.options {
     margin-bottom: 1.5em;
 
   }
 
-  span{
+  span {
     padding-right: 0.3rem;
   }
 
-  label{
+  label {
     padding: 0rem 0.3rem;
   }
 
@@ -51,32 +49,45 @@ section#newsletter{
 
   button.btn{
     background-color: var(--vinuspurple);
+    margin-left: 0.5rem;
   }
 
+  .options input[type="radio"] {
+    border: 0px;
+    width: 0.6rem;
+    height: 0.6rem; 
+  }
 
 
 }
 
 
-
-
-
 @media #{$phone} { 
-  section#newsletter{
+  section#newsletter {
 
 
-    h2{
+    h2 {
       padding: 0rem 1rem;
     }
 
-    span{
+    span {
       display: block;
       margin-bottom: 1rem;
     }
 
-    label{
+
+    label {
       padding: 0rem 0rem;
     }
+		
+    div.inputs {
+      flex-direction: column; 
+      padding: 1rem; 
+    }  
+
+    button.btn {
+      margin-left: 0; 
+    } 
 
     margin-left: 1.5em;
     margin-right: 1.5em;

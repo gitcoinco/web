@@ -1,21 +1,22 @@
-section.grid{
+section.grid {
 	
   margin-top: 12em;
 	
 
-  h1{
+  h1 {
     text-align: center;
     margin-bottom: 3rem;
   }
 
 
-  div.grid{
+  div.grid {
 
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    padding-top: 2rem;
     margin-bottom: 3em;
 
-    div{
+    div {
       align-self: center;
       grid-column: 1;
       grid-row: 1;
@@ -25,25 +26,23 @@ section.grid{
       max-width: 600px;
     }
 
-    figure{
+    figure {
       align-self: center;
       grid-column: 2;
       grid-row: 1;
     }
 
 
-    &.reverse{
-      div{
+    &.reverse {
+      div {
         grid-column: 2;
       }
-      figure{
+      figure {
         grid-column: 1;
       }
     }
 
   }
-
-
 
 }
 
@@ -52,12 +51,12 @@ section.grid{
 
 
 @media #{$phone} { 
-  section.grid{
+  section.grid {
 
-    div.grid{
+    div.grid {
       grid-template-columns: 1fr;
 
-      div{
+      div {
         grid-column: 1;
         grid-row: 2;
 				
@@ -65,19 +64,19 @@ section.grid{
         margin-right: 1.5em;
       }
 
-      figure{
+      figure {
         grid-column: 1;
         grid-row: 1;
         margin-bottom:2em;
       }
 
-      &.reverse{
-        div{
+      &.reverse {
+        div {
           grid-column: 1;
           grid-row: 2;
         }
 
-        figure{
+        figure {
           grid-column: 1;
           grid-row: 1;
         }				

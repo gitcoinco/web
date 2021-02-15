@@ -4,6 +4,8 @@ html{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-size: 130%;
+  font-size: calc(1vw + 1vh);
 }
 
 
@@ -32,19 +34,9 @@ p{
 
 
 
-
-
-
-
-@media #{$desktop} {
-  html{ 
-    font-size:130%;
-  }
-}
-
 @media #{$laptop} {
   html{ 
-    font-size: 120%; 
+    font-size: 120%;
   }
 }
 
