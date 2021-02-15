@@ -2,7 +2,30 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
-let toggleStyle;
+const toggleStyle = function(style) {
+
+  if (!style) {
+    return;
+  }
+
+  let banner;
+
+  if (style.bg) {
+    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+  } else {
+    banner = `url("${ style.banner_image }") center  no-repeat`;
+  }
+  $('#grant-hero-img').css('background', banner);
+  if (style.background_image) {
+    $('#grant-background-image-mount-point').css('background-image', style.background_image);
+  }
+
+  if (style.inline_css) {
+    $('style').last().text(style.inline_css);
+  } else {
+    $('style').last().text('');
+  }
+};
 
 $(document).ready(() => {
   $('#sort_option').select2({
@@ -52,28 +75,7 @@ $(document).ready(() => {
 
   });
 
-  toggleStyle = function(style) {
-    let banner;
-
-    if (style.bg) {
-      banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
-    } else {
-      banner = `url("${ style.banner_image }") center  no-repeat`;
-    }
-    $('#grant-hero-img').css('background', banner);
-    if (style.background_image) {
-      $('#grant-background-image-mount-point').css('background-image', style.background_image);
-    }
-
-    if (style.inline_css) {
-      $('style').last().text(style.inline_css);
-    } else {
-      $('style').last().text('');
-    }
-   
-  };
   toggleStyle(document.current_style);
-
 });
 
 Vue.component('grant-sidebar', {

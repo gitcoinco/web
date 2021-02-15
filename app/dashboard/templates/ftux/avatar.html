@@ -226,10 +226,10 @@
           {% if ids|length > 1 %}
             <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
               {% for id in ids %}
-                <img class=tdselection data-id="{{id}}" 
-                data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
-                data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
-                {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
+                <img class=tdselection data-id="{{id}}"
+                data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"
+                data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"
+                {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>
               {% endfor %}
             </div>
           {% endif %}
@@ -251,7 +251,7 @@
 {% endif %}
 
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
 <script>
   var profileId = '{{ profile_id }}';
   var options = {

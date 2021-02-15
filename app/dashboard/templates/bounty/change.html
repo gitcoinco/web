@@ -14,13 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
-  <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+  {% compress css file bounty_change %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+  {% endcompress %}
 </head>
 <body class="interior submit_bounty g-font-muli">
   {% include 'shared/tag_manager_2.html' %}
@@ -103,22 +105,19 @@
   </div>
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts_lite.html' %}
   {% include 'shared/footer.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
 
   {% include 'shared/current_profile.html' %}
+  <script>
+    document.pk = {{ pk }};
+    document.result = {{ result|safe }};
+    const token_address = '{{ token_address }}';
+  </script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </body>
-<script>
-  document.pk = {{ pk }};
-  document.result = {{ result|safe }};
-  const token_address = '{{ token_address }}';
-</script>
-<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/user-search.js" %}"></script>
-<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="/dynamic/js/tokens_dynamic.js"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>

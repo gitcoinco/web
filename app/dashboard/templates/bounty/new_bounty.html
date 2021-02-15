@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,11 +24,13 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+    {% compress css file new_bounty %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+    {% endcompress %}
     <style>
 
       .issue_description {
@@ -289,7 +291,7 @@
                     </div>
                     <div class="col-12" v-if="!subscriptionActive">
                       <p class="text-highlight-gc-blue bg-lightpurple p-2 mt-2">
-                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:support@gitcoin.co" target="_blank" class="font-weight-bold">support@gitcoin.co</a>
+                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:pro@gitcoin.co" target="_blank" class="font-weight-bold">pro@gitcoin.co</a>
                       </p>
 
                     </div>

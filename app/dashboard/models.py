@@ -4935,7 +4935,7 @@ class BlockedIP(SuperModel):
 
     def __str__(self):
         """Return the string representation of a BlockedIP."""
-        return f'<BlockedIP: {self.ip_address}>'
+        return f'<BlockedIP: {self.addr}>'
 
 
 class Sponsor(SuperModel):
