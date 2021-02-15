@@ -249,39 +249,18 @@ def helper_grants_round_start_end_date(request, round_id):
         print(e)
     return start, end
 
-def helper_contributions_to_earnings(_contributions):
-    from dashboard.models import Earning #avoid circulr import
-    return Earning.objects.filter(
-        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
-        source_id__in=_contributions,
-        )
 
-def helper_earnings_to_addr_list(earnings):
-    items = earnings.values_list('history__payload__from', flat=True)
-    return list(items)
-
-def helper_grants_output(request, meta_data, earnings):
+def helper_grants_output(request, meta_data, addresses):
 
     # gather_stats
-    tx_count_start = earnings.count()
-    addr_count_start = len(set([ele for ele in helper_earnings_to_addr_list(earnings)]))
-
-    # privacy first
-    earnings = earnings.exclude(from_profile__hide_wallet_address_anonymized=True)
-
-    # gather metadata, before & aftter filtering
-    addresses = list(set([ele for ele in helper_earnings_to_addr_list(earnings) if ele]))
-    addr_count_end = len(set(addresses))
+    add_count = len(addresses)
 
     response = {
         'meta': {
             'generated_at': request.build_absolute_uri(),
             'generated_on': timezone.now().strftime("%Y-%m-%d"),
             'stat':{
-                'transactions_found': tx_count_start,
-                'unique_addresses_found': addr_count_start,
-                'unique_addresses_found_after_privacy_preferences': addr_count_end,
-                'unique_addresses_removed_per_privacy_preferences': addr_count_start - addr_count_end,
+                'unique_addresses_found': add_count,
             },
             'meta': meta_data,
         },
@@ -292,6 +271,7 @@ def helper_grants_output(request, meta_data, earnings):
 
 grants_data_release_date = timezone.datetime(2020, 10, 22)
 
+hide_wallet_address_anonymized_sql = "AND contributor_profile_id NOT IN (select id from dashboard_profile where hide_wallet_address_anonymized)"
 @login_required
 @cached_view(timeout=3600)
 def contribution_addr_from_grant_as_json(request, grant_id):
@@ -308,10 +288,8 @@ def contribution_addr_from_grant_as_json(request, grant_id):
             'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
             }, safe=False)
 
-    _contributions = Contribution.objects.filter(
-        subscription__network='mainnet', subscription__grant__id=grant_id
-    )
-    earnings = helper_contributions_to_earnings(_contributions)
+    query = f"select distinct contributor_address from grants_subscription where grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
+    earnings = query_to_results(query)
     meta_data = {
        'grant': grant_id,
     }
@@ -334,13 +312,10 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
             'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
             }, safe=False)
 
-
     start, end = helper_grants_round_start_end_date(request, round_id)
-    _contributions = Contribution.objects.filter(
-        subscription__network='mainnet', subscription__grant__id=grant_id,
-        created_on__gt=start, created_on__lt=end
-    )
-    earnings = helper_contributions_to_earnings(_contributions)
+    query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
+    earnings = query_to_results(query)
+    
     meta_data = {
         'start': start.strftime("%Y-%m-%d"),
         'end': end.strftime("%Y-%m-%d"),
@@ -359,10 +334,8 @@ def contribution_addr_from_round_as_json(request, round_id):
             }, safe=False)
 
     start, end = helper_grants_round_start_end_date(request, round_id)
-    _contributions = Contribution.objects.filter(
-        subscription__network='mainnet', created_on__gt=start, created_on__lt=end
-    )
-    earnings = helper_contributions_to_earnings(_contributions)
+    query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}'  {hide_wallet_address_anonymized_sql}"
+    earnings = query_to_results(query)
     meta_data = {
         'start': start.strftime("%Y-%m-%d"),
         'end': end.strftime("%Y-%m-%d"),
@@ -370,6 +343,15 @@ def contribution_addr_from_round_as_json(request, round_id):
     }
     return helper_grants_output(request, meta_data, earnings)
 
+
+def query_to_results(query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = []
+        for _row in cursor.fetchall():
+            rows.append(list(_row))
+        return rows
+    return []
 
 @login_required
 @cached_view(timeout=3600)
@@ -380,10 +362,8 @@ def contribution_addr_from_all_as_json(request):
             'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
             }, safe=False)
 
-    _contributions = Contribution.objects.filter(
-        subscription__network='mainnet'
-    )
-    earnings = helper_contributions_to_earnings(_contributions)
+    query = f'select distinct contributor_address from grants_subscription where true  {hide_wallet_address_anonymized_sql}'
+    earnings = query_to_results(query)
     meta_data = {
     }
     return helper_grants_output(request, meta_data, earnings)
