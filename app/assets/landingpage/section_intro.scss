@@ -2,20 +2,20 @@ section#intro{
 
   height: 100vh;
   margin-left: 3em;
-	display: grid;
-	grid-template-columns: 1.5fr 1fr;
-	padding-top: 1rem;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  padding-top: 5rem;
 
-	div {
-		align-self: center;
-		max-width: 100%;
+  div {
+    align-self: center;
+    max-width: 39rem;
 
-		p {
-			max-width: 20rem;
-		}
-		.big {
-			font-size: 1.5em;
-		}
+    p {
+      max-width: 20rem;
+    }
+    .big {
+      font-size: 1.5em;
+    }
   }
 
   figure {
@@ -43,6 +43,7 @@ section#intro{
     grid-template-columns: 1fr;
 
     margin: 0em 3em;
+    padding-top: 0em;
 
     div{
       grid-row: 2;

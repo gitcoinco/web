@@ -11,10 +11,10 @@ section.grid {
 
   div.grid {
 
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		padding-top: calc(3vh + 3vw);
-		margin-bottom: 3em;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-top: 2rem;
+    margin-bottom: 3em;
 
     div {
       align-self: center;

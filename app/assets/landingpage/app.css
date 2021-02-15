@@ -49,6 +49,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility; 
+  font-size: 130%;
   font-size: calc(1vw + 1vh); }
 
 h1 {
@@ -69,7 +70,11 @@ p {
   line-height: 1.6em;
   margin-bottom: 1.6rem; }
 
-@media (max-width: 992px) {
+  @media (max-width: 1312px) {
+  html {
+    font-size: 120%; } }
+
+  @media (max-width: 992px) {
   html {
     font-size: 110%; } }
 
@@ -131,7 +136,7 @@ section.grid {
   section.grid div.grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    padding-top: calc(3vh + 3vw);
+    padding-top: 2rem;
     margin-bottom: 3em; }
     section.grid div.grid div {
       align-self: center;
@@ -607,10 +612,10 @@ section#intro {
   width: 98%;
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  padding-top: 1rem; }
+  padding-top: 5rem; }
   section#intro div {
     align-self: center;
-    max-width: 100%; }
+    max-width: 39rem; }
     section#intro div p {
       max-width: 20rem; }
     section#intro div .big {
@@ -626,7 +631,8 @@ section#intro {
   section#intro {
     height: inherit;
     grid-template-columns: 1fr;
-    margin: 0em 3em; }
+    margin: 0em 3em; 
+    padding-top: 0em }
     section#intro div {
       grid-row: 2; }
     section#intro figure {
