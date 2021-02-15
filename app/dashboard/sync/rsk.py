@@ -25,7 +25,6 @@ def find_txn_on_rsk_explorer(fulfillment):
         for txn in response['result']:
             if (
                 txn['from'] == funderAddress.lower() and
-                txn['to'] == payeeAddress.lower() and
                 not txn_already_used(txn['hash'], token_name)
             ):
                 return txn
@@ -57,7 +56,6 @@ def get_rsk_txn_status(fulfillment):
 
         if (
             txn['from'] == funderAddress.lower() and
-            txn['to'] == payeeAddress.lower() and
             not txn_already_used(txn['hash'], token_name) and
             int(txn['confirmations']) > 0
         ):
