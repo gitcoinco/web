@@ -1,3 +1,6 @@
+// import variables and mixins
+@import './gc-mixins';
+
 html {
   --color-notification: 37, 232, 153;
   --badge-bg: #D6FBEB;
@@ -26,7 +29,8 @@ html.dark-mode {
 }
 
 .notification__dot {
-  background: red;
+  background: rgba(255,255,255,0.8);
+  color: $navbar-light-hover-color;
   display: none;
   min-width: 17px;
   height: 17px;

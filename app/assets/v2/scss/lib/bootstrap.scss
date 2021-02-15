@@ -1,8 +1,6 @@
-@import "./bootstrap/functions";
-@import "./bootstrap/variables";
-@import "./bootstrap/mixins";
-// overwrite variables in this file
-@import "bootstrap-overwrites";
+// import all variables and mixins used by bootstrap + gitcoin
+@import "../gc-mixins";
+// import the rest of the bootstrap
 @import "./bootstrap/root";
 @import "./bootstrap/reboot";
 @import "./bootstrap/type";

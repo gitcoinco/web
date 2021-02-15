@@ -1,9 +1,6 @@
 // bootstrap and bootstrap-vue must be included within the same context
 @import 'bootstrap';
 
-@import './bootstrap-vue/index.scss';
+@import 'bootstrap-vue/index';
 
-@import './vue-select/vue-select.scss';
-
-// custom variables overwrite
-// @import '../custom-variables.scss';
+@import 'vue-select/vue-select';
