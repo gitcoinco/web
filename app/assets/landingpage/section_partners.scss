@@ -1,38 +1,38 @@
 section#partners{
 	
-	margin: 0em 3em;
-	margin-top: 6em;
+  margin: 0em 3em;
+  margin-top: 6em;
 
 
 
-	h2{
-		margin-bottom:2em;
-		text-align: center;
-	}
+  h2{
+    margin-bottom:2em;
+    text-align: center;
+  }
 
 
-	div.grid{
+  div.grid{
 		
-		display: grid;
-		grid-template-columns: repeat(6, 1fr);
-		grid-gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
 
-		margin-top: 2em;
+    margin-top: 2em;
 
-		figure{
+    figure{
 
-			background-color: var(--polarisblue);
-			border-radius: 3px;
+      background-color: var(--polarisblue);
+      border-radius: 3px;
 
-			img{
-				width: 100%;
-				height: auto;
-				margin:auto;
+      img{
+        width: 100%;
+        height: auto;
+        margin:auto;
 
-			}
-		}
+      }
+    }
 
-	}
+  }
 
 
 }	
@@ -44,13 +44,13 @@ section#partners{
 
 
 @media #{$phone} { 
-	section#partners{
+  section#partners{
 
-		div.grid{
-			grid-template-columns: repeat(3, 1fr);
-		}
-
+    div.grid{
+      grid-template-columns: repeat(3, 1fr);
     }
+
+  }
 }
 
 

@@ -5,27 +5,27 @@ $phone:  "(max-width: 688px)";
 
 
 @media #{$desktop} {
-	:root{
-		--device: "desktop";
-	}
+  :root{
+    --device: "desktop";
+  }
 }
 
 @media #{$laptop} {
-	:root{
-		--device: "laptop";
-	}
+  :root{
+    --device: "laptop";
+  }
 }
 
 @media #{$tablet} { 
-	:root{
-		--device: "tablet";
-	}
+  :root{
+    --device: "tablet";
+  }
 }
 
 @media #{$phone} { 
-	:root{
-		--device: "phone";
-	}
+  :root{
+    --device: "phone";
+  }
 }
 
 

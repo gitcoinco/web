@@ -1,5 +1,5 @@
 {% load i18n humanize %}
-{% load static %}
+{% load static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,8 +8,10 @@
     <meta name="description" content="See the Top Earners, Payers, Orgs, Tokens and Keywords on Gitcoin.">
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
+    {% compress css file leaderboard %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/leaderboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
+    {% endcompress %}
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

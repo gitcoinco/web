@@ -3,11 +3,7 @@
   .wrap{
     padding-right: 0.1rem;
     border-right: 3px solid var(--cosmicteal);
-    animation: cursor0 500ms infinite; 
-  }
-
-
-  .wrap{
+    animation: cursor0 500ms infinite;
 
     &.styleLearn{
       color: var(--stardustyellow);
@@ -20,13 +16,13 @@
     }
 
     &.styleNetwork{
-      color: var(--vinuspurple); 
+      color: var(--vinuspurple);
       animation: cursorNetwork 500ms infinite;
     }
 
     &.styleBuild{
       color: var(--cosmicteal);
-      animation: cursorBuild 500ms infinite; 
+      animation: cursorBuild 500ms infinite;
     }
 
 

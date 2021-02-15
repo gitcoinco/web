@@ -15,13 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% block 'extrahead' %}
-    <link rel="stylesheet" href="{% static "v2/css/quests.css" %}" />
+    {% compress css file quests %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quests.scss" %} />
+    {% endcompress %}
     {% endblock %}
     {% include 'shared/cards_pic.html' %}
   </head>

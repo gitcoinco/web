@@ -1,6 +1,7 @@
 {
   "extends": "stylelint-config-recommended",
   "rules": {
+    "no-descending-specificity": null,
     "at-rule-no-unknown": [
       true, {
         "ignoreAtRules": [
@@ -25,7 +26,11 @@
       "vh",
       "pt",
       "vmin",
-      "fr"
+      "fr",
+      "turn"
     ]
-  }
+  },
+  "plugins": [
+    "stylelint-scss"
+  ],
 }

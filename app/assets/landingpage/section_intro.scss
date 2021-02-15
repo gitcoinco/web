@@ -1,36 +1,35 @@
 section#intro{
 
-	height: 100vh;
-	margin-left: 3em;
+  height: 100vh;
+  margin-left: 3em;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  padding-top: 5rem;
 
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-gap: 3em;
+  div {
+    align-self: center;
+    max-width: 39rem;
 
-	div{
-		align-self: center;
-		max-width: 700px;
-
-		p{
-			max-width: 600px;
+    p {
+      max-width: 20rem;
     }
-    .big{
+    .big {
       font-size: 1.5em;
     }
   }
 
-	figure{
-		align-self: center;
-		//align-self: end;
+  figure {
+    align-self: center;
+    //align-self: end;
 
-		img{
-			max-height: 100vh;
-		}
+    img {
+      max-height: 100vh;
+    }
 
-		.hidden{
-			display: none;
-		}
-	}
+    .hidden {
+      display: none;
+    }
+  }
 
 }
 
@@ -38,36 +37,37 @@ section#intro{
 
 
 @media #{$tablet} { 
-	section#intro{
+  section#intro{
 
-    	height: inherit;
-    	grid-template-columns: 1fr;
+    height: inherit;
+    grid-template-columns: 1fr;
 
-    	margin: 0em 3em;
+    margin: 0em 3em;
+    padding-top: 0em;
 
-    	div{
-    		grid-row: 2;
-
-    	}
-
-    	figure{
-    		grid-row: 1;
-    		margin-top:8em;
-    	}
-
+    div{
+      grid-row: 2;
 
     }
+
+    figure{
+      grid-row: 1;
+      margin-top:8em;
+    }
+
+
+  }
 }
 
 
 
 @media #{$phone} { 
-	section#intro{
+  section#intro{
 
-		margin-left: 1.5em;
-		margin-right: 1.5em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
 
-    }
+  }
 }
 
 

@@ -1,5 +1,5 @@
 {% extends 'quests/base.html' %}
-{% load humanize static i18n %}
+{% load humanize static i18n compress %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -18,9 +18,10 @@
 {% endcomment %}
 {% block 'content' %}
 <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
-<link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
+{% compress css file cancel_grant %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
+{% endcompress %}
 <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
-
 {% if not hidden and is_owner_or_staff %}
 <div class="alpha-warning font-caption mb-0" style=" text-align: right;">
   {% if is_staff %}

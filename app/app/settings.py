@@ -208,8 +208,10 @@ STATICFILES_FINDERS = [
 ]
 # number of demicals allowed in sass numbers
 LIBSASS_PRECISION = 8
-# minify sass output in production
+# minify sass output in production (offline)
 if ENV not in ['local', 'test', 'staging', 'preview']:
+    # compress offline (use './manage.py compress' to build manifest.json)
+    COMPRESS_OFFLINE = True
     # drop line comments
     LIBSASS_SOURCE_COMMENTS = False
     # minification of sass output
