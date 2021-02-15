@@ -48,12 +48,12 @@
           <div>
             Network: {{kudos.contract.network}} 
 
-            {% if kudos.on_networks|length %}
+            {% if kudos.on_other_networks|length %}
               (Also available on
-              {% for other_kudos in kudos.on_networks %}
+              {% for other_kudos in kudos.on_other_networks %}
                 <a href="{{other_kudos.1.url}}">{{other_kudos.0}}</a>
-                )
               {% endfor %}
+              )
             {% endif %}
           </div>
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>

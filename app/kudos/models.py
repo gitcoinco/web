@@ -171,6 +171,9 @@ class Token(SuperModel):
                 return_me.append((network, ref))
         return return_me
 
+    @property
+    def on_other_networks(self):
+        return [ele for ele in self.on_networks if ele[0] != self.contract.network]
 
     def on_network(self, network):
         if self.contract.network == network:
