@@ -34,10 +34,9 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
 
   if (token_name == 'R-BTC') {
 
-    rbtcBalance = rskClient.utils.fromWei(
-      rskClient.eth.getBalance(ethereum.selectedAddress),
-      'ether'
-    );
+    balanceInWei = await rskClient.eth.getBalance(ethereum.selectedAddress);
+
+    rbtcBalance = rskClient.utils.fromWei(balanceInWei, 'ether');
   
     if (Number(rbtcBalance) < amount) {
       _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
