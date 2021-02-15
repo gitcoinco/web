@@ -23,8 +23,12 @@ def find_txn_on_rsk_explorer(fulfillment):
 
     if response['message'] and response['result']:
         for txn in response['result']:
+            to_address_match = txn['to'] == payeeAddress.lower() if token_name == 'R-BTC' else True
+
             if (
                 txn['from'] == funderAddress.lower() and
+                to_address_match and
+                # float(txn['value']) == float(amount * 10 ** 18) and
                 not txn_already_used(txn['hash'], token_name)
             ):
                 return txn
@@ -54,8 +58,12 @@ def get_rsk_txn_status(fulfillment):
     if response['status'] and response['result']:
         txn = response['result']
 
+        to_address_match = txn['to'] == payeeAddress.lower() if token_name == 'R-BTC' else True
+
         if (
             txn['from'] == funderAddress.lower() and
+            to_address_match and
+            # float(txn['value']) == float(amount * 10 ** 18) and
             not txn_already_used(txn['hash'], token_name) and
             int(txn['confirmations']) > 0
         ):
