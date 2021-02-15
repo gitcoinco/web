@@ -1,5 +1,5 @@
 .navbar {
-  background-color: #0d023b;
+  // background-color: #0d023b;
 }
 
 .banner {
@@ -125,12 +125,12 @@
   color: #fff;
 }
 
-.navbar .nav-link:hover,
-.navbar .nav-link:active {
-  border-bottom: 3px solid #fff;
-  border-radius: 0;
-  background-color: transparent;
-}
+// .navbar .nav-link:hover,
+// .navbar .nav-link:active {
+//   border-bottom: 3px solid #fff;
+//   border-radius: 0;
+//   background-color: transparent;
+// }
 
 .banner__h2 {
   font-size: 2.4rem;
@@ -478,12 +478,12 @@ figure:hover::before {
   }
 }
 
-@media (min-width: 992px) {
-  .mx-auto .nav-item {
-    margin-left: 0.75rem;
-    margin-right: 0.75rem;
-  }
-}
+// @media (min-width: 992px) {
+//   .mx-auto .nav-item {
+//     margin-left: 0.75rem;
+//     margin-right: 0.75rem;
+//   }
+// }
 
 
 @media (max-width: 1024px) {

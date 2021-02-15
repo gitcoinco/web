@@ -554,6 +554,10 @@ h4,
   left: 5rem;
 }
 
+.navbar {
+  min-height: 66px;
+}
+
 @media (max-width: 389.9px) {
 
   .footer__main {
@@ -642,7 +646,7 @@ h4,
 }
 
 #codefund .cf-wrapper {
-  font-family: 'Muli', sans-serif !important;
+  font-family: 'Libre Franklin', sans-serif !important;
   text-align: center !important;
 }
 
@@ -880,6 +884,10 @@ textarea.status-textarea {
   width: 24px;
   max-height: 24px;
   vertical-align: top;
+}
+
+.provider-icon {
+  width: 1.25em;
 }
 
 .wallet-network {

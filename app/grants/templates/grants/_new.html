@@ -200,36 +200,36 @@
                   <p class="font-body">Pick the chain you're accepting grant funding from</p>
 
                   <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'eth'}">
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'eth'}">
                       <input type="radio" name="grant_chain" id="eth_chain" value="eth" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
                     </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
                     <input type="radio" name="grant_chain" id="zcash_chain" value="zcash" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="20"> Zcash
                   </label>
 
                   {% if is_staff %}
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'celo'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'celo'}">
                     <input type="radio" name="grant_chain" id="celo_chain" value="celo" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="20"> Celo
                   </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zilliqa'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zilliqa'}">
                     <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="18"> zilliqa
                   </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'harmony'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'harmony'}">
                     <input type="radio" name="grant_chain" id="harmony_chain" value="harmony" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="20"> harmony
                   </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'binance'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'binance'}">
                     <input type="radio" name="grant_chain" id="binance_chain" value="binance" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="20"> binance
                   </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'polkadot'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'polkadot'}">
                     <input type="radio" name="grant_chain" id="polkadot_chain" value="polkadot" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> polkadot
                   </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'kusama'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'kusama'}">
                     <input type="radio" name="grant_chain" id="kusama_chain" value="kusama" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="20"> kusama
                   </label>
                   {% endif %}
