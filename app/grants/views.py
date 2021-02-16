@@ -99,7 +99,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 # Round 8: December 2nd — December 18th 2020
 
 # TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
-clr_round=7
+clr_round=8
 last_round_start = timezone.datetime(2020, 9, 14, 12, 0)
 last_round_end = timezone.datetime(2020, 10, 2, 16, 0) #tz=utc, not mst
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
