@@ -325,7 +325,7 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
     return helper_grants_output(request, meta_data, earnings)
 
 @login_required
-@cached_view(timeout=3600)
+@cached_view(timeout=60)
 def contribution_info_from_grant_during_round_as_json(request, grant_id, round_id):
 
     # return all contirbutor addresses to the grant
