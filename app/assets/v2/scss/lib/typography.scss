@@ -1,56 +1,3 @@
-@font-face {
-  font-family: 'futura-pt';
-  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
-}
-
-/* muli-200 - latin */
-@font-face {
-  font-family: 'Muli';
-  font-style: normal;
-  font-weight: 200;
-  src: local('Muli ExtraLight'), local('Muli-ExtraLight'),
-    url('/static/v2/fonts/muli/muli-v12-latin-200.woff2') format('woff2'),
-    url('/static/v2/fonts/muli/muli-vn-200.woff') format('woff'),
-    url('/static/v2/fonts/muli/muli-v12-latin-200.ttf') format('truetype');
-}
-
-/* muli-regular - latin */
-@font-face {
-  font-family: 'Muli';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Muli Regular'), local('Muli-Regular'),
-    url('/static/v2/fonts/muli/muli-v12-latin-regular.woff2') format('woff2'),
-    url('/static/v2/fonts/muli/muli-vn-regular.woff') format('woff'),
-    url('/static/v2/fonts/muli/muli-v12-latin-regular.ttf') format('truetype');
-}
-
-/* muli-600 - latin */
-@font-face {
-  font-family: 'Muli';
-  font-style: normal;
-  font-weight: 600;
-  src: local('Muli SemiBold'), local('Muli-SemiBold'),
-    url('/static/v2/fonts/muli/muli-v12-latin-600.woff2') format('woff2'),
-    url('/static/v2/fonts/muli/muli-vn-600.woff') format('woff'),
-    url('/static/v2/fonts/muli/muli-v12-latin-600.ttf') format('truetype');
-}
-
-/* muli-700 - latin */
-@font-face {
-  font-family: 'Muli';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Muli Bold'), local('Muli-Bold'),
-    url('/static/v2/fonts/muli/muli-v12-latin-700.woff2') format('woff2'),
-    url('/static/v2/fonts/muli/muli-vn-700.woff') format('woff'),
-    url('/static/v2/fonts/muli/muli-v12-latin-700.ttf') format('truetype');
-}
-
-
-
-
-
 /* libre-franklin-200 - latin-ext_latin */
 @font-face {
   font-family: 'Libre Franklin';
@@ -175,22 +122,6 @@
        url('/static/v2/fonts/miriam-libre/miriam-libre-v7-latin-ext_latin-regular.woff') format('woff'), /* Modern Browsers */
        url('/static/v2/fonts/miriam-libre/miriam-libre-v7-latin-ext_latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
        url('/static/v2/fonts/miriam-libre/miriam-libre-v7-latin-ext_latin-regular.svg#MiriamLibre') format('svg'); /* Legacy iOS */
-}
-
-.g-font-futura {
-  font-family: 'futura-pt', sans-serif;
-}
-
-.g-font-muli {
-  // font-family: 'Muli', sans-serif;
-}
-
-.g-font-header {
-  font-family: 'Miriam Libre', sans-serif;
-}
-
-.g-font-body {
-  font-family: 'Libre Franklin', sans-serif;
 }
 
 /* Font variables
