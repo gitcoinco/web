@@ -136,6 +136,12 @@ Vue.mixin({
           url = `https://explorer.harmony.one/#/tx/${txn}`;
           break;
 
+        case 'R-BTC':
+        case 'RDOC':
+        case 'DOC':
+          url = `https://explorer.rsk.co/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -182,6 +188,12 @@ Vue.mixin({
 
         case 'ONE':
           url = `https://explorer.harmony.one/#/address/${address}`;
+          break;
+
+        case 'R-BTC':
+        case 'RDOC':
+        case 'DOC':
+          url = `https://explorer.rsk.co/address/${address}`;
           break;
 
         default:
@@ -399,6 +411,12 @@ Vue.mixin({
           tenant = 'HARMONY';
           break;
 
+        case 'R-BTC':
+        case 'DOC':
+        case 'RDOC':
+          tenant = 'RSK';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -480,6 +498,10 @@ Vue.mixin({
 
         case 'harmony_ext':
           payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'rsk_ext':
+          payWithRSKExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -697,6 +719,7 @@ Vue.mixin({
 
         case 'web3_modal':
         case 'polkadot_ext':
+        case 'rsk_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

@@ -26,7 +26,7 @@ def record_payout_activity(fulfillment):
     kwargs['profile'] = fulfillment.funder_profile
     kwargs['metadata']['from'] = fulfillment.funder_profile.handle
     kwargs['metadata']['to'] = fulfillment.profile.handle
-    kwargs['metadata']['payout_amount'] = fulfillment.payout_amount
+    kwargs['metadata']['payout_amount'] = str(fulfillment.payout_amount)
     kwargs['metadata']['token_name'] = fulfillment.token_name
 
     try:
