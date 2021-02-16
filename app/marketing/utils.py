@@ -360,7 +360,7 @@ def generate_hackathon_email_intro(sponsors_prizes):
 
 
 def handle_bounty_feedback(bounty):
-    from dashboard.models import BountyFulfillment
+    from dashboard.models import Bounty, BountyFulfillment
 
     to_fulfiller = to_funder = False
     fulfiller_previous_bounties = funder_previous_bounties = None
