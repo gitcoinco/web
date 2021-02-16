@@ -293,9 +293,9 @@
           {% for hackathon in hackathons %}
             <div class="{% if forloop.counter > 7 %}hidden{%endif%}" >
               {% if hackathon.1.logo %}
-                <img src="{{hackathon.1.logo}}"/>
+                <img data-src="{{hackathon.1.logo}}"/>
               {%else %}
-                <img src="/dynamic/avatar/gitcoinbot"/>
+                <img data-src="/dynamic/avatar/gitcoinbot"/>
               {%endif %}
               <h4>{{hackathon.0.name}}</h4>
               {% if hackathon.1.num_bounties and hackathon.1.total_volume > 1 %}
