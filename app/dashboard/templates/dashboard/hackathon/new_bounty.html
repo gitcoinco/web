@@ -518,7 +518,7 @@
     <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
 
     <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
-
+    {{hackathon.name|json_script:"hackathon_name"}}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
@@ -526,7 +526,7 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.hackathon = {
         slug: '{{hackathon.slug | safe}}',
-        name: '{{hackathon.name | safe}}',
+        name: JSON.parse(document.getElementById('hackathon_name').textContent),
         endDate: '{{hackathon.end_date|date:"U"}}',
       };
 
