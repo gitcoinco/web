@@ -2210,6 +2210,7 @@
 <li>Get a list of contributors to a Gitcoin Grant at a specififc round <code>https://gitcoin.co/grants/v1/api/export_addresses/grantX_roundY.json</code> where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.</li>
 <li>We've got an <code>https://gitcoin.co/grants/v1/api/export_addresses/all.json</code> endpoint available for those who'd like to just get all addresses that've ever funded a Gitcoin Grant.</li>
 <li>We've also put together a list of all grants on the platform, and the addresses you can contribute to them at, at https://gitcoin.co/grants/grants.json</li>
+<li>Get a list of contributor social info (handle, picture, anonymized, comment) for a Gitcoin Grant at a specific round <code>https://gitcoin.co/grants/v1/api/export_info/grantX_roundY.json</code> where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.</li>
 </ul>
 <p>These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases..</p>
 <p>Click through to try them below:
@@ -2217,7 +2218,8 @@
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
 * https://gitcoin.co/grants/v1/api/export_addresses/all.json
-* https://gitcoin.co/grants/grants.json</p>
+* https://gitcoin.co/grants/grants.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round_7.json</p>
 <p>NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at <code>https://gitcoin.co/settings/privacy</code> at anytime.</p>
 <h2 id="generalized-api">Generalized API</h2>
 <p>Gitcoin provides a simple read-only HTTPS API to access data. The API is live at https://gitcoin.co/api/v0.1</p>
