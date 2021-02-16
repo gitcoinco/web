@@ -59,6 +59,40 @@ def do_post(text, comment=None):
             activity=activity,
             comment=comment)
 
+def quest():
+    from marketing.views import quest_of_the_day
+    quest = quest_of_the_day()
+    text = f"Quest of the Day: {quest.title}: {quest.url}"
+    print(text)
+
+    profile = Profile.objects.filter(handle='gitcoinbot').first()
+    metadata = {
+        'title': text,
+        'resource': {
+            'id': quest.enemy_img_url,
+            'type': "gif",
+            'provider': "giphy"
+        }
+    }
+    activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
+
+def kudos():
+    from marketing.views import kudos_of_the_day
+    kudos = kudos_of_the_day()
+    text = f"Kudos of the Day: {kudos.ui_name}: {kudos.url.replace('http://localhost:8000','https://gitcoin.co')}"
+    print(text)
+
+    profile = Profile.objects.filter(handle='gitcoinbot').first()
+    metadata = {
+        'title': text,
+        'resource': {
+            'id': kudos.img_url,
+            'type': "gif",
+            'provider': "giphy"
+        }
+    }
+    activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
+
 def quote():
     quotes = [
     [ ('Open source software has become a relevant part of the software industry and a number of software ecosystems. It has become an alternative to commercial software in various areas and is already included in many commercial software products.'), 'March 2017 Report by the EU' ],
@@ -493,6 +527,10 @@ class Command(BaseCommand):
             results()
         elif options['what'] == 'quote':
             quote()
+        elif options['what'] == 'quest':
+            quest()
+        elif options['what'] == 'kudos':
+            kudos()
         elif options['what'] == 'earners':
             earners()
         elif options['what'] == 'grants':

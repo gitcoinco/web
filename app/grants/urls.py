@@ -21,7 +21,7 @@ from django.urls import path, re_path
 
 from grants.views import (
     add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, clr_grants, collection_thumbnail,
-    contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
+    contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_info_from_grant_during_round_as_json, contribution_addr_from_grant_as_json,
     contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
     flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
     get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
@@ -110,4 +110,7 @@ urlpatterns = [
     path('v1/api/export_addresses/round<int:round_id>.json', contribution_addr_from_round_as_json, name='contribution_addr_from_round_as_json'),
     path('v1/api/export_addresses/grant<int:grant_id>.json', contribution_addr_from_grant_as_json, name='contribution_addr_from_grant_as_json'),
     path('v1/api/export_addresses/grant<int:grant_id>_round<int:round_id>.json', contribution_addr_from_grant_during_round_as_json, name='contribution_addr_from_grant_during_round_as_json'),
+    path('v1/api/export_info/grant<int:grant_id>_round<int:round_id>.json', contribution_info_from_grant_during_round_as_json, name='contribution_addr_from_grant_during_round_as_json'),
+
+
 ]
