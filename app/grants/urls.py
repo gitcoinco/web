@@ -21,15 +21,15 @@ from django.urls import path, re_path
 
 from grants.views import (
     add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, clr_grants, collection_thumbnail,
-    contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_info_from_grant_during_round_as_json, contribution_addr_from_grant_as_json,
-    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
-    flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
-    get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
-    grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel,
-    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info,
-    grants_stats_view, ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
-    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
-    toggle_grant_favorite, verify_grant,
+    contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
+    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json,
+    contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1, flag, get_collection,
+    get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants, get_interrupted_contributions,
+    get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_details_contributions,
+    grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
+    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view, ingest_contributions,
+    ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data, new_matching_partner, profile,
+    quickstart, remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
 )
 
 app_name = 'grants'
