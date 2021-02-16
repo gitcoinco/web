@@ -1507,9 +1507,43 @@ def new_bounty_acceptance(request):
 
 @staff_member_required
 def bounty_feedback(request):
-    from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
-    return HttpResponse(response_html)
+    from dashboard.models import Bounty, BountyFulfillment
+
+    bounty = Bounty.objects.current().filter(idx_status='done').last()
+    submitter_email = bounty.bounty_owner_email
+    is_fulfiller_and_funder_same_person = False
+    accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
+
+    statuses = ['done', 'cancelled']
+
+    if accepted_fulfillments.exists() and bounty.status == 'done':
+        accepted_fulfillment = accepted_fulfillments.first()
+        fulfiller_email = accepted_fulfillment.fulfiller_email
+        is_fulfiller_and_funder_same_person = (fulfiller_email == submitter_email)
+        fulfillment_pks = [
+            fulfillment.pk for fulfillment in BountyFulfillment.objects.filter(accepted=True) \
+                if fulfillment.fulfiller_email == fulfiller_email
+        ]
+        previous_bounties = Bounty.objects.current().filter(
+            idx_status__in=statuses,
+            fulfillments__pk__in=fulfillment_pks
+        ).exclude(pk=bounty.pk).distinct()
+        has_been_sent_before_to_persona = previous_bounties.count()
+        if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
+            bounty_feedback(bounty, 'fulfiller', previous_bounties)
+            response_html, _ = render_bounty_feedback(bounty, 'fulfiller', previous_bounties)
+            return HttpResponse(response_html)
+
+    previous_bounties = Bounty.objects.filter(
+        idx_status__in=statuses,
+        bounty_owner_email=submitter_email,
+        current_bounty=True
+    ).exclude(pk=bounty.pk).distinct()
+    has_been_sent_before_to_persona = previous_bounties.count()
+
+    if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
+        response_html, _ = render_bounty_feedback(bounty, 'funder', previous_bounties)
+        return HttpResponse(response_html)
 
 
 @staff_member_required
