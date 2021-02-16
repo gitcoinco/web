@@ -1023,7 +1023,7 @@ def render_bounty_expire_warning(to_email, bounty):
         unit = 'hours'
         num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
-    fulfiller_emails = list(bounty.fulfillments.annotate(lower_email=Lower('fulfiller_email')).values_list('lower_email'))
+    fulfiller_emails = [fulfiller.profile.email.lower() for fulfiller in bounty.fulfillments.all()]
 
     params = {
         'bounty': bounty,
