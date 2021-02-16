@@ -1,3 +1,47 @@
+Vue.component('contribution-thanks-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      modalId: 'contribution-thanks',
+      numberOfContributions: 0,
+    };
+  },
+  props: {
+  },
+  mounted: function () {
+    const shouldShow = Boolean(localStorage.getItem('contributions_were_successful'));
+    this.numberOfContributions = Number(localStorage.getItem('contributions_count'));
+
+    if (shouldShow) {
+      this.$bvModal.show(this.modalId);
+    }
+
+    const allDonations = CartData.loadCart();
+
+    console.log('All donations: ', allDonations);
+  },
+  methods: {
+    close() {
+      this.$bvModal.hide(this.modalId);
+    },
+    handleHide() {
+      localStorage.removeItem('contributions_were_successful');
+      localStorage.removeItem('contributions_count');
+    },
+  },
+});
+
+/*
+TODO:
+  * Move close x out of header or otherwise get ride of the separator line
+  * Improve spacing around image
+  * Show based on the local storage data
+  * Show cart data from load cart
+  * Clear local storage after load
+  * Implement twitter share button action
+  * Implement save collection button (but how?)
+  * Research image generation
+*/
 
 // DOCUMENT
 let allTokens;
@@ -22,9 +66,9 @@ $(document).ready(function() {
     const message = `You have successfully funded ${numberOfContributions} ${grantWord}. Thank you for your contribution!`;
 
     _alert(message, 'success');
-    localStorage.removeItem('contributions_were_successful');
-    localStorage.removeItem('contributions_count');
-    $('#tweetModal').bootstrapModal('show');
+    // localStorage.removeItem('contributions_were_successful');
+    // localStorage.removeItem('contributions_count');
+    // $('#tweetModal').modal('show');
 
     const allDonations = CartData.loadCart();
     const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
@@ -306,4 +350,14 @@ function toggleSideCart() {
   $('#side-cart').toggle();
   $('#side-cart').toggleClass('col-12 col-md-4 col-lg-3');
   $('#funding-card').toggleClass('mr-md-5 mr-md-3 d-none d-lg-block');
+}
+
+
+if (document.getElementById('grant-thanks-app')) {
+
+  const grantThanksApp = new Vue({
+    delimiters: [ '[[', ']]' ],
+    el: '#grant-thanks-app',
+    data: { }
+  });
 }

@@ -16,7 +16,60 @@
 
 {% endcomment %}
 {% load i18n static %}
-    <div class="modal fade" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="grant-thanks-app" v-cloak>
+  <contribution-thanks-modal inline-template>
+    <b-modal id="contribution-thanks"
+      @hide="handleHide()"
+      size="lg"
+      center
+      hide-header
+      hide-footer>
+        <div class="mt-3 mb-5 mx-5">
+          <div class="mb-5 row justify-content-end">
+              <b-button @click="close()" type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <span aria-hidden="true">&times;</span>
+              </b-button>
+          </div>
+          <div class="text-center">
+            <h3>Thank you for your contribution to open source!</h3>
+            <img class="w-25" src="{% static "v2/images/grants/torchbearer.svg" %}" />
+          </div>
+          <div class="my-4">
+            You've successfull contributed to [[numberOfContributions]] grants:
+          </div>
+          <hr />
+          <div>
+            <p>
+              First grant that is awesome <br />
+              10 DAI
+            </p>
+
+            <p>
+              Another awesome grant <br />
+              12 DAI
+            </p>
+
+            <p>
+              One more super cool grant <br />
+              12 DAI
+            </p>
+          </div>
+          <hr />
+          <div class="float-right mt-2 mb-4">
+            <b-button variant="light">Save as Collection</b-button>
+            <b-button variant="primary">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+              Share on Twitter
+            </b-button>
+          </div>
+        </div>
+    </b-modal>
+  </contribution-thanks-modal>
+</div>
+
+
+
+    <div class="modal" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
           <div class="modal-header border-0">
