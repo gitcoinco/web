@@ -981,6 +981,16 @@ def quest_of_the_day():
     quest = trending_quests()[0] if (len(trending_quests())) else 0
     return quest
 
+def trending_kudos():
+    from kudos.models import KudosTransfer
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    kudos = [ele.kudos_token_cloned_from for ele in KudosTransfer.objects.order_by('?').all()[0:10]]
+    return kudos
+
+def kudos_of_the_day():
+    quest = trending_kudos()[0] if (len(trending_quests())) else 0
+    return quest
+
 def upcoming_grant():
     grant = Grant.objects.order_by('-weighted_shuffle').first()
     return grant

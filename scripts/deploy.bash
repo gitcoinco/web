@@ -107,6 +107,9 @@ fi
 cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google https://gitcoin.co/sitemap.xml
 
+# set datetime of the server to prevent
+sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
+
 if [ "$ENV" = "prod" ] && [ "$JOBS_NODE" ]; then
     # Handle sentry deployment
     echo "- publishing deployment information to Sentry"
