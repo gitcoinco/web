@@ -79,6 +79,7 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 # Application definition
 INSTALLED_APPS = [
     'csp',
+    'compressor',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -195,6 +196,29 @@ TEMPLATES = [{
         ],
     },
 }]
+
+# Sass precompiler settings
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+]
+# number of demicals allowed in sass numbers
+LIBSASS_PRECISION = 8
+# minify sass output in production (offline)
+if ENV not in ['local', 'test', 'staging', 'preview']:
+    # compress offline (use './manage.py compress' to build manifest.json)
+    COMPRESS_OFFLINE = True
+    # drop line comments
+    LIBSASS_SOURCE_COMMENTS = False
+    # minification of sass output
+    COMPRESS_CSS_FILTERS = [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.rCSSMinFilter'
+    ]
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
