@@ -1,0 +1,107 @@
+section#intro{
+
+  height: 100vh;
+  margin-left: 1em;
+  width: 98%;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  padding-top: 3rem;
+
+  div {
+    align-self: center;
+    max-width: 39rem;
+    
+
+    p {
+      max-width: 20rem;
+    }
+    .big {
+      font-size: 1.5em;
+    }
+  }
+
+  figure {
+    align-self: center;
+    //align-self: end;
+
+    img {
+      max-height: 100vh;
+    }
+
+    .hidden {
+      display: none;
+    }
+  }
+
+  .actions {
+    display: none; 
+  }
+
+  .actions-reverse {
+    font-size: 52%; 
+  }
+
+  .land-btn:hover {
+    background-color: rgba(151, 86, 86, 0.15);
+    border-radius: 3px; 
+  }
+
+  h1 {
+    font-size: 120%; 
+  }
+
+  .action-text {
+    font-size: 55%; 
+  }
+
+}
+
+@media #{$laptop} { 
+  section#intro{
+    grid-template-columns: 1.75fr 1fr;
+  }
+}
+
+@media #{$tablet} { 
+  section#intro{
+
+    height: inherit;
+    grid-template-columns: 1fr;
+
+    margin: 0em 3em;
+    padding-top: 0em;
+
+    div{
+      grid-row: 2;
+
+    }
+
+    figure {
+      grid-row: 1;
+      margin-top: 8em; 
+    } 
+
+  }
+}
+
+
+
+@media #{$phone} { 
+  section#intro{
+
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+
+    .actions {
+      display: block; 
+    }
+  
+    .actions-reverse {
+      display: none; 
+    }
+  }
+  
+
+}
+
+
