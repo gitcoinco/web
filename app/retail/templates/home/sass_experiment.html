@@ -1,0 +1,28 @@
+{% load i18n static compress %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Deploy Test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        background: red;
+      }
+    </style>
+    {% compress css file testing %}
+      <style>
+        body {
+          background: green;
+        }
+      </style>
+    {% endcompress %}
+  </head>
+  <body>
+    {% compress js file testing %}
+      <script>
+        alert('testing');
+      </script>
+    {% endcompress %}
+  </body>
+</html>
+
