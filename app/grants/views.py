@@ -99,7 +99,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 # Round 8: December 2nd — December 18th 2020
 
 # TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
-clr_round=7
+clr_round=8
 last_round_start = timezone.datetime(2020, 9, 14, 12, 0)
 last_round_end = timezone.datetime(2020, 10, 2, 16, 0) #tz=utc, not mst
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
@@ -357,6 +357,8 @@ order by grants_subscription.id desc
 
     """
     print(query)
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
     earnings = query_to_results(query)
     
     meta_data = {
@@ -1507,7 +1509,9 @@ def grant_details_contributions(request, grant_id):
             pk=grant_id
         )
     except Grant.DoesNotExist:
-        response['message'] = 'error: grant cannot be found'
+        response = {
+            'message': 'error: grant cannot be found'
+        }
         return JsonResponse(response)
 
     _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')

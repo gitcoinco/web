@@ -180,9 +180,11 @@ along with this program. If not, see
           background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
         };
 
-      document.all_type_styles = {{ all_styles|safe }}
-      document.all_routing_policies = {{ all_routing_policies | safe}}
-      document.all_routing_policies.push(base_style)
+      document.all_type_styles = {% if all_styles %} {{ all_styles|safe }} {% else %} [] {% endif %};
+
+      document.all_routing_policies = {% if all_routing_policies %} {{ all_routing_policies | safe}} {% else %} [] {% endif %};
+      document.all_routing_policies.push(base_style);
+
       {% if grant_bg %}
         document.current_style = {
           banner_image: "{{ grant_bg.banner_image }}",
