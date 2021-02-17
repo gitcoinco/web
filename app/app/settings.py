@@ -440,6 +440,7 @@ if ENV in ['prod', 'stage']:
     )
 else:
     # Handle local static file storage
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
     STATIC_HOST = BASE_URL
     STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
     # Handle local media file storage
@@ -447,6 +448,8 @@ else:
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
 COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_URL = STATIC_URL
+COMPRESS_STORAGE = STATICFILES_STORAGE
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
