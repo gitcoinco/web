@@ -10,14 +10,16 @@
       }
     </style>
     {% compress css file testing %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/test1.scss" %} />
       <style>
-        body {
-          background: green;
+        body > div {
+          border-bottom: 1px solid;
         }
       </style>
     {% endcompress %}
   </head>
   <body>
+    <div></div>
     {% compress js file testing %}
       <script>
         alert('testing');
