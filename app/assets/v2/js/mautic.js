@@ -85,6 +85,9 @@ class MauticEvent {
   }
 
   static send(data) {
+    if (typeof mtcId === 'undefined') {
+      return;
+    }
     let contactApi = `/api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`;
     // let dataMock = this.dataMock(data)
 
