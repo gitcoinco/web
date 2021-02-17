@@ -45,7 +45,6 @@ boto==2.49.0
 google-api-python-client
 django-environ==0.4.5
 eth-utils==1.4.1
-dj_static==0.0.6
 jsondiff==1.1.1
 social-auth-app-django==4.0.0
 django-ipware==2.0.2
