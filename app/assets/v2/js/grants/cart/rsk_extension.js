@@ -1,15 +1,17 @@
-const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
-
-  const amount = vm.fulfillment_context.amount;
-  const token_name = vm.bounty.token_name;
+const contributeWithRskExtension = async(grant, vm, modal) => {
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const to_address = grant.rsk_payout_address;
+  const token = vm.getTokenByName(token_name);
 
   // 1. init rsk provider
-  // const rskHost = "https://public-node.testnet.rsk.co";
-  const rskHost = "https://public-node.rsk.co";
+  const rskHost = "https://public-node.testnet.rsk.co";
+  // const rskHost = "https://public-node.rsk.co";
   const rskClient = new Web3();
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
+
 
   // 2. check if wallet ins installed and unlocked
   if (!provider) {
@@ -29,7 +31,8 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     }
   }
 
-  // 2. construct + sign txn via nifty
+
+  // 3. construct + sign txn via nifty
   let txArgs;
 
   if (token_name == 'R-BTC') {
@@ -54,12 +57,12 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
 
   } else {
 
-    tokenContract = new rskClient.eth.Contract(token_abi, vm.bounty.token_address);
+    tokenContract = new rskClient.eth.Contract(token_abi, token.addr);
 
     balance = tokenContract.methods.balanceOf(
       ethereum.selectedAddress).call({from: ethereum.selectedAddress});
 
-    amountInWei  = amount * 1.0 * Math.pow(10, vm.decimals);
+    amountInWei  = amount * 1.0 * Math.pow(10, token.decimals);
 
     if (Number(balance) < amountInWei) {
       _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
@@ -70,7 +73,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     data = tokenContract.methods.transfer(to_address.toLowerCase(), amountAsString).encodeABI();
 
     txArgs = {
-      to: vm.bounty.token_address,
+      to: token.addr,
       from: ethereum.selectedAddress,
       gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
       gas: rskClient.utils.toHex(318730),
@@ -86,39 +89,45 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     }
   );
 
-  callback(null, ethereum.selectedAddress, txHash)
+  callback(null, ethereum.selectedAddress, txHash);
 
   function callback(error, from_address, txn) {
     if (error) {
-      _alert({ message: gettext('Unable to payout bounty due to: ' + error) }, 'error');
+      vm.updatePaymentStatus(grant.grant_id, 'failed');
+      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'error');
       console.log(error);
     } else {
 
       const payload = {
-        payout_type: 'rsk_ext',
-        tenant: 'RSK',
-        amount: amount,
-        token_name: token_name,
-        funder_address: from_address,
-        payout_tx_id: txn
+        'contributions': [{
+          'grant_id': grant.grant_id,
+          'contributor_address': from_address,
+          'tx_id': txn,
+          'token_symbol': grant.grant_donation_currency,
+          'tenant': 'RSK',
+          'comment': grant.grant_comments,
+          'amount_per_period': grant.grant_donation_amount
+        }]
       };
 
-      modal.closeModal();
-      const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
+      const apiUrlBounty = `v1/api/contribute`;
 
-      fetchData(apiUrlBounty, 'POST', payload).then(response => {
+      fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
+        console.log(response);
+        console.log(payload);
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
 
-          vm.fetchBounty();
-          _alert('Payment Successful');
+          vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
-          console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
+          vm.updatePaymentStatus(grant.grant_id, 'failed');
+          _alert('Unable to make contribute to grant. Please try again later', 'error');
+          console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
-        _alert('Unable to make payout bounty. Please try again later', 'error');
+        vm.updatePaymentStatus(grant.grant_id, 'failed');
+        _alert('Unable to make contribute to grant. Please try again later', 'error');
         console.log(error);
       });
     }

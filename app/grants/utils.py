@@ -36,6 +36,7 @@ from grants.sync.binance import sync_binance_payout
 from grants.sync.celo import sync_celo_payout
 from grants.sync.harmony import sync_harmony_payout
 from grants.sync.polkadot import sync_polkadot_payout
+from grants.sync.rsk import sync_rsk_payout
 from grants.sync.zcash import sync_zcash_payout
 from grants.sync.zil import sync_zil_payout
 from perftools.models import JSONStore
@@ -55,6 +56,7 @@ tenant_payout_mapper = {
     'POLKADOT': sync_polkadot_payout,
     'BINANCE': sync_binance_payout,
     'KUSAMA': sync_polkadot_payout,
+    'RSK': sync_rsk_payout
 }
 
 def get_upload_filename(instance, filename):

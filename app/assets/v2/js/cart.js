@@ -341,6 +341,18 @@ Vue.component('grants-cart', {
 
     isPolkadotExtInstalled() {
       return polkadot_extension_dapp.isWeb3Injected;
+    },
+
+    isRskExtInstalled() {
+      // init rsk provider
+      const rskHost = 'https://public-node.rsk.co';
+      const rskClient = new Web3();
+
+      rskClient.setProvider(
+        new rskClient.providers.HttpProvider(rskHost)
+      );
+
+      return provider && ethereum;
     }
   },
 
@@ -392,6 +404,9 @@ Vue.component('grants-cart', {
           break;
         case 'POLKADOT':
           vm.chainId = '58';
+          break;
+        case 'RSK':
+          vm.chainId = '30';
           break;
       }
     },
@@ -456,6 +471,9 @@ Vue.component('grants-cart', {
       let vm = this;
 
       switch (tenant) {
+        case 'RSK':
+          contributeWithRskExtension(grant, vm);
+          break;
         case 'HARMONY':
           contributeWithHarmonyExtension(grant, vm);
           break;
