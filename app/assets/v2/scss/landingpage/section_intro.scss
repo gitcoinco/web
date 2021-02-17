@@ -1,7 +1,6 @@
 section#intro{
 
   height: 100vh;
-  margin-left: 1em;
   width: 98%;
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -10,7 +9,7 @@ section#intro{
   div {
     align-self: center;
     max-width: 39rem;
-    
+
 
     p {
       max-width: 20rem;
@@ -34,41 +33,40 @@ section#intro{
   }
 
   .actions {
-    display: none; 
+    display: none;
   }
 
   .actions-reverse {
-    font-size: 52%; 
+    font-size: 52%;
   }
 
   .land-btn:hover {
     background-color: rgba(151, 86, 86, 0.15);
-    border-radius: 3px; 
+    border-radius: 3px;
   }
 
   h1 {
-    font-size: 120%; 
+    font-size: 120%;
   }
 
   .action-text {
-    font-size: 55%; 
+    font-size: 55%;
   }
 
 }
 
-@media #{$laptop} { 
+@media #{$laptop} {
   section#intro{
     grid-template-columns: 1.75fr 1fr;
   }
 }
 
-@media #{$tablet} { 
+@media #{$tablet} {
   section#intro{
 
     height: inherit;
     grid-template-columns: 1fr;
 
-    margin: 0em 3em;
     padding-top: 0em;
 
     div{
@@ -78,29 +76,27 @@ section#intro{
 
     figure {
       grid-row: 1;
-      margin-top: 8em; 
-    } 
+      margin-top: 8em;
+    }
 
   }
 }
 
 
 
-@media #{$phone} { 
+@media #{$phone} {
   section#intro{
 
-    margin-left: 1.5em;
-    margin-right: 1.5em;
 
     .actions {
-      display: block; 
+      display: block;
     }
-  
+
     .actions-reverse {
-      display: none; 
+      display: none;
     }
   }
-  
+
 
 }
 
