@@ -18,7 +18,7 @@ Click through to try them below:
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
 * https://gitcoin.co/grants/v1/api/export_addresses/all.json
 * https://gitcoin.co/grants/grants.json
-* https://gitcoin.co/grants/v1/api/export_info/grant12_round_7.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json
 
 NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at `https://gitcoin.co/settings/privacy` at anytime.
 
