@@ -331,9 +331,11 @@ if (document.getElementById('grants-showcase')) {
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
-        const regex_style = document.all_routing_policies.find(policy => {
-          return new RegExp(policy.url_pattern).test(window.location.href);
-        });
+
+        const regex_style = document.all_routing_policies &&
+          document.all_routing_policies.find(policy => {
+            return new RegExp(policy.url_pattern).test(window.location.href);
+          });
 
         toggleStyle(regex_style || current_style);
 

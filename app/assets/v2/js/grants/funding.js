@@ -37,7 +37,15 @@ $(document).ready(function() {
       for (let i = 0; i < allDonations.length; i += 1) {
         const donation = allDonations[i];
 
-        cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'] + ' (+' + donation['grant_donation_clr_match'] + ' DAI match)</li>';
+        cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'];
+        if (
+          donation.clr_round_num != '' &&
+          donation.is_clr_eligible &&
+          !donation.is_on_team
+        ) {
+          cart_html += ' (+' + donation['grant_donation_clr_match'] + ' DAI match)';
+        }
+        cart_html += '</li>';
       }
       cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';
       $("<span class='mt-2 mb-2 w-100'>" + cart_html + '</span>').insertBefore($('#tweetModal span.copy'));
