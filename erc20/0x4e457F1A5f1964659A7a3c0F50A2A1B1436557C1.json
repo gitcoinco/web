@@ -1,0 +1,17 @@
+{
+    "symbol": "WIFI",
+    "address": "0x4e457F1A5f1964659A7a3c0F50A2A1B1436557C1",
+    "overview":{
+          "en": "The WIFI project will realize communication network security through blockchain technology and quickly establish a global voice and data network with long distance wireless connections.",
+          "zh": "WIFI项目将通过区块链技术实现通信网络安全,快速建立远距离无线连接的全球语音和数据网络。"
+    },
+    "email": "wifidefi1@gmail.com",
+    "website": "http://www.wifidefi.com",
+    "whitepaper": "https://www.wifidefi.com/#/book/witePaper",
+    "state": "NORMAL",
+    "published_on": "2020-08-21",
+    "links": {
+        "telegram": "https://t.me/wifi_difi",
+        "twitter": "https://twitter.com/wifidefi1"
+      }
+}
