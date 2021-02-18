@@ -1,0 +1,18 @@
+{
+  "symbol": "RAZOR",
+  "address": "0x50DE6856358Cc35f3A9a57eAAA34BD4cB707d2cd",
+  "overview":{
+        "en": "Razor Network is a decentralized oracle network, which connects smart contracts with real-world off-chain data in a fast, robust and secure way. The core of Razor Network is a set of smart contracts that can run on any Ethereum compatible blockchain. Razor Network is blockchain agnostic and will be integrated with multiple blockchains.",
+  },
+  "website": "https://razor.network/",
+  "whitepaper": "https://razor.network/whitepaper.pdf",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/razor_network",
+    "telegram": "https://t.me/razornetwork",
+    "github": "https://github.com/razor-network",
+    "reddit": "https://www.reddit.com/r/RazorNetwork",
+    "discord": "https://discord.gg/yvrHg85ycE",
+    "medium": "https://medium.com/razor-network"
+  }
+}
