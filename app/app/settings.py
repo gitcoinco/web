@@ -441,6 +441,10 @@ if ENV in ['prod', 'stage']:
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
     COMPRESS_URL = STATIC_URL
+    COMPRESS_OFFLINE_URL_PLACEHOLDERS = True
+    COMPRESS_URL_PLACEHOLDER = COMPRESS_URL
+    COMPRESS_OFFLINE_CONTEXT = [{'STATIC_URL': settings.STATIC_URL}]
+
 
 else:
     # Handle local static file storage
@@ -453,7 +457,7 @@ else:
     MEDIA_ROOT = root('media')
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
-COMPRESS_ROOT = STATIC_ROOT
+# COMPRESS_ROOT = STATIC_ROOT
 
 COMPRESS_OUTPUT_DIR = 'v2'
 COMPRESS_STORAGE = STATICFILES_STORAGE
