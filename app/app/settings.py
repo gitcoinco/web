@@ -212,6 +212,8 @@ LIBSASS_PRECISION = 8
 if ENV not in ['local', 'test', 'staging', 'preview']:
     # compress offline (use './manage.py compress' to build manifest.json)
     COMPRESS_OFFLINE = True
+    # content based hashing
+    COMPRESS_CSS_HASHING_METHOD = 'content'
     # drop line comments
     LIBSASS_SOURCE_COMMENTS = False
     # minification of sass output
@@ -425,9 +427,9 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
-STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
+STATIC_ROOT = root(STATICFILES_LOCATION)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
