@@ -1,0 +1,23 @@
+{
+  "symbol": "DDX",
+  "address": "0x3A880652F47bFaa771908C07Dd8673A787dAEd3A",
+  "overview": {
+    "en": "The next generation of crypto derivatives",
+    "zh": "下一代加密货币衍生品"
+  },
+  "email": "info@derivadex.com",
+  "website": "https://derivadex.com/",
+  "state": "NORMAL",
+  "published_on": "2020-12-22",
+  "initial_price": {
+    "ETH": "0.00949577 ETH",
+    "USD": "5.59 USD",
+    "BTC": "0.0002397 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ddx_official",
+    "reddit": "https://www.reddit.com/r/derivadex/",
+    "telegram": "https://t.me/DerivaDEX",
+    "medium": "https://medium.com/derivadex"
+  }
+}
