@@ -1,0 +1,21 @@
+{
+    "symbol": "BFI",
+    "address": "0xC980be019F2ac10A1C96F964b971A5F44551D318",
+    "overview": {
+        "en": "The BFI token is used as the administrative token for the Bitfarmings organization with a total supply of 66,000,000 BFI. 50% of BFI's native supply is allocated to Bitfarmings community members and the rest goes to team, investors and advisors."
+    },
+    "email": "william.williamphan@gmail.com",
+    "website": "https://bitfarmings.com/",
+    "whitepaper": "https://bitfarmings.com/assets/home/bitfarming-whitepaper.pdf",
+    "state": "NORMAL",
+    "links": {
+        "blog": "",
+        "twitter": "https://twitter.com/BFarmings?s=09",
+        "telegram": "https://t.me/bitfarmings",
+        "github": "",
+        "facebook": "",
+        "reddit": "",
+        "youtube": "https://your-awesome-project.slack.com",
+        "medium": ""
+    }
+}
