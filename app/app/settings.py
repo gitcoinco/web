@@ -213,7 +213,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
     # compress offline (use './manage.py compress' to build manifest.json)
     COMPRESS_OFFLINE = True
     # content based hashing
-    COMPRESS_CSS_HASHING_METHOD = 'content'
+    COMPRESS_CSS_HASHING_METHOD = 'mtime'
     # drop line comments
     LIBSASS_SOURCE_COMMENTS = False
     # minification of sass output
