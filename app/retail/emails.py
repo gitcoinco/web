@@ -592,6 +592,7 @@ def get_notification_count(profile, days_ago, from_date):
         pass
     return notifications_count
 
+
 def email_to_profile(to_email):
     from dashboard.models import Profile
     try:
@@ -599,6 +600,7 @@ def email_to_profile(to_email):
     except Profile.DoesNotExist:
         pass
     return profile
+
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
@@ -658,10 +660,11 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'chats_count': chats_count,
     }
 
-    response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
+    response_html = premailer_transform(render_to_string("emails/pro/new_bounty.html", params))
     response_txt = render_to_string("emails/new_bounty.txt", params)
 
     return response_html, response_txt
+
 
 def render_unread_notification_email_weekly_roundup(to_email, from_date=date.today(), days_ago=7):
     subscriber = get_or_save_email_subscriber(to_email, 'internal')
@@ -687,6 +690,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
     response_txt = render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
