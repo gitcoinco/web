@@ -440,10 +440,6 @@ if ENV in ['prod', 'stage']:
     MEDIA_URL = env(
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
-    COMPRESS_URL = STATIC_URL
-    COMPRESS_URL_PLACEHOLDER = COMPRESS_URL
-    COMPRESS_OFFLINE_CONTEXT = [{'STATIC_URL': STATIC_URL}]
-
 
 
 else:
@@ -451,7 +447,6 @@ else:
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
     STATIC_HOST = BASE_URL
     STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
-    COMPRESS_URL = STATIC_URL
 
     # Handle local media file storage
     MEDIA_ROOT = root('media')
