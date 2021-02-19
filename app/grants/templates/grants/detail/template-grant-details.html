@@ -9,7 +9,7 @@
             <b>[[grant.title]]</b>
           </h1>
         </div>
-        <p class="d-flex align-items-center">
+        <p class="d-lg-flex d-sm-inline-table align-items-center">
           <i class="text-black-70 fas fa-fw fa-link"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url]]</a>
           <i class="col-auto text-black-70 fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
           <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
@@ -130,10 +130,157 @@
           <h2><b>About</b></h2>
           <render-quill :delta="grant.description_rich"></render-quill>
         </div>
-
         <div class="border-top pt-3 mt-4 mb-5">
+          <div class="">
+            {% if is_team_member %}
+              {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+            {% else %}
+              {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+            {% endif %}
+            <div id="activities" class="activity_stream container px-0">
+              {% include 'shared/activity_container.html' with pinned=False %}
+            </div>
+          </div>
           <h2><b>Latest Contributions</b></h2>
         </div>
+
+        {% if is_staff %}
+        <div class="border-top pt-3 mt-4 mb-5">
+          <h4>Grant Sybil Profile</h4>
+
+          <hr>
+          <i class="fa fa-lock" aria-hidden="true"></i>
+          SybilScore ™️: {{ grant.sybil_score }}
+          <br>
+          <i class="fa fa-lock" aria-hidden="true"></i>
+          RiskScore ™️: {{ grant.weighted_risk_score }}
+          <pre>
+
+          A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+          - Account Metadata
+          - Suspicious Interactions
+          - Grant Flags Reports
+          - BrightID Trust Score (coming soon)
+          - KYC (maybe coming soon)
+          - MACI (maybe coming soon)
+
+          a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+          </pre>
+          <div id="section-nav-sybil">
+            {% for ele in sybil_profiles%}
+            <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+            <table>
+              <tr>
+                <td>
+                  Index
+                </td>
+                <td>
+                  Contributors
+                </td>
+                <td>
+                  Contributors (pct)
+                </td>
+                <td>
+                  Contributions/Contributor
+                </td>
+                <td>
+                  Profiles
+                </td>
+              </tr>
+            {% for sp in ele.1.0 %}
+              <tr style="border-top: 1px solid grey;">
+                <td>
+                  {% if '0x' in sp.0 %}
+                  <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+                  {% else %}
+                  {{sp.0}}
+                  {% endif %}
+                </td>
+                <td>
+                  {{sp.1}}
+                </td>
+                <td>
+                  {{sp.5}}%
+                </td>
+                <td>
+                  {{sp.3|floatformat:2}}
+                </td>
+                <td>
+                  <div style="max-height: 50px; overflow: scroll;">
+                    {% for this_profile in sp.4 %}
+                          <a href="/{{this_profile}}">
+                            {% if forloop.counter < 20 %}
+                              <b-img-lazy class="rounded-circle bg-white" width="30" height="30" src="/dynamic/avatar/{{this_profile}}"></b-img-lazy>
+                            {% endif %}
+                            @{{this_profile}}
+                          </a>
+                    {% endfor %}
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+            </table>
+              <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      {% if is_team_member or is_staff  %}
+      <div class= "">
+        <div id=grant_stats_graph class="content-block content-block--white">
+          <div class="container">
+            <div class="value-container">
+              <div class="chart_container chart_container--big">
+                {% if stats_history|length %}
+                <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+                <table id=stats_history>
+                  <tr class="table_header">
+                    <td>
+                      When
+                    </td>
+                    <td>
+                      Impressions
+                    </td>
+                    <td>
+                      Added to Cart
+                    </td>
+                    <td>
+                      Contributions
+                    </td>
+                  </tr>
+                {% for ele in stats_history %}
+                  <tr>
+                    <td>
+                      {{ele.created_on|date:"Y/m/d"}}
+                    </td>
+                    <td>
+                      {{ele.data.impressions}}
+                    </td>
+                    <td>
+                      {{ele.data.in_cart}}
+                    </td>
+                    <td>
+                      {{ele.data.contributions}}
+                    </td>
+                  </tr>
+                {% endfor %}
+                </table>
+                {% endif %}
+
+                <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
+                <div class="chart_container__content">
+                  <div id="grant_chart"></div>
+                </div>
+                <div class="grant-status-list">
+                  <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                  <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
 
         <div class="d-flex justify-content-between align-items-center font-body">
 
