@@ -1,140 +1,173 @@
-Vue.component('contribution-thanks-modal', {
-  delimiters: [ '[[', ']]' ],
-  data: function() {
+Vue.component("contribution-thanks-modal", {
+  delimiters: ["[[", "]]"],
+  data: function () {
     return {
       modalId: 'contribution-thanks',
       numberOfContributions: 0,
+      donations: [],
+      tweetUrl: '',
     };
   },
-  props: {
+  props: {},
+  computed: {
+    tweetURLPath: function() {
+      // TBD
+    }
   },
   mounted: function () {
-    const shouldShow = Boolean(localStorage.getItem('contributions_were_successful'));
-    this.numberOfContributions = Number(localStorage.getItem('contributions_count'));
+    const shouldShow = Boolean(
+      localStorage.getItem("contributions_were_successful")
+    );
+    this.numberOfContributions = Number(
+      localStorage.getItem("contributions_count")
+    );
+
+    this.tweetUrl = `https://twitter.com/intent/tweet?text=I just funded ${this.numberOfContributions} grants on @gitcoin ${CartData.share_url()}`;;
 
     if (shouldShow) {
       this.$bvModal.show(this.modalId);
     }
 
-    const allDonations = CartData.loadCart();
-
-    console.log('All donations: ', allDonations);
+    this.donations = CartData.loadCart();
   },
   methods: {
     close() {
       this.$bvModal.hide(this.modalId);
     },
     handleHide() {
-      localStorage.removeItem('contributions_were_successful');
-      localStorage.removeItem('contributions_count');
+      localStorage.removeItem("contributions_were_successful");
+      localStorage.removeItem("contributions_count");
+      CartData.setCart([]);
     },
+    showSaveAsCollection() {
+      this.$bvModal.show('create-collection');
+    }
   },
 });
 
-/*
-TODO:
-  * Move close x out of header or otherwise get ride of the separator line
-  * Improve spacing around image
-  * Show based on the local storage data
-  * Show cart data from load cart
-  * Clear local storage after load
-  * Implement twitter share button action
-  * Implement save collection button (but how?)
-  * Research image generation
-*/
+Vue.component("create-collection-modal", {
+  delimiters: ["[[", "]]"],
+  data: function () {
+    return {
+      modalId: 'create-collection',
+      collectionTitle: '',
+      collectionDescription: '',
+      collections: [],
+      selectedCollection: null,
+    };
+  },
+  props: {},
+  computed: {
+    isValidCollection() {
+      if (this.selectedCollection !== null) {
+        return true;
+      } else if (this.collectionTitle.length > 3 && this.collectionDescription.length < 140) {
+        return true;
+      }
+
+      return false;
+    },
+  },
+  mounted: function() {
+    fetchData('/grants/v1/api/collections/').then( response => {
+      console.log('COLLECTIONS', response);
+      if (response.collections && response.collections.length > 0) {
+        this.collections = response.collections;
+      }
+    });
+  },
+  methods: {
+    createCollection: async function() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const cart = CartData.loadCart();
+      const grantIds = cart.map(grant => grant.grant_id);
+      let response;
+
+      const body = {
+        collectionTitle: this.collectionTitle,
+        collectionDescription: this.collectionDescription,
+        grants: grantIds
+      };
+
+      if (this.selectedCollection) {
+        body['collection'] = this.selectedCollection;
+      }
+
+      try {
+
+        response = await fetchData('/grants/v1/api/collections/new', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+        const redirect = `/grants/collections?collection_id=${response.collection.id}`;
+
+        _alert('Congratulations, your new collection was created successfully!', 'success');
+        this.cleanCollectionModal();
+
+        this.$bvModal.hide(this.modalId);
+        window.location = redirect;
+
+      } catch (e) {
+        _alert(e.msg, 'error');
+      }
+    },
+    cleanCollectionModal: function() {
+      this.collectionTitle = '';
+      this.collectionDescription = '';
+    }
+  }
+});
 
 // DOCUMENT
 let allTokens;
-const fetchTokens = async() => {
-  const tokensResponse = await fetch('/api/v1/tokens');
+const fetchTokens = async () => {
+  const tokensResponse = await fetch("/api/v1/tokens");
 
   allTokens = await tokensResponse.json();
 };
 
 fetchTokens();
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-  // Check localStorage to see if we need to show alert
-  const shouldShowAlert = Boolean(localStorage.getItem('contributions_were_successful'));
-
-  if (shouldShowAlert) {
-    // This alert currently shows after Ethereum checkouts only. As a result, we make sure to
-    // only clear ETH grants from local storage
-    const numberOfContributions = Number(localStorage.getItem('contributions_count'));
-    const grantWord = numberOfContributions === 1 ? 'grant' : 'grants';
-    const message = `You have successfully funded ${numberOfContributions} ${grantWord}. Thank you for your contribution!`;
-
-    _alert(message, 'success');
-    // localStorage.removeItem('contributions_were_successful');
-    // localStorage.removeItem('contributions_count');
-    // $('#tweetModal').modal('show');
-
-    const allDonations = CartData.loadCart();
-    const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
-    const otherDonations = allDonations.filter((grant) => grant.tenants[0] !== 'ETH');
-
-    if (allDonations.length) {
-      let cart_html = 'You just funded: ';
-      let bulk_add_cart = CartData.share_url();
-
-      for (let i = 0; i < allDonations.length; i += 1) {
-        const donation = allDonations[i];
-
-        cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'];
-        if (
-          donation.clr_round_num != '' &&
-          donation.is_clr_eligible &&
-          !donation.is_on_team
-        ) {
-          cart_html += ' (+' + donation['grant_donation_clr_match'] + ' DAI match)';
-        }
-        cart_html += '</li>';
-      }
-      cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';
-      $("<span class='mt-2 mb-2 w-100'>" + cart_html + '</span>').insertBefore($('#tweetModal span.copy'));
-      $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + allDonations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
-      $('#tweetModal a.button').text('Tweet about it');
-    }
-    CartData.setCart(otherDonations);
-  }
-
-  $('#js-addToCart-form').submit(function(event) {
+  $("#js-addToCart-form").submit(function (event) {
     event.preventDefault();
 
     // const formData = objectifySerialized($(this).serializeArray());
     // const formData = objectifySerialized($(this).serializeArray());
-
 
     CartData.addToCart(grantDetails);
 
     showSideCart();
   });
 
-  $('.infinite-container').on('submit', '.js-addDetailToCart-form', function(event) {
-    event.preventDefault();
+  $(".infinite-container").on(
+    "submit",
+    ".js-addDetailToCart-form",
+    function (event) {
+      event.preventDefault();
 
-    const formData = objectifySerialized($(this).serializeArray());
+      const formData = objectifySerialized($(this).serializeArray());
 
-    CartData.addToCart(formData);
+      CartData.addToCart(formData);
 
-    showSideCart();
-  });
+      showSideCart();
+    }
+  );
 
-  $('#close-side-cart').click(function() {
+  $("#close-side-cart").click(function () {
     hideSideCart();
   });
 
-  $('#side-cart-data').on('click', '#apply-to-all', async function() {
+  $("#side-cart-data").on("click", "#apply-to-all", async function () {
     // Get preferred cart data
     let cartData = CartData.loadCart();
-    const network = document.web3network || 'mainnet';
-    const selected_grant_index = $(this).data('id');
-    const preferredAmount = cartData[selected_grant_index].grant_donation_amount;
-    const preferredTokenName = cartData[selected_grant_index].grant_donation_currency;
+    const network = document.web3network || "mainnet";
+    const selected_grant_index = $(this).data("id");
+    const preferredAmount =
+      cartData[selected_grant_index].grant_donation_amount;
+    const preferredTokenName =
+      cartData[selected_grant_index].grant_donation_currency;
     const preferredTokenAddress = tokens(network)
-      .filter(token => token.name === preferredTokenName)
-      .map(token => token.addr)[selected_grant_index];
+      .filter((token) => token.name === preferredTokenName)
+      .map((token) => token.addr)[selected_grant_index];
 
     // Get fallback amount in ETH (used when token is not available for a grant)
     const url = `${window.location.origin}/sync/get_amount?amount=${preferredAmount}&denomination=${preferredTokenName}`;
@@ -143,8 +176,11 @@ $(document).ready(function() {
 
     // Update cart values
     cartData.forEach((grant, index) => {
-      const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000');
-      const acceptsSelectedToken = grant.grant_token_address === preferredTokenAddress;
+      const acceptsAllTokens =
+        grant.grant_token_address ===
+        "0x0000000000000000000000000000000000000000";
+      const acceptsSelectedToken =
+        grant.grant_token_address === preferredTokenAddress;
 
       if (acceptsAllTokens || acceptsSelectedToken) {
         // Use the user selected option
@@ -153,7 +189,7 @@ $(document).ready(function() {
       } else {
         // If the selected token is not available, fallback to ETH
         cartData[index].grant_donation_amount = fallbackAmount;
-        cartData[index].grant_donation_currency = 'ETH';
+        cartData[index].grant_donation_currency = "ETH";
       }
     }); // end cartData.forEach
 
@@ -201,56 +237,59 @@ function sideCartRowForGrant(grant, index) {
   return cartRow;
 }
 
-
 function tokenOptionsForGrant(grant) {
-
   var network = document.web3network;
 
   if (!network) {
-    network = 'mainnet';
+    network = "mainnet";
   }
 
   // let tokenDataList = tokens(network);
-  let tokenDataList = allTokens.filter((token) => token.network === networkName || 'mainnet');
-  let tokenDefault = 'ETH';
+  let tokenDataList = allTokens.filter(
+    (token) => token.network === networkName || "mainnet"
+  );
+  let tokenDefault = "ETH";
 
-  if (grant.tenants && grant.tenants.includes('ZCASH')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 123123);
-    tokenDefault = 'ZEC';
-  } if (grant.tenants && grant.tenants.includes('CELO')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 42220);
-    tokenDefault = 'CELO';
-  } else if (grant.tenants && grant.tenants.includes('ZIL')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 102);
-    tokenDefault = 'ZIL';
-  } else if (grant.tenants && grant.tenants.includes('HARMONY')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 1000);
-    tokenDefault = 'ONE';
-  } else if (grant.tenants && grant.tenants.includes('BINANCE')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 56);
-    tokenDefault = 'BNB';
-  } else if (grant.tenants && grant.tenants.includes('POLKADOT')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 58);
-    tokenDefault = 'DOT';
-  } else if (grant.tenants && grant.tenants.includes('KUSAMA')) {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 59);
-    tokenDefault = 'KSM';
+  if (grant.tenants && grant.tenants.includes("ZCASH")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
+    tokenDefault = "ZEC";
+  }
+  if (grant.tenants && grant.tenants.includes("CELO")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 42220);
+    tokenDefault = "CELO";
+  } else if (grant.tenants && grant.tenants.includes("ZIL")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 102);
+    tokenDefault = "ZIL";
+  } else if (grant.tenants && grant.tenants.includes("HARMONY")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 1000);
+    tokenDefault = "ONE";
+  } else if (grant.tenants && grant.tenants.includes("BINANCE")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 56);
+    tokenDefault = "BNB";
+  } else if (grant.tenants && grant.tenants.includes("POLKADOT")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 58);
+    tokenDefault = "DOT";
+  } else if (grant.tenants && grant.tenants.includes("KUSAMA")) {
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 59);
+    tokenDefault = "KSM";
   } else {
-    tokenDataList = tokenDataList.filter(token => token.chainId === 1);
+    tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
   }
 
-  const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000' ||
-  grant.grant_token_address === '0x0');
+  const acceptsAllTokens =
+    grant.grant_token_address ===
+      "0x0000000000000000000000000000000000000000" ||
+    grant.grant_token_address === "0x0";
 
-  let options = '';
+  let options = "";
 
   if (!acceptsAllTokens) {
     options += `
             <option value="${tokenDefault}">${tokenDefault}</option>
         `;
 
-    tokenDataList = tokenDataList.filter(tokenData => {
-      return (tokenData.address === grant.grant_token_address);
+    tokenDataList = tokenDataList.filter((tokenData) => {
+      return tokenData.address === grant.grant_token_address;
     });
   }
 
@@ -273,9 +312,7 @@ function tokenOptionsForGrant(grant) {
 
 function showSideCart() {
   // Remove elements in side cart
-  $('#side-cart-data')
-    .find('div.side-cart-row')
-    .remove();
+  $("#side-cart-data").find("div.side-cart-row").remove();
 
   // Add all elements in side cart
   let cartData = CartData.loadCart();
@@ -283,18 +320,20 @@ function showSideCart() {
   cartData.forEach((grant, index) => {
     const cartRowHtml = sideCartRowForGrant(grant, index);
 
-    $('#side-cart-data').append(cartRowHtml);
+    $("#side-cart-data").append(cartRowHtml);
 
     // Register remove click handler
-    $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
-      if (typeof appGrants !== 'undefined') {
-
-        appGrants.grants.filter(grantSingle => {
+    $(`#side-cart-row-remove-${grant.grant_id}`).click(function () {
+      if (typeof appGrants !== "undefined") {
+        appGrants.grants.filter((grantSingle) => {
           if (Number(grantSingle.id) === Number(grant.grant_id)) {
             grantSingle.isInCart = false;
           }
         });
-      } else if (typeof appGrantDetails !== 'undefined' && appGrantDetails.grant.id === Number(grant.grant_id)) {
+      } else if (
+        typeof appGrantDetails !== "undefined" &&
+        appGrantDetails.grant.id === Number(grant.grant_id)
+      ) {
         appGrantDetails.grant.isInCart = false;
       }
 
@@ -303,24 +342,34 @@ function showSideCart() {
     });
 
     // Register change amount handler
-    $(`#side-cart-amount-${grant.grant_id}`).change(function() {
+    $(`#side-cart-amount-${grant.grant_id}`).change(function () {
       const newAmount = parseFloat($(this).val());
 
-      CartData.updateCartItem(grant.grant_id, 'grant_donation_amount', newAmount);
+      CartData.updateCartItem(
+        grant.grant_id,
+        "grant_donation_amount",
+        newAmount
+      );
     });
 
     // Select appropriate currency
-    $(`#side-cart-currency-${grant.grant_id}`).val(grant.grant_donation_currency);
+    $(`#side-cart-currency-${grant.grant_id}`).val(
+      grant.grant_donation_currency
+    );
 
     // Register currency change handler
-    $(`#side-cart-currency-${grant.grant_id}`).change(function() {
-      CartData.updateCartItem(grant.grant_id, 'grant_donation_currency', $(this).val());
+    $(`#side-cart-currency-${grant.grant_id}`).change(function () {
+      CartData.updateCartItem(
+        grant.grant_id,
+        "grant_donation_currency",
+        $(this).val()
+      );
     });
 
     $(`#side-cart-currency-${grant.grant_id}`).select2();
   });
 
-  const isShowing = $('#side-cart').hasClass('col-12');
+  const isShowing = $("#side-cart").hasClass("col-12");
 
   if (!isShowing) {
     toggleSideCart();
@@ -328,14 +377,14 @@ function showSideCart() {
 
   // Scroll To top on mobile
   if (window.innerWidth < 768) {
-    const cartTop = $('#side-cart').position().top;
+    const cartTop = $("#side-cart").position().top;
 
     window.scrollTo(0, cartTop);
   }
 }
 
 function hideSideCart() {
-  const isShowing = $('#side-cart').hasClass('col-12');
+  const isShowing = $("#side-cart").hasClass("col-12");
 
   if (!isShowing) {
     return;
@@ -345,19 +394,19 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
-  $('#grants-details > div').toggleClass('col-12 col-md-8 col-lg-9 d-none d-md-inline-flex');
+  $("#grants-details > div").toggleClass(
+    "col-12 col-md-8 col-lg-9 d-none d-md-inline-flex"
+  );
 
-  $('#side-cart').toggle();
-  $('#side-cart').toggleClass('col-12 col-md-4 col-lg-3');
-  $('#funding-card').toggleClass('mr-md-5 mr-md-3 d-none d-lg-block');
+  $("#side-cart").toggle();
+  $("#side-cart").toggleClass("col-12 col-md-4 col-lg-3");
+  $("#funding-card").toggleClass("mr-md-5 mr-md-3 d-none d-lg-block");
 }
 
-
-if (document.getElementById('grant-thanks-app')) {
-
+if (document.getElementById("grant-thanks-app")) {
   const grantThanksApp = new Vue({
-    delimiters: [ '[[', ']]' ],
-    el: '#grant-thanks-app',
-    data: { }
+    delimiters: ["[[", "]]"],
+    el: "#grant-thanks-app",
+    data: {},
   });
 }
