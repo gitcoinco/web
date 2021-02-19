@@ -10,7 +10,8 @@
 * We've also put together a list of all grants on the platform, and the addresses you can contribute to them at, at https://gitcoin.co/grants/grants.json
 * Get a list of contributor social info (handle, picture, anonymized, comment) for a Gitcoin Grant at a specific round `https://gitcoin.co/grants/v1/api/export_info/grantX_roundY.json` where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.
 
-These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases..
+These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases. 
+*NOTE: These APIs returns live data, with a small cache infront. This means, the data may be up to an hour stale, but will refresh as the cache is recreated.*
 
 Click through to try them below:
 * https://gitcoin.co/grants/v1/api/export_addresses/round7.json
