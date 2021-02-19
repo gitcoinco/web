@@ -212,6 +212,8 @@ LIBSASS_PRECISION = 8
 if ENV not in ['local', 'test', 'staging', 'preview']:
     # compress offline (use './manage.py compress' to build manifest.json)
     COMPRESS_OFFLINE = True
+    # content based hashing
+    COMPRESS_CSS_HASHING_METHOD = 'content'
     # drop line comments
     LIBSASS_SOURCE_COMMENTS = False
     # minification of sass output
@@ -425,9 +427,9 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
-STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
+STATIC_ROOT = root(STATICFILES_LOCATION)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
@@ -438,15 +440,23 @@ if ENV in ['prod', 'stage']:
     MEDIA_URL = env(
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
+
+
 else:
     # Handle local static file storage
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
     STATIC_HOST = BASE_URL
     STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
+
     # Handle local media file storage
     MEDIA_ROOT = root('media')
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
+COMPRESS_OUTPUT_DIR = "v2"
 COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_HOST = STATIC_HOST
+COMPRESS_URL = STATIC_URL
+COMPRESS_STORAGE = STATICFILES_STORAGE
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
