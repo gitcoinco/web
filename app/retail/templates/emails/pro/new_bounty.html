@@ -15,73 +15,46 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
 <style>
-  .event-img {
-    width: 45%;
-    height: 35%;
-    margin-top: 40px;
-    max-width: 250px;
+  @media screen and (min-width: 35.5em) {
   }
 
-  .upcoming-events-container h4 {
-    padding: 0;
-    font-weight: bold;
-    margin-bottom: 5px;
-    margin-top: 1.2em;
+  @media screen and (max-width: 35.5em) {
   }
 
-  .upcoming-events-container p,
-  .upcoming-events-container a {
-    margin: 0;
-    color: #ffffff;
-    display: block;
-    font-weight: 300;
+  @media screen and (min-width: 48em) {
   }
 
-  .activity_stream {
-    margin-bottom: 40px;
+  @media screen and (max-width: 48em) {
+    .section-header {
+      text-align: left;
+    }
+    .section-header+hr {
+      text-align: left;
+    }
   }
 
-  .activity_stream .activity_detail a {
-    font-size: 0.75rem;
+  @media screen and (min-width: 120em) {
   }
 
-  .btn-clean {
-    color: #666666;
-    border: none;
-    background-color: transparent;
-    user-select: none;
-    outline: none;
+  @media screen and (min-width: 160em) {
   }
 
-  .staff_tag {
-    display: inline-block;
-    margin-top: 3px;
-  }
-  .arrow-up{
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-bottom: 15px solid #ddd;
-  margin-left: auto;
-  margin-right: auto;
-}
-  #founder_announce {
-    background-color: #fafafa;
-    margin-bottom: 15px;
-
-  }
-  #founder_announce a{
-    font-weight: bold;
+  @media screen and (max-width: 480px) {
+    .section-header {
+      text-align: left;
+    }
+    .section-header+hr {
+      text-align: left;
+    }
   }
 
-  #preferred_payout{
-    margin-top: 20px;
+  #preferred_payout {
+    margin-top: 7em;
     background-color: #15EBB7;
     padding: 10px 50px;
     text-align: center;
@@ -92,151 +65,200 @@
     color: #70b2ff;
   }
 
+  #content-body {
+    padding: 1.5em 11% 1.5em 11%;
+  }
+
+  .section-header {
+    font-weight: bold;
+    margin-bottom: 0;
+    margin-top: 4em;
+    line-height: 51px;
+    text-align: center;
+  }
+
+  .section-header+hr {
+    height: 4px;
+    background: #15EBB7;
+    width: 9%;
+    min-width: 70px;
+    border: none;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  #issue-date {
+    color: #A0A0A0;
+  }
+
+  .avatar {
+    max-width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    margin: 1em 0 1em 0;
+  }
+
+  .avatar-bounty {
+    margin: 32px auto;
+    margin-bottom: 0;
+    max-width: 120px;
+    height: 50px;
+    margin: 1em 0 1em 0;
+  }
+
 </style>
 
-<div>
-  <div>
-    <h1 class="text-centre">{% trans "Gitcoin Daily Digest" %}</h1>
-    <img width="55%" class="mint-logo" style="border-style:none; vertical-align:middle" valign="middle"
-    src="{% static 'v2/images/emails/daily-digest.svg' %}">
-  </div>
+<div id="content-body">
+  <img class="center-img" src="{% static 'v2/images/emails/daily-digest.svg' %}">
+  <!-- <span class="text-center">issue #{{ issue }} · {{ release_date|date:"F j, Y" }}</span> -->
+  <p id="issue-date" class="text-center">issue #13 · {% now "F j, Y" %}</p>
 
-  {% if email_announcements %}
-
-  <a href="https://gitcoin.co/owocki">
-  <img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
-  </a>
-  <div class="arrow-up">&nbsp;</div>
-  <div id="founder_announce" style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto;">
-  <h3 class="no-subtitle" style="margin-top: 5px; margin-bottom: 5px;">{{email_announcements.title}}</h3>
-  <p style="margin: 5px; border-radius: 5px;">
-    {{email_announcements.desc|safe}}
-  </p>
-  </div>
-
-  <HR>
-  {% endif %}
-  {% if featured_bounties %}
-    <div style="margin-bottom: 5em;">
-      <h3 class="no-subtitle">{% trans " Featured bounties for you!" %}</h3>
-
-      {% for bounty in featured_bounties %}
-        {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1 featured=True %}
-      {% endfor %}
-
-    </div>
+  <!-- {% if email_announcements %}
+    <h3 class="text-center section-header">{% trans "Announcements" %}</h3>
     <hr>
+    <p class="text-left" style="line-height: 24px;">{email_announcements.desc|safe}}</p>
+  {% endif %} -->
+
+  {% if not email_announcements %}
+    <h3 class="section-header">{% trans "Announcements" %}</h3>
+    <hr>
+    <p class="text-left" style="line-height: 24px;">
+      Hey all!<br><br>
+
+      Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇
+      <br><br>
+      This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the News Submissions as well as the good and critical feedback. 🙏 It's been GR8. 😎
+      <br><br>
+      Enjoy the rest of the email, and we'll catch you next week year.™
+      <br><br>
+      
+      — Justin & The Gitcoin Team
+    </p>
   {% endif %}
-  {% if chats_count %}
 
-  <h3 class="no-subtitle" style="margin-top: 15px;"> {{chats_count}} New Chat Messages</h3>
+  <!-- {% if upcoming_events or upcoming_dates %}
+    <h3 class="text-center section-header">{% trans "Save the Date" %}</h3>
+    <hr>
+    <p class="text-left grey mb-0">Upcoming Hackathons!</p><br>
+    {% for event in upcoming_events %}
+      <div class="text-left" style="color: #15003E;">
+        <p class="font-weight-bold mb-0">{{event.title}}</p>
+        <p style="margin-top: 0; margin-bottom: 0;">{{event.date}}</p>
+        <a href="{{event.url}}">Read More</a>
+      </div>
+    {% endfor %}
+  {% endif %} -->
 
-    <p style="margin-bottom: 25px;">You have <a href="{{base_url}}{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ chats_count }} unread chats</a>.Check them out</p>
-
-  <a href={{base_url}}>
-    <div style="margin-bottom: 2em; margin-top: 2em;">
-      <a class="button large" href="https://chat.gitcoin.co">{% trans "Read Messages" %}</a>
-    </div>
-  </a>
-
-  <HR>
-  {% endif %}
-
-  <div style="text-align: center;">
-    {% if notifications_count %}
-    <h3 class="no-subtitle" style="margin-top: 15px;">  {{notifications_count}} Unread Notifications</h3>
-
-      <p style="margin-bottom: 25px;">You have <a href="{{base_url}}{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ notifications_count }} unread notifications</a>.Check them out</p>
-    <div style="margin-bottom: 2em; margin-top: 2em;">
-      <a class="button large" href="https://gitcoin.co/inbox">{% trans "Read Notifications" %}</a>
-    </div>
-    <HR>
-    {% endif %}
+  <h3 class="section-header">{% trans "Save the Date" %}</h3>
+  <hr>
+  <p class="text-left grey mb-0">Upcoming Hackathons!</p><br>
+  <div class="text-left" style="color: #15003E;">
+    <p class="font-weight-bold mb-0">Witnet Incentive Program: Bug Bounty</p>
+    <p style="margin-top: 0; margin-bottom: 0;">2020-09-15</p>
+    <a href="{{event.url}}">Read More</a>
   </div>
-
-
-  {% if activities %}
-    <h3 class="no-subtitle" style="margin-top: 15px;">{% trans "Town Square Posts You've Missed" %}</h3>
-    <div class="container" style="text-align: left; padding: 20px 10px">
-      <div class="col-12 col-md-10 col-lg-8 mx-auto">
-        {% include 'shared/activity_container.html' with hide_loading=1 for_email=1 %}
-      </div>
-    <div style="text-align: center;">
-      {% include 'emails/shared_activities_actions.html' with action='custom' action_copy='View More' action_url='/townsquare' %}
-      </div>
-    </div>
-  {% endif %}
+  <div class="text-left" style="color: #15003E;">
+    <p class="font-weight-bold mb-0">Chasing The GHOST: Network Security Hackathon</p>
+    <p style="margin-top: 0; margin-bottom: 0;">2020-11-03</p>
+    <a href="{{event.url}}">Read More</a>
   </div>
-
-  {% if upcoming_events or upcoming_dates %}
-    <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
-      <h3 style="color: #ffffff;">{% trans "⏰Save The Date" %}</h3>
-      <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
-
-      <div class="upcoming-events-container">
-        {% for event in upcoming_events %}
-          {% if event.img_url %}
-            <img class="event-img" src="{{event.image_url}}">
-          {% endif %}
-          <h4 style="">{{event.title}}</h4>
-          <p>{{event.date}}</p>
-          <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
-        {% endfor %}
-      </div>
-      <br>
-      <br>
-    </div>
-  {% endif %}
-
-  <div class="primary-content text-center" {% if not upcoming_events %} style="padding-top: 0;" {% endif %}>
-
 
   {% if trending_avatar %}
-    <div style="margin-bottom: 5em;">
-      <h3 class="no-subtitle">{% trans " Trending Avatar" %}: {{trending_avatar.humanized_name}}</h3>
-      <div style="margin-top: 25px; ">
-        <a href="{{trending_avatar.url}}">
-          <img src='{{trending_avatar.img_url}}' style="max-width: 200px; height: 200px; border-radius: 100px;">
-        </a>
-      </div>
-      <br>
-      <div style="margin-top: 25px; ">
-        <a class="button" style="text-decoration: underline;" href="{{trending_avatar.url}}">Try it on ></a>
-      </div>
+    <br>
+    <h3 class="section-header">{% trans "Trending Avatar" %}</h3>
+    <hr>
+    <a href="{{trending_avatar.url}}">
+      <img class="avatar" src='{{trending_avatar.img_url}}'>
+    </a>
+    <br>
+    <div style="margin-top: 25px;">
+      <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">Try Avatar</a>
     </div>
-  <HR>
-  {% endif %}
-  {% if quest_of_the_day %}
-    <h3 class="no-subtitle" style="margin-top: 50px">{% trans "Quest of The Day" %}</h3>
-    {% include 'emails/quest_small.html' with quest=quest_of_the_day small=1 %}
   {% endif %}
 
-  <br>
-  <br>
-  <hr>
+  <!-- {% if quest_of_the_day %}
+    <h3 class="text-center section-header">{% trans "Quests Daily" %}</h3>
+    <hr>
+    {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
+      <img class="avatar" src={{base_url}}static/v2/images/emails/kudos_template.png>
+    {% else %}
+      <img class="avatar" src="{{quest.enemy_img_url}}">
+    {% endif %}
+    <div style="margin: 0 18% 0 18%">
+      <div class="text-left" style="color: #15003E;">
+        <p class="font-weight-bold mb-0">{{quest.title}}</p>
+        <p style="margin-top:0; width: 385px; margin-bottom: 0;">
+          {{quest.description}}
+        </p>
+      </div>
+    </div>
+    <div style="margin-top: 25px;">
+      <a class="button" style="text-decoration: none;" href="{{quest.absolute_url}}">Play Quest</a>
+    </div>
+  {% endif %} -->
+
+  {% if not quest_of_the_day %}
+    <h3 class="section-header">{% trans "Quests Daily" %}</h3>
+    <hr>
+    <img class="avatar" src="{{trending_avatar.img_url}}">
+    <div style="margin: 0 18% 0 18%">
+    <div class="text-left" style="color: #15003E;">
+      <p class="font-weight-bold mb-0">Decisions Discussions Decentralized Design Dungeons</p>
+      <p style="margin-top:0; width: 385px; margin-bottom: 0;">
+        Considering the design elements / approaches to a very new world. How that approach can
+        heavily impact usability, accessibility, and repeatability.
+      </p>
+    </div>
+    </div>
+    <div style="margin-top: 25px;">
+      <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}">Play Quest</a>
+    </div>
+  {% endif %}
 
   {% if bounties %}
-    <div style="margin-bottom: 5em;">
-      <h3 class="no-subtitle">{% trans "Start Earning!" %}</h3>
-
-      {% for bounty in bounties %}
-        {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
-      {% endfor %}
-
+    <h3 class="section-header">{% trans "Start Earning" %}</h3>
+    <hr>
+    <img class="avatar-bounty" src="{{trending_avatar.img_url}}">
+    <div style="color: #15003E;">
+      <p class="font-weight-bold mb-0">DimensionDev</p>
+      <p style="margin-top:0; margin-bottom: 0;">[Bounty] Solana and Serum in Maskbook</p>
+    </div>
+    <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">5000 USDT</p>
+    <div style="margin-top: 25px; ">
+      <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}">View Bounty</a>
     </div>
   {% endif %}
 
-
-  {% if old_bounties %}
-
-  <HR>
-
-  <h1>{{ old_bounties|length }} {% trans "Other Open Funded Issue" %}{% if old_bounties|length != 1 %}s{% endif %}</h1>
-  <h3>{% trans "Matching your profile" %}</h3>
-    {% for bounty in old_bounties %}
-      {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
+  {% if bounties %}
+    {% for bounty in bounties %}
+      {% if bounty.avatar_url %}
+        <img class="avatar-bounty" src="{{ bounty.avatar_url }}">
+        <div style="color: #15003E;">
+        {% if not prize %}
+          <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' highlight.who %}">{{ bounty.org_name }}</a>
+        {% endif %}
+      {% else %}
+        * <strong>{{ bounty.org_name }}</strong>
+      {% endif %}
+      <p style="margin-top: 3px; margin-bottom: 3px;">
+        {% if prize %}<b>{% endif %}
+        {% if primer %}
+          {{ primer }}
+        {% elif bounty.title %}
+          {{ bounty.title }}
+        {% endif %}
+        {% if prize %}</b>{% endif %}
+      </p>
+      </div>
+      <p style="color:#15ebb7; font-weight: 600; margin-top: 3px; margin-bottom: 3px;">
+        {% if bounty.value_true and bounty.token_name %}
+          {{ bounty.value_true|floatformat }} {{ bounty.token_name }}
+        {% endif %}
+      </p>
+      <div style="margin-top: 25px; ">
+        <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}">View Bounty</a>
+      </div>
     {% endfor %}
-
   {% endif %}
 
   <!-- <p>
@@ -248,10 +270,10 @@
 <div id="preferred_payout">
   {% if subscriber.profile.preferred_payout_address %}
     Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
-    <a style="color: #6F3FF5;" href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
+    <a href="{{base_url}}settings/account">New Wallet? Click here to update Payout Address.</a>
   {% else %}
     You do not have a preferred payout address on file.
-    <a style="color: #6F3FF5;" href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>
+    <a href="{{base_url}}settings/account">Click here to set a Payout Address.</a>
   {% endif %}
 </div>
 

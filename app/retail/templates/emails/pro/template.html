@@ -120,19 +120,19 @@
     {% else %}
       background-color: #FDFAFA;
     {% endif %}
+    font-family: 'Libre Franklin', sans-serif;
   }
 
   a.button {
     color: #fff;
-    background-color: #3E00FF;
+    background-color: #6F3FF5;
     border-radius: 3px;
     cursor: pointer;
     padding: 10px 15px;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 19.39px;
     text-align: center;
     text-decoration: none;
-    font-family: 'Muli', Arial, sans-serif;
   }
 
   a.button.large {
@@ -151,7 +151,7 @@
   }
 
   a {
-    color: #70b2ff;
+    color: #6F3FF5;;
     text-decoration: none;
   }
 
@@ -162,6 +162,10 @@
 
   .text-center {
     text-align: center;
+  }
+
+  .text-left {
+    text-align: left;
   }
 
   .primary-content {
@@ -745,7 +749,7 @@
   .center-img {
     display: block;
     margin: 0.5em auto 0.5em auto;
-    width: 50%;
+    width: 60%;
   }
 
   #footer {
@@ -786,7 +790,7 @@
         <p>
           &copy; {% now "Y" %} Gitcoin. {% trans "All Rights Reserved." %}
           <br>
-          <a href="https://gitcoin.co/legal/privacy">{% trans "Privacy Policy" %}</a> | <a href="https://gitcoin.co/legal/terms">{% trans "Terms + Conditions" %}</a>
+          <a href="{{base_url}}legal/privacy">{% trans "Privacy Policy" %}</a> | <a href="{{base_url}}legal/terms">{% trans "Terms + Conditions" %}</a>
         </p> 
         <p>
           {% trans "Want to change how you receive these emails?" %}
