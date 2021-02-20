@@ -68,13 +68,17 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
     easy_contrib_np = np.array([[1.,4],[1.,1.]])
     easy_trust_np = np.array([1,.5])
-    easy_contrib_np = np.array([[1.,4],[1.,1.]])
-    easy_trust_np = np.array([1,.5])
     # Trust is trust score indexed by user
     # M is a parameter in the pairwise QF algo
     m = 1
 
-    contrib_matrix_sparse = load_sparse_matrix([[1,2,4]], 4, 4)
+    # [project_id, user_id, contribution_amount]
+    #contributions = [[1,2,4]]
+    contributions = contributions.values_list('subscription__grant__id', 'subscription__contributor_profile__id', 'subscription__amount_per_period_usdt', )
+    num_projects = len(([ele[0] for ele in contributions]))
+    num_users = len(([ele[1] for ele in contributions]))
+    print(num_users, num_users)
+    contrib_matrix_sparse = load_sparse_matrix(contributions, num_projects, num_users)
     #contrib_matrix_sparse = scipy.sparse.csc_matrix((25000,100))
     #contrib_matrix_sparse[:2,:2] = easy_contrib_np
 
