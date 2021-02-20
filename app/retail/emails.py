@@ -1721,6 +1721,9 @@ def tribe_hackathon_prizes(request):
 
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 
+    if not hackathon:
+        return HttpResponse("no upcoming hackathon event in the next 3 days", status=404)
+
     sponsors_prizes = []
     for sponsor in hackathon.sponsor_profiles.all()[:3]:
         prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
