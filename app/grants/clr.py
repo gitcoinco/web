@@ -287,7 +287,7 @@ def fetch_data(clr_round, network='mainnet'):
     subscription_filters = clr_round.subscription_filters
     collection_filters = clr_round.collection_filters
 
-    contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
+    contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr', 'subscription__grant').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True).nocache()
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 

@@ -23,11 +23,8 @@ from grants.clr import fetch_data
 import scipy
 import scipy.sparse
 import numpy as np
+import time
 
-
-import scipy
-import scipy.sparse
-import numpy as np
 def pairwise_clr_match_sparse(contribs, trust, m):
     participant_overlap = (contribs.T.sqrt()@ contribs.sqrt()).todense()
     k = m / (m+participant_overlap)
@@ -56,6 +53,7 @@ def load_sparse_matrix(project_user_contrib_tuples, num_projects, num_users):
 
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
     # setup
+    start_time = time.time()
     clr_calc_start_time = timezone.now()
     debug_output = []
 
@@ -73,8 +71,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     m = 1
 
     # [project_id, user_id, contribution_amount]
-    project_user_contrib_tuples = contributions.values_list('subscription__grant__id', 'subscription__contributor_profile__id', 'subscription__amount_per_period_usdt', )
-    print(f"{len(project_user_contrib_tuples)} contributions")
+    project_user_contrib_tuples = contributions.values_list('subscription__grant__id', 'profile_for_clr__id', 'subscription__amount_per_period_usdt', )
+    run_time = time.time() - start_time
+    print(f"pulled {len(project_user_contrib_tuples)} contributions in {round(run_time, 2)}s")
+    start_time = time.time()
     project_user_contrib_tuples = [(int(ele[0]), int(ele[1]), int(ele[2])) for ele in project_user_contrib_tuples]
     contrib = [x[2] for x in project_user_contrib_tuples]
     project = [x[0] for x in project_user_contrib_tuples]
@@ -90,10 +90,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     processed_contribs = [(project_to_idx[p], user_to_idx[u], c) for (p,u,c) in zip(project, user, contrib)]
 
     sparse_matrix = load_sparse_matrix(processed_contribs, len(project_set), len(user_set))
-
     matches = pairwise_clr_match_sparse(sparse_matrix, np.array([1.]*len(user_set)), 1)
-
     project_id_match_pairs = [(idx_to_project[i], matches[i]) for i in range(len(project_set))]
+
+    run_time = time.time() - start_time
+    print(f"ran calcs {round(run_time, 2)}s")
 
     return project_id_match_pairs
 
