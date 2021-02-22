@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -18,19 +18,17 @@
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>😕 {% trans "Fulfillment Rejected" %} 😕</h1>
+  <h1>😕 {% trans "Fulfillment Rejected" %} 😕</h1>
 
-<p>
-{% trans "There is a new funded issue fulfillment *rejection*. Please refer to the rejection comments on the Github pull request to learn why." %}
-</p>
+  <p>
+  {% trans "There is a new funded issue fulfillment *rejection*. Please refer to the rejection comments on the Github pull request to learn why." %}
+  </p>
 
-<br>
+  <br>
 
-{% include 'emails/bounty.html' with bounty=bounty %}
+  {% include 'emails/bounty.html' with bounty=bounty %}
 
-<p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %}  <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-</p>
-
+</div>
 {% endblock %}

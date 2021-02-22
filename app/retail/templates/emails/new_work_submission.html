@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -19,16 +19,18 @@
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>👇 {% trans "New Work Submission" %} 👇</h1>
+    <h1>👇 {% trans "New Work Submission" %} 👇</h1>
 
 
-<p>
-    {% trans "There is a new work *submission* against your funded issue. Please check it out below." %}
-</p>
+    <p>
+        {% trans "There is a new work *submission* against your funded issue. Please check it out below." %}
+    </p>
 
-<br>
+    <br>
 
-{% include 'emails/bounty.html' with bounty=bounty %}
+    {% include 'emails/bounty.html' with bounty=bounty %}
 
+</div>
 {% endblock %}

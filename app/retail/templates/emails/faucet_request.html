@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -20,24 +20,26 @@
 {% load static %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>{% trans "Faucet Request Processed" %}⛽️</h1>
+    <h1>{% trans "Faucet Request Processed" %}⛽️</h1>
 
-<img src="{% static 'v2/images/gas.png' %}" width=200px height=200px >
+    <img src="{% static 'v2/images/gas.png' %}" width=200px height=200px >
 
-<p>
-    {% trans "Hey" %} @{{fr.github_username}},
+    <p>
+        {% trans "Hey" %} @{{fr.github_username}},
 
-    <br>
-    <br>
+        <br>
+        <br>
 
-    {% blocktrans %}Gitcoin has distributed your faucet request for {{amount}} ETH to{% endblocktrans %} <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
+        {% blocktrans %}Gitcoin has distributed your faucet request for {{amount}} ETH to{% endblocktrans %} <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
 
-    <br>
-    <br>
+        <br>
+        <br>
 
-    {% trans "This should be enough gas to send your first Ethereum Transaction.  We hope you'll consider using it on Gitcoin!" %}
+        {% trans "This should be enough gas to send your first Ethereum Transaction.  We hope you'll consider using it on Gitcoin!" %}
 
-</p>
+    </p>
 
+</div>
 {% endblock %}

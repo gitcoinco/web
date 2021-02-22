@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -18,21 +18,23 @@
 {% load i18n humanize static %}
 
 {% block content %}
-<h1>{% trans "Work Request Rejected" %}</h1>
-<div style="text-align: left! important">
-  <p>
-    {% trans "Hello" %} @{{ interest.profile.handle }},
-  </p>
-  <p>
-    {% trans "The funder has denied your request to work on "%}<a href="{{ bounty.url }}">{% trans "this bounty" %}</a>.  {% trans "Checkout the issue explorer for other projects on the platform!" %}
-  </p>
-  <p style="text-align: center; margin: 30px 50px;">
-    <a class="button" href="{% url 'explorer' %}">{% trans "Issue Explorer" %}</a>
-  </p>
-  <p>
-    {% blocktrans %}
-    - Gitcoin Team
-    {% endblocktrans %}
-  </p>
+<div id="content-body">
+  <h1>{% trans "Work Request Rejected" %}</h1>
+  <div style="text-align: left! important">
+    <p>
+      {% trans "Hello" %} @{{ interest.profile.handle }},
+    </p>
+    <p>
+      {% trans "The funder has denied your request to work on "%}<a href="{{ bounty.url }}">{% trans "this bounty" %}</a>.  {% trans "Checkout the issue explorer for other projects on the platform!" %}
+    </p>
+    <p style="text-align: center; margin: 30px 50px;">
+      <a class="button" href="{% url 'explorer' %}">{% trans "Issue Explorer" %}</a>
+    </p>
+    <p>
+      {% blocktrans %}
+      - Gitcoin Team
+      {% endblocktrans %}
+    </p>
+  </div>
 </div>
 {% endblock %}

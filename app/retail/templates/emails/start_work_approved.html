@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -20,24 +20,27 @@
 {% load static %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>{% trans "Request to Work" %}</h1>
-<div style="text-align: left! important">
-  <p>
-    {% trans "Hello" %} @{{interest.profile.handle}},
-  </p>
-  <p>
-    {% trans "Good news! The funder has accepted your request to work on"%} <a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "You can go ahead and start working on the issue. As a courtesy to the maintainer, please provide an update on the Github issue every few days." %}
-  </p>
-  <br>
-  {% include 'emails/bounty.html' with bounty=bounty %}
-  <p>
-    {% trans "As always, if you have questions, please reach out to the project owner!" %}
-  </p>
-  <p>
-    {% blocktrans %}
-    - Gitcoin Team
-    {% endblocktrans %}
-  </p>
+  <h1>{% trans "Request to Work" %}</h1>
+  <div style="text-align: left! important">
+    <p>
+      {% trans "Hello" %} @{{interest.profile.handle}},
+    </p>
+    <p>
+      {% trans "Good news! The funder has accepted your request to work on"%} <a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "You can go ahead and start working on the issue. As a courtesy to the maintainer, please provide an update on the Github issue every few days." %}
+    </p>
+    <br>
+    {% include 'emails/bounty.html' with bounty=bounty %}
+    <br>
+    <p>
+      {% trans "As always, if you have questions, please reach out to the project owner!" %}
+    </p>
+    <p>
+      {% blocktrans %}
+      - Gitcoin Team
+      {% endblocktrans %}
+    </p>
+  </div>
 </div>
 {% endblock %}
