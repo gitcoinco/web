@@ -212,15 +212,19 @@ LIBSASS_PRECISION = 8
 if ENV not in ['local', 'test', 'staging', 'preview']:
     # compress offline (use './manage.py compress' to build manifest.json)
     COMPRESS_OFFLINE = True
-    # content based hashing
-    COMPRESS_CSS_HASHING_METHOD = 'mtime'
-    # drop line comments
-    LIBSASS_SOURCE_COMMENTS = False
+    # Allow for the full path (url) to be included in the manifest
+    COMPRESS_INCLUDE_URLS = True
+    # Allow the placeholder insertion to be skipped
+    COMPRESS_SKIP_PLACEHOLDER = True
+    # use content based hashing so that we always match between servers
+    COMPRESS_CSS_HASHING_METHOD = 'content'
     # minification of sass output
     COMPRESS_CSS_FILTERS = [
         'compressor.filters.css_default.CssAbsoluteFilter',
         'compressor.filters.cssmin.rCSSMinFilter'
     ]
+    # drop line comments
+    LIBSASS_SOURCE_COMMENTS = False
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
@@ -440,8 +444,6 @@ if ENV in ['prod', 'stage']:
     MEDIA_URL = env(
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
-
-
 else:
     # Handle local static file storage
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
