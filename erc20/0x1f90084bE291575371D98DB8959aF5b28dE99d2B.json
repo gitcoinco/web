@@ -1,0 +1,28 @@
+{
+  "symbol": "KEN",
+  "address": "0x1f90084bE291575371D98DB8959aF5b28dE99d2B",
+  "overview":{
+        "en": "KEN is to solve the related industry pain points of the existing financial blockchain product ecology. It provides a closed-loop financial payment ecosystem for global traders, regulatory agencies, service providers, and consumers. Through the self-adjustment and development of multi-dimensional product architecture, Quickly establish user big data and provide users with trust, subsidies, and value-added ecological services.",
+        "zh": "KEN 是为了解决现有金融区块链产品生态缺失的相关产业痛点问题，面向全球贸易商、监管机构、服务商、消费者，提供一个金融支付生态闭环，通过多维产品架构的自我调整与发展，迅速建立起用户大数据，为用户提供信任、补贴、 增值的生态服务。"
+  },
+  "email": "support@ken-coin.net",
+  "website": "https://ken-coin.net/",
+  "whitepaper": "https://ken-coin.net/wp-content/uploads/2021/02/Ken_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-02-08",
+  "initial_price":{
+        "ETH":"0.00008857 ETH",
+        "USD":"0.155 USD",
+        "BTC":"0.000003118 BTC"
+  },
+  "links": {
+    "blog": "https://ken-coin.net/",
+    "twitter": "",
+    "telegram": "https://t.me/cj188en99",
+    "github": "",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
