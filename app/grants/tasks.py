@@ -306,9 +306,10 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
 
 @app.shared_task(bind=True, max_retries=1)
 def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None:
-    from grants.clr_v2 import predict_clr
+    from grants.clr import predict_clr
 
     print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
+    start_time = time.time()
 
     predict_clr(
         save_to_db,
@@ -317,7 +318,8 @@ def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None
         network
     )
 
-    print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
+    current_time = time.time() - start_time
+    print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug} ({round(current_time, 2)}s)")
 
     # TOTAL GRANT
     # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)

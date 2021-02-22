@@ -73,16 +73,27 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     m = 1
 
     # [project_id, user_id, contribution_amount]
-    #contributions = [[1,2,4]]
-    contributions = contributions.values_list('subscription__grant__id', 'subscription__contributor_profile__id', 'subscription__amount_per_period_usdt', )
-    num_projects = len(([ele[0] for ele in contributions]))
-    num_users = len(([ele[1] for ele in contributions]))
-    print(num_users, num_users)
-    contrib_matrix_sparse = load_sparse_matrix(contributions, num_projects, num_users)
-    #contrib_matrix_sparse = scipy.sparse.csc_matrix((25000,100))
-    #contrib_matrix_sparse[:2,:2] = easy_contrib_np
+    project_user_contrib_tuples = contributions.values_list('subscription__grant__id', 'subscription__contributor_profile__id', 'subscription__amount_per_period_usdt', )
+    print(f"{len(project_user_contrib_tuples)} contributions")
+    project_user_contrib_tuples = [(int(ele[0]), int(ele[1]), int(ele[2])) for ele in project_user_contrib_tuples]
+    contrib = [x[2] for x in project_user_contrib_tuples]
+    project = [x[0] for x in project_user_contrib_tuples]
+    user = [x[1] for x in project_user_contrib_tuples]
 
-    result = pairwise_clr_match_sparse(contrib_matrix_sparse, np.array([1.]*2), 1)
-    print(result)
-    return result
+    user_set = set(user)
+    user_to_idx = {x:i for (i,x) in enumerate(user_set)}
+
+    project_set = set(project)
+    project_to_idx = {x:i for (i,x) in enumerate(project_set)}
+    idx_to_project = {i:x for (i,x) in enumerate(project_set)}
+
+    processed_contribs = [(project_to_idx[p], user_to_idx[u], c) for (p,u,c) in zip(project, user, contrib)]
+
+    sparse_matrix = load_sparse_matrix(processed_contribs, len(project_set), len(user_set))
+
+    matches = pairwise_clr_match_sparse(sparse_matrix, np.array([1.]*len(user_set)), 1)
+
+    project_id_match_pairs = [(idx_to_project[i], matches[i]) for i in range(len(project_set))]
+
+    return project_id_match_pairs
 
