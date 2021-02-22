@@ -29,28 +29,29 @@
   {% endcompress %}
 </head>
 <body class="{{active}} g-font-muli">
-  {% include 'shared/tag_manager_2.html' %}
-  {% include 'shared/top_nav.html' with class='d-md-flex' %}
-  <div class="container-fluid header">
-    {% if nav == 'home' %}
-      {% include 'home/nav.html' %}
-    {% elif nav == 'kudos' %}
-      {% include 'shared/kudos_nav.html' %}
-    {% else %}
-      {% include 'shared/nav.html' %}
-    {% endif %}
-    {% if minihero %}
-      {% include 'shared/minihero.html' with h1=minihero %}
-    {% endif %}
-  </div>
-  <div class="row mt-1 pb-0">
-    <div class="col text-center body">
-      {% block body %}{% endblock %}
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header">
+      {% if nav == 'home' %}
+        {% include 'home/nav.html' %}
+      {% elif nav == 'kudos' %}
+        {% include 'shared/kudos_nav.html' %}
+      {% else %}
+        {% include 'shared/nav.html' %}
+      {% endif %}
+      {% if minihero %}
+        {% include 'shared/minihero.html' with h1=minihero %}
+      {% endif %}
     </div>
+    <div class="row mt-1 pb-0 ml-0 mr-0">
+      <div class="col text-center body">
+        {% block body %}{% endblock %}
+      </div>
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html' %}
   </div>
-  {% include 'shared/footer.html' %}
-  {% include 'shared/footer_scripts.html' %}
-  
 </body>
 {% include 'shared/analytics.html' %}
 {% block scripts %}{% endblock %}
