@@ -8,12 +8,6 @@ Vue.component("contribution-thanks-modal", {
       tweetUrl: '',
     };
   },
-  props: {},
-  computed: {
-    tweetURLPath: function() {
-      // TBD
-    }
-  },
   mounted: function () {
     const shouldShow = Boolean(
       localStorage.getItem("contributions_were_successful")
@@ -56,7 +50,6 @@ Vue.component("create-collection-modal", {
       selectedCollection: null,
     };
   },
-  props: {},
   computed: {
     isValidCollection() {
       if (this.selectedCollection !== null) {
@@ -77,6 +70,9 @@ Vue.component("create-collection-modal", {
     });
   },
   methods: {
+    close() {
+      this.$bvModal.hide(this.modalId);
+    },
     createCollection: async function() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const cart = CartData.loadCart();
@@ -102,6 +98,7 @@ Vue.component("create-collection-modal", {
         this.cleanCollectionModal();
 
         this.$bvModal.hide(this.modalId);
+        this.$bvModal.hide('contribution-thanks'); // triggers cart clear
         window.location = redirect;
 
       } catch (e) {
