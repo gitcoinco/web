@@ -278,6 +278,7 @@ def render_tip_email(to_email, tip, is_new):
 
     return response_html, response_txt
 
+
 def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
     email_style = 'hackathon'
 
@@ -290,7 +291,7 @@ def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
 
     for sponsor_prize in sponsors_prizes:
         sponsor_prize['name'] = sponsor_prize['sponsor'].name
-        sponsor_prize['image_url'] = sponsor_prize['sponsor'].logo.url if sponsor_prize['sponsor'].logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png'
+        sponsor_prize['image_url'] = sponsor_prize['sponsor'].avatar_url or f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png'
 
     intro = f"{intro_begin} participating on a new hackathon on Gitcoin: "
 
@@ -302,10 +303,11 @@ def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
         'hide_bottom_logo': True,
     }
 
-    response_html = premailer_transform(render_to_string("emails/tribe_hackathon_prizes.html", params))
+    response_html = premailer_transform(render_to_string("emails/pro/tribe_hackathon_prizes.html", params))
     response_txt = render_to_string("emails/tribe_hackathon_prizes.txt", params)
 
     return response_html, response_txt
+
 
 def render_request_amount_email(to_email, request, is_new):
 
@@ -394,6 +396,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
     return response_html, response_txt
+
 
 def render_tax_report(to_email, tax_year):
     from dashboard.models import Profile
@@ -1709,14 +1712,19 @@ def start_work_applicant_expired(request):
 
 @staff_member_required
 def tribe_hackathon_prizes(request):
-    from dashboard.models import HackathonEvent
+    from dashboard.models import HackathonEvent, Bounty
     from marketing.utils import generate_hackathon_email_intro
 
-    hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
+    hackathon = HackathonEvent.objects.all().first()
+    # hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
+
+    if not hackathon:
+        return HttpResponse("no upcoming hackathon within 3 days", status=404)
 
     sponsors_prizes = []
     for sponsor in hackathon.sponsor_profiles.all()[:3]:
-        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
+        # prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
+        prizes = Bounty.objects.filter(event=hackathon, network='mainnet')
         sponsor_prize = {
             "sponsor": sponsor,
             "prizes": prizes
