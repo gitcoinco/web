@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n static %}
 
-
+{% block 'content' %}
 <div id="wallet-provider">
 
 	<div class="header" id="close-wallet-provider">
@@ -37,11 +37,9 @@
 
 		<!-- wallet accounts -->
 		<span id="wallet-accounts"></span>
-
-    <!-- current GTC amount -->
-    <!-- @zach : need to get the real value in here in the span -->
-
-    <div id="current_gtc"><span>xxxxx</span> GTC</div>
+    
+    <!-- GTC token balance-->
+    <div ><span id="current_gtc"></span> GTC</div>
 
 		   
 	</div>
@@ -56,10 +54,6 @@
 	</div>
 
 </div>
-
-
-
-
 
   <!-- cleaned out rest of gitcoins working wallet code
     that seems to be mandatory to work ...
@@ -89,30 +83,22 @@
     </template>
   </div>
 
-
-
-
+{% endblock %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/abi.js" %}"></script>
 <script>
-
-/* 
-fetch token amount from adress to show current
-@zach's task list :)
-*/
-
-document.addEventListener("DOMContentLoaded",function(){
-
-  // wallet found
-  window.addEventListener("dataWalletReady", () => {
-    const current_gtc = document.querySelector("#current_gtc span");
-    getTokenBalances(gtc_address()).then(function(result) {
-      current_gtc.innerHTML = result.balance;
-		});
-  
+  document.addEventListener("DOMContentLoaded",function(){
+    // wallet found
+    window.addEventListener("dataWalletReady", () => {
+      const current_gtc = document.querySelector("#current_gtc");
+      getTokenBalances(gtc_address()).then(function(result) {
+        current_gtc.innerHTML = result.balance;
+      });
+    });
   });
-
-});
-
 </script>
+
+{% endblock %}
 
 
 
