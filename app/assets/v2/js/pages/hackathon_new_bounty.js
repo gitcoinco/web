@@ -154,6 +154,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '58':
           // polkadot
           type = 'polkadot_ext';

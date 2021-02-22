@@ -3,7 +3,7 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
-let web3;
+var web3 = typeof (web3) != 'undefined' ? web3 : null;
 let web3Modal;
 let provider;
 let selectedAccount;
