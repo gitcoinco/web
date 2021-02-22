@@ -294,6 +294,7 @@ class Bounty(SuperModel):
         ('polkadot_ext', 'Polkadot Ext'),
         ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
+        ('rsk_ext', 'RSK Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1410,6 +1411,7 @@ class BountyFulfillment(SuperModel):
         ('polkadot_ext', 'polkadot_ext'),
         ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
+        ('rsk_ext', 'rsk_ext'),
         ('manual', 'manual')
     ]
 
@@ -1424,6 +1426,7 @@ class BountyFulfillment(SuperModel):
         ('BINANCE', 'BINANCE'),
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
+        ('RSK', 'RSK'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1462,7 +1465,7 @@ class BountyFulfillment(SuperModel):
     token_name = models.CharField(max_length=10, blank=True, help_text="token/currency in which the payout is done")
     payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True, help_text="transaction id")
     payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True, help_text="payment status")
-    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=50, help_text="amount being paid out by funder")
+    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=6, max_digits=50, help_text="amount being paid out by funder")
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.

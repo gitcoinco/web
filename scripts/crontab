@@ -56,7 +56,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 1 1 * * cd gitcoin/coin; bash scripts/run_management_command.bash activity_report $(date --date='-1 month' +%Y/%m/%d) $(date +%Y/%m/%d)  >> /var/log/gitcoin/activity_report.log  2>&1
 
 ## CLR
-1 * * * * #cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet all >> /var/log/gitcoin/estimate_clr_all.log  2>&1
+1 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet all >> /var/log/gitcoin/estimate_clr_all.log  2>&1
 5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash validate_grants_contributions last_hour >> /var/log/gitcoin/validate_grants_contributions.log  2>&1
 
 ## GRANTS
@@ -82,6 +82,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash funder_stale_email 60  >> /var/log/gitcoin/funder_stale_email.log  2>&1
 15 5 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash new_bounties_email  >> /var/log/gitcoin/new_bounties_email.log  2>&1
 # 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash tribe_hackathon_prizes_email  >> /var/log/gitcoin/tribe_hackathon_prizes_email.log  2>&1
+30 5 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data quest  >> /var/log/gitcoin/post_data.log  2>&1
+30 17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data kudos  >> /var/log/gitcoin/post_data.log  2>&1
 30 6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data grants  >> /var/log/gitcoin/post_data.log  2>&1
 15 15 * * 7 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data quote  >> /var/log/gitcoin/post_data.log  2>&1
 15 18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data results  >> /var/log/gitcoin/post_data.log  2>&1

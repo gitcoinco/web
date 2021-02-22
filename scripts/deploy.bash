@@ -85,14 +85,14 @@ fi
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then
     if ! [ "$CELERY_NODE"  ]; then
-      echo "- gunicorn"
-      for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
-      sudo kill -1 $pid
-      sleep 1.5
-      done
+        echo "- gunicorn"
+        for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
+        sudo kill -1 $pid
+        sleep 1.5
+        done
     else
-      echo "- celery"
-      sudo systemctl restart celery.service
+        echo "- celery"
+        sudo systemctl restart celery.service
     fi
 fi
 
@@ -106,6 +106,9 @@ fi
 # ping google
 cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google https://gitcoin.co/sitemap.xml
+
+# set datetime of the server to prevent
+sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
 
 if [ "$ENV" = "prod" ] && [ "$JOBS_NODE" ]; then
     # Handle sentry deployment

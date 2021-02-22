@@ -214,13 +214,19 @@ LIBSASS_ADDITIONAL_INCLUDE_PATHS = ['assets/v2/scss/lib/']
 if ENV not in ['local', 'test', 'staging', 'preview']:
     # compress offline (use './manage.py compress' to build manifest.json)
     COMPRESS_OFFLINE = True
-    # drop line comments
-    LIBSASS_SOURCE_COMMENTS = False
+    # Allow for the full path (url) to be included in the manifest
+    COMPRESS_INCLUDE_URLS = True
+    # Allow the placeholder insertion to be skipped
+    COMPRESS_SKIP_PLACEHOLDER = True
+    # use content based hashing so that we always match between servers
+    COMPRESS_CSS_HASHING_METHOD = 'content'
     # minification of sass output
     COMPRESS_CSS_FILTERS = [
         'compressor.filters.css_default.CssAbsoluteFilter',
         'compressor.filters.cssmin.rCSSMinFilter'
     ]
+    # drop line comments
+    LIBSASS_SOURCE_COMMENTS = False
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
@@ -427,9 +433,9 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
-STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
+STATIC_ROOT = root(STATICFILES_LOCATION)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
@@ -442,13 +448,19 @@ if ENV in ['prod', 'stage']:
     )
 else:
     # Handle local static file storage
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
     STATIC_HOST = BASE_URL
     STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
+
     # Handle local media file storage
     MEDIA_ROOT = root('media')
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
+COMPRESS_OUTPUT_DIR = "v2"
 COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_HOST = STATIC_HOST
+COMPRESS_URL = STATIC_URL
+COMPRESS_STORAGE = STATICFILES_STORAGE
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
