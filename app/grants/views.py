@@ -325,6 +325,52 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
     return helper_grants_output(request, meta_data, earnings)
 
 @login_required
+@cached_view(timeout=60)
+def contribution_info_from_grant_during_round_as_json(request, grant_id, round_id):
+
+    # return all contirbutor addresses to the grant
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+        return JsonResponse({
+            'msg': 'not_authorized, you must be a team member of this grant'
+            }, safe=False)
+    if timezone.now().timestamp() < grants_data_release_date.timestamp() and not request.user.is_staff:
+        return JsonResponse({
+            'msg': f'not_authorized, check back at {grants_data_release_date.strftime("%Y-%m-%d")}'
+            }, safe=False)
+
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    query = f"""
+select 
+    md5(grants_subscription.id::varchar(255)) as id,
+    dashboard_profile.handle,
+    CONCAT('https://gitcoin.co/dynamic/avatar/', dashboard_profile.handle) as url,
+    comments
+    
+from grants_subscription
+INNER JOIN dashboard_profile on dashboard_profile.id = contributor_profile_id
+where 
+grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {grant_id}
+{hide_wallet_address_anonymized_sql}
+order by grants_subscription.id desc
+
+    """
+    print(query)
+    start, end = helper_grants_round_start_end_date(request, round_id)
+    query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
+    earnings = query_to_results(query)
+    
+    meta_data = {
+        'start': start.strftime("%Y-%m-%d"),
+        'end': end.strftime("%Y-%m-%d"),
+        'round': round_id,
+        'grant': grant_id,
+    }
+    return helper_grants_output(request, meta_data, earnings)
+
+
+@login_required
 @cached_view(timeout=3600)
 def contribution_addr_from_round_as_json(request, round_id):
 
@@ -1463,7 +1509,9 @@ def grant_details_contributions(request, grant_id):
             pk=grant_id
         )
     except Grant.DoesNotExist:
-        response['message'] = 'error: grant cannot be found'
+        response = {
+            'message': 'error: grant cannot be found'
+        }
         return JsonResponse(response)
 
     _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
@@ -1553,13 +1601,14 @@ def grant_edit(request, grant_id):
         if not description_rich:
             description_rich = description
 
-        eth_payout_address = request.POST.get('eth_payout_address', '0x0') if request.POST.get('eth_payout_address') else '0x0'
-        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0') if request.POST.get('zcash_payout_address') else '0x0'
-        celo_payout_address = request.POST.get('celo_payout_address', '0x0') if request.POST.get('celo_payout_address') else '0x0'
-        zil_payout_address = request.POST.get('zil_payout_address', '0x0') if request.POST.get('zil_payout_address') else '0x0'
-        polkadot_payout_address = request.POST.get('polkadot_payout_address', '0x0') if request.POST.get('polkadot_payout_address') else '0x0'
-        kusama_payout_address = request.POST.get('kusama_payout_address', '0x0') if request.POST.get('kusama_payout_address') else '0x0'
-        harmony_payout_address = request.POST.get('harmony_payout_address', '0x0') if request.POST.get('harmony_payout_address') else '0x0'
+        eth_payout_address = request.POST.get('eth_payout_address', '0x0')
+        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
+        celo_payout_address = request.POST.get('celo_payout_address', '0x0')
+        zil_payout_address = request.POST.get('zil_payout_address', '0x0')
+        polkadot_payout_address = request.POST.get('polkadot_payout_address', '0x0')
+        harmony_payout_address = request.POST.get('harmony_payout_address', '0x0')
+        kusama_payout_address = request.POST.get('kusama_payout_address', '0x0')
+        binance_payout_address = request.POST.get('binance_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
@@ -1568,7 +1617,8 @@ def grant_edit(request, grant_id):
             zil_payout_address == '0x0' and
             polkadot_payout_address == '0x0' and
             kusama_payout_address == '0x0' and
-            harmony_payout_address == '0x0'
+            harmony_payout_address == '0x0' and
+            binance_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1600,6 +1650,9 @@ def grant_edit(request, grant_id):
 
         if harmony_payout_address != '0x0':
             grant.harmony_payout_address = harmony_payout_address
+
+        if binance_payout_address != '0x0':
+            grant.binance_payout_address = binance_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -1765,12 +1818,13 @@ def grant_new(request):
         polkadot_payout_address = request.POST.get('polkadot_payout_address', None)
         kusama_payout_address = request.POST.get('kusama_payout_address', None)
         harmony_payout_address = request.POST.get('harmony_payout_address', None)
+        binance_payout_address = request.POST.get('binance_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
-            not harmony_payout_address
+            not harmony_payout_address and not binance_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1817,6 +1871,7 @@ def grant_new(request):
             'polkadot_payout_address': polkadot_payout_address if polkadot_payout_address else '0x0',
             'kusama_payout_address': kusama_payout_address if kusama_payout_address else '0x0',
             'harmony_payout_address': harmony_payout_address if harmony_payout_address else '0x0',
+            'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
@@ -3102,7 +3157,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA']:
+        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE']:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'

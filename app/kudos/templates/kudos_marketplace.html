@@ -1,10 +1,12 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    {% compress css file kudos_styles %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+    {% endcompress %}
   </head>
   <body class="{{ active }} bg-light g-font-muli">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}

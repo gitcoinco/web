@@ -603,18 +603,6 @@ def about(request):
             True
         ),
         (
-            "aamustapha",
-            "Engineer",
-            "aamustapha",
-            '',
-            "Grants",
-            "Pounded yam with Veg. soup",
-            "",
-            "OSS Mechanic",
-            "_amustapha",
-            True
-        ),
-        (
             "scco",
             "Design",
             "scco",

@@ -106,15 +106,20 @@ class CartData {
         grantData.grant_donation_currency = 'ZIL';
       }
     } else if (grantData.tenants.includes('HARMONY')) {
-
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 1;
       }
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'ONE';
       }
+    } else if (grantData.tenants.includes('BINANCE')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'BNB';
+      }
     } else if (grantData.tenants.includes('POLKADOT')) {
-
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 1;
       }
@@ -122,7 +127,6 @@ class CartData {
         grantData.grant_donation_currency = 'DOT';
       }
     } else if (grantData.tenants.includes('KUSAMA')) {
-
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 1;
       }

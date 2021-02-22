@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,20 +8,22 @@
   <meta name="description" content="A place for developers to learn, earn, and network" />
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   {% include 'shared/cards.html' %} {% include 'shared/favicon.html' %}
 
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet"/>
 
-  <link href="{% static "v2/css/fontawesome-all.min.css" %}" rel="stylesheet">
-  
-  <link href="{% static "v2/css/bootstrap.min.css" %}" rel="stylesheet" />
+  {% compress css file libs %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/fontawesome-all.min.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/index.scss" %} />
+  {% endcompress %}
 
-  <link href="{% static "landingpage/app.css" %}" type="text/css" rel="stylesheet" media="screen,projection" />
-  
+  {% compress css file app %}
+    <link rel="stylesheet" media="screen,projection" type="text/x-scss" href={% static "v2/scss/landingpage/app.scss" %} />
+  {% endcompress %}
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 
   <script src="{% static "landingpage/town.js" %}"></script>
   <script src="{% static "landingpage/txtRotate.js" %}"></script>
@@ -32,13 +34,13 @@
 
 <body>
   <!-- fixed logo-->
-  <div id="logo">
+  <div id="logo" class="pt-3">
     <a href="#">
       <img src="{% static "landingpage/logo_animated.svg" %}" alt="logo" />
     </a>
   </div>
   {% if not user.is_authenticated %}
-  <div class="float-right pt-3 pr-4">
+  <div class="float-right pt-2 pr-1">
       <a class="land-btn text-white nav-link login interior" href="{% url 'social:begin' 'github' %}?next=/townsquare" onclick="dataLayer.push({'event': 'login'});">
         <i class="fab fa-github"></i><span class="nav-link__text">&nbsp;&nbsp;{% trans "Log in" %}</span>
       </a>
@@ -126,11 +128,11 @@
         </div>
       </div><br><br>
       <div class="row action-text">
-        <div class="col-md-8" style="align-self: start;">
+        <div class="col-md-7" style="align-self: start;">
           <h2>Here to Earn?</h2>
           <p>
             Build exciting projects and upskill on development while earning
-            Ethereum and other tokens. Find mentorship by connecting with
+            ETH and other tokens. Find mentorship by connecting with
             talented developers and leaders of Ethereum’s top companies.
           </p>
           <div class="actions">
@@ -139,7 +141,7 @@
           <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
           <h2>Here to Support?</h2>
           <p>
             Discover great open source projects working hard to impact the
@@ -150,12 +152,12 @@
         </div>
       </div>
       <div class="row actions-reverse">
-        <div class="col-8">
+        <div class="col-7">
           <a class="btn fe-pulse" href="{% url 'get_hackathons' %}"><span>Join a Hackathon</span></a>
           <a class="btn fe-pulse" href="{% url 'explorer' %}"><span>Work on a Bounty</span></a>
           <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
         </div>
-        <div class="col-4">
+        <div class="col-5">
           <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Support Grant Projects</span></a>
         </div>
       </div>
@@ -192,7 +194,7 @@
         <label for="work">work on bounties</label>
       </div>
 
-      <div>
+      <div class="inputs d-flex justify-content-center">
         <input type="email" name="EMAIL" placeholder="Enter your email" required />
 
         <button type="submit" class="btn fe-pulse">Subscribe</button>
@@ -398,7 +400,7 @@
 
   <!-- footer social icons -->
 
-  <section id="footersocial">
+  <section id="footersocial" class="d-flex justify-content-center">
     <figure>
       <a href="/fb">
         <svg class="fusion">
@@ -442,8 +444,14 @@
       </a>
     </figure>
   </section>
+  <script>
+    var static_url = "{{ STATIC_URL }}";
+    var media_url = "{{ MEDIA_URL }}";
+    document.contxt = {{ json_context|safe }};
+
+  </script>
+  {% include 'shared/tag_manager_2.html' %}
 </body>
 
 </html>
 
-{% include 'shared/tag_manager_2.html' %}

@@ -444,8 +444,6 @@ if ENV in ['prod', 'stage']:
     MEDIA_URL = env(
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
-
-
 else:
     # Handle local static file storage
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')

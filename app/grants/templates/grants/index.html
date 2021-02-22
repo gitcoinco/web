@@ -12,20 +12,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n %}
+{% load humanize static i18n compress %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
   {% include 'shared/head.html' with slim=1 %}
   {% include 'shared/cards_pic.html' %}
-  <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
-  <link rel="stylesheet" href="{% static "v2/css/grants/collection.css" %}">
-  <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-  <link rel="stylesheet" href="{% static "v2/css/sidebar_search.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+  {% compress css file grants %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/collection.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
+  {% endcompress %}
   <style>
     .select2-selection .select2-selection--single {
       background: none;
@@ -147,7 +149,7 @@ along with this program. If not, see
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
     {{collections|json_script:"collections-object"}}
@@ -203,9 +205,7 @@ along with this program. If not, see
     <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
     <script src="{% static "v2/js/grants/index.js" %}"></script>
     <script src="{% static "v2/js/grants/funding.js" %}"></script>
-    <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
-</body>
+  </body>
 
 
 
