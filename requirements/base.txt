@@ -58,7 +58,7 @@ watchdog==0.9.0
 Werkzeug[watchdog]==0.15.5
 imageio
 boto3==1.7.81
-django-storages==1.6.6
+django-storages==1.11.1
 easy-thumbnails==2.5
 eth-account==0.2.2
 django-classy-tags==0.8.0
