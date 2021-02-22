@@ -1,0 +1,69 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background/timeout.svg">
+</section>
+
+
+<section class="quest">
+
+	<!-- quest content -->
+	<main></main>
+	
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+			Question 2 of 2
+		</div>
+
+		<div class="right">
+			<a class="btn" href="/quadraticlands/mission/knowledge/question/2">Try Again</a>
+		</div>
+
+	</nav>
+
+
+</section>
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+<script>const particleSetup = {"initialmode": "floating"}</script>
+<script src="/static/quadraticlands/js/particles.js"></script>
+{% endblock %}
+
+

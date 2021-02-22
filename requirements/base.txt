@@ -1,7 +1,7 @@
 bs4
 ccxt
 cryptocompare==0.6
-cryptography==2.3
+cryptography==3.2
 celery==4.4.0
 django-celery-beat==1.1.1
 django==2.2.4

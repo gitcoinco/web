@@ -1,0 +1,107 @@
+section.hero{
+	width: 100%;
+	height: 100vh;
+	margin-top: -130px;
+	display: grid;
+	margin-bottom: 3em;
+
+	z-index: -5;
+
+	div.content{
+		align-self: center;
+		grid-column: 1;
+		grid-row: 1;
+		max-width: 600px;
+		margin-left: 3em;
+		user-select: none;
+	}
+
+	div.background{
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	svg{
+		display: block;
+		height: 100vh;
+		width: 100%;
+	}
+
+	img{
+		display: block;
+		height: 100vh;
+		object-fit: cover;
+	}
+
+	h1{
+		color: var(--white);
+		animation: inherit;
+		
+		span {
+			background-color: var(--space_pink);
+		}
+		
+	}
+
+}
+
+
+
+
+/* hover knight rider effect for floor on start page */
+
+/*
+section.hero svg #floor{
+
+	polygon, path {
+		stroke-width: 1;
+		stroke: var(--smoke);
+		fill: transparent;
+		pointer-events: visible;
+		transition: all 700ms ease;
+
+		&:hover{
+
+		fill: var(--aqua_light);
+		transition: padding 0s;
+
+		};
+	}
+
+}
+*/
+
+
+
+/* lights for buildings */
+
+/*
+section.hero svg .light{
+
+	fill: var(--aqua);
+	pointer-events: visible;
+	transition: all 700ms ease;
+
+	&:hover{
+		fill: var(--pink);
+	};
+
+}
+*/
+
+
+
+
+
+
+
+@media #{$phone} { 
+	section.hero{
+		div.content{
+			margin-left: 1.5em;
+			max-width: 80%;
+		}
+	}
+}
+
+

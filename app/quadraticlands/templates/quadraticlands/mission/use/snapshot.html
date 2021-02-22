@@ -1,0 +1,184 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background/vote.svg">
+</section>
+
+
+<section class="quest">
+
+	<!-- content gets filled by js see more down ... -->
+	<main>
+		<div class="wrapper">
+			<div class="claim">
+				<h3 id="voteSubheadline"></h3>
+				<h1 id="voteHeadline"></h1>
+				<p id="voteMessage" style="margin-bottom:2em;"></p>
+				<a id="voteButton" class="btn" target="_blank" href="">Vote</a>
+			</div>
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav>
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Use
+		</div>
+
+		<div class="right">
+			<div id="nextButton" class="hide" >
+				<a class="btn" href="/quadraticlands/mission/use/outro">Continue</a>
+			</div>
+			
+			<div id="waitingSpinner">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+			</div>
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+
+<script>
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	const space = "wolfdefi";
+	const proposal = "QmaLD93xmBTPqBtWCjGV9CaztUkavm8uNoanMMmzcJS7iY";
+
+
+	// show default ( no wallet )
+	updateInterface("init");
+
+	window.addEventListener("dataWalletReady", () => {
+
+		// when wallet found show voting question ( adding space and proposal too to generate vote link)
+		updateInterface("voting");
+
+		// check all 5000ms a check for adress is in proposal
+		setInterval(() => {
+			checkShapshotProposalForAdress( space, proposal, selectedAccount );
+
+		}, 5000);
+	});
+
+
+});
+
+
+
+
+// did a user voted ?
+// check in shapshot > space > proposal for adress
+
+function checkShapshotProposalForAdress(space, proposal, adress){
+
+	fetch("https://hub.snapshot.page/api/" + space + "/proposal/" + proposal)
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+
+			for (const [a] of Object.entries(data))
+			{
+				if ( a == adress ) {  updateInterface("success");  }
+			}
+		}
+	)
+
+}
+
+
+// update the interface to let user continue with mission
+// after we found a vote
+// init, success
+
+
+function updateInterface(status){
+
+	const voteSubheadline = document.getElementById("voteSubheadline");
+	const voteHeadline = document.getElementById("voteHeadline");
+	const voteMessage = document.getElementById("voteMessage");
+	const voteButton = document.getElementById("voteButton");
+	const waitingSpinner = document.getElementById("waitingSpinner");
+	const nextButton = document.getElementById("nextButton");
+
+	// no wallet error on load
+	if (status=="init")
+	{
+		voteSubheadline.innerHTML = "Please";
+		voteHeadline.innerHTML = "Connect a Wallet"
+		voteMessage.innerHTML =	"Please select a Wallet by going back to <a href='/quadraticlands/mission/use'>Proof of Use</a>";
+		voteButton.classList.add("hide");
+		console.log("INTERFACE:INIT");
+	}
+
+	// when wallet show voting / question
+	if (status=="voting")
+	{
+		voteSubheadline.innerHTML = "Waiting for your <span>vote</span>";
+		voteHeadline.innerHTML = "Does Gitcoin needs a Redesign?"
+		voteMessage.innerHTML =	"Connect your wallet with snapshot.page and contribute in our this vote. Then come back.";
+		voteButton.classList.remove("hide");
+		voteButton.href= "https://snapshot.page/#/wolfdefi/proposal/QmaLD93xmBTPqBtWCjGV9CaztUkavm8uNoanMMmzcJS7iY";
+		console.log("INTERFACE:VOTING");
+	}
+
+	// when voted - show success page and let user continue
+	if (status=="success")
+	{
+		waitingSpinner.classList.add("hide");
+		nextButton.classList.remove("hide");
+		voteMessage.innerHTML = "Thanks for Voting!";
+		voteButton.classList.add("hide");
+		console.log("INTERFACE:SUCCESS");
+	}
+	
+}
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+

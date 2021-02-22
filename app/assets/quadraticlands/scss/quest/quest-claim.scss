@@ -1,0 +1,114 @@
+.quest-claim{
+	
+	justify-self: center;
+	align-self: center;
+
+
+	.claim{
+		max-width: 600px;
+		padding: 2em;
+		text-align: center;
+		animation: menu-background 4s ease-in-out infinite;  
+
+		p{
+			margin-bottom: initial;
+		}
+
+
+		#advanced{
+
+			label{
+				display: block;
+				margin-top: 1em;
+				margin-bottom: 0.5em;
+				font-size: 80%;
+				line-height: 1em;
+				color: var(--stone);
+			}
+
+			input{
+				display: block;
+				padding: 0.5em 1em;
+				color : var(--space);
+				font-family: 'Space Mono', monospace;
+				background-color: var(--aqua);
+				font-size: 90%;
+				text-align: center;
+				word-break: break-all;
+				border: none;
+				outline: none;
+				width: 100%;
+				margin-top: 0.3em;
+				margin-bottom: 1em;
+
+				&:focus {
+					outline: none;
+				}
+
+			}
+		}
+
+
+
+
+		.claimAdress{
+			width: 100%;
+		}
+
+		div.grid{
+			display: grid;
+			grid-template-columns: 1fr auto;
+			grid-row-gap: 0.2em;
+			
+			font-family: 'Space Mono', monospace;
+			line-height: 1.5em;
+	
+			span.description{
+				justify-self: start;
+				text-align: left;
+			}
+
+			span.token{
+				justify-self: end;
+				text-align: right;
+			}
+
+			&.total{
+				margin-top: 0.5em;
+				padding-top: 0.5em;
+				border-top: 1px solid var(--smoke);
+				color: var(--white);
+				font-weight: 600;
+			}
+
+		}
+
+
+	}
+
+
+
+
+
+
+}
+
+
+
+
+
+@media #{$phone} { 
+	.quest-claim{
+		.claim{
+			padding: 2em 1em;
+			margin: 1em;
+		}
+	}
+}
+
+
+
+
+
+
+

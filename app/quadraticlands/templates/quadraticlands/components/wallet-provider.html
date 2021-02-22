@@ -1,0 +1,111 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% block 'content' %}
+<div id="wallet-provider">
+
+	<div class="header" id="close-wallet-provider">
+		Wallet
+		{% include "quadraticlands/_inlinesvg/close.svg" %}
+	</div>
+
+
+
+	<!-- status infos about the connected wallet -->
+	<div class="status wallet-hidden d-none">
+
+		<!-- network name e.g. rinkeby, mainnet -->
+		<div class="network-name"></div>
+
+		<!-- the account address -->
+		<div class="selected-account"></div>
+
+		<!-- wallet accounts -->
+		<span id="wallet-accounts"></span>
+    
+    <!-- GTC token balance-->
+    <div ><span id="current_gtc"></span> GTC</div>
+
+		   
+	</div>
+
+	<!-- connect -->
+	<div class="provider" id="wallet-btn">Connect to a wallet</div>
+
+	<!-- disconnect -->
+	<div class="provider wallet-hidden d-none" id="btn-disconnect">
+		Disconnect
+		{% include "quadraticlands/_inlinesvg/disconnect.svg" %}
+	</div>
+
+</div>
+
+  <!-- cleaned out rest of gitcoins working wallet code
+    that seems to be mandatory to work ...
+    most of it could be transported to my menu ...
+    its all invisible anyway - it here so no existing js code do break.
+  -->
+  
+
+  <div style="display:none;">
+
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+    </a>
+
+    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet"></div>
+
+  </div>
+
+
+  <div id="templates" style="display: none;">
+    <template id="template-balance">
+      <div class="wallet-option" data-toggle="tooltip" title="Click to select this wallet">
+        <div class="wallet-address"></div>
+        <small class="wallet-balance"></small>
+      </div>
+    </template>
+  </div>
+
+{% endblock %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded",function(){
+    // wallet found
+    window.addEventListener("dataWalletReady", () => {
+      const current_gtc = document.querySelector("#current_gtc");
+      getTokenBalances(gtc_address()).then(function(result) {
+        current_gtc.innerHTML = result.balance;
+      });
+    });
+  });
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

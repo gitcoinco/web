@@ -1,0 +1,383 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+
+{% block 'content' %}
+
+
+<!-- optional fullscreen fixed background -->
+<section class="background">
+	<img src="/static/quadraticlands/images/background/anim-9.svg">
+</section>
+
+
+<!-- headline / summary -->
+<section class="column centered">
+	<h3>{{title}}</h3>
+	<h1>{{question}}</h1>
+	<p style="margin-bottom:2em;">Influence our principles of our living constitution by balance your voting power to the core values you care the most by drag some sliders.</p>
+
+	<!--
+	<p>Start Block: {{start_block}}</p>
+	<p>End Block: {{end_block}}</p>
+	-->
+</section>
+
+
+
+<section class="quest">
+
+	<!-- quest-vote -->
+	<main id="voting">
+		<div class="wrapper scrollable">
+			<div class="quest-vote">
+				{% for key, value in choices.items %}
+				    {% include 'quadraticlands/proposal/vote_item.html' %}
+				{% endfor %}
+			</div>
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator">
+		<div id="progressbar" style="width:0px"></div>
+	</div>
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left"> x </div>
+
+		<div class="center">
+			x
+		</div>
+
+		<!-- button status -->
+		<div class="right">
+
+			<!-- voting submit -->
+			<div id="btnVoting" class="hide" >
+				<a class="btn" id="signTypedDataV4Button" >Submit</a>
+			</div>
+
+			<!-- availablePercent left  -->
+			<div id="availablePercent" style="color:var(--aqua);"><span>100</span>% left</div>
+
+		</div>
+
+	</nav>
+
+
+</section>
+
+
+
+{% endblock %}
+
+
+
+
+
+{% block 'scripts' %}
+<!--<script src="/static/quadraticlands/js/particles.js"></script>-->
+<script src="/static/quadraticlands/js/sal_init.js"></script>
+<script src="/static/quadraticlands/js/app.js"></script>
+<script src="/static/quadraticlands/js/forceWallet.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	const inputs = document.querySelectorAll("input")
+
+	/*********** VIEW:VOTING > INPUT FIELD CHANGE EVENT */
+
+	inputs.forEach(i => {
+
+		i.addEventListener('focus', (event) => {
+			// reset all options to not have class .active
+			document.querySelectorAll(".option").forEach(r => { r.classList.remove("active") })
+			// set parent div.option to class .active
+			event.target.parentNode.parentNode.classList.add("active")
+		});
+
+		// input validate
+		i.addEventListener("input", input => {
+
+			if(isNaN(i.value)) { i.value = 0 }
+			if (i.value <= 0) { i.value = 0 }
+			if (i.value >= 100 ) { i.value = 100 }
+			
+			let usedPercent = 0
+
+			// select all not current inputs to see usedPercent so far
+			let inputs = document.querySelectorAll(".option:not(.active) input")
+			inputs.forEach(i => {
+				usedPercent = parseInt(usedPercent) + parseInt(i.value)
+			})
+
+			let availablePercent = 100 - usedPercent
+
+			// users input will be more than availablePercent
+			if (i.value >= availablePercent ) { i.value = availablePercent }
+
+			// update background percent bar on this user input
+			let bar = document.querySelector(".option.active div.bar")
+			bar.style.width = i.value + "%";
+
+			// update % left status in nav ( bottom right)
+			let used = (100 - usedPercent) - i.value
+			let interfaceAvailablePercentSpan = document.querySelector("#availablePercent span")
+			interfaceAvailablePercentSpan.innerHTML = used
+
+			// user spend 100% > show button to vote
+			let btnVoting = document.getElementById("btnVoting")
+			let interfaceAvailablePercent = document.getElementById("availablePercent")
+
+			if ( used == 0 ){ 
+				btnVoting.classList.remove("hide")
+				interfaceAvailablePercent.classList.add("hide") 
+			}
+			else{
+				btnVoting.classList.add("hide")
+				interfaceAvailablePercent.classList.remove("hide") 
+			}
+
+			// update global progressbar (seperator)
+			let free = Math.abs(used-100)
+			const progressbar = document.getElementById("progressbar");
+			progressbar.style.width = free + "%";
+			console.debug("FREE : " + free)
+
+		});
+
+	});
+
+
+	/*********** VIEW:VOTING > OPTION CLICK EVENT */
+	// additional helper to enable a click on any .option 
+	// to focus its related child input field
+
+	const options = document.querySelectorAll(".option")
+	options.forEach(o => {
+		o.addEventListener("click", () => {
+			let input = o.querySelector("input")
+			input.focus()
+			input.select()
+		});
+	});
+
+
+
+	/*********** VIEW:VOTING > BUTTON TO SIGN A PROPOSAL */
+
+	const btnVoting = document.getElementById("btnVoting")
+	btnVoting.addEventListener("click", () => {
+		console.debug ("BTN:VOTING")
+		const inputs = document.querySelectorAll("input")
+		const selection = {}
+		inputs.forEach(i => { 
+			selection[i.name] = i.value;
+		});
+
+		// submit function with users selection
+		signProposal()
+		
+		// after the submit we need so STORE signed message in database here
+		// 
+		// 
+	});
+
+
+
+});
+
+
+
+
+
+
+
+/*********** SIGN PROPOSAL */
+//
+
+function signProposal(){
+
+	console.debug("SIGN PROPOSAL")
+
+	msgParams = JSON.stringify( {
+		"types" :  { "EIP712Domain" : EIP712Domain(), "CastVote" : CastVote()  },
+		"primaryType" : "CastVote", "domain" : domain(), "message" : message()
+	} )
+
+	console.log('parms before sign:', msgParams);
+	
+	web3.currentProvider.sendAsync(
+		{
+		method: 'eth_signTypedData_v4',
+		params: [ selectedAccount, msgParams ],
+		from: selectedAccount
+		},
+
+		async (err, result) => {
+
+			if (err) {
+
+				console.debug("ERROR")
+				
+				if (err.code == "4001") {
+					console.debug("User canceled Sig")
+				}
+
+				console.error('ERROR', err)
+				return
+			}
+
+
+			else if (result.error){
+				console.error('ERROR', result.error.message);
+				return;
+			}
+
+			console.debug('past send!')
+			const signature = result.result;
+			console.log('signature', signature);
+			console.log('msgParams', JSON.parse( msgParams ));
+
+			// save signature
+			saveSignature(signature)
+
+			// another view for "thanks ? + link to results ?"
+		
+		}
+	);
+
+}
+
+
+
+
+// save signature into the gitcoin database
+// @zach
+function saveSignature(signature){
+
+	console.log("SAVE SIGNATURE", signature)
+	console.log("currentAdress", selectedAccount)
+
+}
+
+
+
+
+
+// helper to build the EIP712Domain Object
+function EIP712Domain(){
+
+	let EIP712Domain = [
+		{ name: 'name', type: 'string' },
+		{ name: 'version', type: 'string' },
+		{ name: 'chainId', type: 'uint256' },
+		{ name: 'verifyingContract', type: 'address' }
+	]
+
+	return EIP712Domain
+}
+
+
+
+
+
+// helper to build the CastVote Array
+function CastVote(){
+
+	let vote = []
+
+	let inputs = document.querySelectorAll("input")
+	inputs.forEach(i => {     
+		vote.push( { "name" : i.name, "type":"uint256" } )     
+	});
+	vote.push( {"name":"nonce", "type":"uint256"} )
+	vote.push( {"name":"expiry", "type":"uint256"} )
+
+	return vote
+}
+
+
+
+
+// helper to build the domain Object
+function domain(){
+
+	let name = "GTCToken"
+	let version = 1
+	let chainId = web3.currentProvider.networkVersion
+	let verifyingContract = "0xc00e94Cb662C3520282E6f5717214004A7f26888"
+
+	let domain = { "name":name, "version": version, "chainId": chainId, "verifyingContract": verifyingContract }
+
+	return domain
+}
+
+
+
+
+
+// helper to build the message Object
+function message(){
+
+	let message = {}
+	let inputs = document.querySelectorAll("input")
+
+	inputs.forEach(i => { 
+		message[i.name] = i.value    
+	});
+
+	message["nonce"] = 0
+	message["expiry"] = "10e9"
+
+	return message
+
+}
+
+
+
+
+
+</script>
+
+
+
+
+	
+{% endblock %}
+
+

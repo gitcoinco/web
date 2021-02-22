@@ -45,6 +45,7 @@ import marketing.views
 import marketing.webhookviews
 import perftools.views
 import ptokens.views
+# import quadraticlands.views
 import quests.views
 import retail.emails
 import retail.views
@@ -793,6 +794,12 @@ urlpatterns = [
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),
+
+    # quadratic lands 
+    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
+    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
+    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
+
 ]
 
 if settings.ENABLE_SILK:

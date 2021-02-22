@@ -1,0 +1,147 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+
+<section class="column centered"><h1>Token Distribution Missions</h1></section>
+
+
+<!--token distribution missions-->
+<section class="mission">
+
+	<!-- PROOF OF KNOWLEDGE CARD -->
+	<!-- no dependencies in other missions -->
+	<!-- add in with proof_of_knowledge=false to simulate available mission -->
+
+	{% with name="1. Proof of Knowledge"%}
+
+		{% if not proof_of_knowledge %}
+			{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="/quadraticlands/mission/knowledge" %}
+		{% else %}
+			{% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-know-end.svg" done="true" locked="true" %}
+		{% endif %}
+
+	{% endwith %}
+
+
+
+
+	<!-- PROOF OF RECEIVE CARD -->
+	<!-- user have to finish proof_of_knowledge first -->
+	<!-- add in with proof_of_receive=false to simulate available mission -->
+
+	{% with name="2. Proof of Receive" %}
+
+		{% if not proof_of_knowledge  %}
+
+			<!-- User can not this mission yet -->
+			{% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
+
+		{% else %}
+
+			<!-- User can Play -->
+			{% if not proof_of_receive %}
+				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-receive-start.svg" url="/quadraticlands/mission/receive" tokens=total_claimable_gtc %}
+			{% else %}
+				{% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-receive-end.svg" done="true" locked="true" %}
+			{% endif %}	
+
+		{% endif %}
+
+
+	{% endwith %}
+
+
+
+
+	<!-- PROOF OF USE CARD -->
+	<!-- user have to finish proof_of_receive first -->
+	<!-- add in with proof_of_use=false to simulate available mission -->
+
+	{% with name="3. Proof of Use" %}
+
+		{% if not proof_of_receive  %}
+
+			<!-- User can not this mission yet -->
+			{% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-use-start.svg" locked="true" %}
+
+		{% else %}
+
+			<!-- User can Play -->
+			{% if not proof_of_use %}
+				{% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-use-start.svg" url="/quadraticlands/mission/use" %}
+			{% else %}
+				{% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-use-end.svg" done="true" locked="true" %}
+			{% endif %}
+
+		{% endif %}
+
+	{% endwith %}
+
+
+</section>
+
+
+
+
+<section class="column centered"><h1>Upcoming Missions</h1></section>
+
+<!-- upcoming missions-->
+<section class="mission">
+
+	<!-- SYBIL -->
+
+	{% with name="SybilHunt Dummy Mission" %}
+		{% include 'quadraticlands/mission/card.html' with message="soon" svg="sybil-start.svg" url="/quadraticlands/mission/use" locked="true" %}
+	{% endwith %}
+
+
+
+	<!-- DUMMY -->
+
+	{% with name="SybilHunt Dummy Mission" %}
+		{% include 'quadraticlands/mission/card.html' with message="soon" svg="back-card.svg" url="/quadraticlands/mission/use" locked="true" %}
+	{% endwith %}
+
+
+</section>
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+{% endblock %}
+
+

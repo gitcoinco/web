@@ -1,0 +1,220 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+
+{% block 'content' %}
+
+	<!-- HERO IMAGE -->
+
+	<section class="hero">
+		<div class="background" style="z-index: -5555">
+			<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+			{% include "quadraticlands/_inlinesvg/town.svg" %}
+		</div>
+
+		<div class="content">
+			<h1><span>Gitcoin becomes even more democratic. Quadratic Lands the land of the everybody.</span></h1>
+			<a href="/quadraticlands/mission" class="btn" data-particlesize="200">Get started</a>
+		</div>
+		
+	</section>
+
+	<!-- TOKEN -->
+	<section class="grid reverse">
+		
+		<figure>
+			<img src="/static/quadraticlands/images/token.svg">
+		</figure>
+
+		<div>
+			<h3><span>#</span>GTC</h3>
+			<h1>Here is your Gitcoin token.</h1>
+			<p>$GTC is the native governance token of the Gitcoin network. It can be used to help decide grants disputes, to help us ward off sybil attacks, and much much more. $GTC helps accelerate the flywheel of Gitcoin by rewarding contributors to things that are good for Gitcoin.</p>
+		</div>
+
+	</section>
+
+	<!-- GOVERNANCE -->
+	<section class="grid">
+		
+		<figure class="laptop-cover tablet-cover phone-cover ">
+			<img src="/static/quadraticlands/images/governance.svg">
+		</figure>
+
+		<div>
+			<h3><span>#</span>Governance</h3>
+			<h1>For us, Governance means we all are part of something.</h1>
+			<p>Gitcoin was originally incubated by Consensys.  We are very thankful to Consensys CEO Joe Lubin for believing in Gitcoin early, but we believe that the future for Gitcoin is community governance. $GTC is the first step in Gitcoin’s progressively decentralizing.</p>	
+		</div>
+
+	</section>
+
+	<!-- PORTAL -->
+	<section class="grid reverse particleMode" data-mode="space">
+		
+		<figure>
+			<img src="/static/quadraticlands/images/tunnel.svg">
+		</figure>
+
+		<div>
+			<h3><span>#</span>Quadratic Voting</h3>
+			<h1>Nobody can exclude you, you have a voice. </h1>
+			<p>With quadratic voting, whales no longer control the discussion.  Quadratic Voting is the mathematically optimal way to make decisions in a democracy, and each $GTC vote comes with Quadratic Voting baked in.</p>	
+		</div>
+
+	</section>
+
+
+
+
+
+	<!-- INFORMATION AGE -->
+	<section class="grid">
+		
+		<figure class="floating particleMode" data-mode="wind">
+			<img src="/static/quadraticlands/images/uni.svg"  style="margin: 5em 0em; padding:0;">
+		</figure>
+
+		<div>
+			<h3><span>#</span>Information Age</h3>
+			<h1>Powering Public Goods in the Information Age</h1>
+			<p>Our deep reason for being - Grow/sustain open source - enable anti Sybil in ecosystem, which means more digital democracy! - enable more hackers/businesses to earn tokens (instead of buy them) - enable the internet of jobs.</p>
+		</div>
+
+	</section>
+
+
+
+
+	<!-- MISSION -->
+	<section class="column centered">
+		<div>
+			<h3><span>#</span>Earn your first Tokens.</h3>
+			<h1>Earn your first Tokens.</h1>
+			<p>Complete your “Proof of Knowledge” to get your distribution of $GTC.  Click below to get started</p>
+			<a href="/quadraticlands/mission" class="btn" data-particlesize="200">Get Started</a>
+		</div>
+	</section>
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+
+	<script>
+
+
+
+	// random floor polygones coloring / lights of town
+
+	document.addEventListener("DOMContentLoaded",function(){
+
+		// the knightrider effect for floor is in section_hero.scss
+		// but deactivated as its to much.
+
+		// the #floor polygones 
+		polygones = document.querySelectorAll("svg #floor polygon")
+		lights = document.querySelectorAll("svg .light")
+
+
+		setInterval(() => {
+
+
+			polygone = polygones[Math.floor(Math.random() * polygones.length)]
+			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: 500, delay: 0, iterations: 1
+			});
+
+			light = lights[Math.floor(Math.random() * lights.length)]
+			duration = Math.random() * (5000 - 500) + 500
+
+			light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: duration, delay: 0, iterations: 1
+			});
+
+
+		}, 200);
+
+
+	
+
+
+		// all .light fill's
+		/*
+		lights = document.querySelectorAll("svg .light")
+		lights.forEach(light => {
+
+			duration = Math.random() * (5000 - 500) + 500
+			delay = Math.random() * 2000
+			light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: duration, delay: delay, iterations: Infinity
+			});
+		});
+		*/
+		
+
+
+
+		// all .light2 stroke's
+		/*
+		lights2 = document.querySelectorAll("svg .light2")
+		lights2.forEach(light => {
+			duration = Math.random() * (5000 - 500) + 500
+			delay = Math.random() * 2000
+			light.animate({ stroke: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: duration, delay: delay, iterations: Infinity
+			});
+		});
+		*/
+
+	});	
+
+
+
+	</script>
+
+
+	
+{% endblock %}
+
+

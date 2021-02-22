@@ -1,0 +1,112 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="grid">
+	
+	<figure class="intro">
+		<img src="/static/quadraticlands/images/mission/proof-of-receive-start.svg">
+	</figure>
+
+	<div>
+		<h3><span>#</span>Chapter 2 of 3</h3>
+		<h1>Proof of receive</h1>
+		<p id="receiveMessage"></p>
+		<span id="receiveAdress" class="receiveadress hide" ></span>
+		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn hide">Continue</a>
+	</div>
+
+</section>
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<script src="/static/quadraticlands/js/particles.js"></script>
+<script src="/static/quadraticlands/js/sal_init.js"></script>
+<script src="/static/quadraticlands/js/app.js"></script>
+
+<script>
+
+// DOMContentLoaded
+document.addEventListener("DOMContentLoaded",function(){
+
+	// expect the worst by default : no wallet
+	updateInterface("nowallet");
+
+	// wallet found
+	window.addEventListener("dataWalletReady", () => {
+		updateInterface("continue");		
+	});
+
+	//user manualy disconnect wallet by button
+	const buttonDisconnect = document.getElementById("btn-disconnect");
+	buttonDisconnect.addEventListener("click", () => {
+		updateInterface("nowallet");
+	});	
+
+	//user disconnect somehow else - eg by log out from metamask
+	setInterval(() => {
+		if(!selectedAccount) { 
+			updateInterface("nowallet");
+		}
+	}, 2000);
+
+});
+
+
+function updateInterface(status){
+
+	const receiveMessage = document.getElementById("receiveMessage");
+	const receiveAdress = document.getElementById("receiveAdress");
+	const buttonContinue = document.getElementById("buttonContinue");
+
+	// no wallet > warning
+	if (status=="nowallet")
+	{
+		receiveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
+		receiveAdress.classList.add("hide");
+		buttonContinue.classList.add("hide");
+		console.log("INTERFACE:NOWALLET");
+	}
+
+	// wallet existing > continue
+	if (status=="continue")
+	{
+		receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
+		receiveAdress.classList.remove("hide");
+		//receiveAdress.innerHTML = shortenAdress(selectedAccount);
+		receiveAdress.innerHTML = selectedAccount;
+		buttonContinue.classList.remove("hide");
+		console.log("INTERFACE:CONTINUE");
+	}
+
+}
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}
+
+

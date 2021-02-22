@@ -1,0 +1,527 @@
+ {% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+<section class="background">
+	<img id="claimBackground" src="/static/quadraticlands/images/background/claim.svg">
+</section>
+
+
+
+<!-- advanced setup button -->
+<div id="quest-setup">
+	<div id="advancedButton" >
+		{% include "quadraticlands/_inlinesvg/setup.svg" %}
+	</div>
+</div>
+
+
+
+<section class="quest">
+
+	<!-- content-->
+	<main>
+		<div class="quest-claim glass">
+
+			{% if user.is_authenticated %}
+
+			<div class="claim">
+
+				<!-- headline -->
+				<h3 id="claimHeadline"></h3>
+
+				<!-- selected wallet address -->
+				<div id="claimAdress" class="claimAdress">
+					<div class="receiveadress" id="wallet-address"></div>
+				</div>
+
+				<!-- advanced mode : ( delegate feature ) -->
+				<div id="advanced" class="hide">	
+					<div class="">
+						<label>Claim & delegate your tokens in one Transaction.</label>
+						<div class="delegateToAdress">
+							<input type="text" id="delegateToAdress" name="delegateToAdress" placeholder="Delegate to ETH-Adress">
+						</div>
+
+					</div>
+				</div>
+
+
+				<!-- details why you get X tokens -->
+				<div id="claimListing" class="grid">
+					<!-- @zach : need data from db + here a loop of one row -->
+					<!-- @scco : copy that. still waiting on buckets data from k-->
+					<span class="description">Member of Gitcoin</span><span class="token">+200 GTC</span>
+					<span class="description">Helpful Person</span><span class="token">+100 GTC</span>
+					<span class="description">Have a Grand</span><span class="token">+100 GTC</span>
+					<span class="description">Have a Kudos</span><span class="token">+100 GTC</span>
+					<span class="description">Staff</span><span class="token">+500 GTC</span>
+					<!-- end loop -->
+				</div>
+
+				<!-- sum of this X tokens -->
+				<div id="claimListingTotal" class="grid total">
+					<span class="description">Total</span><span class="token">+{{ total_claimable_gtc }} GTC</span>
+				</div>
+
+				<!-- just the x Tokens you get -->
+				<h1 id="claimTokenAmount" class="hide">+{{ total_claimable_gtc }}GTC</h1>
+
+				<!-- a status message  -->
+				<p id="claimStatusMessage" class="hide"></p>
+
+				<!-- place for a link to a block explorer -->
+				<p id="claimTXLink" class="hide"></p>
+
+
+
+			</div>
+
+
+			{% else %}
+
+	
+			{% endif %}
+
+
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Receive
+		</div>
+
+		<div class="right">
+			
+			<!-- a div to appear when claim:status claim -->
+			<div id="divClaimButton" class="">
+				<a id="beginClaim" class="btn" href="#">Claim</a>
+				{% csrf_token %}
+			</div>
+
+			<!-- a div to appear when claim:status claiming -->
+			<div id="divClaimingSpinner" class="hide">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+			</div>
+
+			<!-- a div to appear when claim:status claimed -->
+			<div id="divClaimedButton" class="hide">
+				<a class="btn" href="/quadraticlands/mission/receive/outro">Continue</a>
+			</div>			
+
+		</div>
+
+	</nav>
+	
+</section>
+
+
+
+{% endblock %}
+
+
+
+
+{% block 'scripts' %}
+
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+
+<!--APP - burger menu, wallet menu, provider select, collapse, flashMessage-->
+<script src="/static/quadraticlands/js/app.js"></script>
+
+<!-- this page NEEDS a Wallet and will force the Web3Modal -->
+<script src="/static/quadraticlands/js/forceWallet.js"></script>
+
+
+
+
+
+<script>
+
+// security token
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+// DOMContentLoaded
+document.addEventListener("DOMContentLoaded",function(){
+
+	// update the interface to the first initial state
+	updateInterface('init');
+
+	window.addEventListener('dataWalletReady', function(e) {
+	    $('#wallet-address').html(selectedAccount)
+	 }, false);
+
+    console.log( "CLAIM DOCUMENT READY" );
+
+	$(document).on('click', '#beginClaim', (event) => {
+
+		console.log('BEGIN CLAIM');
+
+	    // confirm we have a working web3 connection if not, return error 
+	    try {
+	        const network = checkWeb3();
+	    } catch (error) {
+	        
+	    	updateInterface('nowallet');
+
+	        return console.log('Please confirm you have a wallet connected!!');
+	    }
+
+		/** 
+		 * POST to claim endpoint 
+		 * provided active account/address (claim address) & delegate address
+		 * returns signed claim message data 
+		**/
+
+		// working before delegate set add 
+		// var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
+
+
+		var delegate_adress = document.getElementById("delegateToAdress").value
+		if (!delegate_adress) { delegate_adress = selectedAccount}
+		console.debug("DELEGATE TO ", delegate_adress)
+	
+		var getClaimData = fetchData('/quadraticlands/claim', 'POST', {
+			'address':selectedAccount, 
+			'delegate':delegate_adress
+		}, {'X-CSRFToken': csrftoken});
+
+
+		$.when(getClaimData).then((response, status, statusCode) => {
+			//for debugging, remove for prod 
+			console.log('CLAIM RETURNED!', statusCode, response, status);
+
+			// if we don't get a 200 from the Ethereum Message Signing Service then return error
+			// need to confirm this works as expected, empty return probably not what we want...  
+	        if (statusCode.status != 200) {
+	            console.log('getClaimData response: ', statusCode.status )
+	            return //_alert(response.msg, 'error');
+	        }
+	       
+	        // setup & send our contract call 
+	        setupGTCTokenClaim(response);
+		});
+
+	});
+    
+	// run other functions on load here
+
+});
+
+
+
+
+
+
+// setupGTCTokenClaim
+async function setupGTCTokenClaim(emss_response) {
+
+    const user_id = emss_response.user_id;
+    const user_amount = emss_response.user_amount;
+	const user_address_cleaned = web3.utils.toChecksumAddress(emss_response["user_address"].replace(/\"/g, ''));
+	const delegate_address_cleaned = web3.utils.toChecksumAddress(emss_response["delegate_address"].replace(/\"/g, ''));
+    const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, '');
+    const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, '');
+
+	try {
+        // zak TODO - make sure we only get first address, not array 
+		[user] = await web3.eth.getAccounts();
+
+		const tokenDistributor = await new web3.eth.Contract(
+			token_distributor_abi,
+			token_distributor_address()
+		);
+
+		const claimGTCtokens = () => {
+			
+			/** 
+			 * @Richard, I think we might want to implement something here to let a user know the TX send is in process
+			 * for example, once a user clicks send, it can take 5-10 seconds before a on.receipt or on.confirm fires
+			 * users can/will be confused maybe and hit send again. Even just a message that lets them know the TX has been broadcast might be good 
+			 * for example, "your claim has been broadcast! please stand by for confirmation."  
+			 * This is what waitingState was used for in other parts of the app I think
+            **/
+
+			// waitingState(true);
+
+			tokenDistributor.methods
+			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), delegate_address_cleaned, eth_signed_message_hash_hex, eth_signed_signature_hex)
+       
+			.send({ from: user, gasLimit: '300000' })
+
+			.on('transactionHash', async function(transactionHash) {
+
+				// update interface to the pending view ( claiming )
+				updateInterface('pending', transactionHash);
+				console.log("ON TRANSACTION HASH - PENDING");
+				console.log(transactionHash);
+
+			})
+
+			.on('receipt', receipt => {
+				// https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#eth-gettransactionreceipt-return
+				// you can read about receipt vs confirm on the link above ^^ 
+				// @Richard is there a reason we want/need to call this? if not, lets remove  
+				console.log("ON RECEIPT - WHAT EVER THIS IS");
+			    console.log('receipt:', receipt);
+			})
+
+			.on('confirmation', (confirmationNumber, receipt) => {
+				console.log("ON CONFIRMATION");
+			    if (confirmationNumber >= 1) {
+			    	// update interface to the success view ( claimed )
+			    	updateInterface('success');
+			    	console.log("ON CONFIRMATION >=1");
+			    }
+			})
+
+			.on('error', (error) => { 
+				// update interface to the generic error view
+				// @Richard, we should send something other than 'error', like the actual error or a generic message.
+				// for example. "we're sorry, there was an issue with your tokenclaim, please contact support for more info" 
+				updateInterface('error');
+				console.error("Error-2 on TX send:", error);
+			});
+
+		};
+
+		// now we run the function.
+	    claimGTCtokens();
+
+	} 
+
+	catch (error) {
+        console.error("Error-1 on TX send:", error);
+	}
+
+
+
+}
+
+
+// checkNetwork
+//
+function checkNetwork() {
+    const supportedNetworks = [ 'rinkeby', 'mainnet' ];
+    
+    if (!supportedNetworks.includes(document.web3network)) {
+      flashMessage("Unsupported network",5000);
+      throw new Error;
+    }
+    return document.web3network;
+}
+
+
+// checkWeb3
+//
+function checkWeb3() {
+	if (!web3) {
+		flashMessage("Please connect a wallet",5000);
+		throw new Error;
+	}
+	return checkNetwork();
+}
+
+
+// handleError
+// @Richard do we intend to use this? if not, lets remove. 
+function handleError(err) {
+    console.error(err);
+    let message = 'There was an error';
+    
+    if (err.message)
+      message = err.message;
+    else if (err.msg)
+      message = err.msg;
+    else if (err.responseJSON)
+      message = err.responseJSON.message;
+    else if (typeof err === 'string')
+      message = err;
+    
+    flashMessage("Error:" + message ,5000);
+    indicateMetamaskPopup(true);
+}
+
+
+
+// isNumeric
+//
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
+// DYNAMIC USER INTERFACE 
+// status = init, pending, success, nowallet, error
+
+function updateInterface(status="init", transactionHash="") {
+
+	// define block explorer for generating a link with txhash
+	const blockExplorerLink = "https://rinkeby.etherscan.io/tx/";
+	const blockExplorerName ="Etherscan";  
+
+	// interface
+	const claimBackground = document.getElementById("claimBackground");
+	const claimHeadline = document.getElementById("claimHeadline");
+	const claimListing = document.getElementById("claimListing");
+	const claimListingTotal = document.getElementById("claimListingTotal");
+	const claimTokenAmount = document.getElementById("claimTokenAmount");
+	const claimStatusMessage = document.getElementById("claimStatusMessage");
+	const claimTXLink = document.getElementById("claimTXLink");
+	const divClaimButton = document.getElementById("divClaimButton");
+	const divClaimingSpinner = document.getElementById("divClaimingSpinner");
+	const divClaimedButton = document.getElementById("divClaimedButton");
+	const claimAdress = document.getElementById("claimAdress");
+	const advanced = document.getElementById("advanced");
+	const questSetup = document.getElementById("quest-setup");
+	
+
+
+	if (status=="init")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
+		claimHeadline.innerHTML = "Claim your GTC Tokens to:";
+		claimTokenAmount.classList.add("hide");
+		claimStatusMessage.innerHTML = "";
+		claimStatusMessage.classList.add("hide");
+		claimTXLink.classList.add("hide");
+		claimListing.classList.remove("hide");
+		claimListingTotal.classList.remove("hide");
+		divClaimButton.classList.remove("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.add("hide");
+		claimAdress.classList.remove("hide");
+		questSetup.classList.remove("hide");
+
+	}
+
+	if (status=="pending")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claiming.svg";
+		claimHeadline.innerHTML = "Claiming <span>(Pending)</span>";
+		claimTokenAmount.classList.remove("hide");
+		claimStatusMessage.innerHTML = "The tokens are on the way...";
+		claimStatusMessage.classList.remove("hide");
+		claimTXLink.innerHTML = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>";
+		claimTXLink.classList.remove("hide");
+		claimListing.classList.add("hide");
+		claimListingTotal.classList.add("hide");
+		divClaimButton.classList.add("hide");
+		divClaimingSpinner.classList.remove("hide");
+		divClaimedButton.classList.add("hide");
+		claimAdress.classList.remove("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
+		flashMessage("Your claim has been broadcast to the network!",5000);
+	}
+
+	if (status=="success")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
+		claimHeadline.innerHTML = "Claimed";
+		claimTokenAmount.classList.remove("hide");
+		claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
+		claimListing.classList.add("hide");
+		claimListingTotal.classList.add("hide");
+		divClaimButton.classList.add("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.remove("hide");
+		claimAdress.classList.remove("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
+    	flashMessage("Transaction Confirmed",5000);
+	}
+
+	if (status=="error")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
+		claimHeadline.innerHTML = "Oops";
+		claimTokenAmount.classList.remove("hide");
+		claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
+		claimTokenAmount.classList.add("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.add("hide");
+		divClaimButton.classList.remove("hide");
+		claimAdress.classList.remove("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
+		flashMessage("Error",5000);
+	}
+
+	if (status=="nowallet")
+	{
+		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
+		claimHeadline.innerHTML = "No Wallet found";
+		claimTokenAmount.classList.add("hide");
+		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/receive'>Proof of Receive</a>";
+		claimStatusMessage.classList.remove("hide");
+		claimTXLink.classList.add("hide");
+		claimListing.classList.add("hide");
+		claimListingTotal.classList.add("hide");
+		divClaimButton.classList.add("hide");
+		divClaimingSpinner.classList.add("hide");
+		divClaimedButton.classList.add("hide");
+		claimAdress.classList.add("hide");
+		questSetup.classList.add("hide");
+		advanced.classList.add("hide");
+	}
+
+
+
+}
+
+
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	const advancedButton = document.getElementById("advancedButton");
+	const advanced = document.getElementById("advanced");
+	advancedButton.addEventListener("click", () => {
+		advanced.classList.toggle("hide");
+	});
+
+
+});
+
+
+
+
+
+</script>
+{% endblock %}
+
+

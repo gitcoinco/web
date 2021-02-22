@@ -1,0 +1,80 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+<!-- PARTICLE TEST -->
+
+<section class="column" style="height:100vh">
+	<h1>defaultmode</h1>
+	<h2>define pre-script</h2>
+	<p>const particleSetup = {"defaultmode": "floating"}</p>
+	<a class="btn" href="#">hover me</a>
+</section>
+
+<section class="column particleMode" data-mode="wind" style="height:100vh">
+	<h1>setMode("wind")</h1>
+	<h2>trigger: by SAL's Event Listener</h2>
+	<p>class="particleMode" data-mode="wind"</p>
+	<a class="btn" href="#">hover me</a>
+</section>
+
+<section class="column particleMode" data-mode="floating" style="height:100vh">
+	<h1>setMode("floating")</h1>
+	<h2>trigger: by SAL's Event Listener</h2>
+	<p>class="particleMode" data-mode="floating"</p>	
+	<a class="btn" href="#">hover me</a>
+</section>
+
+<section class="column particleMode" data-mode="space" style="height:100vh">
+	<h1>setMode("space")</h1>
+	<h2>trigger: by SAL's Event Listener</h2>
+	<p>class="particleMode" data-mode="space"</p>	
+	<a class="btn" href="#">hover me</a>
+</section>
+
+
+<section class="column particleMode" data-mode="space" style="height:100vh">
+	<h2>particlesize on hover</h2>
+	<p>on a href : data-particlesize="200"</p>
+	<a class="btn" href="#">default</a>
+	<a class="btn" href="#" data-particlesize="200" >200</a>
+	<a class="btn" href="#" data-particlesize="400" >400</a>
+	<a class="btn" href="#" data-particlesize="600" >600</a>
+</section>
+
+
+<section class="column" style="height:100vh">
+	<h2>mode on click</h2>
+	<p>on a href : onclick="setmode('mode')"</p>
+	<a class="btn" onclick="setMode('space')">space</a>
+	<a class="btn" onclick="setMode('floating')">floating</a>
+	<a class="btn" onclick="setMode('wind')">wind</a>
+
+</section>
+
+
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+	<script>const particleSetup = {"initialmode": "floating"}</script>
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+	<script src="/static/quadraticlands/js/app.js"></script>
+{% endblock %}

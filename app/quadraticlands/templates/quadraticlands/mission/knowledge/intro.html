@@ -1,0 +1,98 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="background">
+	<img src="/static/quadraticlands/images/background/anim-9.svg">
+</section>
+
+
+<section class="quest">
+
+	<!-- quest-intro : video -->
+	<main>
+		<div class="wrapper">
+			<div class="quest-video">
+				<iframe src="https://www.youtube.com/embed/QtgFm38ck0k?rel=0" frameborder="0"allowfullscreen></iframe>
+			</div>
+		</div>
+	</main>
+
+
+	<!-- quest-intro : optional text when we do not use a video theoreticaly -->
+	<!--
+	<main>
+		<div class="wrapper">
+			<div class="quest-intro glass">
+				<h3>xxx</h3>
+				<h1>xxx</h1>
+				<p style="margin-bottom:2em;">xxx</p>			
+			</div>
+		</div>
+	</main>
+	-->
+
+
+
+	<!-- timer / seperator -->
+	<div class="seperator"></div>
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Knowledge
+		</div>
+
+		<div class="right">
+			<a class="btn" href="/quadraticlands/mission/knowledge/question/1">Start</a>
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+
+	
+{% endblock %}
+
+

@@ -1,0 +1,94 @@
+<div class="section full">
+ 
+	<a href="quadraticlands/governance" class="noparticles">
+		<div class="header">
+			<div class="icon">
+				{% include "quadraticlands/_inlinesvg/delegation.svg" %}
+			</div>
+			<div class="title">
+				Governance Mode: <span id="governance_mode_span"></span>
+			</div>
+			<div class="arrow">
+				{% include "quadraticlands/_inlinesvg/arrow.svg" %}
+			</div>
+		</div>
+	</a>
+
+	<div class="content">
+		<div class="content-governance">
+			<div class="wrapper">
+
+				<div class="text">Paste an ethereum adress from the <a href="quadraticlands/delegates">delegates list</a>, to delegate your voting power. If you want to apply as a delegate, use this <a href="#">form</a>. Read more about the Governance Modes in our <a href="quadraticlands/faq">FAQ</a>.</div>
+
+				<div class="delegate">
+					<input id="delegate_adress_inputfield" type="text" name="delegate_adress_inputfield" placeholder="delegators ethereum adress" value="">
+					<a class="btn">Submit</a>
+				</div>
+
+						
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+
+	delegate_adress = getDelegateAdress()
+
+
+	const delegate_adress_inputfield = document.getElementById("delegate_adress_inputfield");
+	const governance_mode_span = document.getElementById("governance_mode_span");
+
+	console.log("selectedAccount ", selectedAccount)
+	console.log("delegate_adress ", delegate_adress)
+
+	if (delegate_adress != selectedAccount){
+		governance_mode_span.innerHTML = "Passive"
+		delegate_adress_inputfield.value = delegate_adress
+	}
+
+	if (delegate_adress != selectedAccount){
+		governance_mode_span.innerHTML = "Active"
+	}
+
+
+	
+
+
+
+});
+
+
+
+
+
+// fetch delegate adress
+function getDelegateAdress() {
+	return "xxxxx";
+}
+
+
+// trigger new tx
+function setDelegateAdress(){
+
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+

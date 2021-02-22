@@ -1,0 +1,71 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+<!-- headline-->
+<section class="column centered">
+	<h1>Proposals</h1>
+</section>
+
+
+
+
+<!--proposals -->
+
+<section class="table">
+
+	<div class="wrapper">
+
+		<table>
+			
+			<thead id="thead">
+				<tr>
+					<th>title</th>
+					<th>question</th>
+					<th>start block</th>
+					<th>end block</th>
+				</tr>
+			</thead>
+
+			<tbody id="tbody">
+				{% for key, value in all_proposals.items %}
+				<tr>
+					<td>{{value.title}}</td>
+					<td><a href="/quadraticlands/proposal/{{key}}">{{value.question}}</a></td>
+					<td>{{value.start_block}}</td>
+					<td>{{value.end_block}}</td>
+				</tr>
+				{% endfor %}				
+			</tbody>
+
+		</table>
+
+	</div>
+
+</section>
+
+
+
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+	<script src="/static/quadraticlands/js/app.js"></script>
+{% endblock %}

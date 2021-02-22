@@ -1,0 +1,30 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+{% block 'content' %}
+	<section class="column">
+		<h3>web3</h3>
+		<!-- selected wallet address -->
+		<div id="claimAdress" class="claimAdress">
+			Active Wallet Address:
+			<div class="receiveadress" id="wallet-address"></div>
+		</div>
+		<!-- selected wallet address -->
+		<div id="claimAdress" class="claimAdress">
+			GTC Balance:
+			<div class="receiveadress" id="gtc-token-balance"></div>
+		</div>
+	</section>
+{% endblock %}
+{% block 'scripts' %}
+	<!--some custom particles-->
+	<script src="/static/quadraticlands/js/particles.js"></script>
+	<!--Scroll Animation Library (sal) INIT-->
+	<script src="/static/quadraticlands/js/sal_init.js"></script>
+	<!--APP - burger menu, wallet menu, provider select-->
+	<script src="/static/quadraticlands/js/app.js"></script>
+	<!-- this page NEEDS a Wallet and will force the Web3Modal -->
+	<script src="/static/quadraticlands/js/forceWallet.js"></script>
+	<!-- contract ABIs & address info-->
+	<script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "quadraticlands/js/web3-samples.js" %}"></script>
+{% endblock %}

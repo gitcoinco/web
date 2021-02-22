@@ -1,0 +1,78 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+	<!-- twitter card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@gitcoin" />
+	<meta name="twitter:title" content="title" />
+	<meta name="twitter:description" content="description" />
+	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
+	<!-- end twitter card -->
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+
+<!-- headline-->
+<section class="column centered">
+	<h1>Leaderboard</h1>
+</section>
+
+
+
+<!--leaderboard -->
+
+<section class="table">
+
+	<div class="wrapper">
+
+		<table>
+			
+			<thead id="thead">
+				<tr>
+					<!--<th data-by="position">#</th>
+					<th data-by="account" data-direction="asc">Account</th>
+					<th data-by="token_amount">GTC</th>
+					<th data-by="power">Power</th>
+					<th data-by="votes">Votes</th>
+					<th data-by="delegates">Delegates</th>
+					<th data-by="delegated_tokens">Del. GTC</th>-->
+					<th data-by="account" data-direction="asc">Account</th>
+					<th data-by="user_id">User_ID</th>
+					<th data-by="id">ID</th>
+				</tr>
+			</thead>
+
+			<tbody id="tbody"></tbody>
+
+		</table>
+
+	</div>
+
+</section>
+
+
+
+<section class="column centered" style="margin-top: 2em;">
+	<div id="more" class="btn sm">more</div>
+</section>
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<script src="/static/quadraticlands/js/particles.js"></script>
+<script src="/static/quadraticlands/js/sal_init.js"></script>
+<script src="/static/quadraticlands/js/app.js"></script>
+
+<!-- leaderboard -->
+<script src="/static/quadraticlands/js/leaderboard.js"></script>
+
+
+{% endblock %}
+
+

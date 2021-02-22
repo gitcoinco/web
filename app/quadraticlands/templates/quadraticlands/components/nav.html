@@ -1,0 +1,130 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static matches cookielaw_tags %}
+
+
+<header>
+
+  <!-- logo-->
+  <div class="logos">
+
+    <a class="gitcoin" href="/">
+      {% include "quadraticlands/_inlinesvg/logo_gitcoin.svg" %}
+    </a>
+
+    <span class="arrow">{% include "quadraticlands/_inlinesvg/logo_arrow.svg" %}</span>
+
+    <a class="quadraticlands" href="/quadraticlands/">
+      {% include "quadraticlands/_inlinesvg/ql.svg" %}
+    </a>
+
+  </div>
+
+
+  <!-- nav -->
+  <nav>
+
+    <!-- links / burger menue -->
+    <div id="nav-links" >
+      <div id="burger">
+        {% include "quadraticlands/_inlinesvg/burger.svg" %}
+      </div>
+
+
+      <ul>
+
+        <a href="/quadraticlands/about" class="particleAttract"
+        {% if "about" in request.path %} aria-current="page" {% endif %}
+        ><li>About</li></a>
+
+        <a href="/quadraticlands/mission" class="particleAttract" 
+        {% if "mission" in request.path %} aria-current="page" {% endif %}
+        >
+          <li>Mission Control</li>
+        </a>
+
+      </ul>
+
+
+    </div>
+
+
+   {% if user.is_authenticated %}
+
+    <!-- user avatar / username -->
+    <div id="nav-user" class="particleAttract" >
+      <a href="/quadraticlands/dashboard">
+        <div>
+            <img src="/dynamic/avatar/{{user.username}}" >
+            <span>{{user.username}}</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- default wallet button / wallet status
+    what TRIGGER another div to pop up (components/wallet-provider.html) -->
+    <div id="nav-wallet" class="">
+
+      <!-- CLAIMABLE AMOUNT -->
+      <!-- IF :  and not proof_of_receive and total_claimable_gtc != 0 -->
+      {% if user.is_authenticated  %}
+      <span class="claimable"><a href="/quadraticlands/mission">+ {{ total_claimable_gtc }}</a></span>
+      {% endif %}
+
+      <div id="noproviderIcon">
+        {% include "quadraticlands/_inlinesvg/wallet.svg" %}
+      </div>
+
+      <!-- this will add an image inside this div, if a provider  -->
+      <div id="navbarDropdownWallet"></div>
+
+    </div>
+  
+
+    {% else %}
+
+    <!-- sign in button -->
+    <div id="nav-signin" class="particleAttract">
+      <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});"
+      class="btn sm">{% trans "Log in" %}</a>
+    </div>
+
+    {% endif %}
+   
+  </nav>
+
+
+
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
