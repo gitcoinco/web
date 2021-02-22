@@ -1,18 +1,21 @@
-section#intro{
-
+section#intro {
   height: 100vh;
+  width: 100%;
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  padding-top: 3rem;
+  grid-template-columns: 1.5fr 1fr;
+  padding-top: 5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  
 
-  div {
+  & > div {
     align-self: center;
-    max-width: 39rem;
-
+    max-width: 40rem;
 
     p {
-      max-width: 20rem;
+      max-width: 19rem;
     }
+
     .big {
       font-size: 1.5em;
     }
@@ -20,7 +23,6 @@ section#intro{
 
   figure {
     align-self: center;
-    //align-self: end;
 
     img {
       max-height: 100vh;
@@ -51,42 +53,49 @@ section#intro{
   .action-text {
     font-size: 55%;
   }
-
 }
 
+
 @media #{$laptop} {
-  section#intro{
-    grid-template-columns: 1.75fr 1fr;
+  section#intro {
+    grid-template-columns: 3fr 1fr;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
+
 @media #{$tablet} {
-  section#intro{
-
+  section#intro {
     height: inherit;
+    padding-left: 1rem;
+    padding-right: 1rem;
     grid-template-columns: 1fr;
-
     padding-top: 0em;
 
-    div{
+    & > div {
+      width: 94vw;
+      max-width: 94vw;
       grid-row: 2;
 
+      p {
+        max-width: 94vw;
+      }
     }
 
     figure {
       grid-row: 1;
       margin-top: 8em;
     }
-
   }
 }
 
 
-
 @media #{$phone} {
-  section#intro{
-
-
+  section#intro {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    
     .actions {
       display: block;
     }
@@ -95,8 +104,4 @@ section#intro{
       display: none;
     }
   }
-
-
 }
-
-

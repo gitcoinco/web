@@ -1,8 +1,6 @@
 #logo{
   position: absolute;
-  top: 3em;
   margin-left: -1.5em;
-  margin-top: -2.5em;
   left: 3em;
 	
   img{
@@ -13,15 +11,14 @@
 
 
 
-@media #{$phone} { 
+@media #{$tablet} { 
   #logo{
     margin-left: -0.5em;
-    margin-top: -1.7em;
-    top: 2em;
     left: 2em;
 	
     img{
-      width: 150px;
+      width: 10rem;
+      min-width: 150px;
     }
 
   }

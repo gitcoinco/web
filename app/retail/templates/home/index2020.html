@@ -8,7 +8,7 @@
   <meta name="description" content="A place for developers to learn, earn, and network" />
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   {% include 'shared/cards.html' %} {% include 'shared/favicon.html' %}
 
@@ -34,13 +34,13 @@
 
 <body>
   <!-- fixed logo-->
-  <div id="logo">
+  <div id="logo" class="pt-3">
     <a href="#">
       <img src="{% static "landingpage/logo_animated.svg" %}" alt="logo" />
     </a>
   </div>
   {% if not user.is_authenticated %}
-  <div class="float-right pt-3 pr-4">
+  <div class="float-right pt-2 pr-1">
       <a class="land-btn text-white nav-link login interior" href="{% url 'social:begin' 'github' %}?next=/townsquare" onclick="dataLayer.push({'event': 'login'});">
         <i class="fab fa-github"></i><span class="nav-link__text">&nbsp;&nbsp;{% trans "Log in" %}</span>
       </a>
@@ -128,7 +128,7 @@
         </div>
       </div><br><br>
       <div class="row action-text">
-        <div class="col-md-8" style="align-self: start;">
+        <div class="col-md-7" style="align-self: start;">
           <h2>Here to Earn?</h2>
           <p>
             Build exciting projects and upskill on development while earning
@@ -141,7 +141,7 @@
           <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
           <h2>Here to Support?</h2>
           <p>
             Discover great open source projects working hard to impact the
@@ -152,12 +152,12 @@
         </div>
       </div>
       <div class="row actions-reverse">
-        <div class="col-8">
+        <div class="col-7">
           <a class="btn fe-pulse" href="{% url 'get_hackathons' %}"><span>Join a Hackathon</span></a>
           <a class="btn fe-pulse" href="{% url 'explorer' %}"><span>Work on a Bounty</span></a>
           <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Get Grant Funding</span></a>
         </div>
-        <div class="col-4">
+        <div class="col-5">
           <a class="btn fe-pulse" href="{% url 'grants:grants' %}"><span>Support Grant Projects</span></a>
         </div>
       </div>
