@@ -5254,7 +5254,18 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
-            'grant_obj': self.grant_obj,
+            'grant_obj': {
+                'id': self.grant_obj.pk,
+                'title': self.grant_obj.title,
+                'logo': self.grant_obj.logo,
+                'logo_svg': self.grant_obj.logo_svg,
+                'description': self.grant_obj.description,
+                'description_rich': self.grant_obj.description_rich,
+                'reference_url': self.grant_obj.reference_url,
+                'github_project_url': self.grant_obj.github_project_url,
+                'region': self.grant_obj.region,
+                'grant_type': self.grant_obj.grant_type
+            },
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }
