@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
     Copyright (C) 2020 Gitcoin Core
 
@@ -64,10 +64,10 @@
 
 </style>
 
-<div>
+<div id="content-body">
   <h1>{% trans "A New Kudos Is Being Minted" %}</h1>
 
-  <h3>
+  <h3 style="text-transform: none;">
     {% trans 'Hello!' %} {{kudos_transfer.from_name}} <br>
     {% trans 'Your minted Kudos is now ready' %}
   </h3>

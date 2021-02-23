@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -46,10 +46,6 @@
 
   .col {
     width: 100%;
-  }
-
-  .col-img {
-    margin: 0 2em;
   }
 
   .col-txt {
@@ -131,7 +127,7 @@
     max-width: 100%;
   }
 </style>
-<div>
+<div id="content-body">
   <div class="kudos-fancy-bg">
     <h1>
       {% if is_new %}
@@ -140,7 +136,7 @@
          🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝
       {% endif %}
     </h1>
-    <h3>
+    <h3 style="text-transform: none;">
       {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}"><b style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">{{ token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
       {% if kudos_transfer.from_name %}
         {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
@@ -201,7 +197,7 @@
   </div>
   <div class="cols">
     <div class="col">
-      <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" height="155" class="col-img">
+      <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" height="155">
     </div>
     <div class="col">
       <p class="col-txt">{% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star." %} {% trans "Kudos are non-fungible tokens that can also be bought and sold on the" %} <b>{% trans "Kudos Marketplace" %}</b>{% trans "." %}</p>
