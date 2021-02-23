@@ -69,14 +69,12 @@
   }
 
   h3 {
-    line-height: 30px;
-  }
-
-  h3 {
     color: #15003E;
     font-weight: bold;
+    font-size: 1.4rem;
     margin-bottom: 10px;
     margin-top: 40px;
+    line-height: 30px;
   }
 
   h3.no-subtitle {
@@ -103,10 +101,6 @@
 
   h2 {
     font-size: 1.6rem;
-  }
-
-  h3 {
-    font-size: 1.4rem;
   }
 
   h4 {
@@ -137,6 +131,24 @@
     line-height: 19.39px;
     text-align: center;
     text-decoration: none;
+  }
+
+  @media (min-width: 992px) {
+    .container {
+      max-width: 960px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      max-width: 720px;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .container {
+      max-width: 540px;
+    }
   }
 
   a.button.large {
@@ -300,7 +312,6 @@
     }
   }
 
-
   .col-12 {
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
@@ -317,20 +328,6 @@
   .mt-2,
   .my-2 {
     margin-top: .5rem !important;
-  }
-
-  @media (min-width: 576px) {
-    .pl-sm-3,
-    .px-sm-3 {
-      padding-left: 1rem !important;
-    }
-  }
-
-  @media (min-width: 576px) {
-    .pr-sm-3,
-    .px-sm-3 {
-      padding-right: 1rem !important;
-    }
   }
 
   .pb-3, .py-3 {
@@ -401,20 +398,22 @@
   }
 
   @media (min-width: 576px) {
+    .pl-sm-3,
+    .px-sm-3 {
+      padding-left: 1rem !important;
+    }
+    .pl-sm-3,
+    .px-sm-3 {
+      padding-left: 1rem !important;
+    }
     .pl-sm-0,
     .px-sm-0 {
       padding-left: 0 !important;
     }
-  }
-
-  @media (min-width: 576px) {
     .pr-sm-0,
     .px-sm-0 {
       padding-right: 0 !important;
     }
-  }
-
-  @media (min-width: 576px) {
     .col-sm-8 {
       -ms-flex: 0 0 66.666667%;
       flex: 0 0 66.666667%;
