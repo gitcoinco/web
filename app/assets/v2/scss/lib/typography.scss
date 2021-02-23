@@ -127,16 +127,17 @@
 @supports (font-variation-settings: normal) {
   @font-face {
     font-family: 'Libre Franklin';
-    src: url('/static/v2/fonts/libre-franklin/LibreFranklin-VariableFont_wght.ttf') format('ttf supports variations'),
-         url('/static/v2/fonts/libre-franklin/LibreFranklin-VariableFont_wght.ttf') format('woff2-variations');
+    src: url('/static/v2/fonts/libre-franklin/LibreFranklin-VariableFont_wght.ttf') format('truetype supports variations'),
+         url('/static/v2/fonts/libre-franklin/LibreFranklin-VariableFont_wght.ttf') format('truetype-variations');
     font-weight: 100 1000;
     font-stretch: 25% 151%;
   }
 
   @font-face {
     font-family: 'Libre Franklin';
-    src: url('/static/v2/fonts/libre-franklin/LibreFranklin-Italic-VariableFont_wght.ttf') format('ttf supports variations'),
-         url('/static/v2/fonts/libre-franklin/LibreFranklin-Italic-VariableFont_wght.ttf') format('woff2-variations');
+    src: url('/static/v2/fonts/libre-franklin/LibreFranklin-Italic-VariableFont_wght.ttf') format('truetype supports variations'),
+         url('/static/v2/fonts/libre-franklin/LibreFranklin-Italic-VariableFont_wght.ttf') format('truetype-variations');
+    font-variation-settings: 'ital' 1;
     font-style: italic;
     font-weight: 100 1000;
     font-stretch: 25% 151%;
