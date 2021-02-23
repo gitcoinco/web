@@ -1034,7 +1034,7 @@ def render_bounty_expire_warning(to_email, bounty):
         unit = 'hours'
         num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
-    fulfiller_emails = list(bounty.fulfillments.annotate(lower_email=Lower('fulfiller_email')).values_list('lower_email'))
+    fulfiller_emails = [fulfiller.profile.email.lower() for fulfiller in bounty.fulfillments.all()]
 
     params = {
         'bounty': bounty,
@@ -1519,8 +1519,19 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
-    return HttpResponse(response_html)
+    from marketing.utils import handle_bounty_feedback
+
+    bounty = Bounty.objects.current().filter(idx_status='done').last()
+
+    (to_fulfiller, to_funder, fulfiller_previous_bounties, funder_previous_bounties) = handle_bounty_feedback(bounty)
+
+    if to_fulfiller:
+        response_html, _ = render_bounty_feedback(bounty, 'fulfiller', fulfiller_previous_bounties)
+        return HttpResponse(response_html)
+    
+    if to_funder:
+        response_html, _ = render_bounty_feedback(bounty, 'funder', funder_previous_bounties)
+        return HttpResponse(response_html)
 
 
 @staff_member_required
@@ -1724,6 +1735,9 @@ def tribe_hackathon_prizes(request):
 
     if not hackathon:
         return HttpResponse("no upcoming hackathon within 3 days", status=404)
+
+    if not hackathon:
+        return HttpResponse("no upcoming hackathon event in the next 3 days", status=404)
 
     sponsors_prizes = []
     for sponsor in hackathon.sponsor_profiles.all()[:3]:
