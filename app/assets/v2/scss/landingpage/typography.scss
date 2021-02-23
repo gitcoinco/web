@@ -18,14 +18,14 @@ h1{
 }
 
 h2{
-  font-size: 120%;
+  font-size: 155%;
   font-weight: 800;
   line-height: 1.3em;
   margin-bottom: 1rem; 
 }
 
 p{
-  font-size: 100%;
+  font-size: 125%;
   font-weight: 400;
   line-height: 1.6em;
   margin-bottom: 1.6rem;  
@@ -36,19 +36,25 @@ p{
 
 @media #{$laptop} {
   html{ 
-    font-size: 120%;
+    font-size: 130%;
   }
 }
 
 @media #{$tablet} { 
   html{  
-    font-size: 110%;
+    font-size: 130%;
   }
 }
 
 @media #{$phone} { 
   html{
-    font-size: 100%;
+    font-size: 115%;
+  }
+}
+
+@media #{$small} { 
+  html{
+    font-size: 110%;
   }
 }
 
