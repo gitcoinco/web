@@ -1,0 +1,130 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    {% compress css file grants_simple %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
+    {% endcompress %}
+  </head>
+
+  <body class="interior {{ active }} grant g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash px-0">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'grants/nav.html' %}
+      </div>
+
+      <grants-explore-grants class="container-fluid mt-5" v-cloak id="gc-grants-explore-grants" inline-template>
+        <div>
+          <!-- Header section-->
+          <h1>Explore Grants</h1>
+          <div class="row justify-content-between border-bottom">
+            <div class="col-auto">
+              <div class="text-primary font-weight-bold border-primary border-bottom">Grants</div>
+            </div>
+            <div class="col-auto">
+              <input class="form-control" placeholder="Filter grants"></input>
+            </div>
+          </div>
+
+          <!-- Filter buttons -->
+          <div>TODO filter buttons</div>
+          
+          <!-- Grant sort options -->
+          <div class="row justify-content-between align-items-center mt-5 mb-3">
+            <h6 class="col-auto">[[grants.length]] Grants</h6>
+             {% include 'grants/shared/landing_subnav.html' %}
+          </div>
+          
+          <!-- Grant cards -->
+          <div class="infinite-container row" @scroll.passive="onScroll($event)" v-if="grants">
+            <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+              {% include 'grants/components/card.html' %}
+            </div>
+          </div>
+        </div>
+      </grants-explore-grants>
+
+      {% include 'shared/current_profile.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+      {% include 'shared/footer.html' %}
+      {% include 'grants/shared/shared_scripts.html' %}
+      {% include 'shared/activity_scripts.html' %}
+
+      {{collections|json_script:"collections-object"}}
+      
+      <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+      <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+      <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
+      <script>
+        document.current_type = "{{ type|default:'all' }}";
+        document.selected_category = "{{ selected_category }}";
+        document.network = "{{ network|default:'mainnet'}}";
+        document.keyword = "{{ keyword }}";
+        document.following = {{ following|yesno:'true,false' }};
+        document.idle_grants = {{ idle_grants|yesno:'true,false' }};
+        document.show_contributions = {{ show_contributions|yesno:'true,false' }};
+        document.featured = {{ featured|yesno:'true,false' }};
+        document.collection_id = {{ collection_id|default:'null' }};
+        document.collections = JSON.parse(document.getElementById('collections-object').textContent);
+        {% if clr_round %}
+          document.round_num = "{{clr_round.round_num}}";
+          document.sub_round_slug = "{{clr_round.sub_round_slug}}";
+          document.customer_name = "{{clr_round.customer_name}}";
+        {% endif %}
+        {% comment %} let base_style = {
+            bg: '/static/v2/images/bg/{{styles.bg}}',
+            size: "{{styles.bg_size}}",
+            color: "{{styles.bg_color}}",
+            background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
+          };
+
+        document.all_type_styles = {{ all_styles|safe }}
+        document.all_routing_policies = {{ all_routing_policies | safe}}
+        document.all_routing_policies.push(base_style)
+        {% if grant_bg %}
+          document.current_style = {
+            banner_image: "{{ grant_bg.banner_image }}",
+            background_image: " url('{{background_image }}')",
+            inline_css: "{{ inline_css }}"
+          }
+        {% else %}
+          document.current_style = base_style
+        {% endif %} {% endcomment %}
+
+      </script>
+    
+
+      <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+      <script src="{% static "v2/js/grants/explore-grants.js" %}"></script>
+      <script src="{% static "v2/js/grants/components.js" %}"></script>
+      <script src="{% static "v2/js/grants/funding.js" %}"></script>
+
+    </div>
+  </body>
+
+<html>

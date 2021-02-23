@@ -3484,3 +3484,13 @@ def ingest_contributions(request):
         ingestion_types.append('L2')
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
+
+def explore_grants(request):
+    context = {
+        'title': 'Explore Grants',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+
+    response = TemplateResponse(request, 'grants/explore-grants.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
