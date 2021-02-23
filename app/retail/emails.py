@@ -1585,7 +1585,7 @@ def funder_stale(request):
     """
     limit = int(request.GET.get('limit', 30))
     duration_copy = request.GET.get('duration_copy', 'about a month')
-    username = request.GET.get('username', '@foo')
+    username = request.GET.get('username', 'foo')
     response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
