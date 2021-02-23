@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -20,44 +20,48 @@
 
 {% block content %}
 
-<h1>👇 {% trans "You've been removed from this task ..." %} 👇</h1>
+<div id="content-body">
+
+  <h1>👇 {% trans "You've been removed from this task ..." %} 👇</h1>
 
 
-<p>
-  {% trans "Hey there," %}
+  <p>
+    {% trans "Hey there," %}
+
+    <br>
+    <br>
+
+    You <strong>started work upon</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
+
+    <br>
+    <br>
+    {% trans "Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin has removed you from the task." %}
+    <br>
+    <br>
+
+    {% trans "Do you still want to work on this?  No big deal!  We can help with that:" %}
+
+    <br>
+    <br>
+
+    {% trans "Please leave a comment on the github thread to check in." %}
+    <br>
+    -{% trans "AND" %}-
+    <br>
+    {% blocktrans %}Click 'Start Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
+
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.
+
+    <br>
+    <h4>{% trans "Funded Issue Details" %}</h4>
+  </p>
 
   <br>
-  <br>
 
-   You <strong>started work upon</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
+  {% include 'emails/bounty.html' with bounty=bounty %}
 
-  <br>
-  <br>
-  {% trans "Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin has removed you from the task." %}
-  <br>
-  <br>
-
-  {% trans "Do you still want to work on this?  No big deal!  We can help with that:" %}
-
-  <br>
-  <br>
-
-  {% trans "Please leave a comment on the github thread to check in." %}
-  <br>
-  -{% trans "AND" %}-
-  <br>
-  {% blocktrans %}Click 'Start Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
-
-  <br>
-  <br>
-  {% blocktrans %}If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.{% endblocktrans %}
-
-  <br>
-  <h5>{% trans "Funded Issue Details" %}</h5>
-</p>
-
-<br>
-
-{% include 'emails/bounty.html' with bounty=bounty %}
+</div>
 
 {% endblock %}
