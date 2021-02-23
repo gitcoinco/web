@@ -1,0 +1,28 @@
+{
+  "symbol": "DOY",
+  "address": "0x95F806733191Abc13bDeeDe6caa7582484b29215",
+  "overview":{
+        "en": "The DOY stablecoin is not only a collection of cryptocurrencies linked to legal currencies (USD, RMB, and other countries' legal currencies or precious metals such as gold and silver), but also a high-performance cryptocurrency for P2P transactions, suitable for daily transactions . To achieve this goal, the DOY stablecoin will be released on a secure public blockchain, using a faster proof of stake (PoS) consensus mechanism.",
+        "zh": "DOY 稳定币不仅是一组与法定货币（美元、人民币以及其他国家法定货币或金银等贵金属）挂钩的加密货币集合，而且还是一种用于 P2P 交易的高性能的加密货币， 适用于日常交易。为实现这一目标， DOY 稳定币将在安全的公共区块链上发布，采用更快的权益证明（PoS）共识机制。"
+  },
+  "email": "support@doy-coin.net",
+  "website": "https://doy-coin.net/",
+  "whitepaper": "https://doy-coin.net/wp-content/uploads/2021/02/DOY_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-01-22",
+  "initial_price":{
+        "ETH":"0.00008857 ETH",
+        "USD":"0.155 USD",
+        "BTC":"0.000003118 BTC"
+  },
+  "links": {
+    "blog": "https://doy-coin.net/",
+    "twitter": "",
+    "telegram": "https://t.me/cj188en99",
+    "github": "",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
