@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -18,26 +18,25 @@
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>💬{% trans "New Wall Post" %} 💬</h1>
+  <h1>💬{% trans "New Wall Post" %} 💬</h1>
 
-<p>
+  <p>
 
-<a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> commented on your {{what}}'s wall. This is what they said:
+  <a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> commented on your {{what}}'s wall. This is what they said:
 
-<pre>
-  {{activity.metadata.title}}
-</pre>
+  <pre>
+    {{activity.metadata.title}}
+  </pre>
 
-<div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ activity.url }}">View Thread</a>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="{{ activity.url }}">View Thread</a>
+  </div>
+
+  </p>
+
+  <br>
+
 </div>
-
-</p>
-
-<br>
-
-
-
-
 {% endblock %}

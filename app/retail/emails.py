@@ -230,7 +230,11 @@ def support_cancellation(request):
 def thank_you_for_supporting(request):
     grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    grant_with_subscription = [{
+        'grant': grant,
+        'subscription': subscription
+    }]
+    response_html, __, __ = render_thank_you_for_supporting_email(grant_with_subscription)
     return HttpResponse(response_html)
 
 
@@ -315,7 +319,7 @@ def render_request_amount_email(to_email, request, is_new):
     params = {
         'link': link,
         'amount': request.amount,
-        'tokenName': request.token_name if request.network == 'ETH' else request.network,
+        'tokenName': request.token_nam,
         'address': request.address,
         'comments': request.comments,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),

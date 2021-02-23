@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -19,33 +19,34 @@
 
 {% block content %}
 
-<h1>💬@{{activity.profile.handle}} writes: 💬</h1>
+<div id="content-body">
 
-<p>
+  <h1>💬@{{activity.profile.handle}} writes: 💬</h1>
 
-<a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> sent a message to funders of {{activity.grant.title}}. This is what they said:
+  <p>
 
-<pre>
-  {{activity.metadata.title}}
-</pre>
+  <a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> sent a message to funders of {{activity.grant.title}}. This is what they said:
 
-<div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ activity.url }}">View Message</a>
+  <pre>
+    {{activity.metadata.title}}
+  </pre>
+
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="{{ activity.url }}">View Message</a>
+  </div>
+  - OR -
+  <div style="margin-bottom: 1em; margin-top: 1em;">
+    <a class="" href="{{ activity.grant.url }}?unsubscribe=1">Unsubscribe to Messages from @{{activity.grant.title}}</a>
+  </div>
+  - OR -
+  <div style="margin-bottom: 1em; margin-top: 1em;">
+    <a class="" href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">Unsubscribe From ALL Grant Updates</a>
+  </div>
+
+  </p>
+
+  <br>
+
 </div>
-- OR -
-<div style="margin-bottom: 1em; margin-top: 1em;">
-  <a class="" href="{{ activity.grant.url }}?unsubscribe=1">Unsubscribe to Messages from @{{activity.grant.title}}</a>
-</div>
-- OR -
-<div style="margin-bottom: 1em; margin-top: 1em;">
-  <a class="" href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">Unsubscribe From ALL Grant Updates</a>
-</div>
-
-</p>
-
-<br>
-
-
-
 
 {% endblock %}

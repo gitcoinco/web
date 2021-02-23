@@ -1,4 +1,4 @@
-{% extends '../emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -116,37 +116,40 @@
   }
 
 </style>
-<img src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
-<h1 style="margin-bottom:1.25rem;">{% trans "An update has been posted for:" %}</h1>
-<div class="grant-info">
-  <a href="{% url 'grants:details' grant.id grant.slug %}">
-    <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
-  </a>
+
+<div id="content-body">
+  <img src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
+  <h1 style="margin-bottom:1.25rem;">{% trans "An update has been posted for:" %}</h1>
+  <div class="grant-info">
+    <a href="{% url 'grants:details' grant.id grant.slug %}">
+      <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+    </a>
+    <br>
+    <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+      {{ grant.title }}
+    </a>
+    <p class="grant-description">
+      {{ grant.description }}
+    </p>
+
+  <hr>
+
+  <div class="grant-update">
+    <div class="grant-update-icon">
+      <img src="{% static "v2/images/file-text.png" %}" alt="{% trans "New Grant Update." %}" title="{% trans "New Grant Update" %}">
+    </div>
+    <div class="grant-update-content">
+      <h3>{{ activity.title }}</h3>
+      <p class="upDate">{{ activity.date }}</p>
+      <p>{{ activity.description }}</p>
+    </div>
+  </div>
+
+  <hr>
+
   <br>
-  <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
-    {{ grant.title }}
-  </a>
-  <p class="grant-description">
-    {{ grant.description }}
-  </p>
+  <a class="grant-button" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
+  <br>
 
-<hr>
-
-<div class="grant-update">
-  <div class="grant-update-icon">
-    <img src="{% static "v2/images/file-text.png" %}" alt="{% trans "New Grant Update." %}" title="{% trans "New Grant Update" %}">
-  </div>
-  <div class="grant-update-content">
-    <h3>{{ activity.title }}</h3>
-    <p class="upDate">{{ activity.date }}</p>
-    <p>{{ activity.description }}</p>
-  </div>
 </div>
-
-<hr>
-
-<br>
-<a class="grant-button" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
-<br>
-
 {% endblock %}

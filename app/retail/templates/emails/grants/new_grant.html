@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
     Copyright (C) 2020 Gitcoin Core
 
@@ -33,10 +33,6 @@
     max-width: 50rem;
     margin: auto;
     text-align: center;
-  }
-
-  div {
-    margin: 2em 0;
   }
 
   hr {
@@ -85,24 +81,28 @@
   }
 </style>
 
-<img src="{% static 'v2/images/new_grant.png' %}" alt="success icon" width="100px" height="100px" >
+<div id="content-body">
 
-<h1>{% trans "New Grant Created" %}</h1>
+  <img src="{% static 'v2/images/new_grant.png' %}" alt="success icon" width="100px" height="100px" >
 
-<p style="margin-bottom:0.25rem;">{% trans "You've created a new grant!" %}</p>
-<p style="margin-top:0.25rem;">{% trans "Get ready to buidl and push forward open source!" %}</p>
-<hr>
-<img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
-<h1 class="grant-email-name">{{ grant.title }}</h1>
-<p class="grant-description">{{ grant.description }}</p>
-<div style="text-align: center;">
-  <span>
-    <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Your Grant" %}</a>
-  </span>
-  <span>
-    <a class="learn-more-button" href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/">{% trans "Learn How to Maximize your Matching" %}</a>
-  </span>
+  <h1>{% trans "New Grant Created" %}</h1>
+
+  <p style="margin-bottom:0.25rem;">{% trans "You've created a new grant!" %}</p>
+  <p style="margin-top:0.25rem;">{% trans "Get ready to buidl and push forward open source!" %}</p>
+  <hr>
+  <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
+  <h1 class="grant-email-name">{{ grant.title }}</h1>
+  <p class="grant-description">{{ grant.description }}</p>
+  <div style="text-align: center;">
+    <span>
+      <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Your Grant" %}</a>
+    </span>
+    <span>
+      <a class="learn-more-button" href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/">{% trans "Learn How to Maximize your Matching" %}</a>
+    </span>
+  </div>
+  <hr>
+
 </div>
-<hr>
 
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -18,28 +18,27 @@
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>💬{% trans "New Comment" %} 💬</h1>
+  <h1>💬{% trans "New Comment" %} 💬</h1>
 
-<p>
+  <p>
 
-<a href="{{comment.profile.url}}">@{{comment.profile.handle}}</a> commented on your status update. This is what the thread looks like:
+  <a href="{{comment.profile.url}}">@{{comment.profile.handle}}</a> commented on your status update. This is what the thread looks like:
 
-<pre>
-{% for comment in comment.activity.comments.all %}
-- @{{comment.profile.handle}} ({{comment.created_on | naturaltime}}): {{comment.comment}}
-{% endfor %}
-</pre>
+  <pre>
+  {% for comment in comment.activity.comments.all %}
+  - @{{comment.profile.handle}} ({{comment.created_on | naturaltime}}): {{comment.comment}}
+  {% endfor %}
+  </pre>
 
-<div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ comment.url }}">View Thread</a>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="{{ comment.url }}">View Thread</a>
+  </div>
+
+  </p>
+
+  <br>
+
 </div>
-
-</p>
-
-<br>
-
-
-
-
 {% endblock %}

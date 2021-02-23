@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2019 Gitcoin Core
 
@@ -18,35 +18,35 @@
 {% endcomment %}
 {% load i18n humanize %}
 
+<style>
+  .tip-box {
+    margin-bottom: 2em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e0e0e0;
+  }
+  .tip-contents {
+    text-align: left;
+  }
+  .tip {
+    display: flex;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+</style>
+
 {% block content %}
-
-  <style>
-    .tip-box {
-      margin-bottom: 2em;
-      border-style: solid;
-      border-width: 1px;
-      border-color: #e0e0e0;
-    }
-    .tip-contents {
-      text-align: left;
-    }
-    .tip {
-      display: flex;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-  </style>
-
+<div id="content-body">
   <div>
     <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
-    <h3>
-        {{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
+    <h3 style="text-transform: none;">
+        @{{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
         {% if address %}
-        Recipient Address: {{ address }}
+        <br><br>Recipient Address: {{ address }}
         {% endif %}
-        {{tip.created_on | naturaltime}}.
+        <br><br>{% if tip %}{{tip.created_on | naturaltime}}.{% endif %}
     </h3>
   </div>
 
@@ -104,7 +104,7 @@
                 ${{earning.value_usd}} {% if earning.token_name %} in {% endif %} {{earning.token_name}}
               </td>
               <td>
-                 {{earning.from_profile.handle}} => {{earning.to_profile.handle}}
+                {{earning.from_profile.handle}} => {{earning.to_profile.handle}}
               </td>
             </tr>
         {% endfor %}
@@ -112,5 +112,5 @@
       </div>
     {% endif %}
   </div>
-
+</div>
 {% endblock %}

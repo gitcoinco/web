@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -18,30 +18,29 @@
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>💬@{{post.profile.handle}} {% trans "mentioned you in a post" %} 💬</h1>
+  <h1 style="text-transform: none;">💬@{{post.profile.handle}} {% trans "mentioned you in a post" %} 💬</h1>
 
-<p>
+  <p>
 
-<a href="{{post.profile.url}}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
+  <a href="{{post.profile.url}}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
 
-<pre>
-{% if is_activity %}
-  {{post.metadata.title}}
-{% else %}
-  - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
-{% endif %}
-</pre>
+  <pre>
+  {% if is_activity %}
+    {{post.metadata.title}}
+  {% else %}
+    - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
+  {% endif %}
+  </pre>
 
-<div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ post.url }}">View Thread</a>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="{{ post.url }}">View Thread</a>
+  </div>
+
+  </p>
+
+  <br>
+
 </div>
-
-</p>
-
-<br>
-
-
-
-
 {% endblock %}

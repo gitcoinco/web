@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -50,41 +50,43 @@
     margin-bottom: 30px;
   }
 </style>
-<img src="{% static "v2/images/new-supporter.png" %}" alt="{% trans "New Supporter" %}" title="{% trans "New Supporter." %}">
-<h1 style="text-transform: none;">{{ grant.title }}{% trans " has a new supporter!" %}</h1>
-<hr>
-<div class="supporter">
-  <a href="{% url 'profile' subscription.contributor_profile.handle %}">
-    <img src="{{ subscription.contributor_profile.avatar_url }}" width="50" height="50" />
-  </a>
-  <br>
-  <a class="supporterName" href="{% url 'profile' subscription.contributor_profile.handle %}">
-    {{ subscription.contributor_profile.handle }}
-  </a>
-  <p>{% trans "has begun contributing" %}</p>
-  <p style="padding-top:0;margin-top:.5rem">
-    <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
-      {% if subscription.num_tx_approved > 1 %}
-        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
-      {% endif %}
-    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
-  </p>
-
-  {% if subscription.comments %}
-  </p>
+<div id="content-body">
+  <img src="{% static "v2/images/new-supporter.png" %}" alt="{% trans "New Supporter" %}" title="{% trans "New Supporter." %}">
+  <h1 style="text-transform: none;">{{ grant.title }}{% trans " has a new supporter!" %}</h1>
+  <hr>
+  <div class="supporter">
     <a href="{% url 'profile' subscription.contributor_profile.handle %}">
-      <img src="{{ subscription.contributor_profile.avatar_url }}" width="20" height="20" />
+      <img src="{{ subscription.contributor_profile.avatar_url }}" width="50" height="50" />
+    </a>
+    <br>
+    <a class="supporterName" href="{% url 'profile' subscription.contributor_profile.handle %}">
       {{ subscription.contributor_profile.handle }}
-    </a> left a comment along with their subscription:
-    <pre>{{subscription.comments}}</pre>
-    <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">Respond to @{{ subscription.contributor_profile.handle }}'s comments here.</a>
-  </p>
-  
-  {% endif %}
-  <p>
-    <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">View Grant</a>
+    </a>
+    <p>{% trans "has begun contributing" %}</p>
+    <p style="padding-top:0;margin-top:.5rem">
+      <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
+        {% if subscription.num_tx_approved > 1 %}
+          {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+        {% endif %}
+      <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
+    </p>
 
-  </p>
+    {% if subscription.comments %}
+    </p>
+      <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+        <img src="{{ subscription.contributor_profile.avatar_url }}" width="20" height="20" />
+        {{ subscription.contributor_profile.handle }}
+      </a> left a comment along with their subscription:
+      <pre>{{subscription.comments}}</pre>
+      <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">Respond to @{{ subscription.contributor_profile.handle }}'s comments here.</a>
+    </p>
+    
+    {% endif %}
+    <p>
+      <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">View Grant</a>
+
+    </p>
+  </div>
+  <hr>
 </div>
-<hr>
 {% endblock %}
