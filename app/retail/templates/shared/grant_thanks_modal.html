@@ -96,7 +96,13 @@
             <b-form-select v-model="selectedCollection" text-field="title" value-field="id" :options="collections" size="md" class="mt-3"></b-form-select>
           </div>
 
-          <b-button @click="createCollection()" class="btn-gc-blue mt-2 mb-2" size="lg" :disabled="!isValidCollection">Save Collection</b-button>
+          <b-button
+            @click="createCollection()"
+            variant="primary"
+            :disabled="!isValidCollection"
+          >
+            Save Collection
+          </b-button>
           <br>
         </div>
       </template>
