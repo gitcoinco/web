@@ -1,0 +1,17 @@
+{
+    "symbol": "GEMR",
+    "address": "0xFbCad6Bd6056416a75C2092c845425dC17917A0C",
+    "overview":{
+          "en": "GEMR aims to create a decentralized financial ecosystem for global users under the existing Internet economic system. By combining financial technology and blockchain technology, it establishes a set of financial infrastructure for value currency storage, circulation and full-scene applications.",
+          "zh": "GEMR旨在现有互联网经济体系下为全球用户打造去中心化金融生态，通过结合金融科技和区块链技术，建立一套价值货币储藏、流通以及全场景应用的金融基础设施。"
+    },
+    "email": "gemrdefi@gmail.com",
+    "website": "http://gemr.vip/",
+    "whitepaper": "http://gemr.vip/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-04-06",
+    "links": {
+        "telegram": "https://t.me/gemrgroup",
+        "twitter": "https://twitter.com/gemrdefi"
+      }
+}
