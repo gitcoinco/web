@@ -1,22 +1,19 @@
-Vue.component("contribution-thanks-modal", {
-  delimiters: ["[[", "]]"],
-  data: function () {
+Vue.component('contribution-thanks-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
     return {
       modalId: 'contribution-thanks',
       numberOfContributions: 0,
       donations: [],
-      tweetUrl: '',
+      tweetUrl: ''
     };
   },
-  mounted: function () {
-    const shouldShow = Boolean(
-      localStorage.getItem("contributions_were_successful")
-    );
-    this.numberOfContributions = Number(
-      localStorage.getItem("contributions_count")
-    );
+  mounted: function() {
+    const shouldShow = Boolean(localStorage.getItem('contributions_were_successful'));
 
-    this.tweetUrl = `https://twitter.com/intent/tweet?text=I just funded ${this.numberOfContributions} grants on @gitcoin ${CartData.share_url()}`;;
+    this.numberOfContributions = Number(localStorage.getItem('contributions_count'));
+
+    this.tweetUrl = `https://twitter.com/intent/tweet?text=I just funded ${this.numberOfContributions} grants on @gitcoin ${CartData.share_url()}`;
 
     if (shouldShow) {
       this.$bvModal.show(this.modalId);
@@ -29,25 +26,25 @@ Vue.component("contribution-thanks-modal", {
       this.$bvModal.hide(this.modalId);
     },
     handleHide() {
-      localStorage.removeItem("contributions_were_successful");
-      localStorage.removeItem("contributions_count");
+      localStorage.removeItem('contributions_were_successful');
+      localStorage.removeItem('contributions_count');
       CartData.setCart([]);
     },
     showSaveAsCollection() {
       this.$bvModal.show('create-collection');
     }
-  },
+  }
 });
 
-Vue.component("create-collection-modal", {
-  delimiters: ["[[", "]]"],
-  data: function () {
+Vue.component('create-collection-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
     return {
       modalId: 'create-collection',
       collectionTitle: '',
       collectionDescription: '',
       collections: [],
-      selectedCollection: null,
+      selectedCollection: null
     };
   },
   computed: {
@@ -59,10 +56,10 @@ Vue.component("create-collection-modal", {
       }
 
       return false;
-    },
+    }
   },
   mounted: function() {
-    fetchData('/grants/v1/api/collections/').then( response => {
+    fetchData('/grants/v1/api/collections/').then(response => {
       console.log('COLLECTIONS', response);
       if (response.collections && response.collections.length > 0) {
         this.collections = response.collections;
@@ -114,17 +111,17 @@ Vue.component("create-collection-modal", {
 
 // DOCUMENT
 let allTokens;
-const fetchTokens = async () => {
-  const tokensResponse = await fetch("/api/v1/tokens");
+const fetchTokens = async() => {
+  const tokensResponse = await fetch('/api/v1/tokens');
 
   allTokens = await tokensResponse.json();
 };
 
 fetchTokens();
 
-$(document).ready(function () {
+$(document).ready(function() {
 
-  $("#js-addToCart-form").submit(function (event) {
+  $('#js-addToCart-form').submit(function(event) {
     event.preventDefault();
 
     // const formData = objectifySerialized($(this).serializeArray());
@@ -135,10 +132,10 @@ $(document).ready(function () {
     showSideCart();
   });
 
-  $(".infinite-container").on(
-    "submit",
-    ".js-addDetailToCart-form",
-    function (event) {
+  $('.infinite-container').on(
+    'submit',
+    '.js-addDetailToCart-form',
+    function(event) {
       event.preventDefault();
 
       const formData = objectifySerialized($(this).serializeArray());
@@ -149,15 +146,15 @@ $(document).ready(function () {
     }
   );
 
-  $("#close-side-cart").click(function () {
+  $('#close-side-cart').click(function() {
     hideSideCart();
   });
 
-  $("#side-cart-data").on("click", "#apply-to-all", async function () {
+  $('#side-cart-data').on('click', '#apply-to-all', async function() {
     // Get preferred cart data
     let cartData = CartData.loadCart();
-    const network = document.web3network || "mainnet";
-    const selected_grant_index = $(this).data("id");
+    const network = document.web3network || 'mainnet';
+    const selected_grant_index = $(this).data('id');
     const preferredAmount =
       cartData[selected_grant_index].grant_donation_amount;
     const preferredTokenName =
@@ -175,7 +172,7 @@ $(document).ready(function () {
     cartData.forEach((grant, index) => {
       const acceptsAllTokens =
         grant.grant_token_address ===
-        "0x0000000000000000000000000000000000000000";
+        '0x0000000000000000000000000000000000000000';
       const acceptsSelectedToken =
         grant.grant_token_address === preferredTokenAddress;
 
@@ -186,7 +183,7 @@ $(document).ready(function () {
       } else {
         // If the selected token is not available, fallback to ETH
         cartData[index].grant_donation_amount = fallbackAmount;
-        cartData[index].grant_donation_currency = "ETH";
+        cartData[index].grant_donation_currency = 'ETH';
       }
     }); // end cartData.forEach
 
@@ -238,47 +235,47 @@ function tokenOptionsForGrant(grant) {
   var network = document.web3network;
 
   if (!network) {
-    network = "mainnet";
+    network = 'mainnet';
   }
 
   // let tokenDataList = tokens(network);
   let tokenDataList = allTokens.filter(
-    (token) => token.network === networkName || "mainnet"
+    (token) => token.network === networkName || 'mainnet'
   );
-  let tokenDefault = "ETH";
+  let tokenDefault = 'ETH';
 
-  if (grant.tenants && grant.tenants.includes("ZCASH")) {
+  if (grant.tenants && grant.tenants.includes('ZCASH')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
-    tokenDefault = "ZEC";
+    tokenDefault = 'ZEC';
   }
-  if (grant.tenants && grant.tenants.includes("CELO")) {
+  if (grant.tenants && grant.tenants.includes('CELO')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 42220);
-    tokenDefault = "CELO";
-  } else if (grant.tenants && grant.tenants.includes("ZIL")) {
+    tokenDefault = 'CELO';
+  } else if (grant.tenants && grant.tenants.includes('ZIL')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 102);
-    tokenDefault = "ZIL";
-  } else if (grant.tenants && grant.tenants.includes("HARMONY")) {
+    tokenDefault = 'ZIL';
+  } else if (grant.tenants && grant.tenants.includes('HARMONY')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 1000);
-    tokenDefault = "ONE";
-  } else if (grant.tenants && grant.tenants.includes("BINANCE")) {
+    tokenDefault = 'ONE';
+  } else if (grant.tenants && grant.tenants.includes('BINANCE')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 56);
-    tokenDefault = "BNB";
-  } else if (grant.tenants && grant.tenants.includes("POLKADOT")) {
+    tokenDefault = 'BNB';
+  } else if (grant.tenants && grant.tenants.includes('POLKADOT')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 58);
-    tokenDefault = "DOT";
-  } else if (grant.tenants && grant.tenants.includes("KUSAMA")) {
+    tokenDefault = 'DOT';
+  } else if (grant.tenants && grant.tenants.includes('KUSAMA')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 59);
-    tokenDefault = "KSM";
+    tokenDefault = 'KSM';
   } else {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
   }
 
   const acceptsAllTokens =
     grant.grant_token_address ===
-      "0x0000000000000000000000000000000000000000" ||
-    grant.grant_token_address === "0x0";
+      '0x0000000000000000000000000000000000000000' ||
+    grant.grant_token_address === '0x0';
 
-  let options = "";
+  let options = '';
 
   if (!acceptsAllTokens) {
     options += `
@@ -309,7 +306,7 @@ function tokenOptionsForGrant(grant) {
 
 function showSideCart() {
   // Remove elements in side cart
-  $("#side-cart-data").find("div.side-cart-row").remove();
+  $('#side-cart-data').find('div.side-cart-row').remove();
 
   // Add all elements in side cart
   let cartData = CartData.loadCart();
@@ -317,18 +314,18 @@ function showSideCart() {
   cartData.forEach((grant, index) => {
     const cartRowHtml = sideCartRowForGrant(grant, index);
 
-    $("#side-cart-data").append(cartRowHtml);
+    $('#side-cart-data').append(cartRowHtml);
 
     // Register remove click handler
-    $(`#side-cart-row-remove-${grant.grant_id}`).click(function () {
-      if (typeof appGrants !== "undefined") {
+    $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
+      if (typeof appGrants !== 'undefined') {
         appGrants.grants.filter((grantSingle) => {
           if (Number(grantSingle.id) === Number(grant.grant_id)) {
             grantSingle.isInCart = false;
           }
         });
       } else if (
-        typeof appGrantDetails !== "undefined" &&
+        typeof appGrantDetails !== 'undefined' &&
         appGrantDetails.grant.id === Number(grant.grant_id)
       ) {
         appGrantDetails.grant.isInCart = false;
@@ -339,12 +336,12 @@ function showSideCart() {
     });
 
     // Register change amount handler
-    $(`#side-cart-amount-${grant.grant_id}`).change(function () {
+    $(`#side-cart-amount-${grant.grant_id}`).change(function() {
       const newAmount = parseFloat($(this).val());
 
       CartData.updateCartItem(
         grant.grant_id,
-        "grant_donation_amount",
+        'grant_donation_amount',
         newAmount
       );
     });
@@ -355,10 +352,10 @@ function showSideCart() {
     );
 
     // Register currency change handler
-    $(`#side-cart-currency-${grant.grant_id}`).change(function () {
+    $(`#side-cart-currency-${grant.grant_id}`).change(function() {
       CartData.updateCartItem(
         grant.grant_id,
-        "grant_donation_currency",
+        'grant_donation_currency',
         $(this).val()
       );
     });
@@ -366,7 +363,7 @@ function showSideCart() {
     $(`#side-cart-currency-${grant.grant_id}`).select2();
   });
 
-  const isShowing = $("#side-cart").hasClass("col-12");
+  const isShowing = $('#side-cart').hasClass('col-12');
 
   if (!isShowing) {
     toggleSideCart();
@@ -374,14 +371,14 @@ function showSideCart() {
 
   // Scroll To top on mobile
   if (window.innerWidth < 768) {
-    const cartTop = $("#side-cart").position().top;
+    const cartTop = $('#side-cart').position().top;
 
     window.scrollTo(0, cartTop);
   }
 }
 
 function hideSideCart() {
-  const isShowing = $("#side-cart").hasClass("col-12");
+  const isShowing = $('#side-cart').hasClass('col-12');
 
   if (!isShowing) {
     return;
@@ -391,19 +388,19 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
-  $("#grants-details > div").toggleClass(
-    "col-12 col-md-8 col-lg-9 d-none d-md-inline-flex"
+  $('#grants-details > div').toggleClass(
+    'col-12 col-md-8 col-lg-9 d-none d-md-inline-flex'
   );
 
-  $("#side-cart").toggle();
-  $("#side-cart").toggleClass("col-12 col-md-4 col-lg-3");
-  $("#funding-card").toggleClass("mr-md-5 mr-md-3 d-none d-lg-block");
+  $('#side-cart').toggle();
+  $('#side-cart').toggleClass('col-12 col-md-4 col-lg-3');
+  $('#funding-card').toggleClass('mr-md-5 mr-md-3 d-none d-lg-block');
 }
 
-if (document.getElementById("grant-thanks-app")) {
+if (document.getElementById('grant-thanks-app')) {
   const grantThanksApp = new Vue({
-    delimiters: ["[[", "]]"],
-    el: "#grant-thanks-app",
-    data: {},
+    delimiters: [ '[[', ']]' ],
+    el: '#grant-thanks-app',
+    data: {}
   });
 }
