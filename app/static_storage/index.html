@@ -1970,7 +1970,7 @@
 
 <p>Define the static storage using S3 via boto3 with hashing.</p>
 <p>If Django cannot find a referenced url in an asset, it will silently pass.</p>
-<h3 id="app.static_storage.SilentFileStorage.location">location</h3>
+<h3 id="app.static_storage.SilentFileStorage.bucket_name">bucket_name</h3>
 
 <p>str(object='') -&gt; str
 str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
@@ -1981,6 +1981,36 @@ Otherwise, returns the result of object.<strong>str</strong>() (if defined)
 or repr(object).
 encoding defaults to sys.getdefaultencoding().
 errors defaults to 'strict'.
+<h3 id="app.static_storage.SilentFileStorage.custom_domain">custom_domain</h3></p>
+<p>str(object='') -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.<strong>str</strong>() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to 'strict'.
+<h3 id="app.static_storage.SilentFileStorage.location">location</h3></p>
+<p>str(object='') -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.<strong>str</strong>() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to 'strict'.
+<h3 id="app.static_storage.SilentFileStorage.save">save</h3></p>
+<pre><code class="python">SilentFileStorage.save(self, name, content)
+</code></pre>
+
+<p>Save both a local and a remote copy of the given file
+<h3 id="app.static_storage.SilentFileStorage.exists">exists</h3></p>
+<pre><code class="python">SilentFileStorage.exists(self, name)
+</code></pre>
+
+<p>Check if the named file exists in S3 storage
 <h3 id="app.static_storage.SilentFileStorage.url">url</h3></p>
 <pre><code class="python">SilentFileStorage.url(self, name, force=True)
 </code></pre>
@@ -1991,6 +2021,26 @@ errors defaults to 'strict'.
 </code></pre>
 
 <p>Define the media storage backend for user uploaded/stored files.
+<h3 id="app.static_storage.MediaFileStorage.bucket_name">bucket_name</h3></p>
+<p>str(object='') -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.<strong>str</strong>() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to 'strict'.
+<h3 id="app.static_storage.MediaFileStorage.custom_domain">custom_domain</h3></p>
+<p>str(object='') -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.<strong>str</strong>() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to 'strict'.
 <h3 id="app.static_storage.MediaFileStorage.location">location</h3></p>
 <p>str(object='') -&gt; str
 str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
