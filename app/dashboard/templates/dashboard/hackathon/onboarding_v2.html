@@ -144,8 +144,8 @@
 
               </div>
               <div class="col col-12 col-lg-9">
-                Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. 
-                Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining 
+                Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me.
+                Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining
                 exposure, experience, and of course making some money!
               </div>
             </div>
@@ -183,12 +183,12 @@
     showOnboarding = false
     $('.jquery-modal').remove()
     $('body').css('overflow', 'scroll')
-    $('#onboarding_v2').modal('hide');
+    $('#onboarding_v2').bootstrapModal('hide');
   }
 
   const loadOnboardingModal = () => {
     if (showOnboarding) {
-      $('#onboarding_v2').modal('show');
+      $('#onboarding_v2').bootstrapModal('show');
     }
   }
 
