@@ -142,6 +142,88 @@
             </div>
           </div>
           <h2><b>Latest Contributions</b></h2>
+          <div>
+            {% if is_team_member %}
+            <div class="float-right font-body">
+              {% if is_owner %}
+                <a href="/settings/account#financials" target="_blank">
+                  Export Transactions (OWNER ONLY)
+                </a> |
+              {% endif %}
+
+              <a href="/grants/v1/api/export_addresses/grant{{grant.pk}}.json" target="_blank">
+                All Contributor Addresses for this Grant (TEAM ONLY)
+              </a>
+            </div>
+            <br class="break">
+            {% endif %}
+          <h4 class="m-auto text-center font-weight-semibold" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h4>
+          <div class="px-0">
+            <div class="row mb-3 py-2 px-0 mx-sm-0">
+              <div class="col-12 px-0">
+                <div id="contributions" v-if="transactions.grantTransactions">
+                  <div class="" v-for="transaction in transactions.grantTransactions">
+                    <div class="py-2 mx-sm-0 row transaction-history">
+                      <div class="col-3 justify-content-center special_tag d-flex">
+                        <a :href="`/profile/${transaction.subscription.contributor_profile}`" v-if="!transaction.anonymous" class="d-flex align-items-center">
+                          <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" :src="`/dynamic/avatar/${ transaction.subscription.contributor_profile }`"></b-img-lazy>
+                          <span>[[transaction.subscription.contributor_profile]]</span>
+                        </a>
+                        <span class="d-flex align-items-center" v-else>
+                          <b-img-lazy class="rounded-circle bg-white mr-2" width="40" height="40" src="/dynamic/avatar/Anonymous"></b-img-lazy>
+                          <span>anonymous</span>
+                        </span>
+                        <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mt-5 pt-1 ml-n5">[[transaction.created_on | moment]]
+                          <a :href="`/_administrationgrants/contribution/${transaction.id}/change/`" target="_blank" v-if="isStaff">
+                            <i class="fas fa-external-link-alt"></i>
+                          </a>
+                        </time>
+                      </div>
+                      <div class="align-self-end d-md-block col-md-4 font-body ml-auto txn-link">
+                        <!---
+                        <a class="tx_link" :href="`https://etherscan.io/tx/${ transaction.tx_id }`" target="_blank" rel="noopener noreferrer" v-if="transaction.tx_id">
+                          View Etherscan
+                        </a>
+                        <span v-if="!transaction.success">
+                          (Failed)
+                        </span>
+                        
+                        -->
+                        <h6 class="gc-text-green pt-0 text-right" v-b-tooltip.hover.top="transaction.subscription.amount_per_period">
+                          [[transaction.subscription.amount_per_period | formatNumberWithDecimal ]]
+                          <span>[[transaction.subscription.token_symbol]]</span>
+                        </h6>
+                        <h6 class="pt-0 text-muted text-right" v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
+                          <span v-if="!transaction.tx_cleared">
+                            (Pending)
+                          </span>
+                          [[transaction.subscription.amount_per_period_usdt | formatNumberWithDecimal ]] USD
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <b-skeleton-wrapper :loading="loadingTx">
+            <template #loading>
+              <b-container>
+                <b-row class="" v-for="index in 4" :key="index">
+                  <b-col cols="12" class="py-2">
+                    <b-skeleton width="100%" height="48px" class="mb-2"></b-skeleton>
+                  </b-col>
+                </b-row>
+              </b-container>
+            </template>
+          </b-skeleton-wrapper>
+          <div class="text-center">
+            <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
+          </div>
+          </div>
+          <div class="activity-comment">
+          </div>
         </div>
 
         {% if is_staff %}
@@ -463,9 +545,9 @@
         </template>
 
 
-        <div class="d-flex justify-content-between mt-2">
-          <div class="d-flex align-items-center font-smaller-2" id="popover-target-1">
-            <span class="fa-stack font-smaller-6 mr-2">
+        <div class="d-flex justify-content-end mt-2">
+          <div class="align-items-center font-smaller-2 text-muted" id="popover-target-1">
+            <span class="fa-stack font-smaller-6">
               <i class="fas fa-circle fa-stack-2x"></i>
               <i class="fas fa-info fa-stack-1x fa-inverse"></i>
             </span> Rules
@@ -480,9 +562,10 @@
             </ul>
             Read all the <a href="https://gitcoin.co/wiki/grants/">rules here</a>.  If you see someone breaking the rules, please use 'Flag Grant' to report them.
           </b-popover>
-          <button @click="flag" class="btn btn-gc-pink btn-sm font-caption font-weight-semibold px-3">
-            Flag <i class="ml-2 far fa-flag"></i>
-          </button>
+          <span @click="flag" class="align-items-center font-smaller-2 text-muted" style="cursor:pointer;">
+            <i class="ml-3 fas fa-flag"></i>
+            Flag
+          </span>
         </div>
         {% if should_show_claim_match_button %}
           <div id="match-payout-section">

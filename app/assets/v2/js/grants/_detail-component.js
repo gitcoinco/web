@@ -11,6 +11,32 @@ Quill.register('modules/ImageExtend', ImageExtend);
 
 Vue.mixin({
   methods: {
+    fetchTransactions: function() {
+      let vm = this;
+
+      page = vm.transactions.next_page_number;
+      if (!page) {
+        return;
+      }
+      vm.loadingTx = true;
+
+      let url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.contributions.forEach(function(item) {
+          vm.transactions.grantTransactions.push(item);
+        });
+
+        vm.transactions.num_pages = json.num_pages;
+        vm.transactions.has_next = json.has_next;
+        vm.transactions.next_page_number = json.next_page_number;
+        vm.transactions.count = json.count;
+        vm.loadingTx = false;
+
+      }).catch(console.error);
+    },
     grantInCart: function() {
       let vm = this;
       let inCart = CartData.cartContainsGrantWithId(vm.grant.id);
@@ -482,7 +508,12 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
+      loadingTx: false,
       relatedGrants: [],
+      transactions: {
+        grantTransactions: [],
+        next_page_number: 1
+      },
       rows: 0,
       perPage: 4,
       currentPage: 1,
@@ -543,6 +574,7 @@ Vue.component('grant-details', {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     }
     vm.grantInCart();
+    vm.fetchTransactions();
   },
   watch: {
     grant: {

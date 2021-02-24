@@ -69,32 +69,6 @@ Vue.mixin({
     paginate: function(array, page_size, page_number) {
       return array.slice(page_number * page_size, page_number * page_size + page_size);
     },
-    fetchTransactions: function() {
-      let vm = this;
-
-      page = vm.transactions.next_page_number;
-      if (!page) {
-        return;
-      }
-      vm.loadingTx = true;
-
-      let url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
-
-      fetch(url).then(function(res) {
-        return res.json();
-      }).then(function(json) {
-        json.contributions.forEach(function(item) {
-          vm.transactions.grantTransactions.push(item);
-        });
-
-        vm.transactions.num_pages = json.num_pages;
-        vm.transactions.has_next = json.has_next;
-        vm.transactions.next_page_number = json.next_page_number;
-        vm.transactions.count = json.count;
-        vm.loadingTx = false;
-
-      }).catch(console.error);
-    },
     fetchContributors: function() {
       let vm = this;
 
@@ -191,14 +165,9 @@ if (document.getElementById('gc-grant-detail')) {
     data() {
       return {
         loadingContributors: false,
-        loadingTx: false,
         loadingRelated: false,
         loading: false,
         isStaff: isStaff,
-        transactions: {
-          grantTransactions: [],
-          next_page_number: 1
-        },
         contributors: {
           grantContributors: [],
           next_page_number: 1
