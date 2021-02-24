@@ -8,7 +8,7 @@
 .sticky-top {
   position: sticky!important;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .no-gutter {
@@ -60,7 +60,7 @@
 }
 
 .header-contributor {
-  background-image: url('/static/v2/images/landing/contributor/hero_header_bg.jpg');
+  background-image: url(static('v2/images/landing/contributor/hero_header_bg.jpg'));
   background-color: #3f00ff;
 }
 
@@ -188,7 +188,7 @@
 
 .light-bg {
   background-color: rgba(239, 243, 238, 0.7);
-  background-image: url('/static/v2/images/light-bg.png');
+  background-image: url(static('/v2/images/light-bg.png'));
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -205,7 +205,7 @@
 
 .white-light-bg {
   background-color: white;
-  background-image: url('/static/v2/images/light-bg.png');
+  background-image: url(static('v2/images/light-bg.png'));
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
