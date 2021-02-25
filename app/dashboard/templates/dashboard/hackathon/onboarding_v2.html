@@ -1,20 +1,23 @@
 {% load static %}
-<div class="modal no-bg height-auto" style="color: #212529; font-size: 12pt;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+<div class="modal no-bg" style="color: #212529; font-size: 12pt;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="onboarding_v2" >
   <div class="modal-dialog modal-lg " role="document">
-    <div class="modal-content py-4 px-3" >
+    <div class="modal-content" >
       <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement.svg'%}" class="achievement-img d-none d-lg-inline"/>
       <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement-sm.svg'%}" class="achievement-img-sm d-lg-none"/>
-      <div class="modal-header border-0">
-        <div class="modal-title block text-center">
+      <div class="modal-header border-0 px-3">
+        <div class="modal-title block text-center pt-4">
           <h1>How to Earn in a Gitcoin Hackathon </h1>
           <h4 class="font-weight-semibold mt-1 pt-0">Gitcoin helps you earn by building open source development projects and
             participating in hackathons</h5>
-        </div>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
       </div>
 
       <hr class="mx-3 d-none d-lg-block"/>
 
-      <div class="modal-body py-0">
+      <div class="modal-body py-0 px-3">
         <div style="font-size: 10pt; font-weight: bold; width: 100%;"
                       class="list-group list-group-horizontal-lg d-flex justify-content-between text-lg-center" width="100%" horizontal="lg">
           <div class="list-group-item py-1 border-lg-0 border-left-0 border-right-0">
@@ -156,7 +159,7 @@
           {% else %}
           <div class="d-block mx-auto text-center pt-2 custom-control custom-checkbox">
             <input onchange="hideNextTime(this)" type="checkbox" class="custom-control-input" id="hide-hackaton-onboarding">
-            <label class="custom-control-label" for="hide-hackaton-onboarding">Got it! Don’t show me again</label>
+            <label class="custom-control-label pb-2" for="hide-hackaton-onboarding">Got it! Don’t show me again</label>
           </div>
           <button class="button button--primary px-5 mb-5 d-block mx-auto"  onclick="dismiss()">I’m ready to explore
             hackathons!
