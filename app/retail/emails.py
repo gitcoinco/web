@@ -1405,7 +1405,6 @@ def render_new_bounty_roundup(to_email):
     return response_html, response_txt, subject, args.from_email, args.from_name
 
 
-
 # DJANGO REQUESTS
 
 
@@ -1538,15 +1537,18 @@ def grant_update(request):
     response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
     return HttpResponse(response_html)
 
+
 @staff_member_required
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
+
 def grant_txn_failed(request):
     failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
     response_html, _ = render_grant_txn_failed(failed_contrib)
     return HttpResponse(response_html)
+
 
 @staff_member_required
 def wallpost(request):
@@ -1623,8 +1625,6 @@ def match_distribution(request):
     mr = MatchRanking.objects.last()
     response_html, _ = render_match_distribution(mr)
     return HttpResponse(response_html)
-
-
 
 
 @staff_member_required
@@ -1771,24 +1771,20 @@ def start_work_applicant_expired(request):
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
 
+
 @staff_member_required
 def tribe_hackathon_prizes(request):
     from dashboard.models import HackathonEvent, Bounty
     from marketing.utils import generate_hackathon_email_intro
 
-    hackathon = HackathonEvent.objects.all().first()
-    # hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
-
-    if not hackathon:
-        return HttpResponse("no upcoming hackathon within 3 days", status=404)
+    hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 
     if not hackathon:
         return HttpResponse("no upcoming hackathon event in the next 3 days", status=404)
 
     sponsors_prizes = []
     for sponsor in hackathon.sponsor_profiles.all()[:3]:
-        # prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
-        prizes = Bounty.objects.filter(event=hackathon, network='mainnet')
+        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor)
         sponsor_prize = {
             "sponsor": sponsor,
             "prizes": prizes
@@ -1799,6 +1795,7 @@ def tribe_hackathon_prizes(request):
 
     response_html, _ = render_tribe_hackathon_prizes(hackathon,sponsors_prizes, intro_begin)
     return HttpResponse(response_html)
+
 
 def render_remember_your_cart(grants_query, grants, hours):
     params = {

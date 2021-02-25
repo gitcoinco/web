@@ -1,4 +1,4 @@
-{% extends 'emails/template.html' %}
+{% extends 'emails/pro/template.html' %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -40,40 +40,44 @@
   }
 </style>
 
-<div>
-  <h1 class="text-centre">{% trans "Your cart is waiting for you" %}</h1>
-</div>
+<div id="content-body">
 
-<a href="https://gitcoin.co/owocki">
-<img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
-</a>
-<div class="arrow-up">&nbsp;</div>
-<div id="founder_announce" style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto; margin-bottom: 25px;">
-<p style="margin: 5px; border-radius: 5px;">
-  {{desc|safe}}
-</p>
-</div>
-
-<HR>
-
-<div>
-  <p style="margin: 5px; border-radius: 5px;">
-    You have the following {{grants|length}} grants in your cart:
-  </p>
-  <ol>
-    {% for grant in grants %}
-      <li><b>{{ grant.grant_title }}</b> ({{ grant.grant_donation_amount|default:5 }} {{ grant.grant_donation_currency|default:"DAI" }})</li>
-    {% endfor %}
-  </ol>
-</div>
-
-<HR>
-
-<a href={{base_url}}>
-  <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button large" href="{{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}">{% trans "Go to cart" %}</a>
+  <div>
+    <h1 class="text-centre">{% trans "Your cart is waiting for you" %}</h1>
   </div>
-</a>
+
+  <a href="https://gitcoin.co/owocki?{{ utm_tracking }}">
+  <img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
+  </a>
+  <div class="arrow-up">&nbsp;</div>
+  <div id="founder_announce" style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto; margin-bottom: 25px;">
+  <p style="margin: 5px; border-radius: 5px;">
+    {{desc|safe}}
+  </p>
+  </div>
+
+  <HR>
+
+  <div>
+    <p style="margin: 5px; border-radius: 5px;">
+      You have the following {{grants|length}} grants in your cart:
+    </p>
+    <ol>
+      {% for grant in grants %}
+        <li><b>{{ grant.grant_title }}</b> ({{ grant.grant_donation_amount|default:5 }} {{ grant.grant_donation_currency|default:"DAI" }})</li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <HR>
+
+  <a href="{{base_url}}?{{ utm_tracking }}">
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+      <a class="button large" href="{{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}">{% trans "Go to cart" %}</a>
+    </div>
+  </a>
+
+</div>
 
 
 {% endblock %}
