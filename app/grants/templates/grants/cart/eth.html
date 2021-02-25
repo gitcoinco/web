@@ -237,7 +237,7 @@
         </div>
       </grants-cart-ethereum-zksync>
     
-      <button class="btn btn-primary py-2 ml-2 mr-0" id='js-fundGrants-button'
+      <button class="btn btn-primary py-2 ml-2" id='js-fundGrants-button'
         @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems"
         v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
       >

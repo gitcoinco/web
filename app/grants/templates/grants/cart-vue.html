@@ -58,97 +58,58 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               Your cart is empty.
             </div>
 
-            <div v-else-if="isLoading" class="text-center">
+            <div v-else-if="isLoading" class="text-center mb-5">
               <loading-screen class="my-5"></loading-screen>
               <div>Fetching cart data...</div>
             </div>
 
-            <div v-else class="m-auto">
+            <div v-else class="container m-auto" style="padding-bottom: 10rem;">
               <div>
-                <b-tabs @input="tabChange" v-model="tabIndex" lazy ref="tabs">
-
+                <b-tabs @input="tabChange" v-model="tabIndex" content-class="mt-3" lazy ref="tabs">
                   <!-- Checkout for ETH Grants -->
                   {% include 'grants/cart/eth.html' %}
 
                   <!-- Checkout for ZCASH Grants -->
                   {% include 'grants/cart/qr/zcash.html' %}
 
-              <div v-else-if="isLoading" style="margin:5rem 0">
-                <loading-screen></loading-screen>
-                <div style="margin:3rem; text-align:center">Fetching cart data...</div>
-              </div>
+                  <!-- Checkout for CELO Grants -->
+                  {% include 'grants/cart/qr/celo.html' %}
 
-              <div v-else class="container" style="padding-bottom: 10rem;">
-                <div v-if="!isFullyVerified" class="grant-row-style">
-                  <div class="row align-items-center justify-content-between">
-                    <div class="col col-12 col-md-8 col-lg-9">
-                      <strong>Get up to 45% greater CLR Match Amount by improving your Trust Bonus</strong> <br />
-                      <font size="2">
-                        Increase your CLR Match Amount by verifying your profile with various services, and help Gitcoin be more sybil-resistant.
-                        Do this anytime before the end of the grants round to earn the match retroactively for all your contributions.
-                      </font>
-                    </div>
-                    <div class="col col-12 col-md-4 col-lg-3 mt-3 mt-md-0 mx-auto text-center">
-                      <a href="/{{ username }}/trust" class="button button--primary text-nowrap" role="button" target="_blank">Improve Trust Bonus</a>
-                    </div>
-                  </div>
-                </div>
-                {% comment %} Cart header {% endcomment %}
+                  <!-- Checkout for ZIL Grants -->
+                  {% include 'grants/cart/qr/zil.html' %}
 
-                <div>
+                  <!-- Checkout for Harmony Grants -->
+                  {% include 'grants/cart/extension/harmony.html' %}
 
-                  <b-tabs @input="tabChange" v-model="tabIndex" content-class="mt-3" lazy ref="tabs">
-                    <!-- Checkout for ETH Grants -->
-                    {% include 'grants/cart/eth.html' %}
-
-                    <!-- Checkout for ZCASH Grants -->
-                    {% include 'grants/cart/qr/zcash.html' %}
-
-                    <!-- Checkout for CELO Grants -->
-                    {% include 'grants/cart/qr/celo.html' %}
-
-                    <!-- Checkout for ZIL Grants -->
-                    {% include 'grants/cart/qr/zil.html' %}
-
-                    <!-- Checkout for Harmony Grants -->
-                    {% include 'grants/cart/extension/harmony.html' %}
                   <!-- Checkout for Kusama Grants -->
                   {% include 'grants/cart/extension/kusama.html' %}
 
-                  <template #tabs-end>                    
-                    <div role="presentation" class="nav nav-item ml-auto mt-2">
-                    <!-- d-none d-sm-block hides on screens sm or less-->
-                      <li class="cursor-pointer align-self-center text-primary d-none d-sm-block" @click="createCollection">
-                        <i class="far fa-heart" aria-hidden="true"></i> Save as collection
-                      </li>
-                      <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
-                        <i class="fa fa-share-alt" aria-hidden="true"></i> Share cart
-                      </li>
-                      <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
-                        <i class="fa fa-times" aria-hidden="true"></i> Clear cart
-                      </li>
-                    </div>
-                  </template>
-                </b-tabs>
-              </div>
-              {% comment %} Cart total {% endcomment %}
-            </div>
-
                     <!-- Checkout for Binance Grants -->
-                    {% include 'grants/cart/extension/binance.html' %}
+                  {% include 'grants/cart/extension/binance.html' %}
 
-                    <!-- Checkout for Polkadot Grants -->
-                    {% include 'grants/cart/extension/polkadot.html' %}
+                  <!-- Checkout for Polkadot Grants -->
+                  {% include 'grants/cart/extension/polkadot.html' %}
 
-                    <!-- Checkout for Kusama Grants -->
-                    {% include 'grants/cart/extension/kusama.html' %}
-                  </b-tabs>
-                </div>
-              </template>
-            </b-modal>
+                <template #tabs-end>
+                  <div role="presentation" class="nav nav-item ml-auto mt-2">
+                  <!-- d-none d-sm-block hides on screens sm or less-->
+                    <li class="cursor-pointer align-self-center text-primary d-none d-sm-block" @click="createCollection">
+                      <i class="far fa-heart" aria-hidden="true"></i> Save as collection
+                    </li>
+                    <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
+                      <i class="fa fa-share-alt" aria-hidden="true"></i> Share cart
+                    </li>
+                    <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
+                      <i class="fa fa-times" aria-hidden="true"></i> Clear cart
+                    </li>
+                  </div>
+                </template>
+              </b-tabs>
+            </div>
           </div>
         </grants-cart>
       </div>
+    </div>
 
 
       <script type="text/x-template" id="select2-template">
@@ -198,7 +159,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <!-- </template> -->
 
       <script src="{% static "v2/js/cart.js" %}"></script>
-    </div>
   </body>
 
   {% include 'shared/activity_scripts.html' %}
