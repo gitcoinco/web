@@ -3,6 +3,7 @@ $laptop: "(max-width: 1312px)";
 $tablet: "(max-width: 992px)";
 $phone:  "(max-width: 748px)";
 $small:  "(max-width: 600px)";
+$smaller:  "(max-width: 330px)";
 
 
 @media #{$desktop} {
@@ -32,6 +33,12 @@ $small:  "(max-width: 600px)";
 @media #{$small} { 
   :root{
     --device: "small";
+  }
+}
+
+@media #{$smaller} { 
+  :root{
+    --device: "smaller";
   }
 }
 

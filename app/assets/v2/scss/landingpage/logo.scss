@@ -1,25 +1,27 @@
-#logo{
+#logo {
   position: absolute;
   margin-left: -1.5em;
   left: 3em;
 	
-  img{
+  img {
     width: 8.7rem;
   }
 }
 
-
-
-
 @media #{$tablet} { 
-  #logo{
+  #logo {
     margin-left: -0.5em;
     left: 2em;
 	
-    img{
+    img {
       width: 10rem;
       min-width: 150px;
     }
+  }
+}
 
+@media #{$smaller} { 
+  #logo {
+    margin-top: 1em;
   }
 }
