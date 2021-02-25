@@ -167,7 +167,6 @@
 }
 
 .subheader-line {
-  color: #fff;
   font-size: 1.5em;
   font-weight: 500;
 }
@@ -557,10 +556,12 @@
 }
 
 @media (max-width: 767.98px) {
+  .navbar {
+    padding: 1rem 1rem;
+  }
   .navbar-collapse {
     margin-top: 1.5rem;
   }
-
   #indicate-popup {
     display: none;
   }
@@ -580,8 +581,8 @@
   }
 
   .navbar-expand-md .navbar-nav .nav-link {
-    padding-left: 0.7rem;
-    padding-right: 0.7rem;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
   }
 }
 

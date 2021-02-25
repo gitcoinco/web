@@ -23,18 +23,18 @@
 </button>
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
 
-  <nav class="navbar-nav mx-auto gc-megamenu">
-    <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
+  <nav class="navbar-nav gc-megamenu m-auto">
+    <a class="nav-link px-md-3 {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
 
-    <div class="nav-item dropdown interior gc-megamenu-fw">
+    <div class="nav-item dropdown px-md-3 interior gc-megamenu-fw my-auto">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownProducts" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% trans "Products" %}
       </a>
-      <div class="dropdown-menu shadow-lg" aria-labelledby="dropdownProducts">
+      <div class="dropdown-menu " aria-labelledby="dropdownProducts">
         <div class="gc-megamenu-content">
-          <div class="row justify-content-center">
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active{% endif %}">
+          <div class="row justify-content-center px-0 px-md-2">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'funder_bounties' %}">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="48">
@@ -56,7 +56,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/hackathon' in request.path %}gc-megamenu-active{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/hackathon' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'get_hackathons' %}">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="48">
@@ -72,7 +72,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/grants' in request.path %}gc-megamenu-active{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/grants' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'grants:grants' %}">
                   <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Grants" height="48">
@@ -91,7 +91,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/quests' in request.path %}gc-megamenu-active{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/quests' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'quests_index' %}">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="48">
@@ -107,7 +107,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path %}gc-megamenu-active{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'kudos_main' %}">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="48">
@@ -126,7 +126,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kernel' in request.path %}gc-megamenu-active{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kernel' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="https://kernel.community">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kudos" height="48">
@@ -143,12 +143,12 @@
         </div>
       </div>
     </div>
-    <div class="nav-item dropdown interior gc-megamenu-fw">
+    <div class="nav-item dropdown px-md-3 interior gc-megamenu-fw my-auto">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCommunity" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% trans "Community" %}
       </a>
-      <div class="dropdown-menu shadow-lg" id="" aria-labelledby="dropdownCommunity">
+      <div class="dropdown-menu " id="" aria-labelledby="dropdownCommunity">
         <div class="gc-megamenu-content">
           <div class="row">
             <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
@@ -217,12 +217,12 @@
         </div>
       </div>
     </div>
-    <div class="nav-item dropdown interior gc-megamenu-fw">
+    <div class="nav-item dropdown px-md-3 interior gc-megamenu-fw my-auto">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCompany" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% trans "Company" %}
       </a>
-      <div class="dropdown-menu shadow-lg" id="" aria-labelledby="dropdownCompany">
+      <div class="dropdown-menu " id="" aria-labelledby="dropdownCompany">
         <div class="gc-megamenu-content">
           <div class="row">
 
@@ -293,11 +293,11 @@
     {% if user.is_authenticated %}
     {% include 'shared/notifications.html' %}
     {% include 'shared/search.html' %}
-    {% include 'shared/cart_nav.html' %}
+    <!-- {% include 'shared/cart_nav.html' %} -->
     {% endif %}
   </nav>
 
-  <nav class="navbar-nav mr-3 d-flex align-items-md-center">
+  <nav class="navbar-nav d-flex align-items-md-center">
     {% include 'shared/nav_auth.html' with source='authed' %}
   </nav>
 </div>

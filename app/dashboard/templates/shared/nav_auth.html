@@ -19,12 +19,12 @@
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
 
 {% if show_sales_action %}
-  <a class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold mr-md-3 my-3 my-md-0" target="_blank" href="mailto:sales@gitcoin.co">Contact Sales</a>
+  <a class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold mr-md-3 my-3 my-md-0 ml-md-3" target="_blank" href="mailto:sales@gitcoin.co">Contact Sales</a>
 {% endif %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
 
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+    <a class="nav-link dropdown-toggle pr-4" href="#" id="navbarDropdownWallet" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <b class="wallet-network">•</b>
       <svg class="provider-icon float-left" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,6 +60,9 @@
     </template>
   </div>
 
+  <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
+    data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
+  </a>
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -139,9 +142,6 @@
       </a>
     </div>
   </div>
-  <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
-   data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
-  </a>
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>

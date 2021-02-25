@@ -19,7 +19,7 @@
 
 <div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
   <a class="navbar-brand py-0 text-center" href="/">
-    <img id="logo" src="{% static "v2/images/images/new-logos/gc-h-pos.svg" %}" width="150" height="50" />
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
     <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
     <p style="color:white; font-size: 12px;">Gas Station</p>
@@ -29,7 +29,7 @@
 
 
   {% if user.is_authenticated %}
-  <div class="d-flex order-0 order-md-last">
+  <div class="d-flex order-0 order-last">
     {% include 'shared/notifications.html' %}
     <a class="nav-link login" href="{% url 'profile' %}">
       <img class="nav_avatar" width=25 height=25
