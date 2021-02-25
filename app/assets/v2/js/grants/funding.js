@@ -24,7 +24,7 @@ $(document).ready(function() {
     _alert(message, 'success');
     localStorage.removeItem('contributions_were_successful');
     localStorage.removeItem('contributions_count');
-    $('#tweetModal').modal('show');
+    $('#tweetModal').bootstrapModal('show');
 
     const allDonations = CartData.loadCart();
     const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
