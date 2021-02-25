@@ -5,8 +5,8 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
   const token = vm.getTokenByName(token_name);
 
   // 1. init rsk provider
-  const rskHost = "https://public-node.testnet.rsk.co";
-  // const rskHost = "https://public-node.rsk.co";
+  // const rskHost = "https://public-node.testnet.rsk.co";
+  const rskHost = "https://public-node.rsk.co";
   const rskClient = new Web3();
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
