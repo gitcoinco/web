@@ -29,7 +29,7 @@
     <img id="funded_featured_bounty" width="400" src="{% static "v2/images/emails/funded_featured_bounty.png" %}" alt="Funded featured bounty" title="Grow Open Source Image" style="max-width: 100%;">
 
     <div style="margin-bottom: 20px;">
-      While you wait for a coder to find your issue, maybe now is a good time to <a href="https://gitcoin.co/help/repo">checkout the repo maintainer's guide</a>.
+      While you wait for a coder to find your issue, maybe now is a good time to <a href="https://gitcoin.co/help/repo?{{ utm_tracking }}">checkout the repo maintainer's guide</a>.
     </div>
 
     <div class="bounty">
@@ -53,7 +53,7 @@
         </div>
 
         <div style="margin-bottom: 2em; margin-top: 2em;">
-          <a class="button" href="{{ bounty.url }}">{% trans "View Bounty" %}</a>
+          <a class="button" href="{{ bounty.url }}?{{ utm_tracking }}">{% trans "View Bounty" %}</a>
         </div>
       </div>
     </div>

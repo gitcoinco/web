@@ -36,7 +36,7 @@
     <br>
     <br>
     {% if is_owner %}
-    <a class="button button--primary" href="{{ bounty.absolute_url }}">{% trans "Extend Expiration Date" %}</a>
+    <a class="button button--primary" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "Extend Expiration Date" %}</a>
     {% if bounty.status == 'submitted' %}
       <br>
       <br>
@@ -53,15 +53,15 @@
     <br>
     <br>
     <br>
-    {% blocktrans %}If you have any questions, feel free to reach out {% endblocktrans %}<a href="{% url 'slack' %}">{% blocktrans %}on slack{% endblocktrans %}</a>.
+    {% blocktrans %}If you have any questions, feel free to reach out {% endblocktrans %}<a href="{% url 'slack' %}?{{ utm_tracking }}">{% blocktrans %}on slack{% endblocktrans %}</a>.
 
     {% else %}
 
-      {% blocktrans %}Why don't you leave a comment <a href="{{ bounty.github_url }}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :){% endblocktrans %}
+      {% blocktrans %}Why don't you leave a comment <a href="{{ bounty.github_url }}?{{ utm_tracking }}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :){% endblocktrans %}
 
       <br>
       <br>
-      {% blocktrans %}If you have any problems, feel free to reach out {% endblocktrans %}<a href="{% url 'slack' %}">{% blocktrans %}on slack{% endblocktrans %}</a>.
+      {% blocktrans %}If you have any problems, feel free to reach out {% endblocktrans %}<a href="{% url 'slack' %}?{{ utm_tracking }}">{% blocktrans %}on slack{% endblocktrans %}</a>.
 
 
     {% endif %}

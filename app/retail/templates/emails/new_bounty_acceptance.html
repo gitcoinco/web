@@ -36,7 +36,7 @@
       <div>
         {% if bounty.title %}
           <p class="" style="text-align: left; padding-left: 1em;">
-            <a style="color:#15003e; font-size: 18px;" href="{{ bounty.absolute_url }}">{{ bounty.title }}</a>
+            <a style="color:#15003e; font-size: 18px;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{{ bounty.title }}</a>
           </p>
         {% endif %}
         <div style="text-align: left;">
@@ -62,7 +62,7 @@
   </div>
 
   <p>
-    <b>Github:</b> <a href="{{ bounty.github_url }}">{{ bounty.github_url }}</a>
+    <b>Github:</b> <a href="{{ bounty.github_url }}?{{ utm_tracking }}">{{ bounty.github_url }}</a>
   </p>
   <!-- {% include 'emails/bounty.html' with bounty=bounty %} -->
 
@@ -71,10 +71,10 @@
     <img src="{% static "v2/images/emails/rate-capture.png" %}" width="341" style="max-width: 100%;" alt="capture rating" id="capture_rating">
     <div style="margin-top: 30px;">
       <h3 style="color: #0D0764; text-align: center;">{% trans "How was your experience?" %}</h3>
-      <span style="">{% trans "Help us improve Gitcoin by rating your bounty experience!" %}</span>
+      <span>{% trans "Help us improve Gitcoin by rating your bounty experience!" %}</span>
     </div>
     <div style="margin-bottom: 2em; margin-top: 4em;">
-      <a class="button" href="{% url "profile"  %}ratings/#ratingTabs">{% trans "Rate your bounty experience" %}</a>
+      <a class="button" href="{% url 'profile'  %}ratings/#ratingTabs?{{ utm_tracking }}">{% trans "Rate your bounty experience" %}</a>
     </div>
   </div>
   {% endif %}

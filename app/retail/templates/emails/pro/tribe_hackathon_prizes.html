@@ -84,23 +84,23 @@
               {{ prize.value_true|floatformat }} {{ prize.token_name }}
             {% endif %}
           </p>
-          <a class="button" href="{{ prize.absolute_url }}">{% trans "See Prize Details" %}</a>
+          <a class="button" href="{{ prize.absolute_url }}?{{ utm_tracking }}">{% trans "See Prize Details" %}</a>
         {% endfor %}
       {% endif %}
     {% endfor %}
 
     <h1 style="margin-top: 3.2em">Join hackathon now</h1>
     <p class="text-left" style="margin-top: 2em; margin-bottom: 3em;">{{ intro }}</p>
-    <a href="{{ hackathon.url }}" class="button large">Join Hackathon</a>
+    <a href="{{ hackathon.url }}?{{ utm_tracking }}" class="button large">Join Hackathon</a>
   </div>
 </div>
 <div id="preferred_payout">
   {% if subscriber.profile.preferred_payout_address %}
     Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
-    <a href="{{base_url}}settings/account">New Wallet? Click here to update Payout Address.</a>
+    <a href="{{base_url}}settings/account?{{ utm_tracking }}">New Wallet? Click here to update Payout Address.</a>
   {% else %}
     You do not have a preferred payout address on file.
-    <a href="{{base_url}}settings/account">Click here to set a Payout Address.</a>
+    <a href="{{base_url}}settings/account?{{ utm_tracking }}">Click here to set a Payout Address.</a>
   {% endif %}
 </div>
 {% endblock %}

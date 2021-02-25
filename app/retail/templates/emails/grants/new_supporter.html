@@ -55,11 +55,11 @@
   <h1 style="text-transform: none;">{{ grant.title }}{% trans " has a new supporter!" %}</h1>
   <hr>
   <div class="supporter">
-    <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+    <a href="{% url 'profile' subscription.contributor_profile.handle %}?{{ utm_tracking }}">
       <img src="{{ subscription.contributor_profile.avatar_url }}" width="50" height="50" />
     </a>
     <br>
-    <a class="supporterName" href="{% url 'profile' subscription.contributor_profile.handle %}">
+    <a class="supporterName" href="{% url 'profile' subscription.contributor_profile.handle %}?{{ utm_tracking }}">
       {{ subscription.contributor_profile.handle }}
     </a>
     <p>{% trans "has begun contributing" %}</p>
@@ -73,18 +73,17 @@
 
     {% if subscription.comments %}
     </p>
-      <a href="{% url 'profile' subscription.contributor_profile.handle %}">
+      <a href="{% url 'profile' subscription.contributor_profile.handle %}?{{ utm_tracking }}">
         <img src="{{ subscription.contributor_profile.avatar_url }}" width="20" height="20" />
         {{ subscription.contributor_profile.handle }}
       </a> left a comment along with their subscription:
       <pre>{{subscription.comments}}</pre>
-      <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">Respond to @{{ subscription.contributor_profile.handle }}'s comments here.</a>
+      <a href="{{grant.url}}?{{ utm_tracking }}" class="button" style="display: inline-block; margin-top:10px;">Respond to @{{ subscription.contributor_profile.handle }}'s comments here.</a>
     </p>
     
     {% endif %}
     <p>
-      <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">View Grant</a>
-
+      <a href="{{grant.url}}?{{ utm_tracking }}" class="button" style="display: inline-block; margin-top:10px;">View Grant</a>
     </p>
   </div>
   <hr>

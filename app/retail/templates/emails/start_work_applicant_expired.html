@@ -28,7 +28,7 @@
       {% trans "Hello" %},
     </p>
     <p>
-      <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Please work together to complete the project." %}
+      <a href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on "%}<a href="{{bounty.url}}?{{ utm_tracking }}">{% trans "this bounty" %}</a>.  {% trans "Please work together to complete the project." %}
     </p>
     <br>
     {% include 'emails/bounty.html' with bounty=bounty  %}

@@ -63,12 +63,12 @@
     </div>
     {% if not already_redeemed %}
       <div style="margin-bottom: 1.5em;">
-        <a class="button" href="{{link}}">{% trans "Fund this Request" %}</a>
+        <a class="button" href="{{link}}&{{ utm_tracking }}">{% trans "Fund this Request" %}</a>
         <br>
         <br>
         - or -
         <br>
-        <a class="" href="https://gitcoin.co/{{request.requester.handle}}">{% trans "Write them a message" %}</a>
+        <a href="https://gitcoin.co/{{request.requester.handle}}?{{ utm_tracking }}">{% trans "Write them a message" %}</a>
         <br>
         <br>
         {% if request.other_earnings|length %}

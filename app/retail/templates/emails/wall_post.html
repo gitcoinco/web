@@ -24,14 +24,14 @@
 
   <p>
 
-  <a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> commented on your {{what}}'s wall. This is what they said:
+  <a href="{{activity.profile.url}}?{{ utm_tracking }}">@{{activity.profile.handle}}</a> commented on your {{what}}'s wall. This is what they said:
 
   <pre>
     {{activity.metadata.title}}
   </pre>
 
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ activity.url }}">View Thread</a>
+    <a class="button" href="{{ activity.url }}&{{ utm_tracking }}">View Thread</a>
   </div>
 
   </p>

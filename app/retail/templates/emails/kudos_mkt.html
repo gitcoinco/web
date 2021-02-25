@@ -62,7 +62,6 @@
 <div id="content-body">
   <h1>{% trans "Show Appreciation with Kudos!" %}</h1>
   <div>
-
     <img src="{% static 'v2/images/emails/kudos-logo.png' %}" alt="" width="244" class="" style="margin:3em auto 2em; display: block;">
     <img src="{% static 'v2/images/emails/kudos-group.png' %}" alt="" width="528" class="col-img" style="margin:0 auto 3em; display: block;">
   </div>
@@ -74,7 +73,7 @@
 
 <p class="main-parag">{% blocktrans %} Kudos is a way of <span class="green">showing your appreciation</span> for another Gitcoin member. It's also a way to <span class="green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="green">bought</span> and <span class="green">sold</span> on the Kudos Marketplace.{% endblocktrans %}</p>
 <div style="margin: 3em 0 5em;">
-  <a class="button" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos" %}</a>
+  <a class="button" href="{% url 'kudos_marketplace' %}?{{ utm_tracking }}">{% trans "Send Kudos" %}</a>
 </div>
 <h2>{% trans "Kudos can be used to" %}</h2>
 <p  style="line-height: 2; font-size:18px;">
@@ -92,7 +91,7 @@
 </small>
 
 <div style="margin: 3em 0 5em;">
-  <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
+  <a class="button" href="{% url 'kudos_about' %}?{{ utm_tracking }}">{% trans "Learn More" %}</a>
 </div>
 
 

@@ -62,7 +62,7 @@
       {% if bounty.avatar_url %}
         <img style="border-radius: 20px; display: block; margin-left: auto; margin-right: auto; margin-bottom: 0.5em" src="{{ bounty.avatar_url }}" width=50px height=50px>
         {% if not prize %}
-          <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ bounty.org_name }}</a>
+          <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' highlight.who %}?{{ utm_tracking }}">{{ bounty.org_name }}</a>
         {% endif %}
       {% else %}
         * <strong>{{ bounty.org_name }}</strong>
@@ -90,7 +90,7 @@
         {% endif %}
 
         <p>
-          <b>Github:</b> <a href="{{ bounty.github_url }}">{{ bounty.github_url }}</a>
+          <b>Github:</b> <a href="{{ bounty.github_url }}?{{ utm_tracking }}">{{ bounty.github_url }}</a>
         </p>
 
         <p>
@@ -106,14 +106,14 @@
             by
             {% for fulfillment in bounty.fulfillments.all %}
               {% if fulfillment.fulfiller_github_username %}
-                <a href="{% url "profile" fulfillment.fulfiller_github_username %}">{{ fulfillment.fulfiller_github_username }}</a>
+                <a href="{% url 'profile' fulfillment.fulfiller_github_username %}?{{ utm_tracking }}">{{ fulfillment.fulfiller_github_username }}</a>
               {% elif fulfillment.fulfiller_email %}
                 <a href="mailto:{{ fulfillment.fulfiller_email }}">{{ fulfillment.fulfiller_email }}</a>
               {% else %}
-                <a href="https://etherscan.io/address/{{ fulfillment.fulfiller_address }}">{{ fulfillment.fulfiller_address }}</a>
+                <a href="https://etherscan.io/address/{{ fulfillment.fulfiller_address }}?{{ utm_tracking }}">{{ fulfillment.fulfiller_address }}</a>
               {% endif %}
               {% if fulfillment.fulfiller_github_url %}
-                <a href="{{ fulfillment.fulfiller_github_url }}">(View Submission)</a>
+                <a href="{{ fulfillment.fulfiller_github_url }}?{{ utm_tracking }}">(View Submission)</a>
               {% endif %}
             {% endfor %}
           {% elif bounty.status == 'started' %}
@@ -121,7 +121,7 @@
               by
             {% endif %}
             {% for interested in bounty.interested.all %}
-              <a href="{% url "profile" interested.profile.handle %}"> {{ interested.profile.handle }}</a>
+              <a href="{% url 'profile' interested.profile.handle %}?{{ utm_tracking }}"> {{ interested.profile.handle }}</a>
             {% endfor %}
           {% endif %}
         </p>

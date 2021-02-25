@@ -49,7 +49,7 @@
 
     {% endif %}
 
-    {% trans "You are welcome to re-apply at" %} <a href="{% url 'faucet' %}">{% url 'faucet' %}</a>
+    {% trans "You are welcome to re-apply at" %} <a href="{% url 'faucet' %}?{{ utm_tracking }}">{% url 'faucet' %}</a>
 
     <br>
     <br>

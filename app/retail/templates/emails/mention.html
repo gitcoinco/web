@@ -24,7 +24,7 @@
 
   <p>
 
-  <a href="{{post.profile.url}}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
+  <a href="{{post.profile.url}}?{{ utm_tracking }}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
 
   <pre>
   {% if is_activity %}
@@ -35,7 +35,7 @@
   </pre>
 
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ post.url }}">View Thread</a>
+    <a class="button" href="{{ post.url }}&{{ utm_tracking }}">View Thread</a>
   </div>
 
   </p>

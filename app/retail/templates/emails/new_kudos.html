@@ -137,7 +137,7 @@
       {% endif %}
     </h1>
     <h3 style="text-transform: none;">
-      {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}"><b style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">{{ token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
+      {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}?{{ utm_tracking }}"><b style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">{{ token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
       {% if kudos_transfer.from_name %}
         {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
       {% endif %}
@@ -154,7 +154,7 @@
         &nbsp;
       </div>
       <div class="kudos-hex-content">
-        <a href="{{ token_elem.kudos_token_cloned_from.url }}">
+        <a href="{{ token_elem.kudos_token_cloned_from.url }}?{{ utm_tracking }}">
           <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}">
         </a>
       </div>
@@ -173,19 +173,19 @@
         {% else %}
           {% trans "The sender" %}
         {% endif %}
-         {% trans " said it was for your work on" %} <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
+         {% trans " said it was for your work on" %} <a href="{{ kudos_transfer.github_url }}?{{ utm_tracking }}">{{ kudos_transfer.github_url }}</a>.
       {% endif %}
     </p>
     <div style="margin: 3em;">
       {% if not already_redeemed %}
-        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="{{ link }}">{% trans "Accept Kudos" %}</a>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="{{ link }}?{{ utm_tracking }}">{% trans "Accept Kudos" %}</a>
       {% endif %}
       {% if already_redeemed %}
         <p>
           {% trans "This kudos has been remitted automatically to the Ethereum address on file (and to your Gitcoin profile). " %}
         </p>
         <BR>
-        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}">{% trans "View Profile" %}</a>
+        <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}?{{ utm_tracking }}">{% trans "View Profile" %}</a>
         <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center" bgcolor="#15003e" href="https://etherscan.io/tx/{{kudos_transfer.txid}}">{% trans "View Transaction" %}</a>
 
       {% elif show_expires %}
@@ -204,7 +204,7 @@
     </div>
   </div>
   <div style="margin: 3em 0 5em;">
-    <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
+    <a class="button" href="{% url 'kudos_about' %}?{{ utm_tracking }}">{% trans "Learn More" %}</a>
   </div>
 </div>
 {% endblock %}

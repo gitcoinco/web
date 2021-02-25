@@ -30,11 +30,11 @@
       <p>
         {% blocktrans %}
         Heads up! The funded issue that you posted (below) has work submitted by
-        <a href="https://github.com/{{ github_username }}">@{{ github_username }}.</a><br>
+        <a href="https://github.com/{{ github_username }}?{{ utm_tracking }}">@{{ github_username }}.</a><br>
         {% endblocktrans %}
       </p>
       <div style="margin-bottom: 2em; margin-top: 2em;">
-        <a class="button button--primary" href="{{bounty_fulfillment.fulfiller_github_url}}">{% trans "View work" %}</a><br>
+        <a class="button button--primary" href="{{bounty_fulfillment.fulfiller_github_url}}?{{ utm_tracking }}">{% trans "View work" %}</a><br>
       </div>
     {% else %}
       <br>

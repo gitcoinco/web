@@ -25,22 +25,22 @@
 
   <p>
 
-  <a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> sent a message to funders of {{activity.grant.title}}. This is what they said:
+  <a href="{{activity.profile.url}}?{{ utm_tracking }}">@{{activity.profile.handle}}</a> sent a message to funders of {{activity.grant.title}}. This is what they said:
 
   <pre>
     {{activity.metadata.title}}
   </pre>
 
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ activity.url }}">View Message</a>
+    <a class="button" href="{{ activity.url }}?{{ utm_tracking }}">View Message</a>
   </div>
   - OR -
   <div style="margin-bottom: 1em; margin-top: 1em;">
-    <a class="" href="{{ activity.grant.url }}?unsubscribe=1">Unsubscribe to Messages from @{{activity.grant.title}}</a>
+    <a class="" href="{{ activity.grant.url }}?unsubscribe=1&{{ utm_tracking }}">Unsubscribe to Messages from @{{activity.grant.title}}</a>
   </div>
   - OR -
   <div style="margin-bottom: 1em; margin-top: 1em;">
-    <a class="" href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">Unsubscribe From ALL Grant Updates</a>
+    <a href="{% url "email_settings" subscriber.priv %}?{{ utm_tracking }}{% if email_type %}&type={{email_type}}{% endif %}">Unsubscribe From ALL Grant Updates</a>
   </div>
 
   </p>

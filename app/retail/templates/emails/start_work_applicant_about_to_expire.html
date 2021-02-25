@@ -28,7 +28,7 @@
       {% trans "Hello" %},
     </p>
     <p>
-      {% trans "Good news!" %} <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "would like to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Please review and approve" %} <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "by clicking approve below." %}
+      {% trans "Good news!" %} <a href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "would like to work on "%}<a href="{{bounty.url}}?{{ utm_tracking }}">{% trans "this bounty" %}</a>.  {% trans "Please review and approve" %} <a href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "by clicking approve below." %}
     </p>
     <br>
     {% include 'emails/bounty.html' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom' %}

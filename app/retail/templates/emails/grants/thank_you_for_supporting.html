@@ -119,11 +119,11 @@
   <hr>
   <br>
   <div class="grant-info">
-    <a href="{% url 'grants:details' grant.id grant.slug %}">
+    <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
       <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
     </a>
     <br>
-    <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}">
+    <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
       {{ grant.title }}
     </a>
     <p class="grant-description">
@@ -136,16 +136,16 @@
       <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
     </p>
     <p>{% trans "You can see all the grants you support and your transaction history " %}
-        <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
+        <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
     </p>
   </div>
 
   <br>
-  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}">{% trans "View Updates" %}</a>
+  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Updates" %}</a>
   <br>
   <br>
   <p>{% trans "If you ever need to, you can cancel your support" %}
-    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
+    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans "here." %}</a>
   </p>
   <hr>
   {% endwith %}

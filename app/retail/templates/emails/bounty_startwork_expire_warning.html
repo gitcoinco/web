@@ -44,11 +44,11 @@
     <br>
     -{% trans "OR" %}-
     <br>
-    {% blocktrans %}If not, click 'Stop Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
+    {% blocktrans %}If not, click 'Stop Work' on the <a href="{{ bounty.absolute_url }}?{{ utm_tracking }}">issue detail page</a>.{% endblocktrans %}
 
     <br>
     <br>
-    If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.
+    If you have any questions, feel free to reach out <a href="{% url 'slack' %}?{{ utm_tracking }}">on slack</a>.
 
     <br>
     <h5>{% trans "Funded Issue Details" %}</h5>

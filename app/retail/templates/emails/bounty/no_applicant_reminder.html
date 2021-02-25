@@ -86,7 +86,7 @@
     <img class="rounded mt-3" src="{{ bounty.avatar_url }}" width="100" height="100">
 
     <h2>
-      <a href="{{ bounty.absolute_url }}">
+      <a href="{{ bounty.absolute_url }}?{{ utm_tracking }}">
         {{ bounty.title }}
       </a>
     </h2>
@@ -108,7 +108,7 @@
   {% endif %}
 
   <p class="btn-container">
-    <a class="button" href="{{ directory_link }}">GO TO USER DIRECTORY</a>
+    <a class="button" href="{{ directory_link }}&{{ utm_tracking }}">GO TO USER DIRECTORY</a>
   </p>
 </div>
 {% endblock %}

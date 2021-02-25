@@ -792,3 +792,15 @@ def articles():
             'alt': 'open kudos'
         }
     ]
+
+
+def build_utm_tracking(email_name):
+    from urllib.parse import urlencode
+
+    params = {
+        'utm_source': 'gitcoin',
+        'utm_medium': 'email',
+        'utm_campaign': email_name
+    }
+
+    return urlencode(params)

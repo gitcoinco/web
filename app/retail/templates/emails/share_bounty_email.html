@@ -26,7 +26,7 @@
     <h3 style="text-transform: none;">@{{from_profile.handle}} {% trans "invited you to work on a bounty" %}</h3><hr>
     <div>
         <p>{{msg}}</p>
-        <a class="button" href="{{ invite_url }}">{% trans "View Bounty" %}</a>
+        <a class="button" href="{{ invite_url }}?{{ utm_tracking }}">{% trans "View Bounty" %}</a>
         <br><br>
     </div>
     <hr>

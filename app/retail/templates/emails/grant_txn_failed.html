@@ -43,7 +43,7 @@
     <p>
       Your contribution to these grants failed due to a technical issue.
       {% for grant in grants %}
-        <li st><a href="{{grant.url}}">{{grant.title}}</a></li>
+        <li><a href="{{grant.url}}?{{ utm_tracking }}">{{grant.title}}</a></li>
       {% endfor %}
     </p>
   </div>
@@ -56,7 +56,7 @@
   </div>
 
   <div style="margin-bottom: 3em; margin-top: 3em;">
-    <a class="button" href="{{ bulk_add_url }}">{% trans "Resubmit Transaction" %}</a>
+    <a class="button" href="{{ bulk_add_url }}?{{ utm_tracking }}">{% trans "Resubmit Transaction" %}</a>
     <br><br>
     <a href="{{ tx_url }}">View on Etherscan</a>
   </div>

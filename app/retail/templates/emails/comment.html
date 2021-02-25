@@ -24,7 +24,7 @@
 
   <p>
 
-  <a href="{{comment.profile.url}}">@{{comment.profile.handle}}</a> commented on your status update. This is what the thread looks like:
+  <a href="{{comment.profile.url}}?{{ utm_tracking }}">@{{comment.profile.handle}}</a> commented on your status update. This is what the thread looks like:
 
   <pre>
   {% for comment in comment.activity.comments.all %}
@@ -33,7 +33,7 @@
   </pre>
 
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ comment.url }}">View Thread</a>
+    <a class="button" href="{{ comment.url }}&{{ utm_tracking }}">View Thread</a>
   </div>
 
   </p>

@@ -120,7 +120,7 @@
       <div class="text-left" style="color: #15003E;">
         <p class="font-weight-bold mb-0">{{event.title}}</p>
         <p style="margin-top: 0; margin-bottom: 0;">{{event.date}}</p>
-        <a href="{{event.url}}?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Read More</a>
+        <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
       </div>
     {% endfor %}
   {% endif %} -->
@@ -131,24 +131,24 @@
   <div class="text-left" style="color: #15003E;">
     <p class="font-weight-bold mb-0">Witnet Incentive Program: Bug Bounty</p>
     <p style="margin-top: 0; margin-bottom: 0;">2020-09-15</p>
-    <a href="{{event.url}}?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Read More</a>
+    <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
   </div>
   <div class="text-left" style="color: #15003E;">
     <p class="font-weight-bold mb-0">Chasing The GHOST: Network Security Hackathon</p>
     <p style="margin-top: 0; margin-bottom: 0;">2020-11-03</p>
-    <a href="{{event.url}}?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Read More</a>
+    <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
   </div>
 
   {% if trending_avatar %}
     <br>
     <h3 class="section-header">{% trans "Trending Avatar" %}</h3>
     <hr>
-    <a href="{{trending_avatar.url}}&utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">
+    <a href="{{trending_avatar.url}}&{{ utm_tracking }}">
       <img class="avatar" src='{{trending_avatar.img_url}}'>
     </a>
     <br>
     <div style="margin-top: 25px;">
-      <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}&utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Try Avatar</a>
+      <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}&{{ utm_tracking }}">Try Avatar</a>
     </div>
   {% endif %}
 
@@ -169,7 +169,7 @@
       </div>
     </div>
     <div style="margin-top: 25px;">
-      <a class="button" style="text-decoration: none;" href="{{quest.absolute_url}}&utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Play Quest</a>
+      <a class="button" style="text-decoration: none;" href="{{quest.absolute_url}}&{{ utm_tracking }}">Play Quest</a>
     </div>
   {% endif %} -->
 
@@ -187,7 +187,7 @@
     </div>
     </div>
     <div style="margin-top: 25px;">
-      <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}&utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Play Quest</a>
+      <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}&{{ utm_tracking }}">Play Quest</a>
     </div>
   {% endif %}
 
@@ -201,7 +201,7 @@
     </div>
     <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">5000 USDT</p>
     <div style="margin-top: 25px; ">
-      <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">View Bounty</a>
+      <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
     </div>
   {% endif %}
 
@@ -211,7 +211,7 @@
         <img class="avatar-bounty" src="{{ bounty.avatar_url }}">
         <div style="color: #15003E;">
         {% if not prize %}
-          <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' highlight.who %}?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">{{ bounty.org_name }}</a>
+          <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' highlight.who %}?{{ utm_tracking }}">{{ bounty.org_name }}</a>
         {% endif %}
       {% else %}
         * <strong>{{ bounty.org_name }}</strong>
@@ -232,7 +232,7 @@
         {% endif %}
       </p>
       <div style="margin-top: 25px; ">
-        <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">View Bounty</a>
+        <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
       </div>
     {% endfor %}
   {% endif %}
@@ -242,10 +242,10 @@
 <div id="preferred_payout">
   {% if subscriber.profile.preferred_payout_address %}
     Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
-    <a href="{{base_url}}settings/account?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">New Wallet? Click here to update Payout Address.</a>
+    <a href="{{base_url}}settings/account?{{ utm_tracking }}">New Wallet? Click here to update Payout Address.</a>
   {% else %}
     You do not have a preferred payout address on file.
-    <a href="{{base_url}}settings/account?utm_source=gitcoin&utm_medium=email&utm_campaign=new_bounty_daily">Click here to set a Payout Address.</a>
+    <a href="{{base_url}}settings/account?{{ utm_tracking }}">Click here to set a Payout Address.</a>
   {% endif %}
 </div>
 

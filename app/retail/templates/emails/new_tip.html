@@ -83,7 +83,7 @@
 
         {% if comments_priv and tip.is_programmatic_comment %}
           <p>
-            The tip was attached to <a href="{{tip.attached_object.url}}">this activity feed item</a>.
+            The tip was attached to <a href="{{tip.attached_object.url}}?{{ utm_tracking }}">this activity feed item</a>.
           </p>
           {% endif %}
 
@@ -112,7 +112,7 @@
     </div>
     {% if not already_redeemed %}
       <div style="margin-bottom: 1.5em;">
-        <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
+        <a class="button" href="{{link}}?{{ utm_tracking }}">{% trans "Redeem Tip" %}</a>
       </div>
     {% endif %}
     <div>

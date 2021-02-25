@@ -48,11 +48,11 @@
     <br>
     -{% trans "AND" %}-
     <br>
-    {% blocktrans %}Click 'Start Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
+    {% blocktrans %}Click 'Start Work' on the <a href="{{ bounty.absolute_url }}?{{ utm_tracking }}">issue detail page</a>.{% endblocktrans %}
 
     <br>
     <br>
-    If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.
+    If you have any questions, feel free to reach out <a href="{% url 'slack' %}?{{ utm_tracking }}">on slack</a>.
 
     <br>
     <h4>{% trans "Funded Issue Details" %}</h4>
