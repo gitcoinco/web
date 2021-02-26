@@ -81,7 +81,7 @@
               </template>
 
               {% if is_staff %}
-                <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full alpha-warning" @click="outputToCSV($event)">Export</b-button>
+                <b-button class="btn btn-sm btn-primary font-caption btn-block alpha-warning" @click="outputToCSV($event)">Export</b-button>
               {% endif %}
             </nav>
           </transition>
@@ -261,7 +261,7 @@
                         </p>
                       </div>
                       <div class="text-center mt-2">
-                        <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-gc-blue font-caption font-weight-semibold button--full" @click="openBounties(user)">Invite to Bounty</button>
+                        <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-primary btn-block" @click="openBounties(user)">Invite to Bounty</button>
                       </div>
                     </template>
 

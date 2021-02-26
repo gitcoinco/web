@@ -6,7 +6,7 @@
               </div>
 
               <div class="mr-4" v-if="current_type !== 'collections'">
-                <button class="btn btn-outline-gc-blue font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
+                <button class="btn btn-outline-primary font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
               </div>
               <div class="mr-4 d-inline-block" v-if="grants.length">
                 <span class="heading mr-2">View</span>

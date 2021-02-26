@@ -109,7 +109,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       </font>
                     </div>
                     <div class="col col-12 col-md-4 col-lg-3 mt-3 mt-md-0 mx-auto text-center">
-                      <a href="/{{ username }}/trust" class="button button--primary text-nowrap" role="button" target="_blank">Improve Trust Bonus</a>
+                      <a href="/{{ username }}/trust" class="btn btn-primary text-nowrap" role="button" target="_blank">Improve Trust Bonus</a>
                     </div>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <b-form-select v-model="selectedCollection" text-field="title" value-field="id" :options="collections" size="md" class="mt-3"></b-form-select>
                     </div>
 
-                    <b-button @click="createCollection()" class="btn-gc-blue mt-2 mb-2" size="lg" :disabled="!isValidCollection">Save Collection</b-button>
+                    <b-button @click="createCollection()" class="btn-primary mt-2 mb-2" size="lg" :disabled="!isValidCollection">Save Collection</b-button>
                     <br>
                   </div>
                 </template>

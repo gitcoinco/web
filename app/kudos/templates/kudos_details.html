@@ -129,7 +129,7 @@
             <div class="row justify-content-start pb-4">
               <div class="col-12">
                 {% if send_enabled %}
-                  <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
+                  <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-primary">{% trans "Send Kudos" %}</a>
                 {% if kudos.quests_reward %}
                   <BR>
                   <BR>
@@ -142,7 +142,7 @@
                   {% endfor %}
                 {% endif %}
                 {% else %}
-                  <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
+                  <button type="button" class="btn btn-primary" disabled>{% trans "Not Available" %}</button>
                   <small class="d-block mt-2">
                     {% if send_enabled_for|length %}
                       {% trans "These users have the power to send this Kudos.  Contact them if you want this Kudos:" %}

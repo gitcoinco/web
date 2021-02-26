@@ -109,7 +109,7 @@
             <i class="far fa-eye mr-2"></i>
             Quick View
           </b-button>
-          <button @click.prevent="addToCart(grant)" :class="{'btn-lg': collection && isCurator}" class="btn btn-gc-blue btn-block font-body font-weight-semibold">
+          <button @click.prevent="addToCart(grant)" :class="{'btn-lg': collection && isCurator}" class="btn btn-primary btn-block font-body font-weight-semibold">
             + Add to Cart
           </button>
           <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})"  class="btn btn-block btn-outline-danger font-body font-weight-semibold" v-if="isCurator">
@@ -242,10 +242,10 @@
                 <i class="far fa-eye mr-2"></i>
                 Quick View
               </b-button>
-              <button @click.prevent="removeFromCart(grant)" class="btn btn-gc-outline-red ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
+              <button @click.prevent="removeFromCart(grant)" class="btn btn-outline-danger ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
                 - Remove from Cart
               </button>
-              <button @click.prevent="addToCart(grant)" class="btn btn-gc-blue ml-1 font-body" style="flex: 1 1 0px;" v-else>
+              <button @click.prevent="addToCart(grant)" class="btn btn-primary ml-1 font-body" style="flex: 1 1 0px;" v-else>
                 + Add to Cart
               </button>
             </div>

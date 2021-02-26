@@ -553,7 +553,7 @@ body #main a.no-pink:hover {
   color: var(--gc-blue-hover);
 }
 
-body #main a.no-pink.btn-gc-blue {
+body #main a.no-pink.btn-primary {
   color: #ffffff;
 }
 

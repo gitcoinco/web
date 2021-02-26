@@ -43,7 +43,7 @@
                 <input name="tags" id="tags" class="form__input" type="text" placeholder="python, javascript" value="">
               </div>
               <div class="col-12 col-md-3 pt-3">
-                <button class="mt-4 btn btn-gc-blue btn-sm font-caption font-weight-semibold" type="submit">Add Project</button>
+                <button class="mt-4 btn btn-primary btn-sm font-caption font-weight-semibold" type="submit">Add Project</button>
               </div>
             </div>
           </div>
@@ -72,9 +72,9 @@
         </div>
       </div>
       <div class="float-right">
-        <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.bounty.url}}">View Bounty &gt;</a>
+        <a class="btn btn-primary btn-sm m-2" href="{{submission.bounty.url}}">View Bounty &gt;</a>
         {% if submission.fulfiller_github_url %}
-          <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
+          <a class="btn btn-primary btn-sm m-2" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
         {% endif %}
       </div>
     </div>
@@ -96,12 +96,12 @@
       </div>
       <div class="float-right">
         {% if pi.link %}
-          <a class="btn btn-gc-blue btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
+          <a class="btn btn-primary btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
         {% endif %}
         <form method="POST">
           {% csrf_token %}
           <input type="hidden" value="{{ pi.pk }}" name="project_pk">
-          <button type="submit" class="btn btn-gc-pink btn-sm m-2">Delete</button>
+          <button type="submit" class="btn btn-danger btn-sm m-2">Delete</button>
         </form>
       </div>
     </div>

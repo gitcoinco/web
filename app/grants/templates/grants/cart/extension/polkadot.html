@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button :disabled="!isPolkadotExtInstalled" class="btn btn-gc-blue px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'POLKADOT')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
+          <b-button :disabled="!isPolkadotExtInstalled" class="btn btn-primary px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'POLKADOT')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
             Payout
           </b-button>
         </div>
@@ -91,7 +91,7 @@
             </p>
             <p>
               <i class="fas fa-times" style="font-size: 7rem;"></i>
-              <a href="#" class="btn btn-gc-pink btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-gc-blue font-smaller-2 py-2 px-4">Try again in some time</a>
+              <a href="#" class="btn btn-danger btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Try again in some time</a>
             </p>
           </div>
           <div v-else-if="grant.payment_status == 'waiting-on-user-input'">
@@ -140,7 +140,7 @@
               <a :href="'https://polkadot.subscan.io/extrinsic/' + grant.txnid" target="_blank">here.</a>
             </p>
 
-            <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-gc-blue btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-gc-blue font-smaller-2 py-2 px-4">Payout your next Grant</a>
+            <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-primary btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Payout your next Grant</a>
           </div>
         </div>
       </modal>

@@ -249,8 +249,8 @@ Vue.mixin({
           user.is_following = false;
         }
 
-        event.target.classList.toggle('btn-outline-green');
-        event.target.classList.toggle('btn-gc-blue');
+        event.target.classList.toggle('btn-outline-secondary');
+        event.target.classList.toggle('btn-primary');
       }).fail(function(error) {
         event.target.disabled = false;
       });

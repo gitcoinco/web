@@ -133,7 +133,7 @@
                 <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 alpha-warning">
                   <span class="font-weight-bold">[[ numUsers ]]</span> users found
                 </p>
-                <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-primary ml-2" id="bulk-invite-modal">
                   Invite all to bounty
                 </button>
               {% endif %}
@@ -244,19 +244,19 @@
                         </p>
                       </div>
                       <div class="text-center mt-2">
-                        <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-gc-blue font-caption font-weight-semibold button--full" @click="openBounties(user)">Invite to Bounty</button>
+                        <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-primary btn-block" @click="openBounties(user)">Invite to Bounty</button>
                       </div>
                     </template>
 
                     <div class="text-center mt-2">
                       <button v-if="user.is_following" @click="joinTribe(user, $event)"
-                        class="btn btn-sm btn-outline-green font-caption font-weight-semibold button--full"
+                        class="btn btn-sm btn-outline-secondary btn-block"
                       >
                         <i class="fas fa-user-minus mr-1"></i>
                         Following
                       </button>
                       <button v-else @click="joinTribe(user, $event)"
-                        class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
+                        class="btn btn-sm btn-primary btn-block"
                       >
                         <i class="fas fa-user-plus mr-1"></i>
                         Follow
@@ -287,7 +287,7 @@
                 <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
               </div>
               <div class="bounties-box">
-                <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-primary': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
                   <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
                   <p class="line-clamp font-smaller-2 my-0 mx-2">
                     [[ bounty.title ]]
@@ -310,8 +310,8 @@
           <div slot="footer" class="d-flex align-items-center flex-fill">
             <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
             <div class="ml-auto">
-              <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-              <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+              <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+              <button  v-if="funderBounties.length" class="btn btn-primary" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
             </div>
           </div>
         </modal>
@@ -341,8 +341,8 @@
             </div>
             <div slot="footer" class="d-flex align-items-center flex-fill">
               <div class="ml-auto">
-                <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-primary" @click="sendInviteAll(issueDetails.pk)">Invite</button>
               </div>
             </div>
           </modal>

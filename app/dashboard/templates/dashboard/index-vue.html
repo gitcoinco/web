@@ -129,7 +129,7 @@
                     <small class="hackathon-countdown text-uppercase">Hackathon Over</small>
                   {% endif %}
                 </p>
-                <a href="{% url "sponsors-dashboard" hackathon.slug %}" v-if="isSponsor" class="btn btn-gc-blue float-right mr-5">Sponsor dashboard</a>
+                <a href="{% url "sponsors-dashboard" hackathon.slug %}" v-if="isSponsor" class="btn btn-primary float-right mr-5">Sponsor dashboard</a>
               </div>
             </div>
             <div class="col-12 col-xl-10 body hackathon-explorer">
@@ -173,7 +173,7 @@
                             <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
                               <div>
                                 <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
-                                <b-button class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</b-button>
+                                <b-button class="btn btn-primary" @click="activePanel = 1">Townsquare</b-button>
                               </div>
                             {% include 'shared/hackathon_sponsors.html' %}
 
@@ -185,10 +185,10 @@
 
                           {% if hackathon.quest_link %}
                             <p>Explore Web3 and be prepared via sponsors Quests</p>
-                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                            <a class="btn btn-primary" href="{{hackathon.quest_link}}">Explore Quests</a>
                           {% else %}
                             <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                            <a class="btn btn-primary" href="{% url 'quests_index' %}">Explore Quests</a>
                           {% endif %}
                         </div>
 
@@ -426,7 +426,7 @@
                                 <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 alpha-warning">
                                   <span class="font-weight-bold">[[ numUsers ]]</span> users found
                                 </p>
-                                <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                                <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-primary ml-2" id="bulk-invite-modal">
                                   Invite all to bounty
                                 </button>
                               {% endif %}
@@ -469,7 +469,7 @@
                                   <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
                                 </div>
                                 <div class="bounties-box">
-                                  <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                                  <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-primary': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
                                     <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
                                     <p class="line-clamp font-smaller-2 my-0 mx-2">
                                       [[ bounty.title ]]
@@ -492,8 +492,8 @@
                             <div slot="footer" class="d-flex align-items-center flex-fill">
                               <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
                               <div class="ml-auto">
-                                <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                                <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+                                <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                                <button  v-if="funderBounties.length" class="btn btn-primary" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
                               </div>
                             </div>
                           </modal>
@@ -523,8 +523,8 @@
                               </div>
                               <div slot="footer" class="d-flex align-items-center flex-fill">
                                 <div class="ml-auto">
-                                  <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                                  <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                                  <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                                  <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-primary" @click="sendInviteAll(issueDetails.pk)">Invite</button>
                                 </div>
                               </div>
                             </modal>
@@ -598,8 +598,8 @@
                       <div style="background-color: white; padding: 5%;" class="container">
                         <div class="d-flex mt-4 justify-content-center position-relative ">
                           <h2 class="text-center font-weight-bold">Hackathon Showcase</h2>
-                          <button style="right: 0" class="position-absolute btn btn-gc-blue" @click="saveShowcase" v-if="is_staff && isEditing">Save Changes</button>
-                          <button style="right: 0" class="position-absolute btn btn-gc-blue" @click="isEditing=true" v-if="is_staff && !isEditing">Edit</button>
+                          <button style="right: 0" class="position-absolute btn btn-primary" @click="saveShowcase" v-if="is_staff && isEditing">Save Changes</button>
+                          <button style="right: 0" class="position-absolute btn btn-primary" @click="isEditing=true" v-if="is_staff && !isEditing">Edit</button>
                         </div>
                       <div class="col-12 mt-4 mb-4 col-md-offset-2 dark-section d-flex justify-content-around">
                         <div class="d-flex justify-content-center align-items-center flex-column">
@@ -666,7 +666,7 @@
                                   <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ getSponsor(spotlight.sponsor).display_name ]]</p>
                                 </div>
                                 <b-button variant="outline-primary" @click="followTribe(spotlight.sponsor, $event)"
-                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'px-4']"
+                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-secondary' : 'btn-primary', 'btn-sm', 'px-4']"
                                 >
                                   [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
                                 </b-button>
@@ -758,7 +758,7 @@
                             <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
                           </ul>
                           <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)"
-                            v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
+                            v-bind:class="[sponsor.followed ? 'btn-outline-secondary' : 'btn-primary', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
                           >
                             [[ sponsor.followed ? "following" : "follow" ]]
                           </b-button>
