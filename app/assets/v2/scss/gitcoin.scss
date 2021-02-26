@@ -1,16 +1,3 @@
-body {
-  overflow-x: hidden;
-  width: 100%;
-  background-color: #fff;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-h4,
-.h4 {
-  padding-top: 40px;
-}
-
 #indicate-popup {
   position: fixed;
   top: 0.25rem;
@@ -21,11 +8,7 @@ h4,
 .sticky-top {
   position: sticky!important;
   top: 0;
-  z-index: 1;
-}
-
-.lighter {
-  font-weight: lighter;
+  z-index: 2;
 }
 
 .no-gutter {
@@ -64,18 +47,6 @@ h4,
   color: lightgray !important;
 }
 
-.header {
-  background-image: url('/static/v2/images/header-bg.png');
-  background-color: #0d023b;
-  background-size: cover;
-  background-position: 0px 0px;
-  background-repeat: no-repeat;
-  position: relative;
-}
-
-.index .header {
-  overflow: hidden;
-}
 
 .minihero {
   overflow: hidden;
@@ -88,25 +59,9 @@ h4,
   color: var(--gc-green);
 }
 
-.header.dash {
-  overflow: visible;
-}
-
 .header-contributor {
-  background-image: url('/static/v2/images/landing/contributor/hero_header_bg.jpg');
+  background-image: url(static('v2/images/landing/contributor/hero_header_bg.jpg'));
   background-color: #3f00ff;
-}
-
-.gitcoin-background {
-  background: url("/static/v2/images/header-bg.png") #0d023b;
-  background-attachment: fixed;
-  background-position: center 0;
-}
-
-.dropdown-toggle::after {
-  position: relative;
-  top: 2px;
-  right: -4px;
 }
 
 .text-white {
@@ -193,37 +148,6 @@ h4,
   letter-spacing: 0.5rem;
 }
 
-div.button-pink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #f9006c;
-  font-size: 0.95rem;
-  font-weight: bold;
-  line-height: 42px;
-  text-transform: uppercase;
-  background: none;
-  width: 130px;
-  height: 39px;
-  border-radius: 19px;
-  border: 3px solid #f9006c;
-  letter-spacing: 0.1em;
-}
-
-.git-pill {
-  background-color: #0d023b;
-  border-radius: 1.2rem;
-  padding-left: 0.95rem;
-  padding-right: 0.95rem;
-  height: 2rem;
-}
-
-.git-pill span {
-  position: relative;
-  top: 2px;
-  left: 2px;
-}
 
 .header-line {
   color: #12c971;
@@ -243,7 +167,6 @@ div.button-pink {
 }
 
 .subheader-line {
-  color: #fff;
   font-size: 1.5em;
   font-weight: 500;
 }
@@ -264,7 +187,7 @@ div.button-pink {
 
 .light-bg {
   background-color: rgba(239, 243, 238, 0.7);
-  background-image: url('/static/v2/images/light-bg.png');
+  background-image: url(static('/v2/images/light-bg.png'));
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -281,7 +204,7 @@ div.button-pink {
 
 .white-light-bg {
   background-color: white;
-  background-image: url('/static/v2/images/light-bg.png');
+  background-image: url(static('v2/images/light-bg.png'));
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -399,6 +322,14 @@ div.button-pink {
   text-decoration: underline;
 }
 
+.footer__notification {
+  margin-top: -64px;
+}
+
+.left-0 {
+  left: 0px;
+}
+
 .footer {
   background-color: #0d023b;
   padding-top: 4rem;
@@ -418,17 +349,6 @@ div.button-pink {
   top: -10px
 }
 
-.nav-link:visited {
-  color: #eff4ee;
-}
-
-.navbar-expand-md .navbar-nav .nav-link {
-  color: #eff4ee;
-  text-decoration: none;
-  padding-right: 1rem;
-  padding-left: 1rem;
-  font-size: 0.9rem;
-}
 
 .footer .nav-link:hover {
   border-radius: 2px;
@@ -623,6 +543,10 @@ div.button-pink {
   left: 5rem;
 }
 
+.navbar {
+  min-height: 66px;
+}
+
 @media (max-width: 389.9px) {
 
   .footer__main {
@@ -632,10 +556,12 @@ div.button-pink {
 }
 
 @media (max-width: 767.98px) {
+  .navbar {
+    padding: 1rem 1rem;
+  }
   .navbar-collapse {
     margin-top: 1.5rem;
   }
-
   #indicate-popup {
     display: none;
   }
@@ -655,8 +581,8 @@ div.button-pink {
   }
 
   .navbar-expand-md .navbar-nav .nav-link {
-    padding-left: 0.7rem;
-    padding-right: 0.7rem;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
   }
 }
 
@@ -711,7 +637,7 @@ div.button-pink {
 }
 
 #codefund .cf-wrapper {
-  font-family: 'Muli', sans-serif !important;
+  font-family: 'Libre Franklin', sans-serif !important;
   text-align: center !important;
 }
 
@@ -949,6 +875,10 @@ textarea.status-textarea {
   width: 24px;
   max-height: 24px;
   vertical-align: top;
+}
+
+.provider-icon {
+  width: 1.25em;
 }
 
 .wallet-network {

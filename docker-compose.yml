@@ -61,6 +61,8 @@ services:
     ports:
       - "8000:8000"
       - "3030:3030"
+      - "8001:8001"
+      - "35729:35729"
     depends_on:
       - db
     stdin_open: true

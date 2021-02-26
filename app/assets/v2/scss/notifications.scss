@@ -1,3 +1,6 @@
+// import variables and mixins
+@import './gc-mixins';
+
 html {
   --color-notification: 37, 232, 153;
   --badge-bg: #D6FBEB;
@@ -15,18 +18,19 @@ html.dark-mode {
   --badge-blue-text: white;
 }
 
-.navbar-nav .nav-link.notification__icon {
-  position: relative;
-  font-size: 18px;
-  color: white;
-}
+// .navbar-nav .nav-link.notification__icon {
+//   position: relative;
+//   font-size: 18px;
+//   color: white;
+// }
 
 .notification__icon.dropdown-toggle::after {
   content: none;
 }
 
 .notification__dot {
-  background: red;
+  background: rgba(255,255,255,0.8);
+  color: $navbar-light-hover-color;
   display: none;
   min-width: 17px;
   height: 17px;

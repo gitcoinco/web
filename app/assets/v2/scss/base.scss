@@ -25,9 +25,6 @@ span {
   word-wrap: break-word;
 }
 
-a {
-  color: var(--link-color);
-}
 
 .cursor-pointer {
   cursor: pointer !important;
@@ -39,32 +36,6 @@ a {
   cursor: pointer;
   border-radius: 50%;
   background-size: cover;
-}
-
-.navbar-dark .navbar-nav .nav-link {
-  border-radius: 2px;
-  color: white;
-}
-
-.navbar .interior .dropdown-item {
-  color: black !important;
-  font-size: 0.9rem;
-}
-
-.navbar .interior .dropdown-item:hover {
-  color: white !important;
-}
-
-.navbar .interior .dropdown-item:hover img{
-  filter: invert(100%);
-}
-.navbar .interior .dropdown-item:hover i{
-  color: white;
-}
-
-#navbarSupportedContent {
-  padding-top: 2px;
-  padding-bottom: 2px;
 }
 
 .navbar-nav .btn-gc-blue {
@@ -81,32 +52,6 @@ a {
   max-height: 88vh;
 }
 
-.nav_avatar,
-.navbar__cta,
-.nav-item.dropdown,
-.navbar-nav .nav-link {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.nav-link.login i {
-  font-size: 1.5em;
-  position: relative;
-  top: 3px;
-  margin-right: 10px;
-}
-
-.navbar-nav .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.navbar-nav a.nav-link.selected {
-  color: #4aeaa7 !important;
-}
-
-.navbar a.slack i {
-  margin-right: 3px;
-}
 
 .navbar-network {
   border: 1px solid #828282;
@@ -982,7 +927,6 @@ input.is-invalid {
   color: white;
   padding: 5px 10px;
   border-radius: 2px;
-  margin-bottom: 15px;
   display: block;
   text-align: center;
 }

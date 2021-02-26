@@ -1,0 +1,7 @@
+body {
+  background: $bg-color;
+  & > div:after {
+    font-weight: bold;
+    content: "working"
+  }
+}

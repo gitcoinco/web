@@ -15,8 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static compress %}
-{% compress css inline %}
-  <!-- updated to the shared version -->
+{% compress css inline email_head %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />

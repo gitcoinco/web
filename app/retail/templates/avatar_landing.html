@@ -30,69 +30,70 @@
   </head>
 
   <body class="{{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
-      {% include 'home/nav.html' %}
-    </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class="header">
+        {% include 'home/nav.html' %}
+      </div>
 
-    <div class="intro container-fluid py-5" style="background:  url('/static/v2/images/quests/backs/back{{back}}.jpeg'); background-size: cover;">
-      <div class="row justify-content-center">
-        <div class="d-flex flex-column align-items-center ">
-          <img src="{% static 'v2/images/animated_avatars.gif' %}" id="3d_humans" style="border-radius: 100px; max-width: 100%;">
-          <div style="background-color: rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 10px; width: 120%; text-align: center;">
-            <span class="intro-header">
-              {% trans "Gitcoin Avatar Builder" %}
-            </span>
-            <BR>
-            <span class="intro-sub-header">
-              The Gitcoin Community's Free Avatar Creator is an online tool to build a character for yourself.  It has dozens of options to show off your bad-self.  No strings attached, Always free.
-            </span>
+      <div class="intro container-fluid py-5" style="background:  url('/static/v2/images/quests/backs/back{{back}}.jpeg'); background-size: cover;">
+        <div class="row justify-content-center">
+          <div class="d-flex flex-column align-items-center ">
+            <img src="{% static 'v2/images/animated_avatars.gif' %}" id="3d_humans" style="border-radius: 100px; max-width: 100%;">
+            <div style="background-color: rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 10px; width: 120%; text-align: center;">
+              <span class="intro-header">
+                {% trans "Gitcoin Avatar Builder" %}
+              </span>
+              <BR>
+              <span class="intro-sub-header">
+                The Gitcoin Community's Free Avatar Creator is an online tool to build a character for yourself.  It has dozens of options to show off your bad-self.  No strings attached, Always free.
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    {% for product in avatar_options %}
-      <div class="{{ product.name }} products container px-0 p-5">
-          <a href="{{product.url}}">
-            <img src="{{product.img_url}}">
-          </a>
-          <h3>{{product.humanized_name}}</h3>
-          {% if product.description %}
-            <p>{{product.description|safe}}</p>
-          {% endif %}
-          {% if product.artist_bio %}
-            <p><strong>About the artist:</strong> {{product.artist_bio|safe}}</p>
-          {% endif %}
-          <p>
-            Created {{product.created_on|naturaltime}} | {{product.popularity}} avatars created
+      {% for product in avatar_options %}
+        <div class="{{ product.name }} products container px-0 p-5">
+            <a href="{{product.url}}">
+              <img src="{{product.img_url}}">
+            </a>
+            <h3>{{product.humanized_name}}</h3>
+            {% if product.description %}
+              <p>{{product.description|safe}}</p>
+            {% endif %}
+            {% if product.artist_bio %}
+              <p><strong>About the artist:</strong> {{product.artist_bio|safe}}</p>
+            {% endif %}
+            <p>
+              Created {{product.created_on|naturaltime}} | {{product.popularity}} avatars created
+            </p>
+            <br>
+            <a class="btn btn-gc-blue p-1 shadow-none font-weight-bold text-center mt-1 mb-1 p-2" href="{{product.url}}">Try Now</a>
+        </div>
+      {% endfor %}
+        <div class="Features products container px-0 p-5">
+          <a class="btn-lg btn-gc-blue p-1 float-right shadow-none font-weight-bold text-center mt-1 mb-0 p-2"  href="/onboard/profile?steps=avatar#">Try Now</a> 
+          <h3 class="mt-0 pt-0">Ready to give it a try?</h3>
+          <p class="mt-0">
+            The avatar's created by this online avatar builder are:
+            <br>
+            - ✅ Customizable
+            <br>
+            - ✅ Beautiful
+            <br>
+            - ✅ Free
+            <br>
+            - ✅ Works on any device
+            <br>
+            - ✅ Use avatar anywhere you want
           </p>
-          <br>
-          <a class="btn btn-gc-blue p-1 shadow-none font-weight-bold text-center mt-1 mb-1 p-2" href="{{product.url}}">Try Now</a>
-      </div>
-    {% endfor %}
-      <div class="Features products container px-0 p-5">
-        <a class="btn-lg btn-gc-blue p-1 float-right shadow-none font-weight-bold text-center mt-1 mb-0 p-2"  href="/onboard/profile?steps=avatar#">Try Now</a> 
-        <h3 class="mt-0 pt-0">Ready to give it a try?</h3>
-        <p class="mt-0">
-          The avatar's created by this online avatar builder are:
-          <br>
-          - ✅ Customizable
-          <br>
-          - ✅ Beautiful
-          <br>
-          - ✅ Free
-          <br>
-          - ✅ Works on any device
-          <br>
-          - ✅ Use avatar anywhere you want
-        </p>
-      </div>
+        </div>
 
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+    </div>  
   </body>
 </html>
