@@ -193,7 +193,7 @@ function tokenOptionsForGrant(grant) {
     tokenDefault = 'KSM';
   } else if (grant.tenants && grant.tenants.includes('RSK')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 30);
-    tokenDefault = 'RSK';
+    tokenDefault = 'R-BTC';
   } else {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1);
   }
