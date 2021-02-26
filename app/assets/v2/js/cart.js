@@ -617,7 +617,7 @@ Vue.component('grants-cart', {
         if (string === '') {
           string += `${formattedAmount} ${key}`;
         } else {
-          string += `+ ${formattedAmount} ${key}`;
+          string += ` + ${formattedAmount} ${key}`;
         }
       });
       return string;

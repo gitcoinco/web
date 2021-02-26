@@ -55,7 +55,7 @@
               :checked="grant.grant_comments === ''"
             >
             <label :for="`comment-${grant.grant_id}-blank`">
-              <i class="fas fa-plus fa-xs border rounded-circle cursor-pointer p-2" aria-hidden="true"></i>
+              <i class="far fa-comment border rounded-circle cursor-pointer p-2" aria-hidden="true"></i>
             </label>
           </div>
           <input v-if="grant.grant_comments !== undefined" class="col-12 form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
@@ -69,8 +69,8 @@
 
   <!-- Cart total -->
   <div class="row justify-content-between text-left">
-    <div class="col"><h4 class="text-dark font-weight-bold pt-0">Total</h4></div>
-    <div class="col"><h4 class="text-dark font-weight-bold pt-0">[[donationsTotalString]]</h4></div>
+    <div class="col"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
+    <div class="col"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
     <div class="col"></div>
     <div class="col-auto"></div>
   </div>
@@ -79,27 +79,33 @@
 
   <!-- Preferences -->
   <div>
-    <h4 class="col text-dark font-weight-bold p-0">Preferences</h4>
-    <!-- Hide wallet -->
-    <div class="row justify-content-start align-items-center ml-1">
-      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2">
-      <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
-    </div>
     <!-- Optional contribution to Gitcon -->
     <div class="ml-1 mt-3">
       {% trans "Contribute to" %}
       <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin Grants Development Fund</a>
     </div>
     <div class="row justify-content-start align-items-center ml-1 mt-3">
-      <div class="cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
-      <div class="cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
-      <div class="cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
-      <div class="cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
+      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
+      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
+      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+      <div class="col-auto form-inline">
+        <span class="font-caption ml-2 mr-1">Custom</span>
+        <input v-model="gitcoinFactorRaw" class="cursor-pointer border rounded form-control mr-0 pr-0" type="number"
+          min="0" max="99" step="any" id="gitcoin-grant-input-amount"
+          name="gitcoin-grant-input-amount" :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
+        >
+      </div>
     </div>
     <!-- CLR matching -->
     <div class="row justify-content-start align-items-center ml-1 mt-3">
       <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2">
       <label class="mb-0" for="include_for_clr">{% trans "Include this contribution to CLR matching" %}</label>
+    </div>
+    <!-- Hide wallet -->
+    <div class="row justify-content-start align-items-center ml-1 mt-3">
+      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2">
+      <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
     </div>
   </div>
 
@@ -107,16 +113,17 @@
 
   <!-- Summary -->
   <div>
-    <h4 class="col text-dark font-weight-bold p-0">Summary</h4>
-
-    <ul>
-      <li>You are contributing [[donationsToGrantsString]]</li>
-      <li>You are additionally contributing [[donationsToGitcoinString]] to the Gitcoin Maintainer Grant</li>
-      <li>
-        Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
-        <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Read how this works</a>.
-      </li>
-    </ul>
+    <h4 class="col gc-font-base text-dark p-0">Summary</h4>
+    <p>
+      <ul>
+        <li>You are contributing [[donationsToGrantsString]]</li>
+        <li>You are additionally contributing [[donationsToGitcoinString]] to the Gitcoin Maintainer Grant</li>
+        <li>
+          Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
+          <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Read how this works</a>.
+        </li>
+      </ul>
+    </p>
   </div>
 
   <!-- Checkout recommendation -->
