@@ -153,10 +153,10 @@
               </div>
               <div class="offset-md-4 offset-lg-0 col-12 col-lg-3">
                 <p class="text-center text-lg-right mr-lg-5 mb-3">
-                  <a href="{% url 'new_hackathon_bounty' hackathon.slug %}" class="font-weight-semibold font-body btn btn-gc-blue">Create new prize</a>
+                  <a href="{% url 'new_hackathon_bounty' hackathon.slug %}" class="font-weight-semibold font-body btn btn-primary">Create new prize</a>
                 </p>
                 <p class="my-auto text-center text-lg-right mr-lg-5">
-                  <a href="{% url 'users_directory' %}" class="font-weight-semibold font-body btn btn-gc-blue">Find more hackers</a>
+                  <a href="{% url 'users_directory' %}" class="font-weight-semibold font-body btn btn-primary">Find more hackers</a>
                 </p>
               </div>
             </div>
@@ -278,7 +278,7 @@
                                       </b-td>
                                       <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                         <template v-if="project.winner">
-                                          <a class="btn btn-gc-blue font-body" target="_blank" :href="`/issue/payout?pk=${prize.pk}`" v-if="!project.paid">Pay</a>
+                                          <a class="btn btn-primary font-body" target="_blank" :href="`/issue/payout?pk=${prize.pk}`" v-if="!project.paid">Pay</a>
                                           <p class="font-body" v-else>Paid [[ project.payment_date ]]</p>
                                         </template>
                                       </b-td>
@@ -334,7 +334,7 @@
                         </div>
                       </div>
                       <div class="form-group mb-3 mt-4">
-                        <b-button class="btn btn-gc-blue"@click="updateBountyMentors();">Update Mentors</b-button>
+                        <b-button class="btn btn-primary"@click="updateBountyMentors();">Update Mentors</b-button>
                       </div>
                     </div>
                   </manage-mentors>

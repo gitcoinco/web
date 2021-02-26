@@ -40,10 +40,10 @@
             </h2>
 
             <div class="buttons text-center mt-5">
-              <a id="fund-issue" href="/townsquare" class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">
+              <a id="fund-issue" href="/townsquare" class="btn btn-primary mx-2 py-2 px-4 text-white">
                 Explore Gitcoin
               </a>
-              <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4 font-weight-semibold" href="{% url "products" %}">
+              <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4" href="{% url "products" %}">
                 See our Products
               </a>
             </div>
@@ -222,7 +222,7 @@
             </div>
 
             <div class="col-12 text-center mt-5">
-              <a class="btn btn-gc-green text-center font-weight-semibold py-2" href="{% url "products" %}">
+              <a class="btn btn-success text-center font-weight-semibold py-2" href="{% url "products" %}">
                 {% trans "Learn about our products" %}
               </a>
             </div>
@@ -286,17 +286,17 @@
             </div>
             {% for item in know_us %}
               <div class="col-12 col-md-4 text-center">
-                <a class="btn button__home button__outline" href="{{ item.link }}">
+                <a class="btn btn-outline-primary" href="{{ item.link }}">
                   {{ item.text }}
                   <i class="fas fa-chevron-right"></i>
                 </a>
               </div>
             {% endfor %}
             <div class="col-12 text-center">
-              <a class="btn button__home py-2 button__blue text-center" href="/townsquare">
+              <a class="btn btn-primary py-2 text-center" href="/townsquare">
                 {% trans "Explore Gitcoin" %}
               </a>
-              <a class="btn button__home py-2 button__blue text-center" href="mailto:founders@gitcoin.co">
+              <a class="btn btn-primary py-2 text-center" href="mailto:founders@gitcoin.co">
                 {% trans "Get in touch" %}
               </a>
             </div>

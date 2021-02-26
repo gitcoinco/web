@@ -202,7 +202,7 @@
                   </template>
                 </b-skeleton-wrapper>
                 <div class="text-center">
-                  <button class="btn btn-gc-blue btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
+                  <button class="btn btn-primary btn-sm" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
                 </div>
 
 
@@ -250,7 +250,7 @@
                   </template>
                 </b-skeleton-wrapper>
                 <div class="text-center">
-                  <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
+                  <button class="btn btn-primary btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
                 </div>
               </b-tab>
 
@@ -273,7 +273,7 @@
                   </template>
                 </b-skeleton-wrapper>
                 <div class="text-center">
-                  <button class="btn btn-gc-blue btn-sm" v-if="contributors.next_page_number" @click="fetchContributors()" :disabled="loadingContributors">Load more</button>
+                  <button class="btn btn-primary btn-sm" v-if="contributors.next_page_number" @click="fetchContributors()" :disabled="loadingContributors">Load more</button>
                 </div>
               </b-tab>
 

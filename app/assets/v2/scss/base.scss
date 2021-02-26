@@ -206,50 +206,50 @@ p a {
   float:right;
 }
 
-.btn-warning,
-.btn-success,
-.btn-info {
-  padding: 0.4rem 1.4rem;
-  font-size: 1.25rem;
-  border: 2px solid #15003e;
-  transition: none;
-}
+// .btn-warning,
+// .btn-success,
+// .btn-info {
+//   padding: 0.4rem 1.4rem;
+//   font-size: 1.25rem;
+//   border: 2px solid #15003e;
+//   transition: none;
+// }
 
-.btn-warning:hover,
-.btn-success:hover,
-.btn-info {
-  cursor: pointer;
-}
+// .btn-warning:hover,
+// .btn-success:hover,
+// .btn-info {
+//   cursor: pointer;
+// }
 
-.btn-info:hover {
-  background-color: #15003e;
-  border-color: #15003e;
-  color: #f9006c;
-}
+// .btn-info:hover {
+//   background-color: #15003e;
+//   border-color: #15003e;
+//   color: #f9006c;
+// // }
 
-.btn-warning {
-  color: #15003e;
-}
+// .btn-warning {
+//   color: #15003e;
+// }
 
-.btn {
-  cursor: pointer;
-}
+// .btn {
+//   cursor: pointer;
+// }
 
-.btn-warning:hover {
-  background-color: #15003e;
-  border-color: #15003e;
-  color: #ffce08;
-}
+// .btn-warning:hover {
+//   background-color: #15003e;
+//   border-color: #15003e;
+//   color: #ffce08;
+// }
 
-.btn-success {
-  color: #15003e;
-}
+// .btn-success {
+//   color: #15003e;
+// }
 
-.btn-success:hover {
-  background-color: #15003e;
-  border-color: #15003e;
-  color: #25e899;
-}
+// .btn-success:hover {
+//   background-color: #15003e;
+//   border-color: #15003e;
+//   color: #25e899;
+// }
 
 .link-current {
   color: currentColor;
@@ -654,7 +654,7 @@ input[type=text].loading {
 }
 
 #gitcoin_buttons .btn {
-  font-weight: bold;
+  // font-weight: bold;
   margin: 10px;
 }
 

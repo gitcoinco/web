@@ -50,7 +50,7 @@
         {% if row.profile.data.type == 'Organization'%}
           {% if row.profile.handle not in my_tribes|join:"," %}
             <div style="text-align:center">
-              <a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>follow</a>
+              <a href=# class="align-middle btn btn-primary btn-sm mt-2 font-smaller-7" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>follow</a>
             </div>
           {% endif %}
         {% endif %}
@@ -461,31 +461,31 @@
         {% endif %}
       </div>
     </div>
-    <div class="d-none pt-4 d-sm-inline col-sm-2 pl-0 position-relative">
+    <div class="d-none pt-4 d-sm-inline col-sm-2 pl-0">
       {% if row.activity_type == 'new_bounty' %}
-        <div class="bg-gc-blue card-ribbon px-2 text-center">
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
           <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
-          <img height="15" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New bounty</span>
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New bounty</span>
         </div>
       {% elif row.activity_type == 'new_kudos' %}
-        <div class="bg-light-blue card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New kudos</span>
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New kudos</span>
         </div>
       {% elif row.activity_type == 'hackathon_new_hacker' %}
-      <div class="bg-gc-dark-blue card-ribbon px-2 text-center">
-        <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Hacker</span>
+      <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+        <span class="text-white font-smaller-2 text-capitalize">New Hacker</span>
       </div>
       {% elif row.activity_type == 'new_hackathon_project' %}
-        <div class="bg-gc-green card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Project</span>
+        <div class="bg-success ml-auto card-ribbon px-2 text-center">
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New Project</span>
         </div>
       {% elif row.activity_type == 'new_grant' %}
-        <div class="bg-gc-dark-blue card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Grant</span>
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New Grant</span>
         </div>
       {% endif %}
     <div class="d-none d-sm-inline col-sm-4 pl-0">

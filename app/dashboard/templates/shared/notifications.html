@@ -16,8 +16,8 @@
 {% endcomment %}
 {% load i18n static humanize %}
 
-  <div id="gc-notifications" class="nav-item dropdown notifications order-last">
-    <a href="" class="notification__icon nav-link dropdown-toggle" id="notificationsDropdown" role="button"
+  <div id="gc-notifications" class="nav-item dropdown notifications order-last{% if onepager %} m-auto {% endif %}">
+    <a href="" class="notification__icon nav-link dropdown-toggle{% if onepager %} px-2 text-white {% endif %}" id="notificationsDropdown" role="button"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="fetchNotifications(1)">
       <i class="far fa-bell fa-fw fa-lg"></i>
         <span id="notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadNotifications.length > 0}">[[unreadNotifications.length ? unreadNotifications.length : '']]</span>

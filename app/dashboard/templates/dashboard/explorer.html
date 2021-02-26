@@ -57,12 +57,12 @@
 
                 <div v-for="(value, prop, index) in params" :key="index" v-if="value && value.length">
                   <template v-if="typeof value == 'string'">
-                    <button @click.prevented="removeFilter(prop, 0)" class="btn btn-gc-blue btn-sm font-smaller-5 mr-1">
+                    <button @click.prevented="removeFilter(prop, 0)" class="btn btn-primary btn-sm font-smaller-5 mr-1">
                       [[value | stringFixer]] <i class="fas fa-times"></i>
                     </button>
                   </template>
                   <template v-else-if="typeof value == 'object'">
-                    <button v-for="(res, index) in value" @click.prevented="removeFilter(prop, index, true)" class="btn btn-gc-blue btn-sm font-smaller-5 mr-1">[[res | stringFixer]] <i class="fas fa-times"></i></button>
+                    <button v-for="(res, index) in value" @click.prevented="removeFilter(prop, index, true)" class="btn btn-primary btn-sm font-smaller-5 mr-1">[[res | stringFixer]] <i class="fas fa-times"></i></button>
                   </template>
                 </div>
               </div>

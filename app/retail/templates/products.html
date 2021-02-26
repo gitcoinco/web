@@ -57,7 +57,7 @@
 
       {% for product in products %}
         <div class="{{ product.name }} container-fluid px-0 py-5">
-          <div class="row py-3 py-md-0">
+          <div class="row py-3 py-md-0 mr-0 ml-0">
             {% if forloop.counter|divisibleby:2 %}
               <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
                 <span class="g-font-futura mb-2 product-name d-flex align-items-center">
@@ -67,7 +67,7 @@
                 <span class=" mb-2 product-heading">{{ product.heading }}</span>
                 <span class="mb-4 product-desc">{{ product.description }}</span>
                 {% if product.link %}
-                  <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
+                  <a href="{{ product.link }}"  class="btn btn-lg button-{{ product.name }} text-center display-5">
                     {% trans "Get Started" %}
                   </a>
                 {% endif %}
@@ -88,7 +88,7 @@
                 <span class="mb-2 product-heading">{{ product.heading }}</span>
                 <span class="mb-4 product-desc">{{ product.description }}</span>
                 {% if product.link %}
-                  <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
+                  <a href="{{ product.link }}"  class="btn btn-lg button-{{ product.name }} text-center display-5">
                     {% trans "Get Started" %}
                   </a>
                 {% endif %}
@@ -100,7 +100,7 @@
       {% endfor %}
 
       <div class="intro container-fluid">
-        <div class="row py-3 py-md-0">
+        <div class="row py-3 py-md-0 mr-0 ml-0">
           <div class="col-12 text-center">
             <h2 class="text-center pt-3 my-4">
               {% trans "Optimizing the OSS Lifecycle" %}
@@ -117,13 +117,13 @@
               {% trans "Interested in working with us?" %}
             </p>
             <p>
-              <a href="{% url 'jobs' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              <a href="{% url 'jobs' %}" class="btn btn-primary py-3 text-center m-2">
                 {% trans "Check our Jobs Page" %}
               </a>
-              <a href="mailto:founders@gitcoin.co" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              <a href="mailto:founders@gitcoin.co" class="btn btn-primary py-3 text-center m-2">
                 {% trans "Contact Us" %}
               </a>
-              <a href="{% url 'mission' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
+              <a href="{% url 'mission' %}" class="btn btn-primary py-3 text-center m-2">
                 {% trans "About the mission" %}
               </a>
             </p>

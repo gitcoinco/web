@@ -39,9 +39,9 @@
               <i class="fas fa-user-secret mr-2"></i>
               Admin Actions
             </span>
-            <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
-            <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="contactFunder()">Contact Funder</button>
-            <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="overrideStatus()">Override Status</button>
+            <a v-for="link in quickLinks" class="btn btn-outline-primary px-2 mx-2 btn-sm" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
+            <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="contactFunder()">Contact Funder</button>
+            <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="overrideStatus()">Override Status</button>
           </div>
           <div class="col-12" v-if="loadingState === 'resolved'">
             {% if event_tag %}
@@ -156,7 +156,7 @@
               <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
                 <template v-if="isOwner">
                   <div v-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
-                    <a class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
+                    <a class="btn btn-primary btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
                       <i class="fas fa-check mr-2"></i>
                       {% trans "Close Bounty" %}
                     </a>
@@ -164,26 +164,26 @@
                 </template>
 
                 <template v-if="checkInterest()">
-                  <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
+                  <a :href="bounty.action_urls.fulfill" class="btn btn-primary btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
                     Submit Work
                   </a>
-                  <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
+                  <button class="btn btn-primary btn-sm mr-2 px-3 font-caption" @click="stopWork()">
                     Stop Work
                   </button>
                 </template>
                 <template v-else-if="bounty.is_open && !isOwner">
-                  <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
+                  <button class="btn btn-primary btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
                     Express Interest
                   </button>
-                  <button @click="show_interest_modal()" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
+                  <button @click="show_interest_modal()" class="btn btn-primary btn-sm mr-2 px-3 font-caption" v-else>
                     Start Work
                   </button>
                 </template>
                 <div id="github_actions" class="d-inline-block">
-                  <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" target="_blank">
+                  <a :href="bounty.github_url" class="btn btn-outline-primary mr-2 px-3" target="_blank">
                     <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
                   </a>
-                  <a class="modal-link btn btn-outline-gc-blue btn-sm px-3 font-caption" href="#" data-toggle="modal" data-target=".share-modal">
+                  <a class="modal-link btn btn-outline-primary px-3" href="#" data-toggle="modal" data-target=".share-modal">
                     <i class="fas fa-share-alt mr-2"></i>
                     <span>Share</span>
                   </a>
@@ -293,7 +293,7 @@
                         </template>
 
                         <template v-else-if="fulfillment.payout_status == 'pending'">
-                          <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <button class="btn btn-sm btn-outline-primary my-auto px-3 font-smaller-2 font-weight-semibold">
                             <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                           </button>
                           <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
@@ -317,7 +317,7 @@
                             </span>
                           </template>
 
-                          <button data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" @click="initFulfillmentContext(fulfillment)" class="btn btn-sm btn-gc-blue my-auto px-5 py-2 font-smaller-2 font-weight-semibold">
+                          <button data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" @click="initFulfillmentContext(fulfillment)" class="btn btn-sm btn-primary my-auto px-5 py-2 font-smaller-2 font-weight-semibold">
                             Payout Bounty
                           </button>
                         </template>
@@ -342,7 +342,7 @@
                           </p>
                         </div>
                         <div v-else-if="fulfillment.payout_status == 'pending'">
-                          <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <button class="btn btn-sm btn-outline-primary my-auto px-3 font-smaller-2 font-weight-semibold">
                             <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                           </button>
                           <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
@@ -400,7 +400,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="nextStepAndLoadPYPLButton(fulfillment.pk, fulfillment.fulfiller_identifier)"
                                 >
@@ -460,7 +460,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('payout', 'payout_amount')"
                                 >
@@ -490,7 +490,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   @click="payWithExtension(fulfillment.pk, fulfillment.fulfiller_address, fulfillment.payout_type, $event)"
                                 >
                                   Payout
@@ -537,7 +537,7 @@
                                   </a>
 
                                 </p>
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-4"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
                                 >
                                   Yes, I understand
@@ -553,7 +553,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button  class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button  class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('submit_transaction', 'payout_amount')"
                                 >
@@ -608,7 +608,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
                                   I have Paid
@@ -656,7 +656,7 @@
                                   </a>
 
                                 </p>
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-4"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
                                 >
                                   Yes, I understand
@@ -679,13 +679,13 @@
                                 </p>
 
                                 <button v-if="fulfillment_context.flow == 'access_to_wallet'"
-                                  class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                  class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('scan_qr_code', 'payout_amount')"
                                 >
                                   Next
                                 </button>
-                                <button v-else class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button v-else class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('submit_transaction', 'payout_amount')"
                                 >
@@ -736,7 +736,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >I have paid
                                 </button>
@@ -796,7 +796,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
                                   I have Paid
@@ -848,20 +848,20 @@
                     </div>
                     <div class="col-md-3 col-lg-3 my-auto text-center">
                       <template v-if="interest.pending && isOwner">
-                        <a :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <a :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-primary m-2 px-3">
                           <i class="fas fa-check mr-1 font-caption"></i> Approve
                         </a>
-                        <a :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <a :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-outline-primary m-2 px-3">
                           <i class="fas fa-times mr-1 font-caption"></i> Reject
                         </a>
                       </template>
                       <template v-else-if="isOwner">
-                        <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner, interest.profile.handle)">
+                        <button class="btn btn-outline-primary m-2 px-3" @click="stopWork(isOwner, interest.profile.handle)">
                           <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
                         </button>
                       </template>
                       <template v-if="interest.profile.handle === contxt.github_handle">
-                        <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork()">
+                        <button class="btn btn-outline-primary m-2 px-3" @click="stopWork()">
                           <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Work
                         </button>
                       </template>
@@ -975,7 +975,7 @@
                         <div class="card m-3 p-1">
                           {% for profile in project.profiles.all %}
                             {% if profile_id == profile.id and project.status == '' %}
-                              <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                              <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-success btn-sm m-2">edit</button>
                             {% endif %}
                           {% endfor %}
                           {% if project.logo %}

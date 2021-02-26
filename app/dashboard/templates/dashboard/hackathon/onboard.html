@@ -125,13 +125,13 @@
                   </h1>
                   <div class="col-12 col-md-3 px-0 mt-md-1 mt-4">
                   {% if not github_handle %}
-                    <a class="btn btn-gc-blue col-12" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?registration={{hackathon.slug}}&referer={{referer}}"
+                    <a class="btn btn-primary col-12" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?registration={{hackathon.slug}}&referer={{referer}}"
                       onclick="dataLayer.push({'event': 'login'});">Join Now</a>
                   {% else %}
                       {% if not is_registered %}
-                          <button type="button" class="btn btn-gc-blue col-12" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</button>
+                          <button type="button" class="btn btn-primary col-12" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</button>
                       {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                          <a class="btn btn-gc-blue col-12"  href="{% url 'hackathon' hackathon.slug %}">See Prizes</a>
+                          <a class="btn btn-primary col-12"  href="{% url 'hackathon' hackathon.slug %}">See Prizes</a>
                       {% endif %}
                   {% endif %}
                   </div>
@@ -238,8 +238,8 @@
           <div class="col-12">
             {% if is_staff %}
             <div class="alpha-warning">
-              <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-              <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+              <button class="btn btn-primary btn-sm" id="edit-btn">Edit</button>
+              <button class="btn btn-primary btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
             </div>
             {% endif %}
             <div class="editor-container">
@@ -409,8 +409,8 @@
                         < Previous
                       </a>
                       <div id="poll-empty"></div>
-                      <button id="poll-submit" class="btn btn-lg btn-gc-blue {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</button>
-                      <a id="poll-next" class="btn btn-lg btn-gc-blue {% if poll.question_set.count <= 1%}d-none{% endif %}" href="#" role="button" data-slide="next">
+                      <button id="poll-submit" class="btn btn-lg btn-primary {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</button>
+                      <a id="poll-next" class="btn btn-lg btn-primary {% if poll.question_set.count <= 1%}d-none{% endif %}" href="#" role="button" data-slide="next">
                         Next >
                       </a>
 

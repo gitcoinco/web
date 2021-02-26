@@ -73,7 +73,7 @@
           <div class="col-12 my-4">
             <form method="POST" id="js-cancelSubscription">
               {% csrf_token %}
-              <button id="cancel-subscription" class="button button--primary button--warning button--full">{% trans "Cancel Contribution" %}
+              <button id="cancel-subscription" class="btn btn-danger btn-block">{% trans "Cancel Contribution" %}
               </button>
               <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
               <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">

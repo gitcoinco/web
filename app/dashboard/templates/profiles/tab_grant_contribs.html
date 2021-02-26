@@ -26,7 +26,7 @@
     {% include "profiles/earningsgraph.html" with graph_type="grants" %}
 
     {% if subs.count %}
-    <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in profile.grant_contributor.all %}{{subs.grant.pk}},{% endfor %}">+
+    <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in profile.grant_contributor.all %}{{subs.grant.pk}},{% endfor %}">+
       Add all to Cart</a>
     {% endif %}
 
@@ -108,7 +108,7 @@
     {% endfor %}
 
     <h2 class="font-body mt-3 mb-3 ml-0 pb-2 mt-5 title">Grant Contribution History ({{history|length}})</h2>
-    <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in history %}{{subs.id}},{% endfor %}">+
+    <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in history %}{{subs.id}},{% endfor %}">+
       Add all to Cart</a>
 
     {% for transaction in history %}

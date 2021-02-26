@@ -106,7 +106,7 @@
                     {% elif bounty.event %}
                       <div class="mt-2">
                         <label class="form__label" for="projectId">{% trans "Please create your project:" %}</label>
-                        <button type="button" onclick="projectModal({{bounty.pk}})" class="btn btn-sm btn-gc-green d-block">Add project</button>
+                        <button type="button" onclick="projectModal({{bounty.pk}})" class="btn btn-sm btn-success d-block">Add project</button>
                       </div>
                     {% endif %}
 
@@ -184,7 +184,7 @@
                     {% endif %}
 
                     <div class="my-2 pb-5 text-center">
-                      <button type="submit" class="mb-3 w-100 button button--primary js-submit" role="button">{% trans "Submit Work" %}</button>
+                      <button type="submit" class="mb-3 w-100 btn btn-primary js-submit" role="button">{% trans "Submit Work" %}</button>
                     </div>
                   </form>
                 </div>

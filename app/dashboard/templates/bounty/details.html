@@ -160,7 +160,7 @@
 
                       <div id="bounty_actions" class="d-inline-block"></div>
                       <div id="github_actions" class="d-inline-block"></div>
-                      <a class="modal-link button button--secondary font-caption" href="" data-toggle="modal" data-target=".share-modal">
+                      <a class="modal-link btn btn-secondary font-caption" href="" data-toggle="modal" data-target=".share-modal">
                         <i class="fas fa-share-alt font-caption mr-2"></i>
                         <span>Share</span>
                       </a>
@@ -208,7 +208,7 @@
                         <div class="card m-3 p-1">
                           {% for profile in project.profiles.all %}
                             {% if profile_id == profile.id and project.status == '' %}
-                              <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                              <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-success btn-sm m-2">edit</button>
                             {% endif %}
                           {% endfor %}
                           {% if project.logo %}
@@ -239,7 +239,7 @@
               {% if event_tag and user.is_authenticated %}
                 <div class="col-12">
                   <p class="my-3">
-                    <button onclick="projectModal(document.result.pk)" class="btn btn-sm btn-gc-green">Add project</button> <small>(manually add your project if you already expressed interest on this prize or want to have more than one project)</small>
+                    <button onclick="projectModal(document.result.pk)" class="btn btn-sm btn-success">Add project</button> <small>(manually add your project if you already expressed interest on this prize or want to have more than one project)</small>
                   </p>
                 </div>
               {% endif %}
@@ -273,11 +273,11 @@
         <span [[if id]] id="[[>id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
           title='<div class="tooltip-info tooltip-sm">[[>title]]</div>'>
           [[if pending_acceptance]]
-            <a class="button button--primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[>href]]" target="[[>target]]">
+            <a class="btn btn-primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[>href]]" target="[[>target]]">
               <span class="font-caption">[[:text]] ( [[>pending_acceptance]] )</span>
             </a>
           [[else]]
-            <a class="button [[if primary]]button--primary[[else]]button--secondary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[>buttonclass]]" role="button" href="[[>href]]" target="[[>target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+            <a class="btn [[if primary]]btn-primary[[else]]btn-outline-primary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[>buttonclass]]" role="button" href="[[>href]]" target="[[>target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
               <span class="font-caption">[[:text]]</span>
             </a>
           [[/if]]
@@ -350,14 +350,14 @@
                   <div class="stop-work-container">
                     <div class="stop-work">
                       <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
-                        <a class="button button--primary" href="[[>reject_worker_url]]">
+                        <a class="btn btn-primary" href="[[>reject_worker_url]]">
                           <span class="font-smaller-4">{% trans "Reject worker" %}</span>
                         </a>
                       </span>
                     </div>
                     <div class="stop-work">
                       <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
-                        <a class="button button--primary" href="[[>approve_worker_url]]">
+                        <a class="btn btn-primary" href="[[>approve_worker_url]]">
                           <span class="font-smaller-4">{% trans "Approve worker" %}</span>
                         </a>
                       </span>
@@ -367,7 +367,7 @@
                   <div class="stop-work-container">
                     <div class="stop-work">
                       <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
-                        <a id="remove-[[>name]]" class="button button--primary" role="button" href="remove-handle">
+                        <a id="remove-[[>name]]" class="btn btn-primary" role="button" href="remove-handle">
                           <span class="font-smaller-4">{% trans "Stop work" %}</span>
                         </a>
                       </span>
@@ -375,7 +375,7 @@
                     [[if slash_possible]]
                       <div class="stop-work">
                         <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
-                          <a id="remove-slash-[[>name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                          <a id="remove-slash-[[>name]]" class="btn btn-primary admin-only" role="button" href="remove-handle">
                             <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
                           </a>
                         </span>
@@ -405,14 +405,14 @@
                   <div class="stop-work-container">
                     <div class="stop-work">
                       <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
-                        <a id="remove-[[>name]]" class="button button--primary" role="button" href="remove-handle">
+                        <a id="remove-[[>name]]" class="btn btn-primary" role="button" href="remove-handle">
                           <span class="font-smaller-4">{% trans "Stop work" %}</span>
                         </a>
                       </span>
                     </div>
                     <div class="stop-work">
                       <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
-                        <a id="remove-slash-[[>name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                        <a id="remove-slash-[[>name]]" class="btn btn-primary admin-only" role="button" href="remove-handle">
                           <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
                         </a>
                       </span>

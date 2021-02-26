@@ -167,7 +167,7 @@
                   {% trans "Users Directory" %}
                 </a>
               </li>
-              <li><a href="{% url 'tribes' %}" class="font-smaller-2 pl-4">Interested in Your Own Tribe?</a></li>
+              <li><a href="{% url 'tribes' %}" class="d-block font-smaller-4 pl-4 pt-3 text-nowrap">Interested in Your Own Tribe?</a></li>
             </ul>
             <ul class="col-md-3 col-lg-2 list-unstyled">
               <li>
@@ -188,25 +188,25 @@
             </ul>
             <div class="col-lg-5 col-md-6 list-unstyled">
               <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
+                <div class="carousel-inner px-2 py-2">
                   <div class="carousel-item active">
                     <h5>Chat with the community</h5>
                     <p>Meet fellow developers, designers, futurists and more. Collaborate and BUIDL awesome projects together.</p>
-                    <a class="btn btn-gc-blue" href="https://discord.gg/jWUzf7b8Yr">
+                    <a class="btn btn-primary" href="https://discord.gg/jWUzf7b8Yr">
                       {% trans "Go to Discord" %}
                     </a>
                   </div>
                   <div class="carousel-item">
                     <h5>Find a Tribe</h5>
                     <p>Discover great web3 organizations, work on meaningful projects and build relationships with like minded people. <a href="{% url 'users_directory' %}?persona=tribe">Browse Tribes</a></p>
-                    <a class="btn btn-gc-blue" href="{% url 'users_directory' %}?persona=tribe">
+                    <a class="btn btn-primary" href="{% url 'users_directory' %}?persona=tribe">
                       {% trans "Find a Tribe" %}
                     </a>
                   </div>
                   <div class="carousel-item">
                     <h5>Weekly leaderboard</h5>
                     <p>Meet the top hunters and contributors from our community.</p>
-                    <a class="btn btn-gc-blue" href="{% url 'leaderboard' '' %}">
+                    <a class="btn btn-primary" href="{% url 'leaderboard' '' %}">
                       {% trans "Go to Leaderboard" %}
                     </a>
                   </div>

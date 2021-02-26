@@ -41,9 +41,9 @@
         {% if not hide_newsletter_caption %}
           <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
         {% endif %}
-        <div class="col-12 pt-3">
-          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-funder" type="submit" class="button font-weight-bold button--primary subscribe py-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+        <div class="col-6 pt-3 input-group m-auto">
+          <input name="EMAIL" placeholder="Enter your email" required="" class="form-control">
+          <div class="input-group-append"><button type="submit" class="btn btn-primary"><i class="far fa-envelope mr-2"></i>Subscribe</button></div>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">
@@ -59,9 +59,9 @@
         {% if not hide_newsletter_caption %}
           <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
         {% endif %}
-        <div class="col-12 pt-3">
-          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-hunter" type="submit" class="button font-weight-bold button--primary subscribe ml-lg-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+        <div class="col-6 pt-3 input-group m-auto">
+          <input name="EMAIL" placeholder="Enter your email" required="" class="form-control">
+          <div class="input-group-append"><button type="submit" class="btn btn-primary"><i class="far fa-envelope mr-2"></i>Subscribe</button></div>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">
