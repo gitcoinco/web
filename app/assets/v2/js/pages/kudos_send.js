@@ -307,6 +307,9 @@ $(document).ready(function() {
 
       startConfetti();
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+      if (document.web3network == 'xdai') {
+        url = 'https://explorer.anyblock.tools/ethereum/poa/xdai/tx/' + txid;
+      }
 
       $('#loading_trans').html('This transaction has been sent 👌');
       $('#loading_trans').hide();
