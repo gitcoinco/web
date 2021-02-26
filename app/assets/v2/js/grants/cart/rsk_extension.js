@@ -114,10 +114,7 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
-          console.log('success', response);
-
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
-
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
           _alert('Unable to make contribute to grant. Please try again later', 'error');
