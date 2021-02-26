@@ -785,6 +785,52 @@
         </div>
       </form>
     </b-sidebar>
+    <div class="related-grants-container nav-line bg-secondary pb-5">
+      <div class="container pt-3" lazy>
+        <h2 class="mb-3">Related Grants <span>([[grant?.metadata?.related?.length || 0]])</span></h2>
+        <h4 class="m-auto text-center font-weight-semibold" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants." %}</h4>
+  
+        <div class="row px-3">
+          <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
+            <a class="text-decoration-none" :href="relgrant.details_url">
+              <div class="card">
+                <b-img-lazy :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title"></b-img-lazy>
+                <div class="card-body">
+                  <h5 class="card-title text-dark">[[relgrant.title]]</h5>
+                  <p class="card-text text-muted">[[relgrant.description | truncate(150)]]</p>
+                  <div class="d-flex">
+                    <div v-for="member in relgrant.team_members" :key="member.pk">
+                      <b-img-lazy class="rounded-circle bg-white" width="40" height="40" :src="`/dynamic/avatar/${member.fields.handle}`" alt="member.fields.handle"></b-img-lazy>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <b-skeleton-wrapper :loading="loadingRelated">
+          <template #loading>
+  
+              <b-row class="px-3 mb-3">
+                <b-col cols="12" md="6" xl="4" v-for="index in 3" :key="index">
+                  <b-card img-top no-body>
+                    <b-skeleton-img card-img="top" ></b-skeleton-img>
+                    <b-card-body>
+                      <b-skeleton width="85%"></b-skeleton>
+                      <b-skeleton width="55%"></b-skeleton>
+                      <b-skeleton width="70%"></b-skeleton>
+                      <b-skeleton type="avatar"></b-skeleton>
+                    </b-card-body>
+                  </b-card>
+                </b-col>
+              </b-row>
+          </template>
+        </b-skeleton-wrapper>
+        <div class="text-center">
+          <button class="btn btn-gc-blue btn-sm" v-if="relatedGrantsIds.length" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
+        </div>
+      </div>
+    </div>
   </div>
 </script>
 

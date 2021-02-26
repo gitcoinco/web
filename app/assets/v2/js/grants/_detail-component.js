@@ -11,6 +11,37 @@ Quill.register('modules/ImageExtend', ImageExtend);
 
 Vue.mixin({
   methods: {
+    fetchRelated: function() {
+      let vm = this;
+      let ids;
+      let size = 6;
+
+      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length) {
+        return;
+      }
+
+      ids = vm.grant.metadata.related.map(arr => {
+        return arr[0];
+      });
+      vm.relatedGrantsIds = vm.paginate(ids, size, vm.relatedGrantsPage);
+
+      vm.relatedGrantsPage += 1;
+
+      if (!vm.relatedGrantsIds.length) {
+        return;
+      }
+      vm.loadingRelated = true;
+      let url = `/grants/v1/api/grants?pks=${vm.relatedGrantsIds}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.grants.forEach(function(item) {
+          vm.relatedGrants.push(item);
+        });
+        vm.loadingRelated = false;
+      }).catch(console.error);
+    },
     fetchTransactions: function() {
       let vm = this;
 
@@ -499,6 +530,7 @@ Vue.component('grant-details', {
   template: '#template-grant-details',
   data() {
     return {
+      loadingRelated: false,
       dirty: false,
       submitted: false,
       user_code: userCode,
@@ -510,6 +542,8 @@ Vue.component('grant-details', {
       logoBackground: null,
       loadingTx: false,
       relatedGrants: [],
+      relatedGrantsPage: 0,
+      relatedGrantsIds: [],
       transactions: {
         grantTransactions: [],
         next_page_number: 1
@@ -575,6 +609,7 @@ Vue.component('grant-details', {
     }
     vm.grantInCart();
     vm.fetchTransactions();
+    vm.fetchRelated();
   },
   watch: {
     grant: {
