@@ -113,8 +113,6 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
       const apiUrlBounty = `v1/api/contribute`;
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
-        console.log(response);
-        console.log(payload);
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
 
