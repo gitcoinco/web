@@ -3,7 +3,7 @@
 <b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
 
-  <div class="row justify-content-between align-items-center mt-4 text-muted text-left">
+  <div class="row justify-content-between align-items-center flex-nowrap mt-4 text-muted text-left d-none d-sm-flex">
     <div class="col"><small>Grant</small></div>
     <div class="col"><small>Amount</small></div>
     <div class="col"><small>Estimated QF Match</small></div>
@@ -12,16 +12,21 @@
 
   <div v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
     <div class="row justify-content-between align-items-center mt-4 ml-1">
-      <!-- Grant name and logo -->
-      <div class="col">
+      <!-- ALL DEVICES: Grant name and logo -->
+      <div class="col-10 col-sm">
         <div class="row align-items-center">
           <img :src="grant.grant_logo" alt="Grant logo" width="45" height="36" class="mr-2">
           <div class="font-weight-bold"><a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a></div>
         </div>
       </div>
 
-      <!-- Contribution amount and currency -->
-      <div class="col">
+      <!-- MOBILE: Delete icon -->
+      <div class="col-1 d-none d-block d-sm-none">
+        <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
+      </div>
+
+      <!-- DESKTOP: Contribution amount and currency-->
+      <div class="col d-none d-sm-block">
         <div class="row align-items-center form-inline">
           <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount">
           <v-select class="col-auto" :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="form-control">
@@ -35,19 +40,44 @@
         </div>
       </div>
 
-      <!-- CLR match amount-->
-      <div class="col text-left">
-        <div v-if="!grant.clr_round_num" class="text-muted">Not in an active CLR</div>
+      <!-- DESKTOP: CLR match amount-->
+      <div class="col text-left d-none d-sm-block">
+        <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
         <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
         <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
       </div>
 
-      <!-- Delete icon -->
-      <div class="col-auto">
+      <!-- MOBILE: Contribution amount, currency, and match amount -->
+      <div class="d-block d-sm-none">
+        <div class="row justify-content-between align-items-center form-inline flex-nowrap">
+          <!-- Amount -->
+          <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount">
+
+          <!-- Token -->
+          <v-select class="col-auto" :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="form-control">
+            <template v-slot:option="option">
+              <span>[[ option.symbol ]]</span>
+            </template>
+          </v-select>
+
+          <!-- Match amount -->
+          <div class="col text-left">
+            <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
+            <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
+            <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
+          </div>
+          <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
+            Apply to all
+          </small>
+        </div>
+      </div>
+
+      <!-- DESKTOP: Delete icon -->
+      <div class="col-auto d-none d-sm-block">
         <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
       </div>
 
-      <!-- Add comments -->
+      <!-- ALL DEVICES: Add comments -->
       <div class="col-12 mt-3" >
         <small class="row justify-content-start text-muted">
           <div class="cursor-pointer px-2 col-auto" >
@@ -69,10 +99,10 @@
 
   <!-- Cart total -->
   <div class="row justify-content-between text-left">
-    <div class="col"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
-    <div class="col"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
-    <div class="col"></div>
-    <div class="col-auto"></div>
+    <div class="col-12 col-sm-auto mr-3"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
+    <div class="col-12 col-sm text-left"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
+    {% comment %} <div class="col d-none d-sm-block"></div>
+    <div class="col-auto d-none d-sm-block"></div> {% endcomment %}
   </div>
 
   <hr class="my-5">
@@ -85,11 +115,11 @@
       <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin Grants Development Fund</a>
     </div>
     <div class="row justify-content-start align-items-center ml-1 mt-3">
-      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
-      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
-      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
-      <div class="col-auto cursor-pointer border rounded pr-5 pl-3 py-2 ml-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
-      <div class="col-auto form-inline">
+      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
+      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
+      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
+      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+      <div class="col-12 col-sm-auto form-inline">
         <span class="font-caption ml-2 mr-1">Custom</span>
         <input v-model="gitcoinFactorRaw" class="cursor-pointer border rounded form-control mr-0 pr-0" type="number"
           min="0" max="99" step="any" id="gitcoin-grant-input-amount"
