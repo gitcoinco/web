@@ -21,7 +21,7 @@ h4,
 .sticky-top {
   position: sticky!important;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .lighter {
@@ -65,7 +65,7 @@ h4,
 }
 
 .header {
-  background-image: url('/static/v2/images/header-bg.png');
+  background-image: url(static('v2/images/header-bg.png'));
   background-color: #0d023b;
   background-size: cover;
   background-position: 0px 0px;
@@ -93,12 +93,12 @@ h4,
 }
 
 .header-contributor {
-  background-image: url('/static/v2/images/landing/contributor/hero_header_bg.jpg');
+  background-image: url(static('v2/images/landing/contributor/hero_header_bg.jpg'));
   background-color: #3f00ff;
 }
 
 .gitcoin-background {
-  background: url("/static/v2/images/header-bg.png") #0d023b;
+  background: url(static("v2/images/header-bg.png")) #0d023b;
   background-attachment: fixed;
   background-position: center 0;
 }
@@ -264,7 +264,7 @@ div.button-pink {
 
 .light-bg {
   background-color: rgba(239, 243, 238, 0.7);
-  background-image: url('/static/v2/images/light-bg.png');
+  background-image: url(static('/v2/images/light-bg.png'));
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -281,7 +281,7 @@ div.button-pink {
 
 .white-light-bg {
   background-color: white;
-  background-image: url('/static/v2/images/light-bg.png');
+  background-image: url(static('v2/images/light-bg.png'));
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
