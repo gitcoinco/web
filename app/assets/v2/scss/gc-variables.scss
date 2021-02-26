@@ -34,11 +34,17 @@ $yellow: $gc-yellow-400;
 $primary: $blue;
 $secondary: $green;
 $dark: $gc-purple;
+$light: #EEE;
 
+// Dropdown overrides
 $dropdown-link-hover-color: $white;
 $dropdown-link-hover-bg: $gc-violet-400;
 $dropdown-link-active-color: $white;
 $dropdown-link-active-bg: $gc-violet-500;
+
+// Nav-pills overrides
+$nav-pills-link-active-color: $white;
+$nav-pills-link-active-bg: $blue;
 
 // Font overrides
 $font-family-base: 'Libre Franklin', sans-serif;

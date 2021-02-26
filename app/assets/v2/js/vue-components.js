@@ -652,7 +652,7 @@ Vue.component('project-card', {
           <div class="text-left">
             <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2 font-weight-semibold">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2 font-weight-semibold">View Bounty</a>
-            <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn-primary">
+            <b-dropdown variant="outline-primary" toggle-class="btn btn-sm" split-class="btn-sm btn-primary">
             <template v-slot:button-content>
               <i class='fas fa-comment-dots'></i>
             </template>
