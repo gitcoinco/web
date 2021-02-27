@@ -81,7 +81,7 @@
             </button>
           </div>
           <div class="modal-body px-5">
-            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" loading="lazy">
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
             <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
             <button id="triggerTwitter" class="btn btn-lg btn-gc-blue" data-toggle="modal" data-target="#startTwitterVerification">Verify with twitter</button>
@@ -98,7 +98,7 @@
             </button>
           </div>
           <div class="modal-body px-5">
-            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" loading="lazy">
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
             <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
               {% if grant.twitter_handle_1 %}<i class="fas fa-check text-highlight-green"></i>{% else %}
@@ -154,9 +154,7 @@
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
-  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script>
-    $('img').unveil(200);
     $('#wallet-etherscan-link').attr(
       'href',
       get_etherscan_url(
@@ -174,7 +172,6 @@
       )
     );
   </script>
-  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script type="text/javascript">
   $(document).ready(function() {
 
