@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
   $('.demo').click(function(e) {
@@ -91,9 +90,35 @@ $(document).ready(function() {
     });
   });
 
-
   $('.quest-card.available').mouseover(function(e) {
     random_attn_effect($(this).find('.btn'));
   });
 
+  const options = {
+    rootMargin: '0px 0px 100px 0px',
+    threshold: 0,
+  };
+  function preloadImage(img) {
+    const src = img.getAttribute('data-src');
+    if (!src) { return; }
+    img.src = src;
+  }
+
+  let observer = new IntersectionObserver(function(entries, self) {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        preloadImage(entry.target);
+        self.unobserve(entry.target);
+      }
+    });
+  }, options);
+
+  const imgs = document.querySelectorAll('[data-src]');
+  imgs.forEach(img => {
+    observer.observe(img);
+  });
+  
+  setTimeout(function(){
+    $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+  }, 1000);
 });
