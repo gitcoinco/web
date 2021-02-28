@@ -122,7 +122,7 @@ $(document).ready(function() {
     observer.observe(image);
   });
 
-  setTimeout(function(){
+  setTimeout(function() {
     $('.leaderboard_hero').css('background-image', 'url("{% static \'v2/images/kudos/kudos-bg.png\' %}")');
   }, 1000);
 });
