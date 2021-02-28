@@ -38,7 +38,7 @@
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
       <div style="text-align:center;">
-        <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" />
+        <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" loading="lazy">
         <h4>
           {% if not the_quest %}
             {% trans "New Quest Application" %}
@@ -73,7 +73,7 @@
         {% endif %}
         {% if success %}
           <div style="text-align: center; margin-bottom: 10px">
-            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}" loading="lazy">
           </div>
         {% endif %}
         <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
@@ -231,7 +231,7 @@
 
           {% csrf_token %}
           <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
-          <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" />
+          <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" loading="lazy">
           {% if not the_quest %} Create {% else %} Edit {% endif %} Quest
           </button>
         </form>
@@ -246,12 +246,5 @@
 <script>
   $('[data-toggle="popover"]').popover()
   $('[data-toggle="tooltip"]').bootstrapTooltip();
-</script>
-
-<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
-<script>
-  $(document).ready(function() {
-    $("img").unveil(200);
-  });
 </script>
 {% endblock %}
