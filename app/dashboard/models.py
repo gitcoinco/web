@@ -4470,6 +4470,15 @@ class Profile(SuperModel):
                      return history.payload.get('from')
         return ''
 
+
+    @property
+    def ips(self):
+        ips = []
+        for login in self.actions.filter(action='Login').order_by('-created_on'):
+            if login.ip_address:
+                ips.append(login.ip_address)
+        return ips
+
     @property
     def locations(self):
         from app.utils import get_location_from_ip
