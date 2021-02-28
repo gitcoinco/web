@@ -34,7 +34,6 @@ $(document).ready(function() {
 
     $.get(url, function(response) {
       $('#available_quests').html($(response).find('#available_quests').html());
-      $('#available_quests img').unveil(200);
       if (callback) {
         callback();
       }
