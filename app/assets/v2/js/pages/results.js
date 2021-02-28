@@ -107,14 +107,30 @@ $(window).resize(function() {
 console.log('here');
 
 $(document).ready(function() {
-  setInterval(function() {
-    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const options = {
+    rootMargin: '0px 0px 100px 0px',
+    threshold: 0,
+  };
+  function preloadImage(img) {
+    const src = img.getAttribute('data-src');
+    if (!src) { return; }
+    img.src = src;
+  }
 
-    if (scrollTop > 500 && !document.offset_loaded) {
-      $('img').unveil(200);
-      document.offset_loaded = true;
-    }
-  }, 3000);
+  let observer = new IntersectionObserver(function(entries, self) {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        preloadImage(entry.target);
+        self.unobserve(entry.target);
+      }
+    });
+  }, options);
+
+  const imgs = document.querySelectorAll('[data-src]');
+  imgs.forEach(img => {
+    observer.observe(img);
+  });
+
   $.get('/activity', function(html) {
     $('#activities').html($(html).find('.activity_stream').html());
   });
