@@ -107,14 +107,15 @@ $(window).resize(function() {
 console.log('here');
 
 $(document).ready(function() {
-  const options = {
-    rootMargin: '0px 0px 100px 0px',
+  const observerOptions = {
+    rootMargin: '0px 0px 200px 0px',
     threshold: 0,
   };
-  function preloadImage(img) {
-    const src = img.getAttribute('data-src');
+
+  function preloadImage(image) {
+    const src = image.getAttribute('data-src');
     if (!src) { return; }
-    img.src = src;
+    image.src = src;
   }
 
   let observer = new IntersectionObserver(function(entries, self) {
@@ -124,11 +125,11 @@ $(document).ready(function() {
         self.unobserve(entry.target);
       }
     });
-  }, options);
+  }, observerOptions);
 
-  const imgs = document.querySelectorAll('[data-src]');
-  imgs.forEach(img => {
-    observer.observe(img);
+  let images = document.querySelectorAll('[data-src]');
+  images.forEach(image => {
+    observer.observe(image);
   });
 
   $.get('/activity', function(html) {
