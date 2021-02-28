@@ -67,4 +67,28 @@ $(document).ready(function() {
       document.location.href = document.location.pathname + '?cadence=' + $('#cadence').val() + '&keyword=' + $('#tech-keyword').val() + '&product=' + $('#product').val();
     }
   });
+
+  const options = {
+    rootMargin: '0px 0px 100px 0px',
+    threshold: 0,
+  };
+  function preloadImage(img) {
+    const src = img.getAttribute('data-src');
+    if (!src) { return; }
+    img.src = src;
+  }
+
+  let observer = new IntersectionObserver(function(entries, self) {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        preloadImage(entry.target);
+        self.unobserve(entry.target);
+      }
+    });
+  }, options);
+
+  const imgs = document.querySelectorAll('[data-src]');
+  imgs.forEach(img => {
+    observer.observe(img);
+  });
 });

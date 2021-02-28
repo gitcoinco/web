@@ -31,14 +31,14 @@
                     <div class="winner mt-5">
                       {% if not is_linked_to_profile %}
                         <a href="{{ podium_item.url }}" data-usercard="{{ podium_item.profile.handle }}" target="_blank">
-                          <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
+                          <img class="img-fluid"  src="{{ podium_item.avatar_url }}" loading="lazy">
                         </a>
                       {% endif %}
 
                       <h6 class="pt-3 pb-2 text-center">
                         {% if not is_linked_to_profile %}
                           {% if forloop.counter == 1 %}
-                            <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;"></img>
+                            <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;" loading="lazy">
                           {% endif %}
                           <a href="{{ podium_item.url }}" class="font-weight-semibold" target="_blank">
                             {{ podium_item.at_ify_username }}
@@ -128,7 +128,7 @@
 
                 {% if items|length == 0 %}
                   <div class="col-12 pt-4 pt-md-0 my-5 mx-auto col-md-6 text-center">
-                    <img class="obiwan my-2" src="{% static "v2/images/obiwan-bot.svg" %}">
+                    <img class="obiwan my-2" src="{% static "v2/images/obiwan-bot.svg" %}" loading="lazy">
                     <h1 class="font-title-lg font-weight-semibold mt-2">{% trans "None found" %}</h1>
                     <p class="font-title mb-0 pb-3">
                       {% trans "Looks like we are missing activity here." %}
@@ -199,7 +199,6 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
-
   </body>
 
   <script>
@@ -214,14 +213,7 @@
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
-  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
-  <script>
-    $(document).ready(function() {
-      $("img").unveil(200);
-    });
-  </script>
   <script src="https://code.highcharts.com/highcharts.js"></script>
   {{ cht|load_charts:"container" }}
-
 
 </html>
