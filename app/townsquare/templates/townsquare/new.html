@@ -41,7 +41,7 @@
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
       <div style="text-align:center;">
-        <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" />
+        <img src="{% static 'v2/images/grants/robots.png' %}" style="margin: 0px auto;" loading="lazy">
         <h4>
           {% trans "New Action Application" %}
         </h4>
@@ -63,7 +63,7 @@
         {% endif %}
         {% if success %}
           <div style="text-align: center; margin-bottom: 10px">
-            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}" loading="lazy">
           </div>
         {% endif %}
         <form class="mt-5" id="newkudos" method="POST" enctype="multipart/form-data">
@@ -132,7 +132,7 @@
           <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{% else %}{{package.pk}}{% endif %}">
           {% csrf_token %}
           <button class='button button--primary mt-2 float-right' style="font-size: 35px; padding-top: 20px; width: 400px;" type='submit' name='submit' value="Submit Quest">
-          <img src="{% static 'v2/images/helmet.svg' %}" style="max-width: 50px; margin-top: -20px" />
+          <img src="{% static 'v2/images/helmet.svg' %}" style="max-width: 50px; margin-top: -20px" loading="lazy">
           Create Action
           </button>
         </form>
@@ -141,18 +141,12 @@
   </div>
 </div>
 {% endblock %}
+
 {% block 'scripts' %}
 <script src="{% static "v2/js/pages/actions.new.js" %}"></script>
 <script src="{% static "v2/js/kudos-search.js" %}"></script>
 <script>
   $('[data-toggle="popover"]').popover()
   $('[data-toggle="tooltip"]').bootstrapTooltip();
-</script>
-
-<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
-<script>
-  $(document).ready(function() {
-    $("img").unveil(200);
-  });
 </script>
 {% endblock %}
