@@ -95,18 +95,21 @@ $(document).ready(function() {
 
   const observerOptions = {
     rootMargin: '0px 0px 200px 0px',
-    threshold: 0,
+    threshold: 0
   };
 
   function preloadImage(image) {
     const src = image.getAttribute('data-src');
-    if (!src) { return; }
+
+    if (!src) {
+      return;
+    }
     image.src = src;
   }
 
   let observer = new IntersectionObserver(function(entries, self) {
     entries.forEach(entry => {
-      if(entry.isIntersecting) {
+      if (entry.isIntersecting) {
         preloadImage(entry.target);
         self.unobserve(entry.target);
       }
@@ -114,11 +117,12 @@ $(document).ready(function() {
   }, observerOptions);
 
   let images = document.querySelectorAll('[data-src]');
+
   images.forEach(image => {
     observer.observe(image);
   });
 
   setTimeout(function(){
-    $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+    $('.leaderboard_hero').css('background-image', 'url("{% static \'v2/images/kudos/kudos-bg.png\' %}")');
   }, 1000);
 });
