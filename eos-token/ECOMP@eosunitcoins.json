@@ -1,0 +1,20 @@
+{
+  "symbol": "ECOMP",
+  "account_name": "eosunitcoins",
+  "overview": {
+    "en": "Lending agreement of EOS United，Innovative financial management,born out of bounds",
+    "zh": "EOS United的借貸協定，创新理财，破界而生"
+  },
+  "email": "eosunited@gmail.com",
+  "website": "https://www.eosunited.finance/",
+  "whitepaper": "https://www.eosunited.finance/static/EOS-united%20report.pdf",
+  "published_on": "2020-12-25",
+  "initial_price": {
+    "EOS": "0.00016 EOS",
+    "USD": "0.07 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/EosUnited",
+    "telegram": "https://t.me/eosunited"
+  }
+}
