@@ -189,6 +189,11 @@ class GrantAdmin(GeneralAdmin):
         return mark_safe("<BR>".join(eles))
 
     def response_change(self, request, obj):
+        if "_mark_fraud" in request.POST:
+            obj.active = False
+            obj.is_clr_eligible = False
+            obj.save()
+            self.message_user(request, "Marked Grant as Fraudulent. Consider blocking the grant admin next?")
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
