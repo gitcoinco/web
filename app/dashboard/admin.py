@@ -238,6 +238,17 @@ class ProfileAdmin(admin.ModelAdmin):
             obj.save()
             self.message_user(request, "Recalc done")
             return redirect(obj.admin_url)
+        if "_block_ips" in request.POST:
+            ips = set(obj.ips)
+            for ip in ips:
+                bi = BlockedIP.objects.create(
+                    addr=ip,
+                    active=True,
+                    comments=f"blocked by {request.user.username}"
+                    )
+            self.message_user(request, f"{len(ips)} IPs Blocked")
+            return redirect(obj.admin_url)
+
         if "_block_user" in request.POST:
             bu = BlockedUser.objects.create(
                 handle=obj,

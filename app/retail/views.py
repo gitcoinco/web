@@ -80,6 +80,10 @@ def index(request):
     }
     return TemplateResponse(request, 'home/index2020.html', context)
 
+def sass_experiment(request):
+    context = {
+    }
+    return TemplateResponse(request, 'home/sass_experiment.html', context)
 
 def index_old(request):
     products = [
@@ -596,18 +600,6 @@ def about(request):
             "",
             "OSS Freedom Fighter",
             "stchibe",
-            True
-        ),
-        (
-            "aamustapha",
-            "Engineer",
-            "aamustapha",
-            '',
-            "Grants",
-            "Pounded yam with Veg. soup",
-            "",
-            "OSS Mechanic",
-            "_amustapha",
             True
         ),
         (

@@ -710,6 +710,7 @@ if (document.getElementById('gc-board')) {
     el: '#gc-board',
     data: {
       network: document.web3network,
+      has_ptoken_auth: document.has_ptoken_auth,
       user_has_token: document.user_has_token,
       bounties: bounties,
       openBounties: [],

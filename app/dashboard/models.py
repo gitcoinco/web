@@ -4470,6 +4470,15 @@ class Profile(SuperModel):
                      return history.payload.get('from')
         return ''
 
+
+    @property
+    def ips(self):
+        ips = []
+        for login in self.actions.filter(action='Login').order_by('-created_on'):
+            if login.ip_address:
+                ips.append(login.ip_address)
+        return ips
+
     @property
     def locations(self):
         from app.utils import get_location_from_ip
@@ -5238,7 +5247,7 @@ class HackathonProject(SuperModel):
         if submission:
             paid = submission.payout_status == 'done'
 
-        return {
+        response = {
             'pk': self.pk,
             'name': self.name,
             'logo': self.logo.url if self.logo else '',
@@ -5254,10 +5263,23 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
-            'grant_obj': self.grant_obj,
+            'grant_obj': None,
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }
+
+        if self.grant_obj:
+            response['grant_obj'] = {
+                'id': self.grant_obj.pk,
+                'title': self.grant_obj.title,
+                'description': self.grant_obj.description,
+                'reference_url': self.grant_obj.reference_url,
+                'github_project_url': self.grant_obj.github_project_url,
+                'region': self.grant_obj.region,
+                'grant_type': self.grant_obj.grant_type.label
+            }
+
+        return response
 
 
 class FeedbackEntry(SuperModel):
