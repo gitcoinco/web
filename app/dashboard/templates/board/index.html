@@ -15,17 +15,17 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static add_url_schema avatar_tags %}
+{% load i18n static add_url_schema avatar_tags compress %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
-
-    <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
-
+    {% compress css file board %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-loader.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/board.scss" %} />
+    {% endcompress %}
   </head>
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -38,7 +38,7 @@
             <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
             <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
             {% if is_staff %}
-            <a class="nav-item nav-link nav-line " id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Personal Tokens</a>
+            <a class="nav-item nav-link nav-line alpha-warning" id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Time Tokens</a>
             {% endif %}
           </div>
         </nav>
@@ -64,6 +64,7 @@
     {% endif %}
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script>
+      document.has_ptoken_auth = {{ has_ptoken_auth|yesno:"true,false"}};
       document.user_has_token = {{ ptoken|yesno:"true,false" }};
       {% if ptoken %}
       document.ptoken = {

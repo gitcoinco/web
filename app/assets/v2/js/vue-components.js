@@ -3,14 +3,8 @@ Vue.mixin({
     const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
 
     return {
-      isMobile,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co'
+      isMobile
     };
-  },
-  methods: {
-    chatWindow: function(channel) {
-      window.chatSidebar.chatWindow(channel);
-    }
   }
 });
 
@@ -869,6 +863,43 @@ Vue.component('copy-clipboard', {
           _alert('Could not copy text to clipboard', 'error', 5000);
         });
       }
+    }
+  }
+});
+
+
+Vue.component('render-quill', {
+  props: ['delta'],
+  template: '<div>{{this.renderHtml}}</div>',
+  data() {
+    return {
+      jqEl: null,
+      renderHtml: ''
+
+    };
+  },
+  methods: {
+    transform: function() {
+      let vm = this;
+
+      if (!vm.delta) {
+        return;
+      }
+
+      vm.jqEl = this.$el;
+      const quill = new Quill(vm.jqEl);
+
+      quill.enable(false);
+      vm.renderHtml = quill.setContents(JSON.parse(vm.delta));
+    }
+
+  },
+  mounted() {
+    this.transform();
+  },
+  watch: {
+    delta: function() {
+      return this.transform();
     }
   }
 });

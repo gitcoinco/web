@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not,see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static %}
+{% load humanize i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,9 +22,11 @@
     <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed.">
     <link rel="canonical" href="{% url 'activity' %}">
     {% include 'shared/head.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    {% compress css file activity %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+    {% endcompress %}
   </head>
 
   <body class="{{ active }} g-font-muli">

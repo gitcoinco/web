@@ -37,10 +37,11 @@ class Command(BaseCommand):
         kwargs['ui_data__feedbacks__ratio__lt'] = 0.3
         hide_quests = Quest.objects.filter(**kwargs).exclude(pk__in=exempt_quests, visible=False).order_by('ui_data__feedbacks__ratio')
         for quest in hide_quests:
-            print(f'hiding {quest.pk}')
-            quest.admin_comments = f"hidden on {timezone.now()} bc of low quality"
-            quest.visible = False
-            quest.save()
+            if not quest.force_visible:
+                print(f'hiding {quest.pk}')
+                quest.admin_comments = f"hidden on {timezone.now()} bc of low quality"
+                quest.visible = False
+                quest.save()
 
         # for all visibble quests, reclassify them
         for quest in Quest.objects.filter(visible=True):

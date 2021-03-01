@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,11 +10,13 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
-    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% compress css file bounty_details %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/highlight_github.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+    {% endcompress %}
     {% include 'shared/fbpixel.html' %}
   </head>
 
@@ -466,7 +468,7 @@
           [[if issue_message && activity_type == 'worker_applied' || issue_message && permission_type == 'permissionless' && activity_type == 'start_work' ]]
             <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
               <p class="font-weight-bold mb-2">Work Plan</p>
-              <p class="mb-0">[[>issue_message.issue_message]]</p>
+              <p class="mb-0 break-line">[[>issue_message.issue_message]]</p>
             </div>
           [[/if]]
         </div>
@@ -519,10 +521,11 @@
       {% endif %}
     </script>
 
+    {% include 'shared/footer.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
+
   </body>
 
   {% include 'shared/current_profile.html' %}

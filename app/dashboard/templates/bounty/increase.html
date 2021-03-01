@@ -15,14 +15,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+    {% compress css file submit_bounty %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+    {% endcompress %}
   </head>
 
   <body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">

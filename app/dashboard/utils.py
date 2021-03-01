@@ -37,6 +37,7 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
 )
+from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
@@ -44,6 +45,7 @@ from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
+from dashboard.sync.rsk import sync_rsk_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
@@ -553,10 +555,16 @@ def sync_payout(fulfillment):
             sync_filecoin_payout(fulfillment)
 
     elif fulfillment.payout_type == 'polkadot_ext':
-         sync_polkadot_payout(fulfillment)
+        sync_polkadot_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'binance_ext':
+        sync_binance_payout(fulfillment)
 
     elif fulfillment.payout_type == 'harmony_ext':
         sync_harmony_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'rsk_ext':
+        sync_rsk_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -1188,3 +1196,11 @@ def set_hackathon_event(type, event):
         'display_showcase': event.display_showcase,
         'show_results': event.show_results,
     }
+
+
+def tx_id_to_block_explorer_url(txid, network):
+    if network == 'xdai':
+        return f"https://explorer.anyblock.tools/ethereum/poa/xdai/tx/{txid}"
+    if network == 'mainnet':
+        return f"https://etherscan.io/tx/{txid}"
+    return f"https://{network}.etherscan.io/tx/{txid}"

@@ -40,10 +40,59 @@ Vue.mixin({
         vm.staffOptions();
         vm.fetchIfPendingFulfillments();
         vm.initChain();
+        vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
+    },
+    eventParams: function() {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      if (searchParams.has('mutate_worker_action')) {
+        const action = searchParams.get('mutate_worker_action');
+        const product = document.result.event ? 'hackathons' : 'bounties';
+        const productPersona = document.result.event ? 'hackathon' : 'bounty';
+        const persona = this.isOwner ? 'funder' : 'hunter';
+        const mtcPersona = `${productPersona}-${persona}`;
+        let bountyEvent = {
+          'alias': 'products',
+          'data': [
+            {
+              'name': 'product',
+              'attributes': {
+                'product': product,
+                'persona': mtcPersona,
+                'action': action
+              }
+            }
+          ]
+        };
+
+        if (document.result.event) {
+          let stopHackathonEvent = {
+            'alias': 'hackathon',
+            'data': [
+              {
+                'name': action,
+                'attributes': {
+                  'hackathon-slug': document.result.event.slug,
+                  'hackathon-action': action
+                }
+              }
+            ]
+          };
+
+          bountyEvent = [ bountyEvent, stopHackathonEvent ];
+
+        }
+
+        MauticEvent.createEvent(bountyEvent);
+        window.history.pushState({}, document.title, window.location.pathname);
+
+      }
+
+
     },
     getTransactionURL: function(token_name, txn) {
       let url;
@@ -78,8 +127,19 @@ Vue.mixin({
           url = `https://filscan.io/#/tipset/message-detail?cid=${txn}`;
           break;
 
+        case 'BNB':
+        case 'BUSD':
+          url = `https://bscscan.com/tx/${txn}`;
+          break;
+
         case 'ONE':
           url = `https://explorer.harmony.one/#/tx/${txn}`;
+          break;
+
+        case 'R-BTC':
+        case 'RDOC':
+        case 'DOC':
+          url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
         default:
@@ -121,8 +181,19 @@ Vue.mixin({
           url = `https://filscan.io/#/tipset/address-detail?address=${address}`;
           break;
 
+        case 'BNB':
+        case 'BUSD':
+          url = `https://bscscan.com/address/${address}`;
+          break;
+
         case 'ONE':
           url = `https://explorer.harmony.one/#/address/${address}`;
+          break;
+
+        case 'R-BTC':
+        case 'RDOC':
+        case 'DOC':
+          url = `https://explorer.rsk.co/address/${address}`;
           break;
 
         default:
@@ -331,8 +402,19 @@ Vue.mixin({
           tenant = 'FILECOIN';
           break;
 
+        case 'BNB':
+        case 'BUSD':
+          tenant = 'BINANCE';
+          break;
+
         case 'ONE':
           tenant = 'HARMONY';
+          break;
+
+        case 'R-BTC':
+        case 'DOC':
+        case 'RDOC':
+          tenant = 'RSK';
           break;
 
         default:
@@ -410,11 +492,18 @@ Vue.mixin({
           payWithPolkadotExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
+        case 'binance_ext':
+          payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
         case 'harmony_ext':
           payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
-      }
 
+        case 'rsk_ext':
+          payWithRSKExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+      }
     },
     closeBounty: function() {
 
@@ -521,7 +610,7 @@ Vue.mixin({
       }
       return;
     },
-    stopWork: function(isOwner) {
+    stopWork: function(isOwner, handle) {
       let text = isOwner ?
         'Are you sure you would like to stop this user from working on this bounty ?' :
         'Are you sure you would like to stop working on this bounty ?';
@@ -538,12 +627,51 @@ Vue.mixin({
 
       const apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
 
-      fetchData(apiUrlBounty, 'POST', {}, headers).then(response => {
+      fetchData(apiUrlBounty, 'POST', {handle}, headers).then(response => {
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
           let text = isOwner ?
             "You\'ve stopped the user from working on this bounty ?" :
             "You\'ve stopped work on this bounty";
+
+          let product = document.result.event ? 'hackathons' : 'bounties';
+          let productPersona = document.result.event ? 'hackathon' : 'bounty';
+          let persona = isOwner ? 'funder' : 'hunter';
+          let mtcPersona = `${productPersona}-${persona}`;
+
+          let stopEvent = {
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': product,
+                  'persona': mtcPersona,
+                  'action': 'stop'
+                }
+              }
+            ]
+          };
+
+          if (document.result.event) {
+            let stopHackathonEvent = {
+              'alias': 'hackathon',
+              'data': [
+                {
+                  'name': 'stop',
+                  'attributes': {
+                    'hackathon-slug': document.result.event.slug,
+                    'hackathon-action': 'stop'
+                  }
+                }
+              ]
+            };
+
+            stopEvent = [ stopEvent, stopHackathonEvent ];
+
+          }
+
+          MauticEvent.createEvent(stopEvent);
 
           _alert(text, 'success');
         } else {
@@ -591,6 +719,7 @@ Vue.mixin({
 
         case 'web3_modal':
         case 'polkadot_ext':
+        case 'rsk_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
@@ -619,6 +748,11 @@ Vue.mixin({
               console.log(err);
             });
           });
+          break;
+        }
+
+        case 'binance_ext': {
+          vm.fulfillment_context.active_step = 'payout_amount';
           break;
         }
 
@@ -824,6 +958,33 @@ var show_interest_modal = function() {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
+
+          MauticEvent.createEvent({
+            'alias': 'hackathon',
+            'data': [
+              {
+                'name': 'interest',
+                'attributes': {
+                  'hackathon-slug': document.result.event.slug,
+                  'hackathon-action': 'interest'
+                }
+              }
+            ]
+          },
+          {
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'hackathon',
+                  'persona': 'hackathon-hunter',
+                  'action': 'interest'
+                }
+              }
+            ]
+          });
+
         });
 
         return;
@@ -844,6 +1005,19 @@ var show_interest_modal = function() {
         }).then(success => {
           if (success) {
             appBounty.fetchBounty();
+            MauticEvent.createEvent({
+              'alias': 'products',
+              'data': [
+                {
+                  'name': 'product',
+                  'attributes': {
+                    'product': 'bounties',
+                    'persona': 'bounty-hunter',
+                    'action': 'interest'
+                  }
+                }
+              ]
+            });
             modals.bootstrapModal('hide');
 
             if (document.result.event) {
@@ -863,19 +1037,19 @@ var show_interest_modal = function() {
   modals.bootstrapModal('show');
 };
 
-$('body').on('click', '.issue_description img', function() {
-  var content = $.parseHTML(
-    '<div><div class="row"><div class="col-12 closebtn">' +
-      '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-        '<span aria-hidden="true">&times;</span>' +
-      '</a>' +
-    '</div>' +
-    '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+// $('body').on('click', '.issue_description img', function() {
+//   var content = $.parseHTML(
+//     '<div><div class="row"><div class="col-12 closebtn">' +
+//       '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+//         '<span aria-hidden="true">&times;</span>' +
+//       '</a>' +
+//     '</div>' +
+//     '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
 
-  $(content).appendTo('body').modal({
-    modalClass: 'modal magnify'
-  });
-});
+//   $(content).appendTo('body').modal({
+//     modalClass: 'modal magnify'
+//   });
+// });
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

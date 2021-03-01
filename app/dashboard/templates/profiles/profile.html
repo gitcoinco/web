@@ -1,4 +1,4 @@
-{% load i18n humanize static avatar_tags kudos_extras %}
+{% load i18n humanize static avatar_tags kudos_extras compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,15 +10,17 @@
     {% if not hidden %}
       <link rel="canonical" href="{{profile.url}}/{{tab}}" />
     {% endif %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/kudos/styles.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    {% compress css file profile %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/profile.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+    {% endcompress %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -107,7 +109,7 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html'%}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/current_profile.html' %}
     {% if tab == 'activity' %}
       {% include 'shared/tip_dependancies.html' %}

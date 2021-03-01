@@ -17,6 +17,7 @@
 '''
 
 import json
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -34,7 +35,7 @@ from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything, SuperModel
-from grants.models import Contribution, Grant, GrantCategory
+from grants.models import Contribution, Grant, GrantCategory, GrantType
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
 from marketing.models import Stat
@@ -46,6 +47,7 @@ from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
 
+logger = logging.getLogger(__name__)
 
 def create_email_inventory_cache():
     print('create_email_inventory_cache')
@@ -90,6 +92,9 @@ def create_grant_type_cache():
 def create_grant_active_clr_mapping():
     print('create_grant_active_clr_mapping')
     # Upate grants mppping to active CLR rounds
+    # NOTE: deprecated; this has been replaced by create_grant_clr_cache
+    # by Owocki 12/16/2020
+    # return
     from grants.models import Grant, GrantCLR
 
     grants = Grant.objects.all()
@@ -102,26 +107,35 @@ def create_grant_active_clr_mapping():
             _grant.in_active_clrs.remove(clr_round)
             _grant.save()
 
+    return
+
     # update new mapping
-    active_clr_rounds = clr_rounds.filter(is_active=True)
-    for clr_round in active_clr_rounds:
-        grants_in_clr_round = grants.filter(**clr_round.grant_filters)
+    # active_clr_rounds = clr_rounds.filter(is_active=True)
+    # for clr_round in active_clr_rounds:
+    #     grants_in_clr_round = grants.filter(**clr_round.grant_filters)
 
-        for grant in grants_in_clr_round:
-            grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
+    #     for grant in grants_in_clr_round:
+    #         grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
 
-            if not grant_has_mapping_to_round:
-                grant.in_active_clrs.add(clr_round)
-                grant.save()
+    #         if not grant_has_mapping_to_round:
+    #             grant.in_active_clrs.add(clr_round)
+    #             grant.save()
 
+def create_hack_event_cache():
+    from dashboard.models import HackathonEvent
+    for he in HackathonEvent.objects.all():
+        he.save()
+        
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
+    grant_types = GrantType.objects.all()
     redis = RedisService().redis
-    for category in GrantCategory.objects.all():
-        key = f"grant_category_{category.category}"
-        val = Grant.objects.filter(categories__category__contains=category.category).count()
-        redis.set(key, val)
+    for g_type in grant_types:
+        for category in GrantCategory.objects.all():
+            key = f"grant_category_{g_type.name}_{category.category}"
+            val = Grant.objects.filter(grant_type=g_type, categories__category__contains=category.category).count()
+            redis.set(key, val)
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -384,24 +398,32 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grant_type_cache()
-        create_grant_clr_cache()
-        create_grant_category_size_cache()
-        create_grant_active_clr_mapping()
+        operations = []
+        operations.append(create_grant_active_clr_mapping)
+        operations.append(create_grant_type_cache)
+        operations.append(create_grant_clr_cache)
+        operations.append(create_grant_category_size_cache)
         if not settings.DEBUG:
-            create_results_cache()
-            create_hidden_profiles_cache()
-            create_tribes_cache()
-            create_activity_cache()
-            create_post_cache()
-            create_top_grant_spenders_cache()
-            create_avatar_cache()
-            create_quests_cache()
-            create_grants_cache()
-            create_contributor_landing_page_context()
-            create_hackathon_cache()
-            create_hackathon_list_page_cache()
+            operations.append(create_results_cache)
+            operations.append(create_hack_event_cache)
+            operations.append(create_hidden_profiles_cache)
+            operations.append(create_tribes_cache)
+            operations.append(create_activity_cache)
+            operations.append(create_post_cache)
+            operations.append(create_top_grant_spenders_cache)
+            operations.append(create_avatar_cache)
+            operations.append(create_quests_cache)
+            operations.append(create_grants_cache)
+            operations.append(create_contributor_landing_page_context)
+            operations.append(create_hackathon_cache)
+            operations.append(create_hackathon_list_page_cache)
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
                 # do dailyi updates
-                create_email_inventory_cache()
+                operations.append(create_email_inventory_cache)
+        for func in operations:
+            try:
+                print(f'running {func}')
+                func()
+            except Exception as e:
+                logger.exception(e)

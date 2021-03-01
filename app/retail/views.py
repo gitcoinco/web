@@ -80,6 +80,10 @@ def index(request):
     }
     return TemplateResponse(request, 'home/index2020.html', context)
 
+def sass_experiment(request):
+    context = {
+    }
+    return TemplateResponse(request, 'home/sass_experiment.html', context)
 
 def index_old(request):
     products = [
@@ -551,18 +555,6 @@ def about(request):
             True
         ),
         (
-            "Dan Lipert",
-            "Engineering",
-            "danlipert",
-            "danlipert",
-            "EIP 1337",
-            "Tantan Ramen",
-            "dan",
-            "Blockchain Artificer",
-            "dan_lipert",
-            True
-        ),
-        (
             "Connor O'Day",
             "DevRel",
             "connoroday",
@@ -575,15 +567,15 @@ def about(request):
             True
         ),
         (
-            "jdorfman",
-            "DevRel SuperStar",
-            "jdorfman",
+            "solexplorer",
+            "Wannabe community Star",
+            "solexplorer",
             '',
-            "Weekly Mint",
-            "Thai",
+            "Community",
+            "Pizza",
             "",
-            "Open Source Paladin",
-            "jdorfman",
+            "Community leader",
+            "rachid_eth",
             True
         ),
         (
@@ -608,18 +600,6 @@ def about(request):
             "",
             "OSS Freedom Fighter",
             "stchibe",
-            True
-        ),
-        (
-            "aamustapha",
-            "Engineer",
-            "aamustapha",
-            '',
-            "Grants",
-            "Pounded yam with Veg. soup",
-            "",
-            "OSS Mechanic",
-            "_amustapha",
             True
         ),
         (
@@ -656,6 +636,18 @@ def about(request):
             "",
             "Rainbow Unicorn",
             "",
+            True
+        ),
+        (
+            "Kyle Weiss",
+            "People, Product and Value Capture",
+            "kweiss",
+            "kweiss",
+            "The Community",
+            "Porkbelly Ramen",
+            "",
+            "",
+            "kweiss",
             True
         ),
         (
@@ -788,10 +780,10 @@ def products(request):
             'traction': '100s of posts per day',
         },
         {
-            'name': 'Chat',
+            'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
-            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
-            'link': 'https://gitcoin.co/chat/landing',
+            'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
+            'link': 'https://discord.gg/jWUzf7b8Yr',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',
@@ -801,7 +793,7 @@ def products(request):
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
-            'link': 'https://hackathons.gitcoin.co',
+            'link': 'https://gitcoin.co/hackathons',
             'img': static('v2/images/products/graphics-hackathons.png'),
             'logo': static('v2/images/top-bar/hackathons-symbol-neg.svg'),
             'service_level': 'Full Service',

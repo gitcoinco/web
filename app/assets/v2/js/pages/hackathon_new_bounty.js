@@ -54,13 +54,21 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
-        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
         // vm.errorIssueDetails = err.responseJSON.message;
       });
 
+    },
+    getBinanceSelectedAccount: async function() {
+      let vm = this;
+
+      try {
+        vm.form.funderAddress = await binance_utils.getSelectedAccount();
+      } catch (error) {
+        vm.funderAddressFallback = true;
+      }
     },
     getAmount: function(token) {
       let vm = this;
@@ -78,38 +86,6 @@ Vue.mixin({
       }).catch((err) => {
         console.log(err);
       });
-    },
-    injectProvider: function(token) {
-      let vm = this;
-      const chainId = vm.chainId;
-
-      if (!token || !chainId) {
-        return;
-      }
-
-      switch (chainId) {
-        case '58': {
-          let polkadot_endpoint;
-
-          if (token == 'KSM') {
-            polkadot_endpoint = KUSAMA_ENDPOINT;
-          } else if (token == 'DOT') {
-            polkadot_endpoint = POLKADOT_ENDPOINT;
-          }
-
-          polkadot_utils.connect(polkadot_endpoint).then(res =>{
-            console.log(res);
-            polkadot_extension_dapp.web3Enable('gitcoin');
-          }).catch(err => {
-            console.log(err);
-          });
-          break;
-        }
-
-        default:
-          break;
-
-      }
     },
     calcValues: function(direction) {
       let vm = this;
@@ -174,9 +150,17 @@ Vue.mixin({
           // ethereum
           type = 'web3_modal';
           break;
+        case '30':
+          // rsk
+          type = 'rsk_ext';
+          break;
         case '58':
           // polkadot
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
           break;
         case '1000':
           // harmony
@@ -360,6 +344,11 @@ Vue.mixin({
       if (!provider && val === '1') {
         await onConnect();
       }
+
+      if (val === '56') {
+        this.getBinanceSelectedAccount();
+      }
+
       this.getTokens();
       await this.checkForm();
     }
@@ -378,6 +367,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        funderAddressFallback: false,
         terms: false,
         hackathonSlug: document.hackathon.slug,
         hackathonEndDate: document.hackathon.endDate,

@@ -68,7 +68,7 @@
                 <a class="dropdown-item dropdown-item-small" href="{% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
               </li>
               <li>
-                <a class="dropdown-item dropdown-item-small" href="http://hackathons.gitcoin.co/contact" target="_blank">{% trans "Get Involved" %}</a>
+                <a class="dropdown-item dropdown-item-small" href="mailto:sales@gitcoin.co" target="_blank">{% trans "Get Involved" %}</a>
               </li>
             </ul>
 
@@ -146,7 +146,7 @@
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCommunity" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% trans "Tribes" %}
+        {% trans "Community" %}
       </a>
       <div class="dropdown-menu shadow-lg" id="" aria-labelledby="dropdownCommunity">
         <div class="gc-megamenu-content">
@@ -192,8 +192,8 @@
                   <div class="carousel-item active">
                     <h5>Chat with the community</h5>
                     <p>Meet fellow developers, designers, futurists and more. Collaborate and BUIDL awesome projects together.</p>
-                    <a class="btn btn-gc-blue" href="https://chat.gitcoin.co/">
-                      {% trans "Go to Chat" %}
+                    <a class="btn btn-gc-blue" href="https://discord.gg/jWUzf7b8Yr">
+                      {% trans "Go to Discord" %}
                     </a>
                   </div>
                   <div class="carousel-item">
@@ -228,13 +228,13 @@
 
             <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
               <li>
-                <a class="dropdown-item" href="{% url "about" %}">
-                  {% trans "About" %}
+                <a class="dropdown-item" href="{% url "mission" %}">
+                  {% trans "Mission" %}
                 </a>
               </li>
               <li>
                 <a class="dropdown-item" href="{% url 'products' %}">
-                  {% trans "Gitcoin Products" %}
+                  {% trans "Products" %}
                 </a>
               </li>
               <li>
@@ -243,8 +243,8 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "mission" %}">
-                  {% trans "Mission" %}
+                <a class="dropdown-item" href="{% url "about" %}">
+                  {% trans "About" %}
                 </a>
               </li>
               <li>
@@ -297,7 +297,6 @@
   </nav>
   <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
-    {% include 'shared/chat_nav.html' %}
     {% include 'shared/notifications.html' %}
     {% include 'shared/search.html' %}
     {% include 'shared/cart_nav.html' %}

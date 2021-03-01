@@ -1,5 +1,32 @@
 # Grants General Documentation
 
+- [Grants General Documentation](#grants-general-documentation)
+  - [Round 8](#round-8)
+  - [Round 7](#round-7)
+    - [Architecture Background](#architecture-background)
+    - [Checkout Flow](#checkout-flow)
+    - [Transfer Fees](#transfer-fees)
+  - [Round 6](#round-6)
+  - [Rounds 1–5](#rounds-15)
+    - [How Grants works](#how-grants-works)
+    - [Sub Miner](#sub-miner)
+    - [More information](#more-information)
+
+## Round 8
+
+In round 8, the zkSync checkout flow was significantly simplified thanks to the new
+[`zksync-checkout`](https://www.npmjs.com/package/zksync-checkout) library released by zkSync. This library natively supports batch transfers, meaning multiple transfers can be approved
+with just one L1 signature. This provides many benefits over the round 7 approach:
+
+- It resolves the UX issues we worked around by introducing "Gitcoin zkSync wallets" in round 7
+- Security is improved, as Gitcoin never sees any of your zkSync private keys
+- It provides a familiar web2 checkout flow, similar to "Checkout with Amazon" or "Checkout with Google Pay"
+- It's less confusing to users as your transaction history on zkScan now shows ordinary transfers to grants instead of one big transfer to an unknown address
+- These native batch transfers are atomic, so your checkout will either succeed or fail. The previous approach can leave user accounts in an odd state if one of the multiple transfers failed, and care must be taken to properly recover from this
+
+For more information on how this new checkout flow works, please see the
+[zkSync Checkout documentation](https://www.notion.so/zkSync-Checkout-docs-2bffd6f169e746d0b51873e4127992a6).
+
 ## Round 7
 
 In round 7 we introduced the option to checkout on L2 using [zkSync](https://zksync.io/).
@@ -147,5 +174,5 @@ For more information on the subminer for grants, checkout
 
 - https://github.com/gitcoinco/web/issues/2424
 - https://github.com/gitcoinco/web/pull/3055
-  https://chat.gitcoin.co/
+  https://discord.com/invite/83BK5z55yB
 - http://1337alliance.com

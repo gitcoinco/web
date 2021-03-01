@@ -36,7 +36,7 @@ def next_quest(request):
     """Render the Quests 'random' page."""
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     for quest in Quest.objects.filter(visible=True).order_by('?'):
@@ -57,7 +57,7 @@ def editquest(request, pk=None):
 
     # auth
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     quest = None
@@ -113,9 +113,11 @@ def editquest(request, pk=None):
             counter += 1
 
         validation_pass = True
+        reward = None
         try:
             enemy = Token.objects.get(pk=package.get('enemy'))
-            reward = Token.objects.get(pk=package.get('reward'))
+            if package.get('reward'):
+                reward = Token.objects.get(pk=package.get('reward'))
         except Exception as e:
             messages.error(request, 'Unable to find Kudos')
             validation_pass = False
@@ -195,7 +197,7 @@ def editquest(request, pk=None):
         package['reading_material_url'] = quest.game_schema.get('prep_materials', [{}])[0].get('url')
         package['reading_material_name'] = quest.game_schema.get('prep_materials', [{}])[0].get('title')
         package['video_enabled'] = quest.video
-        package['reward'] = quest.kudos_reward.pk
+        package['reward'] = quest.kudos_reward.pk if quest.kudos_reward else None
         package['enemy'] = quest.game_metadata.get('enemy', {}).get('id')
         package['points'] = quest.value
         package['minutes'] = quest.cooldown_minutes

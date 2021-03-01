@@ -8,8 +8,10 @@
 * Get a list of contributors to a Gitcoin Grant at a specififc round `https://gitcoin.co/grants/v1/api/export_addresses/grantX_roundY.json` where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.
 * We've got an `https://gitcoin.co/grants/v1/api/export_addresses/all.json` endpoint available for those who'd like to just get all addresses that've ever funded a Gitcoin Grant.
 * We've also put together a list of all grants on the platform, and the addresses you can contribute to them at, at https://gitcoin.co/grants/grants.json
+* Get a list of contributor social info (handle, picture, anonymized, comment) for a Gitcoin Grant at a specific round `https://gitcoin.co/grants/v1/api/export_info/grantX_roundY.json` where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.
 
-These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases..
+These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases. 
+*NOTE: These APIs returns live data, with a small cache infront. This means, the data may be up to an hour stale, but will refresh as the cache is recreated.*
 
 Click through to try them below:
 * https://gitcoin.co/grants/v1/api/export_addresses/round7.json
@@ -17,6 +19,7 @@ Click through to try them below:
 * https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
 * https://gitcoin.co/grants/v1/api/export_addresses/all.json
 * https://gitcoin.co/grants/grants.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json
 
 NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at `https://gitcoin.co/settings/privacy` at anytime.
 
@@ -188,7 +191,7 @@ The grants endpoint provides a listing of grants and all it's information. There
 
 **Filters**
 
-You can filter the data returned from the API by providing these keys as URL parameters `title`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.  You can also add a `limit` parameter to limit the results (typically for performance reasons).
+You can filter the data returned from the API by providing these keys as URL parameters `title`, `admin_address`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.  You can also add a `limit` parameter to limit the results (typically for performance reasons).
 
 
 #### Example Request

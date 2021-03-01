@@ -15,8 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-{% load kudos_extras %}
+{% load i18n static kudos_extras compress %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
@@ -40,7 +39,7 @@
       Once the web3 transaction has been submitted, 
       {% endif %}
 
-      {% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
+      {% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs (please make sure you are on the " %} {{coupon.token.contract.network}} {% trans "network ), or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
       {% include 'shared/twitter.html' %}
       <p>
         <a class="twitter-share-button"
@@ -125,7 +124,7 @@
       </div>
 
       <div class="form-group">
-        <label for="">{% trans "Forward it to a permanent address" %}:</label>
+        <label for="">{% trans "Forward it to a permanent address" %} ({{coupon.token.contract.network}} network):</label>
         <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{% endif %}>
         <input type="hidden" name="network" id="network" value="">
       </div>
@@ -203,8 +202,10 @@
   }
 </style>
 <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
-<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+{% compress css file receive_bulk %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+{% endcompress %}
 <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';

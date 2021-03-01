@@ -101,6 +101,8 @@
   }
 
 </style>
+{% for grant_with_subscription in grants_with_subscription %}
+{% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
 <div class="grant-header">
   <div class="left-grant-header">
     <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
@@ -127,15 +129,10 @@
     {{ grant.description|truncatechars:300 }}
   </p>
   <p>
-    {% trans "You have agreed to give" %}
+    {% trans "You have contributed" %}
   </p>
   <p>
     <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
-      {% if subscription.num_tx_approved > 1 %}
-        {% trans "every" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
-      {% endif %}
-    <strong> {{subscription.num_tx_approved|floatformat}} time{{ subscription.num_tx_approved|pluralize }}</strong>
-
   </p>
   <p>{% trans "You can see all the grants you support and your transaction history " %}
       <a href="{% url 'grants:profile' %}">{% trans "here." %}</a>
@@ -150,4 +147,6 @@
   <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}">{% trans "here." %}</a>
 </p>
 <hr>
+{% endwith %}
+{% endfor %}
 {% endblock %}

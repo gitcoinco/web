@@ -145,6 +145,10 @@ class Token(SuperModel):
     objects = TokenQuerySet.as_manager()
 
     @property
+    def is_owned_by_gitcoin(self):
+        return self.owner_address.lower() == settings.KUDOS_OWNER_ACCOUNT.lower()
+
+    @property
     def on_xdai(self):
         # returns a kudos token object thats on the xdai network; a mirro
         # a mirror of the mainnet with 1000x better costs ( https://github.com/gitcoinco/web/pull/7702/ )
@@ -167,6 +171,9 @@ class Token(SuperModel):
                 return_me.append((network, ref))
         return return_me
 
+    @property
+    def on_other_networks(self):
+        return [ele for ele in self.on_networks if ele[0] != self.contract.network]
 
     def on_network(self, network):
         if self.contract.network == network:

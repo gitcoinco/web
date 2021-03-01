@@ -95,6 +95,11 @@ harmony_utils.logoutHarmonyExtension = async harmonyExt => {
   return harmonyExt.logout();
 }
 
+
+harmony_utils.isOnewalletInstalled = () => {
+  return window.onewallet && window.onewallet.isOneWallet;
+}
+
 /**
  *  transfer tokens between shard 0 address via harmony extension
  *
@@ -128,8 +133,8 @@ harmony_utils.transfer = async(hmy, harmonyExt, from, to, amount) => {
     throw response.error.message
   }
 
-  if (txn && txn.id) {
-    return txn.id;
+  if (response[0] && response[0].id) {
+    return response[0].id;
   }
 
   return response.result;

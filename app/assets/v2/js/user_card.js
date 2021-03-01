@@ -184,9 +184,6 @@ const renderPopOverData = function(data) {
       <a href="/${data.profile.handle}" class="font-body font-weight-semibold">@${data.profile.handle}</a>
 
       <div class="my-2">
-        <button class="btn btn-outline-gc-blue btn-sm font-smaller-5" data-openchat="${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Chat @${data.profile.handle}">
-          <i class="fas fa-fw fa-comment-dots"></i>
-        </button>
 
         <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/tip?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Tip @${data.profile.handle}">
           <i class="fab fa-fw fa-ethereum"></i>

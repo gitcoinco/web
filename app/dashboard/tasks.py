@@ -12,7 +12,6 @@ from django.http import HttpRequest
 from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
-from chat.tasks import create_channel
 from dashboard.models import Activity, Bounty, ObjectView, Profile
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
@@ -32,14 +31,6 @@ def bounty_on_create(self, team_id, new_bounty, retry: bool = True) -> None:
     # from chat.tasks import create_channel
 
     tasks = list()
-
-    tasks.append(
-        create_channel.si({
-            'team_id': team_id,
-            'channel_name': f'bounty-{new_bounty.id}',
-            'channel_display_name': f'bounty-{new_bounty.id}'
-        }, new_bounty.id)
-    )
 
     # what has to happen that we can issue without a dependency from any subtasks?
 

@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,11 +25,12 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
-    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
-
+    {% compress css file dashboard_sponsors %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-vue-hackathon.scss" %} />
+    {% endcompress %}
     <style type="text/css">
       .hackathon-logo {
         height: 13rem;
@@ -270,10 +271,6 @@
                                       </div>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
-                                      <!--a :href="profile.email"><i class="fa fa-envelope"></i></a-->
-                                      <button class="btn btn-link gc-text-blue pt-0" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
-                                    </b-td>
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <b-form-checkbox class="font-smaller-4 mt-1" v-model="project.winner" name="check-button" switch @change="markWinner($event, project, prizeIndex)">
                                         Winner
                                       </b-form-checkbox>
@@ -359,7 +356,7 @@
 
 
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
     {{user_orgs|json_script:"orgs-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}

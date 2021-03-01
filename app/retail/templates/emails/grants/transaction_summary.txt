@@ -25,7 +25,7 @@
 
 {% trans "Amount Received" %}
 
-{{ grant.amount_received }} {% trans "DAI" %}
+{{ grant.amount_received }} {% trans "USD" %}
 
 
 {% trans "View Grant" %} {{ grant.reference_url }}

@@ -14,13 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    {% compress css file tabs %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+    {% endcompress %}
     <style>
       #grant-quickstart-tabs-sections img {
         max-width: 15rem;
@@ -86,13 +88,6 @@
                     <p>
                       {%trans "Read the project’s description thoroughly. What is this project about?" %}<br>
                       {%trans "Who’s behind it? Does this bring value to me or the ecosystem?" %}
-                    </p>
-                  </div>
-                  <div class="mb-3 pb-1">
-                    <h2 class="font-title">{%trans "Contribute with any ERC-20 token" %}</h2>
-                    <p>
-                      {%trans "If the grant owner does not specify a required token, you can contribute with any token!" %}<br>
-                      {%trans "WETH, DAI. It’s up to you." %}
                     </p>
                   </div>
                   <div class="mb-3 pb-1">
@@ -176,7 +171,7 @@
     </div>
 
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
 
     <script src="{% static "v2/js/pages/tabs.js" %}"></script>

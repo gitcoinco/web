@@ -92,16 +92,41 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
+      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_1)) {
+        vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
+      }
+      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
+        vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
+      }
+
+      // payout address validation based on chain
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
-      } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
-        vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+      } else if (vm.chainId == 'eth') {
+        if (!vm.form.eth_payout_address) {
+          vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+        } else if (vm.form.eth_payout_address.trim().endsWith('.eth')) {
+          vm.$set(vm.errors, 'eth_payout_address', 'ENS is not supported. Please enter ETH address');
+        }
       } else if (
         vm.chainId == 'zcash' &&
-            (!vm.form.zcash_payout_address || !vm.form.zcash_payout_address.toLowerCase().startsWith('t'))
+        (!vm.form.zcash_payout_address || !vm.form.zcash_payout_address.toLowerCase().startsWith('t'))
       ) {
         vm.$set(vm.errors, 'zcash_payout_address', 'Please enter transparent ZCash address');
+      } else if (vm.chainId == 'celo' && !vm.form.celo_payout_address) {
+        vm.$set(vm.errors, 'celo_payout_address', 'Please enter CELO address');
+      } else if (vm.chainId == 'zilliqa' && !vm.form.zil_payout_address) {
+        vm.$set(vm.errors, 'zil_payout_address', 'Please enter Zilliqa address');
+      } else if (vm.chainId == 'harmony' && !vm.form.harmony_payout_address) {
+        vm.$set(vm.errors, 'harmony_payout_address', 'Please enter Harmony address');
+      } else if (vm.chainId == 'binance' && !vm.form.binance_payout_address) {
+        vm.$set(vm.errors, 'binance_payout_address', 'Please enter Binance address');
+      } else if (vm.chainId == 'polkadot' && !vm.form.polkadot_payout_address) {
+        vm.$set(vm.errors, 'polkadot_payout_address', 'Please enter Polkadot address');
+      } else if (vm.chainId == 'kusama' && !vm.form.kusama_payout_address) {
+        vm.$set(vm.errors, 'kusama_payout_address', 'Please enter Kusama address');
       }
+
       if (!vm.form.grant_type) {
         vm.$set(vm.errors, 'grant_type', 'Please select the grant category');
       }
@@ -110,6 +135,10 @@ Vue.mixin({
       }
       if (vm.form.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
+      }
+
+      if (!vm.$refs.formNewGrant.reportValidity()) {
+        return false;
       }
 
       if (Object.keys(vm.errors).length) {
@@ -139,18 +168,16 @@ Vue.mixin({
         'github_project_url': form.github_project_url,
         'eth_payout_address': form.eth_payout_address,
         'zcash_payout_address': form.zcash_payout_address,
+        'celo_payout_address': form.celo_payout_address,
+        'zil_payout_address': form.zil_payout_address,
+        'harmony_payout_address': form.harmony_payout_address,
+        'binance_payout_address': form.binance_payout_address,
+        'polkadot_payout_address': form.polkadot_payout_address,
+        'kusama_payout_address': form.kusama_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
-        'network': form.network
-        // logoPreview
-        // admin_address
-        // contract_owner_address
-        // token_address
-        // token_symbol
-        // contract_version
-        // transaction_hash
-        // contract_address
-        // transaction_hash
+        'network': form.network,
+        'region': form.region
       };
 
       console.log(params);
@@ -169,8 +196,11 @@ Vue.mixin({
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
 
-      const apiUrlGrant = '/grants/new';
+      let apiUrlGrant = '/grants/new';
 
+      if (vm.queryParams.get('related_hackathon_project_id')) {
+        apiUrlGrant += `?related_hackathon_project_id=${vm.queryParams.get('related_hackathon_project_id')}`;
+      }
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -200,6 +230,35 @@ Vue.mixin({
       let grant_type = this.grant_types.filter(grant_type => grant_type.name == vm.form.grant_type);
 
       return grant_type[0].categories;
+    },
+    onFileChange(e) {
+      let vm = this;
+
+      if (!e.target) {
+        return;
+      }
+
+      const file = e.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      let imgCompress = new Compressor(file, {
+        quality: 0.6,
+        maxWidth: 2000,
+        success(result) {
+          vm.logoPreview = URL.createObjectURL(result);
+          vm.logo = new File([result], result.name, { lastModified: result.lastModified });
+          $('#preview').css('width', '100%');
+          $('#js-drop span').hide();
+          $('#js-drop input').css('visible', 'invisible');
+          $('#js-drop').css('padding', 0);
+        },
+        error(err) {
+          _alert(err.message, 'error');
+        }
+      });
     }
   },
   watch: {
@@ -225,30 +284,21 @@ Vue.mixin({
         }
         this.dirty = true;
       }
-    },
-    logo: {
-      deep: true,
-      handler(newVal, oldVal) {
-        let vm = this;
-
-        if (checkFileSize(this.logo, 4000000) === false) {
-          _alert(`Grant Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
-        } else {
-          let reader = new FileReader();
-
-          reader.onload = function(e) {
-            vm.logoPreview = e.target.result;
-            $('#preview').css('width', '100%');
-            $('#js-drop span').hide();
-            $('#js-drop input').css('visible', 'invisible');
-            $('#js-drop').css('padding', 0);
-          };
-          reader.readAsDataURL(vm.logo);
-        }
-      }
     }
   }
 });
+
+const grant_regions = [
+  { 'name': 'north_america', 'label': 'North America'},
+  { 'name': 'oceania', 'label': 'Oceania'},
+  { 'name': 'latin_america', 'label': 'Latin America'},
+  { 'name': 'europe', 'label': 'Europe'},
+  { 'name': 'africa', 'label': 'Africa'},
+  { 'name': 'middle_east', 'label': 'Middle East'},
+  { 'name': 'india', 'label': 'India'},
+  { 'name': 'east_asia', 'label': 'East Asia'},
+  { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+];
 
 if (document.getElementById('gc-new-grant')) {
   appFormBounty = new Vue({
@@ -261,6 +311,7 @@ if (document.getElementById('gc-new-grant')) {
       return {
         chainId: '',
         grant_types: document.grant_types,
+        grant_regions: grant_regions,
         usersOptions: [],
         network: 'mainnet',
         logo: null,
@@ -273,11 +324,18 @@ if (document.getElementById('gc-new-grant')) {
           reference_url: '',
           description_rich: '',
           team_members: [],
+          region: null,
           twitter_handle_1: '',
           twitter_handle_2: '',
           github_project_url: '',
           eth_payout_address: '',
           zcash_payout_address: '',
+          celo_payout_address: '',
+          zil_payout_address: '',
+          harmony_payout_address: '',
+          binance_payout_address: '',
+          polkadot_payout_address: '',
+          kusama_payout_address: '',
           grant_type: '',
           grant_categories: [],
           network: 'mainnet'
@@ -299,20 +357,16 @@ if (document.getElementById('gc-new-grant')) {
     },
     computed: {
       queryParams() {
-        let query = window.location.search.substr(1);
-
-        query = query.split('&');
-        let returnVal = {};
-
-        query.map(q => {
-          const parts = q.split('=');
-          const arrayCheckRegex = /\[.+\]/;
-          let value = decodeURIComponent(parts[1]);
-
+        return new URLSearchParams(window.location.search);
+      },
+      clean() {
+        return value => {
+          value = decodeURIComponent(value);
           if ((/<[a-zA-Z\\\/]+>/).test(value)) {
             // if it matches a tag, reset the value to empty
             value = '';
           }
+          const arrayCheckRegex = /\[.+\]/;
 
           if (arrayCheckRegex.test(value)) {
             // check if array is passed in query params and return it as an array instead of default string.
@@ -326,9 +380,8 @@ if (document.getElementById('gc-new-grant')) {
               return item;
             });
           }
-
-          returnVal[parts[0]] = value;
-        });
+          return value;
+        };
       },
       grant_type_logo() {
         const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
@@ -341,17 +394,29 @@ if (document.getElementById('gc-new-grant')) {
     },
     mounted() {
       const writeToRoot = ['chainId'];
+      const writeToBody = [
+        'title',
+        'description_rich',
+        'reference_url',
+        'twitter_handle_1',
+        'twitter_handle_2',
+        'github_project_url',
+        'eth_payout_address',
+        'grant_type',
+        'team_members',
+        'grant_categories'
+      ];
 
       for (const key of writeToRoot) {
-        if (this.queryParams[key]) {
-          this[key] = this.queryParams[key];
-          delete this.queryParams[key];
+        if (this.queryParams && this.queryParams.has(key)) {
+          this[key] = this.clean(this.queryParams.get(key));
         }
       }
-      this.form = {
-        ...this.form,
-        ...this.queryParams
-      };
+      for (const key of writeToBody) {
+        if (this.queryParams && this.queryParams.has(key)) {
+          this.form[key] = this.clean(this.queryParams.get(key));
+        }
+      }
     }
   });
 }

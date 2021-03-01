@@ -14,13 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    {% compress css file tabs %}
+      <link rel="stylesheet" type="text/x-scss" href={% static 'v2/scss/tabs.scss' %} />
+    {% endcompress %}
     <style>
       #quickstart-tabs-sections img {
         max-width: 15rem;
@@ -77,15 +79,15 @@
                 <div class="col-12 col-md-12 px-md-0">
                   <h1 class="font-title">{%trans "Buy a Token" %}</h1>
                   <p class="my-4">
-                    {%trans "With personal tokens, you can buy a stake of someone's future work potential today." %} <br>
+                    {%trans "With time tokens, you can buy a stake of someone's future work potential today." %} <br>
                   </p>
 
-                  <h1 class="font-title">{%trans "Reserve an Expert" %}</h1>
+                  <h1 class="font-title">{%trans "Get Specialist's Attention" %}</h1>
                   <p class="my-3">
-                    {%trans "Eager to work with a top-tier user but not sure what you’ll need them for?" %} <br>
+                    {%trans "Eager to work with a top tier contributor?" %} <br>
                   </p>
                   <p class="my-3">
-                    {%trans "Snagging their personal token secures their attention for your next project." %} <br>
+                    {%trans "Securing their time token opens the opportunity for future work if your request is accepted." %} <br>
                   </p>
 
                   <h1 class="font-title">{%trans "Support a Creator" %}</h1>
@@ -93,12 +95,12 @@
                     {%trans "Funds spent on purchased tokens go directly to the creator, giving them the ability to live fluidly in a distributed world." %} <br>
                   </p>
                   <p class="my-3">
-                    {%trans "If you’re one to spot talent in its infancy, purchasing a personal token is a great way to signal that their work should be valued." %} <br>
+                    {%trans "If you’re one to spot talent in its infancy, purchasing a time token is a great way to signal that their work should be valued." %} <br>
                   </p>
 
                   <h1 class="font-title">{%trans "Garner a Relationship" %}</h1>
                   <p class="my-3">
-                    {%trans "Personal tokens are all about reputation. Our creators are full of innovation and eager to bring that passion to your project." %} <br>
+                    {%trans "Time tokens are all about reputation. Our creators are full of innovation and eager to bring that passion to your project." %} <br>
                   </p>
                   <p class="my-3">
                     {%trans "Enjoy a vetted redemption cycle directly in Gitcoin - providing you with an end-to-end experience for working with our top talent." %} <br>
@@ -115,7 +117,7 @@
                   <hr/>
 
                   <p class="my-4">
-                      <i>{% trans "Disclaimer: Gitcoin personal tokens are currently in beta. Creators remain full control over whether or not they accept a redemption request." %}</i>
+                      <i>{% trans "Disclaimer: Gitcoin time tokens are currently in beta. Creators remain full control over whether or not they accept a redemption request." %}</i>
                       <i>{% trans "There is an inherent risk that your redemption may not be redeemed, so please purchase at your own risk with the knowledge that secondary liquidity may be limited."%}</i>
                   </p>
                 </div>
@@ -140,12 +142,12 @@
                     {%trans "Customize your skillset to match where you excel." %} <br>
                   </p>
 
-                  <h1 class="font-title">{%trans "Control Your Worth" %}</h1>
+                  <h1 class="font-title">{%trans "Boost Your Reliability" %}</h1>
                   <p class="my-3">
-                    {%trans "Determine your own rates and keep 100% of the profits." %} <br>
+                    {%trans "Show funders that you can be trusted to complete specialized tasks." %} <br>
                   </p>
                   <p class="my-3">
-                    {%trans "Change your costs to respond to trends and client demand." %} <br>
+                    {%trans "Successfully completing redemptions boosts your ability to receive future work." %} <br>
                   </p>
 
                   <h1 class="font-title">{%trans "Solidify Your Reputation" %}</h1>
@@ -167,7 +169,7 @@
                   <hr/>
 
                   <p class="my-4">
-                    <i>{% trans "Disclaimer: Personal tokens are highly experimental. Users who issue personal tokens and are unresponsive to redemption requests are likely to suffer penalties or be removed from the platform." %}</i>
+                    <i>{% trans "Disclaimer: Time tokens are highly experimental. Users who issue time tokens and are unresponsive to redemption requests are likely to suffer penalties or be removed from the platform." %}</i>
                   </p>
 
                 </div>
@@ -181,7 +183,7 @@
 
   </body>
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
   {% include 'shared/footer.html' %}
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script>

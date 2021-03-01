@@ -5,9 +5,11 @@ from django.conf import settings
 
 from celery import Celery
 from celery.signals import setup_logging
+from ddtrace import patch
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 
+patch(celery=True)
 app = Celery('app')
 
 

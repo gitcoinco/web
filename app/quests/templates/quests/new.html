@@ -15,22 +15,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 {% block 'content' %}
-<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
-<style type="text/css">
-.add_answer,
-.add_question,
-.close_question,
-.close_answer{
-  font-size: 12px;
-}
-.kudos-module .kudos-comment,
-.kudos-module .msg-alert{
-  display: none !important;
-}
-</style>
-<link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
+{% compress css file quest_new %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
+  <style type="text/css">
+    .add_answer,
+    .add_question,
+    .close_question,
+    .close_answer{
+      font-size: 12px;
+    }
+    .kudos-module .kudos-comment,
+    .kudos-module .msg-alert{
+      display: none !important;
+    }
+  </style>
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
+{% endcompress %}
 
 <div class="container-fluid">
   <div class="row">
@@ -136,14 +138,16 @@
               <input name=reward type="hidden" value={{package.reward}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+                {% include 'shared/add_kudos.html' with kudos_network='xdai' name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F"  %}
               </div>
+            {% elif package.reward_tip %}
+              Tip Reward, N/A
             {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+              {% include 'shared/add_kudos.html' with kudos_network='xdai' name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
           {% if is_staff %}
-          <div class="form-group">
+          <div class="form-group alpha-warning">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>
@@ -205,7 +209,7 @@
             <div class="background_container pt-4">
               <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
               <BR>
-                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 required {% if package.video_enabled%}checked=checked{% endif %} />
+                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 {% if package.video_enabled%}checked=checked{% endif %} />
               <label class="form__label" for="video_enabled">{% trans "Video Enabled Arena" %}</label>
               <BR>
               {% for bg in backgrounds %}

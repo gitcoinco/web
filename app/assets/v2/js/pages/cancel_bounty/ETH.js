@@ -106,7 +106,7 @@ const ethCancelBounty = data => {
     bounty.methods.killBounty(bountyId).send({
       from: selectedAccount
     }).then((result) => {
-      final_callback(result)
+      final_callback(result);
     }).catch(err => {
       final_callback(undefined, err);
       console.log(err);
@@ -118,4 +118,4 @@ const ethCancelBounty = data => {
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
   $.get(uri, apiCallback);
-}
+};

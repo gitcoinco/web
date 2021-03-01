@@ -74,7 +74,6 @@ TRANSACTIONAL_EMAILS = [
 
 
 NOTIFICATION_EMAILS = [
-    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
     ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
@@ -132,8 +131,8 @@ def render_new_supporter_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_thank_you_for_supporting_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_thank_you_for_supporting_email(grants_with_subscription):
+    params = {'grants_with_subscription': grants_with_subscription}
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
     subject = _("Thank you for supporting Grants on Gitcoin!")
@@ -149,8 +148,8 @@ def render_support_cancellation_email(grant, subscription):
     return response_html, response_txt, subject
 
 
-def render_grant_cancellation_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+def render_grant_cancellation_email(grant):
+    params = {'grant': grant}
     response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
     response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
     subject = _("Your Grant on Gitcoin Grants has been cancelled")
@@ -215,8 +214,7 @@ def subscription_terminated(request):
 @staff_member_required
 def grant_cancellation(request):
     grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_grant_cancellation_email(grant, subscription)
+    response_html, __, __ = render_grant_cancellation_email(grant)
     return HttpResponse(response_html)
 
 
@@ -455,7 +453,7 @@ in that spirit,  i have a few questions for you.
 
 thanks again for being a member of the community.
 
-alisa / frank (gitcoin product team)
+kyle, frank & alisa (gitcoin product team)
 
 PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
@@ -471,7 +469,7 @@ thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to se
 
 we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
-in that spirit,  i have a few questions for you:
+in that spirit, i have a few questions for you:
 
 > how much coaching/communication did it take the counterparty to turn around the issue?  was this burdensome?
 
@@ -481,7 +479,7 @@ in that spirit,  i have a few questions for you:
 
 thanks for being a member of the community.
 
-alisa / frank (gitcoin product team)
+kyle, frank & alisa (gitcoin product team)
 
 PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
@@ -502,7 +500,7 @@ i have a few questions for you.
 
 thanks again for being a member of the community.
 
-alisa / frank (gitcoin product team)
+kyle, frank & alisa (gitcoin product team)
 
 PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
@@ -557,17 +555,20 @@ def render_funder_stale(github_username, days=60, time_as_str='a couple months')
     response_txt = f"""
 hi {github_username},
 
-alisa and frank from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+kyle, frank, and alisa from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+
 in the spirit of making Gitcoin better + checking in:
 
-- have any issues which might be bounty worthy or projects you're hoping to build?
-- do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
-- are you interested in joining one of <a href="https://gitcoin.co/hackathon-list/">our upcoming hackathons?</a> it's possible
-we could do so at a discount, as you're a current funder on the platform
+> do you have any issues which might be bounty worthy or projects you're hoping to build?
+
+> do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+
+> are you interested in joining one of our upcoming hackathons? it's possible
+we could do so at a discount, as you're a current funder on the platform.
 
 appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
-~ alisa / frank (gitcoin product team)
+~ kyle, frank & alisa (gitcoin product team)
 
 
 """

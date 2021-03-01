@@ -18,7 +18,7 @@ def find_txn_on_harmony_explorer(fulfillment):
         return None
 
 
-    url = f'https://explorer.harmony.one:8888/address?id={payeeAddress}&pageIndex=0&pageSize=20'
+    url = f'https://explorer.hmny.io:8888/address?id={payeeAddress}&pageIndex=0&pageSize=20'
 
 
     response = requests.get(url).json()
@@ -54,7 +54,7 @@ def get_harmony_txn_status(fulfillment):
     if not txnid or txnid == "0x0":
         return None
 
-    url = f'https://explorer.harmony.one:8888/tx?id={txnid}'
+    url = f'https://explorer.hmny.io:8888/tx?id={txnid}'
 
 
     response = requests.get(url).json()
@@ -62,12 +62,13 @@ def get_harmony_txn_status(fulfillment):
         tx = response['tx']
 
         if 'err' in tx:
-            return 'expired'
+            # txn hasn't been published to chain yet
+            return None
 
         if (
             tx['from'] == funderAddress.lower() and
             tx['to'] == payeeAddress.lower() and
-            tx['value'] == float(amount) * 10 ** 18 and
+            tx['value']== float(amount) * 10 ** 18 and
             not txn_already_used(tx['hash'], token_name)
         ):
             if tx['status'] == 'SUCCESS':
@@ -83,7 +84,7 @@ def sync_harmony_payout(fulfillment):
             fulfillment.payout_tx_id = txn['hash']
             fulfillment.save()
 
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_harmony_txn_status(fulfillment)
 
         if txn_status == 'success':

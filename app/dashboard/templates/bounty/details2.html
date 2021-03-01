@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,12 +10,14 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
-    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/rating.css" %}"/>
+    {% compress css file bounty_details2 %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/highlight_github.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/user_popover.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+    {% endcompress %}
     {% include 'shared/fbpixel.html' %}
   </head>
 
@@ -164,7 +166,7 @@
                 <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
                   Submit Work
                 </a>
-                <button v-if="canStopWork(contxt.github_handle)" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
                   Stop Work
                 </button>
               </template>
@@ -433,7 +435,7 @@
                           </div>
 
                           <!-- WEB3 MODAL FLOW -->
-                          <div v-else-if="fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext'" class="px-sm-4">
+                          <div v-else-if="fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
 
                             <div class="text-center pb-3">
                               <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -852,12 +854,12 @@
                         <i class="fas fa-times mr-1 font-caption"></i> Reject
                       </a>
                     </template>
-                    <template v-else-if="isOwner && canStopWork(interest.profile.handle)">
-                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner)">
+                    <template v-else-if="isOwner">
+                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner, interest.profile.handle)">
                         <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
                       </button>
                     </template>
-                    <template v-if="interest.profile.handle === contxt.github_handle && canStopWork(interest.profile.handle)">
+                    <template v-if="interest.profile.handle === contxt.github_handle">
                       <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork()">
                         <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Work
                       </button>
@@ -866,7 +868,7 @@
                   <div class="col-md-12 my-auto text-center text-md-left">
                     <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
                       <p class="font-weight-bold mb-2">Work Plan</p>
-                      <p class="mb-0">
+                      <p class="mb-0 break-line">
                         [[ interest.issue_message]]
                       </p>
                     </div>
@@ -919,7 +921,7 @@
                     <div v-if="activity.activity_type === 'new_kudos'">
                       show value
                     </div>
-                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
+                    <a v-if="activity.activity_type === 'worker_approved' || activity.activity_type === 'stop_worker'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ activity.metadata.worker_handle ]]
@@ -1104,6 +1106,11 @@
       <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/polkadot_extension.js" %}"></script>
 
+    {% elif web3_type == 'binance_ext' %}
+
+      <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/binance_extension.js" %}"></script>
+
     {% elif web3_type == 'harmony_ext' %}
 
       <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
@@ -1113,6 +1120,10 @@
       <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
       <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/harmony_extension.js" %}"></script>
+
+    {% elif web3_type == 'rsk_ext' %}
+
+      <script src="{% static "v2/js/pages/bounty_detail/rsk_extension.js" %}"></script>
 
     {% elif web3_type == 'fiat' %}
       {% if PYPL_CLIENT_ID %}

@@ -26,12 +26,12 @@ from django.utils.safestring import mark_safe
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
-    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    Activity, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
-    Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TransactionHistory, TribeMember,
-    TribesSubscription, UserAction, UserVerificationModel,
+    Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -85,6 +85,9 @@ class BlockedUserAdmin(admin.ModelAdmin):
     raw_id_fields = ['user']
     list_display = ['created_on', '__str__']
 
+class BlockedIPAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 class ProfileViewAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -235,6 +238,35 @@ class ProfileAdmin(admin.ModelAdmin):
             obj.save()
             self.message_user(request, "Recalc done")
             return redirect(obj.admin_url)
+        if "_block_ips" in request.POST:
+            ips = set(obj.ips)
+            for ip in ips:
+                bi = BlockedIP.objects.create(
+                    addr=ip,
+                    active=True,
+                    comments=f"blocked by {request.user.username}"
+                    )
+            self.message_user(request, f"{len(ips)} IPs Blocked")
+            return redirect(obj.admin_url)
+
+        if "_block_user" in request.POST:
+            bu = BlockedUser.objects.create(
+                handle=obj,
+                active=True,
+                user=obj.user,
+                comments=f"blocked by {request.user.username}"
+                )
+
+            # delete sessions for this user so they cant user their existin sessions
+            from django.contrib.sessions.models import Session
+            session_keys = [ele.metadata.get('session_key') for ele in obj.actions.filter(action='Visit')]
+            session_keys = [ele for ele in session_keys if ele]
+            num_sessions = len(session_keys)
+            sessions = Session.objects.filter(session_key__in=session_keys)
+            sessions.delete()
+
+            self.message_user(request, f"Block done + {num_sessions} sessions invalidated")
+            return redirect(bu.admin_url)
         if "_impersonate" in request.POST:
             return redirect(f"/impersonate/{obj.user.pk}/")
         return super().response_change(request, obj)
@@ -295,6 +327,15 @@ class TipAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "halve_tip" in request.POST:
+            obj.amount = obj.amount / 2
+            obj.metadata['max_redemptions'] = obj.metadata.get("max_redemptions", 1) * 2
+            obj.metadata['override_send_amount'] = True
+            obj.username = ''
+            obj.save()
+            self.message_user(request, f"Tip has been halved and can now be redeemed {obj.metadata['max_redemptions']} times.")
+            return redirect(obj.admin_url)
+
         if "_reset_tip_redemption" in request.POST:
             if not obj.receive_txid:
                 self.message_user(request, f"Cannot reset tip! This tip has not been marked as receieved")
@@ -585,10 +626,15 @@ class ProfileVerificationAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
 
 
+class MediaFileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'file', 'filename']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Earning, EarningAdmin)
+admin.site.register(BlockedIP, BlockedIPAdmin)
 admin.site.register(BlockedUser, BlockedUserAdmin)
 admin.site.register(PortfolioItem, PortfolioItemAdmin)
 admin.site.register(ProfileView, ProfileViewAdmin)
@@ -627,3 +673,4 @@ admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
 admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)
+admin.site.register(MediaFile, MediaFileAdmin)

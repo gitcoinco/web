@@ -15,14 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static matches %}
+{% load i18n static matches compress %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static 'v2/css/lib/quill-snow.css' %}">
-
+    {% compress css file quill_snow %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+    {% endcompress %}
     <style>
       .container {
         counter-reset: section;
@@ -80,7 +81,7 @@
         background-color: #4100FF;
         height: 100px;
         background-image: url(/static/v2/images/dots.svg);
-        ackground-position: center;
+        background-position: center;
       }
 
       .negative-offset {
@@ -88,9 +89,11 @@
         max-height: 160px;
       }
 
-      .overflow-show {
-        overflow: visible !important;
+      .modal-content {
+        overflow: visible;
       }
+
+
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
@@ -233,7 +236,7 @@
       <div class="row p-5">
         <div class="col-12">
           {% if is_staff %}
-          <div class="">
+          <div class="alpha-warning">
             <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
             <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
           </div>
@@ -276,7 +279,7 @@
                 <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
                 {% blocktrans %}
                   <p class="">
-                    Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
+                    Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://discord.com/invite/83BK5z55yB">Click here to join the party!</a>.
                   </p>
                 {% endblocktrans %}
             </div>
@@ -323,8 +326,8 @@
         </div>
       </div>
     </div>
-    <div class="modal p-0 overflow-show" id="questions-form" tabindex="-1" data-backdrop="static"  role="dialog" style="height: auto">
-      <div role="document">
+    <div class="modal p-0 fade" id="questions-form" tabindex="-1" data-backdrop="static" role="dialog">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
           <div class="header-images gc-bg-blue position-relative text-center d-flex justify-content-center">
             {% for question in poll.question_set.all %}
@@ -419,7 +422,7 @@
     </div>
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
 
     <script>
@@ -465,7 +468,41 @@
 
         return true;
       }
+      const sendMtcEvent = (slug, cb) => {
+        console.log(slug)
 
+        MauticEvent.createEvent({
+          "alias": "hackathon",
+          "data": [
+                {
+                  "name": "registration",
+                  "attributes": {
+                    "hackathon-slug": slug,
+                    "hackathon-action": 'register',
+
+                  }
+                }
+              ]
+            },
+          {
+          "alias": "products",
+          "data": [
+            {
+              "name": "product",
+              "attributes": {
+                "product": "hackathon",
+                'persona': 'hackathon-hunter',
+                'action': 'register'
+              }
+            }
+          ]
+        })
+
+        if (cb) {
+          return cb();
+        }
+
+      }
       const register = (name, referer) => {
         if (is_registered) {
           return;
@@ -476,7 +513,9 @@
           const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
           $('[data-registration]').attr('disabled', true);
-          $.when(sendRegister).then((response) => {
+          $.when(sendRegister).then(async(response) => {
+
+            await sendMtcEvent(name)
             _alert('You have now registered for this hackathon.', 'success');
             document.location.href = response.redirect;
           })
@@ -484,7 +523,7 @@
               $('[data-registration]').attr('disabled', false);
             });
         } else {
-          $('#questions-form').modal('show');
+          $('#questions-form').bootstrapModal('show');
           $('#poll-submit').unbind('click')
           $('#poll-submit').on('click', function () {
 
@@ -496,7 +535,8 @@
             const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
             $('#poll-submit').attr('disabled', true);
-            $.when(sendRegister).then((response) => {
+            $.when(sendRegister).then(async(response) => {
+              await sendMtcEvent(name)
               _alert('You have now registered for this hackathon.', 'success');
               console.log(response)
               document.location.href = response.redirect;

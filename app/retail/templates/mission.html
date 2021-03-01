@@ -16,7 +16,7 @@
     <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,7 +25,9 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Mission | Gitcoin">
     <meta name="description" content="Gitcoin's mission is to grow/sustain open source.">
-    <link rel="stylesheet" href="{% static "v2/css/mission.css" %}" />
+    {% compress css file mission %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/mission.scss" %} />
+    {% endcompress %}
   </head>
 
   <body class="{{ active }} g-font-muli">
@@ -492,7 +494,7 @@
                 </a>
                 </div>
             </div>
-            
+
           </section>
         </div>
       </div>
@@ -500,6 +502,6 @@
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
   </body>
 </html>

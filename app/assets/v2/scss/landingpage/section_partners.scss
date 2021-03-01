@@ -1,0 +1,56 @@
+section#partners{
+	
+  margin: 0em 3em;
+  margin-top: 6em;
+
+
+
+  h2{
+    margin-bottom:2em;
+    text-align: center;
+  }
+
+
+  div.grid{
+		
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
+
+    margin-top: 2em;
+
+    figure{
+
+      background-color: var(--polarisblue);
+      border-radius: 3px;
+
+      img{
+        width: 100%;
+        height: auto;
+        margin:auto;
+
+      }
+    }
+
+  }
+
+
+}	
+
+
+
+
+
+
+
+@media #{$phone} { 
+  section#partners{
+
+    div.grid{
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+  }
+}
+
+

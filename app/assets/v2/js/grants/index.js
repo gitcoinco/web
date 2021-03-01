@@ -2,6 +2,30 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
+const toggleStyle = function(style) {
+
+  if (!style) {
+    return;
+  }
+
+  let banner;
+
+  if (style.bg) {
+    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+  } else {
+    banner = `url("${ style.banner_image }") center  no-repeat`;
+  }
+  $('#grant-hero-img').css('background', banner);
+  if (style.background_image) {
+    $('#grant-background-image-mount-point').css('background-image', style.background_image);
+  }
+
+  if (style.inline_css) {
+    $('style').last().text(style.inline_css);
+  } else {
+    $('style').last().text('');
+  }
+};
 
 $(document).ready(() => {
   $('#sort_option').select2({
@@ -51,11 +75,14 @@ $(document).ready(() => {
 
   });
 
+  toggleStyle(document.current_style);
 });
 
 Vue.component('grant-sidebar', {
-  props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'featured'
+  props: [
+    'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
+    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
+    'featured'
   ],
   data: function() {
     return {
@@ -87,26 +114,7 @@ Vue.component('grant-sidebar', {
       return window.innerWidth < 576;
     },
     filterLink: function(params) {
-      if (params.type === this.type) {
-        this.filter_grants(params);
-      } else if (params.type === 'collections') {
-        const collections_query = {};
-
-        if (params.featured) {
-          collections_query.featured = true;
-        }
-
-        if (params.keyword) {
-          collections_query.keyword = params.keyword;
-        }
-
-        document.location.href = `/grants/collections?${$.param(collections_query)}`;
-      } else {
-        document.location.href = this.round_num ?
-          `/grants/clr/${this.round_num}?type=${params.type}` :
-          `/grants/${params.type}`
-        ;
-      }
+      return this.filter_grants(params);
     },
     searchKeyword: function() {
       if (this.timeout) {
@@ -131,15 +139,22 @@ Vue.component('grant-sidebar', {
 });
 if (document.getElementById('grants-showcase')) {
 
+  let sort = getParam('sort');
+
+  if (!sort) {
+    sort = 'weighted_shuffle';
+  }
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
     data: {
       grants: [],
+      grant: {},
       page: 1,
       collectionsPage: 1,
       limit: 6,
-      sort: 'weighted_shuffle',
+      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
+      sort: sort,
       network: document.network,
       keyword: document.keyword,
       current_type: document.current_type,
@@ -160,12 +175,18 @@ if (document.getElementById('grants-showcase')) {
       cart_lock: false,
       collection_id: document.collection_id,
       round_num: document.round_num,
+      sub_round_slug: document.sub_round_slug,
+      customer_name: document.customer_name,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
       numGrants
     },
     methods: {
+      toggleActiveCLRs() {
+        this.show_active_clrs = !this.show_active_clrs;
+        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
+      },
       setView: function(mode, event) {
         event.preventDefault();
         localStorage.setItem('grants_view', mode);
@@ -186,6 +207,18 @@ if (document.getElementById('grants-showcase')) {
 
         if (vm.round_num) {
           let uri = `/grants/clr/${vm.round_num}/`;
+
+          if (vm.sub_round_slug && !vm.customer_name) {
+            uri = `/grants/clr/${vm.round_num}/${vm.sub_round_slug}/`;
+          }
+
+          if (!vm.sub_round_slug && vm.customer_name) {
+            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/`;
+          }
+
+          if (vm.sub_round_slug && vm.customer_name) {
+            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/${vm.sub_round_slug}/`;
+          }
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
@@ -256,8 +289,12 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
+        let current_style;
 
         if (filters.type !== null && filters.type !== undefined) {
+          if (!current_style) {
+            current_style = document.all_type_styles[filters.type];
+          }
           this.current_type = filters.type;
           if (this.current_type === 'collections') {
             this.collection_id = null;
@@ -291,10 +328,17 @@ if (document.getElementById('grants-showcase')) {
         if (filters.type === 'collections') {
           this.collectionsPage = 1;
         }
-
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
+
+        const regex_style = document.all_routing_policies &&
+          document.all_routing_policies.find(policy => {
+            return new RegExp(policy.url_pattern).test(window.location.href);
+          });
+
+        toggleStyle(regex_style || current_style);
+
       },
       clearSingleCollection: function() {
         this.grants = [];
@@ -357,6 +401,14 @@ if (document.getElementById('grants-showcase')) {
 
         if (vm.round_num) {
           base_params['round_num'] = vm.round_num;
+        }
+
+        if (vm.sub_round_slug) {
+          base_params['sub_round_slug'] = vm.sub_round_slug;
+        }
+
+        if (vm.customer_name) {
+          base_params['customer_name'] = vm.customer_name;
         }
 
         const params = new URLSearchParams(base_params).toString();
@@ -462,6 +514,11 @@ if (document.getElementById('grants-showcase')) {
         });
 
         this.grants = getGrants.grants;
+      }
+    },
+    computed: {
+      isLandingPage() {
+        return (window.location.pathname == '/grants/');
       }
     },
     beforeMount() {
