@@ -20,7 +20,8 @@
     <a href="" class="notification__icon nav-link dropdown-toggle{% if onepager %} px-2 text-white {% endif %}" id="notificationsDropdown" role="button"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="fetchNotifications(1)">
       <i class="far fa-bell fa-fw fa-lg"></i>
-        <span id="notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadNotifications.length > 0}">[[unreadNotifications.length ? unreadNotifications.length : '']]</span>
+      <span class="pl-3 d-md-none">Notifications</span>
+      <span id="notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadNotifications.length > 0}">[[unreadNotifications.length ? unreadNotifications.length : '']]</span>
     </a>
     <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box" aria-labelledby="notificationsDropdown">
       <div class="notifications__header">
