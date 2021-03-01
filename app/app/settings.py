@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import os
 import socket
+import subprocess
 
 from django.utils.translation import gettext_noop
 
@@ -439,11 +440,15 @@ STATICFILES_FINDERS = [
 LIBSASS_PRECISION = 8
 # minify sass output in production (offline)
 if ENV not in ['local', 'test', 'staging', 'preview']:
-    # compress offline (use './manage.py compress' to build manifest.json)
+    # get current commit hash to feed into the manifest's name
+    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
+    # compress offline (use './manage.py compress' to build manifest.*.json)
     COMPRESS_OFFLINE = True
-    # Allow for the full path (url) to be included in the manifest
+    # make manifest deploy specific (new manifest for each deployment)
+    COMPRESS_OFFLINE_MANIFEST = 'manifest.' + commit.decode('utf8') + '.json'
+    # allow for the full path (url) to be included in the manifest
     COMPRESS_INCLUDE_URLS = True
-    # Allow the placeholder insertion to be skipped
+    # allow the placeholder insertion to be skipped
     COMPRESS_SKIP_PLACEHOLDER = True
     # use content based hashing so that we always match between servers
     COMPRESS_CSS_HASHING_METHOD = 'content'
