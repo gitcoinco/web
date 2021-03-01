@@ -1,0 +1,24 @@
+{
+  "symbol": "SPC",
+  "address": "0x86ed939B500E121C0C5f493F399084Db596dAd20",
+  "overview":{
+        "en": "SpaceChain, a space exploration initiative based on human consensus, is striving to seek the consensus which can effectively encourage human beings to spontaneously engage in outer space activities.",
+        "zh": "太空链，基于人类共识的太空探索计划，期待寻找一种共识，能有效地调动全人类的力量来自发地开启太空探索活动"
+  },
+  "email": "info@spacechain.com",
+  "website": "https://spacechain.com/",
+  "whitepaper": "https://spacechain.com/wp-content/uploads/2019/03/whitepaper-150319.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-03",
+
+  "links": {
+    "blog": "https://medium.com/blogspacechain", 
+    "twitter": "https://twitter.com/SpaceChain",
+    "telegram": "https://t.me/SpaceChainOfficial_EN",
+    "github": "https://github.com/spacechain/token-v2",
+    "facebook": "https://www.facebook.com/spacechainfound/",
+    "reddit": "https://www.reddit.com/r/SpaceChain/",
+    "slack": "https://spacechain.slack.com",
+    "medium": "https://medium.com/blogspacechain"
+  }
+}
