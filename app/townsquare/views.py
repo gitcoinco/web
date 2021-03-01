@@ -378,7 +378,7 @@ def get_following_tribes(request):
 def town_square(request):
     try:
         audience = redis.get(f"townsquare:audience")
-        audience = str(audience.decode('utf-8')) if audience else '39102'
+        audience = str(audience.decode('utf-8')) if audience else '84244'
     except KeyError:
         data_results = JSONStore.objects.filter(view='results', key=None).first()
         if data_results:
