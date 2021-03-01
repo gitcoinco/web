@@ -1,0 +1,26 @@
+{
+  "symbol": "Fire",
+  "address": "0x4F6DB2d2a2DDAd8E61b43B3d73cF649AF8AA7D2D",
+  "overview":{
+        "en": "Alchemy World has introduced a number of innovations in blockchain game, including DeFi tokens mortgage rights, dynamic rarity, algorithmic stablecoin, and smart contract interoperability. It also introduced the playable NFT with digital value to the blockchain world.Each NFT in Alchemy World has its own characteristics and scarcity. Relying on double  token ecology formed by Alchemy World NFT. Fire, Fe tokens, including NFT Staking, liquidity mining, NFT, FOMO, are all inseparable from NFT in Alchemy World.",
+        "zh": "Alchemy World在区块链游戏中引入了许多创新，包括DeFi令牌抵押权，动态稀有性，算法稳定币和智能合约互操作性。它还将具有数字价值的可玩NFT引入了区块链世界。炼金术世界中的每个NFT都有其自身的特征和稀缺性。依靠Alchemy World NFT形成的双令牌生态。火，铁代币，包括NFT抵押，流动性采矿，NFT，FOMO，都与Alchemy World中的NFT密不可分。"
+  },
+  "email": "business@alchemyworld.onexmail.com",
+  "website": "https://alc.cash/#/ ",
+  "whitepaper": "https://github.com/FIREDEFI/FIREDEFI_DOCS/blob/main/Alchemy_White_Paper_V1.0.2.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-12-14",
+  "initial_price":{
+        "ETH":"0.00001 ETH",
+        "USD":"1.5 USD",
+        "BTC":"0.0000004137 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/alchemy_world",
+    "telegram": "https://t.me/Alchemy_World",
+    "medium":"https://medium.com/@alchemyworld",
+    "github": "https://github.com/FIREDEFI/token-profile",
+    "facebook": "https://www.facebook.com/Alchemy_World-101557395167230"
+  }
+}
+
