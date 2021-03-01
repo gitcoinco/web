@@ -344,7 +344,6 @@ Vue.component('grants-cart', {
     },
 
     isRskExtInstalled() {
-      // init rsk provider
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
 
@@ -352,7 +351,13 @@ Vue.component('grants-cart', {
         new rskClient.providers.HttpProvider(rskHost)
       );
 
-      return provider && ethereum;
+      if (!provider) {
+        try {
+          return ethereum.isNiftyWallet;
+        } catch (e) {
+          return false;
+        }
+      }
     }
   },
 
