@@ -61,13 +61,11 @@ Vue.component('grants-cart', {
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
-      maxCartItems: 40, // Max supported items by zkSync, defaults to 45 unless zkSync component says otherwise
+      maxCartItems: 40, // Max supported items in cart at once
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
-      // verification
-      isFullyVerified: false,
       // Collection
       showCreateCollection: false,
       collectionTitle: '',
@@ -1336,8 +1334,6 @@ Vue.component('grants-cart', {
   },
 
   async mounted() {
-    this.isFullyVerified = document.isFullyVerified;
-
     // Show loading dialog
     this.isLoading = true;
 

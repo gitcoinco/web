@@ -61,11 +61,12 @@ along with this program. If not, see
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'grants/nav.html' %}
-    <div class="container-fluid header dash grants_hero_img" id="grant-hero-img">
+    <div class="container-fluid bg-white">
       {% include 'shared/grant_thanks_modal.html' %}
-      {% include 'grants/shared/landing_hero.html' %}
+      {% include 'grants/shared/landing_qf_active.html' %}
 
-
+      <!-- Commenting out the old code for now so it's available as a quick reference-->
+      {% comment %} 
       <div class="row grants-details-parent" class="mx-0">
         <div id="grants-details" class="no-gutters w-100">
           <div style="background-size: contain;" id="grant-background-image-mount-point">
@@ -146,6 +147,8 @@ along with this program. If not, see
           {% include 'grants/detail/side-cart.html' %}
         </div>
       </div>
+      {% endcomment %}
+    </div>
 
 
       {% include 'shared/analytics.html' %}
