@@ -133,6 +133,13 @@ class CartData {
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'KSM';
       }
+    } else if (grantData.tenants.includes('RSK')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.0001;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'R-BTC';
+      }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;

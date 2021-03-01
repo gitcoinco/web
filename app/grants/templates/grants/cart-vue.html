@@ -140,6 +140,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <!-- Checkout for Kusama Grants -->
                   {% include 'grants/cart/extension/kusama.html' %}
+
+                  <!-- Checkout for RSK Grants -->
+                  {% include 'grants/cart/extension/rsk.html' %}
                 </b-tabs>
               </div>
               {% comment %} Cart total {% endcomment %}
@@ -217,6 +220,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       document.isFullyVerified = '{{is_fully_verified}}' === 'True';
     </script>
     <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
+
+
+    <!-- <template v-if="grantsCountByTenant.BINANCE !== undefined"> -->
+      <script src="{% static "v2/js/grants/cart/rsk_extension.js" %}"></script>
+    <!-- </template> -->
 
     <!-- <template v-if="grantsCountByTenant.HARMONY !== undefined"> -->
       <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
