@@ -332,14 +332,20 @@ def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None
 
 @app.shared_task(bind=True, max_retries=3)
 def process_grant_creation_email(self, grant_id, profile_id):
-    grant = Grant.objects.get(pk=grant_id)
-    profile = Profile.objects.get(pk=profile_id)
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        profile = Profile.objects.get(pk=profile_id)
 
-    new_grant(grant, profile)
+        new_grant(grant, profile)
+    except Exception as e:
+        print(e)
 
 
 @app.shared_task(bind=True, max_retries=3)
 def process_grant_creation_admin_email(self, grant_id):
-    grant = Grant.objects.get(pk=grant_id)
+    try:
+        grant = Grant.objects.get(pk=grant_id)
 
-    new_grant_admin(grant)
+        new_grant_admin(grant)
+    except Exception as e:
+        print(e)
