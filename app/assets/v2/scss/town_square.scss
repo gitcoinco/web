@@ -390,6 +390,9 @@ a.offer_container.animate:hover .prize-gift::after {
   .bg-white {
     background-color: var(--main-bg)!important;
   }
+  .navbar-light #logo {
+    color: #fff;
+  }
   .navbar-light .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 0.5);
   }
