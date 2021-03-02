@@ -1,0 +1,59 @@
+section.introduction{
+	
+	margin: auto;
+
+	margin-top: 3em;
+
+	max-width: 1200px;
+	padding: 0em 6em;
+	text-align: center;
+
+	
+
+
+	h1{
+		
+		span{
+			&.aqua{
+				color: var(--aqua);
+			}
+		}
+	}
+
+	p{
+		margin-bottom: 0em;
+	}
+
+
+
+}
+
+
+
+
+@media #{$desktop} { 
+	section.introduction{
+		padding: 0em 3em;
+	}
+}
+
+
+@media #{$laptop} { 
+	section.introduction{
+	}
+}
+
+@media #{$tablet} { 
+	section.introduction{
+	}
+}
+
+@media #{$phone} { 
+	section.introduction{
+		padding: 0em 1.5em;
+	}
+}
+
+
+
+

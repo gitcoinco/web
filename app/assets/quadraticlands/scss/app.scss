@@ -25,6 +25,7 @@
 @import "cookielaw";
 @import "glass";
 @import "selection";
+@import "delegation-toggle";
 
 /* sections */
 @import "section_column";
@@ -37,6 +38,7 @@
 @import "section_background";
 @import "section_footersocial";
 @import "section_footer";
+@import "section_introduction";
 
 /* section quest */
 @import "quest/section";
@@ -46,7 +48,11 @@
 @import "quest/quest-claim";
 @import "quest/quest-vote";
 @import "quest/quest-setup";
+@import "quest/quest-delegationmode";
+@import "quest/quest-senators";
+@import "quest/quest-delegateaddress";
 @import "quest/progressbar";
+
 
 
 
@@ -75,13 +81,15 @@
 	display: none !important;
 }
 
-.receiveadress{
+
+
+.receiveAddress{
 	display: block;
 	padding: 0.5em 1em;
 
 	color : var(--aqua_light);
 	font-family: 'Space Mono', monospace;
-	background-color: var(--space_pink);
+	background-color: var(--smoke);
 	
 	font-size: 90%;
 	text-align: center;
@@ -89,7 +97,6 @@
 	word-break: break-all;
 	margin-bottom: 1em;
 }
-
 
 
 

@@ -4,6 +4,9 @@
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 1em;
 	margin: 0em 3em;
+	
+	//background-color: green;
+	
 	user-select: none;
 
 	.option{
@@ -132,14 +135,7 @@
 			
 		}
 
-		.intro{
-			padding: 2em 1em;
-			margin: 1em;
-		}
-
-
-
-
+	
 	}
 }
 

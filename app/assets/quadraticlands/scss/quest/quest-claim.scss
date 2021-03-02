@@ -4,8 +4,29 @@
 	align-self: center;
 
 
-	.claim{
+	.claiming, .claimed, .error{
+		padding: 2em;
+		text-align: center;
+		animation: menu-background 4s ease-in-out infinite;
+
+		figure{
+			img{
+				width: 300px;
+				margin: auto;
+				margin-bottom: 1em;
+				
+			}
+		}
+	}
+
+	.error{
 		max-width: 600px;
+	}
+
+
+
+	.claim{
+		
 		padding: 2em;
 		text-align: center;
 		animation: menu-background 4s ease-in-out infinite;  
@@ -13,47 +34,77 @@
 		p{
 			margin-bottom: initial;
 		}
+ 
+		.addresses{
 
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-gap: 1em;
 
-		#advanced{
+			margin-bottom: 1em;
 
-			label{
-				display: block;
-				margin-top: 1em;
-				margin-bottom: 0.5em;
-				font-size: 80%;
-				line-height: 1em;
-				color: var(--stone);
+			.claim_address{
+				p{
+					text-align: left;
+					margin-bottom: 0.5em;
+				}
+
+				div{
+					padding: 1em;
+					
+					background-color: var(--smoke);
+				}
+
 			}
 
-			input{
+			.delegate_address{
+				p{
+					text-align: right;
+					margin-bottom: 0.5em;
+				}
+				div{
+					padding: 1em;
+					
+					background-color: var(--space_pink);
+				}
+			}
+
+			textarea{
 				display: block;
-				padding: 0.5em 1em;
-				color : var(--space);
+				padding: 0em;
+				margin: 0em;
+
+				width: 350px;
+				height: auto;
+				
 				font-family: 'Space Mono', monospace;
-				background-color: var(--aqua);
-				font-size: 90%;
-				text-align: center;
+
+				font-size: 100%;
+				resize: none;
+
 				word-break: break-all;
 				border: none;
 				outline: none;
-				width: 100%;
-				margin-top: 0.3em;
-				margin-bottom: 1em;
+
+				color : var(--aqua_light);
+				background-color: transparent;
+				
 
 				&:focus {
 					outline: none;
 				}
 
 			}
+
+
 		}
 
 
 
 
-		.claimAdress{
-			width: 100%;
-		}
+
+
+
 
 		div.grid{
 			display: grid;
@@ -92,6 +143,28 @@
 
 
 }
+
+
+
+@media #{$tablet} { 
+	.quest-claim{
+		.claim{
+			.addresses{
+				grid-template-columns: 1fr;
+
+				.delegate_address{
+					p{
+						text-align: left;
+					}
+				}
+			}
+
+
+		}
+	}
+}
+
+
 
 
 

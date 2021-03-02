@@ -23,10 +23,10 @@
 	</figure>
 
 	<div>
-		<h3><span>#</span>Chapter 2 of 3</h3>
+		<h3><span>#</span>Chapter 3 of 3</h3>
 		<h1>Proof of receive</h1>
 		<p id="receiveMessage"></p>
-		<span id="receiveAdress" class="receiveadress hide" ></span>
+		<span id="receiveAddress" class="receiveAddress hide" ></span>
 		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn hide">Continue</a>
 	</div>
 
@@ -74,14 +74,14 @@ document.addEventListener("DOMContentLoaded",function(){
 function updateInterface(status){
 
 	const receiveMessage = document.getElementById("receiveMessage");
-	const receiveAdress = document.getElementById("receiveAdress");
+	const receiveAddress = document.getElementById("receiveAddress");
 	const buttonContinue = document.getElementById("buttonContinue");
 
 	// no wallet > warning
 	if (status=="nowallet")
 	{
 		receiveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
-		receiveAdress.classList.add("hide");
+		receiveAddress.classList.add("hide");
 		buttonContinue.classList.add("hide");
 		console.log("INTERFACE:NOWALLET");
 	}
@@ -90,9 +90,9 @@ function updateInterface(status){
 	if (status=="continue")
 	{
 		receiveMessage.innerHTML = "You will be rewarded with GTC Tokens to";
-		receiveAdress.classList.remove("hide");
-		//receiveAdress.innerHTML = shortenAdress(selectedAccount);
-		receiveAdress.innerHTML = selectedAccount;
+		receiveAddress.classList.remove("hide");
+		//receiveAddress.innerHTML = shortenAdress(selectedAccount);
+		receiveAddress.innerHTML = selectedAccount;
 		buttonContinue.classList.remove("hide");
 		console.log("INTERFACE:CONTINUE");
 	}
