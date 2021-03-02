@@ -1609,6 +1609,7 @@ def grant_edit(request, grant_id):
         harmony_payout_address = request.POST.get('harmony_payout_address', '0x0')
         kusama_payout_address = request.POST.get('kusama_payout_address', '0x0')
         binance_payout_address = request.POST.get('binance_payout_address', '0x0')
+        rsk_payout_address = request.POST.get('rsk_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
@@ -1618,7 +1619,8 @@ def grant_edit(request, grant_id):
             polkadot_payout_address == '0x0' and
             kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0' and
-            binance_payout_address == '0x0'
+            binance_payout_address == '0x0' and
+            rsk_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1653,6 +1655,9 @@ def grant_edit(request, grant_id):
 
         if binance_payout_address != '0x0':
             grant.binance_payout_address = binance_payout_address
+
+        if rsk_payout_address != '0x0':
+            grant.rsk_payout_address = rsk_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -1819,12 +1824,14 @@ def grant_new(request):
         kusama_payout_address = request.POST.get('kusama_payout_address', None)
         harmony_payout_address = request.POST.get('harmony_payout_address', None)
         binance_payout_address = request.POST.get('binance_payout_address', None)
+        rsk_payout_address = request.POST.get('rsk_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
-            not harmony_payout_address and not binance_payout_address
+            not harmony_payout_address and not binance_payout_address and
+            not rsk_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1872,6 +1879,7 @@ def grant_new(request):
             'kusama_payout_address': kusama_payout_address if kusama_payout_address else '0x0',
             'harmony_payout_address': harmony_payout_address if harmony_payout_address else '0x0',
             'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
+            'rsk_payout_address': rsk_payout_address if rsk_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
@@ -3158,7 +3166,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE']:
+        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK']:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'

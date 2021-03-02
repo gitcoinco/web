@@ -11,7 +11,7 @@ def find_txn_on_rsk_explorer(fulfillment):
     token_name = fulfillment.token_name
 
     funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
+    # amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
 
     if token_name not in ['R-BTC', 'RDOC', 'DOC']:
@@ -42,8 +42,7 @@ def get_rsk_txn_status(fulfillment):
     funderAddress = fulfillment.bounty.bounty_owner_address
     payeeAddress = fulfillment.fulfiller_address
 
-    amount = fulfillment.payout_amount
-
+    # amount = fulfillment.payout_amount
 
     if token_name not in ['R-BTC', 'RDOC', 'DOC']:
         return None
