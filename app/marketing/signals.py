@@ -24,7 +24,7 @@ from marketing.mails import nth_day_email_campaign
 from marketing.models import EmailSubscriber
 
 
-@receiver(post_save, sender=EmailSubscriber)
+# @receiver(post_save, sender=EmailSubscriber) - PURGED
 def create_email_subscriber(sender, instance, created, **kwargs):
     if created:
         if not EmailSubscriber.objects.filter(email=instance.email).exclude(id=instance.id).exists():
