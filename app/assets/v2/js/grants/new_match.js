@@ -111,8 +111,8 @@ Vue.mixin({
         'comment': form.comment
       };
 
-    vm.submitted = true;
-    vm.createMatchingPledge(params);
+      vm.submitted = true;
+      vm.createMatchingPledge(params);
 
     },
     async createMatchingPledge(data) {
