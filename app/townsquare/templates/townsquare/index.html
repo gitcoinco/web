@@ -149,11 +149,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div id=left_sidebar>
                 <div class="promo mb-4 align-items-center hidden">
                     <span class="close-promo"><i class="fas fa-times"></i></span>
-                    <img class="logo" width="65" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
-                    <div class="d-flex flex-column flex-fill ml-3">
-                      <p class="p-0 font-smaller-1">Work with the coolest projects and the best developers in Web3</p>
+                    <div class="d-flex flex-column flex-fill pt-1 pt-md-3 pt-lg-2">
+                      <p class="p-0 font-smaller-1 text-center mb-2 d-flex">
+                        <img class="logo my-auto" width="65" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
+                        <span class="my-auto pl-3">Work with the coolest projects and the best developers in Web3</span>
+                      </p>
                       <div class="font-caption font-smaller-5 text-left">
-                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 promo-action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
+                        <a href="{% url 'tribes_directory' %}" class="btn py-2 promo-action font-smaller-4 btn-sm mt-2 w-100">Find a Tribe</a>
                       </div>
                     </div>
                 </div>
