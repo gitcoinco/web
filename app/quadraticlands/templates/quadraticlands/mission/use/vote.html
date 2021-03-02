@@ -14,8 +14,11 @@
 
 {% block 'content' %}
 
+
 <!-- hide footer, header as this is a fullscreen experience -->
 {% include 'quadraticlands/components/fullscreen.html' %}
+
+
 
 
 <section class="background">
@@ -23,39 +26,19 @@
 </section>
 
 
+
 <section class="quest">
 
 
-	<!-- quest-intro : text -->
-	<main id="intro" class="hide">
-		<div class="wrapper">
-			<div class="quest-intro glass">
-				<h3>Introduction</h3>
-				<h1>Gitcoin’s Core Values</h1>
-				<p style="margin-bottom:2em;">Influence our principles of our living constitution by balance your voting power to the core values you care the most by drag some sliders.</p>			
-			</div>
-		</div>
-	</main>
-	
-
-
-	<!-- quest-intro : video  -->
-	<!--
-	<main id="intro" class="hide">
-		<div class="wrapper">
-			<div class="quest-video">
-				<iframe src="https://www.youtube.com/embed/QtgFm38ck0k?rel=0" frameborder="0"allowfullscreen></iframe>
-			</div>
-		</div>
-	</main>
-	-->
-	
-
 	<!-- quest-vote -->
-	<main id="voting" class="hide">
-		<div class="wrapper scrollable">
+	<main id="voting">
 
-			<h1>What is Gitcoin’s core values ?</h1>
+		<section class="introduction">
+			<h1>Influence the <br> core values of gitcoin</h1>
+			<p>Balance your voting power to your favorite core values</p>	
+		</section>
+
+		<div class="wrapper scrollable">
 
 			<div class="quest-vote">
 
@@ -69,9 +52,11 @@
 
 			</div>
 
-
 		</div>
 	</main>
+
+
+
 
 
 
@@ -126,6 +111,7 @@
 
 
 
+
 {% endblock %}
 
 
@@ -149,10 +135,8 @@ document.addEventListener("DOMContentLoaded",function(){
 	const inputs = document.querySelectorAll("input")
 
 
-	/*********** VIEW ON LOAD - right now i skip the intro - and load voting instant for faster testing 
-	but later it will initialy just load "intro"  */
-	updateInterface("intro")
-	//updateInterface("voting")
+	/*********** VIEW ON LOAD */
+	updateInterface("voting")
 
 
 
@@ -236,12 +220,6 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
-	/*********** VIEW:INTRO > BUTTON TO SWITCH TO VIEW:VOTING */
-	const btnStart = document.getElementById("btnStart")
-	btnStart.addEventListener("click", () => {
-		updateInterface("voting")
-	});
-
 
 
 	/*********** VIEW:VOTING > BUTTON TO SUBMIT */
@@ -258,10 +236,7 @@ document.addEventListener("DOMContentLoaded",function(){
 		// submit function with users selection
 		submit()
 		
-		// update view to results
-		updateInterface("results")
 	});
-
 
 
 
@@ -283,11 +258,9 @@ document.addEventListener("DOMContentLoaded",function(){
 function updateInterface(status){
 
 	// views
-	const interfaceIntro = document.getElementById("intro")
 	const interfaceVoting = document.getElementById("voting")
 
 	// hide all views
-	interfaceIntro.classList.add("hide")
 	interfaceVoting.classList.add("hide")
 
 	// hide all things in nav bar that might change based on view
@@ -300,19 +273,11 @@ function updateInterface(status){
 
 	// update interface based on interface status
 
-	if (status=="intro")
-	{
-		interfaceIntro.classList.remove("hide")
-		btnStart.classList.remove("hide")
-		console.debug("INTERFACE:INTRO")
-	}
-
-
 	if (status=="voting")
 	{		
 		interfaceVoting.classList.remove("hide")
 		availablePercent.classList.remove("hide")
-		flashMessage("UP/DOWN key's to quickly distribute your voting power",8000);			
+		// flashMessage("UP/DOWN key's to quickly distribute your voting power",8000);			
 		console.debug("INTERFACE:VOTING")
 	}
 
@@ -320,13 +285,11 @@ function updateInterface(status){
 	if (status=="success")
 	{
 		console.debug("INTERFACE:SUCCESS")
+		
+		// forward  
+		window.location = "/quadraticlands/mission/use/outro";
 	}
 
-
-	if (status=="results")
-	{
-		console.debug("INTERFACE:RESULTS")
-	}
 
 	
 }
@@ -382,12 +345,18 @@ function submit(){
 			const signature = result.result;
 			console.log('signature', signature);
 			console.log('msgParams', JSON.parse( msgParams ));
+
+			updateInterface("success")
 		
 		}
 	);
 
 
 }
+
+
+
+
 
 
 
@@ -472,25 +441,6 @@ function message(){
 
 
 
-<!--
-
-{
-   "types":{  DONE },
-
-   "primaryType":"CastVote",
-
-   "domain":{
-		DONE
-   },
-
-   "message":{
-      DONE 
-   }
-
-}
-
-
--->
 
 
 
