@@ -72,7 +72,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
     GrantType, MatchPledge, PhantomFunding, Subscription,
 )
-from grants.tasks import process_grant_creation_email, update_grant_metadata
+from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -1890,7 +1890,9 @@ def grant_new(request):
             'last_update': timezone.now(),
             'admin_profile': profile,
             'logo': logo,
-            'hidden': False,
+            'hidden': True,
+            'active': False,
+            'is_clr_eligible': False,
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
@@ -1933,8 +1935,12 @@ def grant_new(request):
             _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
         )
 
-        record_grant_activity_helper('new_grant', grant, profile)
+        if grant.active:
+            record_grant_activity_helper('new_grant', grant, profile)
+        
+        # send email to creator and admin
         process_grant_creation_email.delay(grant.pk, profile.pk)
+        process_grant_creation_admin_email.delay(grant.pk)
 
         response = {
             'status': 200,

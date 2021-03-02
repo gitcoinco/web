@@ -30,6 +30,7 @@ from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
+from grants.views import record_grant_activity_helper
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -198,6 +199,13 @@ class GrantAdmin(GeneralAdmin):
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
             self.message_user(request, "recaclulation of clr queued")
+        if "_approve_grant" in request.POST:
+            obj.active = True
+            obj.is_clr_eligible = True
+            obj.hidden = False
+            obj.save()
+            record_grant_activity_helper('new_grant', obj, obj.admin_profile)
+            self.message_user(request, "Grant has been successfully approved")
         return redirect(obj.admin_url)
 
     def contributions_links(self, instance):

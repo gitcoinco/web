@@ -336,3 +336,10 @@ def process_grant_creation_email(self, grant_id, profile_id):
     profile = Profile.objects.get(pk=profile_id)
 
     new_grant(grant, profile)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_grant_creation_admin_email(self, grant_id):
+    grant = Grant.objects.get(pk=grant_id)
+
+    new_grant_admin(grant)
