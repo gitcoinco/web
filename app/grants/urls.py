@@ -27,14 +27,16 @@ from grants.views import (
     get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants, get_interrupted_contributions,
     get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_details_contributions,
     grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
-    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view, ingest_contributions,
+    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing, grants_stats_view, ingest_contributions,
     ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data, new_matching_partner, profile,
     quickstart, remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
 )
 
 app_name = 'grants'
 urlpatterns = [
-    path('', grants, name='grants'),
+    path('', grants_landing, name='grants'),
+    path('explorer', grants, name='grants_explorer'),
+    path('explorer/', grants, name='grants_explorer'),
 
     # CLR
     path('clr/<int:round_num>', clr_grants, name='clr_grants'),
@@ -88,8 +90,8 @@ urlpatterns = [
     path('cart', grants_cart_view, name='cart'),
     path('add-missing-contributions', ingest_contributions_view, name='ingest_contributions_view'),
     path('get-interrupted-contributions', get_interrupted_contributions, name='get_interrupted_contributions'),
-    path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
-    path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
+    path('explorer/<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
+    path('explorer/<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/grants', grants_info, name='grants_info'),
     path('v1/api/grant/<int:grant_id>/', grant_details_api, name='grant_details_api'),
     path('v1/api/grant/<int:grant_id>/contributions', grant_details_contributions, name='grant_details_contributions'),

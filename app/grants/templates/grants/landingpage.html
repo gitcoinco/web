@@ -61,84 +61,45 @@ along with this program. If not, see
   {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'grants/nav.html' %}
   <div class="content__main min-vh-100 d-md-flex flex-column">
-    <div class="container-fluid header dash grants_hero_img" id="grant-hero-img">
+    <div class="container-fluid">
       {% include 'shared/grant_thanks_modal.html' %}
-      {% include 'grants/shared/landing_hero.html' %}
+      <!-- {% include 'grants/shared/landing_hero.html' %} -->
+      {% include 'grants/shared/landing_qf_active.html' %}
 
 
+THIS IS THE LANDING
       <div class="row grants-details-parent" class="mx-0">
-        <div id="grants-details" class="no-gutters w-100">
-          <div style="background-size: contain;" id="grant-background-image-mount-point">
-            <div
-              style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px;">
-              {% if prev_grants.count %}
-              <div class="row">
-                <div class="col-12 mt-3">
-                  <div class="info-box large mx-auto p-3">
-                    <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
-                      Add to Cart</a>
-                    <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
-                      them again?</p>
-                    <span class="font-smaller-3">{% for prev_grant in prev_grants %}
-                    <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
-                    {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
-                    {%endfor%}</span>
-                  </div>
+        <div id="grants-details" class=" w-100">
+
+            <div id="grants-showcase" v-cloak>
+              <div class="row" class="grants-showcase--child">
+
+
+                <div class="col-12 ">
+
+                    <template v-if="isLandingPage">
+                      {% include 'grants/shared/active_clr_round.html'%}
+                    </template>
+                    {% include 'grants/shared/landing_grants.html' %}
+
                 </div>
               </div>
-              {% endif %}
-              <div id="grants-showcase" v-cloak>
-                <div class="row mx-0" class="grants-showcase--child">
-                  <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
-                    {% include 'grants/shared/sidebar_search.html' %}
-                  </div>
-
-                  <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
-                    {% include 'grants/shared/landing_navbar.html' %}
-
-                    <!-- TODO : REMOVE -->
-                    <!-- {% include 'grants/shared/landing_clr.html' %} -->
-
-                    <template v-if="'activity' == current_type">
-                      {% include 'grants/shared/landing_activity.html' %}
-                    </template>
-                    <template v-else-if="'about' == current_type">
-                      {% include 'grants/shared/landing_announce.html' %}
-                    </template>
-                    <template v-else-if="'stats' == current_type">
-                      <div id="insert_iframe">
-                        <div style="background-color: #eee; font-size: 14px; text-align: center;">
-                          <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
-                        </div>
-                        <iframe :src="`/grants/getstats/?category=${category}`" style="width: 100%; height: 100%; min-height: 1000px;">
-                        </iframe>
-                      </div>
-                    </template>
-                    <template v-else>
-                      {% include 'grants/shared/top-filters.html' %}
-                      <template v-if="isLandingPage">
-                        {% include 'grants/shared/active_clr_round.html'%}
-                      </template>
-                      {% include 'grants/shared/landing_grants.html' %}
-                    </template>
-                  </div>
-                </div>
-                <b-sidebar
-                  id="sidebar-quick-view"
-                  ref="sidebar-quick-view"
-                  title="Grant Details"
-                  backdrop-variant="dark"
-                  backdrop
-                  shadow
-                  width="max(80vw, 1000px)"
-                >
-                  <grant-details :grant="grant" :fullview="false" v-if="grant.id">
-                    <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
-                  </grant-details>
-                </b-sidebar>
-              </div>
+              <b-sidebar
+                id="sidebar-quick-view"
+                ref="sidebar-quick-view"
+                title="Grant Details"
+                backdrop-variant="dark"
+                backdrop
+                shadow
+                width="max(80vw, 1000px)"
+              >
+                <grant-details :grant="grant" :fullview="false" v-if="grant.id">
+                  <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
+                </grant-details>
+              </b-sidebar>
             </div>
-          </div>
+
+
           {% csrf_token %}
         </div>
         {% include 'grants/detail/template-grant-details.html' %}
@@ -158,7 +119,7 @@ along with this program. If not, see
       <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
 
       <script>
-        document.current_type = "{{ type|default:'all' }}";
+        document.current_type = "{{ type|default:'collections' }}";
         document.selected_category = "{{ selected_category }}";
         document.network = "{{ network}}";
         document.keyword = "{{ keyword }}";
@@ -203,7 +164,7 @@ along with this program. If not, see
       <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
       <script src="{% static "v2/js/grants/components.js" %}"></script>
       <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
-      <script src="{% static "v2/js/grants/index.js" %}"></script>
+      <script src="{% static "v2/js/grants/landingpage.js" %}"></script>
       <script src="{% static "v2/js/grants/funding.js" %}"></script>
     </div>
   </body>

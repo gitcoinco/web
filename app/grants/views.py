@@ -315,7 +315,7 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
     start, end = helper_grants_round_start_end_date(request, round_id)
     query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
     earnings = query_to_results(query)
-    
+
     meta_data = {
         'start': start.strftime("%Y-%m-%d"),
         'end': end.strftime("%Y-%m-%d"),
@@ -342,15 +342,15 @@ def contribution_info_from_grant_during_round_as_json(request, grant_id, round_i
 
     start, end = helper_grants_round_start_end_date(request, round_id)
     query = f"""
-select 
+select
     md5(grants_subscription.id::varchar(255)) as id,
     dashboard_profile.handle,
     CONCAT('https://gitcoin.co/dynamic/avatar/', dashboard_profile.handle) as url,
     comments
-    
+
 from grants_subscription
 INNER JOIN dashboard_profile on dashboard_profile.id = contributor_profile_id
-where 
+where
 grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {grant_id}
 {hide_wallet_address_anonymized_sql}
 order by grants_subscription.id desc
@@ -360,7 +360,7 @@ order by grants_subscription.id desc
     start, end = helper_grants_round_start_end_date(request, round_id)
     query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
     earnings = query_to_results(query)
-    
+
     meta_data = {
         'start': start.strftime("%Y-%m-%d"),
         'end': end.strftime("%Y-%m-%d"),
@@ -869,6 +869,18 @@ def get_branding_info(request):
 def get_all_routing_policies(request):
     all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
     return [get_policy_state(policy, request) for policy in all_policies]
+
+
+def grants_landing(request):
+    network = request.GET.get('network', 'mainnet')
+    params = {
+        'network': network,
+        'title': 'Grants',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+    }
+    response = TemplateResponse(request, 'grants/landingpage.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
@@ -1420,7 +1432,7 @@ def grant_details(request, grant_id, grant_slug):
                 is_match_available_to_claim = True if amount_available > 0 else False
 
         # Determine if we should show the claim match button on the grant details page
-        should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc  
+        should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
 
     except Exception as e:
         logger.exception(e)
@@ -1682,7 +1694,7 @@ def grant_edit(request, grant_id):
             grant.twitter_verified_by = None
             grant.twitter_verified_at = None
             grant.twitter_handle_1 = twitter_handle_1
-            
+
         grant.twitter_handle_2 = twitter_handle_2
 
         reference_url = request.POST.get('reference_url', None)
@@ -3432,7 +3444,7 @@ def ingest_contributions(request):
         # Setup web3 and get user profile
         PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
         w3 = Web3(Web3.WebsocketProvider(PROVIDER))
-        
+
         # Handle ingestion
         if ingestion_method == 'bulk_checkout':
             # We were provided an L1 transaction hash, so process it

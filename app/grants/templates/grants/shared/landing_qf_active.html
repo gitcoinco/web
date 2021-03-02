@@ -1,0 +1,90 @@
+{% load humanize static i18n %}
+<div class="container bg-white">
+  <!--  Header section -->
+  <div class="my-5">
+    <div class="row justify-content-between align-items-center">
+      <div class="col">
+        <h1>
+          Democratic public goods funding <span class="text-nowrap">for the 21st century</span>
+        </h1>
+        <h3 class="text-wrap text-muted">
+          Gitcoin grants sustain web3 projects with
+          <span class="text-nowrap">
+            <a href="https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000" target="_blank">quadratic funding</a>
+          </span>
+        </h3>
+        <div class="my-3">
+          <a class="btn btn-primary" href="{% url 'grants:grants_explorer' %}">{% trans 'Explore Grants' %}</a>
+          <a class="btn btn-outline-primary ml-3" href="/grants/new">{% trans 'Create a Grant' %}</a>
+        </div>
+        <div>
+          or
+          <a href="/grants/matching-partners/new">
+            {% trans "become a member of the funder's league" %}
+          </a>
+        </div>
+      </div>
+      <div class="col-auto d-none d-md-block">
+        <img src="{% static 'v2/images/grants/rocket.svg' %}" />
+      </div>
+    </div>
+  </div>
+
+  <!-- This div is where the hero image goes-->
+  <div class="pb-5" id="grant-hero-img">
+    <h1>$500k Funding Pool, Now Live</h1>
+    <div class="text-muted">Sponsored by</div>
+    <div class="my-5">
+      <div class="row">
+        <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">&nbsp;</div>
+      </div>
+      <div class="m-0 col-12 col-md-6 offset-lg-1 col-lg-5 d-none d-sm-block">&nbsp;</div>
+    </div>
+  </div>
+
+  <!-- Summary of matching pools this round -->
+  <div class="row justify-content-between align-items-center text-secondary mt-3">
+    <div class="col-auto">$125K Community</div>
+    <div class="col-auto">$125K Infra Tech</div>
+    <div class="col-auto">$125K dApp Tech</div>
+    <div class="col-auto">$125K Eask Asia</div>
+    <div class="col-auto">$125K NFTs</div>
+  </div>
+   <!-- Ongoing matching pools (CURRENTLY HIDDEN AND NOT IMPLEMENTED) -->
+   {% comment %}
+   <div class="my-5">
+     <div class="row justify-content-start align-items-center">
+       <div class="col-auto"><img height="30rem" src="{% static 'v2/images/ethereum.svg' %}" /></div>
+       <h4 class="col-auto font-weight-bold py-0 my-0 pl-0">Ongoing Matching Pools</h4>
+     </div>
+   </div>
+   {% endcomment %}
+
+   <!-- Collections -->
+   <div class="my-5">
+     <div class="row justify-content-between align-items-end">
+       <div class="col-auto">
+         <div class="row justify-content-start align-items-center">
+           <div class="col-auto">
+             <h4 class="font-weight-bold py-0 my-0 pl-0">Collections</h4>
+             <div class="text-muted d-none d-md-block">
+               Selections of grants curated by the community
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="col-auto text-muted d-block d-md-none">
+         Selections of grants curated by the community
+       </div>
+       <div class="col-auto">
+         <a href="/grants/collections">{% trans "View all collections" %}</a>
+         <i class="ml-2 text-primary fas fa-long-arrow-alt-right"></i>
+       </div>
+     </div>
+    </div>
+  </div>
+  {% if announcement %}
+  <div class="py-3 text-center" style="background-color: #3e00ff">
+    <p class="mb-0 white">{{announcement.desc | safe}}</p>
+  </div>
+  {% endif %}
