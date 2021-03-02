@@ -114,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="my-1 px-sm-3">
           <div class="row">
             <div class="col-12 mb-2">
-              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold" id="myTab" role="tablist">
+              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold border-0" id="myTab" role="tablist">
                   <li class="nav-item">
                     <a data-toggle="tooltip" class="nav-link nav-line active "
                       href="#" data-slug="feed" title=""
@@ -159,10 +159,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 {% if SHOW_DRESSING %}
                   <div class="townsquare_left-sidebar feed_container">
-                    <div class="townsquare_block-header" data-target="search-area" >
+                    <div class="townsquare_block-header accordion closed" data-target="search-area" >
                       Search
                     </div>
-                    <div class="search font-caption mb-2 text-left" id="search-area">
+                    <div class="search font-caption mb-2 text-left hidden" id="search-area">
                       <div class="search-area">
                         <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                       </div>
