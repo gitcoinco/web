@@ -71,7 +71,7 @@
                     {% trans "Get Started" %}
                   </a>
                 {% endif %}
-                <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="white underline">See Results</a></span>
+                <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="{% if product.name != 'Discord' %}white {% endif %}underline">See Results</a></span>
               </div>
               <div class="col-md-6 py-md-5 py-2 align-self-center">
                 <img class="img-fluid float-right pl-3 pl-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
@@ -92,7 +92,7 @@
                     {% trans "Get Started" %}
                   </a>
                 {% endif %}
-                <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="white underline">See Results</a></span>
+                <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="{% if product.name != 'Discord' %}white {% endif %}underline">See Results</a></span>
               </div>
             {% endif %}
           </div>
