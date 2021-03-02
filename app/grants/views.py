@@ -1932,7 +1932,7 @@ def grant_new(request):
 
         messages.info(
             request,
-            _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+            _('Thank you for posting this Grant. Our team reviews each grant before it goes live on the website. This process takes 1-2 business days.')
         )
 
         if grant.active:
