@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
@@ -36,6 +36,7 @@
 </style>
 
 <div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
 
   <h1>Grants transaction failed, try again?</h1>
 

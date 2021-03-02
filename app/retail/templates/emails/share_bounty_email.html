@@ -16,10 +16,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 <div id="content-body">
+    <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
     <p>hi {{to_email}},</p>
 
     <img src="{{from_profile.avatar_url}}" style="width: 10%;"/>

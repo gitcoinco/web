@@ -34,10 +34,6 @@
     margin-bottom: 40px;
   }
 
-  img {
-    max-width: 4rem;
-  }
-
   #grant-logo {
     max-width: 25rem;
     width: 100%;
@@ -60,6 +56,7 @@
 
 </style>
 <div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
   <img src="{% static "v2/images/grant-ended.png" %}" alt="{% trans "Grant Ended" %}" title="{% trans "Grant Ended" %}" width="75px" height="75px">
   <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
   <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">

@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
@@ -74,6 +74,7 @@
 </style>
 
 <div class="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
   <h1>Get more applicants on your bounty!</h2>
 
   <p class="mb-0 mt-4">We noticed you dont have any contributors on your bounty.</p>

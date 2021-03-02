@@ -102,6 +102,7 @@
 
 </style>
 <div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
   {% for grant_with_subscription in grants_with_subscription %}
   {% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
   <div class="grant-header">

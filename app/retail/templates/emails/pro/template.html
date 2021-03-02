@@ -766,16 +766,29 @@
 
   .footer-links {
     display: flex;
-    max-width: 650px;
+    max-width: 800px;
     margin: auto;
     margin-top: 3em;
     margin-bottom: 3em;
     justify-content: space-around;
   }
+
+  .footer-socials {
+    width: 3em;
+    height: auto;
+  }
+
+  .bounties-img {
+    width: 20em;
+    height: auto;
+    margin-bottom: 4em;
+  }
 </style>
 
 <body>
-  <img class="center-img" src="{% static 'v2/images/loading_v2.gif' %}" style="height: auto; width: 5em;" />
+  <br>
+  <img class="center-img" src="{% static 'v2/images/emails/gitcoin_logo.png' %}" style="height: auto; width: 2.7em;" />
+  <br>
   <div class="primary-content text-center">
     {% block content %}
     {% endblock %}
@@ -783,15 +796,15 @@
   <div id="footer">
     <div class="footer-links">
       {% block footer_links %}
-        <a href="https://www.facebook.com/GetGitcoin"><img src="{% static "v2/images/emails/facebook.svg" %}"></a>
+        <a href="https://www.facebook.com/GetGitcoin"><img class="footer-socials" src="{% static "v2/images/emails/facebook.png" %}"></a>
 
-        <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="" src="{% static "v2/images/emails/youtube.svg" %}"></a>
+        <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="footer-socials" src="{% static "v2/images/emails/youtube.png" %}"></a>
     
-        <a href="https://www.twitter.com/gitcoin"><img src="{% static "v2/images/emails/twitter.svg" %}"></a>
+        <a href="https://www.twitter.com/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/twitter.png" %}"></a>
     
-        <a href="https://github.com/gitcoinco/"><img src="{% static "v2/images/emails/github.svg" %}"></a>
+        <a href="https://github.com/gitcoinco/"><img class="footer-socials" src="{% static "v2/images/emails/github.png" %}"></a>
         
-        <a href="mailto:team@gitcoin.co"><img src="{% static "v2/images/emails/email.svg" %}"></a>
+        <a href="mailto:team@gitcoin.co"><img class="footer-socials" src="{% static "v2/images/emails/email.png" %}"></a>
       {% endblock %}
     </div>
     <center style="margin-bottom: 80px;">
