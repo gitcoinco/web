@@ -45,6 +45,7 @@ import marketing.views
 import marketing.webhookviews
 import perftools.views
 import ptokens.views
+import passport.views
 import quests.views
 import retail.emails
 import retail.views
@@ -255,6 +256,9 @@ urlpatterns = [
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
     re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
     re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
+
+    #passport
+    re_path(r'^passport?$', passport.views.index, name='passport_gen'),
 
     # Contributor dashboard
     path(

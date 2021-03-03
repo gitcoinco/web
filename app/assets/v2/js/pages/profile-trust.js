@@ -774,4 +774,41 @@ $(document).ready(function() {
     $(this).remove();
     $('#verify_offline_target').css('display', 'block');
   });
+
+  $(document).on('click', '#gen_passport', function(e) {
+    e.preventDefault();
+    if(document.web3network != 'rinkeby'){
+      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'error', 1000);
+      return;
+    }
+    const accounts = web3.eth.getAccounts();
+
+    $.when(accounts).then((result) => {
+      const ethAddress = result[0];
+      let params = {
+        'network': document.web3network,
+        'coinbase': ethAddress,
+      }
+      $.get("/passport", params, function(response){
+        let contract_address = response.contract_address;
+        let contract_abi = response.contract_abi;
+        let nonce = response.nonce;
+        let hash = response.hash;
+        let tokenURI = response.tokenURI;
+        var passport = new web3.eth.Contract(contract_abi, contract_address);
+
+        var callback = function(err, txid) {
+          if(err){
+            _alert(err, 'error', 5000);
+            return
+          }
+          document.location.href = 'https://rinkeby.etherscan.io/tx/' + txid;
+        };
+        passport.methods.createPassport(tokenURI, hash, nonce).send({from: ethAddress}, callback);
+      });
+
+    });
+  });
+
+  
 });
