@@ -169,9 +169,15 @@ along with this program. If not, see
       document.collection_id = {{ collection_id|default:'null' }};
       document.collections = JSON.parse(document.getElementById('collections-object').textContent);
       {% if clr_round %}
+        document.clr_round_pk = "{{clr_round.pk}}";
         document.round_num = "{{clr_round.round_num}}";
         document.sub_round_slug = "{{clr_round.sub_round_slug}}";
         document.customer_name = "{{clr_round.customer_name}}";
+      {% else %}
+        delete document.round_num;
+        delete document.customer_name;
+        delete document.clr_round_pk;
+        delete document.sub_round_slug;
       {% endif %}
       let base_style = {
           bg: '/static/v2/images/bg/{{styles.bg}}',

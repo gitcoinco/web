@@ -493,6 +493,12 @@ def bulk_grants_for_cart(request):
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
 
+    try:
+        clr_round_pk = request.GET.get('clr_round')
+        clr_round = GrantCLR.objects.get(pk=clr_round_pk)
+    except GrantCLR.DoesNotExist:
+        clr_round = None
+
     filters = {
         'request': request,
         'grant_type': grant_type,
@@ -504,6 +510,7 @@ def bulk_grants_for_cart(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
+        'clr_round': clr_round,
         'omit_my_grants': True
     }
     _grants = build_grants_by_type(**filters)
@@ -677,8 +684,20 @@ def get_grants(request):
     })
 
 
-def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
-                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False, clr_round=None):
+def build_grants_by_type(
+    request, 
+    grant_type='',
+    sort='weighted_shuffle',
+    network='mainnet',
+    keyword='',
+    state='active',
+    category='', 
+    following=False, 
+    idle_grants=False,
+    only_contributions=False,
+    omit_my_grants=False,
+    clr_round=None
+):
     print(" " + str(round(time.time(), 2)))
 
     sort_by_clr_pledge_matching_amount = None
