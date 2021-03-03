@@ -108,7 +108,8 @@ var gtc_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0x7676bb604cf8174515107c1b35d6c9a87931b4bc'; // correct as of 1/13/21
+      //return '0x7676bb604cf8174515107c1b35d6c9a87931b4bc'; // correct as of 1/13/21
+      return '0x7442218Be2451BfBb72faA9175258A5203390e2A'; // current as of 3/3/2021
   }
 };
 
@@ -125,7 +126,8 @@ var token_distributor_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0x5D9aBdA108De232a971D3bF5a72237920D7Fb61d'; // correct as of 1/13/21
+      //return '0x5D9aBdA108De232a971D3bF5a72237920D7Fb61d'; // correct as of 1/13/21
+      return '0x8c81B26d50fd12E8979D98231d40948bec50cF3C'; // current as of 3/3/2021 - (no claim limit!)
   }
 };
 
