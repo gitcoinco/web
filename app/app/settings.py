@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'livereload',
     'cacheops',
     'storages',
     'social_django',

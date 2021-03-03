@@ -84,7 +84,7 @@
       {% endif %}
 
       {% if not grant.active %}
-        <button type="button" class="mt-3 button button--primary shadow-none font-weight-bold button--full py-3" disabled>
+        <button type="button" class="mt-3 btn btn-primary btn-block py-3" disabled>
           {% trans "This Grant Is Not Active" %}
         </button>
 
@@ -105,20 +105,20 @@
 
         {% if user_non_errored_subscription %}
           <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
-            <button class="mt-3 button button--primary button--warning button--full shadow-none font-weight-bold py-3">
+            <button class="mt-3 btn btn-danger btn-block py-3">
               {% trans "Cancel Your Funding" %}
             </button>
           </a>
         {% elif grant.link_to_new_grant %}
           <a href="{{ grant.link_to_new_grant.url }}">
-            <button class="mt-3 button button--primary shadow-none font-weight-bold button--full py-3">
+            <button class="mt-3 btn btn-primary btn-block py-3">
               Visit the active grant to fund
             </button>
           </a>
         {% else %}
           <form id="js-addToCart-form" class="mt-3">
             {% include 'grants/shared/hidden_inputs.html' %}
-            <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3" id='js-addToCart-button'>
+            <button class="btn btn-primary btn-block py-3" id='js-addToCart-button'>
               ADD TO CART
             </button>
           </form>

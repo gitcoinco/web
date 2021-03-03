@@ -1,5 +1,9 @@
 // bootstrap and bootstrap-vue must be included within the same context
-@import './bootstrap/bootstrap.scss';
-@import './bootstrap-vue/index.scss';
+@import 'bootstrap';
 
-@import './vue-select/vue-select.scss';
+@import 'bootstrap-vue/index';
+
+@import 'vue-select/vue-select';
+
+@import 'typography';
+

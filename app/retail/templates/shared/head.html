@@ -16,16 +16,16 @@
 {% endcomment %}
 {% load i18n static is_in_list matches compress %}
 
-{% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
 
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+{% include 'shared/tag_manager_1.html' %}
 
 {% compress css file libs %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/index.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/typography.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/fontawesome-all.min.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search.scss" %}>
+
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/fontawesome-all.min.scss" %}>
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/top-nav.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/base.scss" %} />

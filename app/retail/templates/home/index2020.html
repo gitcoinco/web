@@ -40,7 +40,7 @@
     </a>
   </div>
   {% if not user.is_authenticated %}
-  <div class="float-right pt-2 pr-1">
+  <div class="position-absolute pt-2 pr-1 text-right w-100">
       <a class="land-btn text-white nav-link login interior" href="{% url 'social:begin' 'github' %}?next=/townsquare" onclick="dataLayer.push({'event': 'login'});">
         <i class="fab fa-github"></i><span class="nav-link__text">&nbsp;&nbsp;{% trans "Log in" %}</span>
       </a>

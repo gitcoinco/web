@@ -54,7 +54,7 @@ body.funder-page {
 }
 
 #landing_page_wrapper {
-  overflow-y: scroll;
+  // overflow-y: scroll;
   background-color: #F9F9F9;
 }
 
@@ -576,10 +576,10 @@ body.funder-page {
 }
 
 .navbar:not(.following) .btn {
-  background: transparent;
+  // background: transparent;
 }
 .navbar:not(.following) .btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  // background-color: rgba(255, 255, 255, 0.2);
 }
 
 @keyframes rotate-blades {

@@ -1,4 +1,4 @@
-  <div class="modal fade" id="editpTokenModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="editpTokenModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" style="max-width: 576px;" role="document">
     <div class="modal-content">
       <form class="modal-body my-4 mx-5 py-3">
@@ -69,11 +69,11 @@
           </div>
         </div>
         <div class="text-center">
-          <button type="button" class="btn btn-lg btn-gc-blue mb-3 px-5" @click="editPToken" :disabled="pToken.tx_status !== 'success'">
+          <button type="button" class="btn btn-lg btn-primary mb-3 px-5" @click="editPToken" :disabled="pToken.tx_status !== 'success'">
             Confirm
           </button>
           <br>
-          <button id="closeEdit" type="button" class="btn btn-lg btn-outline-gc-blue px-5" data-dismiss="modal">
+          <button id="closeEdit" type="button" class="btn btn-lg btn-outline-primary px-5" data-dismiss="modal">
             Cancel
           </button>
         </div>
