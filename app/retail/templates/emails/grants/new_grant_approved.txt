@@ -1,9 +1,9 @@
 {% load i18n  %}
 
-{% trans "New Grant Created" %}
+{% trans "New Grant Approved" %}
 
-{% trans "You've created a new grant!" %}
-{% trans "It would take 1-2 business days for your grant to approved." %}
+{% trans "Hurray! Your grant has been approved!" %}
+{% trans "Share the Grant URL with your friends/followers to raise your first tokens." %}
 {% trans "Get ready to buidl and push forward open source!" %}
 
 {% trans "Title" %} : {{ grant.title }}
