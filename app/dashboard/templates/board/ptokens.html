@@ -60,7 +60,6 @@
           </div>
         </div>
       </div>
-    </div>
   </header>
   <section v-if="has_ptoken_auth" class="container">
     <div class="row">
@@ -72,26 +71,26 @@
                 Create a time token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
               </div>
               <div id="showCreationSuccessModal" hidden data-toggle="modal" data-target="#createTokenSuccessModal"></div>
-              <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
+              <button class="btn btn-sm btn-outline-primary m-2" data-toggle="modal" data-target="#createTokenModal">
                 Create
               </button>
             </template>
             <template v-else-if="pToken.tx_status === 'pending'">
               <div>Please wait for your transaction to be confirmed</div>
               <button class="btn btn-sm  m-2" type="button" disabled>
-                <span class="spinner-border btn-gc-green spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="spinner-border btn-success spinner-border-sm" role="status" aria-hidden="true"></span>
                   Mining...
               </button>
             </template>
             <template v-else-if="pToken.tx_status === 'success'">
               <div>Modify your Time Token</div>
-              <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#editpTokenModal">
+              <button class="btn btn-sm btn-outline-primary m-2" data-toggle="modal" data-target="#editpTokenModal">
                 Edit
               </button>
             </template>
             <template v-else>
               <div>An error occurred trying to create your pToken</div>
-              <button class="btn btn-sm btn-gc-outline-red m-2" data-toggle="modal" data-target="#createTokenModal">
+              <button class="btn btn-sm btn-outline-danger m-2" data-toggle="modal" data-target="#createTokenModal">
                 Please try again or contact support@gitcoin.co
               </button>
             </template>
@@ -128,9 +127,9 @@
                     </div>
                   </div>
                   <div>
-                    <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionAcceptModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
-                    <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCancelModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
-                    <button v-else @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Deny</button>
+                    <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionAcceptModal" class="btn btn-sm m-2 btn-primary" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
+                    <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCancelModal" class="btn btn-sm btn-outline-primary m-2" :disabled="key === disabledBtn">Cancel</button>
+                    <button v-else @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-primary m-2" :disabled="key === disabledBtn">Deny</button>
                   </div>
                 </div>
               </li>
@@ -140,7 +139,7 @@
                     [[ error.open || 'You don’t have any open requests' ]]
                 </h4>
                 <p class="text-black-70">Have any questions? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
-                <a href="{% url 'users_directory' %}?ptokens=true" title="Browse tokens" class="btn btn-gc-blue">Browse tokens</a>
+                <a href="{% url 'users_directory' %}?ptokens=true" title="Browse tokens" class="btn btn-primary">Browse tokens</a>
               </li>
             </ul>
             <loading-screen v-if="isLoading.request"></loading-screen>
@@ -176,8 +175,8 @@
                     </div>
                   </div>
                   <div>
-                    <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" >Complete</button>
-                    <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
+                    <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-primary" :disabled="key === disabledBtn" >Complete</button>
+                    <button @click="cancel(token.id)" class="btn btn-sm btn-outline-primary m-2" :disabled="key === disabledBtn">Cancel</button>
                   </div>
                 </div>
               </li>

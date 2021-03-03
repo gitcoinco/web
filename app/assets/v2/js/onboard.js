@@ -224,7 +224,7 @@ if (document.getElementById('gc-onboard')) {
               `).join(' ') : ''}
             </ul>
             <div class="text-center">
-              <button class="btn btn-sm btn-gc-blue" onClick="popOnboard(${step})">${isComplete ? 'Edit' : 'Complete'} Profile</button>
+              <button class="btn btn-sm btn-primary" onClick="popOnboard(${step})">${isComplete ? 'Edit' : 'Complete'} Profile</button>
             </div>
           </div>`;
         }

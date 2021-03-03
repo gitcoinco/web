@@ -29,16 +29,16 @@
 
 
   {% if user.is_authenticated %}
-  <div class="d-flex order-0 order-md-last">
-    {% include 'shared/notifications.html' %}
+  <div class="d-flex order-0 order-last text-white">
+    {% include 'shared/notifications.html' with onepager=True %}
     <a class="nav-link login" href="{% url 'profile' %}">
       <img class="nav_avatar" width=25 height=25
         src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>
-    <div class="nav-item dropdown interior">
+    <div class="nav-item dropdown interior m-auto">
 
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+      <a class="nav-link dropdown-toggle m-auto pr-0 text-white" href="#" id="navbarDropdownWallet" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
       </a>

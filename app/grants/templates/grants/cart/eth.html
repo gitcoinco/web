@@ -171,19 +171,19 @@
             <!-- changed here -->
             <div  class="">
               <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
-                <div class="btn btn-sm btn-gc-blue font-title font-weight-normal px-4"
+                <div class="btn btn-sm btn-primary font-title font-weight-normal px-4"
                   :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
                   @click="gitcoinFactorRaw=5">
                   5%</div>
-                <div class="btn btn-sm btn-gc-blue font-title font-weight-normal ml-xl-2 px-4"
+                <div class="btn btn-sm btn-primary font-title font-weight-normal ml-xl-2 px-4"
                   :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
                   @click="gitcoinFactorRaw=10">
                   10%</div>
-                <div class="btn btn-sm btn-gc-blue font-title font-weight-normal ml-xl-2 px-4"
+                <div class="btn btn-sm btn-primary font-title font-weight-normal ml-xl-2 px-4"
                   :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
                   @click="gitcoinFactorRaw=15">
                   15%</div>
-                <div class="btn btn-sm mx-3 btn-gc-blue font-title font-weight-normal ml-xl-2 px-4"
+                <div class="btn btn-sm mx-3 btn-primary font-title font-weight-normal ml-xl-2 px-4"
                   :class="{inactive: ![0,5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 0}"
                   @click="gitcoinFactorRaw=0">
                   0%</div>
@@ -253,7 +253,7 @@
   <div class="flex-container" style="margin-top: 3rem;">
     <div style="width: 100%">
       <div class="flex-container" style="justify-content: start">
-        <button v-if="!isLoggedIn" class="btn btn-gc-blue button--full shadow-none py-3"
+        <button v-if="!isLoggedIn" class="btn btn-primary btn-block py-3"
           id='js-fundGrants-button' @click="loginWithGitHub">
           <i class="fab fa-github"></i>
           Login with GitHub to Continue
@@ -285,7 +285,7 @@
                 {% comment %} Checkout with zkSync button {% endcomment %}
                   <button
                     @click="zksync.showModal = true"
-                    class="btn btn-gc-blue button--full shadow-none py-3 mt-1"
+                    class="btn btn-primary btn-block py-3 mt-1"
                     :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems"
                     id='js-zkSyncfundGrants-button'
                     v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
@@ -363,7 +363,7 @@
 
                         {% comment %} If checkout not started {% endcomment %}
                         <div v-if="zksync.checkoutStatus === 'not-started'" class="text-center pt-4">
-                          <button @click="checkoutWithZksync" class="btn btn-gc-blue shadow-none">
+                          <button @click="checkoutWithZksync" class="btn btn-primary">
                           Proceed
                           </button>
                           <div class="font-smaller-2 font-italic mt-2">
@@ -381,13 +381,13 @@
               {% comment %} End HTML Template for cart-ethereum-zksync.js {% endcomment %}
               </div>
             <div class="col-auto">
-              <button v-if="!isZkSyncDown" class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-fundGrants-button'
+              <button v-if="!isZkSyncDown" class="btn btn-outline-primary shadow-none py-3 mt-1" id='js-fundGrants-button'
                 @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems" 
                 v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
               >
                 Standard Checkout
               </button>
-              <button v-else class="btn btn-gc-blue button--full shadow-none py-3 mt-1" id='js-fundGrants-button'
+              <button v-else class="btn btn-primary btn-block py-3 mt-1" id='js-fundGrants-button'
                 @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems" 
                 v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
               >

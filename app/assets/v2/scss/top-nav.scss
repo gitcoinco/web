@@ -44,6 +44,7 @@
     padding: 0;
   }
 }
+
 .top-nav a:hover img,
 .top-nav a.selected img {
   /* opacity: 1; */
@@ -54,7 +55,11 @@
   opacity: 1;
 }
 .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%0A%3Csvg width='30px' height='30px' viewBox='0 0 30 30' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch --%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Artboard' transform='translate(-146.000000, -156.000000)' fill-rule='nonzero'%3E%3Cg id='download' transform='translate(77.000000, 45.000000)'%3E%3Cpath d='M73,118 L95,134 M73,134 L95,118' id='Shape-Copy-2' stroke-opacity='0.5' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round'%3E%3C/path%3E%3Crect id='Path' x='69' y='111' width='30' height='30'%3E%3C/rect%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%0A%3Csvg width='30px' height='30px' viewBox='0 0 30 30' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch --%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Artboard' transform='translate(-146.000000, -156.000000)' fill-rule='nonzero'%3E%3Cg id='download' transform='translate(77.000000, 45.000000)'%3E%3Cpath d='M73,118 L95,134 M73,134 L95,118' id='Shape-Copy-2' stroke='rgba%280, 0, 0, 0.5%29' stroke-width='2' stroke-linecap='round'%3E%3C/path%3E%3Crect id='Path' x='69' y='111' width='30' height='30'%3E%3C/rect%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.navbar-dark .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  filter: invert(1);
 }
 
 .brand-hover .logo-animated {
