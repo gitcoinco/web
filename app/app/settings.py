@@ -151,7 +151,6 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
-    'haystack',
     'quadraticlands'
 ]
 
