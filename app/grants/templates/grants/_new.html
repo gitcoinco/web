@@ -204,36 +204,40 @@
                       <input type="radio" name="grant_chain" id="eth_chain" value="eth" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
                     </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
-                    <input type="radio" name="grant_chain" id="zcash_chain" value="zcash" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="20"> Zcash
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zcash'}">
+                      <input type="radio" name="grant_chain" id="zcash_chain" value="zcash" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="20"> Zcash
+                    </label>
 
-                  {% if is_staff %}
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'celo'}">
-                    <input type="radio" name="grant_chain" id="celo_chain" value="celo" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="20"> Celo
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'celo'}">
+                      <input type="radio" name="grant_chain" id="celo_chain" value="celo" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="20"> Celo
+                    </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zilliqa'}">
-                    <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="18"> zilliqa
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zilliqa'}">
+                      <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="18"> zilliqa
+                    </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'harmony'}">
-                    <input type="radio" name="grant_chain" id="harmony_chain" value="harmony" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="20"> harmony
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'harmony'}">
+                      <input type="radio" name="grant_chain" id="harmony_chain" value="harmony" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="20"> harmony
+                    </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'binance'}">
-                    <input type="radio" name="grant_chain" id="binance_chain" value="binance" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="20"> binance
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'binance'}">
+                      <input type="radio" name="grant_chain" id="binance_chain" value="binance" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="20"> binance
+                    </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'polkadot'}">
-                    <input type="radio" name="grant_chain" id="polkadot_chain" value="polkadot" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> polkadot
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'polkadot'}">
+                      <input type="radio" name="grant_chain" id="polkadot_chain" value="polkadot" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> polkadot
+                    </label>
 
-                  <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'kusama'}">
-                    <input type="radio" name="grant_chain" id="kusama_chain" value="kusama" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="20"> kusama
-                  </label>
-                  {% endif %}
-                </div>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'kusama'}">
+                      <input type="radio" name="grant_chain" id="kusama_chain" value="kusama" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="20"> kusama
+                    </label>
+
+                    {% if is_staff %}
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'rsk'}">
+                      <input type="radio" name="grant_chain" id="rsk_chain" value="rsk" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="20"> rsk
+                    </label>
+                    {% endif %}
+                  </div>
 
                   <div class="text-danger" v-if="errors.chainId">
                     [[errors.chainId]]
@@ -378,6 +382,23 @@
                       [[errors.kusama_payout_address]]
                     </div>
                   </template>
+
+                  <template v-if="chainId == 'rsk'">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="rsk_payout_address">
+                      RSK Recipient Wallet Address
+                    </label>
+                    <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                    <p class="text-black-60 font-caption mb-2">
+                      This is where funds from contributors to this grant will be sent
+                    </p>
+
+                    <input id="rsk_payout_address" v-model="form.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                    <div class="text-danger" v-if="errors.rsk_payout_address">
+                      [[errors.rsk_payout_address]]
+                    </div>
+                  </template>
                 </div>
 
 
@@ -417,14 +438,14 @@
 
               </div>
             </div>
-          </div>
-          <div class="container mt-5">
-            <div class="row">
-              <div class="col-12 text-center">
-                <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="submitForm($event)">Create Grant</button>
-              </div>
-              <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
-                Please verify forms errors and try again
+            <div class="container mt-5">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="submitForm($event)">Create Grant</button>
+                </div>
+                <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
+                  Please verify forms errors and try again
+                </div>
               </div>
             </div>
           </div>

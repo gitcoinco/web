@@ -27,8 +27,8 @@ from townsquare.models import Offer
 
 
 def make_btc(key):
-    token = Token.objects.filter(owner_address='0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F', num_clones_available_counting_indirect_send__gt=10).order_by('?').first()
-    n = 100
+    token = Token.objects.filter(owner_address='0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F', contract__network='xdai', num_clones_available_counting_indirect_send__gt=10).order_by('?').first()
+    n = max(100, token.num_clones_available_counting_indirect_send)
     key_len = 25
     _key = get_random_string(key_len)
     btc = BulkTransferCoupon.objects.create(
