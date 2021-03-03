@@ -464,27 +464,18 @@
 .grants_type_nav a.selected {
   font-weight: bold;
   border-bottom: none;
-  padding-bottom: 6px;
-}
-
-.grants_keyword_nav a:hover {
-  border-bottom: 1.5px solid black;
-  padding-bottom: 4px;
-}
-
-.grants_keyword_nav a.selected:hover {
-  border-color: #3E00FF;
 }
 
 .grants_nav a {
   color: #333333;
   margin-right: 30px;
   cursor: pointer;
+  max-width: 185px;
 }
 
 .grants_nav a:hover {
-  text-shadow: 0 0 .01px black, 0 0 .01px black, 0 0 .01px black;
-  text-decoration: none;
+  text-shadow: 0.1px 0.1px 0 currentColor;
+  text-decoration: underline;
 }
 
 .grants-search .select2-selection__arrow {
@@ -492,8 +483,7 @@
 }
 
 .grants_nav .selected {
-  font-weight: 1000;
-  color: #3f24f9 !important;
+  text-shadow: 0.2px 0.2px 0 currentColor;
 }
 
 .arrow_box {
