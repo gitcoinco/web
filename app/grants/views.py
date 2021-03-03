@@ -494,8 +494,8 @@ def bulk_grants_for_cart(request):
     only_contributions = request.GET.get('only_contributions', '') == 'true'
 
     try:
-        round_num = request.GET.get('clr_round')
-        clr_round = GrantCLR.objects.get(pk=round_num)
+        clr_round_pk = request.GET.get('clr_round')
+        clr_round = GrantCLR.objects.get(pk=clr_round_pk)
     except GrantCLR.DoesNotExist:
         clr_round = None
 
