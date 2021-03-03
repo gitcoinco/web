@@ -730,7 +730,13 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
     gas_price_confirmation_time = 1 if not coupon.sender_address else 60
     gas_price_multiplier = 1.3 if not coupon.sender_address else 1
-    kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+    kudos_contract_address = settings.KUDOS_CONTRACT_MAINNET
+    if coupon.token.contract.network == 'xdai':
+        kudos_contract_address = settings.KUDOS_CONTRACT_XDAI
+    if coupon.token.contract.network == 'rinkeby':
+        kudos_contract_address = settings.KUDOS_CONTRACT_RINKEBY
+
+    kudos_contract_address = Web3.toChecksumAddress(kudos_contract_address)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
