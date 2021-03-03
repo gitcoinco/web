@@ -16,6 +16,17 @@ services:
         reservations:
           memory: 128M
 
+  pgadmin:
+    image: dpage/pgadmin4:5.0
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gitcoin.co
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - db
+
   elasticsearch:
     image: launcher.gcr.io/google/elasticsearch5
     ports:

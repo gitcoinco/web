@@ -129,9 +129,9 @@ You will need to edit the `app/.env` file with your local environment variables.
 
 ## A note on performance
 
-The Gitcoin docker containers contain serval containers for many purposes (web development, task pipeline dev, ganache for blockchain development). Because of this, the whole package can take several GB of RAM.   If all you want to do is work on the site, and you experience slowness while running Gitcoin, we recommend running these commands
+The Gitcoin docker containers contain serval containers for many purposes (web development, task pipeline dev, ganache for blockchain development). Because of this, the whole package can take several GB of RAM. If all you want to do is work on the site, and you experience slowness while running Gitcoin, we recommend running these commands
 
-> docker stop web_worker_1; docker stop web_testrpc_1; docker stop web_ipfs_1; docker stop web_chat_1
+> docker stop web_worker_1; docker stop web_testrpc_1; docker stop web_ipfs_1; docker stop web_chat_1; docker stop web_pgadmin_1
 
 and adding this line to your .env file:
 
