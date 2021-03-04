@@ -3,40 +3,44 @@
 <b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
 
-  <div class="row justify-content-between align-items-center flex-nowrap mt-4 text-muted text-left d-none d-sm-flex">
-    <div class="col"><small>Grant</small></div>
-    <div class="col-7 col-md"><small>Amount</small></div>
-    <div class="col offset-md-1"><small>Estimated QF Match</small></div>
+  <div class="row justify-content-between align-items-center flex-nowrap mt-4 text-muted text-left d-none d-md-flex">
+    <div class="col-10 col-md-4"><small>Grant</small></div>
+    <div class="col-7 col-md-3 pl-0"><small>Amount</small></div>
+    <div class="col col-md-3 offset-md-1 pl-0 ml-5"><small>Estimated QF Match</small></div>
     <div class="col-auto"></div>
   </div>
 
   <div v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
     <div class="row justify-content-between align-items-center mt-4 ml-1">
       <!-- ALL DEVICES: Grant name and logo -->
-      <div class="col-10 col-sm">
+      <div class="col-10 col-md-4 align-self-start">
         <div class="row align-items-center">
-          <img :src="grant.grant_logo" alt="Grant logo" width="45" height="36" class="mr-2">
-          <div class="font-weight-bold"><a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a></div>
+          <div class="logo-container col pl-0">
+            <img :src="grant.grant_logo" alt="Grant logo" width="65" class="mr-2">
+          </div>
+          <div class="col pl-2 pr-2">
+            <div class="font-weight-bold line-clamp">
+              <a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- MOBILE: Delete icon -->
-      <div class="col-1 d-none d-block d-sm-none">
+      <div class="col-1 d-none d-block d-md-none">
         <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
       </div>
 
       <!-- ALL DEVICES: Contribution amount and currency-->
-      <div class="col-7 col-md d-block mt-2 mt-sm-0">
+      <div class="col-8 col-md-3 d-block mt-2 mt-md-0">
         <div class="row align-items-center form-inline">
-          <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount" style="width: 49%"/>
+          <input v-model="grant.grant_donation_amount" class="col-auto form-control w-50 pr-1" type="number" min="0" step="any" placeholder="Amount" />
           <div class="flex-shrink-0 w-50 pl-1" style="min-width:60px;">
-            <v-app>
-              <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" style="height: 38px;">
-                <template v-slot:option="option">
-                  <span class="font-weight-semibold">[[ option.symbol ]]</span>
-                </template>
-              </v-select>
-            </v-app>
+            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" style="height: 38px;">
+              <template v-slot:option="option">
+                <span class="font-weight-semibold">[[ option.symbol ]]</span>
+              </template>
+            </v-select>
           </div>
           <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
             Apply to all
@@ -45,30 +49,35 @@
       </div>
 
       <!-- ALL DEVICES: CLR match amount-->
-      <div class="col offset-md-1 d-block text-md-left text-right pr-2">
+      <div class="col col-md-3 d-block text-md-left text-right pr-2 pl-2 ml-5">
         <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
         <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
         <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
       </div>
 
       <!-- DESKTOP: Delete icon -->
-      <div class="col-auto d-none d-sm-block">
-        <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
+      <div class="col-auto d-none d-md-flex align-self-center inputs-height">
+        <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted pt-1"></i>
       </div>
 
       <!-- ALL DEVICES: Add comments -->
       <div class="col-12 mt-3" >
-        <small class="row justify-content-start text-muted">
-          <div class="cursor-pointer px-2 col-auto" >
-            <input v-model="grant.grant_comments" :id="`comment-${grant.grant_id}-blank`" value="" type="radio" class="d-none" :name="`comment-${grant.grant_id}`"
-              :checked="grant.grant_comments === ''"
-            >
-            <label :for="`comment-${grant.grant_id}-blank`">
-              <i class="far fa-comment border rounded-circle cursor-pointer p-2" aria-hidden="true"></i>
-            </label>
+        <div class="row align-items-center text-muted inputs-height">
+          <div class="flex-shrink-1">
+            <div class="cursor-pointer px-0 col-auto">
+              <input v-model="grant.grant_comments_bool" :id="`comment-${grant.grant_id}-blank`" type="checkbox" class="d-none" :name="`comment-${grant.grant_id}`"
+                :checked="grant.grant_comments_bool || !!grant.grant_comments"
+                :disabled="grant.grant_comments ? '' : disabled"
+              />
+              <label class="border rounded-circle mb-0 cursor-pointer" :for="`comment-${grant.grant_id}-blank`">
+                <i class="far fa-comment p-2" aria-hidden="true"></i>
+              </label>
+            </div>
           </div>
-          <input v-if="grant.grant_comments !== undefined" class="col-12 form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
-        </small>
+          <div class="flex-grow-1 ml-2">
+            <input v-if="grant.grant_comments_bool || !!grant.grant_comments" class="col-12 form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message" />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -78,10 +87,10 @@
 
   <!-- Cart total -->
   <div class="row justify-content-between text-left">
-    <div class="col-12 col-sm-auto mr-3"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
-    <div class="col-12 col-sm text-left"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
-    {% comment %} <div class="col d-none d-sm-block"></div>
-    <div class="col-auto d-none d-sm-block"></div> {% endcomment %}
+    <div class="col-12 col-md-auto mr-3"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
+    <div class="col-12 col-md text-left"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
+    {% comment %} <div class="col d-none d-md-block"></div>
+    <div class="col-auto d-none d-md-block"></div> {% endcomment %}
   </div>
 
   <hr class="my-5">
@@ -94,26 +103,26 @@
       <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin Grants Development Fund</a>
     </div>
     <div class="row justify-content-start align-items-center ml-1 mt-3">
-      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
-      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
-      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
-      <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
       <div class="col-12 col-lg-auto form-inline d-inline-block d-lg-block mt-2 mt-lg-0 pl-0 pl-lg-5">
         <span class="font-caption ml-0 mr-1 d-inline-block">Custom</span>
         <input v-model="gitcoinFactorRaw" class="border cursor-pointer d-inline-block form-control inactive mr-0 pr-0 rounded w-auto" type="number"
           min="0" max="99" step="any" id="gitcoin-grant-input-amount"
           name="gitcoin-grant-input-amount" :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
-        >
+        />
       </div>
     </div>
     <!-- CLR matching -->
     <div class="row justify-content-start align-items-center ml-1 mt-3">
-      <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2">
+      <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2" />
       <label class="mb-0" for="include_for_clr">{% trans "Include this contribution to CLR matching" %}</label>
     </div>
     <!-- Hide wallet -->
     <div class="row justify-content-start align-items-center ml-1 mt-3">
-      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2">
+      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2" />
       <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
     </div>
   </div>

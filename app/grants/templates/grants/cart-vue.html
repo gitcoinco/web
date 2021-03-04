@@ -43,7 +43,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
 
-    <div>
       <div id="gc-grants-cart" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div class="container">
@@ -91,26 +90,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <!-- Checkout for RSK Grants -->
                   {% include 'grants/cart/extension/rsk.html' %}
 
-                <template #tabs-end>
-                  <div role="presentation" class="nav nav-item ml-auto mt-2">
-                  <!-- d-none d-sm-block hides on screens sm or less-->
-                    <li class="cursor-pointer align-self-center text-primary d-none d-sm-block" @click="createCollection">
-                      <i class="far fa-heart" aria-hidden="true"></i> Save as collection
-                    </li>
-                    <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
-                      <i class="fa fa-share-alt" aria-hidden="true"></i> Share cart
-                    </li>
-                    <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
-                      <i class="fa fa-times" aria-hidden="true"></i> Clear cart
-                    </li>
-                  </div>
-                </template>
-              </b-tabs>
+                  <template #tabs-end>
+                    <div role="presentation" class="nav nav-item ml-auto mt-2">
+                    <!-- d-none d-sm-block hides on screens sm or less-->
+                      <li class="cursor-pointer align-self-center text-primary d-none d-md-block" @click="createCollection">
+                        <i class="far fa-heart pr-1" aria-hidden="true"></i> Save as collection
+                      </li>
+                      <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
+                        <i class="fa fa-share-alt pr-1" aria-hidden="true"></i> Share cart
+                      </li>
+                      <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
+                        <i class="fa fa-times pr-1" aria-hidden="true"></i> Clear cart
+                      </li>
+                    </div>
+                  </template>
+                </b-tabs>
+              </div>
             </div>
           </div>
         </grants-cart>
       </div>
-    </div>
 
 
       <script type="text/x-template" id="select2-template">
