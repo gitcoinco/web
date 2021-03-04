@@ -358,21 +358,21 @@ class Command(BaseCommand):
         except Exception as e:
             print(e)
 
-        if not options['perform_obj_updates']:
-            return
-
-        try:
-            print('cryptocompare')
-            cryptocompare()
-        except Exception as e:
-            print(e)
-
         try:
             source = 'coingecko'
             coingecko_tokens = approved_tokens.filter(conversion_rate_source=source)
             if coingecko_tokens.count() > 0:
                 print(source)
                 coingecko(source, coingecko_tokens)
+        except Exception as e:
+            print(e)
+
+        if not options['perform_obj_updates']:
+            return
+
+        try:
+            print('cryptocompare')
+            cryptocompare()
         except Exception as e:
             print(e)
 
