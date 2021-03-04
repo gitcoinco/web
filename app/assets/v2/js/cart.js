@@ -1376,43 +1376,11 @@ Vue.component('grants-cart', {
       token.name = token.symbol;
     });
 
-    // Read array of grants in cart from localStorage
-    const grantData = CartData.loadCart();
-
-    // Make sure none have empty currencies, and if they do default to 0.001 ETH. This is done
-    // to prevent the cart from getting stuck loading if a currency is empty
-    grantData.forEach((grant, index) => {
-      if (!grant.grant_donation_currency) {
-        grantData[index].grant_donation_currency = 'ETH';
-        grantData[index].grant_donation_amount = '0.001';
-      }
-    });
-    CartData.setCart(grantData);
-    this.grantData = grantData;
+    // Update then get cart data from localStorage
+    this.grantData = await CartData.updateCart();
 
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
-
-    // Get list of all grant IDs and unique tokens in the cart
-    const grantIds = this.grantData.map(grant => grant.grant_id);
-
-    // Fetch updated CLR curves for all grants
-    const url = `${window.location.origin}/grants/v1/api/grants?pks=${grantIds.join(',')}`;
-    const response = await fetch(url);
-    const clrCurves = (await response.json()).grants;
-
-    // Update CLR curves
-    this.grantData.forEach((grant, index) => {
-      // Find the clrCurves entry with the same grant ID as this grant
-      const clrIndex = clrCurves.findIndex(item => {
-        return Number(item.id) === Number(grant.grant_id);
-      });
-
-      // Update grantData from server
-      this.$set(this.grantData[index], 'grant_clr_prediction_curve', clrCurves[clrIndex].clr_prediction_curve);
-      this.$set(this.grantData[index], 'is_on_team', clrCurves[clrIndex].is_on_team);
-
-    });
 
     // Wait until we can load token list
     let elapsedTime = 0;
