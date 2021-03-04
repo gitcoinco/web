@@ -86,14 +86,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
 
               {% comment %} Main container {% endcomment %}
-              <div v-if="grantData.length === 0" class="flex-container font-bigger-1 text-left grant-header-row"
-                style="justify-content: center; margin: 5rem 0">
-                Your cart is empty.
-              </div>
-
-              <div v-else-if="isLoading" style="margin:5rem 0">
+              <div v-if="isLoading" style="margin:5rem 0">
                 <loading-screen></loading-screen>
                 <div style="margin:3rem; text-align:center">Fetching cart data...</div>
+              </div>
+
+              <div v-else-if="grantData.length === 0" class="flex-container font-bigger-1 text-left grant-header-row"
+                style="justify-content: center; margin: 5rem 0">
+                Your cart is empty.
               </div>
 
               <div v-else class="container" style="padding-bottom: 10rem;">
