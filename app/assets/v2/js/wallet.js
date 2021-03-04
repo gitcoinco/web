@@ -207,7 +207,8 @@ function createImg(source) {
   if (!imgProvider) {
     imgProvider = document.createElement('img');
     imgProvider.classList.add('image-provider');
-    elem.insertBefore(imgProvider, icon);
+    // elem.insertBefore(imgProvider, icon);
+    elem.appendChild(imgProvider);
   }
 
   if (!source) {
