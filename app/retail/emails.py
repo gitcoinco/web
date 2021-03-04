@@ -123,6 +123,14 @@ def render_new_grant_email(grant):
     return response_html, response_txt, subject
 
 
+def render_new_grant_approved_email(grant):
+    params = {'grant': grant}
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant_approved.html", params))
+    response_txt = render_to_string("emails/grants/new_grant_approved.txt", params)
+    subject = _("Your Grant on Gitcoin Grants has been approved")
+    return response_html, response_txt, subject
+
+
 def render_new_supporter_email(grant, subscription):
     params = {
         'grant': grant,
@@ -266,6 +274,13 @@ def new_supporter(request):
 def new_grant(request):
     grant = Grant.objects.first()
     response_html, __, __ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_grant_approved(request):
+    grant = Grant.objects.first()
+    response_html, __, __ = render_new_grant_approved_email(grant)
     return HttpResponse(response_html)
 
 
