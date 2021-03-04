@@ -148,6 +148,8 @@ def coingecko(source, tokens):
 
     url =  f'https://api.coingecko.com/api/v3/simple/price?ids={token_str}&vs_currencies=usd,eth'
 
+    print(url)
+
     response = requests.get(url).json()
 
     for token in tokens:
