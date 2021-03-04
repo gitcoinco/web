@@ -124,7 +124,7 @@ def render_new_grant_email(grant):
 
 
 def render_new_grant_approved_email(grant):
-    params = {'grant': grant}
+    params = {'grant': grant, 'utm_tracking': build_utm_tracking('new_grant_approved')}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant_approved.html", params))
     response_txt = render_to_string("emails/grants/new_grant_approved.txt", params)
     subject = _("Your Grant on Gitcoin Grants has been approved")
@@ -341,7 +341,7 @@ def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
         'hide_bottom_logo': True,
     }
 
-    response_html = premailer_transform(render_to_string("emails/pro/tribe_hackathon_prizes.html", params))
+    response_html = premailer_transform(render_to_string("emails/tribe_hackathon_prizes.html", params))
     response_txt = render_to_string("emails/tribe_hackathon_prizes.txt", params)
 
     return response_html, response_txt
@@ -707,7 +707,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'chats_count': chats_count,
     }
 
-    response_html = premailer_transform(render_to_string("emails/pro/new_bounty.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
     response_txt = render_to_string("emails/new_bounty.txt", params)
 
     return response_html, response_txt

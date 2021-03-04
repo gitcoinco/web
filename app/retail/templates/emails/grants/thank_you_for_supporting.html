@@ -1,19 +1,20 @@
-{% extends 'emails/pro/template.html' %}
+{% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
 {% load i18n static grants_extra humanize %}
 
@@ -41,7 +42,7 @@
     display: inline-block;
   }
 
-  .right-grant-header > h2 {
+  .right-grant-header>h2 {
     font-size: 20px;
     line-height: 1.5em;
   }
@@ -87,7 +88,7 @@
   }
 
   @media (min-width : 1386px) {
-    .left-grant-header > img {
+    .left-grant-header>img {
       transform: translateY(13.5%);
     }
   }
@@ -99,7 +100,6 @@
       text-align: left;
     }
   }
-
 </style>
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
@@ -107,7 +107,8 @@
   {% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
   <div class="grant-header">
     <div class="left-grant-header">
-      <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
+      <img src="{% static " v2/images/heart-robot.png" %}" alt="{% trans " Gitcoin Heart Robot" %}" title="{% trans "
+        Gitcoin Heart Robot" %}">
     </div>
     <div class="right-grant-header">
       <h1 style="text-transform: none;">{% trans "Thank you for supporting" %} {{ grant.title }}!
@@ -121,7 +122,8 @@
   <br>
   <div class="grant-info">
     <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
-      <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
+      <img id="grant-logo"
+        src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
     </a>
     <br>
     <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
@@ -137,16 +139,18 @@
       <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
     </p>
     <p>{% trans "You can see all the grants you support and your transaction history " %}
-        <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
+      <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
     </p>
   </div>
 
   <br>
-  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Updates" %}</a>
+  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View
+    Updates" %}</a>
   <br>
   <br>
   <p>{% trans "If you ever need to, you can cancel your support" %}
-    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans "here." %}</a>
+    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans
+      "here." %}</a>
   </p>
   <hr>
   {% endwith %}
