@@ -31,6 +31,7 @@ from grants.models import (
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
+from marketing.mails import new_grant_approved
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -205,6 +206,7 @@ class GrantAdmin(GeneralAdmin):
             obj.hidden = False
             obj.save()
             record_grant_activity_helper('new_grant', obj, obj.admin_profile)
+            new_grant_approved(obj, obj.admin_profile)
             self.message_user(request, "Grant has been successfully approved")
         return redirect(obj.admin_url)
 
