@@ -11,7 +11,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     new rskClient.providers.HttpProvider(rskHost)
   );
 
-  // Prompt user to unlock wallet if ethereum.selectedAddress is not present
+  // 2. check if wallet ins installed and unlocked
   if (!provider) {
     try {
       console.log(ethereum.selectedAddress);

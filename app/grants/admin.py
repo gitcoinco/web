@@ -30,6 +30,8 @@ from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
+from grants.views import record_grant_activity_helper
+from marketing.mails import new_grant_approved
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -109,7 +111,7 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'emails'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -189,10 +191,23 @@ class GrantAdmin(GeneralAdmin):
         return mark_safe("<BR>".join(eles))
 
     def response_change(self, request, obj):
+        if "_mark_fraud" in request.POST:
+            obj.active = False
+            obj.is_clr_eligible = False
+            obj.save()
+            self.message_user(request, "Marked Grant as Fraudulent. Consider blocking the grant admin next?")
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
             self.message_user(request, "recaclulation of clr queued")
+        if "_approve_grant" in request.POST:
+            obj.active = True
+            obj.is_clr_eligible = True
+            obj.hidden = False
+            obj.save()
+            record_grant_activity_helper('new_grant', obj, obj.admin_profile)
+            new_grant_approved(obj, obj.admin_profile)
+            self.message_user(request, "Grant has been successfully approved")
         return redirect(obj.admin_url)
 
     def contributions_links(self, instance):

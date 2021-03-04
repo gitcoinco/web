@@ -1479,7 +1479,7 @@ def invoice(request):
 
     if bounty.fee_amount > 0:
         params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
-        params['total'] = params['total'] + params['fee_value_in_usdt']
+        params['total'] = params['total'] + float(params['fee_value_in_usdt'])
 
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
@@ -4915,21 +4915,21 @@ def hackathon_registration(request):
     except Exception as e:
         logger.error('Error while saving registration', e)
 
-    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
-    mailchimp_data = {
-            'email_address': email,
-            'status_if_new': 'subscribed',
-            'status': 'subscribed',
-
-            'merge_fields': {
-                'HANDLE': profile.handle,
-                'HACKATHON': hackathon,
-            },
-        }
-
-    user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
-
     try:
+        client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+        mailchimp_data = {
+                'email_address': email,
+                'status_if_new': 'subscribed',
+                'status': 'subscribed',
+
+                'merge_fields': {
+                    'HANDLE': profile.handle,
+                    'HACKATHON': hackathon,
+                },
+            }
+
+        user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
+
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
 
         client.lists.members.tags.update(
@@ -4988,7 +4988,7 @@ def board(request):
     """Handle the board view."""
 
     user = request.user if request.user.is_authenticated else None
-    has_ptoken_auth = user.has_perm('auth.user.add_pToken_auth')
+    has_ptoken_auth = user.has_perm('auth.add_pToken_auth')
     keywords = user.profile.keywords
     ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 

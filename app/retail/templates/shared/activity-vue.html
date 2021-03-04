@@ -64,7 +64,7 @@
           <div v-if="row.profile.organizations.length">
             <img v-for="org in row.profile.organizations" data-toggle="tooltip" title="Member of {{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
             {% if row.profile.handle not in my_tribes|join:"," and row.profile.data.type == 'Organization' %}
-                <div style="text-align:center"><a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
+                <div style="text-align:center"><a href=# class="align-middle btn btn-primary btn-sm mt-2 font-smaller-7" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
             {% endif %}
       </div>
     </div>

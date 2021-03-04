@@ -72,7 +72,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
     GrantType, MatchPledge, PhantomFunding, Subscription,
 )
-from grants.tasks import process_grant_creation_email, update_grant_metadata
+from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -493,6 +493,12 @@ def bulk_grants_for_cart(request):
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
 
+    try:
+        clr_round_pk = request.GET.get('clr_round')
+        clr_round = GrantCLR.objects.get(pk=clr_round_pk)
+    except GrantCLR.DoesNotExist:
+        clr_round = None
+
     filters = {
         'request': request,
         'grant_type': grant_type,
@@ -504,6 +510,7 @@ def bulk_grants_for_cart(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
+        'clr_round': clr_round,
         'omit_my_grants': True
     }
     _grants = build_grants_by_type(**filters)
@@ -677,8 +684,20 @@ def get_grants(request):
     })
 
 
-def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
-                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False, clr_round=None):
+def build_grants_by_type(
+    request, 
+    grant_type='',
+    sort='weighted_shuffle',
+    network='mainnet',
+    keyword='',
+    state='active',
+    category='', 
+    following=False, 
+    idle_grants=False,
+    only_contributions=False,
+    omit_my_grants=False,
+    clr_round=None
+):
     print(" " + str(round(time.time(), 2)))
 
     sort_by_clr_pledge_matching_amount = None
@@ -1609,6 +1628,7 @@ def grant_edit(request, grant_id):
         harmony_payout_address = request.POST.get('harmony_payout_address', '0x0')
         kusama_payout_address = request.POST.get('kusama_payout_address', '0x0')
         binance_payout_address = request.POST.get('binance_payout_address', '0x0')
+        rsk_payout_address = request.POST.get('rsk_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
@@ -1618,7 +1638,8 @@ def grant_edit(request, grant_id):
             polkadot_payout_address == '0x0' and
             kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0' and
-            binance_payout_address == '0x0'
+            binance_payout_address == '0x0' and
+            rsk_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1653,6 +1674,9 @@ def grant_edit(request, grant_id):
 
         if binance_payout_address != '0x0':
             grant.binance_payout_address = binance_payout_address
+
+        if rsk_payout_address != '0x0':
+            grant.rsk_payout_address = rsk_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -1819,12 +1843,14 @@ def grant_new(request):
         kusama_payout_address = request.POST.get('kusama_payout_address', None)
         harmony_payout_address = request.POST.get('harmony_payout_address', None)
         binance_payout_address = request.POST.get('binance_payout_address', None)
+        rsk_payout_address = request.POST.get('rsk_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
-            not harmony_payout_address and not binance_payout_address
+            not harmony_payout_address and not binance_payout_address and
+            not rsk_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1872,6 +1898,7 @@ def grant_new(request):
             'kusama_payout_address': kusama_payout_address if kusama_payout_address else '0x0',
             'harmony_payout_address': harmony_payout_address if harmony_payout_address else '0x0',
             'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
+            'rsk_payout_address': rsk_payout_address if rsk_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
@@ -1882,7 +1909,9 @@ def grant_new(request):
             'last_update': timezone.now(),
             'admin_profile': profile,
             'logo': logo,
-            'hidden': False,
+            'hidden': True,
+            'active': False,
+            'is_clr_eligible': False,
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
@@ -1922,11 +1951,15 @@ def grant_new(request):
 
         messages.info(
             request,
-            _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+            _('Thank you for posting this Grant. Our team reviews each grant before it goes live on the website. This process takes 1-2 business days.')
         )
 
-        record_grant_activity_helper('new_grant', grant, profile)
+        if grant.active:
+            record_grant_activity_helper('new_grant', grant, profile)
+        
+        # send email to creator and admin
         process_grant_creation_email.delay(grant.pk, profile.pk)
+        process_grant_creation_admin_email.delay(grant.pk)
 
         response = {
             'status': 200,
@@ -2683,7 +2716,8 @@ def create_matching_pledge_v1(request):
     )
 
     match_pledge.save()
-    new_grant_match_pledge(match_pledge)
+    # dont' send spammy email
+    # new_grant_match_pledge(match_pledge)
 
     response = {
         'status': 200,
@@ -3157,7 +3191,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE']:
+        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK']:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'

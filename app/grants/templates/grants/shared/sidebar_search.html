@@ -26,7 +26,7 @@
   <div class="sidebar_search font-body pr-lg-0 px-4">
     <div class="search font-caption mb-4 w-100">
       <div class="search-area col-12">
-        <input @input="searchKeyword()" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
+        <input @input="searchKeyword()" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Libre Franklin', sans-serif; font-weight: 900;" placeholder="&#xF002; Filter Grants" />
       </div>
     </div>
 
@@ -73,20 +73,20 @@
           {% trans "Categories" as cats %}{{ cats|upper }}
         </div>
         <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-          <li class="mr-1 ">
-            <a @click="filterLink({type: '', category: ''})" data-type="all" data-category="" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
+          <li class="mr-1 d-flex">
+            <a @click="filterLink({type: 'all', category: ''})" data-type="all" data-category="" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
               All Categories
             </a>
           </li>
           <template v-for="grant_type in grant_types">
-            <li class="mr-1">
-              <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
+            <li class="mr-1 d-flex">
+              <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" data-category="" :class="`d-inline-block text-truncate mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
                 <template v-if="grant_type.funding_ui != '$0k'">
                   <strong>[[grant_type.funding_ui]]</strong> -
                 </template>
                 [[grant_type.label]] <sup>([[grant_type.count]])</sup>
               </a>
-              <a v-b-toggle='grant_type.keyword' href="#example-collapse" @click.prevent class="m-1">
+              <a v-b-toggle='grant_type.keyword' href="#example-collapse" @click.prevent class="mx-1">
                 <i class="fa fa-fw fa-chevron-up when-open"></i>
                 <i class="fa fa-fw fa-chevron-down when-closed"></i>
               </a>
@@ -94,13 +94,13 @@
             <b-collapse class="" :id="grant_type.keyword" :visible="grant_type.keyword == type">
               <div class="col-12 options">
                 <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
-                  <li class="mr-1 ">
-                    <a @click="filterLink({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
+                  <li class="mr-1 d-flex">
+                    <a @click="filterLink({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`d-inline-block text-truncate mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
                       All [[grant_type.label]] <sup>([[grant_type.count]])</sup>
                     </a>
                   </li>
-                  <li class="mr-1" v-for="category in grant_type.sub_categories">
-                    <a @click="filterLink({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
+                  <li class="mr-1 d-flex" v-for="category in grant_type.sub_categories">
+                    <a @click="filterLink({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`d-inline-block text-truncate mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
                       [[category.label]] <sup>([[category.count]])</sup>
                     </a>
                   </li>
@@ -115,7 +115,7 @@
           </div>
           <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
             <li>
-              <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: true})"  :class="`mr-1  px-1  ${ type == 'collections' && featured ? 'selected':''}`">
+              <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: true})"  :class="`mr-0  px-1  ${ type == 'collections' && featured ? 'selected':''}`">
                 Featured Collections <span class="gc-text-green">NEW</span>
               </a>
             </li>

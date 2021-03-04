@@ -72,6 +72,11 @@ Vue.mixin({
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'celo_payout_address': vm.grant.celo_payout_address,
         'zil_payout_address': vm.grant.zil_payout_address,
+        'binance_payout_address': vm.grant.binance_payout_address,
+        'harmony_payout_address': vm.grant.harmony_payout_address,
+        'polkadot_payout_address': vm.grant.polkadot_payout_address,
+        'kusama_payout_address': vm.grant.kusama_payout_address,
+        'rsk_payout_address': vm.grant.rsk_payout_address,
         'region': vm.grant.region?.name || undefined
       };
 

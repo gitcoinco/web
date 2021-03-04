@@ -41,7 +41,8 @@ Vue.mixin({
         .send({from: selectedAccount},
           (error, tx_id) => {
             if (error) {
-              _alert({ message: gettext('Unable to pay the match pledge amount. Please try again.') }, 'error');
+              _alert('Transaction Failed. To fund the matching pool please visit this Grant.', 'error');
+              document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';
               console.error(`error: unable to pay pledge due to : ${error}`);
               return;
             }
@@ -110,17 +111,8 @@ Vue.mixin({
         'comment': form.comment
       };
 
-      if (form.stage == 'ready') {
-        if (!provider) {
-          onConnect();
-          return false;
-        }
-
-        vm.transfer_web3(params);
-      } else {
-        vm.submitted = true;
-        vm.createMatchingPledge(params);
-      }
+      vm.submitted = true;
+      vm.createMatchingPledge(params);
 
     },
     async createMatchingPledge(data) {
@@ -141,8 +133,9 @@ Vue.mixin({
         response = await fetchData(url, 'POST', data, headers);
 
         if (response.status == 200) {
-          _alert('Match Pledge Request Created.');
+          _alert('Match Pledge Request Recorded.  To fund the matching pool please visit this Grant.');
           vm.clearForm();
+          document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';
         } else {
           vm.submitted = false;
           _alert('Unable to create matching pledge. Please try again', 'error');
@@ -181,7 +174,7 @@ if (document.getElementById('gc-new-match')) {
   ];
   const stage_options = [
     {'key': 'ready', 'val': 'I am ready to transfer DAI'},
-    {'key': 'details', 'val': 'Send me more details'}
+    {'key': 'details', 'val': 'Not ready to transfer DAI'}
   ];
 
   appFormBounty = new Vue({

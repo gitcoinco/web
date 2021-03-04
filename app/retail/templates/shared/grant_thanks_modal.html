@@ -39,17 +39,17 @@
           </div>
           <div class="row mt-1 mb-4 justify-content-center">
             {% if fund_reward %}
-              <a class="button button--primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
+              <a class="btn btn-primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
                 target="_blank" rel="noopener noreferrer" >
                 {% trans "Redeem Kudos" %} 🌈
               </a> |
             {% elif grant.id %}
-              <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}/{% url 'grants:details' grant.id grant.slug %}"
+              <a class="btn btn-primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}/{% url 'grants:details' grant.id grant.slug %}"
                 target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
                 {% trans "Tweet About this Grant" %} 🐦
               </a>
             {% else %}
-              <a class="button button--primary" role="button"
+              <a class="btn btn-primary" role="button"
                 href="/grants/new"
                 target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Fund New Grant', 'click', 'Grant Funder')">
                 {% trans "Fund a New Grant" %}

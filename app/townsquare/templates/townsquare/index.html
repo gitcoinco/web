@@ -81,9 +81,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       }
 
       .card-ribbon {
-        position: absolute;
-        top: 0;
-        right: 16px;
+        top: -15px;
+        right: 25px;
       }
     </style>
     <script src='{% static "v2/js/theme_switcher.js" %}'></script>
@@ -91,7 +90,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="header sticky-top">
+    <div class="bg-white sticky-top">
       {% include 'home/nav.html' %}
     </div>
     <div class="townsquare_main container-fluid">
@@ -115,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="my-1 px-sm-3">
           <div class="row">
             <div class="col-12 mb-2">
-              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold" id="myTab" role="tablist">
+              <ul id="mobile_nav_toggle" class="nav nav-tabs mt-3 font-smaller-2 font-weight-semibold border-0" id="myTab" role="tablist">
                   <li class="nav-item">
                     <a data-toggle="tooltip" class="nav-link nav-line active "
                       href="#" data-slug="feed" title=""
@@ -150,20 +149,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div id=left_sidebar>
                 <div class="promo mb-4 align-items-center hidden">
                     <span class="close-promo"><i class="fas fa-times"></i></span>
-                    <img class="logo" width="65" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
-                    <div class="d-flex flex-column flex-fill ml-3">
-                      <p class="p-0 font-smaller-1">Work with the coolest projects and the best developers in Web3</p>
+                    <div class="d-flex flex-column flex-fill pt-1 pt-md-3 pt-lg-2">
+                      <p class="p-0 font-smaller-1 text-center mb-2 d-flex">
+                        <img class="logo my-auto" width="65" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
+                        <span class="my-auto pl-3">Work with the coolest projects and the best developers in Web3</span>
+                      </p>
                       <div class="font-caption font-smaller-5 text-left">
-                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 promo-action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
+                        <a href="{% url 'tribes_directory' %}" class="btn py-2 promo-action font-smaller-4 btn-sm mt-2 w-100">Find a Tribe</a>
                       </div>
                     </div>
                 </div>
                 {% if SHOW_DRESSING %}
                   <div class="townsquare_left-sidebar feed_container">
-                    <div class="townsquare_block-header" data-target="search-area" >
+                    <div class="townsquare_block-header accordion closed" data-target="search-area" >
                       Search
                     </div>
-                    <div class="search font-caption mb-2 text-left" id="search-area">
+                    <div class="search font-caption mb-2 text-left hidden" id="search-area">
                       <div class="search-area">
                         <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                       </div>
@@ -288,9 +289,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/activity_scripts.html' %}
     <!-- Send direct tip on comments -->
-    <script src='{% static "v2/js/lib/ipfs-api.js" %}'></script>
-    <script src='{% static "v2/js/ipfs.js" %}'></script>
-    <script src='{% static "v2/js/ethereumjs-accounts.js" %}'></script>
+    <!-- <script src='{% static "v2/js/lib/ipfs-api.js" %}'></script> -->
+    <!-- <script src='{% static "v2/js/ipfs.js" %}'></script> -->
+    <!-- <script src='{% static "v2/js/ethereumjs-accounts.js" %}'></script> -->
     <script src='{% static "v2/js/abi.js" %}'></script>
 
     <script src='{% static "v2/js/status.js" %}'></script>

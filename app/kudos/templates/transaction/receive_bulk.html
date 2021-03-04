@@ -49,7 +49,7 @@
         Tweet It</a>
       </p>
       <form action="{% url 'profile' %}">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{% endif %} >
+        <input id="receive" type='submit' class="btn btn-dark" value="🌈 {% trans "View Profile" %} 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{% endif %} >
       </form>
     <hr>
 
@@ -96,7 +96,7 @@
     border-left: 2px solid #295379;
     margin: 10px auto;
     border-top: 1px solid #295389;
-    font-family: Muli;
+    font-family: 'Libre Franklin';
     background-image: linear-gradient(to bottom right, #D0DEEB, #DFBDD9);
     font-weight: 600;
     overflow-y: scroll;
@@ -161,7 +161,7 @@
       </div>
 
       <div class="text-center mt-3">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs or coupon.is_paid_right_now %}disabled=disabled{% endif %} >
+        <input id="receive" type='submit' class="btn btn-dark" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs or coupon.is_paid_right_now %}disabled=disabled{% endif %} >
         <br>
         {% if coupon.is_paid_right_now and coupon.make_paid_for_first_minutes <= 99999 %}
           <span id="free_countdown">

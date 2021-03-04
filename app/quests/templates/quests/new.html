@@ -230,7 +230,7 @@
           <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{% else %}{{package.pk}}{% endif %}">
 
           {% csrf_token %}
-          <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
+          <button class='btn btn-primary btn-lg mt-2 float-right pr-5 py-3' style="font-size: 35px;" type='submit' name='submit' value="Submit Quest">
           <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" />
           {% if not the_quest %} Create {% else %} Edit {% endif %} Quest
           </button>

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import os
 import socket
+import subprocess
 
 from django.utils.translation import gettext_noop
 
@@ -90,6 +91,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'livereload',
     'cacheops',
     'storages',
     'social_django',
@@ -197,35 +199,6 @@ TEMPLATES = [{
         ],
     },
 }]
-
-# Sass precompiler settings
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
-]
-# number of demicals allowed in sass numbers
-LIBSASS_PRECISION = 8
-# minify sass output in production (offline)
-if ENV not in ['local', 'test', 'staging', 'preview']:
-    # compress offline (use './manage.py compress' to build manifest.json)
-    COMPRESS_OFFLINE = True
-    # Allow for the full path (url) to be included in the manifest
-    COMPRESS_INCLUDE_URLS = True
-    # Allow the placeholder insertion to be skipped
-    COMPRESS_SKIP_PLACEHOLDER = True
-    # use content based hashing so that we always match between servers
-    COMPRESS_CSS_HASHING_METHOD = 'content'
-    # minification of sass output
-    COMPRESS_CSS_FILTERS = [
-        'compressor.filters.css_default.CssAbsoluteFilter',
-        'compressor.filters.cssmin.rCSSMinFilter'
-    ]
-    # drop line comments
-    LIBSASS_SOURCE_COMMENTS = False
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
@@ -454,6 +427,40 @@ else:
     # Handle local media file storage
     MEDIA_ROOT = root('media')
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
+
+
+# Sass precompiler settings
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+]
+# number of demicals allowed in sass numbers
+LIBSASS_PRECISION = 8
+# minify sass output in production (offline)
+if ENV not in ['local', 'test', 'staging', 'preview']:
+    # get current commit hash to feed into the manifest's name
+    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
+    # compress offline (use './manage.py compress' to build manifest.*.json)
+    COMPRESS_OFFLINE = True
+    # make manifest deploy specific (new manifest for each deployment)
+    COMPRESS_OFFLINE_MANIFEST = 'manifest.' + commit.decode('utf8') + '.json'
+    # allow for the full path (url) to be included in the manifest
+    COMPRESS_INCLUDE_URLS = True
+    # allow the placeholder insertion to be skipped
+    COMPRESS_SKIP_PLACEHOLDER = True
+    # use content based hashing so that we always match between servers
+    COMPRESS_CSS_HASHING_METHOD = 'content'
+    # minification of sass output
+    COMPRESS_CSS_FILTERS = [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.rCSSMinFilter'
+    ]
+    # drop line comments
+    LIBSASS_SOURCE_COMMENTS = False
 
 COMPRESS_OUTPUT_DIR = "v2"
 COMPRESS_ROOT = STATIC_ROOT

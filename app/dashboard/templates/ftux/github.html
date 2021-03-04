@@ -71,7 +71,7 @@
         </div>
       {% else %}
         <div class="logged-out">
-          <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+          <a class="btn btn-primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
             onclick="dataLayer.push({'event': 'login'});">
             <i class="fab fa-github"></i>
             <span>{% trans "Login with github" %}</span>

@@ -119,7 +119,7 @@ const build_suggested_tribe = (tribe) => {
         </span>
       </a>
       <div>
-        <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="${ tribe.title }">
+        <a class="follow_tribe btn btn-sm btn-primary font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="${ tribe.title }">
           Follow
         </a>
         <button data-ignore-tribe="${ tribe.title }"  class="font-smaller-6 px-0 remove-tribe btn btn-link"><i class="fa fa-times"></i></button>
@@ -170,16 +170,16 @@ $(document).on('click', '.remove-tribe', function(e) {
 const newManageTribe = () => {
   $('[data-tribe]').each(function(index, elem) {
     $(elem).on('mouseenter focus', function(e) {
-      if ($(elem).hasClass('btn-outline-gc-green')) {
-        $(elem).addClass('btn-gc-outline-red').text('Unfollow');
-        $(elem).removeClass('btn-outline-gc-green');
+      if ($(elem).hasClass('btn-outline-secondary')) {
+        $(elem).addClass('btn-outline-danger').text('Unfollow');
+        $(elem).removeClass('btn-outline-secondary');
       }
     });
 
     $(elem).on('mouseleave focusout', function(e) {
-      if ($(elem).hasClass('btn-gc-outline-red')) {
-        $(elem).removeClass('btn-gc-outline-red');
-        $(elem).addClass('btn-outline-gc-green').text('Following');
+      if ($(elem).hasClass('btn-outline-danger')) {
+        $(elem).removeClass('btn-outline-danger');
+        $(elem).addClass('btn-outline-secondary').text('Following');
       }
     });
 
@@ -198,9 +198,9 @@ const newManageTribe = () => {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
         if (response.is_member) {
-          $(elem).addClass('btn-outline-gc-green').removeClass([ 'btn-gc-blue', 'btn-gc-outline-red' ]).text('Following');
+          $(elem).addClass('btn-outline-secondary').removeClass([ 'btn-primary', 'btn-outline-danger' ]).text('Following');
         } else {
-          $(elem).removeClass([ 'btn-outline-gc-green', 'btn-gc-outline-red' ]).addClass('btn-gc-blue').text('Follow');
+          $(elem).removeClass([ 'btn-outline-secondary', 'btn-outline-danger' ]).addClass('btn-primary').text('Follow');
         }
       }, function(error) {
         $(elem).attr('disabled', false);

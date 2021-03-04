@@ -1,7 +1,7 @@
 html {
   --gc-light-blue: #16a8d5;
-  --gc-blue: #3E00FF;
-  --gc-blue-hover: #5b24ff;
+  --gc-blue: #6F3FF5;
+  --gc-blue-hover: #5932C4;
   --gc-purple: #0D0764;
   --gc-purple-hover: #0b0d9d;
   --gc-green: #0FCE7C;
@@ -36,8 +36,8 @@ html {
   --main-bg: #eff3f6;
   --form-input-bg: white;
   --form-input-color: rgba(0, 0, 0, 0.38);
-  --button-radio-icon-color: #3e00ff;
-  --link-color: #3e00ff;
+  --button-radio-icon-color: #6F3FF5;
+  --link-color: #6F3FF5;
   --townsquare-link-color: black;
   --townsquare-block-header-color: #626365;
   --active-button-border-color: var(--link-color);
@@ -48,8 +48,8 @@ html {
 /* @media screen and (prefers-color-scheme: dark) { */
 html.dark-mode {
   --gc-light-blue: #16a8d5;
-  --gc-blue: #3E00FF;
-  --gc-blue-hover: #5b24ff;
+  --gc-blue: #6F3FF5;
+  --gc-blue-hover: #5932C4;
   --gc-purple: #0D0764;
   --gc-purple-hover: #0b0d9d;
   --gc-green: #0FCE7C;

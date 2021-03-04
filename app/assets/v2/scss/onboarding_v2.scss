@@ -38,11 +38,15 @@
   width: 48px;
 }
 
-#onboarding_v2.modal {
-  overflow: visible;
-}
 #onboarding_v2 .modal-content {
-  margin-top: 256px;
+  margin-top: 285px;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+  background-image: url(static('v2/images/tribes/promo-decoration.svg'));
+  background-color: rgba(106, 72, 199, 0.98);
+  background-size: cover;
 }
 
 .no-bg {
