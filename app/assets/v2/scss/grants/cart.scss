@@ -144,3 +144,13 @@
   background-color: white;
   padding:0 10px;
 }
+
+#gc-grants-cart {
+  .vs__dropdown-toggle {
+    padding: 6px 0 7px 0px;
+    max-height: 38px;
+  }
+  .v-select__selections input { 
+    display: none;
+  }
+}

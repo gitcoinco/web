@@ -5,8 +5,8 @@
 
   <div class="row justify-content-between align-items-center flex-nowrap mt-4 text-muted text-left d-none d-sm-flex">
     <div class="col"><small>Grant</small></div>
-    <div class="col"><small>Amount</small></div>
-    <div class="col"><small>Estimated QF Match</small></div>
+    <div class="col-7 col-md"><small>Amount</small></div>
+    <div class="col offset-md-1"><small>Estimated QF Match</small></div>
     <div class="col-auto"></div>
   </div>
 
@@ -25,51 +25,30 @@
         <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
       </div>
 
-      <!-- DESKTOP: Contribution amount and currency-->
-      <div class="col d-none d-sm-block">
+      <!-- ALL DEVICES: Contribution amount and currency-->
+      <div class="col-7 col-md d-block mt-2 mt-sm-0">
         <div class="row align-items-center form-inline">
-          <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount">
-          <v-select class="col-auto" :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="form-control">
-            <template v-slot:option="option">
-              <span>[[ option.symbol ]]</span>
-            </template>
-          </v-select>
-          <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
-            Apply to all
-          </small>
-        </div>
-      </div>
-
-      <!-- DESKTOP: CLR match amount-->
-      <div class="col text-left d-none d-sm-block">
-        <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
-        <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
-        <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
-      </div>
-
-      <!-- MOBILE: Contribution amount, currency, and match amount -->
-      <div class="d-block d-sm-none">
-        <div class="row justify-content-between align-items-center form-inline flex-nowrap">
-          <!-- Amount -->
-          <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount">
-
-          <!-- Token -->
-          <v-select class="col-auto" :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="form-control">
-            <template v-slot:option="option">
-              <span>[[ option.symbol ]]</span>
-            </template>
-          </v-select>
-
-          <!-- Match amount -->
-          <div class="col text-left">
-            <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
-            <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
-            <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
+          <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount" style="width: 49%"/>
+          <div class="flex-shrink-0 w-50 pl-1" style="min-width:60px;">
+            <v-app>
+              <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" style="height: 38px;">
+                <template v-slot:option="option">
+                  <span class="font-weight-semibold">[[ option.symbol ]]</span>
+                </template>
+              </v-select>
+            </v-app>
           </div>
           <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
             Apply to all
           </small>
         </div>
+      </div>
+
+      <!-- ALL DEVICES: CLR match amount-->
+      <div class="col offset-md-1 d-block text-md-left text-right pr-2">
+        <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
+        <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
+        <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
       </div>
 
       <!-- DESKTOP: Delete icon -->
@@ -119,9 +98,9 @@
       <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
       <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
       <div class="col-5 col-sm-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
-      <div class="col-12 col-sm-auto form-inline">
-        <span class="font-caption ml-2 mr-1">Custom</span>
-        <input v-model="gitcoinFactorRaw" class="cursor-pointer border rounded form-control mr-0 pr-0" type="number"
+      <div class="col-12 col-lg-auto form-inline d-inline-block d-lg-block mt-2 mt-lg-0 pl-0 pl-lg-5">
+        <span class="font-caption ml-0 mr-1 d-inline-block">Custom</span>
+        <input v-model="gitcoinFactorRaw" class="border cursor-pointer d-inline-block form-control inactive mr-0 pr-0 rounded w-auto" type="number"
           min="0" max="99" step="any" id="gitcoin-grant-input-amount"
           name="gitcoin-grant-input-amount" :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
         >
@@ -171,7 +150,7 @@
 
   <!-- Checkout buttons -->
   <div class="row justify-content-end">
-    <div class="btn-group" role="group" aria-label="Checkout buttons">
+    <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
       <grants-cart-ethereum-zksync
         inline-template
         @zksync-data-updated="onZkSyncUpdate"
@@ -181,11 +160,11 @@
         :grants-by-tenant="grantsByTenant"
         :network="network"
       >
-        <div>
+        <div class="w-100">
         <!-- Checkout with zkSync button -->
           <button
             @click="zksync.showModal = true"
-            class="btn btn-outline-primary py-2"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap"
             :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems"
             id='js-zkSyncfundGrants-button'
             v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
@@ -274,7 +253,7 @@
         </div>
       </grants-cart-ethereum-zksync>
     
-      <button class="btn btn-primary py-2 ml-2 mr-0" id='js-fundGrants-button'
+      <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
         @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems"
         v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
       >
