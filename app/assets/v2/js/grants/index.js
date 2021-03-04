@@ -517,8 +517,8 @@ if (document.getElementById('grants-showcase')) {
       }
     },
     computed: {
-      isLandingPage() {
-        return (window.location.pathname == '/grants/');
+      isGrantExplorer() {
+        return (window.location.pathname == '/grants/explorer/');
       }
     },
     beforeMount() {

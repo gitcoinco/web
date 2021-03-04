@@ -2,7 +2,30 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
+const toggleStyle = function(style) {
 
+  if (!style) {
+    return;
+  }
+
+  let banner;
+
+  if (style.bg) {
+    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+  } else {
+    banner = `url("${ style.banner_image }") center  no-repeat`;
+  }
+  $('#grant-hero-img').css('background', banner);
+  if (style.background_image) {
+    $('#grant-background-image-mount-point').css('background-image', style.background_image);
+  }
+
+  if (style.inline_css) {
+    $('style').last().text(style.inline_css);
+  } else {
+    $('style').last().text('');
+  }
+};
 
 $(document).ready(() => {
   $('#sort_option').select2({
@@ -51,6 +74,7 @@ $(document).ready(() => {
     }
 
   });
+  toggleStyle(document.current_style);
 
 });
 
@@ -156,7 +180,9 @@ if (document.getElementById('grants-showcase')) {
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
-      numGrants
+      numGrants,
+      mainBanner: document.current_style
+
     },
     methods: {
       toggleActiveCLRs() {
@@ -202,7 +228,7 @@ if (document.getElementById('grants-showcase')) {
             window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
           }
         } else {
-          let uri = '/grants/';
+          let uri = '/grants/explorer/';
 
           if (this.current_type === 'collections') {
             window.history.pushState('', '', `${uri}?${q || ''}`);

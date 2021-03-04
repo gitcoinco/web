@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   border: 1px solid #D3D3D3;
+  color: #757087;
 }
 
 .grant-item__content {
@@ -32,27 +33,17 @@
   margin-bottom: 15px;
 }
 
-.grant-item__title a {
-  color: #454545;
-}
-
 .grant-item--list .grant-item__title {
   font-size: 1rem;
   margin-bottom: 2px;
 }
 
 .grant-item__pitch {
-  color: #666666;
   height: 3.8rem;
   overflow: hidden;
   font-size: 0.875rem;
   line-height: 22px;
   text-overflow: ellipsis;
-}
-
-.grant-item__owner {
-  align-items: center;
-  display: flex;
 }
 
 .grant-item__img {
@@ -105,10 +96,6 @@
   margin-bottom: 1rem;
 }
 
-.grant-item__footer {
-  margin-top: auto;
-  background-color: rgba(156, 255, 213, 0.06);
-}
 
 .grant-item__funding {
   display: flex;

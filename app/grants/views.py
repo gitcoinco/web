@@ -873,10 +873,17 @@ def get_all_routing_policies(request):
 
 def grants_landing(request):
     network = request.GET.get('network', 'mainnet')
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
+    now = datetime.datetime.now()
+    sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
+
     params = {
         'network': network,
+        'grant_bg': get_branding_info(request),
         'title': 'Grants',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
+        'active_rounds': active_rounds,
+        'sponsors': sponsors
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'

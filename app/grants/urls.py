@@ -32,7 +32,7 @@ from grants.views import (
     quickstart, remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
 )
 
-app_name = 'grants'
+app_name = 'grants/'
 urlpatterns = [
     path('', grants_landing, name='grants'),
     path('explorer', grants, name='grants_explorer'),
