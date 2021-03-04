@@ -724,7 +724,7 @@ def new_faucet_request(fr):
 
 
 def new_grant_admin(grant):
-    to_emails = [settings.PERSONAL_CONTACT_EMAIL, 'scott.moore@consensys.net']
+    to_emails = ['support@gitcoin.co', 'joe@gitcoin.co']
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     for to_email in to_emails:
