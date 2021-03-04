@@ -67,7 +67,7 @@
             <div class="cursor-pointer px-0 col-auto">
               <input v-model="grant.grant_comments_bool" :id="`comment-${grant.grant_id}-blank`" type="checkbox" class="d-none" :name="`comment-${grant.grant_id}`"
                 :checked="grant.grant_comments_bool || !!grant.grant_comments"
-                :disabled="grant.grant_comments ? '' : disabled"
+                :disabled="!!grant.grant_comments"
               />
               <label class="border rounded-circle mb-0 cursor-pointer" :for="`comment-${grant.grant_id}-blank`">
                 <i class="far fa-comment p-2" aria-hidden="true"></i>
