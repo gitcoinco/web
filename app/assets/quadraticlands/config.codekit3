@@ -27,24 +27,6 @@
 		"oAP": "/css/app.css.map",
 		"oF": 0
 		},
-	"/css/section_introduction.css": {
-		"aP": 1,
-		"bl": 0,
-		"ft": 16,
-		"ma": 0,
-		"oA": 0,
-		"oAP": "/css/section_introduction-min.css",
-		"oF": 0,
-		"oS": 3
-		},
-	"/css/section_introduction.css.map": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 0,
-		"oAP": "/css/section_introduction.css.map",
-		"oF": 0
-		},
 	"/images/700x900.png": {
 		"ft": 32768,
 		"iS": 295213,
@@ -2027,7 +2009,7 @@
 	},
 "projectAttributes": {
 	"creationDate": 628009112.68162596,
-	"displayValue": "quadraticlands build pipeline",
+	"displayValue": "quadraticlands2 build pipeline",
 	"displayValueWasSetByUser": 1,
 	"iconImageName": "brackets_purple",
 	"iconImageWasSetByUser": 1
