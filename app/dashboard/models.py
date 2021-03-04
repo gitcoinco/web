@@ -1488,13 +1488,14 @@ class BountyFulfillment(SuperModel):
 
     @property
     def value_in_usdt_then(self):
-        return self.value_in_usdt_at_time(self.web3_created)
+        return self.value_in_usdt_at_time(self.created_on)
 
     # TODO: DRY
     def get_natural_value(self):
         token = token_by_name(self.token_name)
         decimals = token['decimals']
-        return float(self.amount) / 10**decimals
+        amount = self.payout_amount if self.payout_amount else 0
+        return float(amount) / 10**decimals
 
     @property
     def value_true(self):
