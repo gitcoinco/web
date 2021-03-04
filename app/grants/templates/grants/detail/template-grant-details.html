@@ -101,6 +101,18 @@
             </div>
           </template>
 
+          <template v-if="grant.tenants && grant.tenants.indexOf('RSK') > -1">
+            <div class="d-flex align-items-center">
+              <img class="mr-1" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://explorer.rsk.co/address/${grant.rsk_payout_address}`">
+                <span id="rsk-address" class="wallet-address" v-b-tooltip.hover.top="grant.rsk_payout_address">
+                  [[grant.rsk_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.rsk_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
         </div>
         <div class="grant-description mt-4 mb-5">
           <render-quill :delta="grant.description_rich"></render-quill>
@@ -289,7 +301,7 @@
         </template>
         <template v-else-if="!grant.active">
           <button type="button" class="btn btn-block btn-primary" disabled>
-            {% trans "Grant Has Ended" %}
+            {% trans "This Grant Is Not Active" %}
           </button>
         </template>
         <template v-else>

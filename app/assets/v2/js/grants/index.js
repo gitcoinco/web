@@ -175,6 +175,7 @@ if (document.getElementById('grants-showcase')) {
       cart_lock: false,
       collection_id: document.collection_id,
       round_num: document.round_num,
+      clr_round_pk: document.clr_round_pk,
       sub_round_slug: document.sub_round_slug,
       customer_name: document.customer_name,
       activeCollection: null,
@@ -483,6 +484,10 @@ if (document.getElementById('grants-showcase')) {
           category: this.category,
           type: this.current_type
         };
+
+        if (this.clr_round_pk) {
+          base_params['clr_round'] = this.clr_round_pk;
+        }
 
         if (this.following) {
           base_params['following'] = this.following;

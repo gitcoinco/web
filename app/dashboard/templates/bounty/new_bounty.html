@@ -133,11 +133,11 @@
                       <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="16"> Celo
                     </label>
 
-                    {% if is_staff %}
-                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '30'}">
-                        <input type="radio" name="bounty_chain" id="30_chain" value="30" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="16"> RSK
-                      </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '30'}">
+                      <input type="radio" name="bounty_chain" id="30_chain" value="30" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="16"> RSK
+                    </label>
 
+                    {% if is_staff %}
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
                         <input type="radio" name="bounty_chain" id="717171_chain" value="717171" v-model="chainId"> Other
                       </label>
@@ -706,46 +706,47 @@
           <input class="form__input" type="text" v-model="pickDate" :disabled="disabled" placeholder="" />
         </div>
       </script>
+
       {% include 'shared/analytics.html' %}
       {% include 'shared/footer.html' %}
       {% include 'shared/footer_scripts.html' with vue=True %}
       {% include 'shared/current_profile.html' %}
+      <script>
+        document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+        document.coupon_code = '{{ coupon_code|safe }}';
+        document.blocked_urls = {{blocked_urls|safe}};
+        {% if expired_coupon %}
+          _alert({ message: 'This coupon has expired.' }, 'error');
+        {% endif %}
+
+        document.subscriptions= [
+          {% for subscription in subscriptions.all %}
+              {% if not forloop.first %},{% endif %}
+              {
+                tribe: "{{ subscription.tribe }}",
+                plan_type: "{{ subscription.plan_type }}",
+                expires_on: new Date("{{ subscription.expires_on.isoformat }}"),
+              }
+          {% endfor %}
+          ]
+      </script>
+      <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/highlight.js" %}"></script>
+      <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+      <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+      <script src="{% static "v2/js/ipfs.js" %}"></script>
+      <script src="{% static "v2/js/abi.js" %}"></script>
+    
+      <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
+
+      <script>
+        $('body').bootstrapTooltip({
+          selector: '[data-toggle="tooltip"]'
+        });
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+      </script>
+      <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
     </div>
-    <script>
-      document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
-      document.coupon_code = '{{ coupon_code|safe }}';
-      document.blocked_urls = {{blocked_urls|safe}};
-      {% if expired_coupon %}
-        _alert({ message: 'This coupon has expired.' }, 'error');
-      {% endif %}
-
-      document.subscriptions= [
-        {% for subscription in subscriptions.all %}
-            {% if not forloop.first %},{% endif %}
-            {
-              tribe: "{{ subscription.tribe }}",
-              plan_type: "{{ subscription.plan_type }}",
-              expires_on: new Date("{{ subscription.expires_on.isoformat }}"),
-            }
-        {% endfor %}
-        ]
-    </script>
-    <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
-    <script src="{% static "v2/js/lib/highlight.js" %}"></script>
-    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
-    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-    <script src="{% static "v2/js/ipfs.js" %}"></script>
-    <script src="{% static "v2/js/abi.js" %}"></script>
-  
-    <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
-
-    <script>
-      $('body').bootstrapTooltip({
-        selector: '[data-toggle="tooltip"]'
-      });
-      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-
-    </script>
-    <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
   </body>
 </html>

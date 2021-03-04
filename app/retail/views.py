@@ -834,11 +834,11 @@ def products(request):
         },
         {
             'name': 'kernel',
-            'heading': _("Accelerate your web3 entrepenurial career."),
+            'heading': _("Accelerate your web3 entrepreneurial career."),
             'description': _("An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies."),
             'link': 'https://kernel.community/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('landingpage/kernel.svg'),
+            'logo': static('v2/images/top-bar/kernel-symbol-neg.svg'),
             'service_level': 'Full Service',
             'traction': '100s of top devs',
         },

@@ -156,7 +156,7 @@ along with this program. If not, see
       <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
       <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
       <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
-
+  
       <script>
         document.current_type = "{{ type|default:'all' }}";
         document.selected_category = "{{ selected_category }}";
@@ -169,9 +169,15 @@ along with this program. If not, see
         document.collection_id = {{ collection_id|default:'null' }};
         document.collections = JSON.parse(document.getElementById('collections-object').textContent);
         {% if clr_round %}
+          document.clr_round_pk = "{{clr_round.pk}}";
           document.round_num = "{{clr_round.round_num}}";
           document.sub_round_slug = "{{clr_round.sub_round_slug}}";
           document.customer_name = "{{clr_round.customer_name}}";
+        {% else %}
+          delete document.round_num;
+          delete document.customer_name;
+          delete document.clr_round_pk;
+          delete document.sub_round_slug;
         {% endif %}
         let base_style = {
             bg: '/static/v2/images/bg/{{styles.bg}}',
@@ -179,12 +185,12 @@ along with this program. If not, see
             color: "{{styles.bg_color}}",
             background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
           };
-
+  
         document.all_type_styles = {% if all_styles %} {{ all_styles|safe }} {% else %} [] {% endif %};
-
+  
         document.all_routing_policies = {% if all_routing_policies %} {{ all_routing_policies | safe}} {% else %} [] {% endif %};
         document.all_routing_policies.push(base_style);
-
+  
         {% if grant_bg %}
           document.current_style = {
             banner_image: "{{ grant_bg.banner_image }}",
@@ -194,11 +200,11 @@ along with this program. If not, see
         {% else %}
           document.current_style = base_style
         {% endif %}
-
+  
       </script>
       {% include 'shared/activity_scripts.html' %}
-
-
+  
+  
       <script src="{% static "v2/js/abi.js" %}"></script>
       <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
       <script src="{% static "v2/js/grants/components.js" %}"></script>
@@ -206,8 +212,8 @@ along with this program. If not, see
       <script src="{% static "v2/js/grants/index.js" %}"></script>
       <script src="{% static "v2/js/grants/funding.js" %}"></script>
     </div>
-  </body>
-
+  </div>
+</body>
 
 
 </html>

@@ -386,6 +386,22 @@ a.offer_container.animate:hover .prize-gift::after {
   opacity: 0.4;
 }
 
+.dark-mode {
+  .bg-white {
+    background-color: var(--main-bg)!important;
+  }
+  .navbar-light #logo {
+    color: #fff;
+  }
+  .navbar-light .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .loading {
+    filter: brightness(100);
+    opacity: 0.3;
+  }
+}
+
 .empty .prize-gift {
   color: grey;
   text-shadow: 0 2px 0px grey;
@@ -992,6 +1008,21 @@ body.green.offer_view .announce {
   justify-content: center;
   font-size: 2rem;
   color: var(--blue);
+}
+
+.nav-link.nav-line.active {
+  color: var(--default-text-color);
+  border-color: var(--active-button-border-color);
+}
+
+.nav-link.nav-line:not(.active):hover {
+  color: var(--default-text-color);
+  border-color: var(--active-button-border-color);
+}
+
+.nav-tabs .nav-line {
+  color: var(--gc-dark-grey);
+  border-color:  var(--gc-dark-grey);
 }
 
 .nav-badge {
