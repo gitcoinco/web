@@ -19,60 +19,47 @@
 
 
 <section class="background">
-	<img id="claimBackground" src="/static/quadraticlands/images/background/claim.svg">
+	<img id="background" src="/static/quadraticlands/images/background/claim.svg">
 </section>
 
 
 
-<!-- advanced setup button -->
-<div id="quest-setup">
-	<div id="advancedButton" >
-		{% include "quadraticlands/_inlinesvg/setup.svg" %}
-	</div>
-</div>
 
 
 
 <section class="quest">
 
-	<!-- content-->
-	<main>
+	<!-- view : claim -->
+	<main id="claim" class="hide">
 		<div class="quest-claim glass">
-
-			{% if user.is_authenticated %}
-
 			<div class="claim">
+				<h3>Token Distribution</h3>
 
-				<!-- headline -->
-				<h3 id="claimHeadline"></h3>
-
-				<!-- selected wallet address -->
-				<div id="claimAdress" class="claimAdress">
-					<div class="receiveadress" id="wallet-address"></div>
-				</div>
-
-				<!-- advanced mode : ( delegate feature ) -->
-				<div id="advanced" class="hide">	
-					<div class="">
-						<label>Claim & delegate your tokens in one Transaction.</label>
-						<div class="delegateToAdress">
-							<input type="text" id="delegateToAdress" name="delegateToAdress" placeholder="Delegate to ETH-Adress">
+				<!-- claim and delegate address -->
+				<div class="addresses">
+					<div class="claim_address">
+						<p>Send Tokens to</p>
+						<div>
+							<textarea id="claim_address" name="claim_address" readonly></textarea>
 						</div>
+						
+					</div>
 
+					<div class="delegate_address">
+						<p>Delegation Address</p>
+						<div>
+							<!-- put the delegate_address wie safe in DB here where the dummy address is
+								by including in example {{ delegate_address }} or so inside the text area -->
+							<textarea id="delegate_address" name="delegate_address">{{ delegate_address }}</textarea>
+						</div>
 					</div>
 				</div>
 
-
 				<!-- details why you get X tokens -->
 				<div id="claimListing" class="grid">
-					<!-- @zach : need data from db + here a loop of one row -->
-					<!-- @scco : copy that. still waiting on buckets data from k-->
 					<span class="description">Member of Gitcoin</span><span class="token">+200 GTC</span>
 					<span class="description">Helpful Person</span><span class="token">+100 GTC</span>
 					<span class="description">Have a Grand</span><span class="token">+100 GTC</span>
-					<span class="description">Have a Kudos</span><span class="token">+100 GTC</span>
-					<span class="description">Staff</span><span class="token">+500 GTC</span>
-					<!-- end loop -->
 				</div>
 
 				<!-- sum of this X tokens -->
@@ -80,28 +67,48 @@
 					<span class="description">Total</span><span class="token">+{{ total_claimable_gtc }} GTC</span>
 				</div>
 
-				<!-- just the x Tokens you get -->
-				<h1 id="claimTokenAmount" class="hide">+{{ total_claimable_gtc }}GTC</h1>
-
-				<!-- a status message  -->
-				<p id="claimStatusMessage" class="hide"></p>
-
-				<!-- place for a link to a block explorer -->
-				<p id="claimTXLink" class="hide"></p>
-
-
-
 			</div>
-
-
-			{% else %}
-
-	
-			{% endif %}
-
-
 		</div>
 	</main>
+
+
+	<!-- view : claiming -->
+	<main id="claiming" class="hide">
+		<div class="quest-claim glass">
+			<div class="claiming">
+				<h3>Claiming <span>(Pending)</span></h3>
+				<figure><img src="/static/quadraticlands/images/uni.svg"></figure>
+				<h1>+{{ total_claimable_gtc }} GTC</h1>
+				<p>Your tokens are on the way. <span id="transaction_link_pending"></span></p>
+			</div>
+		</div>	
+	</main>
+
+
+	<!-- view : claimed -->
+	<main id="claimed" class="hide">
+		<div class="quest-claim glass">
+			<div class="claimed">
+				<h3>Claimed</h3>
+				<figure><img src="/static/quadraticlands/images/uni.svg"></figure>
+				<h1>+{{ total_claimable_gtc }} GTC</h1>
+				<p>You successfully claimed your GTC Tokens. <span id="transaction_link_success"></span></p>
+			</div>
+		</div>	
+	</main>
+
+
+	<!-- view : error -->
+	<main id="error" class="hide">
+		<div class="quest-claim glass">
+			<div class="error">
+				<h3>Error</h3>
+				<p>We're sorry, there was an issue with your claim. Please check <span id="transaction_link_error"></span> for more info, try again, and/or contact support@gitcoin.co </p>
+			</div>
+		</div>	
+	</main>
+
+
 
 	<!-- timer / seperator -->
 	<div class="seperator"></div>
@@ -120,7 +127,7 @@
 		<div class="right">
 			
 			<!-- a div to appear when claim:status claim -->
-			<div id="divClaimButton" class="">
+			<div id="divClaimButton" class="hide">
 				<a id="beginClaim" class="btn" href="#">Claim</a>
 				{% csrf_token %}
 			</div>
@@ -178,25 +185,44 @@ const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 document.addEventListener("DOMContentLoaded",function(){
 
 	// update the interface to the first initial state
+	// to debug other stages goto console and type
+
 	updateInterface('init');
+	//updateInterface('pending');
+	//updateInterface('success');
+	//updateInterface('error');
+
 
 	window.addEventListener('dataWalletReady', function(e) {
-	    $('#wallet-address').html(selectedAccount)
+
+		// show selectedAccount in textarea claim_address
+		const claim_address = document.getElementById("claim_address")
+		claim_address.value = selectedAccount
+	    console.log ("claim_address:" + selectedAccount)
+
+	    // show selectedAccount in textarea delegate_address
+	    // when there was no delegate address rendered to this page
+	    const delegate_address_textarea = document.getElementById('delegate_address')
+		if (delegate_address_textarea.value == '') {
+			delegate_address_textarea.value = selectedAccount
+			console.log("no delegate_address found in textarea - replacing it with selectedAccount:" + selectedAccount)
+		}
+
 	 }, false);
 
     console.log( "CLAIM DOCUMENT READY" );
+
 
 	$(document).on('click', '#beginClaim', (event) => {
 
 		console.log('BEGIN CLAIM');
 
 	    // confirm we have a working web3 connection if not, return error 
+	    // this might never be the case, as we force anyway a wallet connection
+	    // that pops up when no web3 connection.
 	    try {
 	        const network = checkWeb3();
 	    } catch (error) {
-	        
-	    	updateInterface('nowallet');
-
 	        return console.log('Please confirm you have a wallet connected!!');
 	    }
 
@@ -209,14 +235,13 @@ document.addEventListener("DOMContentLoaded",function(){
 		// working before delegate set add 
 		// var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
 
-
-		var delegate_adress = document.getElementById("delegateToAdress").value
-		if (!delegate_adress) { delegate_adress = selectedAccount}
-		console.debug("DELEGATE TO ", delegate_adress)
+		// read delegate_address from textarea
+		var delegate_address = document.getElementById("delegate_address").value
+		console.debug("DELEGATE TO ", delegate_address)
 	
 		var getClaimData = fetchData('/quadraticlands/claim', 'POST', {
 			'address':selectedAccount, 
-			'delegate':delegate_adress
+			'delegate':delegate_address
 		}, {'X-CSRFToken': csrftoken});
 
 
@@ -384,121 +409,123 @@ function isNumeric(n) {
 }
 
 
+
 // DYNAMIC USER INTERFACE 
-// status = init, pending, success, nowallet, error
+// status = init, pending, success, error
 
 function updateInterface(status="init", transactionHash="") {
+
+	// main views
+	const view_claim = document.getElementById("claim");
+	const view_claiming = document.getElementById("claiming");
+	const view_claimed = document.getElementById("claimed");
+	const view_error = document.getElementById("error");
 
 	// define block explorer for generating a link with txhash
 	const blockExplorerLink = "https://rinkeby.etherscan.io/tx/";
 	const blockExplorerName ="Etherscan";  
 
-	// interface
-	const claimBackground = document.getElementById("claimBackground");
-	const claimHeadline = document.getElementById("claimHeadline");
-	const claimListing = document.getElementById("claimListing");
-	const claimListingTotal = document.getElementById("claimListingTotal");
-	const claimTokenAmount = document.getElementById("claimTokenAmount");
-	const claimStatusMessage = document.getElementById("claimStatusMessage");
-	const claimTXLink = document.getElementById("claimTXLink");
+	// background
+	const background = document.getElementById("background");
+
+	// dynamic bottom bar
 	const divClaimButton = document.getElementById("divClaimButton");
 	const divClaimingSpinner = document.getElementById("divClaimingSpinner");
-	const divClaimedButton = document.getElementById("divClaimedButton");
-	const claimAdress = document.getElementById("claimAdress");
-	const advanced = document.getElementById("advanced");
-	const questSetup = document.getElementById("quest-setup");
-	
+	const divClaimedButton = document.getElementById("divClaimedButton");	
 
+	// transaction links
+	const transaction_link_pending = document.getElementById("transaction_link_pending")
+	const transaction_link_success = document.getElementById("transaction_link_success")
+	const transaction_link_error = document.getElementById("transaction_link_error")
 
 	if (status=="init")
 	{
-		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
-		claimHeadline.innerHTML = "Claim your GTC Tokens to:";
-		claimTokenAmount.classList.add("hide");
-		claimStatusMessage.innerHTML = "";
-		claimStatusMessage.classList.add("hide");
-		claimTXLink.classList.add("hide");
-		claimListing.classList.remove("hide");
-		claimListingTotal.classList.remove("hide");
-		divClaimButton.classList.remove("hide");
-		divClaimingSpinner.classList.add("hide");
-		divClaimedButton.classList.add("hide");
-		claimAdress.classList.remove("hide");
-		questSetup.classList.remove("hide");
+		// switch view to
+		view_claim.classList.remove("hide")
+		view_claiming.classList.add("hide")
+		view_claimed.classList.add("hide")
+		view_error.classList.add("hide")
+
+		// dynamic bottom bar
+		divClaimButton.classList.remove("hide")
+		divClaimingSpinner.classList.add("hide")
+		divClaimedButton.classList.add("hide")
+
+		// background
+		background.src = "/static/quadraticlands/images/background/claim.svg";
 
 	}
+
 
 	if (status=="pending")
 	{
-		claimBackground.src = "/static/quadraticlands/images/background/claiming.svg";
-		claimHeadline.innerHTML = "Claiming <span>(Pending)</span>";
-		claimTokenAmount.classList.remove("hide");
-		claimStatusMessage.innerHTML = "The tokens are on the way...";
-		claimStatusMessage.classList.remove("hide");
-		claimTXLink.innerHTML = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>";
-		claimTXLink.classList.remove("hide");
-		claimListing.classList.add("hide");
-		claimListingTotal.classList.add("hide");
-		divClaimButton.classList.add("hide");
-		divClaimingSpinner.classList.remove("hide");
-		divClaimedButton.classList.add("hide");
-		claimAdress.classList.remove("hide");
-		questSetup.classList.add("hide");
-		advanced.classList.add("hide");
+		// switch view to
+		view_claim.classList.add("hide")
+		view_claiming.classList.remove("hide")
+		view_claimed.classList.add("hide")
+		view_error.classList.add("hide")
+
+		// dynamic bottom bar
+		divClaimButton.classList.add("hide")
+		divClaimingSpinner.classList.remove("hide")
+		divClaimedButton.classList.add("hide")
+
+		// background
+		background.src = "/static/quadraticlands/images/background/claiming.svg";		
+
+		// build an etherscan link for this transaction
+		link = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>"
+		transaction_link_pending.innerHTML = link
+		transaction_link_success.innerHTML = link
+		transaction_link_error.innerHTML = link
+
+		// notification
 		flashMessage("Your claim has been broadcast to the network!",5000);
 	}
 
+
 	if (status=="success")
 	{
-		claimBackground.src = "/static/quadraticlands/images/background/claimed.svg";
-		claimHeadline.innerHTML = "Claimed";
-		claimTokenAmount.classList.remove("hide");
-		claimStatusMessage.innerHTML = "You successfully claimed some GTC Tokens. Welcome to the DAO.";
-		claimListing.classList.add("hide");
-		claimListingTotal.classList.add("hide");
-		divClaimButton.classList.add("hide");
-		divClaimingSpinner.classList.add("hide");
-		divClaimedButton.classList.remove("hide");
-		claimAdress.classList.remove("hide");
-		questSetup.classList.add("hide");
-		advanced.classList.add("hide");
+		// switch view to
+		view_claim.classList.add("hide")
+		view_claiming.classList.add("hide")
+		view_claimed.classList.remove("hide")
+		view_error.classList.add("hide")
+
+		// dynamic bottom bar
+		divClaimButton.classList.add("hide")
+		divClaimingSpinner.classList.add("hide")
+		divClaimedButton.classList.remove("hide")
+
+		// background
+		background.src = "/static/quadraticlands/images/background/claimed.svg";
+
+		// notification
     	flashMessage("Transaction Confirmed",5000);
 	}
 
+
 	if (status=="error")
 	{
-		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
-		claimHeadline.innerHTML = "Oops";
-		claimTokenAmount.classList.remove("hide");
-		claimStatusMessage.innerHTML = "Please check transaction for more info, try again, and/or contact support@gitcoin.co";
-		claimTokenAmount.classList.add("hide");
-		divClaimingSpinner.classList.add("hide");
-		divClaimedButton.classList.add("hide");
-		divClaimButton.classList.remove("hide");
-		claimAdress.classList.remove("hide");
-		questSetup.classList.add("hide");
-		advanced.classList.add("hide");
+		// switch view to
+		view_claim.classList.add("hide")
+		view_claiming.classList.add("hide")
+		view_claimed.classList.add("hide")
+		view_error.classList.remove("hide")
+
+		// dynamic bottom bar
+		divClaimButton.classList.add("hide")
+		divClaimingSpinner.classList.add("hide")
+		divClaimedButton.classList.add("hide")
+
+		// background
+		background.src = "/static/quadraticlands/images/background/claim.svg";
+
+		// notification
 		flashMessage("Error",5000);
 	}
 
-	if (status=="nowallet")
-	{
-		claimBackground.src = "/static/quadraticlands/images/background/claim.svg";
-		claimHeadline.innerHTML = "No Wallet found";
-		claimTokenAmount.classList.add("hide");
-		claimStatusMessage.innerHTML = "Please select a Wallet by going back to <a href='/quadraticlands/mission/receive'>Proof of Receive</a>";
-		claimStatusMessage.classList.remove("hide");
-		claimTXLink.classList.add("hide");
-		claimListing.classList.add("hide");
-		claimListingTotal.classList.add("hide");
-		divClaimButton.classList.add("hide");
-		divClaimingSpinner.classList.add("hide");
-		divClaimedButton.classList.add("hide");
-		claimAdress.classList.add("hide");
-		questSetup.classList.add("hide");
-		advanced.classList.add("hide");
-	}
-
+	
 
 
 }
@@ -506,16 +533,6 @@ function updateInterface(status="init", transactionHash="") {
 
 
 
-document.addEventListener("DOMContentLoaded",function(){
-
-	const advancedButton = document.getElementById("advancedButton");
-	const advanced = document.getElementById("advanced");
-	advancedButton.addEventListener("click", () => {
-		advanced.classList.toggle("hide");
-	});
-
-
-});
 
 
 

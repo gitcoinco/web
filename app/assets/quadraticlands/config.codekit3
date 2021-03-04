@@ -27,6 +27,24 @@
 		"oAP": "/css/app.css.map",
 		"oF": 0
 		},
+	"/css/section_introduction.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/css/section_introduction-min.css",
+		"oF": 0,
+		"oS": 3
+		},
+	"/css/section_introduction.css.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/css/section_introduction.css.map",
+		"oF": 0
+		},
 	"/images/700x900.png": {
 		"ft": 32768,
 		"iS": 295213,
@@ -710,25 +728,12 @@
 	"/images/governance.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/governance.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
 		"prP": 0
-		},
-	"/images/informationage.png": {
-		"ft": 32768,
-		"iS": 77381,
-		"oA": 0,
-		"oAP": "/images/informationage.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"ou": "lpckwebp-none",
-		"q": 100,
-		"rq": 75
 		},
 	"/images/mission/back-card.svg": {
 		"ft": 2097152,
@@ -906,6 +911,39 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/quadratic.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/quadratic.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/quadratic2.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/quadratic2.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/senator-dummy.jpg": {
+		"ft": 16384,
+		"iS": 29717,
+		"jF": 0,
+		"oA": 1,
+		"oAP": "/images/senator-dummy.jpg",
+		"oF": 0,
+		"oIPL": 0,
+		"opt": 0,
+		"ou": "lpckwebp-none",
+		"q": 100,
+		"rq": 75
+		},
 	"/images/test.png": {
 		"ft": 32768,
 		"iS": 763532,
@@ -922,8 +960,18 @@
 	"/images/token.svg": {
 		"ft": 2097152,
 		"miP": 0,
-		"oA": 2,
+		"oA": 1,
 		"oAP": "/images/token.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/token2.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/token2.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -1239,6 +1287,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/js/web3-samples.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/web3-samples-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/js/web3alert.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1402,6 +1461,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/scss/css/section_dashboard.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/delegation-toggle.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/delegation-toggle.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
@@ -1601,6 +1673,32 @@
 		"oS": 3,
 		"sct": 0
 		},
+	"/scss/quest/quest-delegateaddress.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/quest-delegateaddress.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/quest/quest-delegationmode.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/quest-delegationmode.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
 	"/scss/quest/quest-intro.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1623,6 +1721,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/scss/css/quest-quiz.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/quest/quest-senators.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/quest-senators.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
@@ -1796,6 +1907,19 @@
 		"oS": 3,
 		"sct": 0
 		},
+	"/scss/section_introduction.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/section_introduction.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
 	"/scss/section_mission.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1889,6 +2013,15 @@
 		}
 	},
 "hooks": [
+	{
+		"enabled": 1,
+		"name": "Hook #1",
+		"predicateDataBase64Encoded": "YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGvEBYLDBMYICorLjU5Pj9CRkpPUFNZXWFjVSRudWxs0w0ODxAREl8QF05TQ29tcG91bmRQcmVkaWNhdGVUeXBlXxAPTlNTdWJwcmVkaWNhdGVzViRjbGFzcxACgAKAFdIUDxUXWk5TLm9iamVjdHOhFoADgBTUDxkaGxwdHh9fEBFOU1JpZ2h0RXhwcmVzc2lvbl8QEE5TTGVmdEV4cHJlc3Npb25fEBNOU1ByZWRpY2F0ZU9wZXJhdG9ygBOADoAEgBHVISIjJA8lJicoKVlOU09wZXJhbmReTlNTZWxlY3Rvck5hbWVfEBBOU0V4cHJlc3Npb25UeXBlW05TQXJndW1lbnRzgAaABRADgAiADVx2YWx1ZUZvcktleTrSIw8sLRABgAfSLzAxMlokY2xhc3NuYW1lWCRjbGFzc2VzXxAQTlNTZWxmRXhwcmVzc2lvbqMxMzRcTlNFeHByZXNzaW9uWE5TT2JqZWN00hQPNjihN4AJgAzTDyM6Ozw9WU5TS2V5UGF0aIALEAqACl1pbnB1dEZ1bGxQYXRo0i8wQEFfEBxOU0tleVBhdGhTcGVjaWZpZXJFeHByZXNzaW9uo0AzNNIvMENEXk5TTXV0YWJsZUFycmF5o0NFNFdOU0FycmF50i8wR0hfEBNOU0tleVBhdGhFeHByZXNzaW9upEdJMzRfEBROU0Z1bmN0aW9uRXhwcmVzc2lvbtNLIw9MTU5fEA9OU0NvbnN0YW50VmFsdWWADxAAgBBecXVhZHJhdGljbGFuZHPSLzBRUl8QGU5TQ29uc3RhbnRWYWx1ZUV4cHJlc3Npb26jUTM01A9UVVZXTSxYWk5TTW9kaWZpZXJXTlNGbGFnc15OU09wZXJhdG9yVHlwZYASEGPSLzBaW18QFU5TSW5QcmVkaWNhdGVPcGVyYXRvcqNaXDRfEBNOU1ByZWRpY2F0ZU9wZXJhdG9y0i8wXl9fEBVOU0NvbXBhcmlzb25QcmVkaWNhdGWjXmA0W05TUHJlZGljYXRl0i8wRWKiRTTSLzBkZV8QE05TQ29tcG91bmRQcmVkaWNhdGWjZGA0AAgAEQAaACQAKQAyADcASQBMAFEAUwBsAHIAeQCTAKUArACuALAAsgC3AMIAxADGAMgA0QDlAPgBDgEQARIBFAEWASEBKwE6AU0BWQFbAV0BXwFhAWMBcAF1AXcBeQF+AYkBkgGlAakBtgG/AcQBxgHIAcoB0QHbAd0B3wHhAe8B9AITAhcCHAIrAi8CNwI8AlICVwJuAnUChwKJAosCjQKcAqECvQLBAsoC1QLdAuwC7gLwAvUDDQMRAycDLANEA0gDVANZA1wDYQN3AAAAAAAAAgEAAAAAAAAAZgAAAAAAAAAAAAAAAAAAA3s=",
+		"runOrder": 0,
+		"scriptSourceString": "",
+		"scriptType": 1,
+		"uuidString": "7B4BA642-8AA0-4C3A-8054-9FDDD92AC13C"
+		}
 	],
 "manualImportLinks": {
 	},

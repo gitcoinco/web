@@ -80,6 +80,13 @@
     100%   { filter: drop-shadow(0px 0px 11px var(--pink)) ; }      
 } 
 
+@keyframes colorcycle-shadow-big { 
+    0% { filter: drop-shadow(0px 0px 22px var(--pink))  ; } 
+    33%  { filter: drop-shadow(0px 0px 22px var(--aqua)) ; } 
+    66%   { filter: drop-shadow(0px 0px 22px var(--purple)) ; }
+    100%   { filter: drop-shadow(0px 0px 22px var(--pink)) ; }      
+} 
+
 
 
 

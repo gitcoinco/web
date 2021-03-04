@@ -84,7 +84,8 @@ section.mission .card{
 				}
 
 				&.gtc-token{
-					background-color: var(--aqua_light);
+					background-color: var(--aqua);
+
 					animation: colorcycle-shadow 3s ease-in-out infinite;
 					span{
 						color: var(--space);
