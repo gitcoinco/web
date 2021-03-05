@@ -36,7 +36,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     # this will prevent tasks on grants that have been issued from an app server from being immediately 
     # rewritten by the celery server.  not elegant, but it works.  perhaps in the future,
     # a delay could be introduced in the call of the task, not the task itself.
-    time.sleep(1)
+    time.sleep(3)
 
     # setup
     print(lineno(), round(time.time(), 2))
