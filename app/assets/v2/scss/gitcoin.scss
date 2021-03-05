@@ -90,6 +90,14 @@
   color: rgba(0, 0, 0, 0.7)!important;
 }
 
+.text-grey-300 { 
+  color: #A7A2B6; 
+}
+
+.text-grey-400 {
+  color: #757087;
+}
+
 .text-current {
   color: currentColor !important;
 }
@@ -191,7 +199,6 @@
   background-repeat: no-repeat;
 }
 
-
 .bg-lightblue {
   background-color: var(--main-bg);
 }
@@ -251,6 +258,10 @@
 
 .font-smaller-7 {
   font-size: 0.55rem;
+}
+
+.font-smaller-8 {
+  font-size: 0.5rem;
 }
 
 .font-smallest {
