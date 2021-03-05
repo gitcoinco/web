@@ -2,30 +2,6 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
-const toggleStyle = function(style) {
-
-  if (!style) {
-    return;
-  }
-
-  let banner;
-
-  if (style.bg) {
-    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
-  } else {
-    banner = `url("${ style.banner_image }") center  no-repeat`;
-  }
-  $('#grant-hero-img').css('background', banner);
-  if (style.background_image) {
-    $('#grant-background-image-mount-point').css('background-image', style.background_image);
-  }
-
-  if (style.inline_css) {
-    $('style').last().text(style.inline_css);
-  } else {
-    $('style').last().text('');
-  }
-};
 
 $(document).ready(() => {
   $('#sort_option').select2({
@@ -47,16 +23,6 @@ $(document).ready(() => {
     e.preventDefault();
   });
 
-
-  $(document).on('click', '.grant-item', function() {
-    $(this).find('img').each(function() {
-      var src_url = $(this).data('src');
-
-      $(this).attr('src', src_url);
-    });
-  });
-
-
   $('.select2-selection__rendered').removeAttr('title');
 
   waitforWeb3(() => {
@@ -75,7 +41,7 @@ $(document).ready(() => {
 
   });
 
-  toggleStyle(document.current_style);
+  // toggleStyle(document.current_style);
 });
 
 Vue.component('grant-sidebar', {
@@ -181,9 +147,34 @@ if (document.getElementById('grants-showcase')) {
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
-      numGrants
+      numGrants,
+      regex_style: {}
     },
     methods: {
+      toggleStyle: function(style) {
+
+        if (!style) {
+          return;
+        }
+
+        // let banner;
+
+        // if (style.bg) {
+        //   banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+        // } else {
+        //   banner = `url("${ style.banner_image }") center  no-repeat`;
+        // }
+        // $('#grant-hero-img').css('background', banner);
+        // if (style.background_image) {
+        //   $('#grant-background-image-mount-point').css('background-image', style.background_image);
+        // }
+
+        if (style.inline_css) {
+          $('.page-styles').last().text(style.inline_css);
+        } else {
+          $('.page-styles').last().text('');
+        }
+      },
       toggleActiveCLRs() {
         this.show_active_clrs = !this.show_active_clrs;
         window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
@@ -333,12 +324,11 @@ if (document.getElementById('grants-showcase')) {
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
 
-        const regex_style = document.all_routing_policies &&
+        this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
             return new RegExp(policy.url_pattern).test(window.location.href);
           });
-
-        toggleStyle(regex_style || current_style);
+        this.toggleStyle(this.regex_style || current_style);
 
       },
       clearSingleCollection: function() {
@@ -524,7 +514,15 @@ if (document.getElementById('grants-showcase')) {
     computed: {
       isGrantExplorer() {
         return (window.location.pathname == '/grants/explorer/');
+      },
+      isUserLogged() {
+        let vm = this;
+
+        if (document.contxt.github_handle) {
+          return true;
+        }
       }
+
     },
     beforeMount() {
       window.addEventListener('scroll', () => {

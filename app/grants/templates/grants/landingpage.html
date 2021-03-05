@@ -61,12 +61,10 @@ along with this program. If not, see
         <div id="grants-showcase">
           {% include 'grants/shared/landing_qf_active.html' %}
           <div class="" class="grants-showcase--child">
-            <template v-if="isLandingPage">
+            <div v-if="isLandingPage" class="my-5">
               {% include 'grants/shared/active_clr_round.html'%}
-            </template>
+            </div>
             <!-- Collections -->
-
-
             <div class="container">
               <div class="row justify-content-between align-items-end">
                 <div class="col-auto">

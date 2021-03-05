@@ -25,7 +25,7 @@
 
 
   <!-- This div is where the hero image goes-->
-  <section class="mb-5">
+  <section class="mb-5 banner-sponsors">
     <div class="row">
       <div class="col">
         <div class="py-3" id="grant-hero-im" :style="`background: ${mainBanner.background_image} center center no-repeat; background-size: contain;`">
@@ -34,27 +34,25 @@
             <h1>$500k Funding Pool, Now Live</h1>
             <span class="text-muted">Sponsored by</span>
           </div>
-          <div class="d-flex" style="gap: 20px;">
+          <div class="banner-sponsors-list d-flex">
             {% for sponsor in sponsors %}
-              <div class="d-flex flex-column align-items-center">
-                {% if forloop.first %}
-                  <img class="rounded-circle img-thumbnail" width="170" src="/dynamic/avatar/{{sponsor.profile}}">
-                {% else %}
-                  <img class="rounded-circle img-thumbnail" width="90" src="/dynamic/avatar/{{sponsor.profile}}">
-                {% endif %}
-                <a href="{% url 'profile' sponsor.profile %}" target="_blank" class="text-break text-black font-weight-semibold">@{{sponsor.profile}}</a>
-              </div>
+              <a href="{% url 'profile' sponsor.profile %}" target="_blank" class="d-flex flex-column align-items-center">
+                <img class="rounded-circle img-thumbnail" width="90" height="90" src="/dynamic/avatar/{{sponsor.profile}}">
+                <span class="text-break text-black font-weight-semibold d-none d-md-block">@{{sponsor.profile}}</span>
+              </a>
             {% endfor %}
           </div>
         </div>
       </div>
     </div>
     <!-- Summary of matching pools this round -->
-    <div class="row justify-content-between align-items-center mt-3">
-      <a :href="`explorer/${grantType.keyword}`" v-for="grantType in grant_types" class="font-bigger-1 text-secondary">
-        [[grantType.funding_ui]]
-        [[grantType.label]]
-      </a>
+    <div class="row mt-3">
+      <div class="col" v-for="grantType in grant_types">
+        <a :href="`explorer/${grantType.keyword}`" class="font-bigger-1 text-success">
+          [[grantType.funding_ui]]
+          [[grantType.label]]
+        </a>
+      </div>
     </div>
   </section>
 
