@@ -108,26 +108,50 @@
 
 
 <section class="introduction" style="margin-bottom: 3em;">
-	<h1>Upcoming Missions</h1>	
+	<h1>Missions</h1>	
 </section>
 
 
 <!-- upcoming missions-->
 <section class="mission">
 
-	<!-- SYBIL -->
+	<!-- Discourse Forum -->
+	{% with name="Discourse Forum" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="available" playable="true" url="/quadraticlands/mission/use"  %}
+	{% endwith %}
 
-	{% with name="SybilHunt Dummy Mission" %}
-		{% include 'quadraticlands/mission/card.html' with message="soon" svg="sybil-start.svg" url="/quadraticlands/mission/use" locked="true" %}
+
+	<!-- Snapshot.page -->
+	{% with name="Snapshot.page" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="available" playable="true" url="http://snapshot.page"  %}
+	{% endwith %}
+
+
+	<!-- SybilHunt -->
+	{% with name="SybilHunt" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="soon" locked="true" %}
+	{% endwith %}
+
+
+	<!-- Anti-Sybil Staking -->
+	{% with name="Anti-Sybil Staking" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="soon" locked="true" %}
+	{% endwith %}
+
+
+	<!-- Grants Governance Game -->
+	{% with name="Grants Governance Game" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="soon" locked="true" %}
+	{% endwith %}
+
+
+	<!-- Propose a Mission -->
+	{% with name="Grants Governance Game" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="available" playable="true" url="#" %}
 	{% endwith %}
 
 
 
-	<!-- DUMMY -->
-
-	{% with name="SybilHunt Dummy Mission" %}
-		{% include 'quadraticlands/mission/card.html' with message="soon" svg="back-card.svg" url="/quadraticlands/mission/use" locked="true" %}
-	{% endwith %}
 
 
 </section>

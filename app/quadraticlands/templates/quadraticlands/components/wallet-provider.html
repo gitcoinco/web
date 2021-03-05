@@ -39,7 +39,7 @@
 		<span id="wallet-accounts"></span>
     
     <!-- GTC token balance-->
-    <div><span id="current_gtc"></span>GTC</div>
+    <div><span id="current_gtc">0</span>&nbsp;GTC</div>
 
 		   
 	</div>
@@ -55,6 +55,11 @@
 
 </div>
 
+
+
+
+
+
   <!-- cleaned out rest of gitcoins working wallet code
     that seems to be mandatory to work ...
     most of it could be transported to my menu ...
@@ -62,7 +67,9 @@
   -->
   
 
-  <div style="display:none;">
+ 
+
+  <div style="display: none;">
 
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -73,7 +80,6 @@
 
   </div>
 
-
   <div id="templates" style="display: none;">
     <template id="template-balance">
       <div class="wallet-option" data-toggle="tooltip" title="Click to select this wallet">
@@ -82,6 +88,10 @@
       </div>
     </template>
   </div>
+
+
+
+
 
 {% endblock %}
 {% block 'scripts' %}

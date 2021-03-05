@@ -82,7 +82,7 @@
 
       <!-- CLAIMABLE AMOUNT -->
       <!-- IF :  and not proof_of_receive and total_claimable_gtc != 0 -->
-      {% if user.is_authenticated  %}
+      {% if user.is_authenticated and total_claimable_gtc != 0 %}
       <span class="claimable"><a href="/quadraticlands/mission">+ {{ total_claimable_gtc }}</a></span>
       {% endif %}
 
@@ -91,7 +91,10 @@
       </div>
 
       <!-- this will add an image inside this div, if a provider  -->
-      <div id="navbarDropdownWallet"></div>
+      <div id="navbarDropdownWallet">
+        <!-- mandatory to not fuck the wallet.js code -->
+        <svg class="provider-icon" style="display:none;">
+      </div>
 
     </div>
   
