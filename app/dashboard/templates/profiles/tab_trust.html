@@ -235,7 +235,7 @@
           {% else %}
             <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
               {% csrf_token %}
-              <input type="submit" value="Verify" class="button button--primary text-nowrap" />
+              <input type="submit" value="Verify" class="btn btn-primary text-nowrap" />
             </form>
           {% endif %}
         </div>
