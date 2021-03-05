@@ -29,6 +29,12 @@ along with this program. If not, see
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
   {% endcompress %}
   <style>
+    
+    #sidebar-quick-view header.b-sidebar-header > strong {
+      font-weight: normal;
+      font-family: 'Miriam Libre';
+    }
+
     .select2-selection .select2-selection--single {
       background: none;
       outline: none;
@@ -133,6 +139,7 @@ along with this program. If not, see
                   ref="sidebar-quick-view"
                   title="Grant Details"
                   backdrop-variant="dark"
+                  bg-variant="white"
                   backdrop
                   shadow
                   width="max(80vw, 1000px)"

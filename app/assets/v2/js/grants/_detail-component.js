@@ -40,71 +40,6 @@ Vue.mixin({
       }
 
     },
-    paginate: function(array, page_size, page_number) {
-      return array.slice(page_number * page_size, page_number * page_size + page_size);
-    },
-    fetchRelated: function() {
-      const vm = this;
-      const size = 3;
-      let ids;
-
-      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length) {
-        return;
-      }
-
-      ids = vm.grant.metadata.related.map(arr => {
-        return arr[0];
-      });
-
-      vm.relatedGrantsIds = vm.paginate(ids, size, vm.relatedGrantsPage);
-
-      vm.relatedGrantsPage += 1;
-
-      vm.relatedGrantsHasNext = vm.relatedGrantsPage + 1 < ids.length / size;
-
-      if (!vm.relatedGrantsIds.length) {
-        return;
-      }
-
-      vm.loadingRelated = true;
-
-      const url = `/grants/v1/api/grants?pks=${vm.relatedGrantsIds}`;
-
-      fetch(url).then(function(res) {
-        return res.json();
-      }).then(function(json) {
-        json.grants.forEach(function(item) {
-          vm.relatedGrants.push(item);
-        });
-        vm.loadingRelated = false;
-      }).catch(console.error);
-    },
-    fetchTransactions: function() {
-      const vm = this;
-
-      page = vm.transactions.next_page_number;
-      if (!page) {
-        return;
-      }
-      vm.loadingTx = true;
-
-      const url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
-
-      fetch(url).then(function(res) {
-        return res.json();
-      }).then(function(json) {
-        json.contributions.forEach(function(item) {
-          vm.transactions.grantTransactions.push(item);
-        });
-
-        vm.transactions.num_pages = json.num_pages;
-        vm.transactions.has_next = json.has_next;
-        vm.transactions.next_page_number = json.next_page_number;
-        vm.transactions.count = json.count;
-        vm.loadingTx = false;
-
-      }).catch(console.error);
-    },
     editGrantModal: function() {
       const vm = this;
 
@@ -552,16 +487,6 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
-      loadingTx: false,
-      loadingRelated: false,
-      relatedGrants: [],
-      relatedGrantsPage: 0,
-      relatedGrantsHasNext: false,
-      relatedGrantsIds: [],
-      transactions: {
-        grantTransactions: [],
-        next_page_number: 1
-      },
       rows: 0,
       perPage: 4,
       currentPage: 1,
@@ -622,8 +547,6 @@ Vue.component('grant-details', {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     }
     vm.grantInCart();
-    vm.fetchTransactions();
-    vm.fetchRelated();
   },
   watch: {
     grant: {
