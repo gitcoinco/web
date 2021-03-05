@@ -40,13 +40,13 @@
 
               <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
                 <span v-b-tooltip.hover.bottom="grant.admin_address">
-                  <i class="text-grey-300 fab fa-fw fa-ethereum"></i> 
+                  <i class="text-grey-300 fab fa-fw fa-ethereum"></i>
                   <a :href="`https://etherscan.io/address/${grant.admin_address}`">[[grant.admin_address | truncateHash]]</a>
                   <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.admin_address"><i class="far fa-copy"></i></copy-clipboard></span>
                   <!-- <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a> -->
                   <!-- <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a> -->
               </template>
-               
+
               <template v-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
                 <div class="d-flex align-items-center">
                   <img class="mr-1 text-grey-300" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
@@ -199,7 +199,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- About -->
         <div class="grant-description mt-4 mb-1">
           <h3>About</h3>
@@ -223,8 +223,8 @@
                     <i class="fab fa-twitter mr-2"></i>
                     VERIFY GRANT
                   </b-button>
-                  <br/> 
-                  <span class="small px-2">OR</span> 
+                  <br/>
+                  <span class="small px-2">OR</span>
                   <a class="d-inline-block font-caption pt-2" target="_blank" href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md&title=Verify%20Grant%20Issue">SUBMIT SUPPORT REQUEST</a>.
                 </div>
               </template>
@@ -256,7 +256,7 @@
               <span class="text-secondary"><b>$[[prediction[2] || 0 | round]] match</b></span>
             </div>
           </div>
-        </div>        
+        </div>
 
         <template v-if="grant.link_to_new_grant">
           <a :href="grant.link_to_new_grant" class="btn btn-block btn-primary">Visit the active grant to fund</a>
@@ -289,7 +289,7 @@
             Read all the <a href="https://gitcoin.co/wiki/grants/">rules here</a>.  If you see someone breaking the rules, please use 'Flag Grant' to report them.
           </b-popover>
           <button @click="flag" class="btn text-muted ml-3 px-1">
-            <i class="fas fa-flag mr-1"></i> Flag 
+            <i class="fas fa-flag mr-1"></i> Flag
           </button>
         </div>
         {% if should_show_claim_match_button %}
@@ -351,6 +351,7 @@
       id="sidebar-grant-edit"
       title="Edit Grant"
       backdrop-variant="dark"
+      bg-variant="white"
       backdrop
       shadow
       width="70%"
@@ -506,7 +507,7 @@
     object-fit: contain;
     background: black;
   }
-  
+
   .ql-editor {
     padding: 12px 0px;
   }
