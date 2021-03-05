@@ -1,6 +1,6 @@
 {% load humanize static i18n %}
 
-    <div class="container">
+    <div class="container" v-cloak>
       <div :class="`infinite-container mt-4 row ${ current_type !== 'collections' ? 'vertica-scroll' : ''}`" @scroll.passive="onScroll($event)" v-if="(current_type == 'all' || current_type == 'collections') && collections && !activeCollection">
         <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in collections">
           {% include 'grants/components/collection.html' %}
