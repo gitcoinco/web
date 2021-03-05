@@ -429,6 +429,16 @@ class GrantTypeAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     readonly_fields = ['pk']
 
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        from perftools.management.commands import create_page_cache
+
+        if "_refresh_grants_type_cache" in request.POST:
+            create_page_cache.create_grant_type_cache()
+            self.message_user(request, f"Grants types cache recreated.")
+            return redirect(obj.admin_url)
+        return super().response_change(request, obj)
+
 
 class GrantCategoryAdmin(admin.ModelAdmin):
     list_display = ['pk', 'category']

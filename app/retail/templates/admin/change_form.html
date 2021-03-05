@@ -42,6 +42,8 @@
       <input type="submit" value="Approve Grant" name="_approve_grant" value="1">
     {% elif 'grantclr/' in request.build_absolute_uri %}
       <input type="submit" value="Recalculate CLR" name="_recalculate_clr" value="1">
+    {% elif 'granttype/' in request.build_absolute_uri %}
+      <input type="submit" value="Refresh grants type cache" name="_refresh_grants_type_cache" value="1">
     {% elif 'kudos/token/' in request.build_absolute_uri %}
       <input type="submit" value="Make into Bulk Transfer Coupon" name="btc_coupon" value="1">
     {% elif 'grants/contribution' in request.build_absolute_uri %}
