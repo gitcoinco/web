@@ -1,8 +1,8 @@
 
-let isStaff = document.contxt.is_staff || false;
+const isStaff = document.contxt.is_staff || false;
 
-let userCode = typeof user_code !== 'undefined' ? user_code : undefined;
-let verificationTweet = typeof verification_tweet !== 'undefined' ? verification_tweet : undefined;
+const userCode = typeof user_code !== 'undefined' ? user_code : undefined;
+const verificationTweet = typeof verification_tweet !== 'undefined' ? verification_tweet : undefined;
 
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
@@ -12,14 +12,14 @@ Quill.register('modules/ImageExtend', ImageExtend);
 Vue.mixin({
   methods: {
     grantInCart: function() {
-      let vm = this;
-      let inCart = CartData.cartContainsGrantWithId(vm.grant.id);
+      const vm = this;
+      const inCart = CartData.cartContainsGrantWithId(vm.grant.id);
 
       vm.$set(vm.grant, 'isInCart', inCart);
       return vm.grant.isInCart;
     },
     addToCart: async function() {
-      let vm = this;
+      const vm = this;
       const grantCartPayloadURL = `/grants/v1/api/${vm.grant.id}/cart_payload`;
       const response = await fetchData(grantCartPayloadURL, 'GET');
 
@@ -31,7 +31,7 @@ Vue.mixin({
 
     },
     removeFromCart: function() {
-      let vm = this;
+      const vm = this;
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
@@ -40,8 +40,73 @@ Vue.mixin({
       }
 
     },
+    paginate: function(array, page_size, page_number) {
+      return array.slice(page_number * page_size, page_number * page_size + page_size);
+    },
+    fetchRelated: function() {
+      const vm = this;
+      const size = 3;
+      let ids;
+
+      if (!Object.keys(vm.grant.metadata).length || !vm.grant.metadata?.related?.length) {
+        return;
+      }
+
+      ids = vm.grant.metadata.related.map(arr => {
+        return arr[0];
+      });
+
+      vm.relatedGrantsIds = vm.paginate(ids, size, vm.relatedGrantsPage);
+
+      vm.relatedGrantsPage += 1;
+
+      vm.relatedGrantsHasNext = vm.relatedGrantsPage + 1 < ids.length / size;
+
+      if (!vm.relatedGrantsIds.length) {
+        return;
+      }
+
+      vm.loadingRelated = true;
+
+      const url = `/grants/v1/api/grants?pks=${vm.relatedGrantsIds}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.grants.forEach(function(item) {
+          vm.relatedGrants.push(item);
+        });
+        vm.loadingRelated = false;
+      }).catch(console.error);
+    },
+    fetchTransactions: function() {
+      const vm = this;
+
+      page = vm.transactions.next_page_number;
+      if (!page) {
+        return;
+      }
+      vm.loadingTx = true;
+
+      const url = `/grants/v1/api/grant/${vm.grant.id}/contributions?page=${page}`;
+
+      fetch(url).then(function(res) {
+        return res.json();
+      }).then(function(json) {
+        json.contributions.forEach(function(item) {
+          vm.transactions.grantTransactions.push(item);
+        });
+
+        vm.transactions.num_pages = json.num_pages;
+        vm.transactions.has_next = json.has_next;
+        vm.transactions.next_page_number = json.next_page_number;
+        vm.transactions.count = json.count;
+        vm.loadingTx = false;
+
+      }).catch(console.error);
+    },
     editGrantModal: function() {
-      let vm = this;
+      const vm = this;
 
       vm.logoPreview = vm.grant.logo_url;
 
@@ -49,7 +114,7 @@ Vue.mixin({
     },
     saveGrant: function(event) {
       event.preventDefault();
-      let vm = this;
+      const vm = this;
 
       if (!vm.checkForm(event))
         return;
@@ -59,7 +124,7 @@ Vue.mixin({
       };
 
       const apiUrlGrant = `/grants/v1/api/grant/edit/${vm.grant.id}/`;
-      let data = {
+      const data = {
         'title': vm.grant.title,
         'reference_url': vm.grant.reference_url,
         'description': vm.$refs.myQuillEditor.quill.getText(),
@@ -129,9 +194,9 @@ Vue.mixin({
     cancelGrant: function(event) {
       event.preventDefault();
 
-      let vm = this;
+      const vm = this;
 
-      let cancel = window.prompt('Please write "CONFIRM" to cancel the grant.');
+      const cancel = window.prompt('Please write "CONFIRM" to cancel the grant.');
 
       if (cancel !== 'CONFIRM') {
         return;
@@ -153,10 +218,10 @@ Vue.mixin({
 
     },
     toggleFollowingGrant: async function(grantId) {
-      let vm = this;
+      const vm = this;
 
       const favoriteUrl = `/grants/${grantId}/favorite`;
-      let response = await fetchData(favoriteUrl, 'POST');
+      const response = await fetchData(favoriteUrl, 'POST');
 
       if (response.action === 'follow') {
         vm.grant.favorite = true;
@@ -167,7 +232,7 @@ Vue.mixin({
       return true;
     },
     flag: function() {
-      let vm = this;
+      const vm = this;
 
 
       const comment = prompt('What is your reason for flagging this Grant?');
@@ -199,7 +264,7 @@ Vue.mixin({
       });
     },
     userSearch(search, loading) {
-      let vm = this;
+      const vm = this;
 
       if (search.length < 3) {
         return;
@@ -209,9 +274,9 @@ Vue.mixin({
 
     },
     getUser: async function(loading, search, selected) {
-      let vm = this;
-      let myHeaders = new Headers();
-      let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}&suppress_non_gitcoiners=true`;
+      const vm = this;
+      const myHeaders = new Headers();
+      const url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}&suppress_non_gitcoiners=true`;
 
       myHeaders.append('X-Requested-With', 'XMLHttpRequest');
       return new Promise(resolve => {
@@ -235,12 +300,12 @@ Vue.mixin({
       });
     },
     changeColor() {
-      let vm = this;
+      const vm = this;
 
       vm.grant.image_css = `background-color: ${vm.logoBackground};`;
     },
     onFileChange(e) {
-      let vm = this;
+      const vm = this;
 
       if (!e.target) {
         return;
@@ -252,7 +317,7 @@ Vue.mixin({
         return;
       }
       vm.imgTransition = true;
-      let imgCompress = new Compressor(file, {
+      const imgCompress = new Compressor(file, {
         quality: 0.6,
         maxWidth: 2000,
         success(result) {
@@ -267,7 +332,7 @@ Vue.mixin({
       });
     },
     async twitterVerification() {
-      let vm = this;
+      const vm = this;
 
       if (!vm.grant.twitter_handle_1 || vm.grant.twitter_handle_1 == '') {
         _alert('Please add a twitter account to your grant!', 'error', 5000);
@@ -320,13 +385,13 @@ Vue.mixin({
       }
     },
     tweetVerification() {
-      let vm = this;
+      const vm = this;
       const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(vm.verification_tweet)}%20${encodeURIComponent(vm.user_code)}`;
 
       window.open(tweetContent, '_blank');
     },
     checkForm: function(e) {
-      let vm = this;
+      const vm = this;
 
       vm.submitted = true;
       vm.errors = {};
@@ -405,7 +470,7 @@ Vue.mixin({
           if (!user?.fields) {
             return user;
           }
-          let newTeam = {};
+          const newTeam = {};
 
           newTeam['id'] = user.pk;
           newTeam['avatar_url'] = `/dynamic/avatar/${user.fields.handle}`;
@@ -425,7 +490,7 @@ Vue.mixin({
       return this.$refs.myQuillEditor.quill;
     },
     filteredMsg: function() {
-      let msgs = [
+      const msgs = [
         '💪 keep up the great work',
         '👍 i appreciate you',
         '🙌 Great Job',
@@ -453,7 +518,7 @@ Vue.mixin({
       );
     },
     isUserLogged() {
-      let vm = this;
+      const vm = this;
 
       if (document.contxt.github_handle) {
         return true;
@@ -487,7 +552,16 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
+      loadingTx: false,
+      loadingRelated: false,
       relatedGrants: [],
+      relatedGrantsPage: 0,
+      relatedGrantsHasNext: false,
+      relatedGrantsIds: [],
+      transactions: {
+        grantTransactions: [],
+        next_page_number: 1
+      },
       rows: 0,
       perPage: 4,
       currentPage: 1,
@@ -540,7 +614,7 @@ Vue.component('grant-details', {
     };
   },
   mounted: function() {
-    let vm = this;
+    const vm = this;
 
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
@@ -548,12 +622,14 @@ Vue.component('grant-details', {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     }
     vm.grantInCart();
+    vm.fetchTransactions();
+    vm.fetchRelated();
   },
   watch: {
     grant: {
       deep: true,
       handler: function(newVal, oldVal) {
-        let vm = this;
+        const vm = this;
 
         if (this.dirty && this.submitted) {
           this.checkForm();
