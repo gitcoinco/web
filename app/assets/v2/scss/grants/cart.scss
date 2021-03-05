@@ -144,3 +144,37 @@
   background-color: white;
   padding:0 10px;
 }
+
+.logo-container {
+  max-width: 65px;
+}
+
+.inputs-height {
+  height: 38px;
+}
+
+.vs__dropdown-menu {
+  min-width: auto;
+}
+
+#gc-grants-cart {
+
+  .vs__dropdown-toggle {
+    padding: 6px 0 7px 0px;
+    min-width: 110px;
+    max-height: 38px;
+  }
+
+  .v-select__selections input { 
+    display: none;
+  }
+
+  label.rounded-circle:hover {
+    border-color: #6F3FF5 !important;
+  }
+
+  input:checked + label.rounded-circle {
+    color: #6F3FF5 !important;
+    border-color: #6F3FF5 !important;
+  }
+}
