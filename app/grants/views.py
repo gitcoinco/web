@@ -685,14 +685,14 @@ def get_grants(request):
 
 
 def build_grants_by_type(
-    request, 
+    request,
     grant_type='',
     sort='weighted_shuffle',
     network='mainnet',
     keyword='',
     state='active',
-    category='', 
-    following=False, 
+    category='',
+    following=False,
     idle_grants=False,
     only_contributions=False,
     omit_my_grants=False,
@@ -902,7 +902,8 @@ def grants_landing(request):
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
         'active_rounds': active_rounds,
-        'sponsors': sponsors
+        'sponsors': sponsors,
+        'featured': True,
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -1975,7 +1976,7 @@ def grant_new(request):
 
         if grant.active:
             record_grant_activity_helper('new_grant', grant, profile)
-        
+
         # send email to creator and admin
         process_grant_creation_email.delay(grant.pk, profile.pk)
         process_grant_creation_admin_email.delay(grant.pk)

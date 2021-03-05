@@ -49,7 +49,7 @@
                       <p class="text-muted mb-0">[[ collection.count ]] Grant[[collection.count > 1 ? 's' : '']]</p>
                     </div>
                     <a class="font-smaller-1 font-weight-bold mt-1"
-                      :href="`/grants/collections?collection_id=${collection.id}`" v-on:click.stop="app/grants/views.py" target="_blank" v-if="collection">
+                      :href="`grants/explorer/collections?collection_id=${collection.id}`" v-on:click.stop="app/grants/views.py" target="_blank" v-if="collection">
                       VIEW <i class="fas fa-arrow-right"></i>
                     </a>
                   </div>

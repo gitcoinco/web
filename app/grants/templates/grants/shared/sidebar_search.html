@@ -45,7 +45,7 @@
       <!-- CLR rounds-->
       {% if active_rounds %}
         <div class="subheading font-weight-bold">
-          {% trans "CLR Rounds" as filts %}{{ filts|upper }}
+          {% trans "QF Rounds" as filts %}{{ filts|upper }}
         </div>
 
         <ul class="font-weight-semibold nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
@@ -138,7 +138,7 @@
 
                 <li>
                   <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
-                    Following
+                    Starred
                     <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
                   </span>
                 </li>

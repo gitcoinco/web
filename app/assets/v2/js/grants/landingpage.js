@@ -2,79 +2,17 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
-const toggleStyle = function(style) {
-
-  if (!style) {
-    return;
-  }
-
-  let banner;
-
-  if (style.bg) {
-    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
-  } else {
-    banner = `url("${ style.banner_image }") center  no-repeat`;
-  }
-  $('#grant-hero-img').css('background', banner);
-  if (style.background_image) {
-    $('#grant-background-image-mount-point').css('background-image', style.background_image);
-  }
-
-  if (style.inline_css) {
-    $('style').last().text(style.inline_css);
-  } else {
-    $('style').last().text('');
-  }
-};
-
 $(document).ready(() => {
   $('#sort_option').select2({
     minimumResultsForSearch: Infinity
   });
 
-  if ($('.grants_type_nav').length) {
-    localStorage.setItem('last_grants_index', document.location.href);
-    localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
-  }
   if (document.location.href.indexOf('/cart') == -1) {
     localStorage.setItem('last_all_grants_index', document.location.href);
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
   }
 
-  $('#wall_of_love .show_more_wall_of_love').click(function(e) {
-    $('#wall_of_love .hidden').removeClass('hidden');
-    $(this).remove();
-    e.preventDefault();
-  });
-
-
-  $(document).on('click', '.grant-item', function() {
-    $(this).find('img').each(function() {
-      var src_url = $(this).data('src');
-
-      $(this).attr('src', src_url);
-    });
-  });
-
-
   $('.select2-selection__rendered').removeAttr('title');
-
-  waitforWeb3(() => {
-    let _network = $('#grant-network').html();
-    let links = $('.etherscan_link');
-
-    etherscanUrlConvert(links, _network);
-  });
-
-  window.addEventListener('scroll', function() {
-    if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
-      $('#skip').addClass('hidden');
-    } else {
-      $('#skip').removeClass('hidden');
-    }
-
-  });
-  toggleStyle(document.current_style);
 
 });
 
@@ -333,13 +271,6 @@ if (document.getElementById('grants-showcase')) {
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
-
-        const regex_style = document.all_routing_policies &&
-          document.all_routing_policies.find(policy => {
-            return new RegExp(policy.url_pattern).test(window.location.href);
-          });
-
-        toggleStyle(regex_style || current_style);
 
       },
       clearSingleCollection: function() {
