@@ -21,6 +21,7 @@
       <div class="input-group">
 
         <input type="text" list="kudos-suggestions"  class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
+        <input type="hidden" name=network value={{network}}>
         <datalist id="kudos-suggestions">
           <option>rare</option>
           <option>common</option>
@@ -38,16 +39,16 @@
         </datalist>
         <div class="input-group-append">
           <a href="{% url 'kudos_marketplace' %}" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
-          <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+          <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
         </div>
       </div>
-      <div class="mt-3 white">
-        <span class="white">Search suggestions:</span>
-        <a href="{% url 'kudos_marketplace' %}?q=rare">rare</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=common">common</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=ninja">ninja</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=soft skills">soft skills</a> -
-        <a href="{% url 'kudos_marketplace' %}?q=programming">programming</a>
+      <div class="mt-3">
+        <span>Search suggestions:</span>
+        <a href="{% url 'kudos_marketplace' %}?q=rare&network={{network}}">rare</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=common&network={{network}}">common</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=ninja&network={{network}}">ninja</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=soft skills&network={{network}}">soft skills</a> -
+        <a href="{% url 'kudos_marketplace' %}?q=programming&network={{network}}">programming</a>
       </div>
     </div>
   </div>

@@ -28,6 +28,11 @@ Vue.mixin({
         return;
       }
 
+      if (url.indexOf('/pull/') > 0) {
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url and not a PR');
+        return;
+      }
+
       let ghIssueUrl = new URL(url);
 
       vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
@@ -67,12 +72,20 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
-        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
       });
 
+    },
+    getBinanceSelectedAccount: async function() {
+      let vm = this;
+
+      try {
+        vm.form.funderAddress = await binance_utils.getSelectedAccount();
+      } catch (error) {
+        vm.funderAddressFallback = true;
+      }
     },
     getAmount: function(token) {
       let vm = this;
@@ -90,37 +103,6 @@ Vue.mixin({
       }).catch((err) => {
         console.log(err);
       });
-    },
-    injectProvider: function(token) {
-      let vm = this;
-      const chainId = vm.chainId;
-
-      if (!token || !chainId) {
-        return;
-      }
-
-      switch (chainId) {
-        case '58': {
-          let polkadot_endpoint;
-
-          if (token == 'KSM') {
-            polkadot_endpoint = KUSAMA_ENDPOINT;
-          } else if (token == 'DOT') {
-            polkadot_endpoint = POLKADOT_ENDPOINT;
-          }
-
-          polkadot_utils.connect(polkadot_endpoint).then(res =>{
-            console.log(res);
-            polkadot_extension_dapp.web3Enable('gitcoin');
-          }).catch(err => {
-            console.log(err);
-          });
-          break;
-        }
-
-        default:
-          break;
-      }
     },
     calcValues: function(direction) {
       let vm = this;
@@ -207,9 +189,18 @@ Vue.mixin({
           // ethereum
           type = 'web3_modal';
           break;
+        case '30':
+          // rsk
+          type = 'rsk_ext';
+          break;
+        case '59':
         case '58':
-          // polkadot
+          // 58 - polkadot, 59 - kusama
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
           break;
         case '1000':
           // harmony
@@ -249,7 +240,19 @@ Vue.mixin({
         await vm.getUser(null, params.get('reserved'), true);
       }
 
+      let url;
 
+      if (params.has('url')) {
+        url = params.get('url');
+        vm.form.issueUrl = url;
+        vm.getIssueDetails(url);
+      }
+
+      if (params.has('source')) {
+        url = params.get('source');
+        vm.form.issueUrl = url;
+        vm.getIssueDetails(url);
+      }
     },
     showQuickStart: function(force) {
       let quickstartDontshow = localStorage['quickstart_dontshow'] ? JSON.parse(localStorage['quickstart_dontshow']) : false;
@@ -259,14 +262,17 @@ Vue.mixin({
           .then(function(response) {
             return response.text();
           }).then(function(html) {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const guide = doc.querySelector('.btn-closeguide');
 
             doc.querySelector('.show_video').href = 'https://www.youtube.com/watch?v=m1X0bDpVcf4';
             doc.querySelector('.show_video').target = '_blank';
-            doc.querySelector('.btn-closeguide').dataset.dismiss = 'modal';
 
-            let docArticle = doc.querySelector('.content').innerHTML;
+            if (guide && guide.dataset)
+              guide.dataset.dismiss = 'modal';
+
+            const docArticle = doc.querySelector('.content').innerHTML;
             const content = $.parseHTML(
               `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-xl" style="max-width:95%">
@@ -278,7 +284,7 @@ Vue.mixin({
                     </div>
                     ${docArticle}
                     <div class="col-12 my-4 d-flex justify-content-around">
-                      <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
                     </div>
                   </div>
                 </div>
@@ -675,6 +681,10 @@ Vue.mixin({
         await onConnect();
       }
 
+      if (val === '56') {
+        this.getBinanceSelectedAccount();
+      }
+
       this.getTokens();
     }
   }
@@ -693,6 +703,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        funderAddressFallback: false,
         checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
         expandedGroup: {'reserve': [], 'featuredBounty': []},
         errors: {},
@@ -700,7 +711,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         bountyFee: document.FEE_PERCENTAGE,
         orgSelected: '',
         subscriptions: document.subscriptions,
-        subscriptionActive: document.subscriptions.length,
+        subscriptionActive: document.subscriptions.length || document.contxt.is_pro,
         coinValue: null,
         usdFeaturedPrice: 12,
         ethFeaturedPrice: null,

@@ -26,7 +26,7 @@ Vue.mixin({
                   </div>
                   ${docArticle}
                   <div class="col-12 my-4 d-flex justify-content-around">
-                    <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
                   </div>
                 </div>
               </div>
@@ -98,16 +98,37 @@ Vue.mixin({
       if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
       }
+
+      // payout address validation based on chain
       if (!vm.chainId) {
         vm.$set(vm.errors, 'chainId', 'Please select an option');
-      } else if (vm.chainId == 'eth' && !vm.form.eth_payout_address) {
-        vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+      } else if (vm.chainId == 'eth') {
+        if (!vm.form.eth_payout_address) {
+          vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
+        } else if (vm.form.eth_payout_address.trim().endsWith('.eth')) {
+          vm.$set(vm.errors, 'eth_payout_address', 'ENS is not supported. Please enter ETH address');
+        }
       } else if (
         vm.chainId == 'zcash' &&
-            (!vm.form.zcash_payout_address || !vm.form.zcash_payout_address.toLowerCase().startsWith('t'))
+        (!vm.form.zcash_payout_address || !vm.form.zcash_payout_address.toLowerCase().startsWith('t'))
       ) {
         vm.$set(vm.errors, 'zcash_payout_address', 'Please enter transparent ZCash address');
+      } else if (vm.chainId == 'celo' && !vm.form.celo_payout_address) {
+        vm.$set(vm.errors, 'celo_payout_address', 'Please enter CELO address');
+      } else if (vm.chainId == 'zilliqa' && !vm.form.zil_payout_address) {
+        vm.$set(vm.errors, 'zil_payout_address', 'Please enter Zilliqa address');
+      } else if (vm.chainId == 'harmony' && !vm.form.harmony_payout_address) {
+        vm.$set(vm.errors, 'harmony_payout_address', 'Please enter Harmony address');
+      } else if (vm.chainId == 'binance' && !vm.form.binance_payout_address) {
+        vm.$set(vm.errors, 'binance_payout_address', 'Please enter Binance address');
+      } else if (vm.chainId == 'polkadot' && !vm.form.polkadot_payout_address) {
+        vm.$set(vm.errors, 'polkadot_payout_address', 'Please enter Polkadot address');
+      } else if (vm.chainId == 'kusama' && !vm.form.kusama_payout_address) {
+        vm.$set(vm.errors, 'kusama_payout_address', 'Please enter Kusama address');
+      } else if (vm.chainId == 'rsk' && !vm.form.rsk_payout_address) {
+        vm.$set(vm.errors, 'rsk_payout_address', 'Please enter RSK address');
       }
+
       if (!vm.form.grant_type) {
         vm.$set(vm.errors, 'grant_type', 'Please select the grant category');
       }
@@ -149,19 +170,17 @@ Vue.mixin({
         'github_project_url': form.github_project_url,
         'eth_payout_address': form.eth_payout_address,
         'zcash_payout_address': form.zcash_payout_address,
+        'celo_payout_address': form.celo_payout_address,
+        'zil_payout_address': form.zil_payout_address,
+        'harmony_payout_address': form.harmony_payout_address,
+        'binance_payout_address': form.binance_payout_address,
+        'polkadot_payout_address': form.polkadot_payout_address,
+        'kusama_payout_address': form.kusama_payout_address,
+        'rsk_payout_address': form.rsk_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
         'network': form.network,
         'region': form.region
-        // logoPreview
-        // admin_address
-        // contract_owner_address
-        // token_address
-        // token_symbol
-        // contract_version
-        // transaction_hash
-        // contract_address
-        // transaction_hash
       };
 
       console.log(params);
@@ -180,8 +199,11 @@ Vue.mixin({
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
 
-      const apiUrlGrant = '/grants/new';
+      let apiUrlGrant = '/grants/new';
 
+      if (vm.queryParams.get('related_hackathon_project_id')) {
+        apiUrlGrant += `?related_hackathon_project_id=${vm.queryParams.get('related_hackathon_project_id')}`;
+      }
       $.ajax({
         type: 'post',
         url: apiUrlGrant,
@@ -311,6 +333,13 @@ if (document.getElementById('gc-new-grant')) {
           github_project_url: '',
           eth_payout_address: '',
           zcash_payout_address: '',
+          celo_payout_address: '',
+          zil_payout_address: '',
+          harmony_payout_address: '',
+          binance_payout_address: '',
+          polkadot_payout_address: '',
+          kusama_payout_address: '',
+          rsk_payout_address: '',
           grant_type: '',
           grant_categories: [],
           network: 'mainnet'
@@ -371,12 +400,14 @@ if (document.getElementById('gc-new-grant')) {
       const writeToRoot = ['chainId'];
       const writeToBody = [
         'title',
+        'description_rich',
         'reference_url',
         'twitter_handle_1',
         'twitter_handle_2',
         'github_project_url',
         'eth_payout_address',
         'grant_type',
+        'team_members',
         'grant_categories'
       ];
 

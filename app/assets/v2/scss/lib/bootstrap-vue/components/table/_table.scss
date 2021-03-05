@@ -1,0 +1,474 @@
+// --- General styling ---
+
+.table.b-table {
+  // Table fixed header width layout
+  &.b-table-fixed {
+    // Fixed width columns
+    table-layout: fixed;
+  }
+
+  // Disabled border-collapse
+  // Mainly for use with sticky headers and columns
+  &.b-table-no-border-collapse {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  // Table busy styling
+  &[aria-busy="true"] {
+    opacity: $b-table-busy-opacity;
+  }
+
+  // Details row styling
+  > tbody > tr.b-table-details > td {
+    border-top: none !important;
+  }
+
+  // Caption positioning
+  > caption {
+    caption-side: bottom;
+  }
+
+  &.b-table-caption-top {
+    > caption {
+      caption-side: top !important;
+    }
+  }
+
+  // Re-declare `table-active` class here so that it can take
+  // precedence over row variants when used on selectable rows
+  // Class can only be applied to rows and not individual cells
+  > tbody > .table-active {
+    &,
+    > th,
+    > td {
+      background-color: $table-active-bg;
+    }
+  }
+
+  // Add special hover styling for `table-active` row variant
+  &.table-hover > tbody > tr.table-active:hover {
+    td,
+    th {
+      color: $table-hover-color;
+      // `$table-hover-bg` default is a very transparent black
+      // We overlay it over the background color to achieve the
+      // same color effect while keeping the background solid
+      background-image: linear-gradient($table-hover-bg, $table-hover-bg);
+      background-repeat: no-repeat;
+    }
+  }
+
+  // Add in missing `bg-active` class for table tbody rows
+  // Bootstrap v4.3 is missing this for dark tables
+  // `bg-active` class cannot be applied to individual cells
+  > tbody > .bg-active {
+    &,
+    > th,
+    > td {
+      // Important is needed to override the standard `bg-variants`
+      // as the also use `!important`
+      background-color: $table-dark-active-bg !important;
+    }
+  }
+
+  // Add special hover styling for `bg-active` row variant (dark tables)
+  &.table-hover.table-dark > tbody > tr.bg-active:hover {
+    td,
+    th {
+      color: $table-dark-hover-color;
+      // `$table-dark-hover-bg` default is a very transparent white
+      // We overlay it over the background color to achieve the
+      // same color effect while keeping the background solid
+      background-image: linear-gradient($table-dark-hover-bg, $table-dark-hover-bg);
+      background-repeat: no-repeat;
+    }
+  }
+}
+
+// --- Table sticky header styling ---
+
+@if $bv-enable-table-sticky {
+  .b-table-sticky-header,
+  .table-responsive,
+  [class*="table-responsive-"] {
+    // Move the table bottom margin to the wrapper
+    margin-bottom: $spacer;
+
+    > .table {
+      // Reset `margin-bottom` to we don't get a space after
+      // the table inside the scroll area
+      margin-bottom: 0;
+    }
+  }
+
+  .b-table-sticky-header {
+    overflow-y: auto;
+    // Annoyingly, when overflow-y is set, browsers convert
+    // 'overflow-x: visible' to 'overflow-x: auto' - so it becomes
+    // responsive in the x axis automatically
+    // Default `max-height` before a scrollbar will show
+    // We don't use `height` as table could be shorter than this value
+    max-height: $b-table-sticky-header-max-height;
+  }
+
+  @media print {
+    // Override any styles (including inline styles)
+    // when printing
+    .b-table-sticky-header {
+      overflow-y: visible !important;
+      max-height: none !important;
+    }
+  }
+
+  @supports (position: sticky) {
+    // Positioning of sticky headers
+    .b-table-sticky-header > .table.b-table > thead > tr > th {
+      // Header cells need to be sticky on top
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    // Positioning of sticky columns
+    // Sticky columns only work when table has sticky
+    // headers and/or is responsive
+    .b-table-sticky-header,
+    .table-responsive,
+    [class*="table-responsive-"] {
+      > .table.b-table {
+        > thead,
+        > tbody,
+        > tfoot {
+          > tr > .b-table-sticky-column {
+            position: sticky;
+            left: 0;
+          }
+        }
+
+        > thead {
+          > tr > .b-table-sticky-column {
+            // z-index needs to be higher than sticky columns and
+            // sticky headers for correct layering
+            z-index: 5;
+          }
+        }
+
+        > tbody,
+        > tfoot {
+          > tr > .b-table-sticky-column {
+            // z-index needs to be lower than sticky header that
+            // is also a sticky column
+            z-index: 2;
+          }
+        }
+      }
+    }
+
+    // Default theme color background for table cells that are sticky
+    // Applied only when no variant is applied to the rows, or no head-variant
+    // Needed because Bootstrap v4 does not have table child elements set up
+    // to inherit their background color from parent element by default
+    //
+    // An issue made at twbs/bootstrap repo for table
+    // background color inheritance:
+    //   https://github.com/twbs/bootstrap/issues/29244
+    // If implemented, would negate the need for all the below SCSS
+    .table.b-table {
+      > thead,
+      > tbody,
+      > tfoot {
+        > tr > .table-b-table-default {
+          // Default cell color
+          color: $table-color;
+          // `$table-bg` is null by default in Bootstrap v4 variables
+          // but could have a value set by the consumer
+          background-color: if($table-bg, $table-bg, $body-bg);
+        }
+      }
+
+      &.table-dark {
+        > thead,
+        > tbody,
+        > tfoot {
+          > tr > .bg-b-table-default {
+            // Default cell color in table dark mode
+            color: $table-dark-color;
+            // Default cell background color in table dark mode
+            background-color: $table-dark-bg;
+          }
+        }
+      }
+
+      // Handle case of zebra striping
+      &.table-striped {
+        // "fake" zebra striping via use of a transparent background image
+        > tbody > tr:nth-of-type(#{$table-striped-order}) > .table-b-table-default {
+          // `$table-accent-bg` (used for striping) default is a very transparent black
+          // We overlay it over the background color to achieve the same color
+          // effect while keeping the background solid.
+          background-image: linear-gradient($table-accent-bg, $table-accent-bg);
+          background-repeat: no-repeat;
+        }
+
+        &.table-dark {
+          > tbody > tr:nth-of-type(#{$table-striped-order}) > .bg-b-table-default {
+            // `$table-dark-accent-bg` (used for striping) default is a very transparent white
+            // We overlay it over the background color to achieve the same color
+            // effect while keeping the background solid.
+            background-image: linear-gradient($table-dark-accent-bg, $table-dark-accent-bg);
+            background-repeat: no-repeat;
+          }
+        }
+      }
+
+      // Handle case of hover
+      &.table-hover {
+        // "fake" hover via use of a transparent background image
+        > tbody > tr:hover > .table-b-table-default {
+          color: $table-hover-color;
+          // `$table-hover-bg` default is a very transparent black
+          // We overlay it over the background color to achieve the same color
+          // effect while keeping the background solid.
+          background-image: linear-gradient($table-hover-bg, $table-hover-bg);
+          background-repeat: no-repeat;
+        }
+
+        &.table-dark {
+          > tbody > tr:hover > .bg-b-table-default {
+            color: $table-dark-hover-color;
+            // `$table-dark-hover-bg` default is a very transparent white
+            // We overlay it over the background color to achieve the same color
+            // effect while keeping the background solid.
+            background-image: linear-gradient($table-dark-hover-bg, $table-dark-hover-bg);
+            background-repeat: no-repeat;
+          }
+        }
+      }
+    }
+  }
+}
+
+// --- Header sort styling ---
+
+// Bootstrap v4.4 will include this variable as `$escaped-characters`
+// But if we want to preserve backwards compatibility with v4.3, we leave this in
+$bv-escaped-characters: (("<", "%3c"), (">", "%3e"), ("#", "%23"));
+
+// Bootstrap v4.4 will include this method as `escape-svg`
+// But if we want to preserve backwards compatibility with v4.3, we leave this in
+// See https://codepen.io/kevinweber/pen/dXWoRw
+@function bv-escape-svg($string) {
+  @if str-index($string, "data:image/svg+xml") {
+    @each $char, $encoded in $bv-escaped-characters {
+      $string: str-replace($string, $char, $encoded);
+    }
+  }
+
+  @return $string;
+}
+
+.table.b-table {
+  > thead,
+  > tfoot {
+    > tr {
+      > [aria-sort] {
+        cursor: pointer;
+        background-image: none;
+        background-repeat: no-repeat;
+        background-size: $b-table-sort-icon-bg-width $b-table-sort-icon-bg-height;
+
+        &:not(.b-table-sort-icon-left) {
+          // Default is icon on the right
+          background-position: right calc(#{$table-cell-padding} / 2) center;
+          padding-right: calc(#{$table-cell-padding} + #{$b-table-sort-icon-bg-width});
+        }
+
+        &.b-table-sort-icon-left {
+          // Left aligned sort icon
+          background-position: left calc(#{$table-cell-padding} / 2) center;
+          padding-left: calc(#{$table-cell-padding} + #{$b-table-sort-icon-bg-width});
+        }
+      }
+
+      > [aria-sort="none"] {
+        background-image: bv-escape-svg($b-table-sort-icon-bg-not-sorted);
+      }
+
+      > [aria-sort="ascending"] {
+        background-image: bv-escape-svg($b-table-sort-icon-bg-ascending);
+      }
+
+      > [aria-sort="descending"] {
+        background-image: bv-escape-svg($b-table-sort-icon-bg-descending);
+      }
+    }
+  }
+
+  // Sort icons for dark tables, headers, footers
+  &.table-dark > thead > tr,
+  &.table-dark > tfoot > tr,
+  > .thead-dark > tr {
+    > [aria-sort="none"] {
+      background-image: bv-escape-svg($b-table-sort-icon-bg-dark-not-sorted);
+    }
+
+    > [aria-sort="ascending"] {
+      background-image: bv-escape-svg($b-table-sort-icon-bg-dark-ascending);
+    }
+
+    > [aria-sort="descending"] {
+      background-image: bv-escape-svg($b-table-sort-icon-bg-dark-descending);
+    }
+  }
+
+  // Sort icons when header cell has `table-dark` class
+  > thead > tr > .table-dark,
+  > tfoot > tr > .table-dark {
+    &[aria-sort="none"] {
+      background-image: bv-escape-svg($b-table-sort-icon-bg-dark-not-sorted);
+    }
+
+    &[aria-sort="ascending"] {
+      background-image: bv-escape-svg($b-table-sort-icon-bg-dark-ascending);
+    }
+
+    &[aria-sort="descending"] {
+      background-image: bv-escape-svg($b-table-sort-icon-bg-dark-descending);
+    }
+  }
+
+  // Padding and position adjustment for small tables
+  &.table-sm {
+    > thead,
+    > tfoot {
+      > tr > [aria-sort] {
+        &:not(.b-table-sort-icon-left) {
+          // Default is icon on the right
+          background-position: right calc(#{$table-cell-padding-sm} / 2) center;
+          padding-right: calc(#{$table-cell-padding-sm} + #{$b-table-sort-icon-bg-width});
+        }
+
+        &.b-table-sort-icon-left {
+          // Left aligned sort icon
+          background-position: left calc(#{$table-cell-padding-sm} / 2) center;
+          padding-left: calc(#{$table-cell-padding-sm} + #{$b-table-sort-icon-bg-width});
+        }
+      }
+    }
+  }
+}
+
+// --- Selectable rows ---
+.table.b-table {
+  &.b-table-selectable:not(.b-table-selectable-no-click) {
+    & > tbody > tr {
+      cursor: pointer;
+    }
+
+    &.b-table-selecting {
+      // Disabled text-selection when in range mode when
+      // at least one row selected
+      &.b-table-select-range > tbody > tr {
+        user-select: none;
+      }
+    }
+  }
+}
+
+// --- Stacked tables ---
+@if $bv-enable-table-stacked {
+  .table.b-table {
+    &.b-table-stacked {
+      @each $breakpoint in map-keys($grid-breakpoints) {
+        $next: breakpoint-next($breakpoint, $grid-breakpoints);
+        $infix: breakpoint-infix($next, $grid-breakpoints);
+
+        &#{$infix} {
+          @include media-breakpoint-down($breakpoint) {
+            display: block;
+            width: 100%;
+
+            // Convert to blocks when stacked
+            > caption,
+            > tbody,
+            > tbody > tr,
+            > tbody > tr > td,
+            > tbody > tr > th {
+              display: block;
+            }
+
+            // Hide when stacked
+            > thead,
+            > tfoot {
+              display: none;
+
+              > tr.b-table-top-row,
+              > tr.b-table-bottom-row {
+                display: none;
+              }
+            }
+
+            // Caption positioning
+            > caption {
+              caption-side: top !important;
+            }
+
+            > tbody {
+              > tr {
+                // Turn cells with labels into micro-grids
+                > [data-label] {
+                  // Cell header label pseudo element
+                  &::before {
+                    content: attr(data-label);
+                    width: $b-table-stacked-heading-width;
+                    float: left;
+                    text-align: right;
+                    overflow-wrap: break-word;
+                    font-weight: bold;
+                    font-style: normal;
+                    padding: 0 calc(#{$b-table-stacked-gap} / 2) 0 0;
+                    margin: 0;
+                  }
+
+                  // Add clearfix in-case field label wraps
+                  &::after {
+                    display: block;
+                    clear: both;
+                    content: "";
+                  }
+
+                  // Cell value (we wrap the cell value in a div when stacked)
+                  > div {
+                    display: inline-block;
+                    width: calc(100% - #{$b-table-stacked-heading-width});
+                    // Add "gap" between "cells"
+                    padding: 0 0 0 calc(#{$b-table-stacked-gap} / 2);
+                    margin: 0;
+                  }
+                }
+
+                // Dont show the fixed top/bottom rows
+                &.top-row,
+                &.bottom-row {
+                  display: none;
+                }
+
+                // Give the top cell of each "row" a heavy border
+                > :first-child {
+                  border-top-width: (3 * $table-border-width);
+                }
+
+                // Give any cell after a rowspan'ed cell a heavy top border
+                > [rowspan] + td,
+                > [rowspan] + th {
+                  border-top-width: (3 * $table-border-width);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

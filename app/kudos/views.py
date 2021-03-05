@@ -137,11 +137,12 @@ def about(request):
 
 def marketplace(request):
     """Render the Kudos 'marketplace' page."""
-    q = request.GET.get('q')
+    q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
     title = str(_('Kudos Marketplace'))
-    network = request.GET.get('network', settings.KUDOS_NETWORK)
-
+    network = request.GET.get('network', 'xdai')
+    if not network:
+        network = 'xdai'
     # Only show the latest contract Kudos for the current network.
     query_kwargs = {
         'num_clones_allowed__gt': 0,
@@ -175,6 +176,7 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': title,
+        'q': q,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
@@ -326,7 +328,7 @@ def send_2(request):
 
     """
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     _id = request.GET.get('id')
     if _id and not str(_id).isdigit():
@@ -644,7 +646,7 @@ def receive(request, key, txid, network):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if kudos_transfer.receive_txid:
@@ -728,7 +730,13 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
     gas_price_confirmation_time = 1 if not coupon.sender_address else 60
     gas_price_multiplier = 1.3 if not coupon.sender_address else 1
-    kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+    kudos_contract_address = settings.KUDOS_CONTRACT_MAINNET
+    if coupon.token.contract.network == 'xdai':
+        kudos_contract_address = settings.KUDOS_CONTRACT_XDAI
+    if coupon.token.contract.network == 'rinkeby':
+        kudos_contract_address = settings.KUDOS_CONTRACT_RINKEBY
+
+    kudos_contract_address = Web3.toChecksumAddress(kudos_contract_address)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
@@ -890,7 +898,7 @@ def newkudos(request):
     }
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -926,7 +934,7 @@ def newkudos(request):
                 tags=request.POST['tags'].split(","),
                 to_address=request.POST['to_address'],
                 artwork_url=artwork_url,
-                network='mainnet',
+                network='xdai',
                 approved=False,
                 metadata={
                     'ip': get_ip(request),

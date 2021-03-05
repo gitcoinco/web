@@ -1,3 +1,4 @@
+
 Vue.component('sms-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
@@ -39,7 +40,7 @@ Vue.component('sms-verify-modal', {
                   <p class="mb-4 font-subheader text-left">read more about <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                     href="https://twitter.com/owocki/status/1271088915982675974">why we are asking for your phone number</a> or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                       href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy.</a></p>
-                  <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify
+                  <b-button @click="validationStep='requestVerification'" class="btn-primary mb-2" size="lg">Verify
                   Phone Number</b-button>
                   <div class="mb-1 font-subheader text-center">
                     <a id="verify_offline" href="#">
@@ -71,7 +72,7 @@ Vue.component('sms-verify-modal', {
                   <div v-if="errorMessage">
                     <span class="label-warning">[[ errorMessage ]]</span>
                   </div>
-                  <b-button @click="requestVerification()" class="btn-gc-blue mt-5 mb-2" size="lg">Send verification
+                  <b-button @click="requestVerification()" class="btn-primary mt-5 mb-2" size="lg">Send verification
                     code</b-button>
                   <br />
                   <b-button @click="hide()" variant="link">Cancel</b-button>
@@ -81,7 +82,6 @@ Vue.component('sms-verify-modal', {
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
                   </div>
                   <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
-
                   <input class="form-control" type="number" required v-model="code">
                   <div v-if="timeInterval > timePassed">
                     <span class="label-warning">Wait [[ timeInterval - timePassed ]] second before request another
@@ -90,7 +90,7 @@ Vue.component('sms-verify-modal', {
                   <div v-if="errorMessage">
                     <span class="label-warning">[[ errorMessage ]]</span>
                   </div>
-                  <b-button @click="validateCode()" class="btn-gc-blue mt-5" size="lg">Submit</b-button>
+                  <b-button @click="validateCode()" class="btn-primary mt-5" size="lg">Submit</b-button>
                   <br />
                   <b-button @click="startVerification()" variant="link">Change number</b-button>
                   <b-button @click="resendCode()" variant="link">Resend Code</b-button>
@@ -246,7 +246,7 @@ Vue.component('twitter-verify-modal', {
                         <em>[[tweetText]]</em>
                       </p>
                       <div class="mt-2 mb-2">
-                        <a :href="tweetIntentURL" @click="clickedSendTweet" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
+                        <a :href="tweetIntentURL" @click="clickedSendTweet" role="button" style="font-size: 1.3em" class="btn btn-primary mb-2" target="_blank">
                           Send Tweet
                         </a>
                       </div>
@@ -267,7 +267,7 @@ Vue.component('twitter-verify-modal', {
                       <div v-if="validationError !== ''" style="color: red">
                         <small>[[validationError]]</small>
                       </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-primary mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
@@ -278,7 +278,7 @@ Vue.component('twitter-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validation-complete'">
                       Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                      <a href="" class="btn btn-primary px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
                     </div>
                   </div>
                 </template>
@@ -384,7 +384,7 @@ Vue.component('poap-verify-modal', {
                         Then, we'll validate your account holds at least one POAP badge, and that it's been there for at least 15 days.
                       </p>
                       <div class="mt-2 mb-2">
-                        <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
+                        <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="btn btn-primary mb-2" target="_blank">
                           Pull from Wallet
                         </a>
                       </div>
@@ -399,7 +399,7 @@ Vue.component('poap-verify-modal', {
                       <div v-if="validationError !== ''" style="color: red">
                         <small>[[validationError]]</small>
                       </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-primary mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
@@ -414,7 +414,7 @@ Vue.component('poap-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validation-complete'">
                       Your POAP verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                      <a href="" class="btn btn-primary px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
                     </div>
                   </div>
                 </template>
@@ -518,6 +518,134 @@ Vue.component('poap-verify-modal', {
   }
 });
 
+Vue.component('brightid-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      calls: []
+    };
+  },
+  props: {
+    showValidation: {
+      type: Boolean,
+      required: false,
+      'default': false
+    },
+    validationStep: {
+      type: String,
+      required: true
+    },
+    brightidUuid: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    brightIdLink() {
+      return `https://app.brightid.org/link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${this.brightidUuid}`;
+    },
+    brightIdAppLink() {
+      return `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${this.brightidUuid}`;
+    }
+  },
+  mounted() {
+    if (calendarData) {
+      this.calls = calendarData;
+    }
+  },
+  template: `<b-modal id="brightid-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+              <template v-slot:default="{ hide }">
+                <div class="modal-content px-2 py-2">
+                  <div class="col-12">
+                    <button @click="dismissVerification()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <template v-if="validationStep === 'connect-brightid'">
+                    <div class="col-12 pt-2 pb-2 text-center">
+                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
+                      <h2 class="font-title mt-2">Connect With BrightID</h2>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <p>
+                        BrightID is a digital identity solution that ensures accounts in any application are created by real humans; each user is unique and only has one account.
+                        <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
+                      </p>
+                      <p>
+                        To increase your Trust Bonus using BrightID, you must first get connected. Follow these steps:
+                      </p>
+                      <p>
+                        <strong>Step 1</strong>: Download the BrightID App on your mobile device<br />
+                        <a href="https://apps.apple.com/us/app/brightid/id1428946820">
+                          <img src="/static/v2/images/app_stores/apple_app_store.svg" width="100">
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=org.brightid">
+                          <img src="/static/v2/images/app_stores/google_play_store.png" width="125">
+                        </a>
+                      </p>
+                      <p>
+                        <strong>Step 2</strong>: Connect BrightID to Gitcoin by scanning this QR code
+                        from the BrightID app, or <a :href="brightIdLink">clicking here</a> from your mobile device.
+                        <div style="display: flex; justify-content: center; text-align: center;">
+                          <qrcode :string="brightIdAppLink" :size="175"></qrcode>
+                        </div>
+                      </p>
+                      <div class="col-12 my-4 text-center">
+                        <a href="" class="btn btn-primary px-5 mb-2 mx-2">Done Connecting</a>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else-if="validationStep === 'verify-brightid'">
+                    <div class="col-12 pt-2 pb-2 text-center">
+                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
+                      <h2 class="font-title mt-2">Verify Your BrightID</h2>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <p>
+                        BrightID is a digital identity solution that ensures accounts in any application are created by real humans; each user is unique and only has one account.
+                        <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
+                      </p>
+                      <p>
+                        Now that you've connected your BrightID, you need to get verified by connecting with other real humans.
+                      </p>
+                      <p>
+                        <strong>Join a Gitcoin + BrightID Verification Party</strong><br />
+                        <small class="text-muted">
+                          You can learn more about how BrightID works and make connections that will help you get verified on the verifications parties.
+                          Register for one of the events.
+                        </small>
+                        <template v-for="call in calls">
+                          <div class="row mb-3">
+                            <div class="col-md-8">
+                              <strong class="d-block">[[call.when]]</strong>
+                              <div class="font-caption">
+                                <template v-for="date in call.dates">
+                                  At <span>[[formatDate(date.timeStart)]]</span> - <span>[[formatDate(date.timeEnd)]]</span><br />
+                                </template>
+                              </div>
+                            </div>
+                            <div class="col-md-4 my-auto">
+                              <a :href="call.link" target="_blank" class="btn btn-sm btn-block btn-primary px-4">Register <br> on [[call.platform]]</a>
+                            </div>
+                          </div>
+                        </template>
+                      </p>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.$emit('modal-dismissed');
+    },
+    formatDate(date) {
+      let options = {hour: 'numeric', minute: 'numeric', dayPeriod: 'short'};
+
+      return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
+    }
+  }
+});
 
 Vue.component('duniter-verify-modal', {
   delimiters: [ '[[', ']]' ],
@@ -526,7 +654,7 @@ Vue.component('duniter-verify-modal', {
       showValidation: false,
       validationStep: 'validate-duniter',
       validationError: '',
-      publicKey: '',
+      publicKey: ''
     };
   },
   computed: {
@@ -627,135 +755,6 @@ Vue.component('duniter-verify-modal', {
   }
 });
 
-Vue.component('brightid-verify-modal', {
-  delimiters: [ '[[', ']]' ],
-  data: function() {
-    return {
-      calls: []
-    };
-  },
-  props: {
-    showValidation: {
-      type: Boolean,
-      required: false,
-      'default': false
-    },
-    validationStep: {
-      type: String,
-      required: true
-    },
-    brightidUuid: {
-      type: String,
-      required: true
-    }
-  },
-  computed: {
-    brightIdLink() {
-      return `https://app.brightid.org/link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${this.brightidUuid}`;
-    },
-    brightIdAppLink() {
-      return `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${this.brightidUuid}`;
-    }
-  },
-  mounted() {
-    if (calendarData) {
-      this.calls = calendarData;
-    }
-  },
-  template: `<b-modal id="brightid-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
-              <template v-slot:default="{ hide }">
-                <div class="modal-content px-2 py-2">
-                  <div class="col-12">
-                    <button @click="dismissVerification()" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <template v-if="validationStep === 'connect-brightid'">
-                    <div class="col-12 pt-2 pb-2 text-center">
-                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
-                      <h2 class="font-title mt-2">Connect With BrightID</h2>
-                    </div>
-                    <div class="col-12 pt-2">
-                      <p>
-                        BrightID is a digital identity solution that ensures accounts in any application are created by real humans; each user is unique and only has one account.
-                        <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
-                      </p>
-                      <p>
-                        To increase your Trust Bonus using BrightID, you must first get connected. Follow these steps:
-                      </p>
-                      <p>
-                        <strong>Step 1</strong>: Download the BrightID App on your mobile device<br />
-                        <a href="https://apps.apple.com/us/app/brightid/id1428946820">
-                          <img src="/static/v2/images/app_stores/apple_app_store.svg" width="100">
-                        </a>
-                        <a href="https://play.google.com/store/apps/details?id=org.brightid">
-                          <img src="/static/v2/images/app_stores/google_play_store.png" width="125">
-                        </a>
-                      </p>
-                      <p>
-                        <strong>Step 2</strong>: Connect BrightID to Gitcoin by scanning this QR code
-                        from the BrightID app, or <a :href="brightIdLink">clicking here</a> from your mobile device.
-                        <div style="display: flex; justify-content: center; text-align: center;">
-                          <qrcode :string="brightIdAppLink" :size="175"></qrcode>
-                        </div>
-                      </p>
-                      <div class="col-12 my-4 text-center">
-                        <a href="" class="btn btn-gc-blue px-5 mb-2 mx-2">Done Connecting</a>
-                      </div>
-                    </div>
-                  </template>
-                  <template v-else-if="validationStep === 'verify-brightid'">
-                    <div class="col-12 pt-2 pb-2 text-center">
-                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
-                      <h2 class="font-title mt-2">Verify Your BrightID</h2>
-                    </div>
-                    <div class="col-12 pt-2">
-                      <p>
-                        BrightID is a digital identity solution that ensures accounts in any application are created by real humans; each user is unique and only has one account.
-                        <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
-                      </p>
-                      <p>
-                        Now that you've connected your BrightID, you need to get verified by connecting with other real humans.
-                      </p>
-                      <p>
-                        <strong>Join a Gitcoin + BrightID Verification Party</strong><br />
-                        <small class="text-muted">
-                          You can learn more about how BrightID works and make connections that will help you get verified on the verifications parties.
-                          Register for one of the events.
-                        </small>
-                        <template v-for="call in calls">
-                          <div class="row mb-3">
-                            <div class="col-md-8">
-                              <strong class="d-block">[[call.when]]</strong>
-                              <div class="font-caption">
-                                <template v-for="date in call.dates">
-                                  At <span>[[formatDate(date.timeStart)]]</span> - <span>[[formatDate(date.timeEnd)]]</span><br />
-                                </template>
-                              </div>
-                            </div>
-                            <div class="col-md-4 my-auto">
-                              <a :href="call.link" target="_blank" class="btn btn-sm btn-block btn-gc-blue px-4 font-caption font-weight-bold">Register <br> on [[call.platform]]</a>
-                            </div>
-                          </div>
-                        </template>
-                      </p>
-                    </div>
-                  </template>
-                </div>
-              </template>
-            </b-modal>`,
-  methods: {
-    dismissVerification() {
-      this.$emit('modal-dismissed');
-    },
-    formatDate(date) {
-      let options = {hour: 'numeric', minute: 'numeric', dayPeriod: 'short'};
-
-      return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
-    }
-  }
-});
-
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
   data() {
@@ -851,7 +850,7 @@ Vue.component('active-trust-row-template', {
               <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
             </template>
             <template v-else>
-              <a @click="didClick" href="" role="button" class="button button--primary text-nowrap">[[buttonText]]</a>
+              <a @click="didClick" href="" role="button" class="btn btn-primary text-nowrap">[[buttonText]]</a>
             </template>
           </template>
         </div>

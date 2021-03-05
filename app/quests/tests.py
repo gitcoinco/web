@@ -46,6 +46,6 @@ class QuestTest(TestCase):
         path = reverse('newquest')
         response = self.client.post(path, data, content_type="application/x-www-form-urlencoded")
 
-        self.assertRedirects(response, '/login/github?next=' + path, target_status_code=302)
+        self.assertRedirects(response, '/login/github/?next=' + path, target_status_code=302)
         '''
         pass

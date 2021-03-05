@@ -31,7 +31,7 @@
               <p class="mb-2">Edit your existing project{{ projects.count|pluralize }}:</p>
               {% for project in projects %}
                 {% if project.status == '' %}
-                  <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
+                  <a href="#" class="btn btn-sm btn-outline-primary mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
                 {% endif %}
               {% endfor %}
                 or <a href="#" class="" onclick="projectModal({{bounty_id}});">create a new one</a>
@@ -140,7 +140,7 @@
                   <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
               </div>
               <div class="row mt-4">
-                  <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
+                  <button class="mx-auto px-5 btn btn-lg btn-primary" id="sendInvites">Submit</button>
               </div>
             {% else %}
               <input type="hidden" name="bounty_id" value="{{bounty.id}}">
@@ -207,7 +207,7 @@
                 <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
               </div>
               <div class="row mt-4">
-                <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
+                <button class="mx-auto px-5 btn btn-lg btn-primary" id="sendInvites">Submit</button>
               </div>
             {% endif %}
           </form>

@@ -1,0 +1,110 @@
+
+.interior .body.leaderboard-container {
+  background-color: #fff;
+}
+
+.leaderboard .card-body {
+  border-radius: 3px;
+}
+
+.leaderboard .podium-items {
+  background-color: #150069;
+}
+
+.key-title {
+  display: inline;
+}
+
+.key {
+  max-width: 12rem;
+  display: inline;
+}
+
+.table-hover tbody tr:hover {
+  background-color: whitesmoke;
+}
+
+.leaderboard .podium {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  background: #150069;
+  justify-content: space-evenly;
+}
+
+.leaderboard .winner {
+  position: relative;
+  padding: 0px;
+  text-align: center;
+}
+
+.interior .body {
+  background-color: #140069;
+}
+
+.leaderboard .clickable-row {
+  cursor: pointer;
+}
+
+.leaderboard .winner img {
+  max-height: 10rem;
+  border-radius: 50%;
+}
+
+.leaderboard .leaderboard_entry img {
+  max-height: 4rem;
+  border-radius: 50%;
+}
+
+tbody, td {
+  color: #5C5D5F
+}
+
+.leaderboard .winner a {
+  color: #fff;
+}
+
+.leaderboard .leaderboard_entry {
+  padding: 10px 0px;
+  text-decoration: none;
+}
+
+.item-count-bounties {
+  display: block;
+}
+
+.hidemobile {
+  visibility: hidden;
+}
+
+@media (min-width: 700px) {
+  .podium {
+    justify-content: space-between;
+  }
+
+  .leaderboard .select {
+    display: block ;
+  }
+
+  .leaderboard .leaderboard_entry div {
+    width: 100%;
+  }
+
+  .leaderboard .leaderboard_entry div:nth-child(2) {
+    width: 30%;
+  }
+
+  .leaderboard .leaderboard_entry div.progress {
+    width: 100%;
+  }
+
+  .hidemobile {
+    visibility: visible;
+  }
+}
+
+@media (min-width: 1000px) {
+  .leaderboard .leaderboard_entry {
+    padding: 10px 0px;
+    text-decoration: none;
+  }
+}

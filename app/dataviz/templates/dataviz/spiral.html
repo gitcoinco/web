@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load humanize i18n static %}
+{% load humanize i18n static compress %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -16,8 +16,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
-
+{% block extrastyle %}{{ block.super }}
+  {% compress css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endcompress %}
+{% endblock %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} cohort{% endblock %}
@@ -79,8 +82,10 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <title>Condegram Spiral Plot</title>
-    <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    {% compress css file typography %}
+      <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+
+    {% endcompress %}
     <script data-require="d3@4.0.0" data-semver="4.0.0" src="https://d3js.org/d3.v4.js"></script>
 </head>
 <a href="..">&lt; back</a>

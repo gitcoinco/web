@@ -16,7 +16,8 @@
 
 {% endcomment %}
 {% load i18n static %}
-<footer class="container-fluid no-gutters footer">
+<footer class="container-fluid no-gutters footer mt-auto">
+  {% include 'shared/bottom_notification.html' with footer=1 %}
   <div class="container footer__main">
     <div class="row">
       <div class="col-md-4">
@@ -42,8 +43,8 @@
           <a class="nav-link" href="{% url "reddit" %}">
             <img {{prefix}}src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
           </a>
-          <a class="nav-link" target="_blank" href="https://chat.gitcoin.co">
-            <img {{prefix}}src="{% static "v2/images/tribes/landing/chat_round.svg" %}" alt="Chat">
+          <a class="nav-link" target="_blank" href="https://discord.gg/jWUzf7b8Yr">
+            <img {{prefix}}src="{% static "v2/images/tribes/landing/chat_round.svg" %}" alt="Discord">
           </a>
           <a class="nav-link" href="mailto:founders@gitcoin.co">
             <img {{prefix}}src="{% static "v2/images/social/mail.png" %}" alt="Mail">
@@ -52,7 +53,8 @@
         <div class="d-flex flex-wrap">
           <div class="sitenav sitenav__product">
             <h5>{% trans "Product" %}</h5>
-            <a href="https://github.com/gitcoinco/web/releases/" target="_blank">{% trans "Latest Updates" %}</a>
+            <a href="https://status.gitcoin.co/" target="_blank">{% trans "Site Status" %} <i class="ml-2 fas fa-external-link-alt"></i></a>
+            <a href="https://github.com/gitcoinco/web/releases/" target="_blank">{% trans "Releases" %} <i class="ml-2 fas fa-external-link-alt"></i></a>
             <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
             <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
             <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
@@ -69,10 +71,10 @@
           </div>
           <div class="sitenav">
             <h5>{% trans "Community" %}</h5>
-            <a href="https://gitcoin.co/wiki/wiki-code-conduct/">{% trans "Code of Conduct" %}</a>
-            <a class="slack{% if active == 'slack' %} selected{% endif %}" target="_blank" href="https://chat.gitcoin.co">
-              Chat
+            <a class="slack{% if active == 'slack' %} selected{% endif %}" target="_blank" href="https://discord.gg/jWUzf7b8Yr">
+              Discord
             </a>
+            <a href="https://gitcoin.co/wiki/wiki-code-conduct/">{% trans "Code of Conduct" %}</a>
             <a href="{% url "request_money" %}">{% trans "Request Money" %}</a>
             <a href="/wiki/">{% trans "Wiki" %}</a>
             <a href="https://github.com/gitcoinco/web/issues/new/choose">{% trans "Help" %}</a>

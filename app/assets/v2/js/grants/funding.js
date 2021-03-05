@@ -24,7 +24,7 @@ $(document).ready(function() {
     _alert(message, 'success');
     localStorage.removeItem('contributions_were_successful');
     localStorage.removeItem('contributions_count');
-    $('#tweetModal').modal('show');
+    $('#tweetModal').bootstrapModal('show');
 
     const allDonations = CartData.loadCart();
     const ethereumDonations = allDonations.filter((grant) => grant.tenants[0] === 'ETH');
@@ -37,7 +37,15 @@ $(document).ready(function() {
       for (let i = 0; i < allDonations.length; i += 1) {
         const donation = allDonations[i];
 
-        cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'] + ' (+' + donation['grant_donation_clr_match'] + ' DAI match)</li>';
+        cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'];
+        if (
+          donation.clr_round_num != '' &&
+          donation.is_clr_eligible &&
+          !donation.is_on_team
+        ) {
+          cart_html += ' (+' + donation['grant_donation_clr_match'] + ' DAI match)';
+        }
+        cart_html += '</li>';
       }
       cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';
       $("<span class='mt-2 mb-2 w-100'>" + cart_html + '</span>').insertBefore($('#tweetModal span.copy'));
@@ -163,10 +171,31 @@ function tokenOptionsForGrant(grant) {
   let tokenDefault = 'ETH';
 
   if (grant.tenants && grant.tenants.includes('ZCASH')) {
-    tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
+    tokenDataList = tokenDataList.filter(token => token.chainId === 123123);
     tokenDefault = 'ZEC';
+  } if (grant.tenants && grant.tenants.includes('CELO')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 42220);
+    tokenDefault = 'CELO';
+  } else if (grant.tenants && grant.tenants.includes('ZIL')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 102);
+    tokenDefault = 'ZIL';
+  } else if (grant.tenants && grant.tenants.includes('HARMONY')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 1000);
+    tokenDefault = 'ONE';
+  } else if (grant.tenants && grant.tenants.includes('BINANCE')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 56);
+    tokenDefault = 'BNB';
+  } else if (grant.tenants && grant.tenants.includes('POLKADOT')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 58);
+    tokenDefault = 'DOT';
+  } else if (grant.tenants && grant.tenants.includes('KUSAMA')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 59);
+    tokenDefault = 'KSM';
+  } else if (grant.tenants && grant.tenants.includes('RSK')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 30);
+    tokenDefault = 'R-BTC';
   } else {
-    tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
+    tokenDataList = tokenDataList.filter(token => token.chainId === 1);
   }
 
   const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000' ||

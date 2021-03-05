@@ -4,7 +4,8 @@
  */
 cancelBounty = data => {
 
-  const url  = '/api/v1/bounty/cancel';
+  const url = '/api/v1/bounty/cancel';
+
   params = data.payload;
 
   $.post(url, params, function(response) {
@@ -18,4 +19,4 @@ cancelBounty = data => {
     }
   });
 
-}
+};

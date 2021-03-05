@@ -38,6 +38,11 @@ Vue.component('grants-cart', {
         { text: 'Wallet t-address', value: 'taddress' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
+      selectedQRPayment: 'address',
+      optionsQRPayment: [
+        { text: 'Wallet address', value: 'address' },
+        { text: 'Transaction Hash', value: 'txid' }
+      ],
       chainId: '',
       network: 'mainnet',
       tabSelected: 'ETH',
@@ -52,15 +57,15 @@ Vue.component('grants-cart', {
       comments: undefined,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
-      include_for_clr: true,
+      include_for_clr: false,
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
+      maxCartItems: 40, // Max supported items in cart at once
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      // verification
-      isFullyVerified: false,
+      isZkSyncDown: false, // disable zkSync when true
       // Collection
       showCreateCollection: false,
       collectionTitle: '',
@@ -84,7 +89,6 @@ Vue.component('grants-cart', {
     },
     grantsCountByTenant() {
       let vm = this;
-      let tenants = [ 'ETH', 'ZCASH' ];
 
       var grantsTentantsCount = vm.grantData.reduce(function(result, grant) {
         var currentCount = result[grant.tenants] || 0;
@@ -96,7 +100,6 @@ Vue.component('grants-cart', {
       return grantsTentantsCount;
     },
     sortByPriority: function() {
-      console.log(this.currentTokens);
       return this.currentTokens.sort(function(a, b) {
         return b.priority - a.priority;
       });
@@ -119,7 +122,6 @@ Vue.component('grants-cart', {
         result = vm.filterByNetwork;
       } else {
         result = vm.filterByNetwork.filter((item) => {
-          console.log(item.chainId, vm.chainId);
           return String(item.chainId) === vm.chainId;
         });
       }
@@ -220,10 +222,10 @@ Vue.component('grants-cart', {
           grant_image_css: '',
           grant_logo: '',
           grant_slug: 'gitcoin-sustainability-fund',
-          grant_title: 'Gitcoin Grants Round 7+ Development Fund',
+          grant_title: 'Gitcoin Grants Round 8 + Dev Fund',
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
-          isAutomatic: true // we add this field to help properly format the POST requests
+          isAutomatic: true // we add this field to help properly format the POST requests,
         };
 
         // Only add to donation inputs array if donation amount is greater than 0
@@ -271,12 +273,12 @@ Vue.component('grants-cart', {
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
           // Special case since we overestimate here otherwise
-          return 80000;
+          return 100000;
         }
         // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
         // then generating a conservative best-fit line
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        return 25000 * donationCurrencies.length + 125000;
+        return 27500 * donationCurrencies.length + 125000;
       }
 
       // Otherwise, based on contract tests, we use the more conservative heuristic below to get
@@ -287,7 +289,7 @@ Vue.component('grants-cart', {
         const tokenAddr = currentValue.token.toLowerCase();
 
         if (currentValue.token === ETH_ADDRESS) {
-          return accumulator + 50000; // ETH donation gas estimate
+          return accumulator + 70000; // ETH donation gas estimate
 
         } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
           return accumulator + 170000; // ANT donation gas estimate
@@ -297,6 +299,9 @@ Vue.component('grants-cart', {
 
         } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
           return accumulator + 450000; // cDAI donation gas estimate
+
+        } else if (tokenAddr === '0x3472A5A71965499acd81997a54BBA8D852C6E53d'.toLowerCase()) {
+          return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
 
         }
         return accumulator + 100000; // generic token donation gas estimate
@@ -322,6 +327,35 @@ Vue.component('grants-cart', {
       const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
 
       return { name: 'zkSync', savingsInGas, savingsInPercent };
+    },
+
+    isHarmonyExtInstalled() {
+      return window.onewallet && window.onewallet.isOneWallet;
+    },
+
+    isBinanceExtInstalled() {
+      return window.BinanceChain || false;
+    },
+
+    isPolkadotExtInstalled() {
+      return polkadot_extension_dapp.isWeb3Injected;
+    },
+
+    isRskExtInstalled() {
+      const rskHost = 'https://public-node.rsk.co';
+      const rskClient = new Web3();
+
+      rskClient.setProvider(
+        new rskClient.providers.HttpProvider(rskHost)
+      );
+
+      if (!provider) {
+        try {
+          return ethereum.isNiftyWallet;
+        } catch (e) {
+          return false;
+        }
+      }
     }
   },
 
@@ -338,27 +372,48 @@ Vue.component('grants-cart', {
     tabChange: async function(input) {
       let vm = this;
 
-      console.log(input);
-      switch (input) {
+      vm.tabSelected = vm.$refs.tabs.tabs[input].id;
+      if (!vm.grantsCountByTenant[vm.tabSelected]) {
+        vm.tabIndex += 1;
+        return;
+      }
+
+      switch (vm.tabSelected) {
         default:
-        case 0:
-          vm.tabSelected = 'ETH';
+        case 'ETH':
           vm.chainId = '1';
-          if (!vm.grantsCountByTenant.ETH) {
-            vm.tabIndex = 1;
-            return;
-          }
+
           if (!provider) {
             await onConnect();
           }
           break;
-        case 1:
-          vm.tabSelected = 'ZCASH';
+        case 'ZCASH':
           vm.chainId = '123123';
+          break;
+        case 'CELO':
+          vm.chainId = '42220';
+          break;
+        case 'ZIL':
+          vm.chainId = '102';
+          break;
+        case 'HARMONY':
+          vm.chainId = '1000';
+          break;
+        case 'BINANCE':
+          vm.chainId = '56';
+          break;
+        case 'KUSAMA':
+          vm.chainId = '59';
+          break;
+        case 'POLKADOT':
+          vm.chainId = '58';
+          break;
+        case 'RSK':
+          vm.chainId = '30';
           break;
       }
     },
-    confirmZcashPayment: function(e, grant) {
+    confirmQRPayment: function(e, grant) {
       let vm = this;
 
       e.preventDefault();
@@ -415,11 +470,34 @@ Vue.component('grants-cart', {
         vm.$set(grant, 'loading', false);
       });
     },
+    contributeWithExtension: function(grant, tenant, data) {
+      let vm = this;
+
+      switch (tenant) {
+        case 'RSK':
+          contributeWithRskExtension(grant, vm);
+          break;
+        case 'HARMONY':
+          contributeWithHarmonyExtension(grant, vm);
+          break;
+        case 'BINANCE':
+          contributeWithBinanceExtension(grant, vm);
+          break;
+        case 'POLKADOT':
+        case 'KUSAMA':
+          if (data) {
+            contributeWithPolkadotExtension(grant, vm, data);
+          } else {
+            initPolkadotConnection(grant, vm);
+          }
+          break;
+      }
+    },
     loginWithGitHub() {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
     confirmClearCart() {
-      if (confirm('are you sure')) {
+      if (confirm('Are you sure you want to clear your cart?')) {
         this.clearCart();
       }
     },
@@ -438,6 +516,7 @@ Vue.component('grants-cart', {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
       update_cart_title();
+      this.tabChange(this.tabIndex);
     },
 
     addComment(id, text) {
@@ -447,6 +526,23 @@ Vue.component('grants-cart', {
       this.$forceUpdate();
 
       // $('input[type=textarea]').focus();
+    },
+
+    updatePaymentStatus(grant_id, step = 'waiting', txnid, additionalAttributes) {
+      let vm = this;
+      let grantData = vm.grantData;
+
+      grantData.forEach((grant, index) => {
+        if (grant.grant_id == grant_id) {
+          vm.grantData[index].payment_status = step;
+          if (txnid) {
+            vm.grantData[index].txnid = txnid;
+          }
+          if (additionalAttributes) {
+            vm.grantData[index].additionalAttributes = additionalAttributes;
+          }
+        }
+      });
     },
 
     /**
@@ -521,7 +617,7 @@ Vue.component('grants-cart', {
         if (string === '') {
           string += `${formattedAmount} ${key}`;
         } else {
-          string += `+ ${formattedAmount} ${key}`;
+          string += ` + ${formattedAmount} ${key}`;
         }
       });
       return string;
@@ -863,6 +959,13 @@ Vue.component('grants-cart', {
         txHashes = new Array(donations.length).fill(txHash[0]);
       }
 
+      // TODO update celery task to manage this so we can remove these two server requests
+      // Update the JSON store with the transaction hashes. We append a timestamp to ensure it
+      // doesn't get overwritten by a subsequent checkout
+      await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save', txHashes);
+      // Once that's done, we can delete the old JSON store
+      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+
       // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
       // a zkSync checkout
       const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
@@ -878,7 +981,7 @@ Vue.component('grants-cart', {
         gas_price: 0,
         gitcoin_donation_address: gitcoinAddress,
         hide_wallet_address: this.hideWalletAddress,
-        anonymize_gitcoin_grants_contributions: this.AnonymizeGrantsContribution,
+        anonymize_gitcoin_grants_contributions: false,
         include_for_clr: this.include_for_clr,
         match_direction: '+',
         network: document.web3network,
@@ -944,6 +1047,9 @@ Vue.component('grants-cart', {
         saveSubscriptionPayload.token_symbol.push(tokenName);
       } // end for each donation
 
+      // to allow , within comments
+      saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
+
       // Configure request parameters
       const url = '/grants/bulk-fund';
       const headers = {
@@ -959,13 +1065,13 @@ Vue.component('grants-cart', {
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
 
-      if (json.failures.length > 0) {
-        // Something went wrong, so we create a backup of the users cart
-        await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
-      }
+      // if (json.failures.length > 0) {
+      //   // Something went wrong, so we create a backup of the users cart
+      //   await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
+      // }
 
-      // Clear JSON Store
-      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+      // // Clear JSON Store
+      // await this.manageEthereumCartJSONStore(userAddress, 'delete');
     },
 
     /**
@@ -1074,14 +1180,35 @@ Vue.component('grants-cart', {
 
     // For the provider address, an action of `save` will backup the user's Ethereum cart data with
     // a JSON store before checkout, and validate that it was saved. An action of `delete` will
-    // delete that JSON store
-    async manageEthereumCartJSONStore(userAddress, action) {
+    // delete that JSON store. The txHashes input must be undefined if no hashes are available, or
+    // or an array with the tx hash for each donation in this.donationInputs
+    async manageEthereumCartJSONStore(userAddress, action, txHashes = undefined) {
       if (action !== 'save' && action !== 'delete') {
         throw new Error("JSON Store action must be 'save' or 'delete'");
       }
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const url = 'manage-ethereum-cart-data';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+
+      // Configure data to save
+      let cartData;
+
+      if (!txHashes) {
+        // No transaction hashes were provided, so just save off the cart data directly
+        cartData = this.donationInputs;
+      } else {
+        // Add transaction hashes to each donation input object
+        if (txHashes.length !== this.donationInputs.length) {
+          throw new Error('Invalid length of transaction hashes array');
+        }
+        cartData = this.donationInputs.map((donation, index) => {
+          return {
+            ...donation,
+            txHash: txHashes[index]
+          };
+        });
+      }
+
 
       // Send request
       const payload = {
@@ -1090,7 +1217,7 @@ Vue.component('grants-cart', {
         body: new URLSearchParams({
           action,
           csrfmiddlewaretoken,
-          ethereum_cart_data: action === 'save' ? JSON.stringify(this.grantsByTenant) : null,
+          ethereum_cart_data: action === 'save' ? JSON.stringify(cartData) : null,
           user_address: userAddress
         })
       };
@@ -1230,8 +1357,6 @@ Vue.component('grants-cart', {
   },
 
   async mounted() {
-    this.isFullyVerified = document.isFullyVerified;
-
     // Show loading dialog
     this.isLoading = true;
 

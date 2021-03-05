@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define the PToken template tags.
+"""Define the Time token template tags.
 
 Copyright (C) 2020 Gitcoin Core
 
