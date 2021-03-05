@@ -148,11 +148,16 @@
           <img width="13" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
         </button>
         <p class="grant-item__pitch font-caption my-2">[[ grant.description | truncate(138) ]]</p>
-        <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
-          <span class="font-smaller-5">
+        <p class="d-flex justify-content-between font-caption mb-0">
+          <span class="font-smaller-5" data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant.">
             <i class="fas fa-fw fa-clock mt-2"></i>
             Last Update: [[ grant.last_update ?  grant.last_update_natural : `Long Ago` ]]
           </span>
+          <template v-if="isUserLogged">
+            <button @click="toggleFollowingGrant(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+            </button>
+          </template>
         </p>
         <hr class="my-2">
         <template v-if="cred.is_staff">
