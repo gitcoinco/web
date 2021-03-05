@@ -1571,7 +1571,7 @@ def grant_details_contributions(request, grant_id):
 
         contribution_json['subscription'] = {
             k: getattr(contribution.subscription, k) for k in
-            ['id', 'contributor_profile', 'token_symbol', 'amount_per_period', 'amount_per_period_minus_gas_price', 'amount_per_period_usdt', 'amount_per_period_to_gitcoin']}
+            ['id', 'contributor_profile', 'token_symbol', 'amount_per_period', 'amount_per_period_minus_gas_price', 'amount_per_period_usdt', 'amount_per_period_to_gitcoin', 'comments']}
 
 
         # contribution_json['subscription']

@@ -1,3 +1,10 @@
 .hover-underline:not(:disabled):not(.disabled):not(.active):hover {
   text-decoration: underline!important
 }
+
+.fill-space {
+  display: flex;
+  height: 100%;
+  flex-flow: column;
+  flex-grow: 1;
+}
