@@ -12,6 +12,7 @@
         </div>
         <div class="border-bottom font-smaller-3 pb-3">
 
+          <!-- Owner/Project links -->
           <div class="row">
             <div class="col-auto text-center my-auto">
               <i class="fas fa-fw fa-globe text-grey-300"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url]]</a>
@@ -144,6 +145,7 @@
             </div>
           </div>
 
+          <!-- Category Details -->
           <div class="row mt-5">
             <template v-if="grant.region && grant.region.label != 'undefined'">
               <div class="col">
@@ -171,9 +173,9 @@
             <h3 class="col-12" v-if="grant.clr_round_num && grant.is_clr_eligible">
               Grants Round [[grant.clr_round_num]]
             </h3>
-            <h2 class="col-12" v-else>
+            <h3 class="col-12" v-else>
               Not in an active CLR round
-            </h2>
+            </h3>
           </div>
           <div class="row mt-2">
             <div class="col col-4">
@@ -303,6 +305,7 @@
         {% endif %}
       </div>
 
+      <!-- Grants Team -->
       <div class="grant-team">
         <div class="">
           <h3>Team</h3>
@@ -318,6 +321,7 @@
 
     </div>
 
+    <!-- Verify Twitter (step 1) -->
     <b-modal ref="startTwitterVerification" id="modal-start-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
       <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
       <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
@@ -325,6 +329,7 @@
       <b-button v-b-modal.modal-twitter-verification size="lg" variant="gc-blue">Verify with twitter</b-button>
     </b-modal>
 
+    <!-- Verify Twitter (step 2) -->
     <b-modal ref="twitterVerification" id="modal-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
       <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
       <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
@@ -341,6 +346,7 @@
       <span class="error" id="validation-errors"></span>
     </b-modal>
 
+    <!-- Edit Grant Details -->
     <b-sidebar
       id="sidebar-grant-edit"
       title="Edit Grant"
@@ -386,7 +392,6 @@
 
           ></quill-editor>
 
-
           <div class="text-danger" v-if="errors.description">
             [[errors.description]]
           </div>
@@ -431,6 +436,7 @@
           <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="150" type="url" placeholder="https://github.com/humanfund"/>
         </div>
 
+        <!-- Team Members -->
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
           <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch"  :options="usersOptions" placeholder="Add your team Gitcoin usernames" v-model="teamFormatted" multiple>
@@ -501,10 +507,10 @@
               <div class="col-12 px-0">
 
                 <div id="contributions">
-                  <div class="align-items-center d-flex float-right" style="margin-top: 28px;">
+                  <!-- <div class="align-items-center d-flex float-right" style="margin-top: 28px;">
                     <a class="pr-2">View All</a>
                     <svg width="19" height="8" viewBox="0 0 19 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.3536 4.35355C18.5488 4.15829 18.5488 3.84171 18.3536 3.64645L15.1716 0.464465C14.9763 0.269203 14.6597 0.269203 14.4645 0.464465C14.2692 0.659727 14.2692 0.976309 14.4645 1.17157L17.2929 4L14.4645 6.82843C14.2692 7.02369 14.2692 7.34027 14.4645 7.53553C14.6597 7.73079 14.9763 7.73079 15.1716 7.53553L18.3536 4.35355ZM4.37114e-08 4.5L18 4.5L18 3.5L-4.37114e-08 3.5L4.37114e-08 4.5Z" fill="#6F3FF5"></path></svg>
-                  </div>
+                  </div> -->
                   <h3 class="py-4">
                     {% trans "Latest Contributions" %}
                   </h3>
