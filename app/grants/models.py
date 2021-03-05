@@ -275,6 +275,8 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    admin_message = models.TextField(default='', blank=True, help_text=_('An admin message that will be shown to visitors of this grant.'))
+    visible = models.BooleanField(default=True, help_text="Is grant visible on the site")
     region = models.CharField(
         max_length=30,
         null=True,
@@ -897,6 +899,7 @@ class Grant(SuperModel):
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url or '',
                 'funding_info': self.funding_info,
+                'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
             }

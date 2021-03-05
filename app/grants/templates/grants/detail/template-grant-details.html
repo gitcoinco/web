@@ -163,6 +163,16 @@
       </div>
 
       <div class="grant-managment">
+        <div class="my-0 mx-0" v-if="grant.admin_message">
+          <div class="bs-alert alert alert-warning pt-0 pb-0 pr-2 pl-2 d-flex">
+            <div class="font-body">
+              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
+              <div class="uppercase font-weight-semibold d-inline">
+                [[grant.admin_message]]
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
           <div class="bs-alert alert alert-warning pt-0 pb-0 pr-2 pl-2 d-flex">
             <div class="font-body">
