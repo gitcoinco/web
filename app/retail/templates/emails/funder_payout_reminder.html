@@ -26,7 +26,7 @@ along with this program. If not, see
   <h1>{% trans "Your funded bounty is fulfilled!" %}</h1>
 
   <p style="line-height:2;">
-    <img src="{% static " v2/images/update-notification.png" %}" style="padding: 40px 0;"><br>
+    <img src="{% static "v2/images/update-notification.png" %}" style="padding: 40px 0;"><br>
 
     {% if bounty_fulfillment.fulfiller_github_url %}
   <p>
@@ -36,8 +36,7 @@ along with this program. If not, see
     {% endblocktrans %}
   </p>
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="btn btn-primary" href="{{bounty_fulfillment.fulfiller_github_url}}?{{ utm_tracking }}">{% trans "View
-      work" %}</a><br>
+    <a class="button" href="{{bounty_fulfillment.fulfiller_github_url}}?{{ utm_tracking }}">{% trans "View work" %}</a><br>
   </div>
   {% else %}
   <br>
@@ -51,7 +50,7 @@ along with this program. If not, see
   {% endblocktrans %}
 
   <br>
-  <h4>{% trans "Funded Issue Details" %}</h4>
+  <h1>{% trans "Funded Issue Details" %}</h1>
   </p>
 
   {% include 'emails/bounty.html' with bounty=bounty %}

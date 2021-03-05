@@ -57,8 +57,6 @@ along with this program. If not, see
 </style>
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
-  <img src="{% static " v2/images/grant-ended.png" %}" alt="{% trans " Grant Ended" %}" title="{% trans " Grant Ended"
-    %}" width="75px" height="75px">
   <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled" %}.</h1>
   <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
     <img id="grant-logo"
@@ -67,8 +65,7 @@ along with this program. If not, see
   </a>
   <p>{% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}</p>
   <p class="grant-link">
-    <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">{% trans "View Inactive
-      Grant" %}</a>
+    <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">{% trans "View Inactive Grant" %}</a>
   </p>
   <br>
 

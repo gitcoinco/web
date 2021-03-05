@@ -60,7 +60,6 @@ along with this program. If not, see
     font-size: 12px;
     border-radius: 3px;
     text-decoration: none;
-    background-color: #0D0764;
     color: white;
     font-weight: 600;
   }
@@ -73,6 +72,7 @@ along with this program. If not, see
     background-color: #00D373;
     color: white;
     font-weight: 600;
+    margin-left: 1em;
   }
 
   #grant-logo {
@@ -100,12 +100,12 @@ along with this program. If not, see
   <p class="grant-description">{{ grant.description }}</p>
   <div style="text-align: center; margin-top: 2em;">
     <span>
-      <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
+      <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
         {% trans "View Your Grant" %}
       </a>
     </span>
     <span>
-      <a class="learn-more-button"
+      <a class="button" style="background-color: #00D373;"
         href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/?{{ utm_tracking }}">
         {% trans "Learn How to Maximize your Matching" %}
       </a>

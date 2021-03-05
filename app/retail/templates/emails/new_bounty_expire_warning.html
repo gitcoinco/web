@@ -25,23 +25,20 @@ along with this program. If not, see
   <h1>{% trans "Your Funded Bounty is Expiring" %}</h1>
 
 
-  <p style="color: #4A4A4A;">
+  <p>
     {% if is_owner %}
-    {% blocktrans %}Heads up! The funded issue that you posted (below) is expiring in {{ num }} {{ unit }}.{%
-    endblocktrans %}
+    Heads up! The funded issue that you posted (below) is expiring in {{ num }} {{ unit }}.
     {% else %}
-    {% blocktrans %}Heads up! The funded issue that you fulfilled (below) is expiring in {{ num }} {{ unit }}.{%
-    endblocktrans %}
+    Heads up! The funded issue that you fulfilled (below) is expiring in {{ num }} {{ unit }}.
     {% endif %}
 
     <br>
     <br>
-    <img src="{% static " v2/images/expiring_clock.png"%}" style="padding: 20px 0;">
+    <img src="{% static "v2/images/expiring_clock.png"%}" style="padding: 20px 0;">
     <br>
     <br>
     {% if is_owner %}
-    <a class="btn btn-primary" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "Extend Expiration Date"
-      %}</a>
+    <a class="button button-primary" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "Extend Expiration Date" %}</a>
     {% if bounty.status == 'submitted' %}
     <br>
     <br>
@@ -50,8 +47,7 @@ along with this program. If not, see
 
     <br>
     <br>
-    {% trans "After a funded issue has expired, a contributor is still able to submit work and you will still be able to
-    accept work." %}
+    {% trans "After a funded issue has expired, a contributor is still able to submit work and you will still be able to accept work." %}
     <br>
     <br>
     {% trans "You can also cancel the bounty on the issue details page if needed." %}
@@ -76,7 +72,7 @@ along with this program. If not, see
     {% endif %}
 
     <br>
-  <h4>{% trans "Funded Issue Details" %}</h4>
+  <h1>{% trans "Funded Issue Details" %}</h1>
   </p>
 
   <br>

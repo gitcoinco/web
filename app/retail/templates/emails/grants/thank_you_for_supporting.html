@@ -107,8 +107,7 @@ along with this program. If not, see
   {% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
   <div class="grant-header">
     <div class="left-grant-header">
-      <img src="{% static " v2/images/heart-robot.png" %}" alt="{% trans " Gitcoin Heart Robot" %}" title="{% trans "
-        Gitcoin Heart Robot" %}">
+      <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
     </div>
     <div class="right-grant-header">
       <h1 style="text-transform: none;">{% trans "Thank you for supporting" %} {{ grant.title }}!
@@ -144,13 +143,11 @@ along with this program. If not, see
   </div>
 
   <br>
-  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View
-    Updates" %}</a>
+  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Updates" %}</a>
   <br>
   <br>
   <p>{% trans "If you ever need to, you can cancel your support" %}
-    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans
-      "here." %}</a>
+    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans "here." %}</a>
   </p>
   <hr>
   {% endwith %}

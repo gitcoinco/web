@@ -140,8 +140,8 @@ along with this program. If not, see
     </h1>
     <h3 style="text-transform: none;">
       {% trans "You received a" %} <a href="{{ token_elem.kudos_token_cloned_from.url }}?{{ utm_tracking }}"><b
-          style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">{{
-          token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
+          style="  font-weight: lighter;  text-transform: capitalize;  line-height: 50px;  font-size: 1.3rem;  color: #FFF;  letter-spacing: 0;  text-align: center;">
+          {{token_elem.name|humanize_name }}</b></a> {% trans "kudos" %}
       {% if kudos_transfer.from_name %}
       {% trans "from" %} <b>{{ kudos_transfer.from_name }}</b>
       {% endif %}
@@ -188,13 +188,11 @@ along with this program. If not, see
       {% endif %}
       {% if already_redeemed %}
       <p>
-        {% trans "This kudos has been remitted automatically to the Ethereum address on file (and to your Gitcoin
-        profile). " %}
+        {% trans "This kudos has been remitted automatically to the Ethereum address on file (and to your Gitcoin profile). " %}
       </p>
       <BR>
       <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center"
-        bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}?{{ utm_tracking }}">{% trans
-        "View Profile" %}</a>
+        bgcolor="#15003e" href="https://gitcoin.co/profile/{{kudos_transfer.username}}?{{ utm_tracking }}">{% trans "View Profile" %}</a>
       <a style="color:#fff; text-decoration:none; font-size:14px; background-color:#15003e; border-radius:5px; line-height:1.5; padding:15px 20px; text-align:center"
         bgcolor="#15003e" href="https://etherscan.io/tx/{{kudos_transfer.txid}}">{% trans "View Transaction" %}</a>
 
@@ -213,14 +211,12 @@ along with this program. If not, see
         height="155">
     </div>
     <div class="col">
-      <p class="col-txt">{% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a
-        way to showcase special skills that a member might have, such as Pythonista, or Design Star." %} {% trans "Kudos
-        are non-fungible tokens that can also be bought and sold on the" %} <b>{% trans "Kudos Marketplace" %}</b>{%
-        trans "." %}</p>
+      <p class="col-txt">
+        {% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star." %} {% trans "Kudos are non-fungible tokens that can also be bought and sold on the" %} <b>{% trans "Kudos Marketplace" %}</b>{% trans "." %}</p>
     </div>
   </div>
   <div style="margin: 3em 0 5em;">
-    <a class="button" href="{% url 'kudos_about' %}?{{ utm_tracking }}">{% trans "Learn More" %}</a>
+    <a class="button large" href="{% url 'kudos_about' %}?{{ utm_tracking }}">{% trans "Learn More" %}</a>
   </div>
 </div>
 {% endblock %}

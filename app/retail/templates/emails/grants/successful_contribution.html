@@ -111,13 +111,10 @@ along with this program. If not, see
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
   <div class="grant-header">
     <div class="left-grant-Header">
-      <img src="{% static " v2/images/heart-robot.png" %}" alt="{% trans " Gitcoin Heart Robot" %}" title="{% trans "
-        Gitcoin Heart Robot" %}">
+      <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans " Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
     </div>
     <div class="right-grant-header" style="margin-top: 4em;">
-      <h1 style="text-transform: none;">{% trans "Your contribution of" %} {{
-        subscription.amount_per_period|floatformat:3|intcomma }} {{ subscription.token_symbol }} {% trans "to " %} {{
-        grant.title }} {% trans " was successful" %}!
+      <h1 style="text-transform: none;">{% trans "Your contribution of" %} {{ subscription.amount_per_period|floatformat:3|intcomma }} {{ subscription.token_symbol }} {% trans "to " %} {{ grant.title }} {% trans " was successful" %}!
       </h1>
       <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
       </h2>
@@ -158,13 +155,11 @@ along with this program. If not, see
   </div>
 
   <br>
-  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Grant"
-    %}</a>
+  <a class="grant-button" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Grant" %}</a>
   <br>
   <br>
   <p>{% trans "If you ever need to, you can cancel your support" %}
-    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans
-      "here." %}</a>
+    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans "here." %}</a>
   </p>
   <hr>
 

@@ -119,8 +119,7 @@ along with this program. If not, see
 
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
-  <img src="{% static " v2/images/update-notification.png" %}" alt="{% trans " Update!" %}" title="{% trans " Update!"
-    %}">
+  <img src="{% static "v2/images/update-notification.png" %}" alt="{% trans " Update!" %}" title="{% trans " Update!" %}">
   <h1 style="margin-bottom:1.25rem;">{% trans "An update has been posted for:" %}</h1>
   <div class="grant-info">
     <a href="{% url 'grants:details' grant.id grant.slug %}">
@@ -140,8 +139,7 @@ along with this program. If not, see
 
     <div class="grant-update">
       <div class="grant-update-icon">
-        <img src="{% static " v2/images/file-text.png" %}" alt="{% trans " New Grant Update." %}" title="{% trans " New
-          Grant Update" %}">
+        <img src="{% static "v2/images/file-text.png" %}" alt="{% trans " New Grant Update." %}" title="{% trans " New Grant Update" %}">
       </div>
       <div class="grant-update-content">
         <h3>{{ activity.title }}</h3>
