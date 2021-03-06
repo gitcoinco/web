@@ -211,7 +211,7 @@
       <!-- Grant Management -->
       <div class="grant-managment">
         <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
-          <div class="bs-alert alert alert-warning pt-2 pb-0 pr-2 pl-2 d-flex">
+          <div class="bs-alert alert alert-warning pt-2 pb-2 pr-2 pl-2 d-flex">
             <div class="text-center">
               <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
               <div class="d-inline-block uppercase">
@@ -242,7 +242,7 @@
       </div>
 
       <!-- CLR details and Add-to/remove-from cart -->
-      <div class="grant-checkout rounded shadow-sm bg-white p-3 border">
+      <div class="grant-checkout rounded shadow-sm bg-white px-3 pt-3 pb-2 border">
         <div v-if="grant.clr_prediction_curve?.length" style="max-width: 250px;" :class="`mx-auto mb-3 mt-2 position-relative${grant.clr_round_num && grant.is_clr_eligible ? '' : ' clr-disabled'}`">
           <svg width="145" height="77" viewBox="0 0 145 77" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1.15491 76.0846C1.15491 22.2514 19.2304 -0.706763 108.423 1.27248" stroke="#C4C1CF" stroke-width="2"/>
@@ -590,29 +590,28 @@
   }
 
   .grid-template-sidebar {
+    gap: 1.2em;
     grid-template-areas:
       "grant-data"
       "grant-managment"
       "grant-checkout"
       "grant-team"
       "grant-team";
-    gap: 1.5em;
   }
 
   .grid-template-sidebar-row {
+    gap: 1.2em;
     grid-template-areas: "grant-data";
-    gap: 1.5em;
   }
 
   @media (min-width: 960px) {
     .grid-template-sidebar {
+      grid-auto-columns: 1fr 1fr 1fr 1.2fr;
       grid-template-areas:
         "grant-data grant-data grant-data grant-managment"
         "grant-data grant-data grant-data grant-checkout"
         "grant-data grant-data grant-data grant-team"
         "grant-data grant-data grant-data grant-team";
-      gap: 1.5em;
-      grid-auto-columns: 1fr 1fr 1fr 1.2fr;
     }
 
     .grid-template-sidebar-row {
