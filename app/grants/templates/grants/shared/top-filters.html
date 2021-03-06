@@ -45,7 +45,7 @@
         </div>
 
       </div>
-      <div class="mr-4" v-if="current_type !== 'collections'">
+      <div class="mr-4" v-if="current_type !== 'collections' && !(current_type === 'all' && !clr_round_pk)">
         <button class="btn btn-outline-primary font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
       </div>
     </div>

@@ -78,7 +78,8 @@
               All Grants
             </a>
           </li>
-          <template v-for="grant_type in grant_types" v-if="grant_type.is_visible">
+
+          <template v-for="grant_type in grant_types" v-if="grant_type.is_visible || round_num">
             <li class="mr-1 d-flex">
               <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" :class="`d-inline-block text-truncate mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
                 <template v-if="grant_type.funding_ui != '$0k'">
