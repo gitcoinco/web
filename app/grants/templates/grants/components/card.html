@@ -210,7 +210,15 @@
                 raised from [[ grant.positive_round_contributor_count ]] contributors
               </p>
             </div>
-            <div class="col-6" v-if="grant.clr_round_num">
+            <div class="col" v-else>
+              <p class="text-black h4 gc-font-base">
+                $[[amount_received || 0 | round | formatNumber]]
+              </p>
+              <p>
+                total raised
+              </p>
+            </div>
+            <div class="col" v-if="grant.clr_round_num">
 
               <template v-if="grant.is_clr_eligible">
                 <p class="font-body">
