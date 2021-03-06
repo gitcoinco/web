@@ -399,16 +399,14 @@ if (document.getElementById('grants-showcase')) {
           if (getGrants.collections.length > 0) {
             this.activeCollection = getGrants.collections[0];
           }
+        } else if (this.current_type === 'collections') {
+          getGrants.collections.forEach(function(item) {
+            vm.collections.push(item);
+          });
         } else {
-          if (this.current_type === 'collections') {
-            getGrants.collections.forEach(function(item) {
-              vm.collections.push(item);
-            });
-          } else {
-            vm.collections = getGrants.collections;
-          }
-
+          vm.collections = getGrants.collections;
         }
+
         vm.credentials = getGrants.credentials;
         vm.grant_types = getGrants.grant_types;
         vm.contributions = getGrants.contributions;

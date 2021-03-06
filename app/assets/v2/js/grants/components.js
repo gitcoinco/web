@@ -1,7 +1,7 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
   props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions',
-    'contributions', 'toggle_following', 'collection',
+    'contributions', 'toggle_following', 'collection'
   ],
   data: function() {
     return {
@@ -105,7 +105,7 @@ Vue.component('grant-card', {
   computed: {
     has_collections() {
       return this.collections.length;
-    },
+    }
 
   },
   mounted() {

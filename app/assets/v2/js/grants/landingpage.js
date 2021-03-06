@@ -1,6 +1,6 @@
-let grantsNumPages = '';
-let grantsHasNext = false;
-let numGrants = '';
+const grantsNumPages = '';
+const grantsHasNext = false;
+const numGrants = '';
 
 $(document).ready(() => {
   $('#sort_option').select2({
@@ -121,7 +121,6 @@ if (document.getElementById('grants-showcase')) {
       grantsHasNext,
       numGrants,
       mainBanner: document.current_style
-
     },
     methods: {
       toggleActiveCLRs() {
@@ -143,7 +142,7 @@ if (document.getElementById('grants-showcase')) {
         this.updateURI();
       },
       updateURI: function() {
-        let vm = this;
+        const vm = this;
         const q = vm.getQueryParams();
 
         if (vm.round_num) {
@@ -167,7 +166,7 @@ if (document.getElementById('grants-showcase')) {
             window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
           }
         } else {
-          let uri = '/grants/explorer/';
+          const uri = '/grants/explorer/';
 
           if (this.current_type === 'collections') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
@@ -294,7 +293,7 @@ if (document.getElementById('grants-showcase')) {
         this.fetchGrants();
       },
       fetchGrants: async function(page, append_mode) {
-        let vm = this;
+        const vm = this;
 
         if (this.lock)
           return;
@@ -388,7 +387,7 @@ if (document.getElementById('grants-showcase')) {
         return vm.grants;
       },
       scrollEnd: async function(event) {
-        let vm = this;
+        const vm = this;
 
         const scrollY = window.scrollY;
         const visible = document.documentElement.clientHeight;
@@ -466,7 +465,8 @@ if (document.getElementById('grants-showcase')) {
       });
     },
     mounted() {
-      let vm = this;
+      const vm = this;
+
       vm.current_type = 'collections';
 
       vm.fetchGrants(vm.page);
@@ -531,7 +531,7 @@ $(document).on('click', '.following-action', async(e) => {
   const grantId = element.data('grant');
   const favorite_url = `/grants/${grantId}/favorite`;
 
-  let response = await fetchData(favorite_url, 'POST');
+  const response = await fetchData(favorite_url, 'POST');
 
   if (response.action === 'follow') {
     element.find('i').addClass('fa');
