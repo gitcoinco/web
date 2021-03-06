@@ -160,24 +160,24 @@
             <template v-if="grant.region && grant.region.label != 'undefined'">
               <div class="col">
                 <span class="px-2">Region</span>
-                <a :href="`/grants/${item.fields.name}`" v-for="item in grant.grant_type" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.label]]</a>
+                <span class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[grant.region.label]]</span>
               </div>
             </template>
             <div class="col">
               <span class="px-2">Category</span>
-              <a :href="`/grants/${item.fields.name}`" v-for="item in grant.grant_type" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.label]]</a>
+              <a :href="`/grants/explorer/${item.fields.name}`" v-for="item in grant.grant_type" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.label]]</a>
             </div>
             <template v-if="grant.categories && grant.categories.length > 0">
               <div class="col">
                 <span class="px-2">Subcategory</span>
-                <a :href="`/grants/${grant.grant_type[0].fields.name}?category=${item.fields.category}`" v-for="item in grant.categories" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.category]]</a>
+                <a :href="`/grants/explorer/${grant.grant_type[0].fields.name}?category=${item.fields.category}`" v-for="item in grant.categories" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.category]]</a>
               </div>
             </template>
           </div>
 
         </div>
 
-        <!-- CLR details -->
+        <!-- CLR details [[grant.positive_round_contributor_count]] -->
         <div class="border-bottom mt-3 pb-3">
           <div class="row">
             <h3 class="col-12" v-if="grant.clr_round_num && grant.is_clr_eligible">
@@ -190,7 +190,7 @@
           <div class="row mt-2">
             <div class="col col-4">
               <h2>$[[grant.amount_received | round ]]</h2>
-              <span>raised from [[grant.positive_round_contributor_count]] contributors</span>
+              <span>raised from all contributors</span>
             </div>
             <div v-if="[[ grant?.clr_prediction_curve?.[0]?.[1] ]] > 0" class="col col-4">
               <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
