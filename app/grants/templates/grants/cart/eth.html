@@ -3,14 +3,7 @@
 <b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
 
-  <div class="row justify-content-between align-items-center flex-nowrap mt-4 text-muted text-left d-none d-md-flex">
-    <div class="col-10 col-md-4"><small>Grant</small></div>
-    <div class="col-7 col-md-3 pl-0"><small>Amount</small></div>
-    <div class="col col-md-3 offset-md-1 pl-0 ml-5"><small>Estimated QF Match</small></div>
-    <div class="col-auto"></div>
-  </div>
-
-  <div v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
+  <div class="mt-5" v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
     <div class="row justify-content-between align-items-center mt-4 ml-1">
       <!-- ALL DEVICES: Grant name and logo -->
       <div class="col-10 col-md-4 align-self-start">
@@ -34,7 +27,7 @@
       <!-- ALL DEVICES: Contribution amount and currency-->
       <div class="col-8 col-md-3 d-block mt-2 mt-md-0">
         <div class="row align-items-center form-inline">
-          <input v-model="grant.grant_donation_amount" class="col-auto form-control w-50 pr-1" type="number" min="0" step="any" placeholder="Amount" />
+          <input v-model="grant.grant_donation_amount" class="col-auto form-control w-50" dir="rtl" style="text-indent: 0.2rem;" type="number" min="0" step="any" placeholder="Amount" />
           <div class="flex-shrink-0 w-50 pl-1" style="min-width:60px;">
             <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" style="height: 38px;">
               <template v-slot:option="option">
@@ -81,12 +74,12 @@
       </div>
     </div>
 
-    <hr class="my-5">
+    <hr class="mt-5">
 
   </div>
 
   <!-- Cart total -->
-  <div class="row justify-content-between text-left">
+  <div class="row justify-content-between text-left mt-5">
     <div class="col-12 col-md-auto mr-3"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
     <div class="col-12 col-md text-left"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
     {% comment %} <div class="col d-none d-md-block"></div>
