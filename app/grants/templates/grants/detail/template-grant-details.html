@@ -19,7 +19,7 @@
             </div>
             <div class="col-auto text-center my-auto">
               <i class="text-grey-300 fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
-              <span v-if="grant.verified" class="py-0 position-relative px-0 btn btn-sm animate-verify" id="tooltip-verify">
+              <span v-if="grant.verified" class="py-0 position-relative px-0 btn" id="tooltip-verify">
                 <b-tooltip target="tooltip-verify" triggers="hover" variant="light">
                   <p class="h6 my-2 text-left">
                     Verified Ownership
