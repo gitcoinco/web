@@ -1268,7 +1268,7 @@ Vue.component('grants-cart', {
       try {
 
         response = await fetchData('/grants/v1/api/collections/new', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
-        const redirect = `/grants/collections?collection_id=${response.collection.id}`;
+        const redirect = `/grants/explorer/collections?collection_id=${response.collection.id}`;
 
         _alert('Congratulations, your new collection was created successfully!', 'success');
         this.cleanCollectionModal();
