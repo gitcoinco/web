@@ -348,7 +348,7 @@
   color: #BBBDBF;
 }
 
-.grants_landing .grants-results{
+.grants-results{
   text-align: center;
 }
 .grant-item {
@@ -683,4 +683,16 @@
   img {
     width: 90px;
   }
+}
+
+
+.vselect-clean .vs__search::placeholder,
+.vselect-clean .vs__dropdown-toggle,
+.vselect-clean .vs__dropdown-menu {
+  border: none;
+}
+
+.vselect-clean .vs__clear,
+.vselect-clean .vs__open-indicator {
+  transform: scale(0.8);
 }

@@ -90,8 +90,8 @@
   color: rgba(0, 0, 0, 0.7)!important;
 }
 
-.text-grey-300 { 
-  color: #A7A2B6; 
+.text-grey-300 {
+  color: #A7A2B6;
 }
 
 .text-grey-400 {
@@ -331,8 +331,8 @@
   text-decoration: underline;
 }
 
-.footer__notification {
-  margin-top: -64px;
+.footer__notification:empty {
+  display: none;
 }
 
 .left-0 {

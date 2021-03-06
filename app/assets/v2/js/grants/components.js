@@ -94,7 +94,7 @@ Vue.component('grant-card', {
       showSideCart();
     },
     addToCollection: async function({collection, grant}) {
-      const collectionAddGrantURL = `v1/api/collections/${collection.id}/grants/add`;
+      const collectionAddGrantURL = `/grants/v1/api/collections/${collection.id}/grants/add`;
       const response = await fetchData(collectionAddGrantURL, 'POST', {
         'grant': grant.id
       });
@@ -132,7 +132,7 @@ Vue.component('grant-collection', {
       window.getSelection().removeAllRanges();
     },
     addToCart: async function() {
-      const collectionDetailsURL = `v1/api/collections/${this.collection.id}`;
+      const collectionDetailsURL = `/grants/v1/api/collections/${this.collection.id}`;
       const collection = await fetchData(collectionDetailsURL, 'GET');
 
       (collection.grants || []).forEach((grant) => {

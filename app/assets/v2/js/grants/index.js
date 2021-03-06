@@ -4,9 +4,6 @@ let numGrants = '';
 
 
 $(document).ready(() => {
-  $('#sort_option').select2({
-    minimumResultsForSearch: Infinity
-  });
 
   if ($('.grants_type_nav').length) {
     localStorage.setItem('last_grants_index', document.location.href);
@@ -16,21 +13,6 @@ $(document).ready(() => {
     localStorage.setItem('last_all_grants_index', document.location.href);
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
   }
-
-  $('#wall_of_love .show_more_wall_of_love').click(function(e) {
-    $('#wall_of_love .hidden').removeClass('hidden');
-    $(this).remove();
-    e.preventDefault();
-  });
-
-  $('.select2-selection__rendered').removeAttr('title');
-
-  waitforWeb3(() => {
-    let _network = $('#grant-network').html();
-    let links = $('.etherscan_link');
-
-    etherscanUrlConvert(links, _network);
-  });
 
   window.addEventListener('scroll', function() {
     if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
@@ -114,6 +96,7 @@ if (document.getElementById('grants-showcase')) {
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
     data: {
+      activePage: document.activePage,
       grants: [],
       grant: {},
       page: 1,
@@ -425,10 +408,10 @@ if (document.getElementById('grants-showcase')) {
             vm.collections = getGrants.collections;
           }
 
-          vm.credentials = getGrants.credentials;
-          vm.grant_types = getGrants.grant_types;
-          vm.contributions = getGrants.contributions;
         }
+        vm.credentials = getGrants.credentials;
+        vm.grant_types = getGrants.grant_types;
+        vm.contributions = getGrants.contributions;
 
         vm.grantsNumPages = getGrants.num_pages;
         vm.grantsHasNext = getGrants.has_next;
@@ -504,7 +487,7 @@ if (document.getElementById('grants-showcase')) {
         this.cart_lock = false;
       },
       removeCollection: async function({collection, grant, event}) {
-        const getGrants = await fetchData(`v1/api/collections/${collection.id}/grants/remove`, 'POST', {
+        const getGrants = await fetchData(`/grants/v1/api/collections/${collection.id}/grants/remove`, 'POST', {
           'grant': grant.id
         });
 
@@ -513,7 +496,7 @@ if (document.getElementById('grants-showcase')) {
     },
     computed: {
       isGrantExplorer() {
-        return (window.location.pathname == '/grants/explorer/');
+        return (this.activePage == 'grants_explorer');
       },
       isUserLogged() {
         let vm = this;
@@ -539,15 +522,6 @@ if (document.getElementById('grants-showcase')) {
 
       this.fetchGrants(this.page);
 
-      $('#sort_option2').select2({
-        minimumResultsForSearch: Infinity,
-        templateSelection: function(data, container) {
-          // Add custom attributes to the <option> tag for the selected option
-          vm.filter_grants({sort: data.id});
-
-          return data.text;
-        }
-      });
     }
   });
 }

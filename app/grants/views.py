@@ -899,6 +899,7 @@ def grants_landing(request):
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
 
     params = {
+        'active': 'grants_landing',
         'network': network,
         'grant_bg': get_branding_info(request),
         'title': 'Grants',
@@ -1034,7 +1035,7 @@ def grants_by_grant_type(request, grant_type):
 
 
     params = {
-        'active': 'grants_landing',
+        'active': 'grants_explorer',
         'title': title,
         'sort': sort,
         'network': network,

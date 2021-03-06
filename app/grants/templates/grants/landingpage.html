@@ -120,6 +120,7 @@ along with this program. If not, see
     document.featured = {{ featured|yesno:'true,false' }};
     document.collection_id = {{ collection_id|default:'null' }};
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
+    document.activePage = "{{ active }}";
 
     {% if clr_round %}
       document.round_num = "{{clr_round.round_num}}";

@@ -86,6 +86,7 @@ if (document.getElementById('grants-showcase')) {
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
     data: {
+      activePage: document.activePage,
       grants: [],
       grant: {},
       page: 1,
@@ -451,7 +452,7 @@ if (document.getElementById('grants-showcase')) {
     },
     computed: {
       isLandingPage() {
-        return (window.location.pathname == '/grants/');
+        return (this.activePage == 'grants_landing');
       }
     },
     beforeMount() {
