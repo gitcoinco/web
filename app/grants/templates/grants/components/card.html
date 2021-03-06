@@ -17,7 +17,6 @@
 {% load i18n static humanize grants_extra %}
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
             :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
-            :has_collections="collections.length"
             v-on:collection:remove='removeCollection'>
   <template>
     <div v-if="view == 'list'">
