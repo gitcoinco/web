@@ -285,7 +285,7 @@ button:focus {
 }
 
 .btn-radio.active {
-  border-color: #3E00FF;
+  border-color: #6F3FF5;
 }
 
 .btn-radio i {
@@ -305,5 +305,6 @@ button:focus {
 
 .btn-gc-grey:not(:disabled):not(.disabled).active {
   color: white;
-  background-color: #5300ff;
+  background-color: #6f3ef5;
+  border-color: #6F3FF5;
 }

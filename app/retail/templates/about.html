@@ -28,114 +28,114 @@
     {% endcompress %}
   </head>
   <body class="{{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class=" header">
-      {% include 'home/nav.html' %}
-      {% include 'shared/minihero.html' with h1='About' %}
-    </div>
-    <div id="team" class="container-fluid section">
-      <div class="row">
-        <div class="col-12 mb-4">
-          <h4 class="font-heading">{% trans "We are Proudly" %}</h4>
-          <p class="font-subheader caption">{% trans "Owned &amp; Built By Open Source Software Developers" %}</p>
-          <p class="font-subheader ">{% trans "*For* Open Source Software Developers" %}</p>
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class=" header">
+        {% include 'home/nav.html' %}
+        {% include 'shared/minihero.html' with h1='About' %}
       </div>
-      <div class="row">
-          {% for name, role, handle, linkedin, feature, food, fname, rpgname, twitter_handle, show_aka in core_team %}
-            <div class="col-10 col-md-6 col-lg-3 mx-auto">
-              <div class="card">
-                {%  if handle %}
-                <a href="/profile/{{handle}}" data-usercard="{{handle}}">
-                {% endif %}
-                 {% if fname %}
-                  <img class="avatar {{fname}} mx-auto" src="/static/v2/images/team/{{fname}}.png">
-                  {% else %}
-                  <img class="avatar alt_avatar mx-auto" src="/dynamic/avatar/{{handle}}">
+      <div id="team" class="container-fluid section">
+        <div class="row">
+          <div class="col-12 mb-4">
+            <h4 class="font-heading">{% trans "We are Proudly" %}</h4>
+            <p class="font-subheader caption">{% trans "Owned &amp; Built By Open Source Software Developers" %}</p>
+            <p class="font-subheader ">{% trans "*For* Open Source Software Developers" %}</p>
+          </div>
+        </div>
+        <div class="row">
+            {% for name, role, handle, linkedin, feature, food, fname, rpgname, twitter_handle, show_aka in core_team %}
+              <div class="col-10 col-md-6 col-lg-3 mx-auto">
+                <div class="card">
+                  {%  if handle %}
+                  <a href="/profile/{{handle}}" data-usercard="{{handle}}">
                   {% endif %}
-                {%  if handle %}
-                </a>
-                {% endif %}
-                {%  if handle %}
-                  <p class="name">
-                  (
-                  {%  if show_aka %}
-                  aka .. 
-                  {% endif %}
-                   <a style="font-weight:888; font-size: 16px;" href="/profile/{{handle}}">@{{handle}}</a> )</p>
-                {%  elif twitter_handle %}
-                  <p class="name">
-                    <a style="font-weight:888; font-size: 16px;" href="https://twitter.com/{{twitter_handle}}" rel=nofollow>@{{twitter_handle}}</a> )</p>
-                {% endif %}
-                <p class="role font-caption">{{rpgname}} <span>({{role}})</span></p>
-                <p class="font-caption">
-                  <span class="title">Favorite Gitcoin Feature</span></br>
-                  <span class="desc">{{feature}}</span>
-                </p>
-                {%  if food %}
-                  <p class="font-caption">
-                    <span class="title">Favorite Food</span></br>
-                    <span class="desc">{{food}}</span>
-                  </p>
-                {% endif %}
-                <div class="social-links">
-                  {%  if linkedin %}
-                    <a rel=nofollow href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
-                  {% endif %}
-                  {%  if twitter_handle %}
-                    <a rel=nofollow href="https://www.twitter.com/{{twitter_handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                  {% if fname %}
+                    <img class="avatar {{fname}} mx-auto" src="/static/v2/images/team/{{fname}}.png">
+                    {% else %}
+                    <img class="avatar alt_avatar mx-auto" src="/dynamic/avatar/{{handle}}">
+                    {% endif %}
+                  {%  if handle %}
+                  </a>
                   {% endif %}
                   {%  if handle %}
-                    <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
-                    <a rel=nofollow href="https://github.com/{{handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                    <p class="name">
+                    (
+                    {%  if show_aka %}
+                    aka .. 
+                    {% endif %}
+                    <a style="font-weight:888; font-size: 16px;" href="/profile/{{handle}}">@{{handle}}</a> )</p>
+                  {%  elif twitter_handle %}
+                    <p class="name">
+                      <a style="font-weight:888; font-size: 16px;" href="https://twitter.com/{{twitter_handle}}" rel=nofollow>@{{twitter_handle}}</a> )</p>
                   {% endif %}
+                  <p class="role font-caption">{{rpgname}} <span>({{role}})</span></p>
+                  <p class="font-caption">
+                    <span class="title">Favorite Gitcoin Feature</span></br>
+                    <span class="desc">{{feature}}</span>
+                  </p>
+                  {%  if food %}
+                    <p class="font-caption">
+                      <span class="title">Favorite Food</span></br>
+                      <span class="desc">{{food}}</span>
+                    </p>
+                  {% endif %}
+                  <div class="social-links">
+                    {%  if linkedin %}
+                      <a rel=nofollow href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                    {% endif %}
+                    {%  if twitter_handle %}
+                      <a rel=nofollow href="https://www.twitter.com/{{twitter_handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                    {% endif %}
+                    {%  if handle %}
+                      <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
+                      <a rel=nofollow href="https://github.com/{{handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
+            {% endfor %}
+          <div class="col-10 col-md-6 col-lg-3 mx-auto">
+              <div class="card">
+                <a href="/jobs">
+                  <img class="avatar jobs" src="/static/v2/images/team/jobs.png">
+                </a>
+                <p class="name">@You?</p>
+                <p class="role font-caption">Working on something important.</p>
+                <p class="role font-caption">With People Like You..</p>
+                <p class="role font-caption">At a Market Rate Salary</p>
+                <p class="role font-caption"><a href="/jobs">See Openings</a></p>
+              </div>
             </div>
-          {% endfor %}
-        <div class="col-10 col-md-6 col-lg-3 mx-auto">
-            <div class="card">
-              <a href="/jobs">
-                <img class="avatar jobs" src="/static/v2/images/team/jobs.png">
-              </a>
-              <p class="name">@You?</p>
-              <p class="role font-caption">Working on something important.</p>
-              <p class="role font-caption">With People Like You..</p>
-              <p class="role font-caption">At a Market Rate Salary</p>
-              <p class="role font-caption"><a href="/jobs">See Openings</a></p>
-            </div>
-          </div>
-      </div>
-    </div>
-
-    </div>
-
-    <div class="container-fluid p-5 whatisit_container">
-      {% include 'shared/what_is_gitcoin.html' with title="What is Gitcoin?" video='DJartWzDn0E' %}
-    </div>
-
-    <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
-      <div class="row">
-        <div class="col pb-4">
-          <h4 >{% trans "Mission-Driven" %}</h4>
-          <h6 class="text-center">{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
         </div>
       </div>
-      <div class="row">
-        <div class="col d-flex flex-column pb-5">
-          <div class="p-4 text-center">
-            {% include 'shared/tree.html' %}
+
+
+      <div class="container-fluid p-5 whatisit_container">
+        {% include 'shared/what_is_gitcoin.html' with title="What is Gitcoin?" video='DJartWzDn0E' %}
+      </div>
+
+      <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
+        <div class="row">
+          <div class="col pb-4">
+            <h4 >{% trans "Mission-Driven" %}</h4>
+            <h6 class="text-center">{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
           </div>
-          <div class="col mb-2">
-            <a class="button button--primary" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
+        </div>
+        <div class="row">
+          <div class="col d-flex flex-column pb-5">
+            <div class="p-4 text-center">
+              {% include 'shared/tree.html' %}
+            </div>
+            <div class="col mb-2">
+              <a class="btn btn-primary" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
+            </div>
           </div>
         </div>
       </div>
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
     </div>
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    
   </body>
 </html>

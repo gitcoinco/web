@@ -3014,8 +3014,6 @@ class Profile(SuperModel):
     @property
     def sybil_score_str(self):
         _map = {
-            -2: 'Error',
-            -1: 'N/A',
             0: 'Low',
             1: 'Med-Low',
             2: 'Med',
@@ -3024,6 +3022,8 @@ class Profile(SuperModel):
             5: 'Very High',
         }
         score = self.sybil_score
+        if score < 0:
+            return f'VeryX{abs(score)} Low'
         if score > 5:
             return f'VeryX{score} High'
         return _map.get(score, "Unknown")

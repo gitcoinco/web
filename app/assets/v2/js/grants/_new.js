@@ -26,7 +26,7 @@ Vue.mixin({
                   </div>
                   ${docArticle}
                   <div class="col-12 my-4 d-flex justify-content-around">
-                    <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
                   </div>
                 </div>
               </div>

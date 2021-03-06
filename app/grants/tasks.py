@@ -36,7 +36,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     # this will prevent tasks on grants that have been issued from an app server from being immediately 
     # rewritten by the celery server.  not elegant, but it works.  perhaps in the future,
     # a delay could be introduced in the call of the task, not the task itself.
-    time.sleep(1)
+    time.sleep(3)
 
     # setup
     print(lineno(), round(time.time(), 2))
@@ -332,7 +332,20 @@ def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None
 
 @app.shared_task(bind=True, max_retries=3)
 def process_grant_creation_email(self, grant_id, profile_id):
-    grant = Grant.objects.get(pk=grant_id)
-    profile = Profile.objects.get(pk=profile_id)
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        profile = Profile.objects.get(pk=profile_id)
 
-    new_grant(grant, profile)
+        new_grant(grant, profile)
+    except Exception as e:
+        print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_grant_creation_admin_email(self, grant_id):
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+
+        new_grant_admin(grant)
+    except Exception as e:
+        print(e)

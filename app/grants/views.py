@@ -72,7 +72,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
     GrantType, MatchPledge, PhantomFunding, Subscription,
 )
-from grants.tasks import process_grant_creation_email, update_grant_metadata
+from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -493,6 +493,12 @@ def bulk_grants_for_cart(request):
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
 
+    try:
+        clr_round_pk = request.GET.get('clr_round')
+        clr_round = GrantCLR.objects.get(pk=clr_round_pk)
+    except GrantCLR.DoesNotExist:
+        clr_round = None
+
     filters = {
         'request': request,
         'grant_type': grant_type,
@@ -504,6 +510,7 @@ def bulk_grants_for_cart(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
+        'clr_round': clr_round,
         'omit_my_grants': True
     }
     _grants = build_grants_by_type(**filters)
@@ -677,8 +684,20 @@ def get_grants(request):
     })
 
 
-def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
-                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False, clr_round=None):
+def build_grants_by_type(
+    request, 
+    grant_type='',
+    sort='weighted_shuffle',
+    network='mainnet',
+    keyword='',
+    state='active',
+    category='', 
+    following=False, 
+    idle_grants=False,
+    only_contributions=False,
+    omit_my_grants=False,
+    clr_round=None
+):
     print(" " + str(round(time.time(), 2)))
 
     sort_by_clr_pledge_matching_amount = None
@@ -1890,7 +1909,9 @@ def grant_new(request):
             'last_update': timezone.now(),
             'admin_profile': profile,
             'logo': logo,
-            'hidden': False,
+            'hidden': True,
+            'active': False,
+            'is_clr_eligible': False,
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
@@ -1930,11 +1951,15 @@ def grant_new(request):
 
         messages.info(
             request,
-            _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
+            _('Thank you for posting this Grant. Our team reviews each grant before it goes live on the website. This process takes 1-2 business days.')
         )
 
-        record_grant_activity_helper('new_grant', grant, profile)
+        if grant.active:
+            record_grant_activity_helper('new_grant', grant, profile)
+        
+        # send email to creator and admin
         process_grant_creation_email.delay(grant.pk, profile.pk)
+        process_grant_creation_admin_email.delay(grant.pk)
 
         response = {
             'status': 200,

@@ -877,7 +877,7 @@ $(document).ready(function() {
                 <i class="far fa-fw fa-smile"></i>
               </button>
             </div>
-            <a href=# class="btn btn-gc-blue btn-sm mt-3 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+            <a href=# class="btn btn-primary btn-sm mt-3 font-smaller-7 post_comment">COMMENT</a>
           </div>
         </div>
       `;
@@ -1027,7 +1027,7 @@ $(document).ready(function() {
     let comment_id = $(this).data('pk');
     let commentContainer = $(`.comment_row[data-id="${comment_id}"] .activity_comments_main_comment`);
     let content = commentContainer.html().replace(/<br>/g, '\n').trim();
-    let editableContainer = $(`<div id="editableContainer" class="col-12 col-sm-12 text-right"><textarea class="form-control bg-lightblue font-caption editableComment" cols="80" rows="3" data-id="${comment_id}">${content}</textarea><a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold cancel_edit" data-id="${comment_id}">CANCEL</a></div>`);
+    let editableContainer = $(`<div id="editableContainer" class="col-12 col-sm-12 text-right"><textarea class="form-control bg-lightblue font-caption editableComment" cols="80" rows="3" data-id="${comment_id}">${content}</textarea><a href=# class="btn btn-primary btn-sm mt-2 font-smaller-7 cancel_edit" data-id="${comment_id}">CANCEL</a></div>`);
 
     $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', true).addClass('hidden');
     $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
