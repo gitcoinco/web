@@ -18,7 +18,7 @@ def find_txn_on_harmony_explorer(fulfillment):
         return None
 
 
-    url = f'https://explorer.harmony.one:8888/address?id={payeeAddress}&pageIndex=0&pageSize=20'
+    url = f'https://explorer.hmny.io:8888/address?id={payeeAddress}&pageIndex=0&pageSize=20'
 
 
     response = requests.get(url).json()
@@ -54,7 +54,7 @@ def get_harmony_txn_status(fulfillment):
     if not txnid or txnid == "0x0":
         return None
 
-    url = f'https://explorer.harmony.one:8888/tx?id={txnid}'
+    url = f'https://explorer.hmny.io:8888/tx?id={txnid}'
 
 
     response = requests.get(url).json()

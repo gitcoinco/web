@@ -37,139 +37,139 @@
     </style>
   </head>
   <body class="{{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-    </div>
-
-    <div class="row metamask-banner">
-      <div class="col-12">
-        {% include 'shared/no_issue_error.html' with page='kill_bounty' %}
-        {% if is_bounties_network %}
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-          {% include 'shared/connect_metamask.html' %}
-        {% endif %}
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/nav.html' %}
       </div>
-    </div>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12 mb-5">
-          <div class="row">
-            <div id="robot_error" class="hidden">
-              <img src="{% static "v2/images/prime.png" %}" alt="Prime">
-            </div>
-            <div class="mt-5" id="primary_form">
-              <div class="media">
-                <div class="align-self-center ">
-                  <img src="{% static "v2/images/helmet_front.png" %}" alt="Helmet front">
-                </div>
-                <div class="media-body align-self-center">
-                  <h4 class="text-left">{% trans "Cancel Bounty and Reclaim Funds" %}</h4>
-                  <p>{% trans "(Issue Submitters only)" %}</p>
-                </div>
+      <div class="row metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_issue_error.html' with page='kill_bounty' %}
+          {% if is_bounties_network %}
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            {% include 'shared/connect_metamask.html' %}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 mb-5">
+            <div class="row">
+              <div id="robot_error" class="hidden">
+                <img src="{% static "v2/images/prime.png" %}" alt="Prime">
               </div>
-              <p class="mt-2">{% trans "Once you cancel, you will receive the funds & you can reuse it for your next bounty." %}</p>
-              <form id="cancelBounty" class="font-smaller-2">
-                <div class="w-100">
-                  <p class="font-caption font-weight-semibold">
-                    <a class="link" href="{{ bounty.url }}">
-                      <i class="fas fa-chevron-left mr-2"></i>
-                      {% trans "Back to Bounty" %}
-                    </a>
-                  </p>
-                  <label class="form__label mb-0" for="issueURL">{% trans "Issue URL" %}</label>
-                  <input name='issueURL' id="issueURL" class="form__input border-0 font-subheader px-lg-0" type="url" 
-                    required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}"
-                  />
-                </div>
-
-                <div class="my-4">
-                  <h6>{% trans "Reason" %}</h6>
-                  <p>
-                      {% trans "Please let us know why you cancelled the bounty" %}
-                  </p>
-                  <div class="options">
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_1" type="radio" value="1- Solved issue" />
-                      <label class="filter-label" for=reason_1>{% trans "An alternative commit, patch, or solution solved the issue." %}</label>
-                    </div>
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_2" type="radio" value="2- Scope changed" />
-                      <label class="filter-label" for=reason_2>{% trans "The scope of work changed." %}</label>
-                    </div>
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_3" type="radio" value="3- Internal solution" />
-                      <label class="filter-label" for=reason_3>{% trans "The bounty was brought to our internal team." %}</label>
-                    </div>
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_4" type="radio" value="4- Abandoned bounty" />
-                      <label class="filter-label" for=reason_4>{% trans "The bounty had no workers and/or was consistently abandoned." %}</label>
-                    </div>
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_5" type="radio" value="5- Bad work submitted" />
-                      <label class="filter-label" for=reason_5>{% trans "The quality of submitted work was not up to par." %}</label>
-                    </div>
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_6" type="radio" value="6- Not needed anymore" />
-                      <label class="filter-label" for=reason_6>{% trans "The bounty was not needed anymore." %}</label>
-                    </div>
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_7" type="radio" value="7 - Success but paid elsewhere" />
-                      <label class="filter-label" for=reason_7>{% trans "The bounty was completed successfully, I'm just paying it out elsewher." %}</label>
-                    </div>
-
-
-                    <div class="form__radio option">
-                      <input name="canceled_bounty_reason" id="reason_other" type="radio" value="other" />
-                      <label class="filter-label" for=reason_other>{% trans "Others (Please tell us more)" %}</label>
-                      <textarea class="form__input mt-2" name="canceled_bounty_reason" id="reason_text" cols="10" rows="4" placeholder="What made you cancel this bounty?"></textarea>
-                    </div>
+              <div class="mt-5" id="primary_form">
+                <div class="media">
+                  <div class="align-self-center ">
+                    <img src="{% static "v2/images/helmet_front.png" %}" alt="Helmet front">
+                  </div>
+                  <div class="media-body align-self-center">
+                    <h4 class="text-left">{% trans "Cancel Bounty and Reclaim Funds" %}</h4>
+                    <p>{% trans "(Issue Submitters only)" %}</p>
                   </div>
                 </div>
-
-                {% include 'shared/bounty_actions_hidden_vars.html' %}
-
-                <div class="w-100 my-2 terms_container">
-                  <div class="form__checkbox">
-                    <input name='terms' id='terms' type="checkbox" value=1 required />
-                    <label required class="form__label" for="terms">
-                      {% url "terms" as termsurl %}
-                      {% blocktrans %}
-                        I have read, understand, and agree to, the
-                        <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
-                      {% endblocktrans %}
-                    </label>
+                <p class="mt-2">{% trans "Once you cancel, you will receive the funds & you can reuse it for your next bounty." %}</p>
+                <form id="cancelBounty" class="font-smaller-2">
+                  <div class="w-100">
+                    <p class="font-caption font-weight-semibold">
+                      <a class="link" href="{{ bounty.url }}">
+                        <i class="fas fa-chevron-left mr-2"></i>
+                        {% trans "Back to Bounty" %}
+                      </a>
+                    </p>
+                    <label class="form__label mb-0" for="issueURL">{% trans "Issue URL" %}</label>
+                    <input name='issueURL' id="issueURL" class="form__input border-0 font-subheader px-lg-0" type="url"
+                      required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}"
+                    />
                   </div>
-                </div>
-                <div class="text-center">
-                  <button class="button button--primary button--warning js-submit" style="width: 100%;">
-                    {% trans "Cancel Bounty" %}
-                  </button>
-                </div>
-              </form>
+
+                  <div class="my-4">
+                    <h6>{% trans "Reason" %}</h6>
+                    <p>
+                        {% trans "Please let us know why you cancelled the bounty" %}
+                    </p>
+                    <div class="options">
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_1" type="radio" value="1- Solved issue" />
+                        <label class="filter-label" for=reason_1>{% trans "An alternative commit, patch, or solution solved the issue." %}</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_2" type="radio" value="2- Scope changed" />
+                        <label class="filter-label" for=reason_2>{% trans "The scope of work changed." %}</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_3" type="radio" value="3- Internal solution" />
+                        <label class="filter-label" for=reason_3>{% trans "The bounty was brought to our internal team." %}</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_4" type="radio" value="4- Abandoned bounty" />
+                        <label class="filter-label" for=reason_4>{% trans "The bounty had no workers and/or was consistently abandoned." %}</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_5" type="radio" value="5- Bad work submitted" />
+                        <label class="filter-label" for=reason_5>{% trans "The quality of submitted work was not up to par." %}</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_6" type="radio" value="6- Not needed anymore" />
+                        <label class="filter-label" for=reason_6>{% trans "The bounty was not needed anymore." %}</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_7" type="radio" value="7 - Success but paid elsewhere" />
+                        <label class="filter-label" for=reason_7>{% trans "The bounty was completed successfully, I'm just paying it out elsewher." %}</label>
+                      </div>
+
+
+                      <div class="form__radio option">
+                        <input name="canceled_bounty_reason" id="reason_other" type="radio" value="other" />
+                        <label class="filter-label" for=reason_other>{% trans "Others (Please tell us more)" %}</label>
+                        <textarea class="form__input mt-2" name="canceled_bounty_reason" id="reason_text" cols="10" rows="4" placeholder="What made you cancel this bounty?"></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  {% include 'shared/bounty_actions_hidden_vars.html' %}
+
+                  <div class="w-100 my-2 terms_container">
+                    <div class="form__checkbox">
+                      <input name='terms' id='terms' type="checkbox" value=1 required />
+                      <label required class="form__label" for="terms">
+                        {% url "terms" as termsurl %}
+                        {% blocktrans %}
+                          I have read, understand, and agree to, the
+                          <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
+                        {% endblocktrans %}
+                      </label>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button class="btn btn-primary button--warning js-submit" style="width: 100%;">
+                      {% trans "Cancel Bounty" %}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <script>
+        const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
+      </script>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
     </div>
-    <script>
-      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
-    </script>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-
   </body>
   {% if is_bounties_network %}
     <script src="{% static "v2/js/abi.js" %}"></script>

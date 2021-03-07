@@ -1,0 +1,46 @@
+$desktop: "(min-width: 1313px)";
+$laptop: "(max-width: 1312px)";
+$tablet: "(max-width: 992px)";
+$phone:  "(max-width: 748px)";
+$small:  "(max-width: 600px)";
+$smaller:  "(max-width: 330px)";
+
+
+@media #{$desktop} {
+  :root{
+    --device: "desktop";
+  }
+}
+
+@media #{$laptop} {
+  :root{
+    --device: "laptop";
+  }
+}
+
+@media #{$tablet} { 
+  :root{
+    --device: "tablet";
+  }
+}
+
+@media #{$phone} { 
+  :root{
+    --device: "phone";
+  }
+}
+
+@media #{$small} { 
+  :root{
+    --device: "small";
+  }
+}
+
+@media #{$smaller} { 
+  :root{
+    --device: "smaller";
+  }
+}
+
+
+

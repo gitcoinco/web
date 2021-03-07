@@ -1,0 +1,18 @@
+// Gitcoins shared variable set...
+@import "../gc-variables";
+
+$primary: $gc-violet-400;
+$success: $gc-teal-500;
+$danger: $gc-pink-500;
+
+$theme-colors: (
+  "primary":    $gc-violet-400,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark
+);
+

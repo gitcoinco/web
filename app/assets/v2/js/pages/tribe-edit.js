@@ -24,7 +24,7 @@ $('#edit-btn').on('click', function() {
     $('#edit-btn i').removeClass('fa-edit');
     $('#edit-btn i').addClass('fa-times');
     $('#edit-btn span').text('Cancel');
-    $('#edit-btn').addClass('btn-gc-pink');
+    $('#edit-btn').addClass('btn-danger');
     return quill;
   };
 
@@ -87,7 +87,7 @@ const destroyQuill = () => {
   $('#edit-btn i').addClass('fa-edit');
   $('#edit-btn span').text('Edit');
   $('#edit-btn i').removeClass('fa-times');
-  $('#edit-btn').removeClass('btn-gc-pink');
+  $('#edit-btn').removeClass('btn-danger');
 };
 
 const rebuildQuill = () => {
@@ -96,7 +96,7 @@ const rebuildQuill = () => {
   editorContainer.removeClass('inactive');
   quill.enable(true);
   $('#save-description-btn').removeClass('d-none');
-  $('#edit-btn').addClass('btn-gc-pink');
+  $('#edit-btn').addClass('btn-danger');
   $('#edit-btn i').removeClass('fa-edit');
   $('#edit-btn i').addClass('fa-times');
   $('#edit-btn span').text('Cancel');

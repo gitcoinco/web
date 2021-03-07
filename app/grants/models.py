@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
+import traceback
 from datetime import timedelta
 from decimal import Decimal
 from io import BytesIO
@@ -265,7 +266,7 @@ class Grant(SuperModel):
         ('southeast_asia', 'Southeast Asia')
     ]
 
-    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
@@ -306,6 +307,7 @@ class Grant(SuperModel):
         default='0x0',
         null=True,
         blank=True,
+        db_index=True,
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
     zcash_payout_address = models.CharField(
@@ -314,6 +316,55 @@ class Grant(SuperModel):
         null=True,
         blank=True,
         help_text=_('The zcash wallet address where subscription funds will be sent.'),
+    )
+    celo_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The celo wallet address where subscription funds will be sent.'),
+    )
+    zil_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The zilliqa wallet address where subscription funds will be sent.'),
+    )
+    polkadot_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The polkadot wallet address where subscription funds will be sent.'),
+    )
+    kusama_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The kusama wallet address where subscription funds will be sent.'),
+    )
+    harmony_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The harmony wallet address where subscription funds will be sent.'),
+    )
+    binance_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The binance wallet address where subscription funds will be sent.'),
+    )
+    rsk_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The rsk wallet address where subscription funds will be sent.'),
     )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
@@ -325,19 +376,19 @@ class Grant(SuperModel):
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The amount received in DAI this round.'),
+        help_text=_('The amount received in USD this round.'),
     )
     monthly_amount_subscribed = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The monthly subscribed to by contributors USDT/DAI.'),
+        help_text=_('The monthly subscribed to by contributors USD.'),
     )
     amount_received = models.DecimalField(
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The total amount received for the Grant in USDT/DAI.'),
+        help_text=_('The total amount received for the Grant in USD.'),
     )
     # TODO-GRANTS: remove
     token_address = models.CharField(
@@ -413,8 +464,8 @@ class Grant(SuperModel):
     )
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
-    random_shuffle = models.PositiveIntegerField(blank=True, null=True)
-    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
+    random_shuffle = models.PositiveIntegerField(blank=True, null=True, db_index=True)
+    weighted_shuffle = models.PositiveIntegerField(blank=True, null=True, db_index=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
     # TODO-GRANTS: remove
@@ -499,7 +550,7 @@ class Grant(SuperModel):
         # create_grant_active_clr_mapping
         clr_rounds = GrantCLR.objects.filter(is_active=True)
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants:
+            if self in this_clr_round.grants.all():
                 self.in_active_clrs.add(this_clr_round)
             else:
                 self.in_active_clrs.remove(this_clr_round)
@@ -525,6 +576,20 @@ class Grant(SuperModel):
             tenants.append('ETH')
         if self.zcash_payout_address and self.zcash_payout_address != '0x0':
             tenants.append('ZCASH')
+        if self.celo_payout_address and self.celo_payout_address != '0x0':
+            tenants.append('CELO')
+        if self.zil_payout_address and self.zil_payout_address != '0x0':
+            tenants.append('ZIL')
+        if self.polkadot_payout_address and self.polkadot_payout_address != '0x0':
+            tenants.append('POLKADOT')
+        if self.kusama_payout_address and self.kusama_payout_address != '0x0':
+            tenants.append('KUSAMA')
+        if self.harmony_payout_address and self.harmony_payout_address != '0x0':
+            tenants.append('HARMONY')
+        if self.binance_payout_address and self.binance_payout_address != '0x0':
+            tenants.append('BINANCE')
+        if self.rsk_payout_address and self.rsk_payout_address != '0x0':
+            tenants.append('RSK')
 
         return tenants
 
@@ -751,13 +816,22 @@ class Grant(SuperModel):
             'grant_clr_prediction_curve': self.clr_prediction_curve,
             'grant_image_css': self.image_css,
             'is_clr_eligible': self.is_clr_eligible,
+            'clr_round_num': self.clr_round_num,
             'tenants': self.tenants,
             'zcash_payout_address': self.zcash_payout_address,
+            'celo_payout_address': self.celo_payout_address,
+            'zil_payout_address': self.zil_payout_address,
+            'polkadot_payout_address': self.polkadot_payout_address,
+            'harmony_payout_address': self.harmony_payout_address,
+            'binance_payout_address': self.binance_payout_address,
+            'kusama_payout_address': self.kusama_payout_address,
+            'harmony_payout_address': self.harmony_payout_address,
+            'rsk_payout_address': self.rsk_payout_address
         }
 
     def repr(self, user, build_absolute_uri):
         team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__avatar_url']
+                            fields=['handle', 'url', 'profile__lazy_avatar_url']
                         )
         grant_type = None
         if self.grant_type:
@@ -784,7 +858,7 @@ class Grant(SuperModel):
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
-                    'avatar_url': self.admin_profile.avatar_url
+                    'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
@@ -803,6 +877,13 @@ class Grant(SuperModel):
                 'token_symbol': self.token_symbol,
                 'admin_address': self.admin_address,
                 'zcash_payout_address': self.zcash_payout_address or '',
+                'celo_payout_address': self.celo_payout_address,
+                'zil_payout_address': self.zil_payout_address,
+                'polkadot_payout_address': self.polkadot_payout_address,
+                'kusama_payout_address': self.kusama_payout_address,
+                'harmony_payout_address': self.harmony_payout_address,
+                'binance_payout_address': self.binance_payout_address,
+                'rsk_payout_address': self.rsk_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
@@ -814,7 +895,7 @@ class Grant(SuperModel):
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
-                'github_project_url': self.github_project_url,
+                'github_project_url': self.github_project_url or '',
                 'funding_info': self.funding_info,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
@@ -851,7 +932,14 @@ class Subscription(SuperModel):
 
     TENANT = [
         ('ETH', 'ETH'),
-        ('ZCASH', 'ZCASH')
+        ('ZCASH', 'ZCASH'),
+        ('CELO', 'CELO'),
+        ('ZIL', 'ZIL'),
+        ('POLKADOT', 'POLKADOT'),
+        ('KUSAMA', 'KUSAMA'),
+        ('HARMONY', 'HARMONY'),
+        ('BINANCE', 'BINANCE'),
+        ('RSK', 'RSK')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
@@ -1008,8 +1096,10 @@ class Subscription(SuperModel):
 
     @property
     def amount_per_period_minus_gas_price(self):
-        amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
-        return amount
+        if self.amount_per_period == self.amount_per_period_to_gitcoin:
+            return float(self.amount_per_period)
+
+        return float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
 
     @property
     def amount_per_period_to_gitcoin(self):
@@ -1454,7 +1544,7 @@ class Donation(SuperModel):
         default=0,
         decimal_places=4,
         max_digits=50,
-        help_text=_('The donation amount converted to USDT/DAI at the moment of donation.'),
+        help_text=_('The donation amount converted to USD at the moment of donation.'),
     )
     tx_id = models.CharField(
         max_length=255,
@@ -1506,7 +1596,13 @@ class Contribution(SuperModel):
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
         ('eth_zksync', 'eth_zksync'),
-        ('zcash_std', 'zcash_std')
+        ('zcash_std', 'zcash_std'),
+        ('celo_std', 'celo_std'),
+        ('zil_std', 'zil_std'),
+        ('polkadot_std', 'polkadot_std'),
+        ('harmony_std', 'harmony_std'),
+        ('binance_std', 'binance_std'),
+        ('rsk_std', 'rsk_std')
     ]
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
@@ -1946,6 +2042,8 @@ class GrantCollection(SuperModel):
             self.cover.save(filename, image_file)
         except Exception:
             print('ERROR: failed build thumbnail')
+            traceback.print_exc()
+
         print(self.cover)
         self.cache = cache
         self.save()
@@ -1954,13 +2052,13 @@ class GrantCollection(SuperModel):
         curators = [{
             'url': curator.url,
             'handle': curator.handle,
-            'avatar_url': curator.avatar_url
+            'avatar_url': curator.lazy_avatar_url
         } for curator in self.curators.all()]
 
         owner = {
             'url': self.profile.url,
             'handle': self.profile.handle,
-            'avatar_url': self.profile.avatar_url
+            'avatar_url': self.profile.lazy_avatar_url
         }
 
         grants = self.cache.get('grants', 0)
@@ -2048,6 +2146,7 @@ class GrantBrandingRoutingPolicy(SuperModel):
         blank=True,
         null=True
     )
+    inline_css = models.TextField(default='', blank=True, help_text=_('Inline css to customize the banner fit'))
 
     def __str__(self):
         return f'{self.url_pattern} >> {self.priority}'

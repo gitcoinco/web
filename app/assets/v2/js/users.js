@@ -10,9 +10,6 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 
 Vue.mixin({
   methods: {
-    chatWindow: function(channel) {
-      window.chatSidebar.chatWindow(channel);
-    },
     fetchUsers: function(newPage) {
       let vm = this;
 
@@ -252,8 +249,8 @@ Vue.mixin({
           user.is_following = false;
         }
 
-        event.target.classList.toggle('btn-outline-green');
-        event.target.classList.toggle('btn-gc-blue');
+        event.target.classList.toggle('btn-outline-secondary');
+        event.target.classList.toggle('btn-primary');
       }).fail(function(error) {
         event.target.disabled = false;
       });
@@ -286,7 +283,6 @@ Vue.component('user-directory', {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {
@@ -356,7 +352,6 @@ if (document.getElementById('gc-users-directory')) {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {},

@@ -5,10 +5,13 @@ cryptography==2.3
 celery==4.4.0
 django-celery-beat==1.1.1
 django==2.2.4
+django-csp==3.7
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-haystack
 django-ratelimit==1.1.0
+git+https://github.com/gdixon/django-compressor.git@develop#egg=django-compressor
+django-libsass==0.8
 djangorestframework==3.9.1
 gitterpy
 gunicorn
@@ -27,7 +30,7 @@ python-twitter==3.2
 sendgrid==5.6.0
 slackclient==2.0.0
 eth-tester
-elasticsearch>=2.0.0,<3.0.0
+elasticsearch
 websockets
 web3==4.5.0
 eth-abi==1.1.1
@@ -43,7 +46,7 @@ google-api-python-client
 django-environ==0.4.5
 eth-utils==1.4.1
 jsondiff==1.1.1
-social-auth-app-django==3.1.0
+social-auth-app-django==4.0.0
 django-ipware==2.0.2
 geoip2==2.8.0
 django-silk==2.0.0
@@ -55,7 +58,7 @@ watchdog==0.9.0
 Werkzeug[watchdog]==0.15.5
 imageio
 boto3==1.7.81
-django-storages==1.6.6
+django-storages==1.11.1
 easy-thumbnails==2.5
 eth-account==0.2.2
 django-classy-tags==0.8.0
@@ -67,7 +70,7 @@ ecdsa
 pysha3
 oyaml
 pygithub==1.43.2
-django-cacheops==4.0.7
+git+https://github.com/gitcoinco/django-cacheops.git#egg=django-cacheops
 django-redis==4.10.0
 collectfast==0.6.2
 django-health-check==3.7.0
@@ -82,16 +85,14 @@ redis-semaphore
 watchtower==0.5.4
 Wand==0.4.4
 raven==6.9.0
-sentry-sdk
+sentry-sdk==0.19.5
 websocket-client
 bleach
 python-magic
 django-oauth-toolkit
-mattermostdriver
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
-pandas
 wiki
 django-bulk-update
 pdfrw
@@ -103,3 +104,4 @@ ed25519
 tweepy
 oogway==0.7.0
 icalendar==4.0.7
+numpy==1.19.5

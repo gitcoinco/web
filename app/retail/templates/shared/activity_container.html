@@ -28,7 +28,7 @@
       <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
     {% endif %}
     {% if not suppress_more_link %}
-      <a class="infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="{% if not supress_infinite_more_link_hidden %}display:none;{%endif%}">{% if infinite_more_copy %}{{infinite_more_copy}}{% else %}More{%endif%}</a>
+      <a class="btn btn-outline-primary btn-sm d-block w-50 mt-5 mx-auto infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="{% if not supress_infinite_more_link_hidden %}display:none;{%endif%}">{% if infinite_more_copy %}{{infinite_more_copy}}{% else %}More{%endif%}</a>
     {% endif %}
   </div>
 </div>

@@ -292,7 +292,9 @@ class Bounty(SuperModel):
         ('qr', 'QR Code'),
         ('web3_modal', 'Web3 Modal'),
         ('polkadot_ext', 'Polkadot Ext'),
+        ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
+        ('rsk_ext', 'RSK Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1364,6 +1366,7 @@ class BountyEvent(SuperModel):
         ('cancel_bounty', 'Cancel Bounty'),
         ('submit_work', 'Submit Work'),
         ('stop_work', 'Stop Work'),
+        ('stop_worker', 'Worker stopped'),
         ('express_interest', 'Express Interest'),
         ('payout_bounty', 'Payout Bounty'),
         ('expire_bounty', 'Expire Bounty'),
@@ -1406,7 +1409,9 @@ class BountyFulfillment(SuperModel):
         ('fiat', 'fiat'),
         ('web3_modal', 'web3_modal'),
         ('polkadot_ext', 'polkadot_ext'),
+        ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
+        ('rsk_ext', 'rsk_ext'),
         ('manual', 'manual')
     ]
 
@@ -1418,8 +1423,10 @@ class BountyFulfillment(SuperModel):
         ('CELO', 'CELO'),
         ('PYPL', 'PYPL'),
         ('POLKADOT', 'POLKADOT'),
+        ('BINANCE', 'BINANCE'),
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
+        ('RSK', 'RSK'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1458,7 +1465,7 @@ class BountyFulfillment(SuperModel):
     token_name = models.CharField(max_length=10, blank=True, help_text="token/currency in which the payout is done")
     payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True, help_text="transaction id")
     payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True, help_text="payment status")
-    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=50, help_text="amount being paid out by funder")
+    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=6, max_digits=50, help_text="amount being paid out by funder")
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.
@@ -2283,11 +2290,11 @@ class Activity(SuperModel):
         ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
-        # ptokens
-        ('create_ptoken', 'Create personal token'),
-        ('mint_ptoken', 'Mint personal token'),
-        ('edit_price_ptoken', 'Edit personal token price'),
-        ('buy_ptoken', 'Edit personal token price'),
+        # ptokens (formerly called personal tokens, now called time tokens)
+        ('create_ptoken', 'Create time token'),
+        ('mint_ptoken', 'Mint time token'),
+        ('edit_price_ptoken', 'Edit time token price'),
+        ('buy_ptoken', 'Edit time token price'),
         ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
         ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
         ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
@@ -2793,6 +2800,7 @@ class Profile(SuperModel):
     last_calc_date = models.DateTimeField(default=get_0_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    # todo remove chat related
     gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     chat_id = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
@@ -2939,12 +2947,14 @@ class Profile(SuperModel):
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
+    is_pro = models.BooleanField(default=False, help_text=_('Is this user upgraded to pro?'))
+    mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, help_text=_('Mautic id to be able to do api requests without user being logged'))
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
     is_idena_verified = models.BooleanField(default=False)
-    idena_address = models.CharField(max_length=128, null=True, unique=True)
-    idena_status = models.CharField(max_length=32, null=True)
+    idena_address = models.CharField(max_length=128, null=True, unique=True, blank=True)
+    idena_status = models.CharField(max_length=32, null=True, blank=True)
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
@@ -2965,8 +2975,10 @@ class Profile(SuperModel):
             tb *= 1.05
         if self.sms_verification:
             tb *= 1.05
-        if self.is_idena_verified:
-            tb *= 1.25
+        if self.is_google_verified:
+            tb *= 1.05
+        if self.is_poap_verified:
+            tb *= 1.05
         return tb
 
 
@@ -3004,8 +3016,6 @@ class Profile(SuperModel):
     @property
     def sybil_score_str(self):
         _map = {
-            -2: 'Error',
-            -1: 'N/A',
             0: 'Low',
             1: 'Med-Low',
             2: 'Med',
@@ -3014,35 +3024,11 @@ class Profile(SuperModel):
             5: 'Very High',
         }
         score = self.sybil_score
+        if score < 0:
+            return f'VeryX{abs(score)} Low'
         if score > 5:
             return f'VeryX{score} High'
         return _map.get(score, "Unknown")
-
-    @property
-    def chat_num_unread_msgs(self):
-        from mattermostdriver import Driver
-        if not self.gitcoin_chat_access_token:
-            return 0
-
-        driver_opts = {
-            'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
-            'url': settings.CHAT_SERVER_URL,
-            'port': settings.CHAT_PORT,
-            'token': self.gitcoin_chat_access_token
-        }
-
-        chat_driver = Driver(driver_opts)
-        chat_driver.login()
-
-        response = chat_driver.client.make_request('get',
-            '/users/me/teams/unread',
-            options=None,
-            params=None,
-            data=None,
-            files=None,
-            basepath=None)
-        total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
-        return total_unread
 
 
     @property
@@ -3061,13 +3047,6 @@ class Profile(SuperModel):
     @property
     def quest_level(self):
         return self.quest_attempts.filter(success=True).distinct('quest').count() + 1
-
-    @property
-    def online_now(self):
-        # returns True IFF the user is online now
-        if not self.last_chat_status:
-            return False
-        return self.last_chat_status in ['online', 'away']
 
     @property
     def match_this_round(self):
@@ -3261,20 +3240,6 @@ class Profile(SuperModel):
     def active_bounties(self):
         active_bounties = Bounty.objects.current().filter(bounty_state='work_started')
         return Interest.objects.filter(profile_id=self.pk, bounty__in=active_bounties)
-
-    @property
-    def last_chat_status(self):
-        if not self.chat_id:
-            return 'offline'
-        try:
-            from app.services import RedisService
-            redis = RedisService().redis
-            status = redis.get(f"chat:{self.chat_id}")
-            if not status:
-                return 'offline'
-            return str(status.decode('utf-8'))
-        except KeyError:
-            return 'offline'
 
     @property
     def frontend_calc_stale(self):
@@ -3940,6 +3905,10 @@ class Profile(SuperModel):
         return f"https://github.com/{self.handle}"
 
     @property
+    def lazy_avatar_url(self):
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+
+    @property
     def avatar_url(self):
         if self.admin_override_avatar:
             return self.admin_override_avatar.url
@@ -3956,7 +3925,7 @@ class Profile(SuperModel):
                     return self.active_avatar.avatar_url
                 except Exception as e:
                     logger.warning(f'Encountered ({e}) while attempting to save a user\'s github avatar')
-        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
+        return self.lazy_avatar_url
 
     @property
     def avatar_url_with_gitcoin_logo(self):
@@ -4503,6 +4472,15 @@ class Profile(SuperModel):
                      return history.payload.get('from')
         return ''
 
+
+    @property
+    def ips(self):
+        ips = []
+        for login in self.actions.filter(action='Login').order_by('-created_on'):
+            if login.ip_address:
+                ips.append(login.ip_address)
+        return ips
+
     @property
     def locations(self):
         from app.utils import get_location_from_ip
@@ -4956,8 +4934,19 @@ class BlockedUser(SuperModel):
     user = models.OneToOneField(User, related_name='blocked', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        """Return the string representation of a Bounty."""
+        """Return the string representation of a BlockedUser."""
         return f'<BlockedUser: {self.handle}>'
+
+class BlockedIP(SuperModel):
+    """Define the structure of the BlockedIP."""
+
+    addr = models.GenericIPAddressField(null=True, db_index=True)
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text=_('Is the block active?'))
+
+    def __str__(self):
+        """Return the string representation of a BlockedIP."""
+        return f'<BlockedIP: {self.addr}>'
 
 
 class Sponsor(SuperModel):
@@ -5018,6 +5007,7 @@ class HackathonEvent(SuperModel):
     display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
     calendar_id = models.CharField(max_length=255, blank=True)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -5103,6 +5093,25 @@ class HackathonEvent(SuperModel):
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
+
+    hackathon_event = instance
+    orgs = []
+    try:
+        sponsors = hackathon_event.sponsor_profiles.all()
+        for sponsor_profile in sponsors:
+            org = {
+                'handle': sponsor_profile.handle,
+                'display_name': sponsor_profile.name,
+                'avatar_url': sponsor_profile.avatar_url,
+                'org_name': sponsor_profile.handle,
+                'follower_count': sponsor_profile.tribe_members.all().count(),
+                'bounty_count': sponsor_profile.bounties.count()
+            }
+            orgs.append(org)
+    except:
+        pass
+    instance.metadata['orgs'] = orgs
+
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
@@ -5240,7 +5249,7 @@ class HackathonProject(SuperModel):
         if submission:
             paid = submission.payout_status == 'done'
 
-        return {
+        response = {
             'pk': self.pk,
             'name': self.name,
             'logo': self.logo.url if self.logo else '',
@@ -5256,10 +5265,23 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
-            'grant_obj': self.grant_obj,
+            'grant_obj': None,
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }
+
+        if self.grant_obj:
+            response['grant_obj'] = {
+                'id': self.grant_obj.pk,
+                'title': self.grant_obj.title,
+                'description': self.grant_obj.description,
+                'reference_url': self.grant_obj.reference_url,
+                'github_project_url': self.grant_obj.github_project_url,
+                'region': self.grant_obj.region,
+                'grant_type': self.grant_obj.grant_type.label
+            }
+
+        return response
 
 
 class FeedbackEntry(SuperModel):
@@ -5432,8 +5454,8 @@ def post_save_earning(sender, instance, created, **kwargs):
         instance.create_auto_follow()
 
         from economy.utils import watch_txn
-        if instance.txid:
-            watch_txn(instance.txid)
+        if instance.txid and instance.network == 'mainnet':
+                watch_txn(instance.txid)
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with

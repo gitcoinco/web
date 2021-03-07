@@ -22,13 +22,14 @@ from django.urls import path, re_path
 from grants.views import (
     add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, clr_grants, collection_thumbnail,
     contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
-    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json, create_matching_pledge_v1,
-    flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
-    get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
-    grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add,
-    grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view, invoice, leaderboard,
-    manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
-    subscription_cancel, toggle_grant_favorite, verify_grant,
+    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json,
+    contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1, flag, get_collection,
+    get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants, get_interrupted_contributions,
+    get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_details_contributions,
+    grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
+    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view, ingest_contributions,
+    ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data, new_matching_partner, profile,
+    quickstart, remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
 )
 
 app_name = 'grants'
@@ -63,6 +64,7 @@ urlpatterns = [
     re_path(r'^new/?$', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
+    path('ingest', ingest_contributions, name='ingest_contributions'),
     path('bulk-fund', bulk_fund, name='bulk_fund'),
     path('manage-ethereum-cart-data', manage_ethereum_cart_data, name='manage_ethereum_cart_data'),
     path('get-ethereum-cart-data', get_ethereum_cart_data, name='get_ethereum_cart_data'),
@@ -84,11 +86,14 @@ urlpatterns = [
     ),
     path('cart/bulk-add/<str:grant_str>', grants_bulk_add, name='grants_bulk_add'),
     path('cart', grants_cart_view, name='cart'),
+    path('add-missing-contributions', ingest_contributions_view, name='ingest_contributions_view'),
     path('get-interrupted-contributions', get_interrupted_contributions, name='get_interrupted_contributions'),
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/grants', grants_info, name='grants_info'),
     path('v1/api/grant/<int:grant_id>/', grant_details_api, name='grant_details_api'),
+    path('v1/api/grant/<int:grant_id>/contributions', grant_details_contributions, name='grant_details_contributions'),
+    path('v1/api/grant/<int:grant_id>/contributors', grant_details_contributors, name='grant_details_contributors'),
     path('v1/api/grant/edit/<int:grant_id>/', grant_edit, name='grant_edit'),
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
 
@@ -105,4 +110,7 @@ urlpatterns = [
     path('v1/api/export_addresses/round<int:round_id>.json', contribution_addr_from_round_as_json, name='contribution_addr_from_round_as_json'),
     path('v1/api/export_addresses/grant<int:grant_id>.json', contribution_addr_from_grant_as_json, name='contribution_addr_from_grant_as_json'),
     path('v1/api/export_addresses/grant<int:grant_id>_round<int:round_id>.json', contribution_addr_from_grant_during_round_as_json, name='contribution_addr_from_grant_during_round_as_json'),
+    path('v1/api/export_info/grant<int:grant_id>_round<int:round_id>.json', contribution_info_from_grant_during_round_as_json, name='contribution_addr_from_grant_during_round_as_json'),
+
+
 ]

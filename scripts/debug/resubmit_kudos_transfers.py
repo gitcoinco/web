@@ -7,17 +7,14 @@ from kudos.models import KudosTransfer
 
 # pk range to re-send
 CAN_OVERRIDE_TO_XDAI = True
-min_pk = 1684
-max_pk = 1740
-TIME_SLEEP = 1
-usernames = ['elm87an', 'resgar', 'adnfx2']
+TIME_SLEEP = 10
+usernames = ['gkobeaga', 'pangelo', 'dmats']
 
-kts = KudosTransfer.objects.filter(pk__gte=min_pk, pk__lte=max_pk)
-kts = KudosTransfer.objects.filter(username__in=usernames).filter(Q(tx_status='dropped') | Q(txid='pending_celery'))
+kts = KudosTransfer.objects.filter(username__in=usernames, network='xdai')
 print(kts.count())
 
 for kt in kts:
     from kudos.helpers import re_send_kudos_transfer
     txid = re_send_kudos_transfer(kt, CAN_OVERRIDE_TO_XDAI)
-    while not has_tx_mined(txid, kt.network):
-        time.sleep(TIME_SLEEP)
+    print(kt.username, kt.kudos_token_cloned_from.name, txid)
+    time.sleep(TIME_SLEEP)

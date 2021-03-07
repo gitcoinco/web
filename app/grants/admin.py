@@ -28,8 +28,10 @@ from django.utils.safestring import mark_safe
 import twitter
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
+from grants.views import record_grant_activity_helper
+from marketing.mails import new_grant_approved
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -74,6 +76,18 @@ class MatchPledgeAdmin(admin.ModelAdmin):
     list_display =['pk', 'profile', 'active','pledge_type','amount']
 
 
+class GrantCLRCalculationAdmin(admin.ModelAdmin):
+    """Define the GrantCLRCalculation administration layout."""
+
+    ordering = ['-id']
+    list_display =['pk', 'latest', 'grant','grantclr','clr_prediction_curve']
+    readonly_fields = [
+        'grant','grantclr','clr_prediction_curve'
+    ]
+    search_fields = [
+        'grant','grantclr'
+    ]
+
 class CLRMatchAdmin(admin.ModelAdmin):
     """Define the CLRMatch administration layout."""
 
@@ -96,18 +110,24 @@ class GrantAdmin(GeneralAdmin):
         'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
-        'zcash_payout_address'
+        'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
+        'emails'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
 
+    def get_queryset(self, request):
+        qs = super(GrantAdmin, self).get_queryset(request)
+        self.request = request
+        return qs
 
     # Custom Avatars
     def logo_svg_asset(self, instance):
@@ -115,6 +135,13 @@ class GrantAdmin(GeneralAdmin):
         if instance.logo_svg and instance.logo_svg.url:
             return mark_safe(f'<img src="{instance.svg.url}" width="300" height="300" />')
         return mark_safe('N/A')
+
+    def emails(self, instance):
+        emails = []
+        emails.append(instance.admin_profile.email)
+        for profile in instance.team_members.all():
+            emails.append(profile.email)
+        return ",".join(emails)
 
     def view_count(self, instance):
         return instance.get_view_count
@@ -148,6 +175,9 @@ class GrantAdmin(GeneralAdmin):
         return mark_safe('N/A')
 
     def subscriptions_links(self, instance):
+        if not self.request.GET.get('show_data'):
+            return mark_safe(f"<a href={instance.admin_url}?show_data=1>Show data</a>")
+
         """Define the logo image tag to be displayed in the admin."""
         eles = []
         # todo: figure out how to set request
@@ -161,13 +191,28 @@ class GrantAdmin(GeneralAdmin):
         return mark_safe("<BR>".join(eles))
 
     def response_change(self, request, obj):
+        if "_mark_fraud" in request.POST:
+            obj.active = False
+            obj.is_clr_eligible = False
+            obj.save()
+            self.message_user(request, "Marked Grant as Fraudulent. Consider blocking the grant admin next?")
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
             self.message_user(request, "recaclulation of clr queued")
+        if "_approve_grant" in request.POST:
+            obj.active = True
+            obj.is_clr_eligible = True
+            obj.hidden = False
+            obj.save()
+            record_grant_activity_helper('new_grant', obj, obj.admin_profile)
+            new_grant_approved(obj, obj.admin_profile)
+            self.message_user(request, "Grant has been successfully approved")
         return redirect(obj.admin_url)
 
     def contributions_links(self, instance):
+        if not self.request.GET.get('show_data'):
+            return mark_safe(f"<a href={instance.admin_url}?show_data=1>Show data</a>")
         """Define the logo image tag to be displayed in the admin."""
         eles = []
 
@@ -190,6 +235,8 @@ class GrantAdmin(GeneralAdmin):
             return mark_safe(html)
 
     def stats_history(self, instance):
+        if not self.request.GET.get('show_data'):
+            return mark_safe(f"<a href={instance.admin_url}?show_data=1>Show data</a>")
         html = "<table>"
         html += "<tr><td>Date</td><td>Impressions</td><td>Cart Additions</td><td>Contributions</td></tr>"
         for ele in instance.stats.filter(snapshot_type='increment').order_by('-created_on'):
@@ -389,7 +436,7 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'customer_name', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
+    list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
     raw_id_fields = ['owner']
 
     def link(self, instance):
@@ -401,13 +448,22 @@ class GrantCLRAdmin(admin.ModelAdmin):
         except:
             return "N/A"
 
+    def response_change(self, request, obj):
+        if "_recalculate_clr" in request.POST:
+            from grants.tasks import recalc_clr
+            for grant in obj.grants:
+                recalc_clr.delay(grant.pk)
+            self.message_user(request, "submitted recaclulation to queue")
+        return redirect(obj.admin_url)
+
+
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
     raw_id_fields = ['profile', 'grants', 'curators']
 
 
 class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'url_pattern', 'priority' ]
+    list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
@@ -424,3 +480,4 @@ admin.site.register(GrantCLR, GrantCLRAdmin)
 admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
+admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)

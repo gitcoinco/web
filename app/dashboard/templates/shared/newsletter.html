@@ -14,8 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-<link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
+{% load i18n static compress %}
+{% compress css file newsletter %}
+  <link rel="stylesheet" href="{% static "v2/scss/newsletter.scss" %}">
+{% endcompress %}
 <div class="row newsletter text-center" id="newsletterGroup">
   <div class="col-12">
     <h4 class="col-12 font-title font-weight-bold py-1" id="newsletter-title">
@@ -28,9 +30,9 @@
     <span class="mr-2">
       I want to
     </span>
-    <nav class="nav justify-content-center d-inline-flex btn-group btn-group-sm my-3" id="myTab" role="tablist">
-      <a class="nav-link active btn btn-gc-grey py-2 px-3" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
-      <a class="nav-link btn btn-gc-grey py-2 px-3" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
+    <nav class="nav nav-pills nav-fill input-groupjustify-content-center d-inline-flex btn-group btn-group-sm my-3 bg-light rounded" id="myTab" role="tablist">
+      <a class="nav-link active btn py-2 px-3 hover-underline" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
+      <a class="nav-link btn py-2 px-3 hover-underline" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
     </nav>
     <div class="tab-content" id="myTabContent">
       <!-- funders newsletter -->
@@ -39,9 +41,9 @@
         {% if not hide_newsletter_caption %}
           <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
         {% endif %}
-        <div class="col-12 pt-3">
-          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-funder" type="submit" class="button font-weight-bold button--primary subscribe py-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+        <div class="col-6 pt-3 input-group m-auto">
+          <input name="EMAIL" placeholder="Enter your email" required="" class="form-control">
+          <div class="input-group-append"><button type="submit" class="btn btn-primary"><i class="far fa-envelope mr-2"></i>Subscribe</button></div>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">
@@ -57,9 +59,9 @@
         {% if not hide_newsletter_caption %}
           <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
         {% endif %}
-        <div class="col-12 pt-3">
-          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-hunter" type="submit" class="button font-weight-bold button--primary subscribe ml-lg-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+        <div class="col-6 pt-3 input-group m-auto">
+          <input name="EMAIL" placeholder="Enter your email" required="" class="form-control">
+          <div class="input-group-append"><button type="submit" class="btn btn-primary"><i class="far fa-envelope mr-2"></i>Subscribe</button></div>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">

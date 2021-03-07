@@ -203,12 +203,15 @@ def grants_transaction_validator(contribution, w3):
         # Validator currently assumes msg.sender == originator as described above
         response['originator'] = [ receipt['from'] ]
 
-        # Return if recipient is not the BulkCheckout contract
-        is_bulk_checkout = is_bulk_checkout_tx(receipt)
-        if not is_bulk_checkout:
-            to_address = receipt['to']
-            response['validation']['comment'] = f'This function only validates transactions through the BulkCheckout contract, but this transaction was sent to {to_address}'
-            return response
+        # The below check was commented out since it wrongly fails for transactions sent via Argent
+        # and other wallets that use meta-transactions or relayers
+
+        # # Return if recipient is not the BulkCheckout contract
+        # is_bulk_checkout = is_bulk_checkout_tx(receipt)
+        # if not is_bulk_checkout:
+        #     to_address = receipt['to']
+        #     response['validation']['comment'] = f'This function only validates transactions through the BulkCheckout contract, but this transaction was sent to {to_address}'
+        #     return response
 
         # Parse receipt logs to look for expected transfer info. We don't need to distinguish
         # between ETH and token transfers, and don't need to look at any other receipt parameters,
@@ -268,14 +271,30 @@ def grants_transaction_validator(contribution, w3):
 
     try:
         # Get receipt and set originator to msg.sender for reasons described above
-        receipt = w3.eth.getTransactionReceipt(tx_hash)
+        receipt = w3.eth.getTransactionReceipt(tx_hash) # equivalent to eth_getTransactionReceipt
+        tx_info = w3.eth.getTransaction(tx_hash) # equivalent to eth_getTransactionByHash
         response['originator'] = [ receipt['from'] ]
 
         if receipt.status == 0:
-            # Transaction was mined but it failed
+            # Transaction was mined but it failed, try to find out why
+            gas_limit = tx_info['gas']
+            gas_used = receipt['gasUsed']
+            if gas_limit == gas_used:
+                response['tx_cleared'] = True
+                response['split_tx_confirmed'] = True
+                response['validation']['comment'] = 'Transaction failed. Out of gas'
+                return response
+
+            if gas_used > 0.99 * gas_limit:
+                # Some out of gas failures don't use all gas, e.g. https://etherscan.io/tx/0xac37f5bc0e9b75dd0f296b8569f72181a066458b9bee1bbed088ec2298fb4344
+                response['tx_cleared'] = True
+                response['split_tx_confirmed'] = True
+                response['validation']['comment'] = 'Transaction failed. Likely out of gas. Check Etherscan or Tenderly for more details'
+                return response
+
             response['tx_cleared'] = True
             response['split_tx_confirmed'] = True
-            response['validation']['comment'] = 'Transaction failed. See Etherscan for more details'
+            response['validation']['comment'] = 'Transaction failed. Unknown reason. See Etherscan or Tenderly for more details'
             return response
 
         # If here, transaction was successful. This code block should never execute because it means

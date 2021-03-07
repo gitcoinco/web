@@ -93,7 +93,10 @@ def next_validation_time():
         idena_validation_time = parse_datetime_from_iso(value)
 
         expiry = int(idena_validation_time.timestamp() - datetime.utcnow().timestamp()) # cache until next epoch
-        redis.set(key, value, expiry)
+
+        # during the validation window, the endpoint will return a date in the past
+        if expiry > 0:
+            redis.set(key, value, expiry)
     else:
         idena_validation_time = parse_datetime_from_iso(value)
 

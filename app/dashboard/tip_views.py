@@ -159,7 +159,7 @@ def receive_tip_v3(request, key, txid, network):
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
     ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower() or not tip.username
@@ -420,6 +420,7 @@ def send_tip_3(request):
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@login_required
 def send_tip_2(request):
     """Handle the second stage of sending a tip.
 

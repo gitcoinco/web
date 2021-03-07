@@ -20,7 +20,7 @@
 <style>
   #onboard-modal {
     background-image: url(/static/v2/images/tribes/promo-decoration.svg);
-    background-color: rgb(62 0 255 / 94%);
+    background-color: rgba(111, 63, 245, 0.94);
     background-size: cover;
   }
   .vs-blue .vs__selected {
@@ -78,7 +78,7 @@
           </v-select>
         </div>
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-gc-blue" @click="goStep(2)" :disabled="!data.interestsSelected.length || !data.bio">Next</button>
+          <button class="btn btn-primary" @click="goStep(2)" :disabled="!data.interestsSelected.length || !data.bio">Next</button>
         </div>
       </div>
     </template>
@@ -89,7 +89,7 @@
       </div>
       <div slot="body">
 
-        <p>Our tools are based on the principes of earn (💰), learn (📖), and meet (💬).
+        <p>Our tools are based on the principles of earn (💰), learn (📖), and meet (💬).
           Select the ones you are interested in. You can change it later in your settings.</p>
         <div class="d-flex">
           <div class="btn-group-toggle w-100">
@@ -162,12 +162,12 @@
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-outline-gc-blue mr-4" @click="goStep(1)">Back</button>
+          <button class="btn btn-outline-primary mr-4" @click="goStep(1)">Back</button>
           <template v-if="isOrg">
-            <button class="btn btn-gc-blue" @click="goStep(3)" :disabled="!data.userOptions.length">Next</button>
+            <button class="btn btn-primary" @click="goStep(3)" :disabled="!data.userOptions.length">Next</button>
           </template>
           <template v-else>
-            <button class="btn btn-gc-blue" @click="submitData()" :disabled="!data.userOptions.length">Save</button>
+            <button class="btn btn-primary" @click="submitData()" :disabled="!data.userOptions.length">Save</button>
           </template>
         </div>
       </div>
@@ -276,8 +276,8 @@
 
 
         <div class="d-flex justify-content-center mt-4">
-          <button class="btn btn-outline-gc-blue mr-4" @click="goStep(2)">Back</button>
-          <button class="btn btn-gc-blue" @click="submitData()" :disabled="!data.orgOptions.length || !data.orgSelected">Save</button>
+          <button class="btn btn-outline-primary mr-4" @click="goStep(2)">Back</button>
+          <button class="btn btn-primary" @click="submitData()" :disabled="!data.orgOptions.length || !data.orgSelected">Save</button>
         </div>
 
       </div>

@@ -46,8 +46,8 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="button button--warning button__small" data-dismiss="modal">Cancel</button>
-                  <button id="saveLogo" type="submit" class="button button--primary button__small">Save</button>
+                  <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">Cancel</button>
+                  <button id="saveLogo" type="submit" class="btn btn-primary btn-sm">Save</button>
                 </div>
               </form>
             </div>
@@ -210,9 +210,9 @@
     {% if not is_team_member or grant.active %}
         <div class="mb-2 mt-3 font-body">
           <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
-          <span class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4">{{ grant.grant_type|title }}</span>
+          <span class="btn btn-outline-secondary py-1 font-smaller-4">{{ grant.grant_type|title }}</span>
           {% for category in grant.categories.all %}
-            <span class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4">{{ category.category|title }}</span>
+            <span class="btn btn-outline-secondary py-1 font-smaller-4">{{ category.category|title }}</span>
           {% endfor %}
         </div>
     {% else %}
@@ -222,7 +222,7 @@
         <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
         <div class="form__select2">
           <select id="grant-categories" class="form__input" name="grant-categories" multiple="multiple" disabled>
-            <span class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4">{{ grant.grant_type|title }}</span>
+            <span class="btn btn-outline-secondary py-1 font-smaller-4">{{ grant.grant_type|title }}</span>
             {% for category in grant.categories.all %}
             <option value="{{ category.id }}" selected="selected">{{ category.category|title }}</option>
             {% endfor %}
@@ -267,19 +267,19 @@
 
     {% if is_team_member and grant.active %}
       <div class="mt-4">
-        <button id="edit-details" class="button btn-gc-blue button--full shadow-none font-weight-bold py-3">
+        <button id="edit-details" class="button btn-primary btn-block shadow-none font-weight-bold py-3">
           <i class="fas fa-edit mr-2"></i> {% trans "Edit Info" %}
         </button>
       </div>
 
       <div class="row mx-0">
         <div class="col-12 col-lg-6 px-0 pr-lg-1 mb-2">
-          <button id="save-details" class="button btn-gc-blue button--full hidden shadow-none font-weight-bold py-3">
+          <button id="save-details" class="button btn-primary btn-block hidden shadow-none font-weight-bold py-3">
             <i class="fas fa-save mr-2"></i> {% trans "Save Info" %}
           </button>
         </div>
         <div class="col-12 col-lg-6 px-0 pl-lg-1">
-          <button id="cancel-details" class="button button--warning button--full hidden shadow-none font-weight-bold py-3">
+          <button id="cancel-details" class="button btn-warning btn-block hidden shadow-none font-weight-bold py-3">
             <i class="fas fa-times mr-2"></i> {% trans "Cancel Edit" %}
           </button>
         </div>
@@ -295,7 +295,7 @@
         <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id" value="">
         <div id="cancel_grant_tooltip" data-toggle="tooltip" data-placement="bottom">
           <button type="button" data-toggle="modal" data-target="#cancelModal" id="cancel_grant"
-            class="button button--primary button--full button--warning shadow-none font-weight-bold py-3">
+            class="btn btn-danger py-3">
             {% trans "Cancel this Grant" %}
           </button>
         </div>
@@ -323,10 +323,10 @@
                   <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
                 </div>
                 <div class="col-12 mt-4 mb-2 text-center text-md-right font-caption">
-                  <a data-dismiss="modal" aria-label="Close dialog" class="button button--primary-o mr-3 shadow-none font-weight-bold py-3">
+                  <a data-dismiss="modal" aria-label="Close dialog" class="btn btn-outline-primary mr-3 py-3">
                     {% trans "No, I don\'t want to cancel" %}
                   </a>
-                  <button class="modal-cancel-grants button button--warning shadow-none font-weight-bold py-3">
+                  <button class="modal-cancel-grants btn btn-warning py-3">
                     {% trans "Cancel this Grant" %}
                   </button>
                 </div>

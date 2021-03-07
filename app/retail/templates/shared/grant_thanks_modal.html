@@ -16,10 +16,10 @@
 
 {% endcomment %}
 {% load i18n static %}
-    <div class="modal" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header border-0">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -39,18 +39,18 @@
           </div>
           <div class="row mt-1 mb-4 justify-content-center">
             {% if fund_reward %}
-              <a class="button button--primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
+              <a class="btn btn-primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
                 target="_blank" rel="noopener noreferrer" >
                 {% trans "Redeem Kudos" %} 🌈
               </a> |
             {% elif grant.id %}
-              <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}/{% url 'grants:details' grant.id grant.slug %}"
+              <a class="btn btn-primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}/{% url 'grants:details' grant.id grant.slug %}"
                 target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
                 {% trans "Tweet About this Grant" %} 🐦
               </a>
             {% else %}
-              <a class="button button--primary" role="button"
-                href="https://gitcoin.co/grants/"
+              <a class="btn btn-primary" role="button"
+                href="/grants/new"
                 target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Fund New Grant', 'click', 'Grant Funder')">
                 {% trans "Fund a New Grant" %}
               </a>

@@ -18,6 +18,7 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import base64
 import hashlib
 import html
 import json
@@ -74,9 +75,6 @@ from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
-from chat.tasks import (
-    add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
-)
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
@@ -163,8 +161,7 @@ def oauth_connect(request, *args, **kwargs):
         "handle": active_user_profile.handle,
         "id": f'{active_user_profile.user.id}',
         "auth_data": f'{active_user_profile.user.id}',
-        "auth_service": "gitcoin",
-        "notify_props": chat_notify_default_props(active_user_profile)
+        "auth_service": "gitcoin"
     }
     return JsonResponse(user_profile, status=200, safe=False)
 
@@ -240,7 +237,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
     if event_name == 'worker_applied':
         kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
-    elif event_name in ['worker_approved', 'worker_rejected'] and interest:
+    elif event_name in ['worker_approved', 'worker_rejected', 'stop_worker'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
     elif event_name == 'worker_paid' and fulfillment:
         kwargs['metadata']['from'] = fulfillment.funder_profile.handle
@@ -329,7 +326,7 @@ def get_interest_modal(request):
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
         'is_registered': is_registered,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        'login_link': '/login/github/?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
 
@@ -585,6 +582,7 @@ def remove_interest(request, bounty_id):
 
     """
     profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
+    user_handle = request.POST.get('handle')
 
     access_token = request.GET.get('token')
     if access_token:
@@ -605,9 +603,16 @@ def remove_interest(request, bounty_id):
                             status=401)
 
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(request.user, 'stop_work', interest)
-        record_bounty_activity(bounty, request.user, 'stop_work')
+        if user_handle:
+            interest = Interest.objects.get(profile__handle=user_handle, bounty=bounty, bounty__bounty_owner_profile_id=profile_id)
+            activity_type = 'stop_worker'
+        else:
+            interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+            activity_type = 'stop_work'
+
+        record_user_action(request.user, activity_type, interest)
+        record_bounty_activity(bounty, request.user, activity_type, interest)
+
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
@@ -833,7 +838,7 @@ def onboard(request, flow=None):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if request.POST.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
@@ -905,7 +910,8 @@ def user_lookup(request):
 def users_directory_elastic(request):
     """Handle displaying users directory page."""
     from retail.utils import programming_languages, programming_languages_full
-
+    messages.info(request, 'The Andrew-era user directory has been deprecated, please contact the #product-data channel if you need something')
+    return redirect('/users')
     keywords = programming_languages + programming_languages_full
 
     params = {
@@ -1069,7 +1075,7 @@ def users_fetch(request):
         current_user = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
 
     if not current_user:
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
     current_profile = Profile.objects.get(user=current_user)
 
     if not settings.DEBUG:
@@ -1184,7 +1190,7 @@ def users_fetch(request):
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org', 'last_chat_status', 'chat_id']}
+            'organizations', 'is_org']}
 
         profile_json['is_following'] = is_following
 
@@ -1317,13 +1323,6 @@ def bounty_mentor(request):
             mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
             for mentor in mentors_to_add:
                 mentor.user.groups.add(bounty_org_default_mentors)
-
-            try:
-                from chat.tasks import hackathon_chat_sync
-                hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
-            except Exception as e:
-                message = 'Hackathon does not exist'
-                logger.info(str(e))
 
     return JsonResponse({'message': message}, status=200, safe=False)
 
@@ -1484,7 +1483,7 @@ def invoice(request):
 
     if bounty.fee_amount > 0:
         params['fee_value_in_usdt'] = bounty.fee_amount * Decimal(bounty.get_value_in_usdt) / bounty.value_true
-        params['total'] = params['total'] + params['fee_value_in_usdt']
+        params['total'] = params['total'] + float(params['fee_value_in_usdt'])
 
     return TemplateResponse(request, 'bounty/invoice.html', params)
 
@@ -3647,7 +3646,7 @@ def extend_issue_deadline(request):
         'title': _('Extend Expiration'),
         'bounty': bounty,
         'user_logged_in': request.user.is_authenticated,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        'login_link': '/login/github/?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
@@ -4004,7 +4003,7 @@ def change_bounty(request, bounty_id):
                 {'error': _('You must be authenticated via github to use this feature!')},
                 status=401)
         else:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
 
     try:
         bounty_id = int(bounty_id)
@@ -4402,8 +4401,6 @@ def hackathon(request, hackathon='', panel='prizes'):
         # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
     is_sponsor = False
 
-    orgs = []
-
     following_tribes = []
     sponsors = hackathon_event.sponsor_profiles.all()
 
@@ -4417,16 +4414,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         is_founder = profile.bounties_funded.filter(event=hackathon_event).exists()
         is_sponsor = is_member or is_founder or request.user.is_staff
 
-    for sponsor_profile in sponsors:
-        org = {
-            'display_name': sponsor_profile.name,
-            'avatar_url': sponsor_profile.avatar_url,
-            'org_name': sponsor_profile.handle,
-            'follower_count': sponsor_profile.tribe_members.all().count(),
-            'followed': True if sponsor_profile.handle in following_tribes else False,
-            'bounty_count': sponsor_profile.bounties.count()
-        }
-        orgs.append(org)
+    orgs = hackathon_event.metadata.get('orgs', [])
+    for _i in range(0, len(orgs)):
+        orgs[_i]['followed'] = orgs[_i]['handle'] in following_tribes
 
     if hasattr(request.user, 'profile') == False:
         is_registered = False
@@ -4505,8 +4495,6 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
-    from chat.tasks import get_chat_url
-    params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
@@ -4803,24 +4791,6 @@ def hackathon_save_project(request):
             'message': message,
         })
 
-    try:
-
-        if profile.chat_id is '' or profile.chat_id is None:
-            created, profile = associate_chat_to_profile(profile)
-    except Exception as e:
-        logger.info("Bounty Profile owner not apart of gitcoin")
-    profiles_to_connect = [profile.chat_id]
-
-    hackathon_admins = Profile.objects.filter(user__groups__name='hackathon-admin')
-
-    try:
-        for hack_admin in hackathon_admins:
-            if hack_admin.chat_id is '' or hack_admin.chat_id is None:
-                created, hack_admin = associate_chat_to_profile(hack_admin)
-            profiles_to_connect.append(hack_admin.chat_id)
-    except Exception as e:
-        logger.debug('Error with adding admin')
-
     if project_id:
         try:
 
@@ -5004,11 +4974,6 @@ def hackathon_registration(request):
             referer=referer,
             registrant=profile
         )
-        try:
-            from chat.tasks import hackathon_chat_sync
-            hackathon_chat_sync.delay(hackathon_event.id, profile.handle)
-        except Exception as e:
-            logger.error('Error while adding to chat', e)
 
         if poll:
             poll = json.loads(poll)
@@ -5052,21 +5017,21 @@ def hackathon_registration(request):
     except Exception as e:
         logger.error('Error while saving registration', e)
 
-    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
-    mailchimp_data = {
-            'email_address': email,
-            'status_if_new': 'subscribed',
-            'status': 'subscribed',
-
-            'merge_fields': {
-                'HANDLE': profile.handle,
-                'HACKATHON': hackathon,
-            },
-        }
-
-    user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
-
     try:
+        client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+        mailchimp_data = {
+                'email_address': email,
+                'status_if_new': 'subscribed',
+                'status': 'subscribed',
+
+                'merge_fields': {
+                    'HANDLE': profile.handle,
+                    'HACKATHON': hackathon,
+                },
+            }
+
+        user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
+
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
 
         client.lists.members.tags.update(
@@ -5125,6 +5090,7 @@ def board(request):
     """Handle the board view."""
 
     user = request.user if request.user.is_authenticated else None
+    has_ptoken_auth = user.has_perm('auth.add_pToken_auth')
     keywords = user.profile.keywords
     ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 
@@ -5137,6 +5103,7 @@ def board(request):
         'avatar_url': static('v2/images/helmet.png'),
         'keywords': keywords,
         'ptoken': ptoken,
+        'has_ptoken_auth': has_ptoken_auth,
     }
     return TemplateResponse(request, 'board/index.html', context)
 
@@ -5972,7 +5939,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6089,8 +6056,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6156,7 +6123,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6272,68 +6239,6 @@ def bulkemail(request):
     }
 
     return TemplateResponse(request, 'bulk_email.html', context)
-
-
-@staff_member_required
-def bulkDM(request):
-    handles = request.POST.get('handles', '')
-    message = request.POST.get('message', '')
-
-    if message and handles:
-        try:
-            from mattermostdriver import Driver
-            from chat.tasks import driver_opts
-
-            from_profile = request.user.profile
-            from_user_id = from_profile.chat_id
-            driver_opts = {
-                'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
-                'url': settings.CHAT_SERVER_URL,
-                'port': settings.CHAT_PORT,
-                'token': from_profile.gitcoin_chat_access_token
-            }
-
-            chat_driver = Driver(driver_opts)
-            chat_driver.login()
-            handles = list(set(handles.split(',')))
-
-            for to_handle in handles:
-                to_handle = to_handle.lower().strip()
-                to_profile = Profile.objects.filter(handle=to_handle).first()
-                if not to_profile:
-                    continue
-                to_user_id = to_profile.chat_id
-                if not to_user_id:
-                    messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
-                    continue
-                try:
-                    response = chat_driver.client.make_request('post',
-                        '/channels/direct',
-                        options=None,
-                        params=None,
-                        data=f'["{to_user_id}", "{from_user_id}"]',
-                        files=None,
-                        basepath=None)
-                    channel_id = response.json()['id']
-                    chat_driver.posts.create_post(options={
-                        'channel_id': channel_id,
-                        'message': message
-                        })
-                except Exception as e:
-                    messages.error(request, f'{to_handle} : {e}')
-
-
-            messages.success(request, 'sent')
-        except Exception as e:
-            messages.error(request, str(e))
-
-
-    context = {
-        'message': message,
-        'handles': request.POST.get('handles', ''),
-    }
-
-    return TemplateResponse(request, 'bulk_DM.html', context)
 
 
 def validate_number(user, twilio, phone, redis, delivery_method='sms'):
@@ -6701,3 +6606,71 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
+
+@csrf_exempt
+def mautic_api(request, endpoint=''):
+
+    if request.user.is_authenticated:
+        response = mautic_proxy(request, endpoint)
+        return response
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+
+def mautic_proxy(request, endpoint=''):
+    params = request.GET
+    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+    headers = {"Authorization": f"Basic {token}"}
+
+    if request.body:
+        body_unicode = request.body.decode('utf-8')
+        payload = json.loads(body_unicode)
+
+    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+    if request.method == 'GET':
+        response = requests.get(url=url, headers=headers, params=params).json()
+    elif request.method == 'POST':
+        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PUT':
+        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PUT':
+        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    elif request.method == 'PATCH':
+        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+
+    return JsonResponse(response)
+
+
+
+@csrf_exempt
+@require_POST
+def mautic_profile_save(request):
+
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        if not profile:
+            return JsonResponse(
+                { 'error': _('You must be authenticated') },
+                status=401
+            )
+        mautic_id = request.POST.get('mtcId')
+        profile.mautic_id = mautic_id
+        profile.save()
+
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated') },
+            status=401
+        )
+
+    return JsonResponse(
+        {
+            'success': True,
+            'msg': 'Data saved'
+        },
+        status=200
+    )

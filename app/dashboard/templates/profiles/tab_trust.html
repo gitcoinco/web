@@ -45,7 +45,7 @@
           {% if is_sms_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="" role="button" id="verify-sms-link" class="button button--primary text-nowrap">Verify</a>
+            <a href="" role="button" id="verify-sms-link" class="btn btn-primary text-nowrap">Verify</a>
           {% endif %}
         </div>
       </div>
@@ -98,9 +98,9 @@
           </div>
           <div class="col-6 col-md-2">
             {% if brightid_status == 'not_connected' %}
-              <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" role="button" class="button button--primary text-nowrap">Connect</a>
+              <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" role="button" class="btn btn-primary text-nowrap">Connect</a>
             {% elif brightid_status == 'not_verified' %}
-              <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" role="button" class="button button--primary text-nowrap">Verify</a>
+              <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" role="button" class="btn btn-primary text-nowrap">Verify</a>
             {% elif brightid_status == 'verified' %}
               <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
             {% endif %}
@@ -135,7 +135,7 @@
           {% if is_twitter_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="" role="button" id="verify-twitter-link" class="button button--primary text-nowrap">Verify</a>
+            <a href="" role="button" id="verify-twitter-link" class="btn btn-primary text-nowrap">Verify</a>
           {% endif %}
         </div>
       </div>
@@ -169,7 +169,7 @@
           {% else %}
             <form method="post" action={% url 'request_verify_google' profile.handle.lower %}>
               {% csrf_token %}
-              <input type="submit" value="Verify" class="button button--primary text-nowrap"/>
+              <input type="submit" value="Verify" class="btn btn-primary text-nowrap"/>
             </form>
           {% endif %}
         </div>
@@ -231,13 +231,13 @@
           {% if is_poap_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="" role="button" id="verify-poap-link" class="button button--primary text-nowrap">Verify</a>
+            <a href="" role="button" id="verify-poap-link" class="btn btn-primary text-nowrap">Verify</a>
           {% endif %}
         </div>
       </div>
 
       <h5>Coming Soon ™️</h5>
-      <a href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
+      <a class="py-2 d-block" href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
       {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" %}
       {% include "profiles/trust_soon_row.html" with service="Idena Network" %}
