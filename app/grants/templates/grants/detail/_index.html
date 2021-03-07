@@ -106,10 +106,10 @@
                 <!-- Contributions -->
                 <b-tab :title-link-class="'nav-line'" lazy @click="fetchTransactions">
                   <template v-slot:title>Contributions</template>
-                  <h3 class="pt-2">
+                  <h3 class="pt-2 pb-3">
                     {% trans "Latest Contributions" %}
                   </h3>
-                  <h5 class="py-3 text-muted" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h5>
+                  <h5 class="mb-5 text-muted" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h5>
                   <div class="px-0" v-if="transactions.grantTransactions?.length && !loadingTx">
                     <div class="mb-5 pb-2 px-0 mx-sm-0">
                       <div class="col-12 px-0">
@@ -220,7 +220,7 @@
                   <h3 class="pt-2 pb-3">
                     {% trans "Related Grants" %}
                   </h3>
-                  <h5 class="mb-5 text-muted" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants." %}</h5>
+                  <h5 class="mb-5 text-muted" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants!" %}</h5>
                   <!-- Related grants -->
                   <div class="pb-5" v-if="relatedGrants.length && !loadingRelated">
                     <div class="container">
