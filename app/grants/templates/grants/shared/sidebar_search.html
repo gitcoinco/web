@@ -135,23 +135,25 @@
 
 
             <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-              <template v-if="!round_num">
 
-                <li>
-                  <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
-                    Starred
-                    <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
-                  </span>
-                </li>
+              <li>
+                <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
+                  Followed Grants
+                  <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
+                </span>
+              </li>
 
-                <li>
-                  <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+              <li>
+                <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+                  <template v-if="idle_grants">
+                    Hide Idle Grants
+                    <i class="fas fa-times font-smaller-4 ml-1"></i>
+                  </template>
+                  <template v-else>
                     Show Idle Grants
-                    <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
-                  </span>
-                </li>
-
-              </template>
+                  </template>
+                </span>
+              </li>
 
               <li>
                 <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-2 ml-0 pl-0 text-left text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
