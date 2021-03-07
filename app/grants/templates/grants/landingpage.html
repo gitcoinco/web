@@ -50,8 +50,6 @@ along with this program. If not, see
   {% include 'grants/nav.html' %}
 
     <div class="container-fluid">
-      {% include 'shared/grant_thanks_modal.html' %}
-
       {% if announcement %}
       <div class="py-3 text-center" style="background-color: #3e00ff">
         <p class="mb-0 white">{{announcement.desc | safe}}</p>

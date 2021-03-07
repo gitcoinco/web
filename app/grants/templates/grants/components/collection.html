@@ -40,7 +40,7 @@
                   </a>
                 </div>
                 <div class="w-100">
-                  <h2 class="mb-1 font-subheader font-weight-bold">
+                  <h2 class="mb-1 h5 gc-font-base">
                     [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
                   </h2>
                   <div class="d-flex justify-content-between mb-2">
@@ -79,8 +79,8 @@
           <img  :src="collection.cover" alt=""  v-if="collection.cover">
         </div>
         <div class="collection-item__content px-3">
-          <h2 class="collection-item__title font-subheader">
-            <a href="#">[[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]</a>
+          <h2 class="h5 gc-font-base">
+            [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
           </h2>
 
           <div class="d-flex mb-2">
