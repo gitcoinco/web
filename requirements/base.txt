@@ -108,7 +108,6 @@ duniterpy
 aiohttp >= 3.6.3
 jsonschema
 pyPEG2
-attrs
 base58
 libnacl
 pyaes
