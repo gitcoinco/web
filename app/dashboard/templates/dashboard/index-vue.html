@@ -757,8 +757,8 @@
                             <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
                             <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
                           </ul>
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)"
-                            v-bind:class="[sponsor.followed ? 'btn-outline-secondary' : 'btn-primary', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
+                          <b-button variant="noop" @click="followTribe(sponsor.org_name, $event)"
+                            v-bind:class="[sponsor.followed ? 'btn-primary' : 'btn-outline-primary', 'btn-sm', 'font-smaller-5']"
                           >
                             [[ sponsor.followed ? "following" : "follow" ]]
                           </b-button>
