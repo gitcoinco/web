@@ -56,7 +56,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-3 activity_detail">
+    <div class="col-10 col-sm-7 pl-3 activity_detail">
       <div>
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
@@ -461,34 +461,34 @@
         {% endif %}
       </div>
     </div>
-    <div class="d-none pt-4 d-sm-inline col-sm-2 pl-0">
+    <div class="d-none pt-4 d-sm-inline col-sm-3 pl-0">
       {% if row.activity_type == 'new_bounty' %}
-        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
           <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
           <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="">
           <span class="text-white font-smaller-2 text-capitalize">New bounty</span>
         </div>
       {% elif row.activity_type == 'new_kudos' %}
-        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
           <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
           <span class="text-white font-smaller-2 text-capitalize">New kudos</span>
         </div>
       {% elif row.activity_type == 'hackathon_new_hacker' %}
-      <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+      <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
         <span class="text-white font-smaller-2 text-capitalize">New Hacker</span>
       </div>
       {% elif row.activity_type == 'new_hackathon_project' %}
-        <div class="bg-success ml-auto card-ribbon px-2 text-center">
+        <div class="bg-success ml-auto card-ribbon px-2 text-center mb-2 float-right">
           <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">
           <span class="text-white font-smaller-2 text-capitalize">New Project</span>
         </div>
       {% elif row.activity_type == 'new_grant' %}
-        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2">
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
           <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="">
           <span class="text-white font-smaller-2 text-capitalize">New Grant</span>
         </div>
       {% endif %}
-    <div class="d-none d-sm-inline col-sm-4 pl-0">
+    <div class="d-none d-sm-inline pl-0">
       <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
         {{ row.created_human_time }}
