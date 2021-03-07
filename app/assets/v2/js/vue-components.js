@@ -792,8 +792,8 @@ Vue.component('suggested-profile', {
         </p>
     </span>
     <p class="row font-caption mb-0 mt-1">
-      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-success font-smaller-5">following</b-button>
-      <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-primary font-smaller-5">follow</b-button>
+      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" variant="outline-success" class="btn btn-outline-success font-smaller-5">following</b-button>
+      <b-button v-else @click="followTribe(profile.handle, $event)" variant="primary" class="btn btn-primary font-smaller-5">follow</b-button>
     </p>
   </div>
 </b-media>
