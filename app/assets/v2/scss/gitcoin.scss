@@ -940,3 +940,7 @@ input[type="search"]::-webkit-search-cancel-button {
   height: 42px;
   max-width: 100%;
 }
+
+.web3modal-modal-lightbox {
+  z-index: 1001;
+}
