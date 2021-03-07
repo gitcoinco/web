@@ -613,6 +613,8 @@ def get_grants(request):
     }
 
     if grant_type == 'collections':
+        _grants = build_grants_by_type(**filters)
+
         _collections = get_collections(request.user, keyword, collection_id=collection_id,
                                        following=following, idle_grants=idle_grants,
                                        only_contributions=only_contributions, featured=featured)
@@ -738,7 +740,7 @@ def build_grants_by_type(
     if state == 'active':
         _grants = _grants.active()
 
-    if grant_type != 'all' and grant_type != 'me':
+    if grant_type != 'all' and grant_type != 'me' and grant_type != 'collections':
         _grants = _grants.filter(grant_type__name=grant_type)
 
     if following and request.user.is_authenticated:
