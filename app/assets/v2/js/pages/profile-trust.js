@@ -755,7 +755,7 @@ Vue.component('ens-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
     return {
-      showValidation: false,
+      ethAddress: '',
       static_url: document.contxt.STATIC_URL,
       ensDomain: '',
       validationStep: 0,
@@ -765,15 +765,69 @@ Vue.component('ens-verify-modal', {
       verificationEthAddress: ''
     };
   },
-  mounted: function() {
+  props: {
+    showValidation: {
+      type: Boolean,
+      required: false,
+      'default': false
+    }
+  },
+  mounted: function () {
     $(document).on('click', '#verify-ens-link', function(event) {
       event.preventDefault();
       this.showValidation = true;
     }.bind(this));
     this.checkENSValidation();
   },
+  template: `<b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+    <template v-slot:default="{ hide }">
+      <div class="mx-5 mt-5 mb-4 text-center">
+        <div class="mb-3">
+          <h1 class="font-bigger-4 font-weight-bold">Verify with ENS</h1>
+          <p>
+            ENS is a name service built on Ethereum. It offers a secure and decentralized way to address resources using human-readable names.
+            <p class="mb-4">
+              <a href="https://ens.domains/about">Learn more.</a>
+            </p>
+          </p>
+          <div>
+            <h4 class="mb-4 font-weight-semibold font-subheader">You need to have these requirements:</h4>
+            <ol class="text-left pl-0" style="list-style: none">
+              <li class="mb-3">
+                <span :class="\`mr-2 fas fa-\${validationStep > 1 ? 'check check gc-text-green' : 'times gc-text-pink'}\`"></span>  Setup your address.
+                <input v-model="verificationEthAddress" class="form-control" type="text" @onchange="testVerification()">
+                <a href="#" @click.prevent.stop="pullEthAddress()">Pull address from Metamask</a><br>
+              </li>
+              <li class="mb-3"><span :class="\`mr-2 fas fa-\${validationStep > 2 ? 'check gc-text-green' : 'times gc-text-pink'}\`"></span> Your address has an ENS domain associated, [[ ensDomain ? '' : 'you can get one' ]] <a :href="\`https://app.ens.domains/\${ensDomain ? 'name/'+ ensDomain : ''}\`">[[ ensDomain ? ensDomain  : 'here' ]]</a>.</li>
+              <li class="mb-3"><span :class="\`mr-2 fas fa-\${validationStep > 4 ? 'check gc-text-green' : 'times gc-text-pink'}\`"></span> Your address should match with the address associated to the ENS domain.</li>
+            </ol>
+          </div>
+        </div>
+        <div>
+          <p class="mb-4" v-if="!validated && validationError === false">
+            You fulfill all the requirements, just click on validate to confirm that your ENS account is valid
+          </p>
+          <b-button @click="verifyENS" class="btn-gc-blue mt-3 mb-2" size="lg" v-if="!validated && validationError === false">
+            Validate
+          </b-button>
+          <div v-if="validationError & validationErrorMsg !== ''" style="color: red">
+            <small>[[validationErrorMsg]]</small>
+          </div>
+          <br />
+          <a href="" v-if="validationError" @click.f="dismissVerification()">
+            Go Back
+          </a>
+        </div>
+        <div v-if="validated && !validationError">
+          Your ENS verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+          <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+        </div>
+      </div>
+    </template>
+  </b-modal>`,
   methods: {
     dismissVerification() {
+      this.$emit('modal-dismissed');
       this.showValidation = false;
     },
     verifyENS() {
