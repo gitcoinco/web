@@ -782,6 +782,7 @@ def get_grant_types(network, filtered_grants=None):
 
             grant_types.append({
                 'label': _grant_type.label,
+                'is_active': _grant_type.is_active,
                 'keyword': _grant_type.name,
                 'count': count,
                 'funding': int(_grant_type.active_clrs_sum),
