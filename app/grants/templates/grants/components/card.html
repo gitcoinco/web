@@ -195,8 +195,14 @@
             <div class="col mb-1">
               <img class="float-right" height="20" src="{% static "v2/images/chains/ethereum.svg" %}" v-if="grant.tenants.indexOf('ETH') > -1">
               <img class="float-right" height="20" src="{% static "v2/images/chains/zcash.svg" %}" v-if="grant.tenants.indexOf('ZCASH') > -1">
-              <img class="float-right" height="20" src="{% static "v2/images/chains/zilliqa.svg" %}" v-if="grant.tenants.indexOf('ZIL') > -1">
               <img class="float-right" height="20" src="{% static "v2/images/chains/celo.svg" %}" v-if="grant.tenants.indexOf('CELO') > -1">
+              <img class="float-right" height="20" src="{% static "v2/images/chains/zilliqa.svg" %}" v-if="grant.tenants.indexOf('ZIL') > -1">
+              <img class="float-right" height="20" src="{% static "v2/images/chains/polkadot.svg" %}" v-if="grant.tenants.indexOf('POLKADOT') > -1">
+              <img class="float-right" height="20" src="{% static "v2/images/chains/kusama.svg" %}" v-if="grant.tenants.indexOf('KUSAMA') > -1">
+              <img class="float-right" height="20" src="{% static "v2/images/chains/harmony.svg" %}" v-if="grant.tenants.indexOf('HARMONY') > -1">
+              <img class="float-right" height="20" src="{% static "v2/images/chains/binance.svg" %}" v-if="grant.tenants.indexOf('BINANCE') > -1">
+              <img class="float-right" height="20" src="{% static "v2/images/chains/rsk.svg" %}" v-if="grant.tenants.indexOf('RSK') > -1">
+
               <p class="mb-0" v-if="grant.clr_round_num && grant.is_clr_eligible">
                 [[grant.clr_round_num]]
               </p>
