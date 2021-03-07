@@ -772,7 +772,7 @@ Vue.component('ens-verify-modal', {
       'default': false
     }
   },
-  mounted: function () {
+  mounted: function() {
     $(document).on('click', '#verify-ens-link', function(event) {
       event.preventDefault();
       this.showValidation = true;
