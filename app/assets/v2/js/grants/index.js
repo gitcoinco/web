@@ -496,6 +496,9 @@ if (document.getElementById('grants-showcase')) {
       isGrantExplorer() {
         return (this.activePage == 'grants_explorer');
       },
+      isGrantCollectionExplorer() {
+        return document.URL.indexOf('explorer/collections') > 0;
+      },
       isUserLogged() {
         let vm = this;
 

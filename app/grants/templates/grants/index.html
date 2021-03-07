@@ -126,7 +126,7 @@ along with this program. If not, see
                     </template>
                     <template v-else>
                       {% include 'grants/shared/top-filters.html' %}
-                      <template v-if="isGrantExplorer">
+                      <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
                         {% include 'grants/shared/active_clr_round.html'%}
                       </template>
                       {% include 'grants/shared/landing_grants.html' %}
