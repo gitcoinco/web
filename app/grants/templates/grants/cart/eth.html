@@ -27,7 +27,7 @@
       <!-- ALL DEVICES: Contribution amount and currency-->
       <div class="col-8 col-md-3 d-block mt-2 mt-md-0">
         <div class="row align-items-center form-inline">
-          <input v-model="grant.grant_donation_amount" class="col-auto form-control w-50" dir="rtl" style="text-indent: 0.2rem;" type="number" min="0" step="any" placeholder="Amount" />
+          <input v-model="grant.grant_donation_amount" class="col-auto form-control w-50" type="number" min="0" step="any" placeholder="Amount" />
           <div class="flex-shrink-0 w-50 pl-1" style="min-width:60px;">
             <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" style="height: 38px;">
               <template v-slot:option="option">
