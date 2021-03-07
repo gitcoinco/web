@@ -171,7 +171,7 @@ Vue.component('grants-cart', {
       let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
-        const amount = parseUnits(String(grant.grant_donation_amount), tokenDetails.decimals)
+        const amount = parseUnits(String(grant.grant_donation_amount || 0), tokenDetails.decimals)
           .mul(gitcoinFactor)
           .div(100);
 
@@ -553,7 +553,7 @@ Vue.component('grants-cart', {
 
       this.grantsByTenant.forEach(grant => {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
-        const totalDonationAmount = parseEther(String(grant.grant_donation_amount))
+        const totalDonationAmount = parseEther(String(grant.grant_donation_amount || 0))
           .mul(String(scaleFactor * 100))
           .div('100');
 
