@@ -1311,7 +1311,7 @@
                             </div>
 
                             <p class="mb-0 mt-1">
-                              <b-button @click="followTribe(tribe.handle, $event)" variant="primary" v-bind:class="[is_on_tribe ? 'btn-outline-secondary' : 'btn-primary']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
+                              <b-button @click="followTribe(tribe.handle, $event)" variant="noop" v-bind:class="[is_on_tribe ? 'btn-outline-secondary' : 'btn-primary']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
                               <span class="m-0 p-0">|</span>
 
@@ -1382,7 +1382,7 @@
                         [[ tribe.data.bio ]]
                       </div>
                       {%  if user.is_authenticated %}
-                      <b-button @click="followTribe(tribe.handle, $event)" variant="noop" v-bind:class="[is_on_tribe ? 'd-none' : 'btn-primary']" class="d-md-none mt-2 col-12 btn btn-primary" >[[ is_on_tribe ? "unfollow" : "follow" ]]</b-button>
+                      <b-button @click="followTribe(tribe.handle, $event)" variant="noop" v-bind:class="[is_on_tribe ? 'd-none' : 'btn-primary']" class="d-md-none mt-2 col-12 btn" >[[ is_on_tribe ? "unfollow" : "follow" ]]</b-button>
                       {% endif %}
                     </b-col>
 
