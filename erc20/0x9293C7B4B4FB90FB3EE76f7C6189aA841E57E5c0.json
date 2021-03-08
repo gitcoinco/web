@@ -1,0 +1,21 @@
+{
+  "symbol": "CNHC",
+  "address": "0x9293C7B4B4FB90FB3EE76f7C6189aA841E57E5c0",
+  "overview":{
+        "en": "CNHC is an ERC20 token that is Centrally Minted and Burned by CGL, representing the trusted party backing the token with CNH.",
+        "zh": "CNHC是由CGL组织mint和burn的ERC20 token，代表CNH支持的token受信任方。"
+  },
+  "email": "contact@cnhc.to",
+  "website": "https://www.cnhc.to/",
+  "whitepaper": "https://static.cnhc.to/CNHC+WHITEPAPER.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-02-02",
+  "initial_price":{
+  },
+  "links": {
+    "twitter": "https://twitter.com/CNHC93231472",
+    "github": "https://github.com/nnnggel/cnhc-contracts",
+    "facebook": "https://www.facebook.com/CNHCto",
+    "medium": "https://medium.com/@cnhcto"
+  }
+}
