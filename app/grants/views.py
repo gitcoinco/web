@@ -1213,6 +1213,7 @@ def grants_by_grant_clr(request, clr_round):
         live_now = 'Gitcoin Grants helps you find funding for your projects'
         title = 'Grants'
 
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
     grant_label = None
     for _type in grant_types:
@@ -1252,7 +1253,8 @@ def grants_by_grant_clr(request, clr_round):
         'only_contributions': only_contributions,
         'clr_round': clr_round,
         'collections': collections,
-        'grant_bg': get_branding_info(request)
+        'grant_bg': get_branding_info(request),
+        'active_rounds': active_rounds
     }
 
     # log this search, it might be useful for matching purposes down the line
