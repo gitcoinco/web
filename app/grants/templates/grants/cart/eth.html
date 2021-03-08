@@ -102,10 +102,10 @@
       <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
       <div class="col-12 col-lg-auto form-inline d-inline-block d-lg-block mt-2 mt-lg-0 pl-0 pl-lg-5">
         <span class="font-caption ml-0 mr-1 d-inline-block">Custom</span>
-        <input v-model="gitcoinFactorRaw" class="border cursor-pointer d-inline-block form-control inactive mr-0 pr-0 rounded w-auto" type="number"
+        <input v-model="gitcoinFactorRaw" class="border cursor-pointer d-inline-block form-control mr-0 pr-0 rounded w-auto" type="number"
           min="0" max="99" step="any" id="gitcoin-grant-input-amount"
           name="gitcoin-grant-input-amount" :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
-        />
+        /> %
       </div>
     </div>
     <!-- CLR matching -->
