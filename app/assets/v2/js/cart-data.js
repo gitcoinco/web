@@ -263,7 +263,6 @@ class CartData {
   }
 
   static setCheckedOut(list) {
-    console.log("checkout ", list);
     localStorage.setItem('contributions_were_successful', JSON.stringify(list));
   }
 
