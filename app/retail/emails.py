@@ -478,46 +478,40 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
         if bounty.status == 'done':
             txt = f"""
 
-hi{github_username},
+Hi {github_username},
 
-thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
+Thanks for putting this bounty ({bounty.github_url}) on Gitcoin. We're glad to see it was turned around!
 
-we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
+We're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra Eth. In that spirit, we have a few questions for you:
 
-in that spirit, i have a few questions for you:
+> How much coaching/communication did it take the counterparty to turn around the issue? Was this burdensome?
 
-> how much coaching/communication did it take the counterparty to turn around the issue?  was this burdensome?
+> What was the best thing about working on the platform? What was the worst?
 
-> what was the best thing about working on the platform?  what was the worst?
+> Would you use gitcoin again?
 
-> would you use gitcoin again?
+Thanks for being a member of the community.
 
-thanks for being a member of the community.
-
-kyle, frank & alisa (gitcoin product team)
+- the Gitcoin product team
 
 PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
 
 """
         elif bounty.status == 'cancelled':
             txt = f"""
-hi{github_username},
+Hi {github_username},
 
-we saw that you cancelled this bounty.
-
-i was sorry to see that the bounty did not get done.
-
-i have a few questions for you.
+We saw that you cancelled this bounty. We are sorry to see that the bounty did not get done. If you dont mind, we have a few questions for you:
 
 > why did you decide to cancel the bounty?
 
 > would you use gitcoin again?
 
-thanks again for being a member of the community.
+Thanks again for being a member of the community! You are part of the change we all want to see in the world!
 
-kyle, frank & alisa (gitcoin product team)
+- the Gitcoin product team
 
-PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
+PS - we've got some new gitcoin schwag on order. If interested, let us know and we can send you a code to order some :)
 
 """
         else:
@@ -568,22 +562,19 @@ def render_funder_stale(github_username, days=60, time_as_str='a couple months')
     """
     github_username = f"@{github_username}" if github_username else "there"
     response_txt = f"""
-hi {github_username},
+Hi {github_username},
 
-kyle, frank, and alisa from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
-
-in the spirit of making Gitcoin better + checking in:
+Gitcoin product team here — we see you haven't funded an issue in {time_as_str}. In the spirit of making Gitcoin better + checking in:
 
 > do you have any issues which might be bounty worthy or projects you're hoping to build?
 
 > do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
 
-> are you interested in joining one of our upcoming hackathons? it's possible
-we could do so at a discount, as you're a current funder on the platform.
+> are you interested in joining one of our upcoming hackathons? it's possible we could do so at a discount, as you're a current funder on the platform.
 
-appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
+We appreciate you being a part of the community! Let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
 
-~ kyle, frank & alisa (gitcoin product team)
+- the Gitcoin product team
 
 
 """
