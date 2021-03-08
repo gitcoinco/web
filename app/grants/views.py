@@ -24,6 +24,7 @@ import json
 import logging
 import re
 import time
+import uuid
 from decimal import Decimal
 
 from django.conf import settings
@@ -70,7 +71,7 @@ from economy.utils import convert_amount, convert_token_to_usdt
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
-    GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantType, GrantAPIKey, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
@@ -230,6 +231,31 @@ def get_keywords():
     return json.dumps([str(key) for key in Keyword.objects.all().cache().values_list('keyword', flat=True)])
 
 
+def api_auth_profile(request):
+    profile = request.user.profile if request.user.is_authenticated else None
+    GAK = None
+    api_key = request.GET.get('_key')
+    api_secret = request.GET.get('_secret')
+
+    should_look_at_api_key = (api_key and api_secret) or profile
+    if should_look_at_api_key:
+        if not api_key:
+            api_key = str(uuid.uuid4())
+        if not api_secret:
+            api_secret = str(uuid.uuid4())
+        GAK, _ = GrantAPIKey.objects.get_or_create(
+            key=api_key,
+            secret=api_secret,
+            defaults={
+                "profile" : profile,
+                }
+            )
+        profile = GAK.profile
+
+    GAK = {'_key': GAK.key, '_secret': GAK.secret} if GAK else None 
+
+    return profile, GAK
+
 def lazy_round_number(n):
     if n>1000000:
         return f"{round(n/1000000, 1)}m"
@@ -250,7 +276,7 @@ def helper_grants_round_start_end_date(request, round_id):
     return start, end
 
 
-def helper_grants_output(request, meta_data, addresses):
+def helper_grants_output(request, meta_data, addresses, GAK=None):
 
     # gather_stats
     add_count = len(addresses)
@@ -263,6 +289,7 @@ def helper_grants_output(request, meta_data, addresses):
                 'unique_addresses_found': add_count,
             },
             'meta': meta_data,
+            'api_key': GAK,
         },
         'addresses': addresses
     }
@@ -272,14 +299,18 @@ def helper_grants_output(request, meta_data, addresses):
 grants_data_release_date = timezone.datetime(2020, 10, 22)
 
 hide_wallet_address_anonymized_sql = "AND contributor_profile_id NOT IN (select id from dashboard_profile where hide_wallet_address_anonymized)"
-@login_required
-@cached_view(timeout=3600)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def contribution_addr_from_grant_as_json(request, grant_id):
 
     # return all contirbutor addresses to the grant
     grant = Grant.objects.get(pk=grant_id)
 
-    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+    profile, GAK = api_auth_profile(request)
+    if not profile:
+        return redirect('/login/github/?next=' + request.get_full_path())
+    if not grant.is_on_team(profile) and not request.user.is_staff:
         return JsonResponse({
             'msg': 'not_authorized, you must be a team member of this grant'
             }, safe=False)
@@ -293,17 +324,19 @@ def contribution_addr_from_grant_as_json(request, grant_id):
     meta_data = {
        'grant': grant_id,
     }
-    return helper_grants_output(request, meta_data, earnings)
+    return helper_grants_output(request, meta_data, earnings, GAK)
 
 
-@login_required
-@cached_view(timeout=3600)
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_id):
 
     # return all contirbutor addresses to the grant
     grant = Grant.objects.get(pk=grant_id)
 
-    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+    profile, GAK = api_auth_profile(request)
+    if not profile:
+        return redirect('/login/github/?next=' + request.get_full_path())
+    if not grant.is_on_team(profile) and not request.user.is_staff:
         return JsonResponse({
             'msg': 'not_authorized, you must be a team member of this grant'
             }, safe=False)
@@ -322,16 +355,18 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
         'round': round_id,
         'grant': grant_id,
     }
-    return helper_grants_output(request, meta_data, earnings)
+    return helper_grants_output(request, meta_data, earnings, GAK)
 
-@login_required
-@cached_view(timeout=60)
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def contribution_info_from_grant_during_round_as_json(request, grant_id, round_id):
 
     # return all contirbutor addresses to the grant
     grant = Grant.objects.get(pk=grant_id)
 
-    if not grant.is_on_team(request.user.profile) and not request.user.is_staff:
+    profile, GAK = api_auth_profile(request)
+    if not profile:
+        return redirect('/login/github/?next=' + request.get_full_path())
+    if not grant.is_on_team(profile) and not request.user.is_staff:
         return JsonResponse({
             'msg': 'not_authorized, you must be a team member of this grant'
             }, safe=False)
@@ -367,7 +402,7 @@ order by grants_subscription.id desc
         'round': round_id,
         'grant': grant_id,
     }
-    return helper_grants_output(request, meta_data, earnings)
+    return helper_grants_output(request, meta_data, earnings, GAK)
 
 
 @login_required
