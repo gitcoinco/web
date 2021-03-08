@@ -2016,7 +2016,7 @@ def grant_new(request):
         grant.calc_clr_round()
         grant.save()
 
-        messages.info(
+        messages.success(
             request,
             _('Thank you for posting this Grant. Our team reviews each grant before it goes live on the website. This process takes 1-2 business days.')
         )
