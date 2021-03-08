@@ -56,12 +56,18 @@ Vue.component('grant-sidebar', {
       let me = state ? 'me' : 'all';
 
       event.preventDefault;
-      this.filter_grants({type: me, category: ''});
+      this.filter_grants({type: me, category: '', keyword: ''});
     },
     isMobileDevice: function() {
       return window.innerWidth < 576;
     },
+    toggleMyCollections: function(state, event) {
+      let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
+      this.filter_grants(me);
+      this.search = me.keyword;
+    },
     filterLink: function(params) {
+
       return this.filter_grants(params);
     },
     searchKeyword: function() {
