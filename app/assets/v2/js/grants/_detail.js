@@ -36,6 +36,29 @@ Vue.mixin({
     paginate: function(array, page_size, page_number) {
       return array.slice(page_number * page_size, page_number * page_size + page_size);
     },
+    tabChange: function(input) {
+
+      console.log(input);
+      window.location = `${this.grant.details_url}?tab=${input}`;
+    },
+    enableTab: function() {
+      let vm = this;
+      let urlParams = new URLSearchParams(window.location.search);
+
+      vm.tab = urlParams.get('tab');
+
+      switch (vm.tab) {
+        case 'sybil_profile':
+          vm.tabSelected = 3;
+          break;
+        case 'stats':
+          vm.tabSelected = 4;
+          break;
+        default:
+          vm.tabSelected = 0;
+      }
+      window.history.replaceState({}, document.title, `${window.location.pathname}`);
+    },
     fetchRelated: function() {
       const vm = this;
       const size = 3;
@@ -147,6 +170,7 @@ if (document.getElementById('gc-grant-detail')) {
       };
     },
     mounted: function() {
+      this.enableTab();
       this.backNavigation();
       this.fetchGrantDetails();
     }

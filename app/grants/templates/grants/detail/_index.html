@@ -267,6 +267,155 @@
                     <button class="btn btn-outline-primary btn-sm mt-n4 mb-4" v-if="relatedGrantsIds.length && relatedGrantsHasNext" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
                   </div>
                 </b-tab>
+
+                {% if is_staff %}
+                <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
+                  <template v-slot:title>Sybil Profile</template>
+  
+  
+                    <h4>Grant Sybil Profile</h4>
+  
+                    <hr>
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    SybilScore ™️: {{ grant.sybil_score }}
+                    <br>
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    RiskScore ™️: {{ grant.weighted_risk_score }}
+                    <pre>
+  
+                    A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+                    - Account Metadata
+                    - Suspicious Interactions
+                    - Grant Flags Reports
+                    - BrightID Trust Score (coming soon)
+                    - KYC (maybe coming soon)
+                    - MACI (maybe coming soon)
+  
+                    a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+                    </pre>
+                    <div id="section-nav-sybil">
+                      {% for ele in sybil_profiles%}
+                      <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+                      <table>
+                        <tr>
+                          <td>
+                            Index
+                          </td>
+                          <td>
+                            Contributors
+                          </td>
+                          <td>
+                            Contributors (pct)
+                          </td>
+                          <td>
+                            Contributions/Contributor
+                          </td>
+                          <td>
+                            Profiles
+                          </td>
+                        </tr>
+                      {% for sp in ele.1.0 %}
+                        <tr style="border-top: 1px solid grey;">
+                          <td>
+                            {% if '0x' in sp.0 %}
+                            <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+                            {% else %}
+                            {{sp.0}}
+                            {% endif %}
+                          </td>
+                          <td>
+                            {{sp.1}}
+                          </td>
+                          <td>
+                            {{sp.5}}%
+                          </td>
+                          <td>
+                            {{sp.3|floatformat:2}}
+                          </td>
+                          <td>
+                            <div style="max-height: 50px; overflow: scroll;">
+                              {% for this_profile in sp.4 %}
+                                    <a href="/{{this_profile}}">
+                                      {% if forloop.counter < 20 %}
+                                        <b-img-lazy class="rounded-circle bg-white" width="30" height="30" src="/dynamic/avatar/{{this_profile}}"></b-img-lazy>
+                                      {% endif %}
+                                      @{{this_profile}}
+                                    </a>
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      </table>
+                        <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+  
+  
+                      {% endfor %}
+                    </div>
+                </b-tab>
+                {% endif %}
+                {% if is_team_member or is_staff  %}
+                <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
+                  <template v-slot:title>Stats</template>
+                  {% if tab == 'stats' %}
+                    <div id=grant_stats_graph class="content-block content-block--white">
+                      <div class="container">
+  
+                        <div class="value-container">
+                          <div class="chart_container chart_container--big">
+                            {% if stats_history|length %}
+                            <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+                            <table id=stats_history>
+                              <tr class="table_header">
+                                <td>
+                                  When
+                                </td>
+                                <td>
+                                  Impressions
+                                </td>
+                                <td>
+                                  Added to Cart
+                                </td>
+                                <td>
+                                  Contributions
+                                </td>
+                              </tr>
+                            {% for ele in stats_history %}
+                              <tr>
+                                <td>
+                                  {{ele.created_on|date:"Y/m/d"}}
+                                </td>
+                                <td>
+                                  {{ele.data.impressions}}
+                                </td>
+                                <td>
+                                  {{ele.data.in_cart}}
+                                </td>
+                                <td>
+                                  {{ele.data.contributions}}
+                                </td>
+                              </tr>
+                            {% endfor %}
+                            </table>
+                            {% endif %}
+  
+                            <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
+                            <div class="chart_container__content">
+                              <div id="grant_chart"></div>
+                            </div>
+                            <div class="grant-status-list">
+                              <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                              <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
+                            </div>
+                          </div>
+                        </div>
+  
+                      </div>
+                    </div>
+                  {% endif %}
+                </b-tab>
+                {% endif %}
+
               </b-tabs>
             </div>
           </div>
