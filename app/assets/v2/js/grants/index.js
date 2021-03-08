@@ -311,6 +311,8 @@ if (document.getElementById('grants-showcase')) {
 
         if (filters.type === 'collections') {
           this.collectionsPage = 1;
+        } else {
+          this.clearSingleCollection();
         }
         this.page = 1;
         this.setCurrentType(this.current_type);
