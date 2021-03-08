@@ -1068,7 +1068,6 @@ Vue.component('grants-cart', {
       CartData.setCheckedOut(this.grantsByTenant)
       // Remove each grant from the cart which has just been checkout
       this.grantsByTenant.forEach((grant) => {
-        console.log(grant)
         CartData.removeIdFromCart(grant.grant_id);
       });
 
@@ -1315,7 +1314,6 @@ Vue.component('grants-cart', {
     const allTokens = await tokensResponse.json();
 
     // Only keep the ones for the current network
-    console.log(document.web3network)
     this.currentTokens = allTokens.filter((token) => token.network === document.web3network || 'mainnet');
     this.currentTokens.forEach((token) => {
       // Add addr and name fields for backwards compatibility with existing code in this file
