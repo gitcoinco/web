@@ -36,7 +36,8 @@ Vue.component('create-collection-modal', {
     },
     createCollection: async function() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const cart = CartData.loadCart();
+      const checkedOut = CartData.loadCheckedOut();
+      const cart = (checkedOut.length > 0 ? checkedOut : CartData.loadCart());
       const grantIds = cart.map(grant => grant.grant_id);
       let response;
 

@@ -9,9 +9,10 @@ Vue.component('contribution-thanks-modal', {
     };
   },
   mounted: function() {
-    const shouldShow = Boolean(localStorage.getItem('contributions_were_successful'));
+    const checkoutData = CartData.loadCheckedOut();
+    const shouldShow = checkoutData.length > 0;
 
-    this.numberOfContributions = Number(localStorage.getItem('contributions_count'));
+    this.numberOfContributions = checkoutData.length;
 
     this.tweetUrl = `https://twitter.com/intent/tweet?text=I just funded ${this.numberOfContributions} grants on @gitcoin ${CartData.share_url()}`;
 
@@ -19,16 +20,14 @@ Vue.component('contribution-thanks-modal', {
       this.$bvModal.show(this.modalId);
     }
 
-    this.donations = CartData.loadCart();
+    this.donations = checkoutData;
   },
   methods: {
     close() {
       this.$bvModal.hide(this.modalId);
     },
     handleHide() {
-      localStorage.removeItem('contributions_were_successful');
-      localStorage.removeItem('contributions_count');
-      CartData.setCart([]);
+      CartData.clearCheckedOut();
     },
     showSaveAsCollection() {
       this.$bvModal.show('create-collection');
