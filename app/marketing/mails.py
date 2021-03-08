@@ -223,7 +223,7 @@ def featured_funded_bounty(from_email, bounty):
 
 def new_grant_flag_admin(flag):
     from_email = settings.CONTACT_EMAIL
-    to_email = 'kevin@gitcoin.co'
+    to_email = 'new-grants@gitcoin.co'
 
     cur_language = translation.get_language()
 
@@ -724,7 +724,7 @@ def new_faucet_request(fr):
 
 
 def new_grant_admin(grant):
-    to_emails = [settings.PERSONAL_CONTACT_EMAIL, 'scott.moore@consensys.net']
+    to_emails = ['new-grants@gitcoin.co']
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     for to_email in to_emails:
