@@ -158,17 +158,17 @@
           <!-- Category Details -->
           <div class="row mt-5">
             <template v-if="grant.region && grant.region.label != 'undefined'">
-              <div class="col">
+              <div class="col-12 col-md-auto mb-1">
                 <span class="px-2">Region</span>
                 <span class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[grant.region.label]]</span>
               </div>
             </template>
-            <div class="col">
+            <div class="col-12 col-md-auto mb-1">
               <span class="px-2">Category</span>
               <a :href="`/grants/explorer/${item.fields.name}`" v-for="item in grant.grant_type" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.label]]</a>
             </div>
             <template v-if="grant.categories && grant.categories.length > 0">
-              <div class="col">
+              <div class="col-12 col-md-auto mb-1">
                 <span class="px-2">Subcategory</span>
                 <a :href="`/grants/explorer/${grant.grant_type[0].fields.name}?category=${item.fields.category}`" v-for="item in grant.categories" class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">[[item.fields.category]]</a>
               </div>
