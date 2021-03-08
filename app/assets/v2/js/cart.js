@@ -641,7 +641,7 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-      return this.currentTokens.filter(token => token.name === name)[0];
+      return this.filterByChainId.filter(token => token.name === name)[0];
     },
 
     async applyAmountToAllGrants(grant) {
@@ -1310,6 +1310,7 @@ Vue.component('grants-cart', {
     const allTokens = await tokensResponse.json();
 
     // Only keep the ones for the current network
+    console.log(document.web3network)
     this.currentTokens = allTokens.filter((token) => token.network === document.web3network || 'mainnet');
     this.currentTokens.forEach((token) => {
       // Add addr and name fields for backwards compatibility with existing code in this file
