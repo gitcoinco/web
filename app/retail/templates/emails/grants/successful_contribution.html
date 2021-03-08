@@ -121,7 +121,7 @@ along with this program. If not, see
     </div>
   </div>
 
-  <hr>
+  <hr style="margin-left: 0;">
   <br>
   <div class="grant-info">
     <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
@@ -161,7 +161,7 @@ along with this program. If not, see
   <p>{% trans "If you ever need to, you can cancel your support" %}
     <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans "here." %}</a>
   </p>
-  <hr>
+  <hr style="margin-left: 0;">
 
 </div>
 {% endblock %}

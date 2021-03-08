@@ -28,13 +28,14 @@ along with this program. If not, see
     <a href="{{post.profile.url}}?{{ utm_tracking }}">@{{post.profile.handle}}</a> mentioned you in a post. This is what
     the post looks like:
 
-  <pre>
+  <br><br>
+  <code style="word-wrap: break-word;">
   {% if is_activity %}
     {{post.metadata.title}}
   {% else %}
     - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
   {% endif %}
-  </pre>
+  </code>
 
   <div style="margin-bottom: 2em; margin-top: 2em;">
     <a class="button" href="{{ post.url }}&{{ utm_tracking }}">View Thread</a>

@@ -91,7 +91,7 @@ along with this program. If not, see
     title="{% trans " Subscription Terminated." %}">
   <h1>{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled by its creator." %}</h1>
   <p style="margin-bottom:1.25rem;">{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
-  <hr>
+  <hr style="margin-left: 0;">
 
   <div class="grant-info">
     <a href="{% url 'grants:details' grant.id grant.slug %}">
@@ -135,6 +135,6 @@ along with this program. If not, see
     <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
   </p>
   <br>
-  <hr>
+  <hr style="margin-left: 0;">
 </div>
 {% endblock %}

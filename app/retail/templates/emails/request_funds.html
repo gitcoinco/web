@@ -44,16 +44,16 @@ along with this program. If not, see
 <div id="content-body">
   <div>
     <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
-    <h3 style="text-transform: none;">
+    <h2 style="text-transform: none; word-wrap: break-word;">
       @{{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
       {% if address %}
       <br><br>Recipient Address: {{ address }}
       {% endif %}
       <br><br>{% if tip %}{{tip.created_on | naturaltime}}.{% endif %}
-    </h3>
+    </h2>
   </div>
 
-  <div class="text-center tip-box">
+  <div class="tip-box">
     <div class="tip">
       <div class="tip-contents">
         <p>
@@ -71,16 +71,18 @@ along with this program. If not, see
       <br>
       - or -
       <br>
+      <br>
       <a href="https://gitcoin.co/{{request.requester.handle}}?{{ utm_tracking }}">{% trans "Write them a message" %}</a>
       <br>
       <br>
       {% if request.other_earnings|length %}
-      <hr>
+      <hr style="margin-left: 0;">
       <h4>
         {{request.other_earnings|length}} Other transactions between {{request.requester.handle}} &lt;&gt;
         {{request.profile.handle}}
       </h4>
       {% endif %}
+      {% if request.other_earnings %}
       <table style="margin: 0px auto; text-align: left;">
         <tr style="font-weight:bold;">
           <td>
@@ -113,6 +115,7 @@ along with this program. If not, see
         </tr>
         {% endfor %}
       </table>
+      {% endif %}
     </div>
     {% endif %}
   </div>

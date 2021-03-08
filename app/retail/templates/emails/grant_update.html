@@ -44,8 +44,7 @@ along with this program. If not, see
   </div>
   - OR -
   <div style="margin-bottom: 1em; margin-top: 1em;">
-    <a href="{% url " email_settings" subscriber.priv %}?{{ utm_tracking }}{% if email_type %}&type={{email_type}}{%
-      endif %}">Unsubscribe From ALL Grant Updates</a>
+    <a href="{% url "email_settings" subscriber.priv %}?{{ utm_tracking }}{% if email_type %}&type={{email_type}}{% endif %}">Unsubscribe From ALL Grant Updates</a>
   </div>
 
   </p>

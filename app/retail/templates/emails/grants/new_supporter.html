@@ -55,7 +55,7 @@ along with this program. If not, see
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
   <img src="{% static "v2/images/new-supporter.png" %}" alt="{% trans " New Supporter" %}" title="{% trans " New Supporter." %}">
   <h1 style="text-transform: none;">{{ grant.title }}{% trans " has a new supporter!" %}</h1>
-  <hr>
+  <hr style="margin-left: 0;">
   <div class="supporter">
     <a href="{% url 'profile' subscription.contributor_profile.handle %}?{{ utm_tracking }}">
       <img src="{{ subscription.contributor_profile.avatar_url }}" width="50" height="50" />
@@ -90,6 +90,6 @@ along with this program. If not, see
         Grant</a>
     </p>
   </div>
-  <hr>
+  <hr style="margin-left: 0;">
 </div>
 {% endblock %}

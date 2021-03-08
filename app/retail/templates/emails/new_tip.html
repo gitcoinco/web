@@ -27,6 +27,7 @@ along with this program. If not, see
     border-style: solid;
     border-width: 1px;
     border-color: #e0e0e0;
+    padding-left: 1em;
   }
 
   .tip-contents {
@@ -37,7 +38,6 @@ along with this program. If not, see
     display: flex;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
-    padding-left: 1em;
     padding-right: 1em;
   }
 </style>
@@ -56,11 +56,11 @@ along with this program. If not, see
       {{tip.from_name}} {% blocktrans %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
       {% else %}
       {% blocktrans %}Someone sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
-      {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{% endif %}.
+      {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{% endif %}
     </h3>
   </div>
 
-  <div class="text-center tip-box">
+  <div>
     <div class="tip">
       <div class="tip-contents">
         {% if tip.github_url %}
@@ -123,6 +123,7 @@ along with this program. If not, see
     <div>
       {% trans "Transaction ID:" %} <a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>
     </div>
+    <br>
   </div>
 
 </div>

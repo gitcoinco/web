@@ -34,9 +34,6 @@ along with this program. If not, see
 
     <br>
     <br>
-    <img src="{% static "v2/images/expiring_clock.png"%}" style="padding: 20px 0;">
-    <br>
-    <br>
     {% if is_owner %}
     <a class="button button-primary" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "Extend Expiration Date" %}</a>
     {% if bounty.status == 'submitted' %}

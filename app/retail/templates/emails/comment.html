@@ -27,12 +27,12 @@ along with this program. If not, see
 
     <a href="{{comment.profile.url}}?{{ utm_tracking }}">@{{comment.profile.handle}}</a> commented on your status
     update. This is what the thread looks like:
-
-  <pre>
+  <br><br>
+  <code style="word-wrap: break-word;">
   {% for comment in comment.activity.comments.all %}
   - @{{comment.profile.handle}} ({{comment.created_on | naturaltime}}): {{comment.comment}}
   {% endfor %}
-  </pre>
+  </code>
 
   <div style="margin-bottom: 2em; margin-top: 2em;">
     <a class="button" href="{{ comment.url }}&{{ utm_tracking }}">View Thread</a>

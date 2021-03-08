@@ -475,8 +475,8 @@ def render_no_applicant_reminder(bounty):
         'utm_tracking': build_utm_tracking('no_applicant_reminder'),
         'directory_link': '/users?skills=' + bounty.keywords.lower()
     }
-    response_html = premailer_transform(render_to_string("emails/bounty/no_applicant_reminder.html", params))
-    response_txt = render_to_string("emails/bounty/no_applicant_reminder.txt", params)
+    response_html = premailer_transform(render_to_string("emails/no_applicant_reminder.html", params))
+    response_txt = render_to_string("emails/no_applicant_reminder.txt", params)
     return response_html, response_txt
 
 

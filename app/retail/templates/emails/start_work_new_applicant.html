@@ -34,9 +34,7 @@ along with this program. If not, see
         href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "by clicking approve below." %}
     </p>
     <br>
-    {% include 'emails/bounty.html' with bounty=bounty action='custom' action_copy='Approve Worker'
-    action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom'
-    contributor_plan=interest.issue_message %}
+    {% include 'emails/bounty.html' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom' contributor_plan=interest.issue_message %}
     <p>
       {% blocktrans %}
       - Gitcoin Team

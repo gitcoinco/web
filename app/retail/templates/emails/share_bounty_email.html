@@ -26,20 +26,20 @@ along with this program. If not, see
 
     <img src="{{from_profile.avatar_url}}" style="width: 10%;" />
     <h3 style="text-transform: none;">@{{from_profile.handle}} {% trans "invited you to work on a bounty" %}</h3>
-    <hr>
+    <hr style="margin-left: 0;">
     <div>
         <p>{{msg}}</p>
         <a class="button" href="{{ invite_url }}?{{ utm_tracking }}">{% trans "View Bounty" %}</a>
         <br><br>
     </div>
-    <hr>
+    <hr style="margin-left: 0;">
 
     {% if not kudos_invite %}
     <div>
         <h3 style="text-transform: none;">If you accept the invite... you can get a special Kudos from
             @{{from_profile.handle}} for working on this bounty!</h3>
         <img src="https://gitcoin.co/dynamic/kudos/1055/pika_bot" style="width: 10%; z-index: 2; position: relative;" />
-        <img src="https://gitcoin.co/dynamic/kudos/1057/saber_bot" style="width: 10%; margin-left: -40px;" />
+        <img src="https://gitcoin.co/dynamic/kudos/1057/saber_bot" style="width: 10%; margin-left: -20px;" />
         <br><br>
     </div>
     {% endif %}
