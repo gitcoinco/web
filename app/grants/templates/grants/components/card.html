@@ -135,7 +135,7 @@
               <template v-slot:button-content>
                 <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
               </template>
-              <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections" :key="collection.id">[[collection.title]]</b-dropdown-item>
+              <b-dropdown-item @click.prevent="addToCollection({grant, userCollection})" v-for="userCollection in collections" :key="userCollection.id" v-if="collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
             </b-dropdown>
           </div>
         </div>
@@ -272,7 +272,7 @@
               <template v-slot:button-content>
                 <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
               </template>
-              <b-dropdown-item @click.prevent="addToCollection({grant, collection})" v-for="collection in collections" :key="collection.id">[[collection.title]]</b-dropdown-item>
+              <b-dropdown-item @click.prevent="addToCollection({grant, userCollection})" v-for="userCollection in collections" :key="userCollection.id" v-if="collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
             </b-dropdown>
           </div>
 
