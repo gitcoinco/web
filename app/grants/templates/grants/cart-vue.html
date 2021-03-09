@@ -42,7 +42,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-
+      
+      
       <div id="gc-grants-cart" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div class="container">
@@ -93,7 +94,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <template #tabs-end>
                     <div role="presentation" class="nav nav-item ml-auto mt-2">
                     <!-- d-none d-sm-block hides on screens sm or less-->
-                      <li class="cursor-pointer align-self-center text-primary d-none d-md-block" @click="createCollection">
+                      <li class="cursor-pointer align-self-center text-primary d-none d-md-block" @click="$refs.createCollection.fetchCollections()">
                         <i class="far fa-heart pr-1" aria-hidden="true"></i> Save as collection
                       </li>
                       <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
@@ -107,10 +108,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </b-tabs>
               </div>
             </div>
+            {% include 'shared/create_collection_modal.html' %}
           </div>
         </grants-cart>
       </div>
-
 
       <script type="text/x-template" id="select2-template">
         <select>
@@ -162,6 +163,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <script src="{% static "v2/js/grants/cart/binance_extension.js" %}"></script>
       <!-- </template> -->
 
+      <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
       <script src="{% static "v2/js/cart.js" %}"></script>
     </div>
   </body>

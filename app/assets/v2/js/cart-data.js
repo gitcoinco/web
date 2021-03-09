@@ -19,7 +19,8 @@ class CartData {
   }
 
   static share_url(title) {
-    const donations = this.loadCart();
+    const checkedOut = this.loadCheckedOut();
+    const donations = (checkedOut.length > 0 ? checkedOut : this.loadCart());
     let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
 
     let network = document.web3network;
@@ -243,5 +244,29 @@ class CartData {
   static setCart(list) {
     localStorage.setItem('grants_cart', JSON.stringify(list));
     applyCartMenuStyles();
+  }
+
+  static loadCheckedOut() {
+    const checkedOutList = localStorage.getItem('contributions_were_successful');
+
+    if (!checkedOutList) {
+      return [];
+    }
+
+    const parsedCheckout = JSON.parse(checkedOutList);
+
+    if (!Array.isArray(parsedCheckout)) {
+      return [];
+    }
+
+    return parsedCheckout;
+  }
+
+  static setCheckedOut(list) {
+    localStorage.setItem('contributions_were_successful', JSON.stringify(list));
+  }
+
+  static clearCheckedOut() {
+    localStorage.removeItem('contributions_were_successful');
   }
 }

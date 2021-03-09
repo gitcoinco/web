@@ -938,7 +938,6 @@ body.green.offer_view .announce {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
   border: 1px solid transparent;
-  margin-bottom: 0.5rem !important;
 }
 
 #status .btn-group-toggle .btn-radio.active {
@@ -971,6 +970,7 @@ body.green.offer_view .announce {
 
 .activity_time {
   color: var(--gc-medium-dark-gray);
+  clear: both;
 }
 
 .filter-tag {
