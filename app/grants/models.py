@@ -220,6 +220,12 @@ class GrantCLR(SuperModel):
         return f"{self.round_num}"
 
     @property
+    def happening_now(self):
+        # returns true if we are within the time range for this round
+        now = timezone.now()
+        return now >= self.start_date and now <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -573,9 +579,9 @@ class Grant(SuperModel):
         clr_round = None
 
         # create_grant_active_clr_mapping
-        clr_rounds = GrantCLR.objects.filter(is_active=True)
+        clr_rounds = GrantCLR.objects.all()
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants.all():
+            if self in this_clr_round.grants.all() and this_clr_round.is_active and this_clr_round.happening_now:
                 self.in_active_clrs.add(this_clr_round)
             else:
                 self.in_active_clrs.remove(this_clr_round)
