@@ -244,7 +244,7 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    subscription = Subscription.objects.last()
+    subscription = Subscription.objects.get(pk=86090)
     response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 

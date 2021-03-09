@@ -64,9 +64,6 @@
   <p>{% trans "has contributed" %}</p>
   <p style="padding-top:0;margin-top:.5rem">
     <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
-    {% if subscription.subscription_contribution.first.blockexplorer_url %}
-      <a href="{{subscription.subscription_contribution.first.blockexplorer_url}}">View transaction</a>
-    {% endif %}
   </p>
 
   {% if subscription.comments %}
@@ -82,6 +79,11 @@
   {% endif %}
   <p>
     <a href="{{grant.url}}" class="button" style="display: inline-block; margin-top:10px;">View Grant</a>
+    {% if subscription.subscription_contribution.first.blockexplorer_url %}
+      <br>
+      <br>
+      <a href="{{subscription.subscription_contribution.first.blockexplorer_url}}">View transaction</a>
+    {% endif %}
 
   </p>
 </div>
