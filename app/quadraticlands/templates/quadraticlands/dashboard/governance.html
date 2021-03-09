@@ -106,58 +106,64 @@ document.addEventListener("DOMContentLoaded",function(){
 		getTokenBalances(gtc_address()).then(function(result) {
 
 			// if user have selected an ethereum account AND have >= 1 gtc tokens 
-			if(selectedAccount && result.balance >= 1)
+			if(selectedAccount && result.balance > 0)
 			{
 
 				// show governance module
 				governance.classList.remove("hide")
 
-				// find out delegate address with the help of zachs web3-ql library 
-				// right now i just put my address here manualy to see (enable/disabled) for testing
-				delegateAddress = "0x3087Ae5af5356B485B83E819B8B281E556c47858"
-				// delegateAddress = "0xB8B281E556c478583087Ae5af5356B485B83E819"
+			    // get delegate address
+			    getDelegateAddress(gtc_address(), selectedAccount).then(function(result) {
+
+			        delegateAddress = result
+			        console.debug('SelectedAccount Delegate Address: ', result);
+
+					// delegate mode DISABLED 
+					// ( user do not delegate to a different delegation address)
+					if (selectedAccount == delegateAddress){
+						delegation_mode.innerHTML = "disabled"
+
+						toggle_disabled.classList.remove("hide")
+						toggle_enabled.classList.add("hide")
+				
+						txt_delegate.classList.remove("hide")
+						txt_redelegate.classList.add("hide")
+						txt_disable_delegate.classList.add("hide")
+						
+						console.log("DELEGATION MODE : DISABLED")
+					}
+
+					// delegation mode ENABLED 
+					// ( user delegate to a different address )
+					else {
+						delegation_mode.innerHTML = "enabled"
+
+						toggle_disabled.classList.add("hide")
+						toggle_enabled.classList.remove("hide")
+
+						delegate_address.innerHTML = "( " + truncate(delegateAddress) + " )"
+
+						txt_delegate.classList.add("hide")
+						txt_redelegate.classList.remove("hide")
+						txt_disable_delegate.classList.remove("hide")
+
+						delegate_input.value = delegateAddress;
+
+						console.log("DELEGATION MODE : ENABLED")
+					}
 
 
-				// delegate mode DISABLED 
-				// ( user do not delegate to a different delegation address)
-				if (selectedAccount == delegateAddress){
-					delegation_mode.innerHTML = "disabled"
+			    });
 
-					toggle_disabled.classList.remove("hide")
-					toggle_enabled.classList.add("hide")
-			
-					txt_delegate.classList.remove("hide")
-					txt_redelegate.classList.add("hide")
-					txt_disable_delegate.classList.add("hide")
-					
-					console.log("DELEGATION MODE : DISABLED")
-				}
-
-				// delegation mode ENABLED 
-				// ( user delegate to a different address )
-				else {
-					delegation_mode.innerHTML = "enabled"
-
-					toggle_disabled.classList.add("hide")
-					toggle_enabled.classList.remove("hide")
-
-					delegate_address.innerHTML = "( " + truncate(delegateAddress) + " )"
-
-					txt_delegate.classList.add("hide")
-					txt_redelegate.classList.remove("hide")
-					txt_disable_delegate.classList.remove("hide")
-
-					delegate_input.value = delegateAddress;
-
-					console.log("DELEGATION MODE : ENABLED")
-				}
 
 			}
+
 
 			else{
 				// hide governance module
 				governance.classList.add("hide")
 			}
+
 
 
 		});
