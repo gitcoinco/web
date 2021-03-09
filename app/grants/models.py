@@ -2044,6 +2044,7 @@ class GrantCollection(SuperModel):
     cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
     featured = models.BooleanField(default=False, help_text=_('Show grant as featured'))
     objects = CollectionsQuerySet.as_manager()
+    shuffle_rank = models.PositiveIntegerField(default=1, db_index=True)
     curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
 
     def generate_cache(self):

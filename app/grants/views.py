@@ -482,7 +482,7 @@ def grants(request):
     return grants_by_grant_type(request, _type)
 
 
-def get_collections(user, keyword, sort='-modified_on', collection_id=None, following=None,
+def get_collections(user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
                     idle_grants=None, only_contributions=None, featured=False):
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
 
