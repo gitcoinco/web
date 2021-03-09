@@ -308,7 +308,7 @@
       <div class="grant-team">
         <div class="">
           <h3>Team</h3>
-          <div class="d-flex" style="gap: 16px;">
+          <div :class="`d-flex flex-wrap ${teamFormatted.length > 3 ? 'justify-content-center' : ''}`" style="gap: 16px;">
             <div v-for="member in teamFormatted" :key="member.id" class="d-flex flex-column align-items-center" v-if="member?.text">
               <b-img-lazy class="rounded-circle bg-light" width="50" height="50" :src="member.avatar_url" :alt="member.text"></b-img-lazy>
               <a :href="`/profile/${member.text}`" class="">[[member.text]]</a>
