@@ -22,7 +22,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-CLR_START_DATE = dt.datetime(2020, 12, 1, 15, 0) # TODO:SELF-SERVICE
+CLR_START_DATE = dt.datetime(2021, 3, 10, 1, 0) # TODO:SELF-SERVICE
 
 
 def lineno():

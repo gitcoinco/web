@@ -43,7 +43,7 @@
 
       <!-- ALL DEVICES: CLR match amount-->
       <div class="col col-md-3 d-block text-md-left text-right pr-2 pl-2 ml-5">
-        <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active CLR</div>
+        <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div>
         <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
         <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
       </div>
