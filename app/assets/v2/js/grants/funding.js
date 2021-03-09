@@ -193,13 +193,13 @@ function tokenOptionsForGrant(grant) {
     tokenDefault = 'KSM';
   } else if (grant.tenants && grant.tenants.includes('RSK')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 30);
-    tokenDefault = 'R-BTC';
+    tokenDefault = 'RBTC';
   } else {
     tokenDataList = tokenDataList.filter(token => token.chainId === 1);
   }
 
   const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000' ||
-  grant.grant_token_address === '0x0');
+    grant.grant_token_address === '0x0');
 
   let options = '';
 
