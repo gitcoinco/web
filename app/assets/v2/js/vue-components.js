@@ -633,7 +633,7 @@ Vue.component('project-card', {
       projectModal(project.bounty.pk, project.pk);
     }
   },
-  template: `<div class="card card-user shadow-sm border-0">
+  template: `<div class="card card-user border-0">
     <div class="card card-project">
       <button v-on:click="projectModal" class="position-absolute btn btn-success btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
       <img v-if="project.grant_obj" class="position-absolute" style="left: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>

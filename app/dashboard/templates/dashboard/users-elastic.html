@@ -97,8 +97,8 @@
                   </div>
                   <div class="grid-4 pt-5">
                     <directory-card v-for="user in hits.items" :key="user._source.profile_id" :user="user._source" inline-template >
-                      <div class="card card-user shadow-sm border-0">
-                        <div class="d-flex flex-column py-1 bg-lightblue">
+                      <div class="card card-user shadow-sm border-0 bg-lightblue">
+                        <div class="d-flex flex-column py-1">
                           <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                           <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
                             <a href='/funding/new?invite=${user.profile_id}' target="_blank" class="dropdown-item p-2">
@@ -165,8 +165,8 @@
                 <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
               </div>
               <div class="grid-4">
-                <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user._source.id">
-                  <div class="d-flex flex-column py-1 bg-lightblue">
+                <div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key="user._source.id">
+                  <div class="d-flex flex-column py-1">
                     <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                     <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
                       <a :href="`/funding/new?invite=${ user._source.id }`" target="_blank" class="dropdown-item p-2">
@@ -204,10 +204,10 @@
                     <template v-if="user._source.is_org">
                       <div v-html="user._source.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
                       </div>
-                      <div class="text-left">
+                      <div class="text-center">
                         <span v-if="user._source.rank_org > 0"><b>#[[ user._source.rank_org ]]</b> Tribe</span>
                       </div>
-                      <div class="text-left">
+                      <div class="text-center">
                         <p class="mb-0">
                           <i class="fas fa-user font-smaller-4 mr-1"></i>
                           <b>[[ user._source.follower_count ]]</b> followers
@@ -243,7 +243,7 @@
                           <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user._source.job_status ]]
                         </a>
                       </div>
-                      <div class="text-left">
+                      <div class="text-center">
                         <p class="mb-0">
                           <i class="fas fa-user font-smaller-4 mr-1"></i>
                           <b>[[ user._source.follower_count ]]</b> followers
