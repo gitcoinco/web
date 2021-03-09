@@ -40,7 +40,7 @@ Vue.component('contribution-thanks-modal', {
 
     this.collection.grants = checkoutData.map((grant) => {
 
-      return {...grant, logo: grant.grant_logo }
+      return {...grant, logo: grant.grant_logo };
     });
   },
   methods: {
