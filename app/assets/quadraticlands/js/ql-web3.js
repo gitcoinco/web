@@ -1,40 +1,3 @@
-
-function web3Ready() {
-    console.debug('WEB3 version from script', web3.version);
-
-    //window.addEventListener('dataWalletReady', function(e) {
-    $('#wallet-address').html(selectedAccount)
-    
-	// }, false);
-    // some examples of getting data from the GTC and tokenDist contracts 
-
-    // get token balance - (using generic ERC20 function from Octos wallet file)
-    getTokenBalances(gtc_address()).then(function(result) {
-        console.debug('ERC20 TokenBalance:', result.balance);
-        $('#gtc-token-balance').html(result.balance)
-    });
-
-    // get current votes 
-    getCurrentVotes(gtc_address()).then(function(result) { 
-        console.debug('Current GTC Votes:', result);
-    });
-
-    // get prior votes by block number 
-    block_number = 4242424
-    getPriorVotes(gtc_address(), selectedAccount, block_number).then(function(result) { 
-       console.debug('Current GTC Votes:', result);
-    });
-
-    // get delegate address
-    getDelegateAddress(gtc_address(), selectedAccount).then(function(result) {
-        console.debug('SelectedAccount Delegate Address: ', result);
-    });
-}
-
-// dataWalletReady comes from wallet.js function 
-document.addEventListener("dataWalletReady", web3Ready);
-
-
 /**
 *  * Gets the delegateAddress for active account 
 *  * @param {string} selectedAccount - active wallet address
@@ -92,4 +55,3 @@ async function getPriorVotes(tokenAddress, account, block_number) {
     }
     return past_votes;
 }
-
