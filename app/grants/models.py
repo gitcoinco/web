@@ -1691,6 +1691,15 @@ class Contribution(SuperModel):
     )
     anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
+    @property
+    def blockexplorer_url(self):
+        if self.checkout_type == 'eth_zksync':
+            return f'https://zkscan.io/explorer/transactions/{self.split_tx_id.replace("sync-tx", "")}'
+        if self.checkout_type == 'eth_std':
+            return f'https://etherscan.io/tx/{self.split_tx_id}'
+        # TODO: support all block explorers for diff chains
+        return ''
+
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
 
