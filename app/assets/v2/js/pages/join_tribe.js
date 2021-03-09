@@ -20,10 +20,10 @@ const joinTribe = () => {
       $.when(sendJoin).then(function(response) {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
+        $(elem).toggleClass("btn-success").toggleClass("btn-primary")
         response.is_member ? $(elem).html('Unfollow <i class="fas fa-minus"></i>') : $(elem).html('Follow <i class="fas fa-plus"></i>');
         let old_count = parseInt($('#follower_count span').text());
         var new_count = response.is_member ? old_count + 1 : old_count - 1;
-
         $('#follower_count span').fadeOut();
         setTimeout(function() {
           $('#follower_count span').text(new_count).fadeIn();
@@ -170,16 +170,16 @@ $(document).on('click', '.remove-tribe', function(e) {
 const newManageTribe = () => {
   $('[data-tribe]').each(function(index, elem) {
     $(elem).on('mouseenter focus', function(e) {
-      if ($(elem).hasClass('btn-outline-secondary')) {
-        $(elem).addClass('btn-outline-danger').text('Unfollow');
-        $(elem).removeClass('btn-outline-secondary');
+      if ($(elem).hasClass('btn-primary')) {
+        $(elem).removeClass('btn-primary');
+        $(elem).addClass('btn-success').text('Unfollow');
       }
     });
 
     $(elem).on('mouseleave focusout', function(e) {
-      if ($(elem).hasClass('btn-outline-danger')) {
-        $(elem).removeClass('btn-outline-danger');
-        $(elem).addClass('btn-outline-secondary').text('Following');
+      if ($(elem).hasClass('btn-primary')) {
+        $(elem).removeClass('btn-primary');
+        $(elem).addClass('btn-success').text('Following');
       }
     });
 
@@ -198,9 +198,9 @@ const newManageTribe = () => {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
         if (response.is_member) {
-          $(elem).addClass('btn-outline-secondary').removeClass([ 'btn-primary', 'btn-outline-danger' ]).text('Following');
+          $(elem).addClass('btn-success').removeClass([ 'btn-primary']).text('Following');
         } else {
-          $(elem).removeClass([ 'btn-outline-secondary', 'btn-outline-danger' ]).addClass('btn-primary').text('Follow');
+          $(elem).removeClass([ 'btn-success']).addClass('btn-primary').text('Follow');
         }
       }, function(error) {
         $(elem).attr('disabled', false);

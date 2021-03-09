@@ -666,7 +666,7 @@
                                   <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ getSponsor(spotlight.sponsor).display_name ]]</p>
                                 </div>
                                 <b-button variant="outline-primary" @click="followTribe(spotlight.sponsor, $event)"
-                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-secondary' : 'btn-primary', 'btn-sm', 'px-4']"
+                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-success' : 'btn-primary', 'btn-sm', 'px-4']"
                                 >
                                   [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
                                 </b-button>
@@ -758,7 +758,7 @@
                             <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
                           </ul>
                           <b-button variant="noop" @click="followTribe(sponsor.org_name, $event)"
-                            v-bind:class="[sponsor.followed ? 'btn-primary' : 'btn-outline-primary', 'btn-sm', 'font-smaller-5']"
+                            v-bind:class="[sponsor.followed ? 'btn-success' : 'btn-primary', 'btn-sm', 'font-smaller-5']"
                           >
                             [[ sponsor.followed ? "following" : "follow" ]]
                           </b-button>
