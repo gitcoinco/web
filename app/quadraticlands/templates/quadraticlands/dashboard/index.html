@@ -24,14 +24,14 @@
 <!--dashboard 2 column grid that include sub templates-->
 <section class="dashboard">
 
+	<!-- Wallet -->
+	{% include 'quadraticlands/dashboard/wallet.html' %}
+
 	<!-- Delegation -->
 	{% include 'quadraticlands/dashboard/governance.html' %}
 
 	<!-- Mission -->
 	{% include 'quadraticlands/dashboard/mission.html' %}
-
-	<!-- Leaderboard -->
-	{% include 'quadraticlands/dashboard/leaderboard.html' %}
 
 	<!-- Active Proposals -->
 	{% include 'quadraticlands/dashboard/proposals.html' %}
@@ -57,6 +57,9 @@
 
 	<!-- this page NEEDS a Wallet and will force the Web3Modal -->
 	<script src="/static/quadraticlands/js/forceWallet.js"></script>
+
+	<!-- abi to fetch balance -->
+	<script src="{% static "v2/js/abi.js" %}"></script>
 
 
 	

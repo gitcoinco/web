@@ -40,6 +40,13 @@
 		animation: colorcycle-shadow 3s ease-in-out infinite;
 	};
 
+	&.disablehover{
+		&:hover{
+			cursor: default;
+			animation: initial;
+		};
+	}
+
 
 	.circle{
 		width: 50px;

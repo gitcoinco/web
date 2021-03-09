@@ -8,9 +8,14 @@ section.dashboard{
 
 	.section{
 
+		background-color: var(--space_light);
+
 		&.full{
 			grid-column: 1 / span 2;
 		}
+
+
+
 	}
 
 	.header{

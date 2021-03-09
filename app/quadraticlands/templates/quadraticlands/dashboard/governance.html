@@ -1,15 +1,16 @@
-<div class="section full">
+<!-- governance module hidden by default - available only when user have tokens -->
+
+<div id="governance" class="section full hide">
  
-	<a href="quadraticlands/governance" class="noparticles">
+	<a class="noparticles">
 		<div class="header">
 			<div class="icon">
 				{% include "quadraticlands/_inlinesvg/delegation.svg" %}
 			</div>
 			<div class="title">
-				Governance Mode: <span id="governance_mode_span"></span>
-			</div>
-			<div class="arrow">
-				{% include "quadraticlands/_inlinesvg/arrow.svg" %}
+				Delegation Mode:
+				<span id="delegation_mode"></span>
+				<span id="delegate_address"></span>
 			</div>
 		</div>
 	</a>
@@ -17,15 +18,46 @@
 	<div class="content">
 		<div class="content-governance">
 			<div class="wrapper">
-
-				<div class="text">Paste an ethereum adress from the <a href="quadraticlands/delegates">delegates list</a>, to delegate your voting power. If you want to apply as a delegate, use this <a href="#">form</a>. Read more about the Governance Modes in our <a href="quadraticlands/faq">FAQ</a>.</div>
-
-				<div class="delegate">
-					<input id="delegate_adress_inputfield" type="text" name="delegate_adress_inputfield" placeholder="delegators ethereum adress" value="">
-					<a class="btn">Submit</a>
+				
+				<div id="txt_disable_delegate" class="hide">
+					<p>To participate activly in governance, disable the Delegation Mode.</p>
 				</div>
 
-						
+				<!--enabled button-->
+				<div id="toggle_enabled" class="delegation-toggle hide">
+					<div class="label">Delegation Mode</div>
+					<div id="mode_toggle" class="toggle enabled">
+						<div class="enabled">Enabled</div>
+						<div class="circle"></div>
+						<div class="disabled">Disabled</div>
+					</div>					
+				</div>
+
+				<!--disabled button-->
+				<div id="toggle_disabled" class="delegation-toggle hide">
+					<div class="label">Delegation Mode</div>
+					<div id="mode_toggle" class="toggle disabled disablehover">
+						<div class="enabled">Enabled</div>
+						<div class="circle"></div>
+						<div class="disabled">Disabled</div>
+					</div>					
+				</div>
+
+
+				<div id="txt_delegate" class="hide">
+					<p>To enable Delegation Mode to empower someone else,  explore the <a href="#">discourse</a> forum and paste his ethereum adress here:</p>
+				</div>
+
+				<div id="txt_redelegate" class="hide">
+					<p>To empower someone else, explore the <a href="#">discourse</a> forum and paste his ethereum adress here:</p>
+				</div>
+
+				<div id="delegate_form">
+					<input id="delegate_input" type="text" placeholder="Paste Ethereum Address">
+					<a id="delegate_button" class="btn">Delegate</a>
+				</div>
+
+
 			</div>
 		</div>
 	</div>
@@ -33,51 +65,116 @@
 </div>
 
 
+
+
+
 <script>
 
 document.addEventListener("DOMContentLoaded",function(){
 
-
-	delegate_adress = getDelegateAdress()
-
-
-	const delegate_adress_inputfield = document.getElementById("delegate_adress_inputfield");
-	const governance_mode_span = document.getElementById("governance_mode_span");
-
-	console.log("selectedAccount ", selectedAccount)
-	console.log("delegate_adress ", delegate_adress)
-
-	if (delegate_adress != selectedAccount){
-		governance_mode_span.innerHTML = "Passive"
-		delegate_adress_inputfield.value = delegate_adress
-	}
-
-	if (delegate_adress != selectedAccount){
-		governance_mode_span.innerHTML = "Active"
-	}
+	const governance = document.getElementById("governance")
+	const delegation_mode = document.getElementById("delegation_mode")
+	const toggle_disabled = document.getElementById("toggle_disabled")
+	const toggle_enabled = document.getElementById("toggle_enabled")
+	const delegate_address = document.getElementById("delegate_address")
+	const txt_delegate = document.getElementById("txt_delegate")
+	const txt_redelegate = document.getElementById("txt_redelegate")
+	const txt_disable_delegate = document.getElementById("txt_disable_delegate")
+	const delegate_button = document.getElementById("delegate_button")
+	const delegate_input = document.getElementById("delegate_input")
 
 
-	
+	// enabled button : web3 delegate(selectedAccount)
+	toggle_enabled.addEventListener("click", () => {
+		if (selectedAccount){
+			// call a function like delegate(selectedAccount)
+			console.log("DELEGATE TO (SELF) : " + selectedAccount)
+		}
+	});
+
+	// delegate button : web3 delegate(delegate_input.value)
+	delegate_button.addEventListener("click", () => {
+		if (selectedAccount){
+			// call a function like delegate(delegate_input.value)
+			console.log("DELEGATE TO " + delegate_input.value)
+		}
+	});
+
+
+	window.addEventListener("dataWalletReady", () => {
+
+		getTokenBalances(gtc_address()).then(function(result) {
+
+			// if user have selected an ethereum account AND have >= 1 gtc tokens 
+			if(selectedAccount && result.balance > 0)
+			{
+
+				// show governance module
+				governance.classList.remove("hide")
+
+			    // get delegate address
+			    getDelegateAddress(gtc_address(), selectedAccount).then(function(result) {
+
+			        delegateAddress = result
+			        console.debug('SelectedAccount Delegate Address: ', result);
+
+					// delegate mode DISABLED 
+					// ( user do not delegate to a different delegation address)
+					if (selectedAccount == delegateAddress){
+						delegation_mode.innerHTML = "disabled"
+
+						toggle_disabled.classList.remove("hide")
+						toggle_enabled.classList.add("hide")
+				
+						txt_delegate.classList.remove("hide")
+						txt_redelegate.classList.add("hide")
+						txt_disable_delegate.classList.add("hide")
+						
+						console.log("DELEGATION MODE : DISABLED")
+					}
+
+					// delegation mode ENABLED 
+					// ( user delegate to a different address )
+					else {
+						delegation_mode.innerHTML = "enabled"
+
+						toggle_disabled.classList.add("hide")
+						toggle_enabled.classList.remove("hide")
+
+						delegate_address.innerHTML = "( " + truncate(delegateAddress) + " )"
+
+						txt_delegate.classList.add("hide")
+						txt_redelegate.classList.remove("hide")
+						txt_disable_delegate.classList.remove("hide")
+
+						delegate_input.value = delegateAddress;
+
+						console.log("DELEGATION MODE : ENABLED")
+					}
+
+
+			    });
+
+
+			}
+
+
+			else{
+				// hide governance module
+				governance.classList.add("hide")
+			}
+
+
+
+		});
+
+	});
+
+
 
 
 
 });
-
-
-
-
-
-// fetch delegate adress
-function getDelegateAdress() {
-	return "xxxxx";
-}
-
-
-// trigger new tx
-function setDelegateAdress(){
-
-}
-
 
 
 

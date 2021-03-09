@@ -1,0 +1,60 @@
+<div class="section full">
+ 
+	
+	<div class="header">
+		<div class="icon">
+			{% include "quadraticlands/_inlinesvg/delegation.svg" %}
+		</div>
+		<div class="title">
+			Wallet <span id="dashboard_wallet_address"></span>
+		</div>
+	</div>
+	
+
+	<div class="content">
+		<div class="content-wallet">
+			<div class="wrapper">
+				<div  class="amount"><span id="dashboard_wallet_balance">0</span><span> GTC</span></div>		
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	// wallet found
+	window.addEventListener("dataWalletReady", () => {
+
+
+		// wallet address
+		const dashboard_wallet_address = document.querySelector("#dashboard_wallet_address");
+
+		if(selectedAccount) { 
+			dashboard_wallet_address.innerHTML = truncate(selectedAccount)
+		}
+
+		// wallet balance
+		const dashboard_wallet_balance = document.querySelector("#dashboard_wallet_balance");
+		getTokenBalances(gtc_address()).then(function(result) {
+			dashboard_wallet_balance.innerHTML = result.balance;
+		});
+
+	});
+
+
+});
+
+
+</script>
+
+
+
+
+
