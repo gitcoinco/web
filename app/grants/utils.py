@@ -195,7 +195,7 @@ def add_grant_to_active_clrs(grant):
 def generate_collection_thumbnail(collection, width, heigth):
     MARGIN = int(width / 30)
     MID_MARGIN = int(width / 90)
-    BG = (13, 2, 59)
+    BG = (111, 63, 245)
     DISPLAY_GRANTS_LIMIT = 4
     PROFILE_WIDTH = PROFILE_HEIGHT = int(width / 3.5)
     GRANT_WIDTH = int(width / 2) - MARGIN - MID_MARGIN
@@ -285,7 +285,7 @@ def generate_collection_thumbnail(collection, width, heigth):
     draw_on_thumbnail.ellipse([
         (int(width / 2 - PROFILE_WIDTH / 2), int(heigth / 2 - PROFILE_HEIGHT / 2)),
         (int(width / 2 + PROFILE_WIDTH / 2), int(heigth / 2 + PROFILE_HEIGHT / 2))
-    ], fill="#0D013B")
+    ], fill="#6F3FF5")
 
     try:
         thumbail.paste(profile_circle, (int(width / 2 - PROFILE_WIDTH / 2) + HALF_LOGO_SIZE_DIFF, int(heigth / 2 - PROFILE_HEIGHT / 2) + HALF_LOGO_SIZE_DIFF),

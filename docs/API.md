@@ -23,6 +23,19 @@ Click through to try them below:
 
 NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at `https://gitcoin.co/settings/privacy` at anytime.
 
+### Authentication
+
+These API calls require you to be authenticated as a team member of a grant:
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json
+
+Authentication on Gitcoin is primary centric around our user model, which (for now) is dependant upon Github.  If you are accessing the data programmatically, you may not be able to handle the Github authentication cycle, and for that reason we have begun providing limited access to this data via an API Key / Secret model.  Here's how it works.
+
+1. Access any API which requires authorization via the standard authentication flow in browser.
+2. You will be issued credentials, which you can find in the response: `body.meta.api_key`.
+3. You may now access the API using the API credentials at `URL?_key=YOUR_KEY&_secret=YOUR_SECRET`.
+
 ## Generalized API
 
 Gitcoin provides a simple read-only HTTPS API to access data. The API is live at https://gitcoin.co/api/v0.1

@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 <grant-collection inline-template :collection="collection" v-on:collection:show="showSingleCollection($event)" :small="current_type !== 'collections' ">
-  <a @click="$emit('collection:show', collection.id)" v-if="collection" target="_blank">
+  <div v-if="collection" >
     <template>
       <div class="collection-item" v-if="small">
         <div class="collection-item__img position-relative">
@@ -40,7 +40,7 @@
                   </a>
                 </div>
                 <div class="w-100">
-                  <h2 class="mb-1 font-subheader font-weight-bold">
+                  <h2 class="mb-1 h5 gc-font-base">
                     [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
                   </h2>
                   <div class="d-flex justify-content-between mb-2">
@@ -48,10 +48,9 @@
                       <a :href="collection.owner.url" class="collection-item__owner-handle mr-2 text-capitalize" target="_blank" rel="noopener noreferrer">[[ collection.owner.handle || 'anonymous' ]]</a>
                       <p class="text-muted mb-0">[[ collection.count ]] Grant[[collection.count > 1 ? 's' : '']]</p>
                     </div>
-                    <a class="font-smaller-1 font-weight-bold mt-1"
-                      :href="`/grants/collections?collection_id=${collection.id}`" v-on:click.stop="app/grants/views.py" target="_blank" v-if="collection">
+                    <button class="btn btn-primary mt-1" @click="$emit('collection:show', collection.id)"  v-if="collection">
                       VIEW <i class="fas fa-arrow-right"></i>
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -80,8 +79,8 @@
           <img  :src="collection.cover" alt=""  v-if="collection.cover">
         </div>
         <div class="collection-item__content px-3">
-          <h2 class="collection-item__title font-subheader">
-            <a href="#">[[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]</a>
+          <h2 class="h5 gc-font-base">
+            [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
           </h2>
 
           <div class="d-flex mb-2">
@@ -103,28 +102,29 @@
           <p class="collection-item__pitch font-smaller-3 text-muted mb-2">[[ collection.description.slice(0, 140) ]][[ collection.description.length > 145 ? '...' : '']]</p>
         </div>
         <div class="collection-item__footer">
-            <div class="col-12 pb-4">
+          <div class="col pb-4 d-flex justify-content-between">
+            <button @click.stop="shareCollection()" class="btn btn-outline-primary font-weight-semibold mr-1">
+              <i class="fa fa-fw fa-share" aria-hidden="true"></i>
+              <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/collections?collection_id=${collection.id}`">
+            </button>
 
-              {% if activeCollection %}
-                <button @click.stop="addToCart()" class="btn btn-primary cart-btn large font-body font-weight-semibold mt-1 mr-1">
-                  <i class="fas fa-cart-plus" aria-hidden="true"></i> Add to Cart
-                </button>
-              {% else %}
-                <a class="btn btn-primary cart-btn large font-body font-weight-semibold mt-1 mr-1"
-                  :href="`/grants/collections?collection_id=${collection.id}`" v-on:click.stop="app/grants/views.py" target="_blank">
-                  <i class="ml-2 fas fa-arrow-right"></i> View
-                </a>
-              {% endif %}
-
-              <button @click.stop="shareCollection()" class="btn btn-link gc-text-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
-                <i class="fa fa-share ml-2" aria-hidden="true"></i>
-                Share Collection
-                <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/collections?collection_id=${collection.id}`">
+            <template v-if="$parent.activeCollection">
+              <button @click.stop="addToCart()" class="btn btn-primary font-weight-semibold ml-1" style="flex: 1 1 0px;">
+                <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add to Cart
               </button>
-            </div>
+            </template>
+            <template v-else>
+              <a class="btn btn-primary font-weight-semibold ml-1" :href="`/grants/explorer/collections?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
+                <i class="fas fa-fw fa-arrow-right"></i> View
+              </a>
+              <button class="btn btn-primary font-weight-semibold ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>
+                <i class="fas fa-fw fa-arrow-right"></i> View
+              </button>
+            </template>
+          </div>
         </div>
       </div>
     </template>
-  </a>
+  </div>
 
 </grant-collection>

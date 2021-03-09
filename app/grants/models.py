@@ -102,7 +102,8 @@ class GrantType(SuperModel):
     name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
     is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
-    categories  = models.ManyToManyField(
+    is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
+    categories = models.ManyToManyField(
         GrantCategory,
         help_text="Grant Categories associated with Grant Type"
     )
@@ -243,6 +244,30 @@ class GrantCLR(SuperModel):
             clr_prediction_curve=clr_prediction_curve,
             latest=True,
         )
+
+
+class GrantAPIKey(SuperModel):
+    """Define the structure of a GrantAPIKey."""
+
+    key = models.CharField(
+        max_length=255,
+        blank=True,
+        db_index=True,
+        help_text="the api key"
+    )
+    secret = models.CharField(
+        max_length=255,
+        blank=True,
+        db_index=True,
+        help_text="the api secret"
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grant_apikey',
+        on_delete=models.CASCADE,
+        help_text=_('The GrantAPI key\'s profile.'),
+        null=True,
+    )
 
 
 class Grant(SuperModel):
