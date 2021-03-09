@@ -189,7 +189,7 @@
           </div>
           <div class="row mt-2">
             <div class="col col-4">
-              <h2>$[[grant.amount_received | round ]]</h2>
+              <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
               <span>raised from all contributors</span>
             </div>
             <div v-if="[[ grant?.clr_prediction_curve?.[0]?.[1] ]] > 0" class="col col-4">
