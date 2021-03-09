@@ -47,16 +47,6 @@ along with this program. If not, see
       background: none !important;
     }
 
-    @media (min-width: 768px) {
-      .grants-details-parent {
-        width: 100vw;
-      }
-
-      .grants-showcase--child {
-        max-width: 99vw;
-      }
-    }
-
   </style>
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
@@ -98,7 +88,7 @@ along with this program. If not, see
               </div>
               {% endif %}
               <div >
-                <div class="row mx-0" class="grants-showcase--child">
+                <div class="row mx-0">
                   <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
                     {% include 'grants/shared/sidebar_search.html' %}
                   </div>
