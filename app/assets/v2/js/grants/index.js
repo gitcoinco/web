@@ -273,6 +273,10 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
+        if (filters.type == "all" && location.href.indexOf("grants/explorer") == -1) {
+          location.href = "/grants/explorer"
+          return false;
+        }
         let current_style;
 
         if (filters.type !== null && filters.type !== undefined) {

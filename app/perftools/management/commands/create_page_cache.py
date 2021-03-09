@@ -67,7 +67,7 @@ def create_email_inventory_cache():
 
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
-    pks = Grant.objects.values_list('pk', flat=True)
+    pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
         grant = Grant.objects.get(pk=pk)
         grant.calc_clr_round()
@@ -79,7 +79,7 @@ def create_grant_type_cache():
     for network in ['rinkeby', 'mainnet']:
         view = f'get_grant_types_{network}'
         keyword = view
-        data = get_grant_types('mainnet', None)
+        data = get_grant_types(network, None)
         with transaction.atomic():
             JSONStore.objects.filter(view=view).all().delete()
             JSONStore.objects.create(
@@ -134,7 +134,7 @@ def create_grant_category_size_cache():
     for g_type in grant_types:
         for category in GrantCategory.objects.all():
             key = f"grant_category_{g_type.name}_{category.category}"
-            val = Grant.objects.filter(grant_type=g_type, categories__category__contains=category.category).count()
+            val = Grant.objects.filter(active=True, hidden=False, grant_type=g_type, categories__category__contains=category.category).count()
             redis.set(key, val)
 
 def create_top_grant_spenders_cache():
