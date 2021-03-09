@@ -20,10 +20,11 @@ const joinTribe = () => {
       $.when(sendJoin).then(function(response) {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
-        $(elem).toggleClass("btn-success").toggleClass("btn-primary")
+        $(elem).toggleClass('btn-success').toggleClass('btn-primary');
         response.is_member ? $(elem).html('Unfollow <i class="fas fa-minus"></i>') : $(elem).html('Follow <i class="fas fa-plus"></i>');
         let old_count = parseInt($('#follower_count span').text());
         var new_count = response.is_member ? old_count + 1 : old_count - 1;
+
         $('#follower_count span').fadeOut();
         setTimeout(function() {
           $('#follower_count span').text(new_count).fadeIn();
@@ -198,9 +199,9 @@ const newManageTribe = () => {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
         if (response.is_member) {
-          $(elem).addClass('btn-success').removeClass([ 'btn-primary']).text('Following');
+          $(elem).addClass('btn-success').removeClass(['btn-primary']).text('Following');
         } else {
-          $(elem).removeClass([ 'btn-success']).addClass('btn-primary').text('Follow');
+          $(elem).removeClass(['btn-success']).addClass('btn-primary').text('Follow');
         }
       }, function(error) {
         $(elem).attr('disabled', false);

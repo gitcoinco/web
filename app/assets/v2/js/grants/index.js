@@ -63,10 +63,11 @@ Vue.component('grant-sidebar', {
     },
     toggleMyCollections: function(state, event) {
       let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
+
       this.filter_grants(me);
 
       this.search = me.keyword;
-      console.log('searchkey', this.search)
+      console.log('searchkey', this.search);
     },
     filterLink: function(params) {
 
@@ -78,7 +79,7 @@ Vue.component('grant-sidebar', {
       }
 
       this.timeout = setTimeout(() => {
-        console.log('searchkey', this.search)
+        console.log('searchkey', this.search);
         this.filter_grants({keyword: this.search});
       }, 1000);
     },
@@ -273,8 +274,8 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
-        if (filters.type == "all" && location.href.indexOf("grants/explorer") == -1) {
-          location.href = "/grants/explorer"
+        if (filters.type == 'all' && location.href.indexOf('grants/explorer') == -1) {
+          location.href = '/grants/explorer';
           return false;
         }
         let current_style;

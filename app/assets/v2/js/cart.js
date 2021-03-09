@@ -1065,7 +1065,8 @@ Vue.component('grants-cart', {
       // Number of items descides the timeout time
       const timeout_amount = 1500 + (this.grantsByTenant.length * 500);
       // Clear cart, redirect back to grants page, and show success alert
-      CartData.setCheckedOut(this.grantsByTenant)
+
+      CartData.setCheckedOut(this.grantsByTenant);
       // Remove each grant from the cart which has just been checkout
       this.grantsByTenant.forEach((grant) => {
         CartData.removeIdFromCart(grant.grant_id);
