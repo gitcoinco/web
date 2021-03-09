@@ -943,6 +943,7 @@ def grants_landing(request):
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
     now = datetime.datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
+    live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
 
     params = {
         'active': 'grants_landing',
@@ -950,6 +951,11 @@ def grants_landing(request):
         'grant_bg': get_branding_info(request),
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
+        'card_desc': f'{live_now}',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'card_type': 'summary_large_image',
+        'avatar_height': 675,
+        'avatar_width': 1200,
         'active_rounds': active_rounds,
         'sponsors': sponsors,
         'featured': True,
@@ -1104,10 +1110,10 @@ def grants_by_grant_type(request, grant_type):
         'current_partners': current_partners,
         'past_partners': past_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants8.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
         'card_type': 'summary_large_image',
-        'avatar_height': 1097,
-        'avatar_width': 1953,
+        'avatar_height': 675,
+        'avatar_width': 1200,
         'grants': grants,
         'what': what,
         'all_styles': all_styles,
@@ -1276,10 +1282,10 @@ def grants_by_grant_clr(request, clr_round):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants8.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
         'card_type': 'summary_large_image',
-        'avatar_height': 1097,
-        'avatar_width': 1953,
+        'avatar_height': 675,
+        'avatar_width': 1200,
         'grants': grants,
         'can_pin': False,
         'target': f'/activity?what=all_grants',
@@ -2565,7 +2571,7 @@ def grants_bulk_add(request, grant_str):
 
     context = {
         'grants': grants,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants8.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
         'title': title,
         'card_desc': "Click to Add All to Cart: " + grant_titles
 
@@ -2588,7 +2594,7 @@ def quickstart(request):
     params = {
     'active': 'grants_quickstart',
     'title': _('Quickstart'),
-    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants8.png')),
+    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
