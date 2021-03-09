@@ -251,7 +251,7 @@ def api_auth_profile(request):
             )
         profile = GAK.profile
 
-    GAK = {'_key': GAK.key, '_secret': GAK.secret} if GAK else None 
+    GAK = {'_key': GAK.key, '_secret': GAK.secret} if GAK else None
 
     return profile, GAK
 
@@ -742,8 +742,11 @@ def build_grants_by_type(
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     if clr_round:
-        _grants = _grants.filter(**clr_round.grant_filters)
+        if clr_round.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
+            _grants = _grants.filter(pk__in=grant_ids)
 
+        _grants = _grants.filter(**clr_round.grant_filters)
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
     if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:

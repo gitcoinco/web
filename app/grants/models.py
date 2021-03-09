@@ -217,18 +217,19 @@ class GrantCLR(SuperModel):
     )
 
     def __str__(self):
-        return f"{self.round_num}"
+        return f"id: {self.pk}, round_num: {self.round_num}, customer_name: {self.customer_name}, customer_name: {self.customer_name}"
 
     @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**self.collection_filters).values_list('grants', flat=True)
+            grants = grants.filter(pk__in=grant_ids)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
         if self.subscription_filters:
             grants = grants.filter(**self.subscription_filters)
-        if self.collection_filters:
-            grants = grants.filter(**self.collection_filters)
 
         return grants
 
