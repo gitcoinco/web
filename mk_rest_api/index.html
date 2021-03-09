@@ -379,6 +379,19 @@
     Grants API
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" title="Authentication" class="md-nav__link">
+    Authentication
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2094,6 +2107,19 @@
     Grants API
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" title="Authentication" class="md-nav__link">
+    Authentication
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2222,6 +2248,17 @@
 * https://gitcoin.co/grants/grants.json
 * https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json</p>
 <p>NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at <code>https://gitcoin.co/settings/privacy</code> at anytime.</p>
+<h3 id="authentication">Authentication</h3>
+<p>These API calls require you to be authenticated as a team member of a grant:
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json</p>
+<p>Authentication on Gitcoin is primary centric around our user model, which (for now) is dependant upon Github.  If you are accessing the data programmatically, you may not be able to handle the Github authentication cycle, and for that reason we have begun providing limited access to this data via an API Key / Secret model.  Here's how it works.</p>
+<ol>
+<li>Access any API which requires authorization via the standard authentication flow in browser.</li>
+<li>You will be issued credentials, which you can find in the response: <code>body.meta.api_key</code>.</li>
+<li>You may now access the API using the API credentials at <code>URL?_key=YOUR_KEY&amp;_secret=YOUR_SECRET</code>.</li>
+</ol>
 <h2 id="generalized-api">Generalized API</h2>
 <p>Gitcoin provides a simple read-only HTTPS API to access data. The API is live at https://gitcoin.co/api/v0.1</p>
 <h3 id="datatypes">Datatypes</h3>
