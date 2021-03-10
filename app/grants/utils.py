@@ -219,6 +219,7 @@ def generate_img_thumbnail_helper(grants, profile, width, heigth):
             if len(logos) > DISPLAY_GRANTS_LIMIT:
                 break
             grant_url = f'{media_url}{grant.logo.url}'
+            grant_url = 'https://gitcoin.co/dynamic/avatar/owocki'
             print(f'Trying to get: ${grant_url}')
             fd = urllib.request.urlopen(grant_url)
             logos.append(fd)
@@ -231,6 +232,7 @@ def generate_img_thumbnail_helper(grants, profile, width, heigth):
 
     thumbail = Image.new('RGBA', IMAGE_BOX, color=BG)
     avatar_url = f'{media_url}{profile.avatar_url}'
+    avatar_url = 'https://gitcoin.co/dynamic/avatar/owocki'
     fd = urllib.request.urlopen(avatar_url)
 
     # Make rounder profile avatar img

@@ -56,6 +56,7 @@ from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
 from kudos.router import router as kdrouter
+from grants.views import cart_thumbnail
 
 from .sitemaps import sitemaps
 
@@ -119,6 +120,9 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
+
+
+    path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
 
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),

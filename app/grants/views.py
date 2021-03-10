@@ -2576,7 +2576,7 @@ def grants_bulk_add(request, grant_str):
     title = f"{prefix}{len(grants)} Grants in Shared Cart {by_whom} : Viewed {views} times"
 
     grant_ids = ",".join([str(ele) for ele in grant_ids])
-    avatar_url = f'/grants/cart_thumb/{handle}/{grant_ids}'
+    avatar_url = f'/dynamic/grants_cart_thumb/{handle}/{grant_ids}'
     context = {
         'grants': grants,
         'avatar_url': avatar_url,
@@ -3154,6 +3154,7 @@ def add_grant_from_collection(request, collection_id):
         'grants': grants,
     })
 
+@cache_page(60 * 60)
 def cart_thumbnail(request, profile, grants):
     width = int(request.GET.get('w', 348 * 5))
     height = int(request.GET.get('h', 175 * 5))
