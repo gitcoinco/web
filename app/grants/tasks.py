@@ -32,6 +32,10 @@ def lineno():
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
+    if settings.FLUSH_QUEUE:
+        return
+
+
     # KO hack 12/14/2020
     # this will prevent tasks on grants that have been issued from an app server from being immediately 
     # rewritten by the celery server.  not elegant, but it works.  perhaps in the future,
@@ -50,7 +54,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
     
     # contributor counts
-    do_calc = (time.time() - (900)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
+    do_calc = (time.time() - (200 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
     if do_calc:
         print("last_calc_time_contributor_counts")
         instance.contribution_count = instance.get_contribution_count
