@@ -393,9 +393,6 @@ grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {gra
 order by grants_subscription.id desc
 
     """
-    print(query)
-    start, end = helper_grants_round_start_end_date(request, round_id)
-    query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
     earnings = query_to_results(query)
 
     meta_data = {
