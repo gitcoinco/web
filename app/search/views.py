@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def get_search(request):
     mimetype = 'application/json'
     keyword = request.GET.get('term', '')
-    return_results = search_helper(term)
+    return_results = search_helper(keyword)
     return HttpResponse(json.dumps(return_results), mimetype)
 
 def search_helper(keyword):
