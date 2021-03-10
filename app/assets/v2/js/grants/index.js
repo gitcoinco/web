@@ -67,7 +67,6 @@ Vue.component('grant-sidebar', {
       this.filter_grants(me);
 
       this.search = me.keyword;
-      console.log('searchkey', this.search);
     },
     filterLink: function(params) {
 
@@ -79,7 +78,6 @@ Vue.component('grant-sidebar', {
       }
 
       this.timeout = setTimeout(() => {
-        console.log('searchkey', this.search);
         this.filter_grants({keyword: this.search});
       }, 1000);
     },

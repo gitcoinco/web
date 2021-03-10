@@ -93,7 +93,7 @@ Vue.component('grant-card', {
       CartData.removeIdFromCart(vm.grant.id);
       showSideCart();
     },
-    addToCollection: async function({collection, grant}) {
+    addToCollection: async function(collection, grant) {
       const collectionAddGrantURL = `/grants/v1/api/collections/${collection.id}/grants/add`;
       const response = await fetchData(collectionAddGrantURL, 'POST', {
         'grant': grant.id
