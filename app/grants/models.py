@@ -630,8 +630,18 @@ class Grant(SuperModel):
 
     @property
     def calc_clr_round_nums(self):
+        """Generates CLR rounds sub_round_slug seperated by comma"""
         if self.pk:
             round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            return ", ".join(round_nums)
+        return ''
+
+
+    @property
+    def calc_clr_round_label(self):
+        """Generates CLR rounds display text seperated by comma"""
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('display_text', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -942,7 +952,7 @@ class Grant(SuperModel):
         """Override the Grant save to optionally handle modified_on logic."""
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
-        self.clr_round_num = self.calc_clr_round_nums
+        self.clr_round_num = self.calc_clr_round_label
 
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
