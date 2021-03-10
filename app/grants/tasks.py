@@ -54,7 +54,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
     
     # contributor counts
-    do_calc = (time.time() - (200 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
+    do_calc = (time.time() - (2 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
     if do_calc:
         print("last_calc_time_contributor_counts")
         instance.contribution_count = instance.get_contribution_count
