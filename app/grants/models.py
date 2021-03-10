@@ -2067,7 +2067,7 @@ class GrantCollection(SuperModel):
         }
 
         try:
-            cover = generate_collection_thumbnail(self, 348, 175)
+            cover = generate_collection_thumbnail(self, 348 * 5, 175 * 5)
             filename = f'thumbnail_{self.id}.png'
             buffer = BytesIO()
             cover.save(fp=buffer, format='PNG')

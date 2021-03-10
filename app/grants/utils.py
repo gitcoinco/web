@@ -193,6 +193,12 @@ def add_grant_to_active_clrs(grant):
 
 
 def generate_collection_thumbnail(collection, width, heigth):
+    grants = collection.grants.all()
+    profile = collection.profile
+    return generate_img_thumbnail_helper(grants, profile, width, heigth)
+
+
+def generate_img_thumbnail_helper(grants, profile, width, heigth):
     MARGIN = int(width / 30)
     MID_MARGIN = int(width / 90)
     BG = (111, 63, 245)
@@ -206,8 +212,6 @@ def generate_collection_thumbnail(collection, width, heigth):
     PROFILE_BOX = (PROFILE_WIDTH - LOGO_SIZE_DIFF, PROFILE_HEIGHT - LOGO_SIZE_DIFF)
     GRANT_BOX = (GRANT_WIDTH, GRANT_HEIGHT)
     media_url = '' if 'media' not in MEDIA_URL else BASE_URL[:-1]
-
-    grants = collection.grants.all()
 
     logos = []
     for grant in grants:
@@ -226,7 +230,7 @@ def generate_collection_thumbnail(collection, width, heigth):
         logos.append(None)
 
     thumbail = Image.new('RGBA', IMAGE_BOX, color=BG)
-    avatar_url = f'{media_url}{collection.profile.avatar_url}'
+    avatar_url = f'{media_url}{profile.avatar_url}'
     fd = urllib.request.urlopen(avatar_url)
 
     # Make rounder profile avatar img

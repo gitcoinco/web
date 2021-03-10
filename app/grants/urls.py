@@ -30,7 +30,7 @@ from grants.views import (
     grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing, grants_stats_view,
     ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
     new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
-    toggle_grant_favorite, verify_grant,
+    toggle_grant_favorite, verify_grant, cart_thumbnail
 )
 
 app_name = 'grants/'
@@ -60,6 +60,8 @@ urlpatterns = [
     path('bulk_cart', bulk_grants_for_cart, name='bulk_grants_for_cart'),
     path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
     path('activity', grant_activity, name='log_activity'),
+
+    path('cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
