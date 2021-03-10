@@ -70,11 +70,14 @@ from economy.models import Token as FTokens
 from economy.utils import convert_amount, convert_token_to_usdt
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
-    GrantType, GrantAPIKey, MatchPledge, PhantomFunding, Subscription,
+    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    GrantCollection, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
-from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout, generate_img_thumbnail_helper
+from grants.utils import (
+    emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_user_code, is_grant_team_member,
+    sync_payout,
+)
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (

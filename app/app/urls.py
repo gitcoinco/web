@@ -160,11 +160,7 @@ urlpatterns = [
         dashboard.views.authenticate_idena,
         name='authenticate_idena'
     ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
-        dashboard.views.logout_idena,
-        name='logout_idena'
-    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/logout_idena', dashboard.views.logout_idena, name='logout_idena'),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
         dashboard.views.recheck_idena_status,
