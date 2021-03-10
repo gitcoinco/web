@@ -3162,7 +3162,7 @@ def cart_thumbnail(request, profile, grants):
     height = int(request.GET.get('h', 175 * 5))
     grant_ids = grants.split(",")
     grant_ids = [ele for ele in grant_ids if ele]
-    grants = Grant.objects.filter(pk__in=grant_ids)[:4]
+    grants = Grant.objects.filter(pk__in=grant_ids).order_by('-amount_received_in_round')[:4]
     profile = Profile.objects.get(handle=profile.lower())
     thumbnail = generate_img_thumbnail_helper(grants, profile, width, height)
 
