@@ -217,7 +217,7 @@ class GrantCLR(SuperModel):
     )
 
     def __str__(self):
-        return f"id: {self.pk}, round_num: {self.round_num}, customer_name: {self.customer_name}, customer_name: {self.customer_name}"
+        return f"{self.round_num}"
 
     @property
     def grants(self):
