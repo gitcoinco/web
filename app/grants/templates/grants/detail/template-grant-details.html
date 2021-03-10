@@ -179,6 +179,15 @@
 
         <!-- CLR details [[grant.positive_round_contributor_count]] -->
         <div class="border-bottom mt-3 pb-3">
+
+          <div class="row mt-2">
+            <div class="col mb-4">
+              <h3 class="font-weight-bold">Lifetime funding received</h3>
+              <h2 class="font-weight-bold">$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
+              <span>raised from all contributors</span>
+            </div>
+          </div>
+
           <div class="row">
             <h3 class="col-12" v-if="grant.clr_round_num && grant.is_clr_eligible">
               Grants Round [[grant.clr_round_num]]
@@ -187,21 +196,17 @@
               Not in an active matching round
             </h3>
           </div>
-          <div class="row mt-2">
-            <div class="col col-4" v-if="grant.clr_round_num && grant.is_clr_eligible">
+
+          <div class="row mt-2" v-if="grant.clr_round_num && grant.is_clr_eligible">
+            <div class="col col-4">
               <h2>$[[ grant.amount_received_in_round || 0 | round | formatNumber ]]</h2>
               <span>
                 raised from [[ grant.positive_round_contributor_count ]] contributors
               </span>
             </div>
-            <div class="col col-4" v-else>
-              <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
-              <span>total raised</span>
-            </div>
-            <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0 && grant.is_clr_eligible" class="col col-4">
+            <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0" class="col col-4">
               <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
-              <span v-if="grant.clr_round_num && grant.is_clr_eligible">estimated QF matching</span>
-              <span v-if="!grant.clr_round_num || !grant.is_clr_eligible">Total QF matched</span>
+              <span>estimated QF matching</span>
             </div>
           </div>
         </div>
