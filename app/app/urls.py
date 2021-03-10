@@ -55,8 +55,8 @@ import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
-from kudos.router import router as kdrouter
 from grants.views import cart_thumbnail
+from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
 
