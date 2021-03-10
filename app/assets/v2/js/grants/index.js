@@ -431,7 +431,7 @@ if (document.getElementById('grants-showcase')) {
         vm.grantsNumPages = getGrants.num_pages;
         vm.grantsHasNext = getGrants.has_next;
         vm.numGrants = getGrants.count;
-        vm.changeBanner()
+        vm.changeBanner();
 
         if (vm.grantsHasNext) {
           vm.page = ++vm.page;

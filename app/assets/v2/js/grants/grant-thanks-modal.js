@@ -6,21 +6,7 @@ Vue.component('contribution-thanks-modal', {
       imgURL: '',
       numberOfContributions: 0,
       donations: [],
-      tweetUrl: '',
-      current_type: 'collections',
-      hideCollectionButtons: true,
-      collection: {
-        id: 0,
-        title: '',
-        description: '',
-        grants: [],
-        hideButtons: true,
-        owner: {
-          url: document.contxt.profile_url,
-          handle: document.contxt.github_handle,
-          avatar_url: '/dynamic/avatar/' + document.contxt.github_handle
-        }
-      }
+      tweetUrl: ''
     };
   },
   mounted: function() {
@@ -43,20 +29,11 @@ Vue.component('contribution-thanks-modal', {
     }
 
     this.donations = checkoutData;
-
-    this.collection.count = checkoutData.length;
-
-    this.collection.grants = checkoutData.map((grant) => {
-
-      return {...grant, logo: grant.grant_logo };
-    });
   },
   methods: {
-    showSingleCollection() {
-      return true;
-    },
     close() {
       this.$bvModal.hide(this.modalId);
+      this.$bvModal.show('trust-bonus');
     },
     handleHide() {
       CartData.clearCheckedOut();
