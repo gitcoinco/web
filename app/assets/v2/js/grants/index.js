@@ -329,7 +329,7 @@ if (document.getElementById('grants-showcase')) {
           document.all_routing_policies.find(policy => {
             return new RegExp(policy.url_pattern).test(window.location.href);
           });
-        this.toggleStyle(this.regex_style || current_style);
+        this.toggleStyle(this.regex_style || document.current_style);
       },
       clearSingleCollection: function() {
         this.grants = [];
