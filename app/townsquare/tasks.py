@@ -5,6 +5,7 @@ from cacheops import invalidate_obj
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Activity
+from django.conf import settings
 
 logger = get_task_logger(__name__)
 
