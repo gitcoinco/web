@@ -198,7 +198,7 @@
               <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
               <span>total raised</span>
             </div>
-            <div v-if="[[ grant?.clr_prediction_curve?.[0]?.[1] ]] > 0" class="col col-4">
+            <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0 && grant.is_clr_eligible" class="col col-4">
               <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
               <span v-if="grant.clr_round_num && grant.is_clr_eligible">estimated QF matching</span>
               <span v-if="!grant.clr_round_num || !grant.is_clr_eligible">Total QF matched</span>
