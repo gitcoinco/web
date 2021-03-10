@@ -220,6 +220,12 @@ class GrantCLR(SuperModel):
         return f"{self.round_num}"
 
     @property
+    def happening_now(self):
+        # returns true if we are within the time range for this round
+        now = timezone.now()
+        return now >= self.start_date and now <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -574,12 +580,14 @@ class Grant(SuperModel):
         clr_round = None
 
         # create_grant_active_clr_mapping
-        clr_rounds = GrantCLR.objects.filter(is_active=True)
+        clr_rounds = GrantCLR.objects.all()
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants.all():
+            add_to_round = self.active and not self.hidden and this_clr_round.is_active and this_clr_round.happening_now and self in this_clr_round.grants.all()
+            if add_to_round:
                 self.in_active_clrs.add(this_clr_round)
             else:
-                self.in_active_clrs.remove(this_clr_round)
+                if this_clr_round in self.in_active_clrs.all():
+                    self.in_active_clrs.remove(this_clr_round)
 
         # create_grant_clr_cache
         if self.in_active_clrs.count() > 0 and self.is_clr_eligible:
@@ -1692,6 +1700,16 @@ class Contribution(SuperModel):
     )
     anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
+    @property
+    def blockexplorer_url(self):
+        if self.checkout_type == 'eth_zksync':
+            return f'https://zkscan.io/explorer/transactions/{self.split_tx_id.replace("sync-tx:", "")}'
+        if self.checkout_type == 'eth_std':
+            network_sub = f"{{self.subscription.network}}." if self.subscription and self.subscription.network != 'mainnet' else ''
+            return f'https://{network_sub}etherscan.io/tx/{self.split_tx_id}'
+        # TODO: support all block explorers for diff chains
+        return ''
+
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
 
@@ -2045,6 +2063,7 @@ class GrantCollection(SuperModel):
     cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
     featured = models.BooleanField(default=False, help_text=_('Show grant as featured'))
     objects = CollectionsQuerySet.as_manager()
+    shuffle_rank = models.PositiveIntegerField(default=1, db_index=True)
     curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
 
     def generate_cache(self):
@@ -2059,7 +2078,7 @@ class GrantCollection(SuperModel):
         }
 
         try:
-            cover = generate_collection_thumbnail(self, 348, 175)
+            cover = generate_collection_thumbnail(self, 348 * 5, 175 * 5)
             filename = f'thumbnail_{self.id}.png'
             buffer = BytesIO()
             cover.save(fp=buffer, format='PNG')
