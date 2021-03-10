@@ -254,7 +254,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     comment=comment)
 
         # emails to grant owner
-        new_supporter(grant, subscription)
+        try:
+            new_supporter(grant, subscription)
+        except Exception as e:
+            logger.exception(e)
 
         # emails to contributor
         if send_supporter_mail:
@@ -262,7 +265,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                 'grant': grant,
                 'subscription': subscription
             }]
-            thank_you_for_supporting(grants_with_subscription)
+            try:
+                thank_you_for_supporting(grants_with_subscription)
+            except Exception as e:
+                logger.exception(e)
 
         update_grant_metadata.delay(grant_id)
         return grant, subscription
@@ -288,7 +294,10 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
-    thank_you_for_supporting(grants_with_subscription)
+    try:
+        thank_you_for_supporting(grants_with_subscription)
+    except Exception as e:
+        logger.exception(e)
 
 
 @app.shared_task(bind=True, max_retries=1)
