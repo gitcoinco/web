@@ -91,9 +91,20 @@ def create_grant_type_cache():
 
 def create_grant_active_clr_mapping():
     print('create_grant_active_clr_mapping')
-    # Upate grants mppping to active CLR rounds
-    # NOTE: deprecated; this has been replaced by create_grant_clr_cache
-    # by Owocki 12/16/2020
+
+    # removes grants who are not in an active matching round from having a match prediction curve
+    # waits 14 days from removing them tho
+    from grants.models import *
+    from_date = timezone.now() - timezone.timedelta(days=14)
+    gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
+    for gclr in gclrs:
+        gclr.latest = False
+        gclr.save()
+        grant = gclr.grant
+        grant.calc_clr_round()
+        grant.save()
+
+
     return
 
 def create_hack_event_cache():
