@@ -13,9 +13,9 @@ Vue.component('contribution-thanks-modal', {
     const checkoutData = CartData.loadCheckedOut();
     const shouldShow = checkoutData.length > 0;
 
-    var grant_ids = '';
+    let grant_ids = '';
 
-    for (var i = 0; i < checkoutData.length; i++) {
+    for (let i = 0; i < checkoutData.length; i++) {
       grant_ids = grant_ids + checkoutData[i]['grant_id'] + ',';
     }
 
