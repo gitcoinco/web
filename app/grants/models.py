@@ -2158,7 +2158,7 @@ class GrantBrandingRoutingPolicy(SuperModel):
         blank=True,
         null=True
     )
-    url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
+    url_pattern = models.CharField(max_length=255, help_text=_("A regex url pattern"))
     banner_image = models.ImageField(
         upload_to=get_upload_filename,
         help_text=_('The banner image for a grant page'),
