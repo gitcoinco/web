@@ -10,18 +10,21 @@ from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-from .models import SearchResult, search
+from search.models import SearchResult, search
 
 logger = logging.getLogger(__name__)
 
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
-@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def get_search(request):
+    mimetype = 'application/json'
     keyword = request.GET.get('term', '')
+    return_results = search_helper(term)
+    return HttpResponse(json.dumps(return_results), mimetype)
+
+def search_helper(keyword):
 
     # attempt elasticsearch first
-    mimetype = 'application/json'
     return_results = []
     try:
         all_result_sets = search(keyword)
@@ -40,7 +43,7 @@ def get_search(request):
         logger.exception(e)
     finally:
         if not settings.DEBUG or len(return_results):
-            return HttpResponse(json.dumps(return_results), mimetype)
+            return return_results
 
     all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(description__icontains=keyword)]
     return_results = []
@@ -71,5 +74,4 @@ def get_search(request):
             ip_address=get_ip(request)
         )
 
-    mimetype = 'application/json'
-    return HttpResponse(json.dumps(return_results), mimetype)
+    return return_results
