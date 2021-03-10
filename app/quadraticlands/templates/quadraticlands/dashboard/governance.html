@@ -20,7 +20,7 @@
 			<div class="wrapper">
 				
 				<div id="txt_disable_delegate" class="hide">
-					<p>To participate activly in governance, disable the Delegation Mode.</p>
+					<p>To participate actively in governance, disable the Delegation Mode.</p>
 				</div>
 
 				<!--enabled button-->
@@ -45,7 +45,7 @@
 
 
 				<div id="txt_delegate" class="hide">
-					<p>To enable Delegation Mode to empower someone else,  explore the <a href="#">discourse</a> forum and paste his ethereum adress here:</p>
+					<p>To enable Delegation Mode to empower someone else, explore the <a href="#">discourse</a> forum and paste his ethereum adress here:</p>
 				</div>
 
 				<div id="txt_redelegate" class="hide">
@@ -89,17 +89,20 @@ document.addEventListener("DOMContentLoaded",function(){
 	// defining enabled delegate button : web3 delegate(selectedAccount)
 	toggle_enabled.addEventListener("click", () => {
 		if (selectedAccount){
-			// call a function like delegate(selectedAccount) ( what is basicaly selfdelegation )
 			console.log("DELEGATE TO (SELF) : " + selectedAccount)
+			// call a function like delegate(selectedAccount) ( what is basically selfdelegation )
+			setDelegateAddress(selectedAccount, gtc_address());
 		}
 	});
 
 	// defining the delegate button : web3 delegate(delegate_input.value)
 	delegate_button.addEventListener("click", () => {
 		if (selectedAccount){
-			// call a function like delegate(delegate_input.value)
 			console.log("DELEGATE TO " + delegate_input.value)
-		}
+			// call a function like delegate(delegate_input.value)
+			// I think we will want to confirm input.address here
+			setDelegateAddress(delegate_input.value, gtc_address());
+	    }
 	});
 
 
