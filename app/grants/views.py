@@ -2579,10 +2579,12 @@ def grants_bulk_add(request, grant_str):
     title = f"{prefix}{len(grants)} Grants in Shared Cart {by_whom} : Viewed {views} times"
 
     grant_ids = ",".join([str(ele) for ele in grant_ids])
-    avatar_url = f'/dynamic/grants_cart_thumb/{handle}/{grant_ids}'
+    avatar_url = f'https://gitcoin.co/dynamic/grants_cart_thumb/{handle}/{grant_ids}'
     context = {
         'grants': grants,
         'avatar_url': avatar_url,
+        'avatar_height': 875,
+        'avatar_width': 1740,
         'title': title,
         'card_desc': "Click to Add All to Cart: " + grant_titles
 
