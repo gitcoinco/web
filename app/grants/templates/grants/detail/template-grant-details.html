@@ -188,9 +188,15 @@
             </h3>
           </div>
           <div class="row mt-2">
-            <div class="col col-4">
+            <div class="col col-4" v-if="grant.clr_round_num && grant.is_clr_eligible">
+              <h2>$[[ grant.amount_received_in_round || 0 | round | formatNumber ]]</h2>
+              <span>
+                raised from [[ grant.positive_round_contributor_count ]] contributors
+              </span>
+            </div>
+            <div class="col col-4" v-else>
               <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
-              <span>raised from all contributors</span>
+              <span>total raised</span>
             </div>
             <div v-if="[[ grant?.clr_prediction_curve?.[0]?.[1] ]] > 0" class="col col-4">
               <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>

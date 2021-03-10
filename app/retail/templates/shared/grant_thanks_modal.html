@@ -17,62 +17,61 @@
 {% endcomment %}
 {% load i18n static %}
 <contribution-thanks-modal inline-template>
-  <b-modal id="contribution-thanks"
-    @hide="handleHide()"
-    size="lg"
-    center
-    hide-header
-    hide-footer>
-      <div>
-        <div class="my-2 mx-3 row justify-content-end">
-            <b-button @click="close()" type="button" variant="white" class="close" data-dismiss="modal" aria-label="Close"></button>
-              <span aria-hidden="true">&times;</span>
-            </b-button>
-        </div>
-        <div class="mx-3 mx-md-5 pb-4">
-          <div class="d-inline-flex flex-column-reverse flex-md-column text-left text-md-center">
-            <h3 class="mb-0 mb-md-5 d-flex-inline">Thank you for your contribution!</h3>
-            <!-- <img class="align-self-center d-flex-inline mb-5 mb-md-0" width="35%" style="max-width: 728px;" src="{% static "v2/images/grants/space-funding-woman.png" %}" /> -->
-            <div class="align-self-center d-flex-inline mb-5 mb-md-0 col-12 col-lg-6">
-              <img class="align-self-center d-flex-inline mb-5 mb-md-0" width="75%" style="max-width: 728px;" :src="imgURL" />
-              <!-- <grant-collection :collection="collection" v-on:collection:show="true" :small="false"></grant-collection> -->
+  <div>
+    <b-modal id="contribution-thanks"
+      @hide="handleHide()"
+      size="lg"
+      center
+      hide-header
+      hide-footer>
+        <div>
+          <div class="my-2 mx-3 row justify-content-end">
+              <b-button @click="close()" type="button" variant="white" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <span aria-hidden="true">&times;</span>
+              </b-button>
+          </div>
+          <div class="mx-3 mx-md-5 pb-4">
+            <div class="d-inline-flex flex-column-reverse flex-md-column text-left text-md-center">
+              <h3 class="mb-0 mb-md-5 d-flex-inline">Thank you for your contribution!</h3>
+              <div class="align-self-center d-flex-inline mb-5 mb-md-0 col-12 col-lg-6">
+                <img class="align-self-center d-flex-inline mb-5 mb-md-0" width="75%" style="max-width: 728px;" :src="imgURL" />
+              </div>
+            </div>
+            <div class="mt-5 my-4">
+              You've successfully contributed to [[numberOfContributions]] grants:
+            </div>
+            <hr />
+            <div>
+              <template v-for="donation in donations">
+                <div class="my-3">
+                  <a :href="donation.grant_url" target="_blank">[[donation.grant_title]]</a><br />
+                  [[donation.grant_donation_amount]] [[donation.grant_donation_currency]]
+                  <span v-if="donation.grant_donation_clr_match > 0" class="text-success"> + [[donation.grant_donation_clr_match]] DAI matching</span>
+                </div>
+              </template>
+            </div>
+            <hr />
+            <div class="mt-2 mb-4 px-1 row justify-content-end">
+              <b-button
+                class="mt-2 mx-2 col-md-4 col-sm-12"
+                variant="outline-primary"
+                @click="$refs.createCollection.fetchCollections()"
+              >
+                Save as Collection
+              </b-button>
+              <b-button
+                class="mt-2 mx-2 col-md-4 col-sm-12"
+                variant="primary"
+                :href="tweetUrl"
+              >
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+                Share on Twitter
+              </b-button>
             </div>
           </div>
-          <div class="mt-5 my-4">
-
-            You've successfully contributed to [[numberOfContributions]] grants:
-          </div>
-          <hr />
-          <div>
-            <template v-for="donation in donations">
-              <div class="my-3">
-                <a :href="donation.grant_url" target="_blank">[[donation.grant_title]]</a><br />
-                [[donation.grant_donation_amount]] [[donation.grant_donation_currency]]
-                <span v-if="donation.grant_donation_clr_match > 0" class="text-success"> + [[donation.grant_donation_clr_match]] DAI matching</span>
-              </div>
-            </template>
-          </div>
-          <hr />
-          <div class="mt-2 mb-4 px-1 row justify-content-end">
-            <b-button
-              class="mt-2 mx-2 col-md-4 col-sm-12"
-              variant="outline-primary"
-              @click="$refs.createCollection.fetchCollections()"
-            >
-              Save as Collection
-            </b-button>
-            <b-button
-              class="mt-2 mx-2 col-md-4 col-sm-12"
-              variant="primary"
-              :href="tweetUrl"
-            >
-              <i class="fab fa-twitter" aria-hidden="true"></i>
-              Share on Twitter
-            </b-button>
-          </div>
+          {% include 'shared/create_collection_modal.html' %}
         </div>
-        {% include 'shared/create_collection_modal.html' %}
-      </div>
-  </b-modal>
+      </b-modal>
+      {% include 'shared/contribution_trust_bonus.html' %}
+  </div>
 </contribution-thanks-modal>
-
