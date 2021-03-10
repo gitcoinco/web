@@ -149,6 +149,7 @@ along with this program. If not, see
 
 
     </div>
+    {% include 'grants/components/collection.html' %}
     {% include 'grants/detail/template-grant-details.html' %}
   </div>
   {% include 'shared/analytics.html' %}
@@ -156,6 +157,7 @@ along with this program. If not, see
   {% include 'shared/footer.html' %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}
+  {{grant_bg.inline_css|json_script:"inline_css"}}
   <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
   <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
@@ -201,7 +203,7 @@ along with this program. If not, see
       document.current_style = {
         banner_image: "{{ grant_bg.banner_image }}",
         background_image: " url('{{grant_bg.background_image }}')",
-        inline_css: "{{ grant_bg.inline_css }}"
+        inline_css: JSON.parse(document.getElementById('inline_css').textContent)
       }
     {% else %}
       document.current_style = base_style

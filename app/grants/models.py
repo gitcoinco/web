@@ -229,12 +229,13 @@ class GrantCLR(SuperModel):
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**self.collection_filters).values_list('grants', flat=True)
+            grants = grants.filter(pk__in=grant_ids)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
         if self.subscription_filters:
             grants = grants.filter(**self.subscription_filters)
-        if self.collection_filters:
-            grants = grants.filter(**self.collection_filters)
 
         return grants
 
@@ -629,8 +630,18 @@ class Grant(SuperModel):
 
     @property
     def calc_clr_round_nums(self):
+        """Generates CLR rounds sub_round_slug seperated by comma"""
         if self.pk:
             round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            return ", ".join(round_nums)
+        return ''
+
+
+    @property
+    def calc_clr_round_label(self):
+        """Generates CLR rounds display text seperated by comma"""
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('display_text', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -941,7 +952,7 @@ class Grant(SuperModel):
         """Override the Grant save to optionally handle modified_on logic."""
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
-        self.clr_round_num = self.calc_clr_round_nums
+        self.clr_round_num = self.calc_clr_round_label
 
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
@@ -2176,7 +2187,7 @@ class GrantBrandingRoutingPolicy(SuperModel):
         blank=True,
         null=True
     )
-    url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
+    url_pattern = models.CharField(max_length=255, help_text=_("A regex url pattern"))
     banner_image = models.ImageField(
         upload_to=get_upload_filename,
         help_text=_('The banner image for a grant page'),

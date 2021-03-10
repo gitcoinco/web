@@ -189,7 +189,7 @@
           </div>
           <div class="row mt-2">
             <div class="col col-4">
-              <h2>$[[grant.amount_received | round ]]</h2>
+              <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
               <span>raised from all contributors</span>
             </div>
             <div v-if="[[ grant?.clr_prediction_curve?.[0]?.[1] ]] > 0" class="col col-4">
@@ -308,8 +308,8 @@
       <div class="grant-team">
         <div class="">
           <h3>Team</h3>
-          <div class="d-flex" style="gap: 16px;">
-            <div v-for="member in teamFormatted" :key="member.id" class="d-flex flex-column align-items-center" v-if="member?.text">
+          <div :class="`d-flex flex-wrap${teamFormatted.length > 3 ? ' justify-content-center' : ''}`">
+            <div v-for="member in teamFormatted" :key="member.id" class="d-flex flex-column align-items-center px-2 py-3" v-if="member?.text">
               <b-img-lazy class="rounded-circle bg-light" width="50" height="50" :src="member.avatar_url" :alt="member.text"></b-img-lazy>
               <a :href="`/profile/${member.text}`" class="">[[member.text]]</a>
             </div>

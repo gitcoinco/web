@@ -115,8 +115,9 @@ Vue.component('grant-card', {
 });
 
 Vue.component('grant-collection', {
+  template: '#grant-collection',
   delimiters: [ '[[', ']]' ],
-  props: [ 'collection', 'small' ],
+  props: [ 'collection', 'small', 'activeCollection' ],
   methods: {
     shareCollection: function() {
       let testingCodeToCopy = document.querySelector(`#collection-${this.collection.id}`);
