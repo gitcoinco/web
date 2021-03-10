@@ -24,32 +24,32 @@
 
 
 
-
 <script>
 
 document.addEventListener("DOMContentLoaded",function(){
 
-	// wallet found
-	window.addEventListener("dataWalletReady", () => {
+	// every time web3 is ready / address changes this calls the async function delegationInterface()
+	document.addEventListener("dataWalletReady", walletInterface);
 
-
-		// wallet address
-		const dashboard_wallet_address = document.querySelector("#dashboard_wallet_address");
-
-		if(selectedAccount) { 
-			dashboard_wallet_address.innerHTML = truncate(selectedAccount)
-		}
-
-		// wallet balance
-		const dashboard_wallet_balance = document.querySelector("#dashboard_wallet_balance");
-		getTokenBalances(gtc_address()).then(function(result) {
-			dashboard_wallet_balance.innerHTML = result.balance;
-		});
-
-	});
-
+	const dashboard_wallet_address = document.getElementById("dashboard_wallet_address")
+	const dashboard_wallet_balance = document.getElementById("dashboard_wallet_balance")
 
 });
+
+
+async function walletInterface() {
+
+	try {
+
+        let balance = await getTokenBalances(gtc_address())
+        dashboard_wallet_balance.innerHTML = balance.balance;
+        dashboard_wallet_address.innerHTML = truncate(selectedAccount)
+
+    } catch(e) {
+        console.log(e);
+    }
+
+}
 
 
 </script>
