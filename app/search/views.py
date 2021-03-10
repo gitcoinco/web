@@ -19,10 +19,10 @@ logger = logging.getLogger(__name__)
 def get_search(request):
     mimetype = 'application/json'
     keyword = request.GET.get('term', '')
-    return_results = search_helper(keyword)
+    return_results = search_helper(keyword, request)
     return HttpResponse(json.dumps(return_results), mimetype)
 
-def search_helper(keyword):
+def search_helper(keyword, request):
 
     # attempt elasticsearch first
     return_results = []
@@ -30,7 +30,7 @@ def search_helper(keyword):
         all_result_sets = search(keyword)
         return_results = [ele['_source'] for ele in all_result_sets['hits']['hits']]
 
-        if request.user.is_authenticated:
+        if request and request.user.is_authenticated:
             data = {'keyword': keyword}
             SearchHistory.objects.update_or_create(
                 search_type='sitesearch',
