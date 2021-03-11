@@ -86,8 +86,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             value_usdt = subscription.amount_per_period_usdt
             if not value_usdt:
                 value_usdt = subscription.get_converted_amount(False)
-                subscription.amount_per_period_usdt = value_usdt
-                subscription.save()
+                if value_usdt:
+                    subscription.amount_per_period_usdt = value_usdt
+                    subscription.save()
             value_usdt = subscription.amount_per_period_usdt
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
