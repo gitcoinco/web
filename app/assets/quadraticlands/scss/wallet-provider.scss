@@ -16,9 +16,25 @@
 		display: block;
 	};
 
-	#current_gtc{
+
+
+
+	.token{
+
 		color: var(--aqua);
+		font-size: 120%;
+
+
+		#token_balance{
+
+		}
+
+		#token_symbol{
+			margin-left: 0.3em;
+		}
+
 	}
+
 
 
 	div.header{
@@ -87,7 +103,7 @@
 	
 		&:hover{
 			color: var(--space);
-			background-color: var(--purple);
+			background-color: var(--aqua);
 		};
 
 

@@ -39,7 +39,7 @@
 		<span id="wallet-accounts"></span>
     
     <!-- GTC token balance-->
-    <div><span id="current_gtc">0</span>&nbsp;GTC</div>
+    <div class="token"><span id="token_balance"></span><span id="token_symbol"></span></div>
 
 		   
 	</div>
@@ -95,17 +95,35 @@
 
 {% endblock %}
 {% block 'scripts' %}
+
 <script src="{% static "v2/js/abi.js" %}"></script>
+
+
 <script>
-  document.addEventListener("DOMContentLoaded",function(){
-    // wallet found
-    window.addEventListener("dataWalletReady", () => {
-      const current_gtc = document.querySelector("#current_gtc");
-      getTokenBalances(gtc_address()).then(function(result) {
-        current_gtc.innerHTML = result.balance;
-      });
-    });
-  });
+
+document.addEventListener("DOMContentLoaded",function(){
+
+  const token_balance = document.querySelector("#token_balance")
+  const token_symbol = document.querySelector("#token_symbol")
+  document.addEventListener("dataWalletReady", walletMenu);
+
+});
+
+
+async function walletMenu() {
+
+  try {
+
+      let balance = await getTokenBalances(gtc_address())
+      token_balance.innerHTML = balance.balance
+      token_symbol.innerHTML = balance.symbol
+
+    } catch(e) {
+        console.log(e);
+    }
+
+}
+
 </script>
 
 {% endblock %}
