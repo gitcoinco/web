@@ -226,6 +226,14 @@ class GrantCLR(SuperModel):
         return now >= self.start_date and now <= self.end_date
 
     @property
+    def happened_recently(self):
+        # returns true if we are within a week or 2 of this round
+        days = 14
+        now = timezone.now()
+        then = timezone.now() - timezone.timedelta(days=days)
+        return now >= self.start_date and then <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)

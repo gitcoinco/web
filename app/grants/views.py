@@ -464,7 +464,13 @@ def grants_stats_view(request):
     except Exception as e:
         logger.exception(e)
         raise Http404
-    round_types = GrantType.objects.all()
+    active_clrs = GrantCLR.objects.filter(is_active=True)
+    pks = []
+    for active_clr in active_clrs:
+        pk = active_clr.grant_filters.get('grant_type', 0)
+        if pk and active_clr.happened_recently:
+            pks.append(pk)
+    round_types = GrantType.objects.filter(pk__in=pks)
     params = {
         'cht': cht,
         'chart_list': chart_list,
