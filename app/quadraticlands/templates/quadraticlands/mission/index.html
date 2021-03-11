@@ -121,6 +121,12 @@
 	{% endwith %}
 
 
+	<!-- Propose a Mission -->
+	{% with name="Propose a Mission" %}
+		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="available" playable="true" url="#" %}
+	{% endwith %}
+
+
 	<!-- Snapshot.page -->
 	{% with name="Snapshot.page" %}
 		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="available" playable="true" url="http://snapshot.page"  %}
@@ -145,10 +151,7 @@
 	{% endwith %}
 
 
-	<!-- Propose a Mission -->
-	{% with name="Grants Governance Game" %}
-		{% include 'quadraticlands/mission/card.html' with svg="back-card.svg" message="available" playable="true" url="#" %}
-	{% endwith %}
+
 
 
 

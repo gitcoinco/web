@@ -47,6 +47,16 @@
 
 /* colors */
 
+
+.btn.disabled{
+  background-color: var(--smoke);
+  cursor: default;
+  &:hover{
+    animation: initial;
+  };
+}
+
+
 .btn.purple{
   background-color: var(--purple_light);
 }
@@ -54,7 +64,6 @@
 .btn.aqua{
   background-color: var(--aqua_light);
 }
-
 
 .btn.twitter{
   background-color: var(--twitter);
