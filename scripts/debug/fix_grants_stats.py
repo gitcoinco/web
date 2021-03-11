@@ -3,11 +3,9 @@
 
 
 from django.utils import timezone
-
+import pytz
 from grants.models import Grant
 from marketing.models import Stat
-
-lt_pk = 47067421 * 999
 
 key_titles = [
     ('_match', 'Estimated Matching Amount ($)', '-positive_round_contributor_count', 'grants' ),
@@ -27,8 +25,8 @@ for key in keys:
         key_list.append(item)
 
 
-_from = timezone.now() - timezone.timedelta(days=30)
-stats = Stat.objects.filter(key__in=key_list, pk__lt=lt_pk, created_on__gt=_from).order_by('-pk')
+_from = timezone.datetime(2021, 3, 10).replace(tzinfo=pytz.utc)
+stats = Stat.objects.filter(key__in=key_list, created_on__gt=_from).order_by('-pk')
 for stat in stats:
     stat.created_on -= timezone.timedelta(microseconds=stat.created_on.microsecond)
     stat.created_on -= timezone.timedelta(seconds=int(stat.created_on.strftime('%S')))

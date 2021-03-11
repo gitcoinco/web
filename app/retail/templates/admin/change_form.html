@@ -40,6 +40,8 @@
       <input type="submit" value="Recalculate CLR" name="_calc_clr" value="1">
       <input type="submit" value="Mark as Fraud" name="_mark_fraud" value="1">
       <input type="submit" value="Approve Grant" name="_approve_grant" value="1">
+    {% elif 'grantcollection/' in request.build_absolute_uri %}
+      <input type="submit" value="Generate Cache" name="_generate_cache" value="1">
     {% elif 'grantclr/' in request.build_absolute_uri %}
       <input type="submit" value="Recalculate CLR" name="_recalculate_clr" value="1">
     {% elif 'granttype/' in request.build_absolute_uri %}

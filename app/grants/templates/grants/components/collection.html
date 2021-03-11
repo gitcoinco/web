@@ -1,38 +1,38 @@
   {% comment %}
   Copyright (C) 2020 Gitcoin Core
-
+  
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
   by the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-
+  
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Affero General Public License for more details.
-
+  
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
-{% endcomment %}
-<grant-collection inline-template :collection="collection" v-on:collection:show="showSingleCollection($event)" :small="current_type !== 'collections' ">
-  <div v-if="collection" >
-    <template>
-      <div class="collection-item" v-if="small">
-        <div class="collection-item__img position-relative">
-          <div class="collection-item__img--small-grid">
-            <div class="collection-item__img__cover--small">
-              <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
-            </div>
-            <div class="collection-item__img__cover--small">
-              <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2">
-            </div>
-            <div class="collection-item__img__cover--small">
-              <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3">
+  {% endcomment %}
+  <script type="text/x-template" id="grant-collection">
+    <div v-if="collection" >
+      <template>
+        <div class="collection-item" v-if="small">
+          <div class="collection-item__img position-relative">
+            <div class="collection-item__img--small-grid">
+              <div class="collection-item__img__cover--small">
+                <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
+              </div>
+              <div class="collection-item__img__cover--small">
+                <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2">
+              </div>
+              <div class="collection-item__img__cover--small">
+                <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3">
+              </div>
             </div>
           </div>
-        </div>
-        <div class="collection-item__content px-3">
-          <div class="d-flex mb-1">
+          <div class="collection-item__content px-3">
+            <div class="d-flex mb-1">
               <div class="d-flex w-100">
                 <div class="collection-item__owner-image--large position-relative mr-2" style="top: 5px; ">
                   <a :href="collection.owner.url" target="_blank" rel="noopener noreferrer">
@@ -54,77 +54,76 @@
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="collection-item" v-else>
-        <div class="collection-item__img position-relative" :style="collection.cover ? 'padding: 0' : ''">
-          <div class="collection-item__img--grid" v-if="!collection.cover">
-            <div class="collection-item__img__cover">
-              <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
-            </div>
-            <div class="collection-item__img__cover">
-              <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2">
-            </div>
-            <div class="collection-item__img__cover">
-              <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3">
-            </div>
-            <div class="collection-item__img__cover">
-              <img :src="getGrantLogo(3)" alt="" v-if="collection.grants.length >= 4">
-            </div>
-          </div>
-          <div class="collection-item__owner-image--cover" v-if="!collection.cover">
-            <img :src="collection.owner.avatar_url">
-          </div>
-          <img  :src="collection.cover" alt=""  v-if="collection.cover">
-        </div>
-        <div class="collection-item__content px-3">
-          <h2 class="h5 gc-font-base">
-            [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
-          </h2>
-
-          <div class="d-flex mb-2">
-            <a :href="collection.owner.url" class="mr-2" target="_blank" rel="noopener noreferrer">
-              <div class="d-flex">
-                <div class="collection-item__owner-image position-relative" style="top: -4px;">
-                  <img :src="collection.owner.avatar_url">
-                </div>
-                <div class="collection-item__owner-handle font-smaller-3">
-                  <span class="ml-2">
-                    [[ collection.owner.handle || 'anonymous' ]]
-                  </span>
-                </div>
+        <div class="collection-item" v-else>
+          <div class="collection-item__img position-relative" :style="collection.cover ? 'padding: 0' : ''">
+            <div class="collection-item__img--grid" v-if="!collection.cover">
+              <div class="collection-item__img__cover">
+                <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
               </div>
-            </a>
-            <p class="font-weight-bold mr-2 mb-0">&middot;</p>
-            <p class="text-muted font-smaller-3 mb-0">[[ collection.count ]] grant[[collection.count > 1 ? 's' : '']]</p>
+              <div class="collection-item__img__cover">
+                <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2">
+              </div>
+              <div class="collection-item__img__cover">
+                <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3">
+              </div>
+              <div class="collection-item__img__cover">
+                <img :src="getGrantLogo(3)" alt="" v-if="collection.grants.length >= 4">
+              </div>
+            </div>
+            <div class="collection-item__owner-image--cover" v-if="!collection.cover">
+              <img :src="collection.owner.avatar_url">
+            </div>
+            <img  :src="collection.cover" alt=""  v-if="collection.cover">
           </div>
-          <p class="collection-item__pitch font-smaller-3 text-muted mb-2">[[ collection.description.slice(0, 140) ]][[ collection.description.length > 145 ? '...' : '']]</p>
-        </div>
-        <div class="collection-item__footer">
-          <div class="col pb-4 d-flex justify-content-between">
-            <button @click.stop="shareCollection()" class="btn btn-outline-primary font-weight-semibold mr-1">
-              <i class="fa fa-fw fa-share" aria-hidden="true"></i>
-              <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/collections?collection_id=${collection.id}`">
-            </button>
-
-            <template v-if="$parent.activeCollection">
-              <button @click.stop="addToCart()" class="btn btn-primary font-weight-semibold ml-1" style="flex: 1 1 0px;">
-                <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add to Cart
-              </button>
-            </template>
-            <template v-else>
-              <a class="btn btn-primary font-weight-semibold ml-1" :href="`/grants/explorer/collections?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
-                <i class="fas fa-fw fa-arrow-right"></i> View
+          <div class="collection-item__content px-3">
+            <h2 class="h5 gc-font-base">
+              [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
+            </h2>
+            
+            <div :class="`d-flex ${!collection.hideButtons ? 'mb-2' : 'mb-4'}`" >
+              <a :href="collection.owner.url" class="mr-2" target="_blank" rel="noopener noreferrer">
+                <div class="d-flex">
+                  <div class="collection-item__owner-image position-relative" style="top: -4px;">
+                    <img :src="collection.owner.avatar_url">
+                  </div>
+                  <div class="collection-item__owner-handle font-smaller-3">
+                    <span class="ml-2">
+                      [[ collection.owner.handle || 'anonymous' ]]
+                    </span>
+                  </div>
+                </div>
               </a>
-              <button class="btn btn-primary font-weight-semibold ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>
-                <i class="fas fa-fw fa-arrow-right"></i> View
+              <p class="font-weight-bold mr-2 mb-0">&middot;</p>
+              <p class="text-muted font-smaller-3 mb-0">[[ collection.count ]] grant[[collection.count > 1 ? 's' : '']]</p>
+            </div>
+            <p v-if="!collection.hideButtons" class="collection-item__pitch font-smaller-3 text-muted mb-2">[[ collection.description.slice(0, 140) ]][[ collection.description.length > 145 ? '...' : '']]</p>
+          </div>
+          <div v-if="!collection.hideButtons" class="collection-item__footer">
+            <div class="col pb-4 d-flex justify-content-between">
+              <button @click.stop="shareCollection()" class="btn btn-outline-primary font-weight-semibold mr-1">
+                <i class="fa fa-fw fa-share" aria-hidden="true"></i>
+                <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/collections?collection_id=${collection.id}`">
               </button>
-            </template>
+              
+              <template v-if="$parent.activeCollection">
+                <button @click.stop="addToCart()" class="btn btn-primary font-weight-semibold ml-1" style="flex: 1 1 0px;">
+                  <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add to Cart
+                </button>
+              </template>
+              <template v-else>
+                <a class="btn btn-primary font-weight-semibold ml-1" :href="`/grants/explorer/collections?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
+                  <i class="fas fa-fw fa-arrow-right"></i> View
+                </a>
+                <button class="btn btn-primary font-weight-semibold ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>
+                  <i class="fas fa-fw fa-arrow-right"></i> View
+                </button>
+              </template>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-  </div>
-
-</grant-collection>
+      </template>
+    </div>
+  </script>

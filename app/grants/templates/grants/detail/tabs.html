@@ -299,7 +299,11 @@
                     {{ele.created_on|date:"Y/m/d"}}
                   </td>
                   <td>
-                    {{ele.data.impressions}}
+                    {% if ele.data.impressions > 0 %}
+                      {{ele.data.impressions}}
+                    {% else %}
+                      0
+                    {% endif %}
                   </td>
                   <td>
                     {{ele.data.in_cart}}
@@ -312,14 +316,6 @@
               </table>
               {% endif %}
 
-              <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
-              <div class="chart_container__content">
-                <div id="grant_chart"></div>
-              </div>
-              <div class="grant-status-list">
-                <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
-                <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
-              </div>
             </div>
           </div>
           <script>

@@ -479,6 +479,21 @@ class GrantCLRAdmin(admin.ModelAdmin):
 class GrantCollectionAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'description', 'hidden', 'cache', 'featured']
     raw_id_fields = ['profile', 'grants', 'curators']
+    readonly_fields = ['img']
+
+
+    def response_change(self, request, obj):
+        if "_generate_cache" in request.POST:
+            obj.generate_cache()
+            self.message_user(request, "generated cache")
+        return redirect(obj.admin_url)
+
+    def img(self, instance):
+        try:
+            html = f'<img src="{instance.cover.url}">'
+            return mark_safe(html)
+        except:
+            return "N/A"
 
 
 class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
