@@ -65,13 +65,7 @@ Vue.component('grants-cart', {
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      isZkSyncDown: false, // disable zkSync when true
-      // Collection
-      showCreateCollection: false,
-      collectionTitle: '',
-      collectionDescription: '',
-      collections: [],
-      selectedCollection: null
+      isZkSyncDown: false // disable zkSync when true
     };
   },
 
@@ -132,17 +126,6 @@ Vue.component('grants-cart', {
       return document.contxt.github_handle;
     },
 
-    // Determine when activate the save collection button
-    isValidCollection() {
-      if (this.selectedCollection !== null) {
-        return true;
-      } else if (this.collectionTitle.length > 3 && this.collectionDescription.length < 140) {
-        return true;
-      }
-
-      return false;
-    },
-
     // Percentage of donation that goes to Gitcoin
     gitcoinFactor() {
       return Number(this.gitcoinFactorRaw) / 100;
@@ -188,7 +171,7 @@ Vue.component('grants-cart', {
       let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
-        const amount = parseUnits(String(grant.grant_donation_amount), tokenDetails.decimals)
+        const amount = parseUnits(String(grant.grant_donation_amount || 0), tokenDetails.decimals)
           .mul(gitcoinFactor)
           .div(100);
 
@@ -570,7 +553,7 @@ Vue.component('grants-cart', {
 
       this.grantsByTenant.forEach(grant => {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
-        const totalDonationAmount = parseEther(String(grant.grant_donation_amount))
+        const totalDonationAmount = parseEther(String(grant.grant_donation_amount || 0))
           .mul(String(scaleFactor * 100))
           .div('100');
 
@@ -658,7 +641,7 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-      return this.currentTokens.filter(token => token.name === name)[0];
+      return this.filterByChainId.filter(token => token.name === name)[0];
     },
 
     async applyAmountToAllGrants(grant) {
@@ -1079,15 +1062,20 @@ Vue.component('grants-cart', {
      * success alert
      */
     async finalizeCheckout() {
+      // Number of items descides the timeout time
+      const timeout_amount = 1500 + (this.grantsByTenant.length * 500);
       // Clear cart, redirect back to grants page, and show success alert
-      localStorage.setItem('contributions_were_successful', 'true');
-      localStorage.setItem('contributions_count', String(this.grantsByTenant.length));
-      let timeout_amount = 1500 + (CartData.loadCart().length * 500);
+
+      CartData.setCheckedOut(this.grantsByTenant);
+      // Remove each grant from the cart which has just been checkout
+      this.grantsByTenant.forEach((grant) => {
+        CartData.removeIdFromCart(grant.grant_id);
+      });
 
       setTimeout(function() {
         _alert('Contributions saved', 'success', 1000);
         setTimeout(function() {
-          window.location.href = `${window.location.origin}/grants`;
+          window.location.href = `${window.location.origin}/grants/explorer`;
         }, 500);
       }, timeout_amount);
     },
@@ -1246,45 +1234,7 @@ Vue.component('grants-cart', {
         return cartData;
       }
       return false;
-    },
-
-    // ================== Start collection logic ==================
-    createCollection: async function() {
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const cart = CartData.loadCart();
-      const grantIds = cart.map(grant => grant.grant_id);
-      let response;
-
-      const body = {
-        collectionTitle: this.collectionTitle,
-        collectionDescription: this.collectionDescription,
-        grants: grantIds
-      };
-
-      if (this.selectedCollection) {
-        body['collection'] = this.selectedCollection;
-      }
-
-      try {
-
-        response = await fetchData('/grants/v1/api/collections/new', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
-        const redirect = `/grants/collections?collection_id=${response.collection.id}`;
-
-        _alert('Congratulations, your new collection was created successfully!', 'success');
-        this.cleanCollectionModal();
-        this.showCreateCollection = false;
-
-        window.location = redirect;
-
-      } catch (e) {
-        _alert(e.msg, 'error');
-      }
-    },
-    cleanCollectionModal: function() {
-      this.collectionTitle = '';
-      this.collectionDescription = '';
     }
-    // ================== End collection logic ==================
   },
 
   watch: {
@@ -1431,10 +1381,6 @@ Vue.component('grants-cart', {
 
     // Show user cart now
     this.isLoading = false;
-
-    const collections_response = await fetchData('/grants/v1/api/collections/');
-
-    this.collections = collections_response.collections;
   },
 
   beforeDestroy() {

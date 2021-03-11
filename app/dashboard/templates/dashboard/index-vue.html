@@ -102,7 +102,7 @@
   <body class="interior {{active}} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
-      <div class="container-fluid header sticky-top dash">
+      <div class="header sticky-top dash">
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'shared/nav_hackathons.html' %}
       </div>
@@ -173,7 +173,7 @@
                             <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
                               <div>
                                 <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
-                                <b-button class="btn btn-primary" @click="activePanel = 1">Townsquare</b-button>
+                                <b-button variant="primary" class="btn" @click="activePanel = 1">Townsquare</b-button>
                               </div>
                             {% include 'shared/hackathon_sponsors.html' %}
 
@@ -314,7 +314,7 @@
                             </nav>
                           </transition>
                           <div class="container py-4" @scroll.passive="onScroll($event)">
-                          <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                          <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold mb-5" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
                           <div class="mt-4">
                           <div v-if="noResults" class="text-center">
                             <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
@@ -433,7 +433,7 @@
                             </nav>
                           </transition>
                           <div class="container pt-4" @scroll.passive="onScroll($event)">
-                            <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                            <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold mb-5" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
                             <div>
                               <div v-if="noResults" class="text-center py-5 mt-4">
                                 <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
@@ -666,7 +666,7 @@
                                   <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ getSponsor(spotlight.sponsor).display_name ]]</p>
                                 </div>
                                 <b-button variant="outline-primary" @click="followTribe(spotlight.sponsor, $event)"
-                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-secondary' : 'btn-primary', 'btn-sm', 'px-4']"
+                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-success' : 'btn-primary', 'btn-sm', 'px-4']"
                                 >
                                   [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
                                 </b-button>
@@ -757,8 +757,8 @@
                             <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
                             <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
                           </ul>
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)"
-                            v-bind:class="[sponsor.followed ? 'btn-outline-secondary' : 'btn-primary', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
+                          <b-button variant="noop" @click="followTribe(sponsor.org_name, $event)"
+                            v-bind:class="[sponsor.followed ? 'btn-success' : 'btn-primary', 'btn-sm', 'font-smaller-5']"
                           >
                             [[ sponsor.followed ? "following" : "follow" ]]
                           </b-button>

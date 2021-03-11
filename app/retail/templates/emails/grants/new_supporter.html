@@ -39,16 +39,6 @@ along with this program. If not, see
 
   .supporterName {
     font-size: 18px;
-    color: #0D0764;
-  }
-
-  p>a {
-    color: #4A90E2;
-  }
-
-  #grow-oss {
-    margin-top: 45px;
-    margin-bottom: 30px;
   }
 </style>
 <div id="content-body">
@@ -88,8 +78,14 @@ along with this program. If not, see
     <p>
       <a href="{{grant.url}}?{{ utm_tracking }}" class="button" style="display: inline-block; margin-top:10px;">View
         Grant</a>
+      {% if subscription.subscription_contribution.first.blockexplorer_url %}
+        <br>
+        <br>
+        <a href="{{subscription.subscription_contribution.first.blockexplorer_url}}">View transaction</a>
+      {% endif %}
     </p>
   </div>
   <hr style="margin-left: 0;">
 </div>
+
 {% endblock %}

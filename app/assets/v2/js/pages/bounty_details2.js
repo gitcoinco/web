@@ -136,7 +136,7 @@ Vue.mixin({
           url = `https://explorer.harmony.one/#/tx/${txn}`;
           break;
 
-        case 'R-BTC':
+        case 'RBTC':
         case 'RDOC':
         case 'DOC':
           url = `https://explorer.rsk.co/tx/${txn}`;
@@ -190,7 +190,7 @@ Vue.mixin({
           url = `https://explorer.harmony.one/#/address/${address}`;
           break;
 
-        case 'R-BTC':
+        case 'RBTC':
         case 'RDOC':
         case 'DOC':
           url = `https://explorer.rsk.co/address/${address}`;
@@ -263,7 +263,7 @@ Vue.mixin({
             txid: txid,
             network: document.web3network
           };
-          let syncDb = fetchData ('/sync/web3/', 'POST', data);
+          let syncDb = fetchData('/sync/web3/', 'POST', data);
 
           $.when(syncDb).then(function(response) {
             console.log(response);
@@ -411,7 +411,7 @@ Vue.mixin({
           tenant = 'HARMONY';
           break;
 
-        case 'R-BTC':
+        case 'RBTC':
         case 'DOC':
         case 'RDOC':
           tenant = 'RSK';
@@ -589,7 +589,7 @@ Vue.mixin({
 
       return vm.bounty.fulfillments.filter(fulfillment =>
         fulfillment.accepted &&
-          fulfillment.payout_status == 'done'
+        fulfillment.payout_status == 'done'
       );
 
     },
@@ -627,7 +627,7 @@ Vue.mixin({
 
       const apiUrlBounty = `/actions/bounty/${vm.bounty.pk}/interest/remove/`;
 
-      fetchData(apiUrlBounty, 'POST', {handle}, headers).then(response => {
+      fetchData(apiUrlBounty, 'POST', { handle }, headers).then(response => {
         if (200 <= response.status && response.status <= 204) {
           this.fetchBounty();
           let text = isOwner ?
@@ -739,7 +739,7 @@ Vue.mixin({
             polkadot_endpoint = POLKADOT_ENDPOINT;
           }
 
-          polkadot_utils.connect(polkadot_endpoint).then(res =>{
+          polkadot_utils.connect(polkadot_endpoint).then(res => {
             console.log(res);
             polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
               vm.fulfillment_context.active_step = 'payout_amount';
@@ -827,7 +827,7 @@ var show_extend_deadline_modal = function() {
 
   moment.locale('en');
   modals.on('show.bs.modal', function() {
-    modalBody.load(url, ()=> {
+    modalBody.load(url, () => {
       const currentExpires = moment.utc(document.result['expires_date']);
 
       $('#modalExtend input[name="expirationTimeDelta"]').daterangepicker({
@@ -881,7 +881,7 @@ var show_extend_deadline_modal = function() {
 };
 
 var set_extended_time_html = function(extendedDuration) {
-  extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+  extendedDuration = extendedDuration.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
   $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
   $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
   $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
@@ -930,7 +930,7 @@ var show_interest_modal = function() {
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
   modals.on('show.bs.modal', function() {
-    modalBody.load(modalUrl, ()=> {
+    modalBody.load(modalUrl, () => {
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
       let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
@@ -996,7 +996,7 @@ var show_interest_modal = function() {
         let msg = issueMessage.val().trim();
 
         if (!msg || msg.length < 30) {
-          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
+          _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'error');
           return false;
         }
 

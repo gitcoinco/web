@@ -196,7 +196,7 @@ $(document).ready(function() {
 
   // refresh activity page
   document.buffered_rows = [];
-  var refresh_interval = 7000;
+  var refresh_interval = 55000;
   var max_pk = null;
   var run_longpoller = function(recursively) {
     if (document.hidden || !document.long_poller_live) {

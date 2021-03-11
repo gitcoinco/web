@@ -29,6 +29,12 @@ along with this program. If not, see
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
   {% endcompress %}
   <style>
+
+    #sidebar-quick-view header.b-sidebar-header > strong {
+      font-weight: normal;
+      font-family: 'Miriam Libre';
+    }
+
     .select2-selection .select2-selection--single {
       background: none;
       outline: none;
@@ -41,32 +47,26 @@ along with this program. If not, see
       background: none !important;
     }
 
-    @media (min-width: 768px) {
-      .grants-details-parent {
-        width: 100vw;
-      }
-
-      .grants-showcase--child {
-        max-width: 99vw;
-      }
-    }
-
+  </style>
+  <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
-  <style></style>
+
 </head>
 
 <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
-  <div class="content__main min-vh-100 d-md-flex flex-column">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'grants/nav.html' %}
-    <div class="container-fluid header dash grants_hero_img" id="grant-hero-img">
+  {% include 'shared/tag_manager_2.html' %}
+  {% include 'shared/top_nav.html' with class='d-md-flex' %}
+  {% include 'grants/nav.html' %}
+  <div class="content__main min-vh-100 d-md-flex flex-column" id="grants-showcase" v-cloak>
+    <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
+
+    </div>
       {% include 'shared/grant_thanks_modal.html' %}
+
       {% include 'grants/shared/landing_hero.html' %}
 
-
-      <div class="row grants-details-parent" class="mx-0">
+      <div class="row grants-details-parent mx-0">
         <div id="grants-details" class="no-gutters w-100">
           <div style="background-size: contain;" id="grant-background-image-mount-point">
             <div
@@ -87,8 +87,8 @@ along with this program. If not, see
                 </div>
               </div>
               {% endif %}
-              <div id="grants-showcase" v-cloak>
-                <div class="row mx-0" class="grants-showcase--child">
+              <div >
+                <div class="row mx-0">
                   <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
                     {% include 'grants/shared/sidebar_search.html' %}
                   </div>
@@ -115,8 +115,8 @@ along with this program. If not, see
                       </div>
                     </template>
                     <template v-else>
-                      {% include 'grants/shared/landing_subnav.html' %}
-                      <template v-if="isLandingPage">
+                      {% include 'grants/shared/top-filters.html' %}
+                      <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
                         {% include 'grants/shared/active_clr_round.html'%}
                       </template>
                       {% include 'grants/shared/landing_grants.html' %}
@@ -128,6 +128,7 @@ along with this program. If not, see
                   ref="sidebar-quick-view"
                   title="Grant Details"
                   backdrop-variant="dark"
+                  bg-variant="white"
                   backdrop
                   shadow
                   width="max(80vw, 1000px)"
@@ -141,78 +142,86 @@ along with this program. If not, see
           </div>
           {% csrf_token %}
         </div>
-        {% include 'grants/detail/template-grant-details.html' %}
         <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
           {% include 'grants/detail/side-cart.html' %}
         </div>
       </div>
 
 
-      {% include 'shared/analytics.html' %}
-      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
-      {% include 'shared/footer.html' %}
-      {% include 'grants/shared/shared_scripts.html' %}
-      {{collections|json_script:"collections-object"}}
-      <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
-      <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
-      <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
-  
-      <script>
-        document.current_type = "{{ type|default:'all' }}";
-        document.selected_category = "{{ selected_category }}";
-        document.network = "{{ network}}";
-        document.keyword = "{{ keyword }}";
-        document.following = {{ following|yesno:'true,false' }};
-        document.idle_grants = {{ idle_grants|yesno:'true,false' }};
-        document.show_contributions = {{ show_contributions|yesno:'true,false' }};
-        document.featured = {{ featured|yesno:'true,false' }};
-        document.collection_id = {{ collection_id|default:'null' }};
-        document.collections = JSON.parse(document.getElementById('collections-object').textContent);
-        {% if clr_round %}
-          document.clr_round_pk = "{{clr_round.pk}}";
-          document.round_num = "{{clr_round.round_num}}";
-          document.sub_round_slug = "{{clr_round.sub_round_slug}}";
-          document.customer_name = "{{clr_round.customer_name}}";
-        {% else %}
-          delete document.round_num;
-          delete document.customer_name;
-          delete document.clr_round_pk;
-          delete document.sub_round_slug;
-        {% endif %}
-        let base_style = {
-            bg: '/static/v2/images/bg/{{styles.bg}}',
-            size: "{{styles.bg_size}}",
-            color: "{{styles.bg_color}}",
-            background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
-          };
-  
-        document.all_type_styles = {% if all_styles %} {{ all_styles|safe }} {% else %} [] {% endif %};
-  
-        document.all_routing_policies = {% if all_routing_policies %} {{ all_routing_policies | safe}} {% else %} [] {% endif %};
-        document.all_routing_policies.push(base_style);
-  
-        {% if grant_bg %}
-          document.current_style = {
-            banner_image: "{{ grant_bg.banner_image }}",
-            background_image: " url('{{background_image }}')",
-            inline_css: "{{ inline_css }}"
-          }
-        {% else %}
-          document.current_style = base_style
-        {% endif %}
-  
-      </script>
-      {% include 'shared/activity_scripts.html' %}
-  
-  
-      <script src="{% static "v2/js/abi.js" %}"></script>
-      <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-      <script src="{% static "v2/js/grants/components.js" %}"></script>
-      <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
-      <script src="{% static "v2/js/grants/index.js" %}"></script>
-      <script src="{% static "v2/js/grants/funding.js" %}"></script>
     </div>
+    {% include 'grants/components/collection.html' %}
+    {% include 'grants/detail/template-grant-details.html' %}
   </div>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+  {% include 'shared/footer.html' %}
+  {% include 'grants/shared/shared_scripts.html' %}
+  {{collections|json_script:"collections-object"}}
+  {{grant_bg.inline_css|json_script:"inline_css"}}
+  <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+  <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
+
+  <script>
+    document.current_type = "{{ type|default:'all' }}";
+    document.selected_category = "{{ selected_category }}";
+    document.network = "{{ network}}";
+    document.keyword = "{{ keyword }}";
+    document.following = {{ following|yesno:'true,false' }};
+    document.idle_grants = {{ idle_grants|yesno:'true,false' }};
+    document.show_contributions = {{ show_contributions|yesno:'true,false' }};
+    document.featured = {{ featured|yesno:'true,false' }};
+    document.collection_id = {{ collection_id|default:'null' }};
+    document.collections = JSON.parse(document.getElementById('collections-object').textContent);
+    document.activePage = "{{ active }}";
+
+    {% if clr_round %}
+      document.clr_round_pk = "{{clr_round.pk}}";
+      document.round_num = "{{clr_round.round_num}}";
+      document.sub_round_slug = "{{clr_round.sub_round_slug}}";
+      document.customer_name = "{{clr_round.customer_name}}";
+    {% else %}
+      delete document.round_num;
+      delete document.customer_name;
+      delete document.clr_round_pk;
+      delete document.sub_round_slug;
+    {% endif %}
+    let base_style = {
+        bg: '/static/v2/images/bg/{{styles.bg}}',
+        size: "{{styles.bg_size}}",
+        color: "{{styles.bg_color}}",
+        background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
+      };
+
+    document.all_type_styles = {% if all_styles %} {{ all_styles|safe }} {% else %} [] {% endif %};
+
+    document.all_routing_policies = {% if all_routing_policies %} {{ all_routing_policies | safe}} {% else %} [] {% endif %};
+    // document.all_routing_policies.push(base_style);
+
+    {% if grant_bg %}
+    // {{styles}}
+      document.current_style = {
+        banner_image: "{{ grant_bg.banner_image }}",
+        background_image: " url('{{grant_bg.background_image }}')",
+        inline_css: JSON.parse(document.getElementById('inline_css').textContent)
+      }
+    {% else %}
+      document.current_style = base_style
+    {% endif %}
+
+  </script>
+  {% include 'shared/activity_scripts.html' %}
+
+
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/grants/components.js" %}"></script>
+  <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+  <script src="{% static "v2/js/grants/funding.js" %}"></script>
+  <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/contribution-trust-bonus.js" %}"></script>
+  <script src="{% static "v2/js/grants/grant-thanks-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
 </body>
 
 
