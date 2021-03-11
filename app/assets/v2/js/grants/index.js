@@ -537,8 +537,6 @@ if (document.getElementById('grants-showcase')) {
     async mounted() {
       let vm = this;
 
-      // Update localStorage with latest cart data. This ensures side cart always shows the correct grant info
-      await CartData.updateCart();
       this.fetchGrants(this.page);
 
     }
