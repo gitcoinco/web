@@ -84,6 +84,11 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.sybil_score = 0
         for subscription in instance.subscriptions.all():
             value_usdt = subscription.amount_per_period_usdt
+            if not value_usdt:
+                value_usdt = subscription.get_converted_amount(False)
+                subscription.amount_per_period_usdt = value_usdt
+                subscription.save()
+            value_usdt = subscription.amount_per_period_usdt
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
