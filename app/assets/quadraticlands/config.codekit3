@@ -1168,6 +1168,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/js/ql-web3.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 1,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/js/ql-web3-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/js/questCountdown-min.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1404,6 +1415,32 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/scss/css/content-proposals.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/dashboard/content-tx-error.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/content-tx-error.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/dashboard/content-tx-pending.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/scss/css/content-tx-pending.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0

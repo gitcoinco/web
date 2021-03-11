@@ -54,15 +54,48 @@
 
 				<div id="delegate_form">
 					<input id="delegate_input" type="text" placeholder="Paste Ethereum Address">
-					<a id="delegate_button" class="btn">Delegate</a>
+					<a id="delegate_button" class="btn disabled">Delegate</a>
 				</div>
-
 
 			</div>
 		</div>
 	</div>
 	
+
 </div>
+
+
+
+<!-- pending transaction -->
+
+<div id="tx_pending" class="section full hide">
+	<div class="content-tx-pending">
+		<div class="wrapper">
+			<div class="spinner">
+				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
+			</div>
+			<div>
+				<p>Delegation transaction pending, please wait. <span id="transaction_link_pending"></span></p>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<!-- pending transaction -->
+
+<div id="tx_error" class="section full hide">
+	<div class="content-tx-error">
+		<div class="wrapper">
+			<div class="text">
+				<p>Error : <span id="transaction_link_error"></span></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 
 
@@ -85,6 +118,17 @@ document.addEventListener("DOMContentLoaded",function(){
 	const txt_disable_delegate = document.getElementById("txt_disable_delegate")
 	const delegate_button = document.getElementById("delegate_button")
 	const delegate_input = document.getElementById("delegate_input")
+	
+
+	// validate delegate address input field > recolor delegate button
+	delegate_input.addEventListener("input", () => {
+		delegate_button.classList.add("disabled")
+		// check if this adress is a valid address
+		if (web3.utils.toChecksumAddress(delegate_input.value)){
+			delegate_button.classList.remove("disabled")
+		}
+	});
+
 
 	// defining enabled delegate button : web3 delegate(selectedAccount)
 	toggle_enabled.addEventListener("click", () => {
@@ -160,6 +204,48 @@ async function delegationInterface() {
     } catch(e) {
         console.log(e);
     }
+
+
+}
+
+
+
+
+// tx interface handling
+
+function updateInterface(status="pending", transactionHash="") {
+
+	blockExplorerLink = "https://rinkeby.etherscan.io/tx/";
+	blockExplorerName ="Etherscan";
+
+	tx_pending = document.getElementById("tx_pending")
+	tx_error = document.getElementById("tx_error")
+	transaction_link_pending = document.getElementById("transaction_link_pending")
+	transaction_link_error = document.getElementById("transaction_link_error")
+
+	if (status=="pending")
+	{
+		link = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>"
+		transaction_link_pending.innerHTML = link
+		transaction_link_error.innerHTML = link
+		
+		flashMessage("Transaction pending",5000);
+		governance.classList.add("hide")
+		tx_pending.classList.remove("hide")
+	}
+	
+	if (status=="success")
+	{
+		flashMessage("Transaction successfull",5000);
+		window.location = "/quadraticlands/dashboard";
+	}
+	
+	if (status=="error")
+	{
+		tx_pending.classList.add("hide")
+		tx_error.classList.remove("hide")
+		flashMessage("Transaction Error",3000);
+	}
 
 
 }

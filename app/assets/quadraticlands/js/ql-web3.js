@@ -70,18 +70,18 @@ async function setDelegateAddress(_delegateAddress, tokenAddress) {
                     .delegate(_delegateAddress)
                     .send({ from: selectedAccount, gasLimit: '300000' })
                     .on('transactionHash', async function(transactionHash) {
-                        //updateInterface('pending', transactionHash);
+                        updateInterface('pending', transactionHash);
                         console.debug("ON TRANSACTION HASH - PENDING", transactionHash);
                     })
                     .on('confirmation', (confirmationNumber) => {
                         console.debug("ON CONFIRMATION");
                         if (confirmationNumber >= 1) {
-                            //updateInterface('success');
+                            updateInterface('success');
                             console.debug("ON CONFIRMATION >=1");
                         }
                     })
                     .on('error', (error) => { 
-                        // updateInterface('error');
+                        updateInterface('error');
                         console.error("Error setting delegate address:", error);
                     });
             }
