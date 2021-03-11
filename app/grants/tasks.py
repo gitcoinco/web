@@ -58,9 +58,13 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     if do_calc:
         print("last_calc_time_contributor_counts")
         instance.contribution_count = instance.get_contribution_count
+        print(lineno(), round(time.time(), 2))
         instance.contributor_count = instance.get_contributor_count()
+        print(lineno(), round(time.time(), 2))
         instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
+        print(lineno(), round(time.time(), 2))
         instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+        print(lineno(), round(time.time(), 2))
         instance.metadata['last_calc_time_contributor_counts'] = time.time()
 
     # cheap calcs
@@ -79,7 +83,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.monthly_amount_subscribed = 0
         instance.sybil_score = 0
         for subscription in instance.subscriptions.all():
-            value_usdt = subscription.get_converted_amount(False)
+            value_usdt = subscription.amount_per_period_usdt
+            if not value_usdt:
+                value_usdt = subscription.get_converted_amount(False)
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
@@ -87,9 +93,6 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                         instance.amount_received_in_round += Decimal(value_usdt)
                         instance.sybil_score += subscription.contributor_profile.sybil_score
 
-            if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-                if subscription.num_tx_approved != 1:
-                    instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         instance.metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
 
     from django.contrib.contenttypes.models import ContentType
