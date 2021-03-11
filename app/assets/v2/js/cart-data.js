@@ -9,9 +9,9 @@ class CartData {
   }
 
   static cartContainsGrantWithId(grantId) {
-    grantId = Number(grantId);
+    grantId = String(grantId);
     const cart = this.loadCart();
-    const idList = cart.map((grant) => Number(grant.grant_id));
+    const idList = cart.map((grant) => String(grant.grant_id));
 
     return idList.includes(grantId);
   }
@@ -50,8 +50,8 @@ class CartData {
   }
 
   static addToCart(grantData, no_report) {
-    // Enforce that grant ID is a number, since backend returns it as a number
-    grantData.grant_id = Number(grantData.grant_id);
+    // Enforce that grant ID is a string, since currently grant IDs are stored as strings in the cart
+    grantData.grant_id = String(grantData.grant_id);
     
     // Return if grant is already in cart
     if (this.cartContainsGrantWithId(grantData.grant_id)) {
@@ -176,7 +176,7 @@ class CartData {
   }
 
   static removeIdFromCart(grantId) {
-    grantId = Number(grantId);
+    grantId = String(grantId);
 
     let cartList = this.loadCart();
 
@@ -270,7 +270,7 @@ class CartData {
     // Update grant info with latest data
     cartData.forEach((grant, index) => {
       // Find the latestGrantsData entry with the same grant ID as this grant
-      const grantIndex = latestGrantsData.findIndex((item) => Number(item.id) === Number(grant.grant_id));
+      const grantIndex = latestGrantsData.findIndex((item) => String(item.id) === String(grant.grant_id));
       const latestGrantData = latestGrantsData[grantIndex];
 
       // Update with the grant data from server
@@ -282,7 +282,7 @@ class CartData {
       cartData[index].grant_contract_address = latestGrantData.contract_address;
       cartData[index].grant_contract_version = latestGrantData.contract_version;
       cartData[index].grant_donation_num_rounds = 1; // always 1, since recurring contributions are not supported
-      cartData[index].grant_id = Number(latestGrantData.id); // should already be a number, so this is an extra safety check
+      cartData[index].grant_id = String(latestGrantData.id); // IDs are saved as strings in localStorage, so we cast to string here
       cartData[index].grant_image_css = latestGrantData.image_css;
       cartData[index].grant_logo = latestGrantData.logo_url;
       cartData[index].grant_slug = latestGrantData.slug;
