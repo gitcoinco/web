@@ -17,6 +17,7 @@ from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
+from django.utils import timezone
 
 logger = get_task_logger(__name__)
 
