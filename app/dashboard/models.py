@@ -1427,6 +1427,7 @@ class BountyFulfillment(SuperModel):
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
+        ('NERVOS', 'NERVOS'),
         ('OTHERS', 'OTHERS')
     ]
 

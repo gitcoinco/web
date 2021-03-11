@@ -142,6 +142,10 @@ Vue.mixin({
           url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
+        case 'CKB':
+          url = `https://explorer.nervos.org/transaction/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -194,6 +198,10 @@ Vue.mixin({
         case 'RDOC':
         case 'DOC':
           url = `https://explorer.rsk.co/address/${address}`;
+          break;
+
+        case 'CKB':
+          url = `https://explorer.nervos.org/address/${address}`;
           break;
 
         default:
@@ -415,6 +423,10 @@ Vue.mixin({
         case 'DOC':
         case 'RDOC':
           tenant = 'RSK';
+          break;
+
+        case 'CKB':
+          tenant = 'NERVOS';
           break;
 
         default:

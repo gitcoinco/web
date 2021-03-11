@@ -44,6 +44,7 @@ from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
+from dashboard.sync.nervos import sync_nervos_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
 from dashboard.sync.zil import sync_zil_payout
@@ -540,7 +541,10 @@ def sync_payout(fulfillment):
         token_name = fulfillment.bounty.token_name
 
     if fulfillment.payout_type == 'web3_modal':
-        sync_eth_payout(fulfillment)
+        if token_name = 'ETH':
+            sync_eth_payout(fulfillment)
+        elif token_name == 'CKB':
+            sync_nervos_payout(fulfillment)
 
     elif fulfillment.payout_type == 'qr':
         if token_name == 'ETC':
