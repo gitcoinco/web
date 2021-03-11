@@ -79,6 +79,13 @@ class Command(BaseCommand):
             upcoming_score += num * upcoming_weight
             gem_score += num * gem_weight
 
+            # sandbag grants that already have a high match estimate
+            upcoming_weight = 10
+            gem_weight = 300
+
+            upcoming_score += grant.clr_match_estimate_this_round * upcoming_weight * -1
+            gem_score += grant.clr_match_estimate_this_round * gem_weight * -1
+
             # sandbag grants that are not new
             upcoming_weight = 1000
             gem_weight = 100000
