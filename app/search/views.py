@@ -9,6 +9,7 @@ from django.shortcuts import render
 from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+
 from search.models import SearchResult, search
 
 logger = logging.getLogger(__name__)
