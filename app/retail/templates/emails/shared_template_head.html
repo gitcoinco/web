@@ -14,11 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
-{% compress css inline email_head %}
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-{% endcompress %}
+{% load i18n static %}
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap" rel="stylesheet" data-premailer="ignore">
