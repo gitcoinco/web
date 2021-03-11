@@ -75,7 +75,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # sybil amount + amount received amount
     print(lineno(), round(time.time(), 2))
-    do_calc = (time.time() - (400 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
+    do_calc = (time.time() - (800 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
     if do_calc:
         print("last_calc_time_sybil_and_contrib_amounts")
         instance.amount_received_in_round = 0
@@ -83,13 +83,18 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.monthly_amount_subscribed = 0
         instance.sybil_score = 0
         for subscription in instance.subscriptions.all():
+            
             value_usdt = subscription.amount_per_period_usdt
-            if not value_usdt:
+            
+            # recalculate usdt value
+            created_recently = subscription.created_on > (timezone.now() - timezone.timedelta(days=10))
+            if not value_usdt and created_recently:
                 value_usdt = subscription.get_converted_amount(False)
                 if value_usdt:
                     subscription.amount_per_period_usdt = value_usdt
                     subscription.save()
-            value_usdt = subscription.amount_per_period_usdt
+
+            # calcualte usdt value in aggregate
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
