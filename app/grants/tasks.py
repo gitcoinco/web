@@ -22,7 +22,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-CLR_START_DATE = dt.datetime(2020, 12, 1, 15, 0) # TODO:SELF-SERVICE
+CLR_START_DATE = dt.datetime(2021, 3, 10, 1, 0) # TODO:SELF-SERVICE
 
 
 def lineno():
@@ -31,6 +31,10 @@ def lineno():
 
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
 
     # KO hack 12/14/2020
     # this will prevent tasks on grants that have been issued from an app server from being immediately 
@@ -50,7 +54,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
     
     # contributor counts
-    do_calc = (time.time() - (900)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
+    do_calc = (time.time() - (2 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
     if do_calc:
         print("last_calc_time_contributor_counts")
         instance.contribution_count = instance.get_contribution_count
@@ -250,7 +254,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     comment=comment)
 
         # emails to grant owner
-        new_supporter(grant, subscription)
+        try:
+            new_supporter(grant, subscription)
+        except Exception as e:
+            logger.exception(e)
 
         # emails to contributor
         if send_supporter_mail:
@@ -258,7 +265,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                 'grant': grant,
                 'subscription': subscription
             }]
-            thank_you_for_supporting(grants_with_subscription)
+            try:
+                thank_you_for_supporting(grants_with_subscription)
+            except Exception as e:
+                logger.exception(e)
 
         update_grant_metadata.delay(grant_id)
         return grant, subscription
@@ -284,7 +294,10 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
-    thank_you_for_supporting(grants_with_subscription)
+    try:
+        thank_you_for_supporting(grants_with_subscription)
+    except Exception as e:
+        logger.exception(e)
 
 
 @app.shared_task(bind=True, max_retries=1)

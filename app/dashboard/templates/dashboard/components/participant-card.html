@@ -16,8 +16,8 @@
 
 {% endcomment %}
 {% load i18n static %}
-<div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
-  <div class="d-flex flex-column py-1 bg-lightblue">
+<div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key="user.id">
+  <div class="d-flex flex-column py-1">
     <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
     <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
       <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
@@ -49,7 +49,7 @@
     <template v-if="user.is_org">
       <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
       </div>
-      <div class="text-left">
+      <div class="text-center">
         <p class="mb-0">
           <i class="fas fa-user font-smaller-4 mr-1"></i>
           <b>[[ user.follower_count ]]</b> followers
@@ -86,7 +86,7 @@
           <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
         </a>
       </div>
-      <div class="text-left">
+      <div class="text-center">
         <p class="mb-0">
           <i class="fas fa-user font-smaller-4 mr-1"></i>
           <b>[[ user.follower_count ]]</b> followers

@@ -132,7 +132,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
     # debug logs
-    logger.info(f"-- Sending Mail '{subject}' to {to_email}")
+    logger.info(f"-- Sending Mail '{subject}' to {to_email.email}")
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:

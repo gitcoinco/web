@@ -36,7 +36,7 @@ class SilentFileStorage(S3ManifestStaticStorage, S3StaticStorage):
         # Record the clean file content (pre gzip)
         file_content = content.file
         # Save remote copy to S3
-        super(SilentFileStorage, self).save(name, content)    
+        super(SilentFileStorage, self).save(name, content)
         # Only save files that are part of the compress blocks locally
         if ".scss" in name or ".js" in name or ".css" in name:
             # restore the clean file_content
@@ -52,13 +52,11 @@ class SilentFileStorage(S3ManifestStaticStorage, S3StaticStorage):
         # Check file exists on S3
         exists = super(SilentFileStorage, self).exists(name)
         # This is a hack to get a status report during S3ManifestStaticStorage._postProcess
-        print("INFO " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + 
-            " - Checking for matching file hash on S3 - " + name + ": " + (
-                "Skipping based on matching file hashes" if exists else "Hashes did not match"
-            )
+        print(
+            "INFO " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " - Checking for matching file hash on S3 - " +
+            name + ": " + ("Skipping based on matching file hashes" if exists else "Hashes did not match")
         )
         return exists
-
 
     def url(self, name, force=True):
         """Handle catching bad URLs and return the name if route is unavailable."""

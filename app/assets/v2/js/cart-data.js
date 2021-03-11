@@ -17,7 +17,8 @@ class CartData {
   }
 
   static share_url(title) {
-    const donations = this.loadCart();
+    const checkedOut = this.loadCheckedOut();
+    const donations = (checkedOut.length > 0 ? checkedOut : this.loadCart());
     let bulk_add_cart = `${window.location.host}/grants/cart/bulk-add/`;
     let network = document.web3network;
 
@@ -175,7 +176,7 @@ class CartData {
   }
 
   static removeIdFromCart(grantId) {
-    grantId = String(grantId);
+    grantId = Number(grantId);
 
     let cartList = this.loadCart();
 
@@ -312,5 +313,29 @@ class CartData {
     // Save the updated cart data to local storage and return it
     this.setCart(cartData);
     return cartData;
+  }
+
+  static loadCheckedOut() {
+    const checkedOutList = localStorage.getItem('contributions_were_successful');
+
+    if (!checkedOutList) {
+      return [];
+    }
+
+    const parsedCheckout = JSON.parse(checkedOutList);
+
+    if (!Array.isArray(parsedCheckout)) {
+      return [];
+    }
+
+    return parsedCheckout;
+  }
+
+  static setCheckedOut(list) {
+    localStorage.setItem('contributions_were_successful', JSON.stringify(list));
+  }
+
+  static clearCheckedOut() {
+    localStorage.removeItem('contributions_were_successful');
   }
 }
