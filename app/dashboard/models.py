@@ -1492,7 +1492,7 @@ class BountyFulfillment(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
-        token = token_by_name(self.token_name)
+        token = token_by_name(self.token_name, self.bounty.network)
         decimals = token['decimals']
         amount = self.payout_amount if self.payout_amount else 0
         return float(amount) / 10**decimals

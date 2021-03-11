@@ -38,6 +38,7 @@ def setup_bounties():
             title='foo',
             value_in_token=3,
             token_name='USDT',
+            network="rinkeby",
             web3_created=timezone.now() - timedelta(days=7),
             github_url='https://github.com/oogetyboogety/gitcointestproject/issues/28',
             token_address='0x0',
@@ -60,6 +61,8 @@ def setup_bounties():
         fulfiller_address='0x0000000000000000000000000000000000000000',
         accepted=True,
         bounty=Bounty.objects.first(),
+        token_name="USDT",
+        payout_amount=1.5,
         profile=User.objects.filter(username='user1').first().profile
     )
 
@@ -67,12 +70,16 @@ def setup_bounties():
         fulfiller_address='0x0000000000000000000000000000000000000000',
         accepted=True,
         bounty=Bounty.objects.last(),
+        token_name="USDT",
+        payout_amount=1.5,
         profile=User.objects.last().profile
     )
 
 
 class UsersListTest(TestCase):
     """Define tests for the user list."""
+
+    fixtures = ['tokens.json']
 
     def setUp(self):
         self.request = RequestFactory()

@@ -85,7 +85,7 @@ class TestAssembleLeaderboards(TestCase):
             raw_data={},
             idx_status='submitted',
             current_bounty=True,
-            network='mainnet',
+            network='rinkeby',
             metadata={"issueKeywords": "Python, Shell"},
         )
 
@@ -94,6 +94,8 @@ class TestAssembleLeaderboards(TestCase):
             bounty=self.bounty,
             accepted=True,
             profile=self.bounty_earner_profile,
+            token_name="USDT",
+            payout_amount=3,
         )
 
         self.tip_value = 7
@@ -127,7 +129,7 @@ class TestAssembleLeaderboards(TestCase):
             username=self.tip_earner_handle,
             from_username=self.tip_payer_handle,
             github_url='https://github.com/gitcoinco/web',
-            network='mainnet',
+            network='rinkeby',
             expires_date=datetime.now(UTC) + timedelta(days=1),
             tokenAddress='0x0000000000000000000000000000000000000000',
             txid='123',
