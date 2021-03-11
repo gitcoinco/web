@@ -1453,7 +1453,7 @@ def tokens(request):
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
 
-@cached_view(timeout=60)
+# @cached_view(timeout=60)
 def json_tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
