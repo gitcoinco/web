@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
             # contributions last day
             upcoming_weight = 100
-            gem_weight = 10000
+            gem_weight = 100000
 
             then = timezone.now() - timezone.timedelta(days=1)
             num = grant.get_contributor_count(then, True)
@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
             # contributions 3 day
             upcoming_weight = 50
-            gem_weight = 5000
+            gem_weight = 50000
 
             then = timezone.now() - timezone.timedelta(days=3)
             num = grant.get_contributor_count(then, True)
@@ -80,8 +80,8 @@ class Command(BaseCommand):
             gem_score += num * gem_weight
 
             # sandbag grants that are not new
-            upcoming_weight = 10
-            gem_weight = 1
+            upcoming_weight = 1000
+            gem_weight = 100000
 
             how_old_days = (grant.created_on - timezone.now()).days
 
@@ -90,8 +90,8 @@ class Command(BaseCommand):
 
             # sandbag admin grants
             if grant.pk == 86:
-                upcoming_score += -1000000
-                gem_score += -1000000
+                upcoming_score += -1000000000000
+                gem_score += -1000000000000
 
             # save to db
             grant.metadata['upcoming'] = int(upcoming_score)
