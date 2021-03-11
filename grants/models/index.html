@@ -2604,8 +2604,12 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.cancel_tx_id">cancel_tx_id</h3>
+<h3 id="grants.models.Grant.calc_clr_round_label">calc_clr_round_label</h3>
 
+<p>Generates CLR rounds display text seperated by comma
+<h3 id="grants.models.Grant.calc_clr_round_nums">calc_clr_round_nums</h3></p>
+<p>Generates CLR rounds sub_round_slug seperated by comma
+<h3 id="grants.models.Grant.cancel_tx_id">cancel_tx_id</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="grants.models.Grant.cart_actions">cart_actions</h3>
@@ -4108,7 +4112,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">GrantCollection(self, *args, **kwargs)
 </code></pre>
 
-<p>GrantCollection(id, created_on, modified_on, profile, title, description, cover, hidden, cache, featured)
+<p>GrantCollection(id, created_on, modified_on, profile, title, description, cover, hidden, cache, featured, shuffle_rank)
 <h3 id="grants.models.GrantCollection.cache">cache</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -4186,6 +4190,10 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="grants.models.GrantCollection.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantCollection.shuffle_rank">shuffle_rank</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
