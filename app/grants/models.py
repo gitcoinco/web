@@ -739,11 +739,8 @@ class Grant(SuperModel):
     @property
     def get_contribution_count(self):
         num = 0
-        for sub in self.subscriptions.filter(is_postive_vote=True):
-            for contrib in sub.subscription_contribution.filter(success=True):
-                num += 1
-        for pf in self.phantom_funding.all():
-            num+=1
+        num += self.subscriptions.filter(is_postive_vote=True, subscription_contribution__success=True).count()
+        num += self.phantom_funding.all().count()
         return num
 
     @property
@@ -759,14 +756,10 @@ class Grant(SuperModel):
     def get_contributor_count(self, since=None, is_postive_vote=True):
         if not since:
             since = timezone.datetime(1990, 1, 1)
-        contributors = []
-        for sub in self.subscriptions.filter(is_postive_vote=is_postive_vote):
-            for contrib in sub.subscription_contribution.filter(success=True, created_on__gt=since):
-                contributors.append(contrib.subscription.contributor_profile.handle)
+        num = self.subscriptions.filter(is_postive_vote=is_postive_vote, subscription_contribution__success=True, created_on__gt=since).distinct('contributor_profile').count()
         if is_postive_vote:
-            for pf in self.phantom_funding.filter(created_on__gt=since).all():
-                contributors.append(pf.profile.handle)
-        return len(set(contributors))
+            num += self.phantom_funding.filter(created_on__gt=since).exclude(profile__in=grant.subscriptions.values_list('contributor_profile')).all().count()
+        return num
 
 
     @property
