@@ -1454,7 +1454,6 @@ def tokens(request):
 
 
 # @cached_view(timeout=60)
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def json_tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']

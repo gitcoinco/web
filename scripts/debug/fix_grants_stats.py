@@ -3,7 +3,6 @@
 
 
 from django.utils import timezone
-
 import pytz
 from grants.models import Grant
 from marketing.models import Stat

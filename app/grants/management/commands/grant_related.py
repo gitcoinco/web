@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import random
-import time
 
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from grants.models import Grant
+from django.utils import timezone
+import time
 
 
 class Command(BaseCommand):
