@@ -132,7 +132,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
     # debug logs
-    logger.info(f"-- Sending Mail '{subject}' to {to_email}")
+    logger.info(f"-- Sending Mail '{subject}' to {to_email.email}")
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
@@ -310,7 +310,10 @@ def new_supporter(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     if not to_email:
-        to_email = grant.admin_profile.user.email
+        if grant.admin_profile:
+            to_email = grant.admin_profile.email
+        else:
+            return
     cur_language = translation.get_language()
 
     try:

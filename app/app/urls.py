@@ -55,6 +55,7 @@ import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
+from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -120,6 +121,9 @@ urlpatterns = [
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
 
+
+    path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
+
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
     url('mailing_list/hunters/', dashboard.views.hunters_mailing_list),
@@ -160,11 +164,7 @@ urlpatterns = [
         dashboard.views.authenticate_idena,
         name='authenticate_idena'
     ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
-        dashboard.views.logout_idena,
-        name='logout_idena'
-    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/logout_idena', dashboard.views.logout_idena, name='logout_idena'),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
         dashboard.views.recheck_idena_status,

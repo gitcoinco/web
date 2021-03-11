@@ -415,7 +415,7 @@
     <div class="content__main min-vh-100 d-md-flex flex-column">
 
       {% include 'shared/tag_manager_2.html' %}
-      <div class="container-fluid header sticky-top dash">
+      <div class="header sticky-top dash">
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'home/nav.html' %}
       </div>
@@ -637,8 +637,8 @@
                               <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
                             </div>
                             <div class="grid-4">
-                              <div v-for="user in users" class="card card-user shadow-sm border-0" :key=`"user-${user.handle}"`>
-                                <div class="d-flex flex-column py-1 bg-lightblue">
+                              <div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key=`"user-${user.handle}"`>
+                                <div class="d-flex flex-column py-1">
                                   <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                                   <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
                                     <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
@@ -676,10 +676,10 @@
                                   <template v-if="user.is_org">
                                     <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
                                     </div>
-                                    <div class="text-left">
+                                    <div class="text-center">
                                       <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
                                     </div>
-                                    <div class="text-left">
+                                    <div class="text-center">
                                       <p class="mb-0">
                                         <i class="fas fa-user font-smaller-4 mr-1"></i>
                                         <b>[[ user.follower_count ]]</b> followers
@@ -715,7 +715,7 @@
                                         <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
                                       </a>
                                     </div>
-                                    <div class="text-left">
+                                    <div class="text-center">
                                       <p class="mb-0">
                                         <i class="fas fa-user font-smaller-4 mr-1"></i>
                                         <b>[[ user.follower_count ]]</b> followers
@@ -739,7 +739,7 @@
 
                                   <div class="text-center mt-2">
 
-                                    <b-button v-bind:class="[user.is_following ? 'btn-outline-secondary' : 'btn-primary', 'btn btn-sm btn-block']" @click="joinTribe(user, $event)">
+                                    <b-button variant="noop" v-bind:class="[user.is_following ? 'btn-success' : 'btn-primary', 'btn btn-sm btn-block']" @click="joinTribe(user, $event)">
                                       <i v-bind:class="[user.is_following ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> [[ user.is_following ? "following" : "follow" ]]
                                     </b-button>
                                   </div>
@@ -1311,7 +1311,7 @@
                             </div>
 
                             <p class="mb-0 mt-1">
-                              <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-secondary' : 'btn-primary']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
+                              <b-button @click="followTribe(tribe.handle, $event)" variant="noop" v-bind:class="[is_on_tribe ? 'btn-success' : 'btn-primary']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
                               <span class="m-0 p-0">|</span>
 
@@ -1375,14 +1375,14 @@
                       </b-col>
                     <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
                     <b-col>
-                      <b-button v-if="!is_my_org && is_on_tribe" v-b-modal.suggest-bounty-modal class="btn btn-block px-3 btn-primary d-none d-md-inline-block">
+                      <b-button v-if="!is_my_org && is_on_tribe" variant="primary" v-b-modal.suggest-bounty-modal class="btn btn-block px-3 btn-primary d-none d-md-inline-block">
                         {% trans "Suggest a Bounty" %}
                       </b-button>
-                      <div v-if="tribe.data && tribe.data.bio" class="col-12 d-md-none profile-header__bio my-3">
+                      <div v-if="tribe.data && tribe.data.bio" variant="primary" class="col-12 d-md-none profile-header__bio my-3">
                         [[ tribe.data.bio ]]
                       </div>
                       {%  if user.is_authenticated %}
-                      <b-button @click="followTribe(tribe.handle, $event)"  v-bind:class="[is_on_tribe ? 'd-none' : 'btn-primary']" class="d-md-none mt-2 col-12 btn btn-primary" >[[ is_on_tribe ? "unfollow" : "follow" ]]</b-button>
+                      <b-button @click="followTribe(tribe.handle, $event)" variant="noop" v-bind:class="[is_on_tribe ? 'btn-success' : 'btn-primary']" class="d-md-none mt-2 col-12 btn" >[[ is_on_tribe ? "unfollow" : "follow" ]]</b-button>
                       {% endif %}
                     </b-col>
 
@@ -1420,8 +1420,8 @@
               </div>
             </form>
             <template v-slot:modal-footer>
-              <b-button class="btn btn-warning btn-sm" @click="$bvModal.hide('change-tribe-header')">Cancel</b-button>
-              <b-button class="btn btn-primary btn-sm" @click.prevent="updateTribe();">Save</b-button>
+              <b-button variant="danger" class="btn btn-danger btn-sm" @click="$bvModal.hide('change-tribe-header')">Cancel</b-button>
+              <b-button variant="primary" class="btn btn-primary btn-sm" @click.prevent="updateTribe();">Save</b-button>
             </template>
           </b-modal>
           <b-modal size="lg" v-if="!is_my_org" @hide="resetBountySuggestion" @close="resetBountySuggestion" @cancel="resetBountySuggestion"  hide-backdrop content-class="shadow" id="suggest-bounty-modal" tabindex="-1" role="dialog" aria-labelledby="suggestBountyLabel" aria-hidden="true">
@@ -1467,10 +1467,10 @@
               </div>
             </div>
             <template v-slot:modal-footer>
-              <b-button class="btn btn-warning btn-sm" @click="$bvModal.hide('suggest-bounty-modal')">Cancel</b-button>
-              <b-button class="btn btn-primary btn-sm" @click.prevent="suggestBounty();">
+              <b-button variant="danger" class="btn btn-danger btn-sm" @click="$bvModal.hide('suggest-bounty-modal')">Cancel</b-button>
+              <b-button variant="primary" class="btn btn-primary btn-sm" @click.prevent="suggestBounty();">
                 <i class="far fa-arrow-alt-circle-up mr-1"></i>
-                  <span class="font-weight-semibold">{% trans "Suggest Bounty"%}</span>
+                  <span>{% trans "Suggest Bounty"%}</span>
               </b-button>
             </template>
           </b-modal>
