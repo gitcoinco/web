@@ -3404,8 +3404,7 @@ def ingest_contributions(request):
     ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
 
     # Setup web3
-    PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
-    w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+    w3 = get_web3(network)
 
     def verify_signature(signature, message, expected_address):
         message_hash = defunct_hash_message(text=message)
