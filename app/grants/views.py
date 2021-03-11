@@ -620,12 +620,6 @@ def get_grants(request):
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
     sort = request.GET.get('sort_option', 'weighted_shuffle')
-    if (
-        request.user.is_authenticated and
-        request.user.profile.pk % 2 == 1 and
-        sort == 'weighted_shuffle'
-    ):
-        sort = 'random_shuffle'
 
     clr_round = None
     try:
