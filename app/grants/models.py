@@ -758,7 +758,7 @@ class Grant(SuperModel):
             since = timezone.datetime(1990, 1, 1)
         num = self.subscriptions.filter(is_postive_vote=is_postive_vote, subscription_contribution__success=True, created_on__gt=since).distinct('contributor_profile').count()
         if is_postive_vote:
-            num += self.phantom_funding.filter(created_on__gt=since).exclude(profile__in=grant.subscriptions.values_list('contributor_profile')).all().count()
+            num += self.phantom_funding.filter(created_on__gt=since).exclude(profile__in=self.subscriptions.values_list('contributor_profile')).all().count()
         return num
 
 
