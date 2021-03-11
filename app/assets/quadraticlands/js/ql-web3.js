@@ -55,3 +55,39 @@ async function getPriorVotes(tokenAddress, account, block_number) {
     }
     return past_votes;
 }
+
+
+/**
+*  * Sets delegate address 
+*  * @param string 
+*  */
+async function setDelegateAddress(_delegateAddress, tokenAddress) {
+        // Get GTC Token contract instance
+        let GTC = new web3.eth.Contract(gtc_token_abi, tokenAddress);
+        try {
+            const setDelegate = () => {
+                GTC.methods
+                    .delegate(_delegateAddress)
+                    .send({ from: selectedAccount, gasLimit: '300000' })
+                    .on('transactionHash', async function(transactionHash) {
+                        //updateInterface('pending', transactionHash);
+                        console.debug("ON TRANSACTION HASH - PENDING", transactionHash);
+                    })
+                    .on('confirmation', (confirmationNumber) => {
+                        console.debug("ON CONFIRMATION");
+                        if (confirmationNumber >= 1) {
+                            //updateInterface('success');
+                            console.debug("ON CONFIRMATION >=1");
+                        }
+                    })
+                    .on('error', (error) => { 
+                        // updateInterface('error');
+                        console.error("Error setting delegate address:", error);
+                    });
+            }
+            setDelegate();
+
+        } catch {
+            console.error("Error setting delegate address!")
+        }
+}    
