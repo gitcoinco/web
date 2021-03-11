@@ -32,22 +32,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # save related addresses
-	    # related = same contirbutor, same cart
-	    grants = Grant.objects.filter(active=True).order_by('-contributor_count')
-	    for instance in grants:
-	    	pk = instance.pk
-	    	print(pk)
-	        related = {}
-	        for subscription in instance.subscriptions.all():
-	            _from = subscription.created_on - timezone.timedelta(hours=1)
-	            _to = subscription.created_on + timezone.timedelta(hours=1)
-	            profile = subscription.contributor_profile
-	            for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=grant_id):
-	                key = _subs.grant.pk
-	                if key not in related.keys():
-	                    related[key] = 0
-	                related[key] += 1
-	        instance = Grant.objects.get(pk=pk)
-	        instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
-	        instance.metadata['last_calc_time_related'] = time.time()
-	        instance.save()
+        # related = same contirbutor, same cart
+        grants = Grant.objects.filter(active=True).order_by('-contributor_count')
+        for instance in grants:
+            pk = instance.pk
+            print(pk)
+            related = {}
+            for subscription in instance.subscriptions.all():
+                _from = subscription.created_on - timezone.timedelta(hours=1)
+                _to = subscription.created_on + timezone.timedelta(hours=1)
+                profile = subscription.contributor_profile
+                for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=pk):
+                    key = _subs.grant.pk
+                    if key not in related.keys():
+                        related[key] = 0
+                    related[key] += 1
+            instance = Grant.objects.get(pk=pk)
+            instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
+            instance.metadata['last_calc_time_related'] = time.time()
+            instance.save()
