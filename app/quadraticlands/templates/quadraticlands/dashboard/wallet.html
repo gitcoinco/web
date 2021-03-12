@@ -14,7 +14,19 @@
 	<div class="content">
 		<div class="content-wallet">
 			<div class="wrapper">
-				<div  class="amount"><span id="dashboard_wallet_balance">0</span><span> GTC</span></div>		
+
+				<div class="logo">
+					<img src="/static/quadraticlands/images/gtctoken_coin.svg" >
+				</div>
+
+				<div class="balance">
+					<span id="dashboard_wallet_token_balance"></span><span id="dashboard_wallet_token_symbol"></span>
+				</div>
+
+				<div class="statistics">
+					<span>+400000 GTC Voting Power from 32 Delegators</span>
+				</div>
+		
 			</div>
 		</div>
 	</div>
@@ -32,7 +44,8 @@ document.addEventListener("DOMContentLoaded",function(){
 	document.addEventListener("dataWalletReady", walletInterface);
 
 	const dashboard_wallet_address = document.getElementById("dashboard_wallet_address")
-	const dashboard_wallet_balance = document.getElementById("dashboard_wallet_balance")
+	const dashboard_wallet_token_balance = document.getElementById("dashboard_wallet_token_balance")
+	const dashboard_wallet_token_symbol = document.getElementById("dashboard_wallet_token_symbol")
 
 });
 
@@ -42,7 +55,8 @@ async function walletInterface() {
 	try {
 
         let balance = await getTokenBalances(gtc_address())
-        dashboard_wallet_balance.innerHTML = balance.balance;
+        dashboard_wallet_token_balance.innerHTML = balance.balance;
+        dashboard_wallet_token_symbol.innerHTML = balance.symbol;
         dashboard_wallet_address.innerHTML = truncate(selectedAccount)
 
     } catch(e) {

@@ -4,18 +4,15 @@ section.dashboard{
 	grid-template-columns: 1fr 1fr;
 	margin: auto;
 	margin: 0em 1.5em;
-	grid-gap: 1em;
+	grid-gap: 2em;
 
 	.section{
-
 		background-color: var(--space_light);
 
 		&.full{
 			grid-column: 1 / span 2;
 		}
-
-
-
+		
 	}
 
 	.header{
