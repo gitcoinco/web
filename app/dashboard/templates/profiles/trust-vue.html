@@ -32,6 +32,8 @@
           :show-validation="visibleModal === 'ens-modal'"
           @modal-dismissed="hideModal()">
         </ens-verify-modal>
+        <duniter-verify-modal :show-validation="visibleModal === 'duniter-modal'" @modal-dismissed="hideModal()">
+        </duniter-verify-modal>
 
         <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
         The higher the Trust
@@ -140,7 +142,6 @@
 
           <active-trust-row-template
             icon-type="markup"
-<<<<<<< HEAD
             title="Verify With ENS"
             :match-percent=5
             :is-verified="'{{is_ens_verified}}' === 'True'"
@@ -153,7 +154,10 @@
             <template v-slot:description>
               Verify with your ENS domain.
             </template>
-=======
+          </active-trust-row-template>
+
+          <active-trust-row-template
+            icon-type="markup"
             title="Verify With Facebook"
             :match-percent=5
             :is-verified="'{{is_facebook_verified}}' === 'True'"
@@ -175,7 +179,6 @@
                 </form>
               </template>
             {% endif %}
->>>>>>> Elhamne/feature/facebook-integration
           </active-trust-row-template>
         </div>
 
@@ -220,7 +223,13 @@
               {% endif %}
             </template>
           </active-trust-row-template>
-
+          <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
+            title="Verify With Duniter" :match-percent=5 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
+            @verify-button-pressed="showModal('duniter-modal')">
+            <template v-slot:description>
+              Verify your Duniter Account
+            </template>
+          </active-trust-row-template>
         </div>
       </div>
     </active-trust-manager>
@@ -231,7 +240,6 @@
 
         {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" %}
         {% include "profiles/trust_soon_row.html" with service="Upala" %}
-        {% include "profiles/trust_soon_row.html" with service="Duniter" %}
         {% include "profiles/trust_soon_row.html" with service="Equality Protocol" %}
         {% include "profiles/trust_soon_row.html" with service="KYC" %}
         {% include "profiles/trust_soon_row.html" with service="PASS" %}

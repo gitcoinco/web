@@ -1,3 +1,4 @@
+
 Vue.component('sms-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
@@ -81,7 +82,6 @@ Vue.component('sms-verify-modal', {
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
                   </div>
                   <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
-
                   <input class="form-control" type="number" required v-model="code">
                   <div v-if="timeInterval > timePassed">
                     <span class="label-warning">Wait [[ timeInterval - timePassed ]] second before request another
@@ -383,7 +383,6 @@ Vue.component('poap-verify-modal', {
                         We want to verify your POAP badges. To do so, you must first connect with your preferred web3 account.
                         Then, we'll validate your account holds at least one POAP badge, and that it's been there for at least 15 days.
                       </p>
-
                       <div class="mt-2 mb-2">
                         <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="btn btn-primary mb-2" target="_blank">
                           Pull from Wallet
@@ -644,6 +643,114 @@ Vue.component('brightid-verify-modal', {
       let options = {hour: 'numeric', minute: 'numeric', dayPeriod: 'short'};
 
       return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
+    }
+  }
+});
+
+Vue.component('duniter-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      showValidation: false,
+      validationStep: 'validate-duniter',
+      validationError: '',
+      publicKey: ''
+    };
+  },
+  computed: {
+  },
+  props: {
+    showValidation: {
+      type: Boolean,
+      required: false,
+      'default': false
+    }
+  },
+  template: `<b-modal id="duniter-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+                <template v-slot:default="{ hide }">
+                  <div class="mx-5 mt-5 mb-4 text-center">
+                    <div class="mb-3">
+                      <h1 class="font-bigger-4 font-weight-bold">Verify your Duniter account</h1>
+                      <p>
+                        Duniter is a free software for free currencies: a P2P, <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of Trust</a> & <a href="https://en.wikipedia.org/wiki/Social_credit">Universal Dividend system.</a>
+                        <p class="mb-4">
+                          <a href="https://duniter.org/en/introduction/">Learn more.</a>
+                        </p>
+                      </p>
+                      <div>
+                        <h2 class="font-bigger-4 font-weight-bold"> You need to have these requirements:</h2>
+                        <ol>
+                          <li>let's check if there is already a record with your account.</li>
+                          <li>if there is a link to your gitcoin account in your Duniter record </li>
+                          <li>if you are is a qualified member</li>
+                        </ol>
+                         <p>read more about Web of <a href="https://en.wikipedia.org/wiki/Web_of_trust">trust</a></p>
+                      </div>
+                    </div>
+                    <div v-if="validationStep === 'validate-duniter' || validationStep == 'perform-validation'">
+                      <p class="mb-4">
+                        You fulfill all the requirements, if you just need to click on validate to confirm that your duniter account is valid
+                      </p>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'validate-duniter'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'validate-duniter'" type="grow"></b-spinner>
+                        Validate
+                      </b-button>
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
+                      <br />
+                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
+                        Go Back
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'validation-complete'">
+                      Your Duniter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                    </div>
+                  </div>
+                </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.showValidation = false;
+    },
+    clickedGoBack(event) {
+      event.preventDefault();
+      this.validationStep = 'validate-duniter';
+      this.validationError = '';
+    },
+    clickedValidate(event) {
+      event.preventDefault();
+
+      this.validationError = '';
+
+      this.validationStep = 'perform-validation';
+      this.getUserHandle();
+      this.verifyDuniter();
+    },
+    getUserHandle() {
+      this.githubHandle = trustHandle;
+    },
+    verifyDuniter() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+      const payload = JSON.stringify({
+        'gitcoin_handle': this.githubHandle
+      });
+      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_duniter`, 'POST', payload, headers);
+
+      $.when(verificationRequest).then(response => {
+        if (response.ok) {
+          this.validationStep = 'validation-complete';
+        } else {
+          this.validationError = response.msg;
+          this.validationStep = 'validate-duniter';
+        }
+
+      }).catch((_error) => {
+        this.validationError = 'There was an error; please try again later';
+        this.validationStep = 'validate-duniter';
+      });
     }
   }
 });

@@ -56,17 +56,22 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
+
+import asyncio
+import dateutil.parser
 import magic
 import pytz
 import requests
 import tweepy
 from ens.auto import ns
 from ens.utils import name_to_hash
+import asyncio
+import getpass
 
 from app.services import RedisService, TwilioService
 from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
-    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, ES_USER_ENDPOINT, BMAS_ENDPOINT, ES_CORE_ENDPOINT
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -150,6 +155,62 @@ confirm_time_minutes_target = 4
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+MODULE = "wot"
+
+CERTIFICATIONS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "pubkey": {"type": "string"},
+        "uid": {"type": "string"},
+        "isMember": {"type": "boolean"},
+        "certifications": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "pubkey": {"type": "string"},
+                    "uid": {"type": "string"},
+                    "cert_time": {
+                        "type": "object",
+                        "properties": {
+                            "block": {"type": "number"},
+                            "medianTime": {"type": "number"},
+                        },
+                        "required": ["block", "medianTime"],
+                    },
+                    "sigDate": {"type": "string"},
+                    "written": {
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "number": {"type": "number"},
+                                    "hash": {"type": "string"},
+                                },
+                                "required": ["number", "hash"],
+                            },
+                            {"type": "null"},
+                        ]
+                    },
+                    "isMember": {"type": "boolean"},
+                    "wasMember": {"type": "boolean"},
+                    "signature": {"type": "string"},
+                },
+                "required": [
+                    "pubkey",
+                    "uid",
+                    "cert_time",
+                    "sigDate",
+                    "written",
+                    "wasMember",
+                    "isMember",
+                    "signature",
+                ],
+            },
+        },
+    },
+    "required": ["pubkey", "uid", "isMember", "certifications"],
+}
 
 
 @protected_resource()
@@ -3207,6 +3268,137 @@ def verify_user_twitter(request, handle):
         'expected': expected_split
     })
 
+
+@login_required
+async def verify_user_duniter(request, handle):
+    """This function searches the database for the gitcoin link, from a verified duniter account.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    import asyncio
+    from duniterpy.api.client import Client, RESPONSE_AIOHTTP
+    from duniterpy.api import bma
+
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_duniter_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    gitcoin_handle = request_data.get('gitcoin_handle', '')
+    pubkey = request_data.get('publicKey', '')
+
+    if gitcoin_handle == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must include gitcoin_handle'
+        })
+
+    try:
+
+        #duniter client
+        client = Client(ES_USER_ENDPOINT)
+
+        # verify if there is account with same username on duniter
+        search_user_duniter_url = await client.get("user/profile/_search?q={0}".format(gitcoin_handle))
+        if search_user_duniter_url != 200:
+            #try search by publickey
+            search_user_duniter_url = await client.get("user/profile/{0}/_source".format(pubkey.strip(" \n")))
+
+        duniter_user_response = requests.get(search_user_duniter_url)
+
+        await client.close()
+
+        # search the user for their gitcoin link, if the search is successful I save the private key in the variable public_key_duniter
+        if duniter_user_response.status_code == 200:
+            duniter_user_json = duniter_user_response.json()
+            position = duniter_user_json.get('hits', {}).get('hits', {})
+            # I assume here that the most relevant account has the highest score
+            public_key_duniter = next(iter(position)).get('_id', {})
+
+            # checks uid equals gitcoin-username
+            client = Client(BMAS_ENDPOINT)
+            same_uid_url = await client(bma.wot.lookup, public_key_duniter)
+            res_uid = requests.get(same_uid_url)
+            uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
+
+            if uid_duniter != gitcoin_handle:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'Your gitcoin username must be the same as the duniter'
+                })
+
+            if not res_uid.status_code == 200:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'Your gitcoin username must be the same as the duniter'
+                })
+
+            # checks if the user has valid certificates and is a member
+            async def certifiers_of(client: client, search: str) -> dict:
+                """
+                GET UID/Public key certifiers
+                :param client: Client to connect to the api
+                :param search: UID or public key
+                :return:
+                """
+                return await client.get(
+                    MODULE + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
+                )
+
+            wot = certifiers_of(public_key_duniter)
+            res_wot = requests.get(wot)
+            if not res_wot.status_code == 200:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'You must be a certified duniter member'
+                })
+
+            elif res_wot.status_code == 200:
+                member_data = res_wot.json()
+                isVerified = member_data.get('isMember', {})
+                if not isVerified:
+                    return JsonResponse({
+                        'ok': False,
+                        'msg': f'You need 6 certificates to have your account valid'
+                    })
+
+
+        elif duniter_user_response.status_code != 200:
+            return JsonResponse({
+                'ok': False,
+                'msg': f'You need to add your gitcoin link to your duniter social links'
+            })
+
+
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, not working'
+        })
+
+    profile.is_duniter_verified = True
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': 'Your Duniter Qualified User Check was successful!'
+    })
+
+
+
 def connect_google():
     import urllib.parse
 
@@ -3219,12 +3411,6 @@ def connect_google():
 @login_required
 @require_POST
 def request_verify_google(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
 
     profile = profile_helper(handle, True)
     if profile.is_google_verified:
