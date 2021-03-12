@@ -308,7 +308,7 @@
       {% else %}
         {{row.humanized_activity_type }}
         {% if row.bounty %}
-          : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
+          : <a href="{{ row.bounty.url }}">{{ row.bounty.title | safe }}</a>
         {% endif %}
       {% endif %}
       </div>
@@ -525,7 +525,7 @@
   </div>
   {% if row.activity_type == 'hypercharge_bounty'%}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.bounty.url }}">
       <div class="col-12 col-md-2 text-center">
         {% if row.bounty.funding_organisation %}
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.funding_organisation %}">
@@ -554,7 +554,7 @@
   </div>
   {% elif row.activity_type == 'new_bounty' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.bounty.url }}">
       <div class="col-12 col-md-2 text-center">
         {% if row.bounty.funding_organisation %}
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.funding_organisation %}">
@@ -565,7 +565,7 @@
       <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
-            {{ row.bounty.title }}
+            {{ row.bounty.title | safe }}
           </div>
 
           <div class="bounty-summary p-0 col-12">
@@ -599,7 +599,7 @@
   </div>
   {% elif row.activity_type == 'new_kudos' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.kudos.external_url }}">
       <div class="col-12 col-md-3 text-center">
           <img class="logo-metacard" src="{{ row.kudos.img_url }}">
       </div>
@@ -611,13 +611,13 @@
   </div>
   {% elif row.activity_type == 'new_hackathon_project' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{% if row.project.name %}{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}{% else %}{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id %}{% endif %}">
       <div class="col-12 col-md-2 text-center">
-         {% if row.project.logo %}
-           <img class="logo-metacard rounded-circle" src="{{MEDIA_URL}}{{row.project.logo}}" alt="Hackathon logo" />
-         {% else %}
-           <img class="logo-metacard rounded-circle" src="{{ row.project.bounty.avatar_url }}" alt="{{row.project.bounty.org_name}}" />
-         {% endif %}
+        {% if row.project.logo %}
+          <img class="logo-metacard rounded-circle" src="{{MEDIA_URL}}{{row.project.logo}}" alt="Hackathon logo" />
+        {% else %}
+          <img class="logo-metacard rounded-circle" src="{{ row.project.bounty.avatar_url }}" alt="{{row.project.bounty.org_name}}" />
+        {% endif %}
       </div>
       <div class="col-12 col-md-6 text-left">
         <p class="mt-2 mb-1 font-weight-bold" style="font-size: 1.2em;">{{ row.project.name }}</p>
@@ -634,7 +634,7 @@
   </div>
   {% elif row.activity_type == 'new_grant' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.metadata.grant_url }}">
       <div class="col-12 col-md-2 text-center mr-2">
           <img class="logo-metacard" src="{% if row.grant.logo and row.grant.logo.url %}{{ row.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=row.grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}">
       </div>
