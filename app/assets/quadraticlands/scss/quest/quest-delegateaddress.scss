@@ -12,8 +12,8 @@
 		border: 0px;
 		outline: 0px;
 
-		width: 800px;
-		max-width: 90%;
+		width: 90%;
+		max-width: 800px;
 
 		color : var(--pink_light);
 		font-family: 'Space Mono', monospace;
@@ -24,7 +24,7 @@
 		word-break: break-all;
 
 		&::placeholder {
-			color: var(--space);
+			color: var(--pink);
 		}
 
 		&:focus {
