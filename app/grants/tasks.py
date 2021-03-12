@@ -286,10 +286,20 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
+        recalc_clr_if_x_minutes_old(grant_id, 10)
     try:
         thank_you_for_supporting(grants_with_subscription)
     except Exception as e:
         logger.exception(e)
+
+
+@app.shared_task(bind=True, max_retries=1)
+def recalc_clr_if_x_minutes_old(self, grant_id, minutes, retry: bool = True) -> None:
+    with redis.lock(f"tasks:recalc_clr_if_x_minutes_old:{grant_id}", timeout=60 * 3):
+        obj = Grant.objects.get(pk=grant_id)
+        then = timezone.now() - timezone.timedelta(minutes=minutes)
+        if obj.last_clr_calc_date < then:
+            recalc_clr(grant_id)
 
 
 @app.shared_task(bind=True, max_retries=1)
