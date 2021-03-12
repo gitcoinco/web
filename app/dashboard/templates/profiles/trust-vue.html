@@ -124,29 +124,6 @@
             </template>
           </active-trust-row-template>
 
-          <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
-            title="Verify with Duniter" :match-percent=5 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
-            @verify-button-pressed="showModal('duniter-modal')">
-            <template v-slot:description>
-              Verify your Duniter Account
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify with ENS"
-            :match-percent=5
-            :is-verified="'{{is_ens_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('ens-modal')"
-            >
-            <template v-slot:icon>
-              <img src="/static/v2/images/project_logos/ens.svg" alt="ENS Logo" class="img-fluid">
-            </template>
-            <template v-slot:description>
-              Verify with your ENS domain.
-            </template>
-          </active-trust-row-template>
 
 
           <active-trust-row-template
@@ -190,30 +167,6 @@
           </active-trust-row-template>
 
 
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify with Facebook"
-            :match-percent=2
-            :is-verified="'{{is_facebook_verified}}' === 'True'"
-            button-text="Verify"
-            >
-            <template v-slot:icon>
-              <span style="color: #1877F2">
-                <i class="fab fa-facebook fa-3x" aria-hidden="true"></i>
-              </span>
-            </template>
-            <template v-slot:description>
-              Verify your Facebook account.
-            </template>
-            {% if not is_facebook_verified %}
-              <template v-slot:verify>
-                <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
-                  {% csrf_token %}
-                  <input type="submit" value="Verify" class="btn btn-primary text-nowrap" />
-                </form>
-              </template>
-            {% endif %}
-          </active-trust-row-template>
 
           <active-trust-row-template
             icon-type="markup"
@@ -243,7 +196,57 @@
             Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds. 
           </p>
 
+          <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
+            title="Verify with Duniter" :match-percent=0 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
+            @verify-button-pressed="showModal('duniter-modal')">
+            <template v-slot:description>
+              Verify your Duniter Account
+            </template>
           </active-trust-row-template>
+
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify with ENS"
+            :match-percent=0
+            :is-verified="'{{is_ens_verified}}' === 'True'"
+            button-text="Verify"
+            @verify-button-pressed="showModal('ens-modal')"
+            >
+            <template v-slot:icon>
+              <img src="/static/v2/images/project_logos/ens.svg" alt="ENS Logo" class="img-fluid">
+            </template>
+            <template v-slot:description>
+              Verify with your ENS domain.
+            </template>
+          </active-trust-row-template>
+
+
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify with Facebook"
+            :match-percent=0
+            :is-verified="'{{is_facebook_verified}}' === 'True'"
+            button-text="Verify"
+            >
+            <template v-slot:icon>
+              <span style="color: #1877F2">
+                <i class="fab fa-facebook fa-3x" aria-hidden="true"></i>
+              </span>
+            </template>
+            <template v-slot:description>
+              Verify your Facebook account.
+            </template>
+            {% if not is_facebook_verified %}
+              <template v-slot:verify>
+                <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
+                  {% csrf_token %}
+                  <input type="submit" value="Verify" class="btn btn-primary text-nowrap" />
+                </form>
+              </template>
+            {% endif %}
+          </active-trust-row-template>
+
+
           {% include "profiles/trust_soon_row.html" with service="Proof of Humanity" when="On the Roadmap" %}
 
         </div>

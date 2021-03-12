@@ -3039,11 +3039,11 @@ class Profile(SuperModel):
         if self.is_idena_verified:
             tb *= 1.25
         if self.is_facebook_verified:
-            tb *= 1.02
+            tb *= 1.00
         if self.is_ens_verified:
-            tb *= 1.05
+            tb *= 1.00
         if self.is_duniter_verified:
-            tb *= 1.05
+            tb *= 1.00
         return tb
 
 
