@@ -13,7 +13,7 @@ Vue.component('contribution-trust-bonus', {
     close() {
       this.$bvModal.hide(this.modalId);
     },
-    goToTrustBonus() {
+    openProfileTrustBonus() {
       document.location = '/profile/trust';
     }
   }
