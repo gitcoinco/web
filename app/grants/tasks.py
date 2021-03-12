@@ -286,7 +286,7 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
-        recalc_clr_if_x_minutes_old(grant_id, 10)
+        recalc_clr_if_x_minutes_old.delay(grant_id, 10)
     try:
         thank_you_for_supporting(grants_with_subscription)
     except Exception as e:
