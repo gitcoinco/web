@@ -1741,7 +1741,7 @@ class Contribution(SuperModel):
         if mechanism == 'originated_address':
             return self.originated_address
         else:
-            return self.subscription.contributor_profile.id
+            return self.profile_for_clr.id
 
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
