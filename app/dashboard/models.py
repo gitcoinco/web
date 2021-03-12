@@ -2972,11 +2972,13 @@ class Profile(SuperModel):
         if self.is_twitter_verified:
             tb *= 1.05
         if self.sms_verification:
-            tb *= 1.05
+            tb *= 1.02
         if self.is_google_verified:
-            tb *= 1.05
+            tb *= 1.02
         if self.is_poap_verified:
-            tb *= 1.05
+            tb *= 1.10
+        if self.is_idena_verified:
+            tb *= 1.25
         return tb
 
 
