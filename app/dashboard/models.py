@@ -3034,6 +3034,10 @@ class Profile(SuperModel):
             tb *= 1.05
         if self.is_facebook_verified:
             tb *= 1.05
+        if self.is_ens_verified:
+            tb *= 1.05
+        if self.is_duniter_verified:
+            tb *= 1.05
         return tb
 
 
