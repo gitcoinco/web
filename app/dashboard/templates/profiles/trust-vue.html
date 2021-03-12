@@ -140,6 +140,7 @@
 
           <active-trust-row-template
             icon-type="markup"
+<<<<<<< HEAD
             title="Verify With ENS"
             :match-percent=5
             :is-verified="'{{is_ens_verified}}' === 'True'"
@@ -152,6 +153,29 @@
             <template v-slot:description>
               Verify with your ENS domain.
             </template>
+=======
+            title="Verify With Facebook"
+            :match-percent=5
+            :is-verified="'{{is_facebook_verified}}' === 'True'"
+            button-text="Verify"
+            >
+            <template v-slot:icon>
+              <span style="color: #1877F2">
+                <i class="fab fa-facebook fa-3x" aria-hidden="true"></i>
+              </span>
+            </template>
+            <template v-slot:description>
+              Verify your Facebook account.
+            </template>
+            {% if not is_facebook_verified %}
+              <template v-slot:verify>
+                <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
+                  {% csrf_token %}
+                  <input type="submit" value="Verify" class="btn btn-primary text-nowrap" />
+                </form>
+              </template>
+            {% endif %}
+>>>>>>> Elhamne/feature/facebook-integration
           </active-trust-row-template>
         </div>
 
@@ -209,7 +233,6 @@
         {% include "profiles/trust_soon_row.html" with service="Upala" %}
         {% include "profiles/trust_soon_row.html" with service="Duniter" %}
         {% include "profiles/trust_soon_row.html" with service="Equality Protocol" %}
-        {% include "profiles/trust_soon_row.html" with service="Facebook" %}
         {% include "profiles/trust_soon_row.html" with service="KYC" %}
         {% include "profiles/trust_soon_row.html" with service="PASS" %}
         {% include "profiles/trust_soon_row.html" with service="ENS Reverse Lookup" %}

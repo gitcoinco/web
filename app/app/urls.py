@@ -55,6 +55,7 @@ import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
+from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -120,6 +121,9 @@ urlpatterns = [
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
 
+
+    path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
+
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
     url('mailing_list/hunters/', dashboard.views.hunters_mailing_list),
@@ -160,11 +164,7 @@ urlpatterns = [
         dashboard.views.authenticate_idena,
         name='authenticate_idena'
     ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
-        dashboard.views.logout_idena,
-        name='logout_idena'
-    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/logout_idena', dashboard.views.logout_idena, name='logout_idena'),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
         dashboard.views.recheck_idena_status,
@@ -183,8 +183,14 @@ urlpatterns = [
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_facebook',
+        dashboard.views.request_verify_facebook,
+        name='request_verify_facebook'
+    ),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
     path('api/v0.1/profile/verify_ens', dashboard.views.verify_profile_with_ens, name='verify_with_ens'),
+    url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),

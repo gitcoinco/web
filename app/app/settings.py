@@ -564,6 +564,7 @@ CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 # https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
 CELERY_ROUTES = [
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
+    ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
@@ -654,6 +655,12 @@ GOOGLE_SCOPE = env('GOOGLE_SCOPE', default='https://www.googleapis.com/auth/user
 
 # OATHLIB
 OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
+
+# Facebook
+FACEBOOK_AUTH_BASE_URL = env('FACEBOOK_AUTH_BASE_URL', default='https://www.facebook.com/v9.0/dialog/oauth')
+FACEBOOK_TOKEN_URL = env('FACEBOOK_TOKEN_URL', default='https://graph.facebook.com/v9.0/oauth/access_token')
+FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID', default='')
+FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET', default='')
 
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')

@@ -2,7 +2,7 @@
 <div class="container-fluid grants-container">
   <div class="container">
     <div class="subheading font-weight-bold d-flex justify-content-between" @click="toggleActiveCLRs">
-      <span>{% trans "Active CLR Rounds" as filts %}{{ filts|upper }}</span>
+      <span>{% trans "Active QF Rounds" as filts %}{{ filts|upper }}</span>
       <span class=" fa fa-fw fa-chevron-down" v-if="!show_active_clrs"></span>
       <span class=" fa fa-fw fa-chevron-up" v-if="show_active_clrs"></span>
     </div>
@@ -41,7 +41,7 @@
                     {% endif %}
                     <br />
                     <small class="font-body font-weight-semibold">
-                      {{active_round.start_date | date:'m/Y'}} - {{active_round.end_date | date:'m/Y'}}
+                      {{active_round.start_date | date:'m/d'}} - {{active_round.end_date | date:'m/d'}}
                     </small>
                   </h5>
                 </div>
@@ -52,6 +52,6 @@
         {% endfor %}
       </div>
     </b-collapse>
-    
+
   </div>
 </div>

@@ -1476,6 +1476,56 @@ class BountyFulfillment(SuperModel):
         """
         return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
 
+    @property
+    def get_value_in_usdt_now(self):
+        return self.value_in_usdt_at_time(None)
+
+    @property
+    def get_value_in_usdt(self):
+        if self.status in self.OPEN_STATUSES:
+            return self.value_in_usdt_now
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        return self.value_in_usdt_at_time(self.created_on)
+
+    # TODO: DRY
+    def get_natural_value(self):
+        token = token_by_name(self.token_name, self.bounty.network)
+        decimals = token['decimals']
+        amount = self.payout_amount if self.payout_amount else 0
+        return float(amount) / 10**decimals
+
+    @property
+    def value_true(self):
+        return self.get_natural_value()
+
+    def value_in_usdt_at_time(self, at_time):
+        try:
+            if self.token_name in ['USDT', 'USDC']:
+                return float(self.payout_amount / 10 ** 6)
+            if self.token_name in settings.STABLE_COINS:
+                return float(self.payout_amount / 10 ** 18)
+            try:
+                return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
+            except ConversionRateNotFoundError:
+                try:
+                    in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
+                    return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
+                except ConversionRateNotFoundError:
+                    return None
+        except:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        if self.token_name in settings.STABLE_COINS:
+            return 1
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def fulfiller_email(self):
@@ -2056,7 +2106,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "org_profile":instance.bounty.org_profile,
                 "from_profile":instance.bounty.bounty_owner_profile,
                 "to_profile":instance.profile,
-                "value_usd":instance.bounty.value_in_usdt_then,
+                "value_usd":instance.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
                 "txid": instance.payout_tx_id,
@@ -2943,6 +2993,8 @@ class Profile(SuperModel):
     is_ens_verified = models.BooleanField(default=False)
     is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    is_facebook_verified = models.BooleanField(default=False)
+    identity_data_facebook = JSONField(blank=True, default=dict, null=True)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -2978,6 +3030,8 @@ class Profile(SuperModel):
         if self.is_google_verified:
             tb *= 1.05
         if self.is_poap_verified:
+            tb *= 1.05
+        if self.is_facebook_verified:
             tb *= 1.05
         return tb
 
@@ -5703,6 +5757,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'POAP Verified: {instance.is_poap_verified}')
         if instance.is_poap_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'Facebook Verified: {instance.is_facebook_verified}')
+        if instance.is_facebook_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 
