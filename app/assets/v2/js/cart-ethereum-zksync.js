@@ -222,7 +222,7 @@ Vue.component('grantsCartEthereumZksync', {
 
         // Save off cart data
         this.zksync.checkoutStatus = 'pending';
-        await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');
+        // await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');
 
         // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
