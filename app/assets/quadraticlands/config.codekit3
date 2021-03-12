@@ -358,6 +358,66 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/brands/arweave.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/brands/arweave.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/brands/chainlink.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/brands/chainlink.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/brands/ethereumfoundation.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/brands/ethereumfoundation.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/brands/near.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/brands/near.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/brands/protocollabs.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/brands/protocollabs.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/brands/sia.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/brands/sia.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
 	"/images/dummy.png": {
 		"ft": 32768,
 		"iS": 1043091,
@@ -370,6 +430,16 @@
 		"ou": "lpckwebp-none",
 		"q": 100,
 		"rq": 75
+		},
+	"/images/dummy.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/dummy.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
 		},
 	"/images/favicon/android-icon-144x144.png": {
 		"ft": 32768,
@@ -1325,6 +1395,19 @@
 		"oS": 3,
 		"sct": 0
 		},
+	"/scss/article.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/article.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
 	"/scss/breakpoints.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1585,6 +1668,19 @@
 		"oS": 3,
 		"sct": 0
 		},
+	"/scss/logowall.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/logowall.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
 	"/scss/nav.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -1815,6 +1911,19 @@
 		"ma": 1,
 		"oA": 1,
 		"oAP": "/scss/css/section.css",
+		"oF": 0,
+		"oS": 3,
+		"sct": 0
+		},
+	"/scss/roadmap.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 1,
+		"oA": 1,
+		"oAP": "/css/roadmap.css",
 		"oF": 0,
 		"oS": 3,
 		"sct": 0
