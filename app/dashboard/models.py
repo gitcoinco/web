@@ -1492,7 +1492,7 @@ class BountyFulfillment(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
-        token = token_by_name(self.token_name)
+        token = token_by_name(self.token_name, self.bounty.network)
         decimals = token['decimals']
         amount = self.payout_amount if self.payout_amount else 0
         return float(amount) / 10**decimals
@@ -1501,21 +1501,22 @@ class BountyFulfillment(SuperModel):
     def value_true(self):
         return self.get_natural_value()
 
-
     def value_in_usdt_at_time(self, at_time):
-        decimals = 10 ** 18
-        if self.token_name in ['USDT', 'USDC']:
-            return float(self.payout_amount / 10 ** 6)
-        if self.token_name in settings.STABLE_COINS:
-            return float(self.payout_amount / 10 ** 18)
         try:
-            return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
-        except ConversionRateNotFoundError:
+            if self.token_name in ['USDT', 'USDC']:
+                return float(self.payout_amount / 10 ** 6)
+            if self.token_name in settings.STABLE_COINS:
+                return float(self.payout_amount / 10 ** 18)
             try:
-                in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
-                return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
+                return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
             except ConversionRateNotFoundError:
-                return None
+                try:
+                    in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
+                    return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
+                except ConversionRateNotFoundError:
+                    return None
+        except:
+            return None
 
     @property
     def token_value_in_usdt_now(self):
