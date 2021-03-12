@@ -332,23 +332,41 @@ def populate_data_for_clr(grants, contributions, clr_round):
 
     mechanism="profile"
 
+    # 3-4s to get all the contributions
+    _contributions = list(contributions.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date).prefetch_related('profile_for_clr', 'subscription'))
+    _contributions_by_id = {}
+    for ele in _contributions:
+        key = ele.normalized_data.get('id')
+        if key not in _contributions_by_id.keys():
+            _contributions_by_id[key] = []
+        _contributions_by_id[key].append(ele)
+
     # set up data to load contributions for each grant
     for grant in grants:
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
         # contributions
-        contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+        contribs = _contributions_by_id.get(grant.id, [])
 
-        # combine
-        contributing_profile_ids = list(set([(c.identity_identifier(mechanism), c.profile_for_clr.trust_bonus) for c in contribs]))
+        # create arrays
+        contributing_profile_ids = []
+        contributions_by_id = {}
+        for c in contribs:
+            prof = c.profile_for_clr
+            key = prof.id
+            if key not in contributions_by_id.keys():
+                contributions_by_id[key] = []
+            contributions_by_id[key].append(c)
+            contributing_profile_ids.append((prof.id, prof.trust_bonus))
+
+        contributing_profile_ids = list(set(contributing_profile_ids))
 
         summed_contributions = []
 
         # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id, trust_bonus in contributing_profile_ids:
-                profile_contributions = contribs.filter(profile_for_clr__id=profile_id)
-                sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt * clr_round.contribution_multiplier for c in profile_contributions if c.subscription.amount_per_period_usdt]))
+                sum_of_each_profiles_contributions = sum(ele.normalized_data.get('amount_per_period_usdt') for ele in contributions_by_id[profile_id]) * float(clr_round.contribution_multiplier)
 
                 summed_contributions.append({
                     'id': str(profile_id),

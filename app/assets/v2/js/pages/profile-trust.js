@@ -816,7 +816,7 @@ Vue.component('active-trust-row-template', {
     }
   },
   template: `
-      <div class="row mb-4">
+      <div class="row mb-4 pb-4" style="border-bottom: 1px solid #eee;">
         <div class="col-12 col-md-1 mx-auto text-center">
           <div v-if="iconType === 'markup'">
             <slot name="icon"></slot>
@@ -838,7 +838,7 @@ Vue.component('active-trust-row-template', {
             +[[matchPercent]]%
           </div>
           <div style="color:grey">
-            <small>Grants CLR Match</small>
+            <small>Grants Match Bonus</small>
           </div>
         </div>
         <div class="col-6 col-md-2">

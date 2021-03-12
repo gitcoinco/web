@@ -68,6 +68,7 @@ from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
 from economy.utils import convert_amount, convert_token_to_usdt
+from eth_account.messages import defunct_hash_message
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
@@ -464,7 +465,13 @@ def grants_stats_view(request):
     except Exception as e:
         logger.exception(e)
         raise Http404
-    round_types = GrantType.objects.all()
+    active_clrs = GrantCLR.objects.filter(is_active=True)
+    pks = []
+    for active_clr in active_clrs:
+        pk = active_clr.grant_filters.get('grant_type', 0)
+        if pk and active_clr.happened_recently:
+            pks.append(pk)
+    round_types = GrantType.objects.filter(pk__in=pks)
     params = {
         'cht': cht,
         'chart_list': chart_list,
@@ -613,12 +620,6 @@ def get_grants(request):
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
     sort = request.GET.get('sort_option', 'weighted_shuffle')
-    if (
-        request.user.is_authenticated and
-        request.user.profile.pk % 2 == 1 and
-        sort == 'weighted_shuffle'
-    ):
-        sort = 'random_shuffle'
 
     clr_round = None
     try:
@@ -3397,8 +3398,26 @@ def ingest_contributions(request):
     profile = request.user.profile
     txHash = request.POST.get('txHash')
     userAddress = request.POST.get('userAddress')
+    signature = request.POST.get('signature')
+    message = request.POST.get('message')
     network = request.POST.get('network')
     ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
+
+    # Setup web3
+    w3 = get_web3(network)
+
+    def verify_signature(signature, message, expected_address):
+        message_hash = defunct_hash_message(text=message)
+        recovered_address = w3.eth.account.recoverHash(message_hash, signature=signature)
+        if recovered_address.lower() != expected_address.lower():
+            raise Exception("Signature could not be verified")
+
+    if txHash != '':
+        receipt = w3.eth.getTransactionReceipt(txHash)
+        from_address = receipt['from']
+        verify_signature(signature, message, from_address)
+    if userAddress != '':
+        verify_signature(signature, message, userAddress)
 
     def get_token(w3, network, address):
         if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
