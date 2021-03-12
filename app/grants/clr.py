@@ -410,7 +410,6 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         potential_clr = []
 
         for amount in potential_donations:
-            print(time.time())
             # calculate clr with each additional donation and save to grants model
             # print(f'using {total_pot_close}')
             predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
