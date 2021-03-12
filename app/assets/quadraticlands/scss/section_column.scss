@@ -1,19 +1,28 @@
 section.column{
 
-	margin-bottom: 6em;
 	margin: auto;
-	max-width: 1200px;
-	padding: 0em 6em;
-
-	&.centered {
-		text-align: center;
-	}
-
+	max-width: 960px;
+	margin-bottom: 2em;
 
 	figure{
 		margin:0;
 		padding:0;
 		background-color: var(--smoke);
+	}
+
+	p{
+		margin:0px;
+		padding:0px;
+		margin-bottom: 0.5em;
+	}
+
+
+	&.full{
+		max-width: 100%;
+	}
+
+	&.centered {
+		text-align: center;
 	}
 
 
@@ -30,11 +39,13 @@ section.column{
 
 @media #{$laptop} { 
 	section.column{
+		padding: 0em 2.5em;
 	}
 }
 
 @media #{$tablet} { 
 	section.column{
+		padding: 0em 2em;
 	}
 }
 
