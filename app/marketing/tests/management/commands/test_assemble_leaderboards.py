@@ -94,7 +94,7 @@ class TestAssembleLeaderboards(TestCase):
             bounty=self.bounty,
             accepted=True,
             profile=self.bounty_earner_profile,
-            token_name="USDT",
+            token_name='USDT',
             payout_amount=3,
         )
 
