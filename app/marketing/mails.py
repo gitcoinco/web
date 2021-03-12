@@ -1133,6 +1133,42 @@ Gitcoin Grants KYC Team
         translation.activate(cur_language)
 
 
+def grant_more_info_required(grant, more_info):
+    to_email = grant.admin_profile.email
+    cc_emails = [profile.email for profile in grant.team_members.all()]
+    from_email = 'new-grants@gitcoin.co'
+    cc_emails.append(from_email)
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"More Info Requested for {grant.url}"
+        body = f"""
+<pre>
+Hello @{grant.admin_profile.handle},
+
+This email is in regards to your Gitcoin Grant: {grant.url}
+
+We require more information to approve your application. {more_info}
+
+Thanks,
+Gitcoin Grant Team
+</pre>
+
+        """
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
 def grant_match_distribution_test_txn(match):
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]

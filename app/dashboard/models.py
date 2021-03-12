@@ -2963,6 +2963,10 @@ class Profile(SuperModel):
             self.is_idena_verified = False
 
     @property
+    def shadowbanned(self):
+        return self.squelches.filter(active=True).exists()
+
+    @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
         # trust bonus compounds for every new verification added

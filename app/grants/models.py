@@ -583,6 +583,9 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
+    def is_on_team(self, profile):
+        return is_grant_team_member(self, profile)
+
 
     def calc_clr_round(self):
         clr_round = None
