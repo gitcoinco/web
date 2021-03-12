@@ -982,8 +982,8 @@ Vue.component('grants-cart', {
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
 
-      // Save off cart data
-      await this.manageEthereumCartJSONStore(userAddress, 'save');
+      // // Save off cart data
+      // await this.manageEthereumCartJSONStore(userAddress, 'save');
 
       // Send transaction
       indicateMetamaskPopup();
@@ -1011,23 +1011,18 @@ Vue.component('grants-cart', {
         const donations = this.donationInputs;
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        // If txHash has a length of one, stretch it so there's one hash for each donation
-        let txHashes = txHash;
+        // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's a zkSync checkout
+        const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
+        
+        // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
+        const txHashes = checkout_type === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
 
-        if (txHash.length === 1) {
-          txHashes = new Array(donations.length).fill(txHash[0]);
-        }
-
-        // TODO update celery task to manage this so we can remove these two server requests
-        // Update the JSON store with the transaction hashes. We append a timestamp to ensure it
-        // doesn't get overwritten by a subsequent checkout
-        await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save', txHashes);
-        // Once that's done, we can delete the old JSON store
-        await this.manageEthereumCartJSONStore(userAddress, 'delete');
-
-        // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
-        // a zkSync checkout
-        const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
+        // // TODO update celery task to manage this so we can remove these two server requests
+        // // Update the JSON store with the transaction hashes. We append a timestamp to ensure it
+        // // doesn't get overwritten by a subsequent checkout
+        // await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save', txHashes);
+        // // Once that's done, we can delete the old JSON store
+        // await this.manageEthereumCartJSONStore(userAddress, 'delete');
 
         // Configure template payload
         const saveSubscriptionPayload = {
