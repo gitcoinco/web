@@ -57,6 +57,8 @@ class Command(BaseCommand):
             stat.created_on -= timezone.timedelta(microseconds=stat.created_on.microsecond)
             stat.created_on -= timezone.timedelta(seconds=int(stat.created_on.strftime('%S')))
             stat.created_on -= timezone.timedelta(minutes=int(stat.created_on.strftime('%M')))
+            num_hours = 3
+            stat.created_on -= timezone.timedelta(hours=int(stat.created_on.strftime('%H')) % num_hours)
             stat.save()
             print(stat.pk)
 
