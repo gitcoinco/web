@@ -1791,7 +1791,10 @@ class Contribution(SuperModel):
 
                 # Handle replaced transactions
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
+                if split_tx_status in ['pending']:
+                    print('txn pending')
+                    return
+                if split_tx_status in ['dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
                     if new_tx:
                         self.split_tx_id = new_tx
