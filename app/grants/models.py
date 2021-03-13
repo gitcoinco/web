@@ -1746,7 +1746,7 @@ class Contribution(SuperModel):
         else:
             return self.profile_for_clr.id
 
-    def update_tx_status(self):
+ 
         """Updates tx status for Ethereum contributions."""
         try:
             from economy.tx import grants_transaction_validator
@@ -1796,7 +1796,10 @@ class Contribution(SuperModel):
                     if new_tx:
                         self.split_tx_id = new_tx
                     else:
-                        print('TODO: do stuff related to long running pending txns')
+                        self.success = False
+                        self.validator_passed = False
+                        self.validator_comment = "txn not found"
+                        print('txn not found')
                     return
 
                 # Validate that the token transfers occurred
