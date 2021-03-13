@@ -430,10 +430,11 @@ def get_poap_earliest_owned_token_timestamp(network, address):
                 return web3.eth.getBlock(block_number).timestamp
 
 
-def get_ens_contract_addresss(network):
+def get_ens_contract_addresss(network, legacy=False):
     if network == 'mainnet':
-        return to_checksum_address('0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e')
-
+        if not legacy:
+            return to_checksum_address('0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e')
+        return to_checksum_address('0x314159265dd8dbb310642f98f50c066173c1259b')
     raise UnsupportedNetworkException(network)
 
 
