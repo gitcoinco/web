@@ -1713,7 +1713,7 @@ class Contribution(SuperModel):
         else:
             return self.subscription.contributor_profile.id
 
- 
+    def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
         try:
             from economy.tx import grants_transaction_validator
