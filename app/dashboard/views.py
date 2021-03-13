@@ -3483,12 +3483,13 @@ def verify_profile_with_ens(request):
     if not node:
         return JsonResponse({
             'error': 'NO_ENS_NAME_ASSOCIATED',
-            'msg': f'You haven\'t set reverse record yet. Please read ENS FAQ page at https://app.ens.domains/faq/#what-is-a-reverse-record',
+            'msg': f'You haven\'t set reverse record yet. Please read ENS FAQ page at ',
             'data': {
                 'step': 2,
                 'verified': profile.is_ens_verified,
                 'address': user_address,
-                'ens_domain': node
+                'ens_domain': node,
+                'url': 'https://app.ens.domains/faq/#what-is-a-reverse-record',
             }
         })
 
@@ -3497,26 +3498,27 @@ def verify_profile_with_ens(request):
     if not is_address(registered_address):
         return JsonResponse({
             'error': 'NO_ADDRESS_ASSOCIATED_TO_ENS',
-            'msg': f'You don\'t have associated your address to your domain {node}. Please add your ETH address at https://app.ens.domains/name/{node}',
+            'msg': f'You don\'t have associated your address to your domain {node}. Please add your ETH address at ',
             'data': {
                 'step': 3,
                 'verified': profile.is_ens_verified,
                 'address': user_address,
-                'ens_domain': node
+                'ens_domain': node,
+                'url': f'https://app.ens.domains/name/{node}'
             }
         })
 
-
     # 4. Check if address matches.
-    if registered_address != user_address:
+    if registered_address.lower() != user_address.lower():
         return JsonResponse({
             'error': 'NO_ADDRESS_DOESNT_MATCH',
-            'msg': f'{node} has {registered_address[0:5]}... set as ETH address which is different from your preferred payout address ({user_address[0:5]}...). Please set your correct ETH address at https://app.ens.domains/name/{node}',
+            'msg': f'{node} has {registered_address[0:5]}... set as ETH address which is different from the provided address ({user_address[0:5]}...). Please set your correct ETH address at ',
             'data': {
                 'step': 4,
                 'verified': profile.is_ens_verified,
                 'address': user_address,
-                'ens_domain': node
+                'ens_domain': node,
+                'url': f'https://app.ens.domains/name/{node}'
             }
         })
 

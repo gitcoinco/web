@@ -868,6 +868,7 @@ Vue.component('ens-verify-modal', {
       validationStep: 0,
       validationError: '',
       validationErrorMsg: '',
+      url: '',
       validated: false,
       verificationEthAddress: ''
     };
@@ -902,7 +903,7 @@ Vue.component('ens-verify-modal', {
             <ol class="text-left pl-0" style="list-style: none">
               <li class="mb-3">
                 <span :class="\`mr-2 fas fa-\${validationStep > 1 ? 'check check gc-text-green' : 'times gc-text-pink'}\`"></span>  Setup your address.
-                <input v-model="verificationEthAddress" class="form-control" type="text" @onchange="testVerification()">
+                <input v-model="verificationEthAddress" class="form-control" type="text" @keyup="onchange">
                 <a href="#" @click.prevent.stop="pullEthAddress()">Pull address from Metamask</a><br>
               </li>
               <li class="mb-3"><span :class="\`mr-2 fas fa-\${validationStep > 2 ? 'check gc-text-green' : 'times gc-text-pink'}\`"></span> Your address has an ENS domain associated, [[ ensDomain ? '' : 'you can get one' ]] <a :href="\`https://app.ens.domains/\${ensDomain ? 'name/'+ ensDomain : ''}\`">[[ ensDomain ? ensDomain  : 'here' ]]</a>.</li>
@@ -911,6 +912,9 @@ Vue.component('ens-verify-modal', {
           </div>
         </div>
         <div>
+          <p class="mb-4" v-if="!validated && validationError !== false">
+            [[ validationErrorMsg ]] <a v-if="url" :href="url">[[url]]</a>
+          </p>
           <p class="mb-4" v-if="!validated && validationError === false">
             You fulfill all the requirements, just click on validate to confirm that your ENS account is valid
           </p>
@@ -963,6 +967,7 @@ Vue.component('ens-verify-modal', {
         vm.validationErrorMsg = response.msg;
         vm.validated = response.data.verified;
         vm.validationStep = response.data.step;
+        vm.url = response.data.url;
         vm.verificationEthAddress = response.data.address;
         vm.ensDomain = response.data.ens_domain;
       });
