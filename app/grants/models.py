@@ -1789,20 +1789,32 @@ class Contribution(SuperModel):
                 PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
                 w3 = Web3(Web3.WebsocketProvider(PROVIDER))
 
-                # Handle replaced transactions
+                # Handle dropped/replaced transactions
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-                if split_tx_status in ['pending']:
-                    print('txn pending')
-                    return
-                if split_tx_status in ['dropped', 'unknown', '']:
+                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
                     if new_tx:
                         self.split_tx_id = new_tx
+                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+
+                # Handle pending txns
+                if split_tx_status in ['pending']:
+                    then = timezone.now() - timezone.timedelta(days=1)
+                    if self.created_on > then:
+                        print('txn pending')
                     else:
                         self.success = False
                         self.validator_passed = False
-                        self.validator_comment = "txn not found"
-                        print('txn not found')
+                        self.validator_comment = "txn pending for more than 1 days, assuming failure"
+                        print(self.validator_comment)
+                    return
+
+                # Handle dropped txns
+                if split_tx_status in ['dropped', 'unknown', '']:
+                    self.success = False
+                    self.validator_passed = False
+                    self.validator_comment = "txn not found"
+                    print('txn not found')
                     return
 
                 # Validate that the token transfers occurred
