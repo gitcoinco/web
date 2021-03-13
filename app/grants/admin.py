@@ -31,7 +31,7 @@ from grants.models import (
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
-from marketing.mails import new_grant_approved, grant_more_info_required
+from marketing.mails import grant_more_info_required, new_grant_approved
 
 
 class GeneralAdmin(admin.ModelAdmin):
