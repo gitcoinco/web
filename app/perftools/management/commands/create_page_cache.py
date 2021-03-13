@@ -94,7 +94,7 @@ def create_grant_active_clr_mapping():
 
     # removes grants who are not in an active matching round from having a match prediction curve
     # waits 14 days from removing them tho
-    from grants.models import *
+    from grants.models import GrantCLRCalculation
     from_date = timezone.now() - timezone.timedelta(days=14)
     gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
     for gclr in gclrs:
