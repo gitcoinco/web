@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import Http404, JsonResponse
 from dashboard.utils import get_web3
 import web3
+from eth_account.messages import defunct_hash_message
 import json
 from django.conf import settings
 
@@ -20,10 +21,11 @@ def index(request):
 
     #_hash = sp.getMessageHash(player, 0, tokenURI, nonce);
     message = contract.functions.getMessageHash(player, 0, tokenURI, nonce).call()
+    message_hash = defunct_hash_message(primitive=message)
     private_key = settings.PASSPORT_PK
     #signature = await accounts[0].signMessage(ethers.utils.arrayify(hash));
-    signed_message = w3.eth.account.signHash(message.hex(), private_key=private_key).signature.hex()
-    signed_message = '0x304ccffbca9a729465b8b025bb0a41b07e949b8cecf30552bb4413c3eccfe9af590ea3d9bcb337a42f746a6668129395ab2abb459ba371bcbcc6f3c403db71661c'
+    signed_message = w3.eth.account.signHash(message_hash, private_key=private_key).signature.hex()
+    # signed_message = '0x304ccffbca9a729465b8b025bb0a41b07e949b8cecf30552bb4413c3eccfe9af590ea3d9bcb337a42f746a6668129395ab2abb459ba371bcbcc6f3c403db71661c'
     print(message)
     print(signed_message)
     #sp.createPassport(tokenURI, signature, nonce);
