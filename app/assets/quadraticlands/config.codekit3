@@ -27,18 +27,15 @@
 		"oAP": "/css/app.css.map",
 		"oF": 0
 		},
-	"/images/700x900.png": {
-		"ft": 32768,
-		"iS": 295213,
-		"oA": 0,
-		"oAP": "/images/700x900.png",
+	"/images/about_hero.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/about_hero.svg",
 		"oF": 0,
-		"oIPL": 0,
 		"opt": 0,
-		"oT": 1,
-		"ou": "lpckwebp-none",
-		"q": 100,
-		"rq": 75
+		"plM": 52780316221407,
+		"prP": 0
 		},
 	"/images/background/_old/background-01.svg": {
 		"ft": 2097152,
@@ -417,19 +414,6 @@
 		"opt": 0,
 		"plM": 52780316221407,
 		"prP": 0
-		},
-	"/images/dummy.png": {
-		"ft": 32768,
-		"iS": 1043091,
-		"oA": 0,
-		"oAP": "/images/dummy.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"ou": "lpckwebp-none",
-		"q": 100,
-		"rq": 75
 		},
 	"/images/dummy.svg": {
 		"ft": 2097152,
@@ -1006,19 +990,6 @@
 		"q": 100,
 		"rq": 75
 		},
-	"/images/test.png": {
-		"ft": 32768,
-		"iS": 763532,
-		"oA": 1,
-		"oAP": "/images/test.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
-		"ou": "lpckwebp-none",
-		"q": 100,
-		"rq": 75
-		},
 	"/images/token.svg": {
 		"ft": 2097152,
 		"miP": 0,
@@ -1034,26 +1005,6 @@
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/token2.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/town.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 2,
-		"oAP": "/images/town.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/tunnel.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 2,
-		"oAP": "/images/tunnel.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -1078,19 +1029,6 @@
 		"oF": 0,
 		"oIPL": 0,
 		"opt": 0,
-		"ou": "lpckwebp-none",
-		"q": 100,
-		"rq": 75
-		},
-	"/images/x.png": {
-		"ft": 32768,
-		"iS": 714716,
-		"oA": 0,
-		"oAP": "/images/x.png",
-		"oF": 0,
-		"oIPL": 0,
-		"opt": 0,
-		"oT": 1,
 		"ou": "lpckwebp-none",
 		"q": 100,
 		"rq": 75
