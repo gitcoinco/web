@@ -673,24 +673,25 @@ def get_grants(request):
         grants = paginator.get_page(page)
 
     contributions = Contribution.objects.none()
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and only_contributions:
         contributions = Contribution.objects.filter(
             id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
                 'subscription_contribution__id')).prefetch_related('subscription')
 
     contributions_by_grant = {}
-    for contribution in contributions:
-        grant_id = str(contribution.subscription.grant_id)
-        group = contributions_by_grant.get(grant_id, [])
+    if only_contributions:
+        for contribution in contributions:
+            grant_id = str(contribution.subscription.grant_id)
+            group = contributions_by_grant.get(grant_id, [])
 
-        group.append({
-            **contribution.normalized_data,
-            'id': contribution.id,
-            'grant_id': contribution.subscription.grant_id,
-            'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
-        })
+            group.append({
+                **contribution.normalized_data,
+                'id': contribution.id,
+                'grant_id': contribution.subscription.grant_id,
+                'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
+            })
 
-        contributions_by_grant[grant_id] = group
+            contributions_by_grant[grant_id] = group
 
     grants_array = []
     for grant in grants:
