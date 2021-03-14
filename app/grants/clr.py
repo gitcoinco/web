@@ -418,7 +418,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
         counter += 1
         if counter % 10 == 0 or True:
-            print(f"- {counter}/{total_count} grants iter, pk:{grant,pk}, at {round(time.time(),1)}")
+            print(f"- {counter}/{total_count} grants iter, pk:{grant.pk}, at {round(time.time(),1)}")
 
         for amount in potential_donations:
             # calculate clr with each additional donation and save to grants model
