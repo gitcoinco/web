@@ -383,6 +383,8 @@ def populate_data_for_clr(grants, contributions, clr_round):
 
 
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
+    import time
+
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
@@ -392,22 +394,31 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
+    print(f"- starting fetch_data at {round(time.time(),1)}")
     grants, contributions = fetch_data(clr_round, network)
 
     if contributions.count() == 0:
         print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
         return
 
+    print(f"- starting populate_data_for_clr at {round(time.time(),1)}")
     grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
 
     if only_grant_pk:
         grants = grants.filter(pk=only_grant_pk)
 
     # calculate clr given additional donations
+    print(f"- starting grants iter at {round(time.time(),1)}")
+    counter = 0
+    total_count = grants.count()
     for grant in grants:
         # five potential additional donations plus the base case of 0
         potential_donations = [0, 1, 10, 100, 1000, 10000]
         potential_clr = []
+
+        counter += 1
+        if counter % 10 == 0 or True:
+            print(f"- {counter}/{total_count} grants iter, pk:{grant,pk}, at {round(time.time(),1)}")
 
         for amount in potential_donations:
             # calculate clr with each additional donation and save to grants model
