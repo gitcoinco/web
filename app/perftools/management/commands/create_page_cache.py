@@ -67,11 +67,10 @@ def create_email_inventory_cache():
 
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
+    from grants.tasks import update_grant_metadata
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
-        grant = Grant.objects.get(pk=pk)
-        grant.calc_clr_round()
-        grant.save()
+        update_grant_metadata.delay(pk)
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
