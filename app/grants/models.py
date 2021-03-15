@@ -102,7 +102,8 @@ class GrantType(SuperModel):
     name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
     is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
-    categories  = models.ManyToManyField(
+    is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
+    categories = models.ManyToManyField(
         GrantCategory,
         help_text="Grant Categories associated with Grant Type"
     )
@@ -219,15 +220,22 @@ class GrantCLR(SuperModel):
         return f"{self.round_num}"
 
     @property
+    def happening_now(self):
+        # returns true if we are within the time range for this round
+        now = timezone.now()
+        return now >= self.start_date and now <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**self.collection_filters).values_list('grants', flat=True)
+            grants = grants.filter(pk__in=grant_ids)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
         if self.subscription_filters:
             grants = grants.filter(**self.subscription_filters)
-        if self.collection_filters:
-            grants = grants.filter(**self.collection_filters)
 
         return grants
 
@@ -243,6 +251,30 @@ class GrantCLR(SuperModel):
             clr_prediction_curve=clr_prediction_curve,
             latest=True,
         )
+
+
+class GrantAPIKey(SuperModel):
+    """Define the structure of a GrantAPIKey."""
+
+    key = models.CharField(
+        max_length=255,
+        blank=True,
+        db_index=True,
+        help_text="the api key"
+    )
+    secret = models.CharField(
+        max_length=255,
+        blank=True,
+        db_index=True,
+        help_text="the api secret"
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grant_apikey',
+        on_delete=models.CASCADE,
+        help_text=_('The GrantAPI key\'s profile.'),
+        null=True,
+    )
 
 
 class Grant(SuperModel):
@@ -550,12 +582,14 @@ class Grant(SuperModel):
         clr_round = None
 
         # create_grant_active_clr_mapping
-        clr_rounds = GrantCLR.objects.filter(is_active=True)
+        clr_rounds = GrantCLR.objects.all()
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants.all():
+            add_to_round = self.active and not self.hidden and this_clr_round.is_active and this_clr_round.happening_now and self in this_clr_round.grants.all()
+            if add_to_round:
                 self.in_active_clrs.add(this_clr_round)
             else:
-                self.in_active_clrs.remove(this_clr_round)
+                if this_clr_round in self.in_active_clrs.all():
+                    self.in_active_clrs.remove(this_clr_round)
 
         # create_grant_clr_cache
         if self.in_active_clrs.count() > 0 and self.is_clr_eligible:
@@ -598,8 +632,18 @@ class Grant(SuperModel):
 
     @property
     def calc_clr_round_nums(self):
+        """Generates CLR rounds sub_round_slug seperated by comma"""
         if self.pk:
             round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            return ", ".join(round_nums)
+        return ''
+
+
+    @property
+    def calc_clr_round_label(self):
+        """Generates CLR rounds display text seperated by comma"""
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('display_text', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -697,11 +741,8 @@ class Grant(SuperModel):
     @property
     def get_contribution_count(self):
         num = 0
-        for sub in self.subscriptions.filter(is_postive_vote=True):
-            for contrib in sub.subscription_contribution.filter(success=True):
-                num += 1
-        for pf in self.phantom_funding.all():
-            num+=1
+        num += self.subscriptions.filter(is_postive_vote=True, subscription_contribution__success=True).count()
+        num += self.phantom_funding.all().count()
         return num
 
     @property
@@ -717,14 +758,10 @@ class Grant(SuperModel):
     def get_contributor_count(self, since=None, is_postive_vote=True):
         if not since:
             since = timezone.datetime(1990, 1, 1)
-        contributors = []
-        for sub in self.subscriptions.filter(is_postive_vote=is_postive_vote):
-            for contrib in sub.subscription_contribution.filter(success=True, created_on__gt=since):
-                contributors.append(contrib.subscription.contributor_profile.handle)
+        num = self.subscriptions.filter(is_postive_vote=is_postive_vote, subscription_contribution__success=True, created_on__gt=since).distinct('contributor_profile').count()
         if is_postive_vote:
-            for pf in self.phantom_funding.filter(created_on__gt=since).all():
-                contributors.append(pf.profile.handle)
-        return len(set(contributors))
+            num += self.phantom_funding.filter(created_on__gt=since).exclude(profile__in=self.subscriptions.values_list('contributor_profile')).all().count()
+        return num
 
 
     @property
@@ -911,7 +948,7 @@ class Grant(SuperModel):
         """Override the Grant save to optionally handle modified_on logic."""
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
-        self.clr_round_num = self.calc_clr_round_nums
+        self.clr_round_num = self.calc_clr_round_label
 
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
@@ -1669,6 +1706,16 @@ class Contribution(SuperModel):
     )
     anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
+    @property
+    def blockexplorer_url(self):
+        if self.checkout_type == 'eth_zksync':
+            return f'https://zkscan.io/explorer/transactions/{self.split_tx_id.replace("sync-tx:", "")}'
+        if self.checkout_type == 'eth_std':
+            network_sub = f"{{self.subscription.network}}." if self.subscription and self.subscription.network != 'mainnet' else ''
+            return f'https://{network_sub}etherscan.io/tx/{self.split_tx_id}'
+        # TODO: support all block explorers for diff chains
+        return ''
+
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
 
@@ -1734,14 +1781,32 @@ class Contribution(SuperModel):
                 PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
                 w3 = Web3(Web3.WebsocketProvider(PROVIDER))
 
-                # Handle replaced transactions
+                # Handle dropped/replaced transactions
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
                 if split_tx_status in ['pending', 'dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
                     if new_tx:
                         self.split_tx_id = new_tx
+                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+
+                # Handle pending txns
+                if split_tx_status in ['pending']:
+                    then = timezone.now() - timezone.timedelta(days=1)
+                    if self.created_on > then:
+                        print('txn pending')
                     else:
-                        print('TODO: do stuff related to long running pending txns')
+                        self.success = False
+                        self.validator_passed = False
+                        self.validator_comment = "txn pending for more than 1 days, assuming failure"
+                        print(self.validator_comment)
+                    return
+
+                # Handle dropped txns
+                if split_tx_status in ['dropped', 'unknown', '']:
+                    self.success = False
+                    self.validator_passed = False
+                    self.validator_comment = "txn not found"
+                    print('txn not found')
                     return
 
                 # Validate that the token transfers occurred
@@ -2022,6 +2087,7 @@ class GrantCollection(SuperModel):
     cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
     featured = models.BooleanField(default=False, help_text=_('Show grant as featured'))
     objects = CollectionsQuerySet.as_manager()
+    shuffle_rank = models.PositiveIntegerField(default=1, db_index=True)
     curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
 
     def generate_cache(self):
@@ -2036,7 +2102,7 @@ class GrantCollection(SuperModel):
         }
 
         try:
-            cover = generate_collection_thumbnail(self, 348, 175)
+            cover = generate_collection_thumbnail(self, 348 * 5, 175 * 5)
             filename = f'thumbnail_{self.id}.png'
             buffer = BytesIO()
             cover.save(fp=buffer, format='PNG')
@@ -2135,7 +2201,7 @@ class GrantBrandingRoutingPolicy(SuperModel):
         blank=True,
         null=True
     )
-    url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
+    url_pattern = models.CharField(max_length=255, help_text=_("A regex url pattern"))
     banner_image = models.ImageField(
         upload_to=get_upload_filename,
         help_text=_('The banner image for a grant page'),
