@@ -70,11 +70,14 @@ from economy.models import Token as FTokens
 from economy.utils import convert_amount, convert_token_to_usdt
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR, GrantCollection,
-    GrantType, GrantAPIKey, MatchPledge, PhantomFunding, Subscription,
+    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    GrantCollection, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
-from grants.utils import emoji_codes, generate_collection_thumbnail, get_user_code, is_grant_team_member, sync_payout
+from grants.utils import (
+    emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_user_code, is_grant_team_member,
+    sync_payout,
+)
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
@@ -251,7 +254,7 @@ def api_auth_profile(request):
             )
         profile = GAK.profile
 
-    GAK = {'_key': GAK.key, '_secret': GAK.secret} if GAK else None 
+    GAK = {'_key': GAK.key, '_secret': GAK.secret} if GAK else None
 
     return profile, GAK
 
@@ -390,9 +393,6 @@ grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {gra
 order by grants_subscription.id desc
 
     """
-    print(query)
-    start, end = helper_grants_round_start_end_date(request, round_id)
-    query = f"select distinct contributor_address from grants_subscription where created_on BETWEEN '{start}' AND '{end}' and grant_id = '{grant_id}' {hide_wallet_address_anonymized_sql}"
     earnings = query_to_results(query)
 
     meta_data = {
@@ -482,7 +482,7 @@ def grants(request):
     return grants_by_grant_type(request, _type)
 
 
-def get_collections(user, keyword, sort='-modified_on', collection_id=None, following=None,
+def get_collections(user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
                     idle_grants=None, only_contributions=None, featured=False):
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
 
@@ -742,8 +742,11 @@ def build_grants_by_type(
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     if clr_round:
-        _grants = _grants.filter(**clr_round.grant_filters)
+        if clr_round.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
+            _grants = _grants.filter(pk__in=grant_ids)
 
+        _grants = _grants.filter(**clr_round.grant_filters)
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
     if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
@@ -2535,6 +2538,7 @@ def grants_bulk_add(request, grant_str):
     views = redis.incr(key)
 
     grants_data = grant_str.split(':')[0].split(',')
+    grant_ids = []
 
     for ele in grants_data:
         # new format will support amount and token in the URL separated by ;
@@ -2544,6 +2548,7 @@ def grants_bulk_add(request, grant_str):
             grants[grant_id] = {
                 'id': int(grant_id)
             }
+            grant_ids.append(grant_id)
 
             if len(grant_data) == 3:  # backward compatibility
                 grants[grant_id]['amount'] = grant_data[1]
@@ -2551,7 +2556,9 @@ def grants_bulk_add(request, grant_str):
 
     by_whom = ""
     prefix = ""
+    handle = ''
     try:
+        handle = f"{grant_str.split(':')[1]}"
         by_whom = f"by {grant_str.split(':')[1]}"
         prefix = f"{grant_str.split(':')[2]} : "
     except:
@@ -2568,9 +2575,13 @@ def grants_bulk_add(request, grant_str):
     grant_titles = ", ".join([grant['obj'].title for grant in grants])
     title = f"{prefix}{len(grants)} Grants in Shared Cart {by_whom} : Viewed {views} times"
 
+    grant_ids = ",".join([str(ele) for ele in grant_ids])
+    avatar_url = f'https://gitcoin.co/dynamic/grants_cart_thumb/{handle}/{grant_ids}'
     context = {
         'grants': grants,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': avatar_url,
+        'avatar_height': 875,
+        'avatar_width': 1740,
         'title': title,
         'card_desc': "Click to Add All to Cart: " + grant_titles
 
@@ -3145,6 +3156,20 @@ def add_grant_from_collection(request, collection_id):
         'grants': grants,
     })
 
+@cache_page(60 * 60)
+def cart_thumbnail(request, profile, grants):
+    width = int(request.GET.get('w', 348 * 5))
+    height = int(request.GET.get('h', 175 * 5))
+    grant_ids = grants.split(",")
+    grant_ids = [ele for ele in grant_ids if ele]
+    grants = Grant.objects.filter(pk__in=grant_ids).order_by('-amount_received_in_round')[:4]
+    profile = Profile.objects.get(handle=profile.lower())
+    thumbnail = generate_img_thumbnail_helper(grants, profile, width, height)
+
+    response = HttpResponse(content_type="image/png")
+    thumbnail.save(response, "PNG")
+
+    return response
 
 @login_required
 @staff_member_required

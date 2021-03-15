@@ -1443,6 +1443,7 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+@cached_view(timeout=60)
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1452,6 +1453,7 @@ def tokens(request):
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
 
+@cached_view(timeout=60)
 def json_tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']

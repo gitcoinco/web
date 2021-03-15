@@ -17,6 +17,7 @@ from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
+from django.utils import timezone
 
 logger = get_task_logger(__name__)
 
@@ -31,6 +32,10 @@ def lineno():
 
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
 
     # KO hack 12/14/2020
     # this will prevent tasks on grants that have been issued from an app server from being immediately 
@@ -50,13 +55,17 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
     
     # contributor counts
-    do_calc = (time.time() - (900)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
+    do_calc = (time.time() - (2 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
     if do_calc:
         print("last_calc_time_contributor_counts")
         instance.contribution_count = instance.get_contribution_count
+        print(lineno(), round(time.time(), 2))
         instance.contributor_count = instance.get_contributor_count()
+        print(lineno(), round(time.time(), 2))
         instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
+        print(lineno(), round(time.time(), 2))
         instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+        print(lineno(), round(time.time(), 2))
         instance.metadata['last_calc_time_contributor_counts'] = time.time()
 
     # cheap calcs
@@ -67,7 +76,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # sybil amount + amount received amount
     print(lineno(), round(time.time(), 2))
-    do_calc = (time.time() - (400 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
+    do_calc = (time.time() - (800 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_sybil_and_contrib_amounts', 0)
     if do_calc:
         print("last_calc_time_sybil_and_contrib_amounts")
         instance.amount_received_in_round = 0
@@ -75,7 +84,18 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.monthly_amount_subscribed = 0
         instance.sybil_score = 0
         for subscription in instance.subscriptions.all():
-            value_usdt = subscription.get_converted_amount(False)
+            
+            value_usdt = subscription.amount_per_period_usdt
+            
+            # recalculate usdt value
+            created_recently = subscription.created_on > (timezone.now() - timezone.timedelta(days=10))
+            if not value_usdt and created_recently:
+                value_usdt = subscription.get_converted_amount(False)
+                if value_usdt:
+                    subscription.amount_per_period_usdt = value_usdt
+                    subscription.save()
+
+            # calcualte usdt value in aggregate
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
@@ -83,9 +103,6 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                         instance.amount_received_in_round += Decimal(value_usdt)
                         instance.sybil_score += subscription.contributor_profile.sybil_score
 
-            if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-                if subscription.num_tx_approved != 1:
-                    instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         instance.metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
 
     from django.contrib.contenttypes.models import ContentType
@@ -131,27 +148,6 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             wall_of_love[key] += 1
     wall_of_love = sorted(wall_of_love.items(), key=lambda x: x[1], reverse=True)
     instance.metadata['wall_of_love'] = wall_of_love
-
-    # save related addresses
-    # related = same contirbutor, same cart
-    print(lineno(), round(time.time(), 2))
-    do_calc = (time.time() - (3600 * 24)) > instance.metadata.get('last_calc_time_related', 0)
-    if do_calc:
-        print("last_calc_time_related")
-        related = {}
-        from django.utils import timezone
-        for subscription in instance.subscriptions.all():
-            _from = subscription.created_on - timezone.timedelta(hours=1)
-            _to = subscription.created_on + timezone.timedelta(hours=1)
-            profile = subscription.contributor_profile
-            for _subs in profile.grant_contributor.filter(created_on__gt=_from, created_on__lt=_to).exclude(grant__id=grant_id):
-                key = _subs.grant.pk
-                if key not in related.keys():
-                    related[key] = 0
-                related[key] += 1
-        instance.metadata['related'] = sorted(related.items() ,  key=lambda x: x[1], reverse=True)
-        instance.metadata['last_calc_time_related'] = time.time()
-    print(lineno(), round(time.time(), 2))
 
     instance.calc_clr_round()
     print(lineno(), round(time.time(), 2))
@@ -250,7 +246,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     comment=comment)
 
         # emails to grant owner
-        new_supporter(grant, subscription)
+        try:
+            new_supporter(grant, subscription)
+        except Exception as e:
+            logger.exception(e)
 
         # emails to contributor
         if send_supporter_mail:
@@ -258,7 +257,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                 'grant': grant,
                 'subscription': subscription
             }]
-            thank_you_for_supporting(grants_with_subscription)
+            try:
+                thank_you_for_supporting(grants_with_subscription)
+            except Exception as e:
+                logger.exception(e)
 
         update_grant_metadata.delay(grant_id)
         return grant, subscription
@@ -284,7 +286,10 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
-    thank_you_for_supporting(grants_with_subscription)
+    try:
+        thank_you_for_supporting(grants_with_subscription)
+    except Exception as e:
+        logger.exception(e)
 
 
 @app.shared_task(bind=True, max_retries=1)

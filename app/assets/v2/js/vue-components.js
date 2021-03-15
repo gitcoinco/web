@@ -644,7 +644,7 @@ Vue.component('project-card', {
         <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
       </div>
       <div class="card-body">
-        <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+        <h5 class="card-title font-weight-bold text-left" v-html="project.name"></h5>
         <div class="my-2">
           <p class="text-left text-muted font-smaller-1">
             [[ project.summary | truncate(500) ]]
