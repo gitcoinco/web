@@ -12,7 +12,8 @@ Vue.component('grants-ingest-contributions', {
     return {
       form: {
         txHash: undefined, // user transaction hash, used to ingest L1 donations
-        userAddress: undefined // user address, used to ingest zkSync (L2) donations
+        userAddress: undefined, // user address, used to ingest zkSync (L2) donations
+        handle: undefined // user to ingest under -- ignored unless you are a staff
       },
       errors: {}, // keys are errors that occurred
       submitted: false // true if form has been submitted and we are waiting on response
@@ -116,7 +117,7 @@ Vue.component('grants-ingest-contributions', {
       // so to workaround that we ask the user for a signature, and the backend will verify that signature
       const baseMessage = 'Sign this message as verification that you control the provided wallet address'; // base message that will be signed
 
-      await postToDatabaseManualIngestion([txHash], userAddress, baseMessage); // this has it's own try/catch error handler
+      await postToDatabaseManualIngestion([txHash], userAddress, baseMessage, this.form.handle); // this method has it's own try/catch error handler
       this.resetForm();
     },
 

@@ -233,13 +233,23 @@ const signMessage = async(userAddress, baseMessage) => {
  * length one. For zkSync checkout, this is an array with a unique transaction hash for each contribution
  * @param {String} userAddress User's address
  * @param {String} baseMessage Message to sign
+ * @param {String} handle user to ingest under -- ignored unless you are a staff
  */
-const postToDatabaseManualIngestion = async(txHash, userAddress, baseMessage) => {
-  // Determine if this was a zkSync checkout or standard L1 checkout. For this endpoint, we pass a txHash
-  // to ingest L1 contributions or an address to pass L2 contributions
-  const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
-  
-  txHash = checkout_type === 'eth_std' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
+const postToDatabaseManualIngestion = async(txHash, userAddress, baseMessage, handle = undefined) => {
+  // This method is used in two places:
+  //   1. If called as fallback after checkout, we'll have both a txHash and userAddress parameter
+  //   2. If called on the add-missing-contributions page, well only have one or the other
+  //
+  // Therefore we can detect if we're ingesting an L1 or L2 checkout as follows:
+  //   - If the txHash parameter starts with 'sync', that indicates a zkSync transaction hash, so checkout type
+  //     is eth_zksync
+  //   - If the txHash parameter is an empty string, only an address was provided, and we manually ingest zkSync
+  //     via address, so checkout_type is eth_zksync
+  //   - Otherwise, we are ingesting for L1, so checkout_type is eth_std
+  const checkout_type = txHash[0].startsWith('sync') || txHash[0] === '' ? 'eth_zksync' : 'eth_std';
+
+  // We only want one of these two to be defined, since we only ingest one at a time
+  txHash = checkout_type === 'eth_std' ? txHash[0] : ''; // txHash is always an array of hashes from checkout or empty if add-missing-contributions page
   userAddress = checkout_type === 'eth_zksync' ? userAddress : '';
 
   // Get user's signature to prevent ingesting arbitrary transactions under their own username, then ingest
@@ -248,7 +258,7 @@ const postToDatabaseManualIngestion = async(txHash, userAddress, baseMessage) =>
   const url = '/grants/ingest';
   const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
   const network = document.web3network || 'mainnet';
-  const payload = { csrfmiddlewaretoken, txHash, userAddress, signature, message, network };
+  const payload = { csrfmiddlewaretoken, txHash, userAddress, signature, message, network, handle};
   const postParams = { method: 'POST', headers, body: new URLSearchParams(payload) };
   let json; // response
 
@@ -267,7 +277,7 @@ const postToDatabaseManualIngestion = async(txHash, userAddress, baseMessage) =>
   } catch (err) {
     console.error(err);
     const message = `Your contribution was successful, but was not recognized by our database. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`;
-    
+
     _alert(message, 'error');
     throw new Error(message);
   }
