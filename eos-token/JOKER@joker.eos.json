@@ -1,0 +1,20 @@
+{
+    "symbol": "JOKER",
+    "account_name": "joker.eos",
+    "overview": {
+        "en": "JOKER token is the value carrier of JOKER.ONE ecosystem that it leverages a greater value for the dApps",
+        "zh": "JOKER代币是JOKER.ONE生态系统的价值载体，它为dApps发挥了很大的价值"
+    },
+    "email": "contact@joker.one",
+    "website": "https://www.joker.one/",
+    "whitepaper": "https://www.joker.one/whitepaper",
+    "published_on": "2020-10-31",
+    "links": {
+        "twitter": "https://twitter.com/jokerdotone",
+        "telegram": "https://t.me/jokerdotoneofficial",
+        "github": "https://github.com/JOKERdotONE/JOKER.ONE",
+        "reddit": "https://www.reddit.com/user/JokerdotOne",
+        "medium": "https://medium.com/jokerdotone",
+        "youtube": "https://www.youtube.com/channel/UCYr2J-X_SEJzuHr0RfZylfQ"
+    }
+}
