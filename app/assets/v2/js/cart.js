@@ -1055,75 +1055,10 @@ Vue.component('grants-cart', {
         // Something went wrong, so we use the manual ingestion process instead
         console.error(err);
         console.log('Standard contribution ingestion failed, falling back to manual ingestion');
-        await this.postToDatabaseManualIngestion(txHash, userAddress);
+        const baseMessage = 'Something went wrong, but we want to ensure your contributions are counted!\n\nSign this message as verification that you control the provided wallet address so we can process your contributions';
+
+        await postToDatabaseManualIngestion(txHash, userAddress, baseMessage);
       }
-    },
-
-    // Alternative to postToDatabase that uses the manual ingestion process
-    async postToDatabaseManualIngestion(txHash, userAddress) {
-      // Determine if this was a zkSync checkout or standard L1 checkout. For this endpoint, we pass a txHash
-      // to ingest L1 contributions or an address to pass L2 contributions
-      const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
-      
-      txHash = checkout_type === 'eth_std' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
-      userAddress = checkout_type === 'eth_zksync' ? userAddress : '';
-
-      // Get user's signature to prevent ingesting arbitrary transactions under your own username, then ingest
-      const { signature, message } = await this.signMessage(userAddress);
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const url = '/grants/ingest';
-      const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
-      const network = document.web3network || 'mainnet';
-      const payload = { csrfmiddlewaretoken, txHash, userAddress, signature, message, network };
-      const postParams = { method: 'POST', headers, body: new URLSearchParams(payload) };
-      let json; // response
-
-      // Send saveSubscription request
-      try {
-        _alert('Please be patient, as manual ingestion may take 1-2 minutes', 'info', '3000');
-        const res = await fetch(url, postParams);
-
-        json = await res.json();
-        console.log('ingestion response: ', json);
-        if (!json.success) {
-          console.log('ingestion failed');
-          throw new Error(`Your transactions could not be processed. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`);
-        }
-      } catch (err) {
-        console.error(err);
-        const message = `Your contribution was successful, but was not recognized by our database. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`;
-        
-        _alert(message, 'error');
-        throw new Error(message);
-      }
-    },
-
-    // Asks user to sign a message as verification they own the provided address
-    async signMessage(userAddress) {
-      const baseMessage = 'Something went wrong, but we want to ensure your contributions are counted!\n\nSign this message as verification that you control the provided wallet address so we can process your contributions'; // base message that will be signed
-      const ethersProvider = new ethers.providers.Web3Provider(provider); // ethers provider instance
-      const signer = ethersProvider.getSigner(); // ethers signers
-      const { chainId } = await ethersProvider.getNetwork(); // append chain ID if not mainnet to mitigate replay attack
-      const message = chainId === 1 ? baseMessage : `${baseMessage}\n\nChain ID: ${chainId}`;
-
-      // Get signature from user
-      const isValidSignature = (sig) => ethers.utils.isHexString(sig) && sig.length === 132; // used to verify signature
-      let signature = await signer.signMessage(message); // prompt to user is here, uses eth_sign
-
-      // Fallback to personal_sign if eth_sign isn't supported (e.g. for Status and other wallets)
-      if (!isValidSignature(signature)) {
-        signature = await ethersProvider.send(
-          'personal_sign',
-          [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), userAddress.toLowerCase() ]
-        );
-      }
-
-      // Verify signature
-      if (!isValidSignature(signature)) {
-        throw new Error(`Invalid signature: ${signature}`);
-      }
-
-      return { signature, message };
     },
 
     /**

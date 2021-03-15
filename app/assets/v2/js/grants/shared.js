@@ -194,3 +194,81 @@ const getFormData = object => {
   Object.keys(object).forEach(key => formData.append(key, object[key]));
   return formData;
 };
+
+/**
+ * @notice Asks user to sign a message
+ * @param {String} userAddress User's address
+ * @param {String} baseMessage Message to sign
+ * @returns The signature and the message
+ */
+const signMessage = async(userAddress, baseMessage) => {
+  const ethersProvider = new ethers.providers.Web3Provider(provider); // ethers provider instance
+  const signer = ethersProvider.getSigner(); // ethers signers
+  const { chainId } = await ethersProvider.getNetwork(); // append chain ID if not mainnet to mitigate replay attack
+  const message = chainId === 1 ? baseMessage : `${baseMessage}\n\nChain ID: ${chainId}`;
+
+  // Get signature from user
+  const isValidSignature = (sig) => ethers.utils.isHexString(sig) && sig.length === 132; // used to verify signature
+  let signature = await signer.signMessage(message); // prompt to user is here, uses eth_sign
+
+  // Fallback to personal_sign if eth_sign isn't supported (e.g. for Status and other wallets)
+  if (!isValidSignature(signature)) {
+    signature = await ethersProvider.send(
+      'personal_sign',
+      [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), userAddress.toLowerCase() ]
+    );
+  }
+
+  // Verify signature
+  if (!isValidSignature(signature)) {
+    throw new Error(`Invalid signature: ${signature}`);
+  }
+
+  return { signature, message };
+};
+
+/**
+ * @notice Ingests a user's contributions into the database
+ * @param {String[]} txHash Array of transaction hashes from the checkout. For standard checkout, this is an array of
+ * length one. For zkSync checkout, this is an array with a unique transaction hash for each contribution
+ * @param {String} userAddress User's address
+ * @param {String} baseMessage Message to sign
+ */
+const postToDatabaseManualIngestion = async(txHash, userAddress, baseMessage) => {
+  // Determine if this was a zkSync checkout or standard L1 checkout. For this endpoint, we pass a txHash
+  // to ingest L1 contributions or an address to pass L2 contributions
+  const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
+  
+  txHash = checkout_type === 'eth_std' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
+  userAddress = checkout_type === 'eth_zksync' ? userAddress : '';
+
+  // Get user's signature to prevent ingesting arbitrary transactions under their own username, then ingest
+  const { signature, message } = await signMessage(userAddress, baseMessage);
+  const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const url = '/grants/ingest';
+  const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+  const network = document.web3network || 'mainnet';
+  const payload = { csrfmiddlewaretoken, txHash, userAddress, signature, message, network };
+  const postParams = { method: 'POST', headers, body: new URLSearchParams(payload) };
+  let json; // response
+
+  // Send saveSubscription request
+  try {
+    _alert('Please be patient, as manual ingestion may take 1-2 minutes', 'info', '3000');
+    const res = await fetch(url, postParams);
+
+    json = await res.json();
+    console.log('ingestion response: ', json);
+    if (!json.success) {
+      console.log('ingestion failed');
+      throw new Error(`Your transactions could not be processed. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`);
+    }
+    _alert('Success!', 'success');
+  } catch (err) {
+    console.error(err);
+    const message = `Your contribution was successful, but was not recognized by our database. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`;
+    
+    _alert(message, 'error');
+    throw new Error(message);
+  }
+};
