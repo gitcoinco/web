@@ -1,0 +1,23 @@
+{
+  "symbol": "10SET",
+  "address": "0x7FF4169a6B5122b664c51c95727d87750eC07c84",
+  "overview":{
+        "en": "Tenset is the world's first deflationary token with a smart staking system that bridges cryptocurrencies with the stock market. Tenset adds 2% fee to every transfer. Half of the fee is burned creating deflationary effect and another half is automatically distributed to all token holders."
+  },
+  "email": "g.domanowski@tenset.io",
+  "website": "https://tenset.io/",
+  "whitepaper": "https://tenset.io/wp-content/uploads/2021/02/Tenset_Whitepaper_En_v3.1.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-02-21",
+  "initial_price":{
+        "ETH":"0.0001 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/TenseT_io/",
+    "telegram": "https://t.me/tenset_io_eng",
+    "github": "https://github.com/TensetIO/tenset",
+    "facebook": "https://www.facebook.com/tensetio",
+    "medium": "https://10set.medium.com/",
+    "linkedin": "https://www.linkedin.com/company/tenset/"
+  }
+}
