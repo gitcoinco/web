@@ -704,7 +704,7 @@
 }
 
 @media only screen and (min-width: 768px) {
-  .grant .side-cart-open #sidebar_container+div {
+  .grant .side-cart-open #sidebar_container + div {
     padding-right: 33.333%!important;
   }
 
@@ -720,7 +720,7 @@
 }
 
 @media only screen and (min-width: 992px) {
-  .grant .side-cart-open #sidebar_container+div {
+  .grant .side-cart-open #sidebar_container + div {
     padding-right: 25%!important;
   }
 
