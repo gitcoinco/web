@@ -3617,6 +3617,19 @@ def ingest_contributions(request):
             r.raise_for_status()
             transactions = r.json()  # array of zkSync transactions
 
+            # Paginate if required. API returns last 100 transactions by default, so paginate if response length was 100
+            if len(transactions) == 100:
+                max_length = 500 # only paginate until a max of most recent 500 transactions or no transaction are left
+                last_tx_id = transactions[-1]["tx_id"]
+                while len(transactions) < max_length:
+                    r = requests.get(f"{base_url}/account/{user_address}/history/older_than?tx_id={last_tx_id}") # gets next 100 zkSync transactions
+                    r.raise_for_status()
+                    new_transactions = r.json()
+                    if (len(new_transactions) == 0):
+                        break
+                    transactions.extend(new_transactions) # append to array
+                    last_tx_id = transactions[-1]["tx_id"]
+
             for transaction in transactions:
                 # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
                 if transaction["tx"]["type"] != "Transfer":
