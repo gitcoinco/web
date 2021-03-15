@@ -65,7 +65,31 @@ Vue.component('grants-cart', {
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      isZkSyncDown: false // disable zkSync when true
+      isZkSyncDown: false, // disable zkSync when true
+      chainScripts: {
+        'POLKADOT': [
+          `${static_url}v2/js/lib/polkadot/core.min.js`,
+          `${static_url}v2/js/lib/polkadot/extension.min.js`,
+          `${static_url}v2/js/lib/polkadot/utils.js`,
+          `${static_url}v2/js/grants/cart/polkadot_extension.js`
+        ],
+        'BINANCE': [
+          `${static_url}v2/js/lib/binance/utils.js`,
+          `${static_url}v2/js/grants/cart/binance_extension.js`
+        ],
+        'HARMONY': [
+          `${static_url}v2/js/lib/harmony/HarmonyUtils.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyJs.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyAccount.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyCrypto.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyNetwork.browser.js`,
+          `${static_url}v2/js/lib/harmony/utils.js`,
+          `${static_url}v2/js/grants/cart/harmony_extension.js`
+        ],
+        'RSK': [
+          `${static_url}v2/js/grants/cart/rsk_extension.js`
+        ]
+      }
     };
   },
 
@@ -80,6 +104,15 @@ Vue.component('grants-cart', {
 
       return result;
 
+    },
+    grantsTenants() {
+      let vm = this;
+      var grantsTenants = vm.grantData.reduce(function(result, grant) {
+
+        return result.concat(grant.tenants);
+      }, []);
+
+      return grantsTenants;
     },
     grantsCountByTenant() {
       let vm = this;
@@ -321,7 +354,11 @@ Vue.component('grants-cart', {
     },
 
     isPolkadotExtInstalled() {
-      return polkadot_extension_dapp.isWeb3Injected;
+      try {
+        return polkadot_extension_dapp.isWeb3Injected;
+      } catch (e) {
+        return false;
+      }
     },
 
     isRskExtInstalled() {
@@ -343,6 +380,16 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    setChainScripts: function() {
+      let vm = this;
+
+      vm.grantsTenants.forEach(function(tenant) {
+        tenant = tenant === 'KUSAMA' ? 'POLKADOT' : tenant;
+        if (vm.chainScripts[tenant]) {
+          vm.loadDynamicScripts(null, vm.chainScripts[tenant], `${tenant}-script`);
+        }
+      });
+    },
     // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
     // payload. This component listens for that event and uses the data to show the user details
     // and suggestions about their checkout (gas cost estimates and why zkSync may not be
@@ -1234,6 +1281,26 @@ Vue.component('grants-cart', {
         return cartData;
       }
       return false;
+    },
+    loadDynamicScripts: function(callback, urlObj, id) {
+      urlObj.forEach(function(source, index) {
+        let existingScript = document.getElementById(id + index);
+
+        if (!existingScript) {
+          const script = document.createElement('script');
+
+          script.src = urlObj[index];
+          script.id = id + index;
+          document.body.appendChild(script);
+
+          script.onload = () => {
+            if (callback)
+              callback();
+          };
+        }
+        if (existingScript && callback)
+          callback();
+      });
     }
   },
 
@@ -1376,6 +1443,9 @@ Vue.component('grants-cart', {
       elapsedTime += delay;
       await this.sleep(delay);
     }
+    // Load needed scripts based on tenants
+    this.setChainScripts();
+
     // Support responsive design
     window.addEventListener('resize', this.onResize);
 
