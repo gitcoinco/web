@@ -258,7 +258,8 @@ urlpatterns = [
     re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
 
     #passport
-    re_path(r'^passport?$', passport.views.index, name='passport_gen'),
+    re_path(r'^passport/$', passport.views.index, name='passport_gen'),
+    path('passport/<str:pattern>', passport.views.passport, name='view_passport'),
 
     # Contributor dashboard
     path(

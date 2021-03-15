@@ -777,8 +777,8 @@ $(document).ready(function() {
 
   $(document).on('click', '#gen_passport', function(e) {
     e.preventDefault();
-    if(document.web3network != 'rinkeby'){
-      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'error', 1000);
+    if(document.web3network != 'rinkeby' && document.web3network != 'mainnet'){
+      _alert('Please connect your web3 wallet to mainnet or rinkeby + unlock it', 'error', 1000);
       return;
     }
     const accounts = web3.eth.getAccounts();
@@ -790,6 +790,12 @@ $(document).ready(function() {
         'coinbase': ethAddress,
       }
       $.get("/passport", params, function(response){
+        let status = response['status'];
+        if (status == 'error'){
+          _alert(response['msg'], 'error', 5000);
+          return
+        }
+
         let contract_address = response.contract_address;
         let contract_abi = response.contract_abi;
         let nonce = response.nonce;
