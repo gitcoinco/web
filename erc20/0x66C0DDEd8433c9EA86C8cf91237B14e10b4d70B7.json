@@ -1,0 +1,17 @@
+{
+	"symbol": "Mars",
+	"address": "0x66C0DDEd8433c9EA86C8cf91237B14e10b4d70B7",
+	"overview": {
+		"en": "Mars Project is launched and managed by Poolin Singapore in January 2021. As a bitcoin mining pool, Poolin issued an ERC-20 token backed by its bitcoin hashrate in an effort to bridge proof-of-work mining and yield farming.",
+                 "zh": "Mars是首个基于以太坊生态的去中心化标准算力协议。Mars协议通过结合标准化算力产品和流动性挖矿，将实体PoW挖矿整合为链上协议。其中POW挖矿产出连续且可被精确计算，帮助用户实现采矿更稳定、计算更简便。另外，协议的用户还可以通过质押算力Token、为不同的交易对提供流动性获得平台代币MARS奖励，进一步缩短DeFi到比特币社区的距离。"
+	},
+	"email": "",
+	"website": "https://mars.poolin.fi/#/",
+	"state": "NORMAL",
+	"links": {
+		"blog": "https://marsproject.medium.com/",
+		"twitter": "https://twitter.com/MarsProject2020",
+		"telegram": "https://t.me/marsproject1",
+		"github": "https://github.com/MarsFi/POWToken"
+	}
+}
