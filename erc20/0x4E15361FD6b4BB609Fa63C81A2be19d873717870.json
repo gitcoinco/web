@@ -1,0 +1,12 @@
+{
+  "symbol": "FTM",
+  "address": "0x4E15361FD6b4BB609Fa63C81A2be19d873717870",
+  "overview": {
+    "en": "Fantom is a directed acyclic graph (DAG) smart contract platform providing decentralized finance (DeFi) services to developers using its own bespoke consensus algorithm.Together with its in-house token FTM, Fantom aims to solve problems associated with smart-contract platforms, specifically transaction speed, which developers say they have reduced to under two seconds.The Fantom Foundation, which oversees the Fantom product offering, was originally created in 2018, with the launch of OPERA, Fantom’s mainnet, coming in December 2019.",
+    "zh": "FTM是Fantom的代币，而Fantom，它是在DAG基础上发展起来的一种新型智能合约平台，它旨在解决现存的公共分布式账本技术中的可扩展性问题。Fantom平台计划通过使用现有基于DAG协议的改进版本将自己与传统的基于块的分布式账本存储基础架构区分开来。它采用一种名为“lachesis协议”的新协议来维持共识，该协议将被整合到Fantom OPERA链中，其目的是允许在Fantom OPERA链之上建立一批程序，让所有的用户能够享受成本几乎为零的即时交易。Fantom的目标是让世界上所有的交易机构能够相互兼容，它还想创建一个能够以低成本实现实时交易和数据共享的生态系统。"
+    
+  },
+  "website": "https://fantom.foundationa/",
+  "state": "NORMAL"
+
+}
