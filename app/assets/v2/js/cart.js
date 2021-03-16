@@ -280,22 +280,23 @@ Vue.component('grants-cart', {
       // The below heuristics are used instead of `estimateGas()` so we can send the donation
       // transaction before the approval txs are confirmed, because if the approval txs
       // are not confirmed then estimateGas will fail.
+      if (this.chainId === '1') {
+        // If we have a cart where all donations are in Dai, we use a linear regression to
+        // estimate gas costs based on real checkout transaction data, and add a 50% margin
+        const donationCurrencies = this.donationInputs.map(donation => donation.token);
+        const daiAddress = this.getTokenByName('DAI').addr;
+        const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
 
-      // If we have a cart where all donations are in Dai, we use a linear regression to
-      // estimate gas costs based on real checkout transaction data, and add a 50% margin
-      const donationCurrencies = this.donationInputs.map(donation => donation.token);
-      const daiAddress = this.getTokenByName('DAI').addr;
-      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
-
-      if (isAllDai) {
-        if (donationCurrencies.length === 1) {
-          // Special case since we overestimate here otherwise
-          return 100000;
+        if (isAllDai) {
+          if (donationCurrencies.length === 1) {
+            // Special case since we overestimate here otherwise
+            return 100000;
+          }
+          // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
+          // then generating a conservative best-fit line
+          // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
+          return 27500 * donationCurrencies.length + 125000;
         }
-        // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
-        // then generating a conservative best-fit line
-        // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        return 27500 * donationCurrencies.length + 125000;
       }
 
       // Otherwise, based on contract tests, we use the more conservative heuristic below to get
@@ -321,6 +322,7 @@ Vue.component('grants-cart', {
           return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
 
         }
+
         return accumulator + 100000; // generic token donation gas estimate
       }, 0);
 
