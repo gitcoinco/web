@@ -67,7 +67,7 @@ along with this program. If not, see
       {% include 'grants/shared/landing_hero.html' %}
 
       <div class="row grants-details-parent mx-0">
-        <div id="grants-details" class="no-gutters w-100">
+        <div id="grants-details" :class="`no-gutters w-100 ${view == 'list' ? 'list-view' : 'grid-view'}`">
           <div style="background-size: contain;" id="grant-background-image-mount-point">
             <div
               style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px;">
