@@ -1,7 +1,7 @@
 const initPolkadotConnection = async(grant, vm) => {
 
   // step 1: check if web3 is injected
-  if (!polkadot_utils.isWeb3Injected) {
+  if (!polkadot_utils.isWeb3Injected()) {
     vm.updatePaymentStatus(grant.grant_id, 'failed');
     _alert({ message: `Please ensure your Polkadot One wallet is installed and unlocked`}, 'error');
     return;
