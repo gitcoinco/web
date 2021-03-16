@@ -66,6 +66,7 @@ Vue.component('grants-cart', {
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
+      isPolkadotExtInstalled: false,
       chainScripts: {
         'POLKADOT': [
           `${static_url}v2/js/lib/polkadot/core.min.js`,
@@ -352,15 +353,6 @@ Vue.component('grants-cart', {
     isBinanceExtInstalled() {
       return window.BinanceChain || false;
     },
-
-    isPolkadotExtInstalled() {
-      try {
-        return polkadot_extension_dapp.isWeb3Injected;
-      } catch (e) {
-        return false;
-      }
-    },
-
     isRskExtInstalled() {
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
@@ -385,9 +377,26 @@ Vue.component('grants-cart', {
 
       vm.grantsTenants.forEach(function(tenant) {
         tenant = tenant === 'KUSAMA' ? 'POLKADOT' : tenant;
+        let cb = tenant === 'POLKADOT' ? vm.isPolkadotLoaded : null;
+
         if (vm.chainScripts[tenant]) {
-          vm.loadDynamicScripts(null, vm.chainScripts[tenant], `${tenant}-script`);
+          vm.loadDynamicScripts(cb, vm.chainScripts[tenant], `${tenant}-script`);
         }
+      });
+    },
+    async isPolkadotLoaded() {
+      let vm = this;
+
+      const asyncFunction = (t) => new Promise(resolve => setTimeout(resolve, t));
+
+      return (async() => {
+
+        while (!Object.prototype.hasOwnProperty.call(window, 'polkadot_extension_dapp'))
+          await asyncFunction(3000);
+        return await polkadot_extension_dapp.isWeb3Injected;
+      })().then(result => {
+        vm.isPolkadotExtInstalled = result;
+        return vm.isPolkadotExtInstalled;
       });
     },
     // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
