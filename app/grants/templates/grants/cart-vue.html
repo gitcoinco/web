@@ -42,8 +42,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-      
-      
+
+
       <div id="gc-grants-cart" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div class="container">
@@ -52,13 +52,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <h1 class="text-left text-black mt-5 mb-3">Grants Cart</h1>
 
             {% comment %} Main container {% endcomment %}
-            <div v-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row">
-              Your cart is empty.
-            </div>
 
-            <div v-else-if="isLoading" class="text-center mb-5">
+            <div v-if="isLoading" class="text-center mb-5">
               <loading-screen class="my-5"></loading-screen>
               <div>Fetching cart data...</div>
+            </div>
+
+            <div v-else-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row">
+              Your cart is empty.
             </div>
 
             <div v-else class="m-auto" style="padding-bottom: 10rem;">
