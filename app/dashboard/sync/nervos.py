@@ -1,65 +1,41 @@
 from django.utils import timezone
 
 import requests
-from dashboard.sync.helpers import record_payout_activity, txn_already_used
-
-
-def find_txn_on_nervos_explorer(fulfillment, network='mainnet'):
-    token_name = fulfillment.token_name
-    if token_name != 'cUSD' and token_name != 'CELO':
-        return None
-
-    funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
-    payeeAddress = fulfillment.fulfiller_address
-
-    blockscout_url = f'https://explorer.celo.org/api?module=account&action=tokentx&address={funderAddress}'
-    blockscout_response = requests.get(blockscout_url).json()
-    if blockscout_response['message'] and blockscout_response['result']:
-        for txn in blockscout_response['result']:
-            if (
-                txn['from'] == funderAddress.lower() and
-                txn['to'] == payeeAddress.lower() and
-                float(txn['value']) == float(amount) and
-                not txn_already_used(txn['hash'], token_name)
-            ):
-                return txn
-    return None
+from dashboard.sync.helpers import record_payout_activity
 
 
 def get_nervos_txn_status(txnid, network='mainnet'):
     if not txnid:
         return None
 
-    blockscout_url = f'https://explorer.celo.org/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    if network == 'mainnet':
+        base_url = 'https://api.explorer.nervos.org/api/v1'
+    else:
+        base_url = 'https://api.explorer.nervos.org/testnet/api/v1'
+    
+    explorer_url = f'{base_url}/transactions/{txnid}'
+    tip_block_number = f'{base_url}/statistics/tip_block_number'
 
-    blockscout_response = requests.get(blockscout_url).json()
+    tx_response = requests.get(explorer_url)
 
-    if blockscout_response['status'] and blockscout_response['result']:
+    tx_data = tx_response.json()['data']['attributes']
 
-        response = {
-            'blockNumber': int(blockscout_response['result']['blockNumber']),
-            'confirmations': int(blockscout_response['result']['confirmations'])
-        }
+    if tx_response.status_code == 200:
+        tip_block_number = requests.get(
+            tip_block_number_url).json()['data']['attributes']['tip_block_number']
+        confirmations = tip_block_number - tx_data['block_number']
+        output_status = tx_data['display_outputs'][0]['status']
 
-        if response['confirmations'] > 0:
-            response['has_mined'] = True
+        if confirmations > 0 and tx_data['tx_status'] == 'committed' and output_status == 'live':
+            return True
         else:
-            response['has_mined'] = False
-        return response
-
-    return None
+            return False
 
 
 def sync_nervos_payout(fulfillment):
-    if not fulfillment.payout_tx_id or fulfillment.payout_tx_id == "0x0":
-        txn = find_txn_on_celo_explorer(fulfillment)
-        if txn:
-            fulfillment.payout_tx_id = txn['hash']
-
-    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
-        txn_status = get_celo_txn_status(fulfillment.payout_tx_id)
-        if txn_status and txn_status.get('has_mined'):
+   if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
+        txn_status = get_nervos_txn_status(fulfillment.payout_tx_id)
+        if txn_status:
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
