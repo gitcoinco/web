@@ -454,48 +454,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 data=clr_prediction_curve,
             )
             clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
-            
-            try:
-                if clr_prediction_curve[0][1]:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_match",
-                        val=clr_prediction_curve[0][1],
-                        )
-                    max_twitter_followers = max(_grant.twitter_handle_1_follower_count, _grant.twitter_handle_2_follower_count)
-                    if max_twitter_followers:
-                        Stat.objects.create(
-                            created_on=from_date,
-                            key=_grant.title[0:43] + "_admt1",
-                            val=int(100 * clr_prediction_curve[0][1]/max_twitter_followers),
-                            )
-
-                if _grant.positive_round_contributor_count:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_pctrbs",
-                        val=_grant.positive_round_contributor_count,
-                        )
-                if _grant.amount_received_in_round:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_amt",
-                        val=_grant.amount_received_in_round,
-                        )
-            except:
-                pass
 
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
-
-    try :
-        Stat.objects.create(
-            key= clr_type + '_grants_round_6_saturation',
-            val=int(CLR_PERCENTAGE_DISTRIBUTED),
-        )
-    except:
-        pass
 
     return debug_output

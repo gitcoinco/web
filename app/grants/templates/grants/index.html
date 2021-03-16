@@ -110,7 +110,8 @@ along with this program. If not, see
                         <div style="background-color: #eee; font-size: 14px; text-align: center;">
                           <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
                         </div>
-                        <iframe :src="`/grants/getstats/?category=${category}`" style="width: 100%; height: 100%; min-height: 1000px;">
+                        <br>
+                        <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
                         </iframe>
                       </div>
                     </template>
