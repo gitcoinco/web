@@ -86,7 +86,7 @@
             :title="'{{brightid_status}}' === 'not_connected' ? 'Connect with BrightID' : 'Verify with BrightID'"
             :match-percent=25
             :is-verified="'{{brightid_status}}' === 'verified'"
-            :button-text="'{{brightid_status}}' === 'not_connected' ? 'Connect' : 'Verify'"
+            :button-text="'{{brightid_status}}' === 'not_connected' ? 'Connect' : ('{{brightid_status}}' === 'unknown' ? 'Check' : 'Verify')"
             @verify-button-pressed="showModal('brightid-modal')"
             >
             <template v-slot:description>

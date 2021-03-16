@@ -599,11 +599,11 @@ Vue.component('brightid-verify-modal', {
                   <template v-if="validationStep === 'pull_status'">
                     <div class="col-12 pt-2 pb-2 text-center">
                       <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
-                      <h2 class="font-title mt-2">Connect With BrightID</h2>
+                      <h2 class="font-title mt-2">Check With BrightID</h2>
                     </div>
                     <div class="col-12 pt-2">
                       <p>
-                      Pull your BrightID status by clicking on this button.
+                      Pull your BrightID status to continue.
                         <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Connect</a>
                       
                       </p>

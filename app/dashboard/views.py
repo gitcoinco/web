@@ -2928,12 +2928,12 @@ def get_profile_tab(request, profile, tab, prev_context):
         #2. not_verified - connected, but not verified
         #3. verified - connected, and verified
         context['brightid_status'] = 'not_connected'
-        if profile.brightid_uuid and not profile.is_brightid_verified:
+        if profile.brightid_uuid:
             context['brightid_status'] = 'unknown'
+        if profile.is_brightid_verified:
+            context['brightid_status'] = 'verified'
         if request.GET.get('pull_bright_id_status'):
             context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-        #if settings.DEBUG:
-        #    context['brightid_status'] = 'not_verified'
 
         try:
             context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
