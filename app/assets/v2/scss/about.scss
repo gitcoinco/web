@@ -102,8 +102,9 @@ h4 {
   opacity: .9;
 }
 
-#team .alt_avatar{
+#team .alt_avatar {
   border-radius: 150px;
+  object-fit: cover;
 }
 
 #team .avatar:hover {
