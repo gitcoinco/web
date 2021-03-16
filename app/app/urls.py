@@ -120,8 +120,6 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
-
-
     path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
 
     # mailing list

@@ -31,7 +31,7 @@ from grants.models import (
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
-from marketing.mails import new_grant_approved
+from marketing.mails import grant_more_info_required, new_grant_approved
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -203,6 +203,10 @@ class GrantAdmin(GeneralAdmin):
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
             self.message_user(request, "recaclulation of clr queued")
+        if "_request_more_info" in request.POST:
+            more_info = request.POST.get('more_info')
+            grant_more_info_required(obj, more_info)
+            self.message_user(request, "Grant has been successfully approved")
         if "_approve_grant" in request.POST:
             obj.active = True
             obj.is_clr_eligible = True

@@ -22,6 +22,7 @@ import json
 import re
 import statistics
 import time
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.db import connection
@@ -792,3 +793,13 @@ def articles():
             'alt': 'open kudos'
         }
     ]
+
+
+def build_utm_tracking(email_name):
+    params = {
+        'utm_source': 'gitcoin',
+        'utm_medium': 'email',
+        'utm_campaign': email_name
+    }
+
+    return urlencode(params)

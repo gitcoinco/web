@@ -226,6 +226,14 @@ class GrantCLR(SuperModel):
         return now >= self.start_date and now <= self.end_date
 
     @property
+    def happened_recently(self):
+        # returns true if we are within a week or 2 of this round
+        days = 14
+        now = timezone.now()
+        then = timezone.now() - timezone.timedelta(days=days)
+        return now >= self.start_date and then <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -576,6 +584,9 @@ class Grant(SuperModel):
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
+
+    def is_on_team(self, profile):
+        return is_grant_team_member(self, profile)
 
 
     def calc_clr_round(self):
@@ -1736,7 +1747,7 @@ class Contribution(SuperModel):
         if mechanism == 'originated_address':
             return self.originated_address
         else:
-            return self.subscription.contributor_profile.id
+            return self.profile_for_clr.id
 
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""

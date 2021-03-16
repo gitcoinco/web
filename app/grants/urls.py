@@ -28,7 +28,7 @@ from grants.views import (
     get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
     grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel,
     grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
-    grants_stats_view, ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
+    ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
     new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
     toggle_grant_favorite, verify_grant,
 )
@@ -52,7 +52,6 @@ urlpatterns = [
     path('clr/<str:customer_name>/<int:round_num>/<str:sub_round_slug>', clr_grants, name='clr_grants'),
     path('clr/<str:customer_name>/<int:round_num>/<str:sub_round_slug>/', clr_grants, name='clr_grants'),
 
-    path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('cards_info', get_grants, name='grant_cards_info'),

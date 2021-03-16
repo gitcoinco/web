@@ -15,7 +15,7 @@
           <!-- Owner/Project links -->
           <div class="row">
             <div class="col-auto text-center my-auto">
-              <i class="fas fa-fw fa-globe text-grey-300"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url]]</a>
+              <i class="fas fa-fw fa-globe text-grey-300"></i> <a target="_blank" :href="grant.reference_url">[[grant.reference_url | truncate(40)]]</a>
             </div>
             <div class="col-auto text-center my-auto">
               <i class="text-grey-300 fab fa-fw fa-twitter-square "></i> <a target="_blank" :href="`https://twitter.com/${grant.twitter_handle_1}`">@[[grant.twitter_handle_1]]</a>
@@ -41,10 +41,10 @@
               <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
                 <span v-b-tooltip.hover.bottom="grant.admin_address">
                   <i class="text-grey-300 fab fa-fw fa-ethereum"></i>
-                  <a :href="`https://etherscan.io/address/${grant.admin_address}`">[[grant.admin_address | truncateHash]]</a>
+                  <a :href="`https://etherscan.io/address/${grant.admin_address}`" target="_blank">[[grant.admin_address | truncateHash]]</a>
                   <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.admin_address"><i class="far fa-copy"></i></copy-clipboard></span>
                   <!-- <a target="_blank" :href="`https://etherscan.io/address/${grant.admin_address}`" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a> -->
-                  <!-- <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a> -->
+                  <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2)</a>
               </template>
 
               <template v-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
@@ -147,7 +147,7 @@
             <div class="col-auto text-center my-auto">
               <div class="d-flex justify-content-end font-body">
                 <div class="flex-fill text-md-left text-center" v-if="isUserLogged">
-                  <button @click="toggleFollowingGrant(grant.id, $event)" v-b-tooltip.hover.bottom="!grant.favorite ? 'follow' : 'unfollow'" :class="`btn btn-link font-smaller-5 mx-0 my-auto ${!grant.favorite ? 'text-grey-300' : 'text-primary'}`" :data-grant="grant.id">
+                  <button @click="toggleFollowingGrant(grant.id, $event)" v-b-tooltip.hover.bottom="!grant.favorite ? 'follow' : 'unfollow'" :class="`btn btn-link mx-0 my-auto ${!grant.favorite ? 'text-grey-300' : 'text-primary'}`" :data-grant="grant.id">
                     <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
                   </button>
                 </div>
@@ -422,7 +422,7 @@
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
           <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-          <input v-model.trim="grant.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
+          <input v-model.trim="grant.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
           <div class="text-danger" v-if="errors.reference_url">
             [[errors.reference_url]]
           </div>
@@ -454,7 +454,7 @@
         <!-- Github -->
         <div class="col-12 mb-3">
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
-          <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="150" type="url" placeholder="https://github.com/humanfund"/>
+          <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/humanfund"/>
         </div>
 
         <!-- Team Members -->

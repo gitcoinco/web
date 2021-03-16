@@ -9,7 +9,7 @@ Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
 
 
 {% if kudos_transfer.url %}
-{% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on {{kudos_transfer.github_url}}:
+{% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on {{kudos_transfer.github_url}}?{{ utm_tracking }}:
 {% endif %}
 
 {% if comments %}
@@ -26,5 +26,5 @@ No pressure, but if you wanted to redeem your kudos sooner rather than later tha
 {% endif %}
 
 {% if not already_redeemed %}
-Click here to redeem it: {{link}}
+Click here to redeem it: {{link}}?{{ utm_tracking }}
 {% endif %}
