@@ -1805,7 +1805,7 @@ class Contribution(SuperModel):
                     else:
                         self.success = False
                         self.validator_passed = False
-                        self.validator_comment = "txn pending for more than 1 days, assuming failure"
+                        self.validator_comment = "txn pending for more than 1 hours, assuming failure"
                         print(self.validator_comment)
                     return
 
