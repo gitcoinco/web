@@ -5,6 +5,7 @@ import time
 from decimal import Decimal
 
 from django.conf import settings
+from django.utils import timezone
 from django.utils.text import slugify
 
 import pytz
@@ -17,7 +18,6 @@ from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
-from django.utils import timezone
 
 logger = get_task_logger(__name__)
 
@@ -208,6 +208,9 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         include_for_clr = package.get('include_for_clr')
 
+        if subscription.contributor_profile.shadowbanned:
+            include_for_clr = False
+
         subscription.successful_contribution(
             subscription.new_approve_tx_id,
             include_for_clr,
@@ -286,6 +289,7 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
             "grant": grant,
             "subscription": subscription
         })
+        recalc_clr_if_x_minutes_old.delay(grant_id, 10)
     try:
         thank_you_for_supporting(grants_with_subscription)
     except Exception as e:
@@ -293,7 +297,29 @@ def batch_process_grant_contributions(self, grants_with_payload, profile_id, ret
 
 
 @app.shared_task(bind=True, max_retries=1)
+def recalc_clr_if_x_minutes_old(self, grant_id, minutes, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
+    return # KO 2020/03/13 - disabling this while i investigate queue processing issues.
+    # namely, this task was clogging up celery queues last night
+    # plus, this task is strictly additive (ie estimate_clr runs every hour already), this task 
+    # only creates incremental stats update on top of that.
+
+    with redis.lock(f"tasks:recalc_clr_if_x_minutes_old:{grant_id}", timeout=60 * 3):
+        obj = Grant.objects.get(pk=grant_id)
+        then = timezone.now() - timezone.timedelta(minutes=minutes)
+        if obj.last_clr_calc_date < then:
+            recalc_clr(grant_id)
+
+
+@app.shared_task(bind=True, max_retries=1)
 def recalc_clr(self, grant_id, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
     obj = Grant.objects.get(pk=grant_id)
     from django.utils import timezone
 

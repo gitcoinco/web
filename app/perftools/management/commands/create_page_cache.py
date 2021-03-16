@@ -67,11 +67,10 @@ def create_email_inventory_cache():
 
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
+    from grants.tasks import update_grant_metadata
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
-        grant = Grant.objects.get(pk=pk)
-        grant.calc_clr_round()
-        grant.save()
+        update_grant_metadata.delay(pk)
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
@@ -94,7 +93,7 @@ def create_grant_active_clr_mapping():
 
     # removes grants who are not in an active matching round from having a match prediction curve
     # waits 14 days from removing them tho
-    from grants.models import *
+    from grants.models import GrantCLRCalculation
     from_date = timezone.now() - timezone.timedelta(days=14)
     gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
     for gclr in gclrs:

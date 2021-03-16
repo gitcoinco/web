@@ -291,7 +291,7 @@ def fetch_data(clr_round, network='mainnet'):
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 
-    grants = Grant.objects.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+    grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
 
     if grant_filters:
         # Grant Filters (grant_type, category)
@@ -332,23 +332,41 @@ def populate_data_for_clr(grants, contributions, clr_round):
 
     mechanism="profile"
 
+    # 3-4s to get all the contributions
+    _contributions = list(contributions.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date).prefetch_related('profile_for_clr', 'subscription'))
+    _contributions_by_id = {}
+    for ele in _contributions:
+        key = ele.normalized_data.get('id')
+        if key not in _contributions_by_id.keys():
+            _contributions_by_id[key] = []
+        _contributions_by_id[key].append(ele)
+
     # set up data to load contributions for each grant
     for grant in grants:
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
         # contributions
-        contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+        contribs = _contributions_by_id.get(grant.id, [])
 
-        # combine
-        contributing_profile_ids = list(set([(c.identity_identifier(mechanism), c.profile_for_clr.trust_bonus) for c in contribs]))
+        # create arrays
+        contributing_profile_ids = []
+        contributions_by_id = {}
+        for c in contribs:
+            prof = c.profile_for_clr
+            key = prof.id
+            if key not in contributions_by_id.keys():
+                contributions_by_id[key] = []
+            contributions_by_id[key].append(c)
+            contributing_profile_ids.append((prof.id, prof.trust_bonus))
+
+        contributing_profile_ids = list(set(contributing_profile_ids))
 
         summed_contributions = []
 
         # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id, trust_bonus in contributing_profile_ids:
-                profile_contributions = contribs.filter(profile_for_clr__id=profile_id)
-                sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt * clr_round.contribution_multiplier for c in profile_contributions if c.subscription.amount_per_period_usdt]))
+                sum_of_each_profiles_contributions = sum(ele.normalized_data.get('amount_per_period_usdt') for ele in contributions_by_id[profile_id]) * float(clr_round.contribution_multiplier)
 
                 summed_contributions.append({
                     'id': str(profile_id),
@@ -365,6 +383,8 @@ def populate_data_for_clr(grants, contributions, clr_round):
 
 
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None):
+    import time
+
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
@@ -374,22 +394,31 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
+    print(f"- starting fetch_data at {round(time.time(),1)}")
     grants, contributions = fetch_data(clr_round, network)
 
     if contributions.count() == 0:
         print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
         return
 
+    print(f"- starting populate_data_for_clr at {round(time.time(),1)}")
     grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
 
     if only_grant_pk:
         grants = grants.filter(pk=only_grant_pk)
 
     # calculate clr given additional donations
+    print(f"- starting grants iter at {round(time.time(),1)}")
+    counter = 0
+    total_count = grants.count()
     for grant in grants:
         # five potential additional donations plus the base case of 0
         potential_donations = [0, 1, 10, 100, 1000, 10000]
         potential_clr = []
+
+        counter += 1
+        if counter % 10 == 0 or True:
+            print(f"- {counter}/{total_count} grants iter, pk:{grant.pk}, at {round(time.time(),1)}")
 
         for amount in potential_donations:
             # calculate clr with each additional donation and save to grants model
@@ -425,48 +454,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 data=clr_prediction_curve,
             )
             clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
-            
-            try:
-                if clr_prediction_curve[0][1]:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_match",
-                        val=clr_prediction_curve[0][1],
-                        )
-                    max_twitter_followers = max(_grant.twitter_handle_1_follower_count, _grant.twitter_handle_2_follower_count)
-                    if max_twitter_followers:
-                        Stat.objects.create(
-                            created_on=from_date,
-                            key=_grant.title[0:43] + "_admt1",
-                            val=int(100 * clr_prediction_curve[0][1]/max_twitter_followers),
-                            )
-
-                if _grant.positive_round_contributor_count:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_pctrbs",
-                        val=_grant.positive_round_contributor_count,
-                        )
-                if _grant.amount_received_in_round:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_amt",
-                        val=_grant.amount_received_in_round,
-                        )
-            except:
-                pass
 
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
-
-    try :
-        Stat.objects.create(
-            key= clr_type + '_grants_round_6_saturation',
-            val=int(CLR_PERCENTAGE_DISTRIBUTED),
-        )
-    except:
-        pass
 
     return debug_output

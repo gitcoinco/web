@@ -1076,7 +1076,7 @@ def create_status_update(request):
         attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
 
-        if request.user.is_authenticated and request.user.profile.is_blocked:
+        if request.user.is_authenticated and (request.user.profile.is_blocked or request.user.profile.shadowbanned):
             response['status'] = 200
             response['message'] = 'Status updated!'
             return JsonResponse(response, status=400)
@@ -1158,8 +1158,12 @@ def create_status_update(request):
             mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
-                if 'Email Grant Funders' in activity.metadata.get('ask'):
-                    grant_update_email_task.delay(activity.pk)
+                if activity.grant and activity.grant.is_on_team(request.user.profile):
+                    grant = activity.grant
+                    grant.last_update = timezone.now()
+                    grant.save()
+                    if 'Email Grant Funders' in activity.metadata.get('ask'):
+                        grant_update_email_task.delay(activity.pk)
                 else:
                     wall_post_email(activity)
 

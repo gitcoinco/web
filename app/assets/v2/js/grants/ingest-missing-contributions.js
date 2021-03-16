@@ -57,6 +57,46 @@ Vue.component('grants-ingest-contributions', {
       };
     },
 
+    // Wrapper around web3's getTransactionReceipt so it can be used with await
+    async getTxReceipt(txHash) {
+      return new Promise(function(resolve, reject) {
+        web3.eth.getTransactionReceipt(txHash, (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(res);
+        });
+      });
+    },
+
+    // Asks user to sign a message as verification they own the provided address
+    async signMessage(userAddress) {
+      const baseMessage = 'Sign this message as verification that you control the provided wallet address'; // base message that will be signed
+      const ethersProvider = new ethers.providers.Web3Provider(provider); // ethers provider instance
+      const signer = ethersProvider.getSigner(); // ethers signers
+      const { chainId } = await ethersProvider.getNetwork(); // append chain ID if not mainnet to mitigate replay attack
+      const message = chainId === 1 ? baseMessage : `${baseMessage}\n\nChain ID: ${chainId}`;
+
+      // Get signature from user
+      const isValidSignature = (sig) => ethers.utils.isHexString(sig) && sig.length === 132; // used to verify signature
+      let signature = await signer.signMessage(message); // prompt to user is here, uses eth_sign
+
+      // Fallback to personal_sign if eth_sign isn't supported (e.g. for Status and other wallets)
+      if (!isValidSignature(signature)) {
+        signature = await ethersProvider.send(
+          'personal_sign',
+          [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), userAddress.toLowerCase() ]
+        );
+      }
+
+      // Verify signature
+      if (!isValidSignature(signature)) {
+        throw new Error(`Invalid signature: ${signature}`);
+      }
+
+      return { signature, message };
+    },
+
     async ingest(event) {
       try {
         event.preventDefault();
@@ -68,8 +108,47 @@ Vue.component('grants-ingest-contributions', {
           return;
         }
 
-        // Send POST requests to ingest contributions
+        // Make sure wallet is connected
+        let walletAddress;
+
+        if (web3) {
+          walletAddress = (await web3.eth.getAccounts())[0];
+        }
+        if (!walletAddress) {
+          throw new Error('Please connect a wallet');
+        }
+
+        // TODO if user is staff, add a username field and bypass the below checks
+
+        // Parse out provided form inputs
         const { txHash, userAddress } = formParams;
+        
+        // If user entered an address, verify that it matches the user's connected wallet address
+        if (userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
+          throw new Error('Provided wallet address does not match connected wallet address');
+        }
+        
+        // If user entered an tx hash, verify that the tx's from address matches the connected wallet address
+        let fromAddress;
+
+        if (txHash) {
+          const receipt = await this.getTxReceipt(txHash);
+
+          if (!receipt) {
+            throw new Error('Transaction hash not found. Are you sure this transaction was confirmed?');
+          }
+          fromAddress = receipt.from;
+
+          if (ethers.utils.getAddress(fromAddress) !== ethers.utils.getAddress(walletAddress)) {
+            throw new Error('Sender of the provided transaction does not match connected wallet address');
+          }
+        }
+        
+        // If we are here, the provided form data is valid. However, someone could just POST directly to the endpoint,
+        // so to workaround that we ask the user for a signature, and the backend will verify that signature
+        const { signature, message } = await this.signMessage(walletAddress);
+
+        // Send POST requests to ingest contributions
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const url = '/grants/ingest';
         const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
@@ -77,6 +156,8 @@ Vue.component('grants-ingest-contributions', {
           csrfmiddlewaretoken,
           txHash,
           userAddress,
+          signature,
+          message,
           network: document.web3network || 'mainnet'
         };
         const postParams = {
@@ -86,8 +167,16 @@ Vue.component('grants-ingest-contributions', {
         };
 
         // Send saveSubscription request
-        const res = await fetch(url, postParams);
-        const json = await res.json();
+        let json;
+
+        try {
+          const res = await fetch(url, postParams);
+
+          json = await res.json();
+        } catch (err) {
+          console.error(err);
+          throw new Error('Something went wrong. Please verify the form parameters and try again later');
+        }
         
         // Notify user of success status, and clear form if successful
         console.log('ingestion response: ', json);

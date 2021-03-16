@@ -260,8 +260,10 @@ $(document).ready(function() {
   }, 1000);
 
   $(document).on('click', '.activity_stream .content', function(e) {
-    window.open($(this).find('a.d-block').first().attr('href'));
-    e.preventDefault();
+    if ($(this).data('href')) {
+      window.open($(this).data('href'));
+      e.preventDefault();
+    }
   });
 
   // expand attachments
