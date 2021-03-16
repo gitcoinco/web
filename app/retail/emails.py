@@ -619,7 +619,10 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from marketing.views import upcoming_dates, email_announcements, trending_avatar
     sub = get_or_save_email_subscriber(to_email, 'internal')
-
+    counter = 0
+    import time
+    counter += 1
+    print(counter, time.time())
     email_style = 26
 
     # Get notifications count from the Profile.User of to_email
@@ -627,6 +630,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
 
     notifications_count = get_notification_count(profile, days_ago, from_date)
 
+    counter += 1
+    print(counter, time.time())
     upcoming_events = []
     for hackathon in upcoming_hackathon:
         upcoming_events = upcoming_events + [{
@@ -636,6 +641,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'url': hackathon.url,
             'date': hackathon.start_date.strftime("%Y-%m-%d")
         }]
+    counter += 1
+    print(counter, time.time())
     for hackathon in upcoming_hackathon:
         upcoming_events = upcoming_events + [{
             'event': hackathon,
@@ -644,6 +651,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'url': hackathon.url,
             'date': hackathon.end_date.strftime("%Y-%m-%d")
         }]
+    counter += 1
+    print(counter, time.time())
     for ele in upcoming_dates():
         upcoming_events = upcoming_events + [{
             'event': ele,
@@ -655,6 +664,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
     upcoming_events = upcoming_events[0:7]
 
+    counter += 1
+    print(counter, time.time())
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
@@ -672,9 +683,16 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'notifications_count': notifications_count,
         'chats_count': chats_count,
     }
-
-    response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
+    counter += 1
+    print(counter, time.time())
+    foo = render_to_string("emails/new_bounty.html", params)
+    
+    print(counter, time.time())
+    response_html = premailer_transform(foo)
+    print(counter, time.time())
     response_txt = render_to_string("emails/new_bounty.txt", params)
+    counter += 1
+    print(counter, time.time())
 
     return response_html, response_txt
 

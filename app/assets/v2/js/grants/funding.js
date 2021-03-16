@@ -88,18 +88,18 @@ function sideCartRowForGrant(grant, index) {
   let cartRow = `
       <div id="side-cart-row-${grant.grant_id}" class="side-cart-row mb-3">
         <div class="form-row mb-2">
-          <div class="col-2">
+          <div class="d-flex col-2 justify-content-center" style="overflow:hidden;">
             <img src="${grant.grant_logo}" alt="Grant logo" width="40">
           </div>
-          <div class="col-9">
+          <div class="col-8 line-clamp">
               ${grant.grant_title}
           </div>
-          <div class="col-1" style="opacity: 40%">
+          <div class="col-2 text-right" style="opacity: 40%;">
             <i id="side-cart-row-remove-${grant.grant_id}" class="fas fa-trash-alt" style="cursor: pointer"></i>
           </div>
         </div>
         <div class="form-row">
-          <div class="col-2"></div>
+          <div class="d-flex col-2"></div>
           <div class="col-5">
             <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
           </div>
@@ -281,7 +281,7 @@ function hideSideCart() {
 
 function toggleSideCart() {
   $('#grants-details > div').toggleClass(
-    'col-12 col-md-8 col-lg-9 d-none d-md-inline-flex'
+    'col-12 col-md-8 col-lg-9 d-none d-md-block side-cart-open'
   );
 
   $('#side-cart').toggle();

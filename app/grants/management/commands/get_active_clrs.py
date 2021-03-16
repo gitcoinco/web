@@ -41,7 +41,6 @@ class Command(BaseCommand):
 
         network = options['network']
         clr_pk = options['clr_pk']
-        print (network, clr_pk)
 
         if clr_pk == "all":
             active_clr_rounds = GrantCLR.objects.filter(is_active=True)
@@ -50,11 +49,6 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                process_predict_clr(
-                    save_to_db=True,
-                    from_date=timezone.now(),
-                    clr_round=clr_round,
-                    network=network
-                )
+                print(clr_round.pk)
         else:
             print("No active CLRs found")
