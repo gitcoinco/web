@@ -648,6 +648,7 @@ Vue.component('brightid-verify-modal', {
   }
 });
 
+
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
   data() {
@@ -789,7 +790,7 @@ $(document).ready(function() {
         'network': document.web3network,
         'coinbase': ethAddress,
       }
-      $.get("/passport", params, function(response){
+      $.get("/passport/", params, function(response){
         let status = response['status'];
         if (status == 'error'){
           _alert(response['msg'], 'error', 5000);
