@@ -2,6 +2,33 @@
 
 {% if not profile.is_org and is_my_profile %}
 
+<!-- Passport Modal -->
+<div class="modal fade" id="passportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Generate your Proof of Personhood Passport</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img class="float-left p-2" src="/static/v2/images/passport-cover.png" style="max-width:200px;">
+        <div>
+          <strong>What:</strong> PoPP aggregates the top personhood-identity providers in the web3 space into one transportable identity that proves your personhood.
+          <hr>
+          <strong>How:</strong> You can generate your Proof of Personhood Passport via the following methods.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="gen_passport" class="btn btn-primary">NFT</button>
+        <button type="button" class="btn btn-secondary disabled">3Box (coming soon)</button>
+        <button type="button" class="btn btn-secondary disabled">SpruceID (coming soon)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <div id="gc-trust-manager-app" v-cloak>
     <active-trust-manager inline-template>
       <div>
@@ -10,7 +37,7 @@
           :show-validation="visibleModal === 'brightid-modal'"
           @modal-dismissed="hideModal()"
           brightid-uuid="{{profile.brightid_uuid}}"
-          :validation-step="'{{brightid_status}}' === 'not_connected' ? 'connect-brightid' : 'verify-brightid'"
+          :validation-step="'{{brightid_status}}' === 'not_connected' ? 'connect-brightid' : ( '{{brightid_status}}' === 'unknown' ? 'pull_status' : 'verify-brightid')"
           >
         </brightid-verify-modal>
 
@@ -39,7 +66,7 @@
           <img class="float-right p-2" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
           <strong>NEW!</strong> Take your TrustBonus with you across the web <br>with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
           <br>
-          <a id="gen_passport" href="#" role="button" class="button button--primary float-right text-nowrap">Try It!</a>
+          <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="button button--primary float-right text-nowrap">Try It!</a>
         </div>
 
         <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
@@ -65,6 +92,8 @@
             <template v-slot:description>
               {% if brightid_status == 'not_connected' %}
                 Connect to BrightID and verify yourself by connecting with other humans.
+              {% elif brightid_status == 'unknown' %}
+                Check your BrightID verification status to continue.
               {% elif brightid_status == 'not_verified' %}
                 Verify yourself on BrightID by proving you're human to other humans. Connect
                 with other users and join groups to meet the threshold.

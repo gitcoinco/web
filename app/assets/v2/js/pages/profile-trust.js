@@ -596,40 +596,16 @@ Vue.component('brightid-verify-modal', {
                       </div>
                     </div>
                   </template>
-                  <template v-else-if="validationStep === 'verify-brightid'">
+                  <template v-if="validationStep === 'pull_status'">
                     <div class="col-12 pt-2 pb-2 text-center">
                       <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
-                      <h2 class="font-title mt-2">Verify Your BrightID</h2>
+                      <h2 class="font-title mt-2">Connect With BrightID</h2>
                     </div>
                     <div class="col-12 pt-2">
                       <p>
-                        BrightID is a digital identity solution that ensures accounts in any application are created by real humans; each user is unique and only has one account.
-                        <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
-                      </p>
-                      <p>
-                        Now that you've connected your BrightID, you need to get verified by connecting with other real humans.
-                      </p>
-                      <p>
-                        <strong>Join a Gitcoin + BrightID Verification Party</strong><br />
-                        <small class="text-muted">
-                          You can learn more about how BrightID works and make connections that will help you get verified on the verifications parties.
-                          Register for one of the events.
-                        </small>
-                        <template v-for="call in calls">
-                          <div class="row mb-3">
-                            <div class="col-md-8">
-                              <strong class="d-block">[[call.when]]</strong>
-                              <div class="font-caption">
-                                <template v-for="date in call.dates">
-                                  At <span>[[formatDate(date.timeStart)]]</span> - <span>[[formatDate(date.timeEnd)]]</span><br />
-                                </template>
-                              </div>
-                            </div>
-                            <div class="col-md-4 my-auto">
-                              <a :href="call.link" target="_blank" class="btn btn-sm btn-block btn-gc-blue px-4 font-caption font-weight-bold">Register <br> on [[call.platform]]</a>
-                            </div>
-                          </div>
-                        </template>
+                      Pull your BrightID status by clicking on this button.
+                        <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Connect</a>
+                      
                       </p>
                     </div>
                   </template>
