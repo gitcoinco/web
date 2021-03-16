@@ -1,56 +1,63 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2018 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
-<h1>Grants CLR Round {{ next_round }} is here!</h1>
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
 
-<div class="grant-recontrib-msg">
-  <p>
-    From {{ next_round_start }} - {{ next_round_end }}, support open source projects across different categories and get them matched with ${{ match_pool }} matching pool!
-  </p>
-  <p>
-    Here are some of the grants you funded last time.<br>Fund them again?
-  </p>
-</div>
+  <h1>Grants CLR Round {{ next_round }} is here!</h1>
 
-<div style="margin-bottom: 3em; margin-top: 3em;">
-  <a class="button large" href="{{ bulk_add_url }}">{% trans "Fund These Grants Again" %}</a>
-</div>
+  <div class="grant-recontrib-msg">
+    <p>
+      From {{ next_round_start }} - {{ next_round_end }}, support open source projects across different categories and
+      get them matched with ${{ match_pool }} matching pool!
+    </p>
+    <p>
+      Here are some of the grants you funded last time.<br>Fund them again?
+    </p>
+  </div>
 
-{% for grant in prev_grants %}
+  <div style="margin-bottom: 3em; margin-top: 3em;">
+    <a class="button" href="{{ bulk_add_url }}?{{ utm_tracking }}">{% trans "Fund These Grants Again" %}</a>
+  </div>
+
+  {% for grant in prev_grants %}
   <div class="grant-tile">
-    <a href="{{base_url}}{{ grant.url }}">
+    <a href="{{base_url}}{{ grant.url }}?{{ utm_tracking }}">
       <img class="grant-image mr-2" src="{{ grant.image_url }}">
     </a>
     <p class="grant-detail">
-      <a href="{{base_url}}{{ grant.url }}">
+      <a href="{{base_url}}{{ grant.url }}?{{ utm_tracking }}">
         <b>{{ grant.title }}</b>
       </a>
       <br>
       <span class="grey">You funded <b>{{ grant.amount }} {{ grant.token_symbol }} </b>last round</span>
     </p>
   </div>
-{% endfor %}
+  {% endfor %}
 
-<div style="margin-bottom: 3em; margin-top: 3em;">
-  <a class="button large" href="{{ bulk_add_url }}">{% trans "Fund These Grants Again" %}</a>
+  <div style="margin-bottom: 3em; margin-top: 3em;">
+    <a class="button" href="{{ bulk_add_url }}?{{ utm_tracking }}">{% trans "Fund These Grants Again" %}</a>
+  </div>
+
 </div>
 
 {% endblock %}

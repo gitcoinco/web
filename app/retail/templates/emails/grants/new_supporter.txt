@@ -4,7 +4,7 @@
 
 {% trans "You have a new supporter!" %}
 
-{{ subscriber.contributor_profile.avatar_url }}
+{{ subscriber.contributor_profile.avatar_url }}?{{ utm_tracking }}
 
 {{ subscriber.contributor_profile }}
 

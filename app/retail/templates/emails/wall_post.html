@@ -1,43 +1,44 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2018 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>💬{% trans "New Wall Post" %} 💬</h1>
+  <h1>💬{% trans "New Wall Post" %} 💬</h1>
 
-<p>
+  <p>
 
-<a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> commented on your {{what}}'s wall. This is what they said:
+    <a href="{{activity.profile.url}}?{{ utm_tracking }}">@{{activity.profile.handle}}</a> commented on your {{what}}'s
+    wall. This is what they said:
 
-<pre>
-  {{activity.metadata.title}}
-</pre>
+  <pre>
+    {{activity.metadata.title}}
+  </pre>
 
-<div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ activity.url }}">View Thread</a>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="{{ activity.url }}&{{ utm_tracking }}">View Thread</a>
+  </div>
+
+  </p>
+
+  <br>
+
 </div>
-
-</p>
-
-<br>
-
-
-
-
 {% endblock %}

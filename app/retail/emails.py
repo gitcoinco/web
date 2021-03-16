@@ -38,7 +38,7 @@ from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from premailer import Premailer
-from retail.utils import strip_double_chars, strip_html
+from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ def premailer_transform(html):
 
 
 def render_featured_funded_bounty(bounty):
-    params = {'bounty': bounty}
+    params = {'bounty': bounty, 'utm_tracking': build_utm_tracking('featured_funded_bounty')}
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
     subject = _("Your bounty is now live on Gitcoin!")
@@ -116,7 +116,7 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
 
 
 def render_new_grant_email(grant):
-    params = {'grant': grant}
+    params = {'grant': grant, 'utm_tracking': build_utm_tracking('new_grant')}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
     subject = _("Your Gitcoin Grant")
@@ -124,7 +124,7 @@ def render_new_grant_email(grant):
 
 
 def render_new_grant_approved_email(grant):
-    params = {'grant': grant}
+    params = {'grant': grant, 'utm_tracking': build_utm_tracking('new_grant_approved')}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant_approved.html", params))
     response_txt = render_to_string("emails/grants/new_grant_approved.txt", params)
     subject = _("Your Grant on Gitcoin Grants has been approved")
@@ -132,7 +132,11 @@ def render_new_grant_approved_email(grant):
 
 
 def render_new_supporter_email(grant, subscription):
-    params = {'grant': grant, 'subscription': subscription}
+    params = {
+        'grant': grant,
+        'subscription': subscription,
+        'utm_tracking': build_utm_tracking('new_supporter'),
+    }
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
     response_txt = render_to_string("emails/grants/new_supporter.txt", params)
     subject = _("You have a new Grant supporter!")
@@ -140,7 +144,10 @@ def render_new_supporter_email(grant, subscription):
 
 
 def render_thank_you_for_supporting_email(grants_with_subscription):
-    params = {'grants_with_subscription': grants_with_subscription}
+    params = {
+        'grants_with_subscription': grants_with_subscription,
+        'utm_tracking': build_utm_tracking('thank_you_for_supporting_email'),
+    }
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
     response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
     subject = _("Thank you for supporting Grants on Gitcoin!")
@@ -157,7 +164,7 @@ def render_support_cancellation_email(grant, subscription):
 
 
 def render_grant_cancellation_email(grant):
-    params = {'grant': grant}
+    params = {'grant': grant, 'utm_tracking': build_utm_tracking('grant_cancellation'),}
     response_html = premailer_transform(render_to_string("emails/grants/grant_cancellation.html", params))
     response_txt = render_to_string("emails/grants/grant_cancellation.txt", params)
     subject = _("Your Grant on Gitcoin Grants has been cancelled")
@@ -173,7 +180,12 @@ def render_subscription_terminated_email(grant, subscription):
 
 
 def render_successful_contribution_email(grant, subscription, contribution):
-    params = {'grant': grant, 'subscription': subscription, "contribution": contribution}
+    params = {
+        'grant': grant,
+        'subscription': subscription,
+        'utm_tracking': build_utm_tracking('successful_contribution_email'),
+        'contribution': contribution,
+    }
     response_html = premailer_transform(render_to_string("emails/grants/successful_contribution.html", params))
     response_txt = render_to_string("emails/grants/successful_contribution.txt", params)
     subject = _('Your Gitcoin Grants contribution was successful!')
@@ -181,7 +193,12 @@ def render_successful_contribution_email(grant, subscription, contribution):
 
 
 def render_pending_contribution_email(contribution):
-    params = {"contribution": contribution, "hide_bottom_logo": True, 'email_style': 'grants'}
+    params = {
+        'contribution': contribution,
+        'hide_bottom_logo': True,
+        'email_style': 'grants',
+        'utm_tracking': build_utm_tracking('pending_contributions'),
+    }
     response_html = premailer_transform(render_to_string("emails/grants/reminder_pending_contribution.html", params))
     response_txt = render_to_string("emails/grants/reminder_pending_contribution.html", params)
     subject = _('Complete Grant Contribution Checkout')
@@ -238,7 +255,11 @@ def support_cancellation(request):
 def thank_you_for_supporting(request):
     grant = Grant.objects.first()
     subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_thank_you_for_supporting_email(grant, subscription)
+    grant_with_subscription = [{
+        'grant': grant,
+        'subscription': subscription
+    }]
+    response_html, __, __ = render_thank_you_for_supporting_email(grant_with_subscription)
     return HttpResponse(response_html)
 
 
@@ -285,13 +306,15 @@ def render_tip_email(to_email, tip, is_new):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
-		'email_type': 'tip'
+		'email_type': 'tip',
+        'utm_tracking': build_utm_tracking('new_tip'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
     response_txt = render_to_string("emails/new_tip.txt", params)
 
     return response_html, response_txt
+
 
 def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
     email_style = 'hackathon'
@@ -305,7 +328,7 @@ def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
 
     for sponsor_prize in sponsors_prizes:
         sponsor_prize['name'] = sponsor_prize['sponsor'].name
-        sponsor_prize['image_url'] = sponsor_prize['sponsor'].logo.url if sponsor_prize['sponsor'].logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png'
+        sponsor_prize['image_url'] = sponsor_prize['sponsor'].avatar_url or f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png'
 
     intro = f"{intro_begin} participating on a new hackathon on Gitcoin: "
 
@@ -314,6 +337,7 @@ def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
         'sponsors_prizes': sponsors_prizes,
         'intro': intro,
         'email_style': email_style,
+        'utm_tracking': build_utm_tracking('tribe_hackathon_prizes'),
         'hide_bottom_logo': True,
     }
 
@@ -322,17 +346,19 @@ def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
 
     return response_html, response_txt
 
+
 def render_request_amount_email(to_email, request, is_new):
 
     link = f'{reverse("tip")}?request={request.id}'
     params = {
         'link': link,
         'amount': request.amount,
-        'tokenName': request.token_name if request.network == 'ETH' else request.network,
+        'tokenName': request.token_name,
         'address': request.address,
         'comments': request.comments,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'email_type': 'request',
+        'utm_tracking': build_utm_tracking('request_amount_email'),
         'request': request,
         'already_received': request.tip
     }
@@ -370,6 +396,7 @@ def render_kudos_email(to_email, kudos_transfer, is_new, html_template, text_tem
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in kudos_transfer.emails,
         'is_receiver': to_email in kudos_transfer.emails,
+        'utm_tracking': build_utm_tracking('new_kudos'),
     }
 
     response_html = premailer_transform(render_to_string(html_template, params))
@@ -410,6 +437,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
 
     return response_html, response_txt
 
+
 def render_tax_report(to_email, tax_year):
     from dashboard.models import Profile
     profile = Profile.objects.filter(email=to_email).first()
@@ -425,6 +453,7 @@ def render_tax_report(to_email, tax_year):
 
 def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(profile__handle=kwargs['github_username']).last()
+    kwargs['utm_tracking'] = build_utm_tracking('funder_payout_reminder')
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
     return response_html, response_txt
@@ -433,6 +462,7 @@ def render_funder_payout_reminder(**kwargs):
 def render_match_distribution(mr):
     params = {
         'mr': mr,
+        'utm_tracking': build_utm_tracking('match_distribution'),
     }
     response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
     response_txt = ''
@@ -442,10 +472,11 @@ def render_match_distribution(mr):
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
+        'utm_tracking': build_utm_tracking('no_applicant_reminder'),
         'directory_link': '/users?skills=' + bounty.keywords.lower()
     }
-    response_html = premailer_transform(render_to_string("emails/bounty/no_applicant_reminder.html", params))
-    response_txt = render_to_string("emails/bounty/no_applicant_reminder.txt", params)
+    response_html = premailer_transform(render_to_string("emails/no_applicant_reminder.html", params))
+    response_txt = render_to_string("emails/no_applicant_reminder.txt", params)
     return response_html, response_txt
 
 
@@ -607,6 +638,7 @@ def get_notification_count(profile, days_ago, from_date):
         pass
     return notifications_count
 
+
 def email_to_profile(to_email):
     from dashboard.models import Profile
     try:
@@ -614,6 +646,7 @@ def email_to_profile(to_email):
     except Profile.DoesNotExist:
         pass
     return profile
+
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
@@ -665,6 +698,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
+        'utm_tracking': build_utm_tracking('new_bounty_daily'),
         'base_url': settings.BASE_URL,
         'quest_of_the_day': quest_of_the_day,
         'upcoming_events': upcoming_events,
@@ -677,6 +711,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     response_txt = render_to_string("emails/new_bounty.txt", params)
 
     return response_html, response_txt
+
 
 def render_unread_notification_email_weekly_roundup(to_email, from_date=date.today(), days_ago=7):
     subscriber = get_or_save_email_subscriber(to_email, 'internal')
@@ -702,6 +737,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
     response_txt = render_to_string("emails/unread_notifications_roundup/unread_notification_email_weekly_roundup.txt", params)
 
     return response_html, response_txt, subject
+
 
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -821,7 +857,8 @@ def render_share_bounty(to_email, msg, from_profile, invite_url=None, kudos_invi
         'to_email': to_email,
         'invite_url': invite_url,
         'kudos_invite': kudos_invite,
-		'email_type': 'bounty'
+		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('share_bounty'),
     }
     response_html = premailer_transform(render_to_string("emails/share_bounty_email.html", params))
     response_txt = render_to_string("emails/share_bounty_email.txt", params)
@@ -832,6 +869,7 @@ def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('new_work_submission'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -846,6 +884,7 @@ def render_new_bounty_acceptance(to_email, bounty, unrated_count=0):
         'bounty': bounty,
         'unrated_count': unrated_count,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('new_bounty_acceptance'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -859,6 +898,7 @@ def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
         'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('new_bounty_rejection'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -872,6 +912,7 @@ def render_comment(to_email, comment):
     params = {
         'comment': comment,
         'email_type': 'comment',
+        'utm_tracking': build_utm_tracking('comment'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -886,6 +927,7 @@ def render_mention(to_email, post):
     params = {
         'post': post,
         'email_type': 'mention',
+        'utm_tracking': build_utm_tracking('mention'),
         'is_activity': isinstance(post, Activity),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
@@ -900,6 +942,7 @@ def render_grant_update(to_email, activity):
     params = {
         'activity': activity,
         'email_type': 'grant_updates',
+        'utm_tracking': build_utm_tracking('grant_update'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -939,6 +982,7 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
         'next_round_end': next_round_end,
         'match_pool': match_pool,
         'email_style': email_style,
+        'utm_tracking': build_utm_tracking('grant_recontribute'),
         'prev_grants': prev_grants,
         'base_url': settings.BASE_URL,
         'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/"+','.join(str(grant['id']) for grant in prev_grants),
@@ -968,6 +1012,7 @@ def render_grant_txn_failed(contribution):
         'tx_url': "https://etherscan.io/tx/"+tx_id,
         'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/" + ",".join([str(ele.id) for ele in grants]),
         'email_style': email_style,
+        'utm_tracking': build_utm_tracking('grant_txn_failed'),
         'hide_bottom_logo': True,
     }
 
@@ -980,6 +1025,7 @@ def render_wallpost(to_email, activity):
     params = {
         'activity': activity,
         'email_type': 'wall_post',
+        'utm_tracking': build_utm_tracking('wallpost'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'what': activity.what,
     }
@@ -1038,7 +1084,7 @@ def render_bounty_expire_warning(to_email, bounty):
         unit = 'hours'
         num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
-    fulfiller_emails = list(bounty.fulfillments.annotate(lower_email=Lower('fulfiller_email')).values_list('lower_email'))
+    fulfiller_emails = [fulfiller.profile.email.lower() for fulfiller in bounty.fulfillments.all()]
 
     params = {
         'bounty': bounty,
@@ -1047,6 +1093,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('bounty_expire_warning'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -1062,6 +1109,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'interest': interest,
         'time_delta_days': time_delta_days,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('bounty_startwork_expire_warning'),
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -1090,6 +1138,7 @@ def render_faucet_rejected(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+        'utm_tracking': build_utm_tracking('faucet_rejected'),
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
@@ -1105,6 +1154,7 @@ def render_faucet_request(fr):
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
 		'email_type': 'faucet',
+        'utm_tracking': build_utm_tracking('faucet_request'),
         'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
@@ -1119,6 +1169,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('bounty_startwork_expired'),
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
@@ -1177,6 +1228,7 @@ def render_start_work_approved(interest, bounty):
         'interest': interest,
         'bounty': bounty,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('start_work_approved'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1194,6 +1246,7 @@ def render_start_work_rejected(interest, bounty):
         'interest': interest,
         'bounty': bounty,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('start_work_rejected'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1211,6 +1264,7 @@ def render_start_work_new_applicant(interest, bounty):
         'interest': interest,
         'bounty': bounty,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('start_work_new_applicant'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1228,6 +1282,7 @@ def render_start_work_applicant_about_to_expire(interest, bounty):
         'interest': interest,
         'bounty': bounty,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('start_work_applicant_about_to_expire'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1245,6 +1300,7 @@ def render_start_work_applicant_expired(interest, bounty):
         'interest': interest,
         'bounty': bounty,
 		'email_type': 'bounty',
+        'utm_tracking': build_utm_tracking('start_work_applicant_expired'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
     }
 
@@ -1364,7 +1420,6 @@ def render_new_bounty_roundup(to_email):
     return response_html, response_txt, subject, args.from_email, args.from_name
 
 
-
 # DJANGO REQUESTS
 
 
@@ -1430,6 +1485,7 @@ def resend_new_tip(request):
     pk = request.POST.get('pk', request.GET.get('pk'))
     params = {
         'pk': pk,
+        'utm_tracking': build_utm_tracking('resend_tip'),
     }
 
     if request.POST.get('pk'):
@@ -1496,15 +1552,18 @@ def grant_update(request):
     response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
     return HttpResponse(response_html)
 
+
 @staff_member_required
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
+
 def grant_txn_failed(request):
     failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
     response_html, _ = render_grant_txn_failed(failed_contrib)
     return HttpResponse(response_html)
+
 
 @staff_member_required
 def wallpost(request):
@@ -1523,8 +1582,19 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
-    return HttpResponse(response_html)
+    from marketing.utils import handle_bounty_feedback
+
+    bounty = Bounty.objects.current().filter(idx_status='done').last()
+
+    (to_fulfiller, to_funder, fulfiller_previous_bounties, funder_previous_bounties) = handle_bounty_feedback(bounty)
+
+    if to_fulfiller:
+        response_html, _ = render_bounty_feedback(bounty, 'fulfiller', fulfiller_previous_bounties)
+        return HttpResponse(response_html)
+    
+    if to_funder:
+        response_html, _ = render_bounty_feedback(bounty, 'funder', funder_previous_bounties)
+        return HttpResponse(response_html)
 
 
 @staff_member_required
@@ -1572,8 +1642,6 @@ def match_distribution(request):
     return HttpResponse(response_html)
 
 
-
-
 @staff_member_required
 def funder_stale(request):
     """Display the stale funder email template.
@@ -1589,7 +1657,7 @@ def funder_stale(request):
     """
     limit = int(request.GET.get('limit', 30))
     duration_copy = request.GET.get('duration_copy', 'about a month')
-    username = request.GET.get('username', '@foo')
+    username = request.GET.get('username', 'foo')
     response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
@@ -1718,12 +1786,16 @@ def start_work_applicant_expired(request):
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
 
+
 @staff_member_required
 def tribe_hackathon_prizes(request):
-    from dashboard.models import HackathonEvent
+    from dashboard.models import HackathonEvent, Bounty
     from marketing.utils import generate_hackathon_email_intro
 
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
+
+    if not hackathon:
+        return HttpResponse("no upcoming hackathon event in the next 3 days", status=404)
 
     sponsors_prizes = []
     for sponsor in hackathon.sponsor_profiles.all()[:3]:
@@ -1738,6 +1810,7 @@ def tribe_hackathon_prizes(request):
 
     response_html, _ = render_tribe_hackathon_prizes(hackathon,sponsors_prizes, intro_begin)
     return HttpResponse(response_html)
+
 
 def render_remember_your_cart(grants_query, grants, hours):
     params = {
