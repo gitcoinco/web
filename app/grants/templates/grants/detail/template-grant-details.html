@@ -483,6 +483,16 @@
           </v-select>
         </div>
 
+        <!-- Is CLR Eligible -->
+        <div class="col-12 mb-3">
+          <b-form-checkbox v-model="grant.is_clr_eligible" name="is_clr_eligible">
+            <label class="font-caption letter-spacing text-black-60 text-uppercase">OPT IN FOR CLR</label>
+            <span class="font-smaller-6 text-black-60 text-capitalize ml-2">
+              (If unchecked, your grant will not be able part of the CLR rounds on Gitcoin)
+            </span>
+          </b-form-checkbox>
+        </div>
+
         <!-- Save/Cancel -->
         <div class="col-12 mb-3 text-right">
           <button @click="saveGrant($event)" class="btn btn-primary">SAVE CHANGES</button>
