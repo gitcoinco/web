@@ -752,6 +752,18 @@ $(document).ready(function() {
     $('#verify_offline_target').css('display', 'block');
   });
 
+  jQuery.fn.shake = function(interval,distance,times){
+     interval = typeof interval == "undefined" ? 100 : interval;
+     distance = typeof distance == "undefined" ? 10 : distance;
+     times = typeof times == "undefined" ? 3 : times;
+     var jTarget = $(this);
+     jTarget.css('position','relative');
+     for(var iter=0;iter<(times+1);iter++){
+        jTarget.animate({ top: ((iter%2==0 ? distance : distance*-1))}, interval);
+     }
+     return jTarget.animate({ top: 0},interval);
+  }
+
   $(document).on('click', '#gen_passport', function(e) {
     e.preventDefault();
     if(document.web3network != 'rinkeby'){
@@ -785,7 +797,19 @@ $(document).ready(function() {
             _alert(err, 'error', 5000);
             return
           }
-          document.location.href = 'https://rinkeby.etherscan.io/tx/' + txid;
+          let url = 'https://rinkeby.etherscan.io/tx/' + txid;
+          var html = `
+<strong>Woo hoo!</strong> - Your passport is being generated.  View the transaction <a href='` + url + `' target=_blank>here</a>.
+<br><br>
+<strong>Whats next?</strong>
+<br>
+1. Please add the token contract address (` + contract_address + `) as a token to your wallet provider.
+<br>
+2. Use the Trust you've built up on Gitcoin across the dWeb!  Learn more at <a target=_blank href=https://proofofpersonhood.com>proofofpersonhood.com</a>
+
+          `;
+          $('.modal-body .subbody').html(html);
+          $(".modal-dialog").shake();
         };
         passport.methods.createPassport(tokenURI, hash, nonce).send({from: ethAddress}, callback);
       });
