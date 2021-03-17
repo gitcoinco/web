@@ -690,7 +690,7 @@ Vue.component('duniter-verify-modal', {
                       <p>
                         Duniter is a free software for free currencies: a P2P, <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of Trust</a> & <a href="https://en.wikipedia.org/wiki/Social_credit">Universal Dividend system.</a>
                         <p class="mb-4">
-                          <a href="https://duniter.org/en/introduction/">Learn more.</a>
+                          <a href="https://duniter.org/en/introduction/" target=_blank>Learn more.</a>
                         </p>
                       </p>
                       <div>
@@ -700,7 +700,6 @@ Vue.component('duniter-verify-modal', {
                           <li>If there is a link to your gitcoin account in your Duniter record </li>
                           <li>If you are is a qualified member</li>
                         </ol>
-                         <p>read more about <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of trust</a></p>
                       </div>
                     </div>
                     <div v-if="validationStep === 'validate-duniter' || validationStep == 'perform-validation'">
