@@ -1665,6 +1665,8 @@ def grant_edit(request, grant_id):
 
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
         twitter_handle_2 = request.POST.get('handle2', '').strip('@')
+        funding_info = request.POST.get('funding_info', '')
+        grant.funding_info = funding_info
 
         if twitter_handle_1 and not re.search(r'^@?[a-zA-Z0-9_]{1,15}$', twitter_handle_1):
             response['message'] = 'error: enter a valid project twitter handle e.g @humanfund'

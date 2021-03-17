@@ -185,6 +185,9 @@
               <h3>Lifetime funding received</h3>
               <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
               <span>raised from all contributors</span>
+              <div class="ml-0 pl-0 col-12" v-if="grant.funding_info">
+                Non-Gitcoin Funding Info: [[grant.funding_info]]
+              </div>
             </div>
           </div>
 
@@ -427,6 +430,18 @@
 
           <div class="text-danger" v-if="errors.twitter_handle_1">
             [[errors.twitter_handle_1]]
+          </div>
+        </div>
+
+        <!-- Funding Info -->
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funding_info">Project Funding Info</label>
+          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+          <input id="funding_info" v-model="grant.funding_info" @change="funding_info" name="funding_info" class="form__input form__input-lg" type="text" placeholder="Raised $1m from VC.Fund" required>
+
+          <div class="text-danger" v-if="errors.funding_info">
+            [[errors.funding_info]]
           </div>
         </div>
 

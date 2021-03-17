@@ -550,7 +550,7 @@ class Grant(SuperModel):
         help_text=_('The Grants Sybil Score'),
     )
 
-    funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
+    funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded? does it have a token?'))
 
     clr_prediction_curve = ArrayField(
         ArrayField(

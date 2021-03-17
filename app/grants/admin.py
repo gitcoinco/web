@@ -111,7 +111,7 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails',
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',

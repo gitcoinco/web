@@ -69,6 +69,7 @@ Vue.mixin({
         'handle1': vm.grant.twitter_handle_1,
         'handle2': vm.grant.twitter_handle_2,
         'eth_payout_address': vm.grant.admin_address,
+        'funding_info': vm.grant.funding_info,
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'celo_payout_address': vm.grant.celo_payout_address,
         'zil_payout_address': vm.grant.zil_payout_address,
@@ -106,6 +107,7 @@ Vue.mixin({
               vm.grant.verified = false;
             }
             vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
+            vm.funding_info = vm.grant.funding_info;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -542,6 +544,7 @@ Vue.component('grant-details', {
     const vm = this;
 
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
+    vm.funding_info = vm.grant.funding_info;
     vm.grant.description_rich_edited = vm.grant.description_rich;
     if (vm.grant.description_rich_edited) {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
