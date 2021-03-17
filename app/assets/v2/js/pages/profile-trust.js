@@ -754,8 +754,8 @@ $(document).ready(function() {
 
   $(document).on('click', '#gen_passport', function(e) {
     e.preventDefault();
-    if(document.web3network != 'rinkeby' && document.web3network != 'mainnet'){
-      _alert('Please connect your web3 wallet to mainnet or rinkeby + unlock it', 'error', 1000);
+    if(document.web3network != 'rinkeby'){
+      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'error', 1000);
       return;
     }
     const accounts = web3.eth.getAccounts();

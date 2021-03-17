@@ -85,7 +85,7 @@ def passport(request, pattern):
         "name": "Personhood Passport",
         "description": "Proof of Personhood Passport (PoPP) is a transportable proof of personhood identity for the web3 space.",
         "image": image_url,
-        'external_url': image_url,
+        'external_url': 'https://proofofpersonhood.com',
         'background_color': 'fbfbfb',
         "attributes": [
             {

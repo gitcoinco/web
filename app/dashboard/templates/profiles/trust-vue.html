@@ -62,12 +62,14 @@
           @modal-dismissed="hideModal()">
         </poap-verify-modal>
 
+        {% if is_staff %}
         <div class="float-right text-right" style="padding: 5px;">
           <img class="float-right p-2" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
-          <strong>NEW!</strong> Take your TrustBonus with you across the web <br>with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
+          <strong>STAFF ONLY</strong> Take your TrustBonus with you across the web <br>with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
           <br>
           <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="button button--primary float-right text-nowrap">Try It!</a>
         </div>
+        {% endif %}
 
         <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
         The higher the Trust
