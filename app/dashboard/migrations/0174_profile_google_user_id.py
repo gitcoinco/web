@@ -25,10 +25,8 @@ def populate_google_id(apps, schema_editor):
                 profile.is_google_verified = False
                 profile.identity_data_google = {}
 
-
     for profile in profiles_with_google_connection:
         profile.save()
-
 
 
 class Migration(migrations.Migration):
