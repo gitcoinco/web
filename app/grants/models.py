@@ -1892,6 +1892,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "txid":instance.subscription.split_tx_id,
                     "token_name":instance.subscription.token_symbol,
                     "token_value":instance.subscription.amount_per_period,
+                    "success":instance.success,
                 }
             )
         except:

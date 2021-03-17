@@ -172,6 +172,7 @@ class Command(BaseCommand):
                         "value_usd":amount_owed,
                         "url":'https://gitcoin.co/#clr',
                         "network":network,
+                        "success":True,
                     }
                     )
 
