@@ -47,7 +47,7 @@ from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
-from townsquare.models import Favorite
+from townsquare.models import Favorite, Comment
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
@@ -1746,6 +1746,24 @@ class Contribution(SuperModel):
         else:
             return self.profile_for_clr.id
 
+    def leave_gitcoinbot_comment_for_status(self, status):
+        try:
+            from dashboard.models import Profile
+            comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
+            profile = Profile.objects.get(handle='gitcoinbot')
+            activity = self.subscription.activities.first()
+            Comment.objects.update_or_create(
+                profile=profile,
+                activity=activity,
+                defaults={
+                    "comment":comment,
+                    "is_edited":True,
+                }
+                );
+        except Exception as e:
+            print(e)
+
+
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
         try:
@@ -1802,11 +1820,13 @@ class Contribution(SuperModel):
                     then = timezone.now() - timezone.timedelta(hours=1)
                     if self.created_on > then:
                         print('txn pending')
+                        self.leave_gitcoinbot_comment_for_status('pending')
                     else:
                         self.success = False
                         self.validator_passed = False
                         self.validator_comment = "txn pending for more than 1 hours, assuming failure"
                         print(self.validator_comment)
+                        self.leave_gitcoinbot_comment_for_status('dropped')
                     return
 
                 # Handle dropped txns
@@ -1815,6 +1835,7 @@ class Contribution(SuperModel):
                     self.validator_passed = False
                     self.validator_comment = "txn not found"
                     print('txn not found')
+                    self.leave_gitcoinbot_comment_for_status('dropped')
                     return
 
                 # Validate that the token transfers occurred
@@ -1829,21 +1850,25 @@ class Contribution(SuperModel):
 
             else:
                 # This validator is only for eth_std and eth_zksync, so exit for other contribution types
+                self.leave_gitcoinbot_comment_for_status('unknown')
                 return
 
             # Validator complete!
 
-            if self.success:
-                print("TODO: do stuff related to successful contribs, like emails")
-            else:
-                print("TODO: do stuff related to failed contribs, like emails")
         except Exception as e:
+            self.leave_gitcoinbot_comment_for_status('error')
             self.validator_passed = False
             self.validator_comment = str(e)
             print(f"Exception: {self.validator_comment}")
             self.tx_cleared = False
             self.split_tx_confirmed = False
             self.success = False
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('success')
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('failed')
 
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
