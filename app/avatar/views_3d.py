@@ -302,8 +302,7 @@ def get_avatar_attrs(theme, key):
             },
             'skin_tones': [],
             'hair_tones': [],
-            'background_tones': [
-            ],
+            'background_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/masks.svg',
         },

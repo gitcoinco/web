@@ -47,7 +47,7 @@ from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
-from townsquare.models import Favorite, Comment
+from townsquare.models import Comment, Favorite
 from web3 import Web3
 
 logger = logging.getLogger(__name__)

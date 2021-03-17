@@ -17,27 +17,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
 import asyncio
+import json
 from datetime import date, datetime, timedelta
 from unittest import TestCase
-
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils import timezone
 
-from app.settings import (
-    ES_USER_ENDPOINT, BMAS_ENDPOINT, ES_CORE_ENDPOINT
-)
-
 import requests
+from app.settings import BMAS_ENDPOINT, ES_CORE_ENDPOINT, ES_USER_ENDPOINT
 from dashboard.models import Profile
 from dashboard.views import verify_user_duniter
-
-from duniterpy.api.client import Client, RESPONSE_AIOHTTP
 from duniterpy.api import bma
+from duniterpy.api.client import RESPONSE_AIOHTTP, Client
 
 CERTIFICATIONS_SCHEMA = {
     "type": "object",
