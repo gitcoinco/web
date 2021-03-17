@@ -21,6 +21,12 @@ section.dashboard .header{
 
 	.arrow{
 		margin-left: auto;
+
+		a{
+			display: inline;
+			border: 10px solid red;
+		}
+
 		svg{
 			margin-right: 0.5em;
 			stroke: var(--purple_light);
