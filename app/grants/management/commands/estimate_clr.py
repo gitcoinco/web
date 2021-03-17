@@ -41,6 +41,7 @@ class Command(BaseCommand):
 
         network = options['network']
         clr_pk = options['clr_pk']
+        print (network, clr_pk)
 
         if clr_pk == "all":
             active_clr_rounds = GrantCLR.objects.filter(is_active=True)

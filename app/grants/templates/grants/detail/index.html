@@ -37,98 +37,99 @@
 
   </head>
   <body class="interior {{ active }} grant grant-detail g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'grants/nav.html' %}
-    </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'grants/nav.html' %}
+      </div>
 
-    {% include 'grants/shared/waiting_state.html' %}
+      {% include 'grants/shared/waiting_state.html' %}
 
-    {% if is_staff %}
-    <div class="alpha-warning font-caption mb-0">
-      <span class="font-weight-bold">Staff only</span>
-      <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
-    </div>
-    {% endif %}
+      {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+      </div>
+      {% endif %}
 
-    <div class="row">
-      <div id="grants-details" class="col-12">
-        <div class="row">
-          <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
-              {% include 'grants/detail/info.html' %}
+      <div class="row">
+        <div id="grants-details" class="col-12">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+                {% include 'grants/detail/info.html' %}
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 px-5 px-md-0">
+              {% include 'grants/detail/funding.html' %}
+            </div>
           </div>
-          <div class="col-12 col-md-6 col-lg-4 px-5 px-md-0">
-            {% include 'grants/detail/funding.html' %}
+          <div class="row">
+            <div class="col-12 px-5">
+              {% include 'grants/detail/tabs.html' %}
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12 px-5">
-            {% include 'grants/detail/tabs.html' %}
-          </div>
+        <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+          {% include 'grants/detail/side-cart.html' %}
         </div>
       </div>
-      <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
-        {% include 'grants/detail/side-cart.html' %}
-      </div>
-    </div>
-        <div class="modal fade" id="startVerification" tabindex="-1" role="dialog" aria-labelledby="startVerification" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content text-center">
-          <div class="modal-header" style="border-bottom: none">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body px-5">
-            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
-            <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
-            <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
-            <button id="triggerTwitter" class="btn btn-lg btn-gc-blue" data-toggle="modal" data-target="#startTwitterVerification">Verify with twitter</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="startTwitterVerification" tabindex="-1" role="dialog" aria-labelledby="startTwitterVerification" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content text-center">
-          <div class="modal-header" style="border-bottom: none">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body px-5">
-            <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
-            <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
-            <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
-              {% if grant.twitter_handle_1 %}<i class="fas fa-check text-highlight-green"></i>{% else %}
-                <i class="fas fa-exclamation-triangle" style="color: #b88b16"></i>
-              {% endif %}</p>
-            <p class="mb-4 text-left"><b>Step 2:</b> Click to send the verification tweet from the grant account (<b>{{ grant.twitter_handle_1 }}</b>)
-            </p>
-            {% with verification_tweet|add:" "|add:user_code as tweet %}
-              {% if grant.twitter_handle_1 %}
-              <a class="font-caption btn btn-outline-gc-blue btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank"><i class="fab fa-twitter"></i> Send Verification Tweet</a>
-              {% else %}
-                <span class="font-caption btn btn-outline-gc-blue btn-sm disabled"><i class="fab fa-twitter"></i> Send Verification Tweet</span>
-              {% endif %}
-            {% endwith %}
-            <p class="mb-4 mt-3 text-left mt-2"><b>Step 3:</b> Click the "Verify" button below</p>
-            <button class="btn btn-lg btn-gc-blue mt-2 mb-4" id="twitterVerification" {% if not grant.twitter_handle_1 %}disabled{% endif %}>Verify</button>
-            <br>
-            <span class="error" id="validation-errors"></span>
-
+          <div class="modal fade" id="startVerification" tabindex="-1" role="dialog" aria-labelledby="startVerification" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content text-center">
+            <div class="modal-header" style="border-bottom: none">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body px-5">
+              <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+              <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
+              <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
+              <button id="triggerTwitter" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#startTwitterVerification">Verify with twitter</button>
+            </div>
           </div>
         </div>
       </div>
+      <div class="modal fade" id="startTwitterVerification" tabindex="-1" role="dialog" aria-labelledby="startTwitterVerification" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content text-center">
+            <div class="modal-header" style="border-bottom: none">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body px-5">
+              <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+              <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
+              <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
+                {% if grant.twitter_handle_1 %}<i class="fas fa-check text-highlight-green"></i>{% else %}
+                  <i class="fas fa-exclamation-triangle" style="color: #b88b16"></i>
+                {% endif %}</p>
+              <p class="mb-4 text-left"><b>Step 2:</b> Click to send the verification tweet from the grant account (<b>{{ grant.twitter_handle_1 }}</b>)
+              </p>
+              {% with verification_tweet|add:" "|add:user_code as tweet %}
+                {% if grant.twitter_handle_1 %}
+                <a class="font-caption btn btn-outline-primary btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank"><i class="fab fa-twitter"></i> Send Verification Tweet</a>
+                {% else %}
+                  <span class="font-caption btn btn-outline-primary btn-sm disabled"><i class="fab fa-twitter"></i> Send Verification Tweet</span>
+                {% endif %}
+              {% endwith %}
+              <p class="mb-4 mt-3 text-left mt-2"><b>Step 3:</b> Click the "Verify" button below</p>
+              <button class="btn btn-lg btn-primary mt-2 mb-4" id="twitterVerification" {% if not grant.twitter_handle_1 %}disabled{% endif %}>Verify</button>
+              <br>
+              <span class="error" id="validation-errors"></span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
+      {% include 'shared/current_profile.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+      {% include 'shared/footer.html' %}
+      {% include 'grants/shared/shared_scripts.html' %}
     </div>
-    <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
-    {% include 'shared/current_profile.html' %}
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
-    {% include 'shared/footer.html' %}
-    {% include 'grants/shared/shared_scripts.html' %}
   </body>
 
   {% include 'shared/activity_scripts.html' %}

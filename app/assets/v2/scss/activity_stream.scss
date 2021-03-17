@@ -23,8 +23,13 @@
 .activity_stream{
   margin-bottom: 50px;
 }
-.activity_stream .content{
+.activity_stream .content {
   cursor: pointer;
+}
+.activity_stream .content:not(.cursor-none):hover {
+  p:first-of-type, .title {
+    text-decoration: underline;
+  }
 }
 #new_activity_notifier {
   text-align: center;
@@ -177,6 +182,10 @@ a .sup {
 }
 .activity_stream .content img{
   max-height: 100px;
+}
+
+.activity_stream .content img.logo-metacard {
+  max-width: 105px;
 }
 
 .comment_container li{
@@ -360,14 +369,14 @@ iframe.popout{
   display: none;
 }
 
-.infinite-more-link {
-  position: absolute;
-  bottom: 10px;
-  text-align: center;
-  width: 50%;
-  border: 1px solid;
-  margin-left: 25%;
-}
+// .infinite-more-link {
+//   position: absolute;
+//   bottom: 10px;
+//   text-align: center;
+//   width: 50%;
+//   border: 1px solid;
+//   margin-left: 25%;
+// }
 
 .dark-mode .activity_stream .activity_detail .tag {
   background-color: var(--gc-blue);

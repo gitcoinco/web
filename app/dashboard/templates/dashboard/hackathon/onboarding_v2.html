@@ -1,5 +1,5 @@
 {% load static %}
-<div class="modal no-bg" style="color: #212529; font-size: 12pt;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="onboarding_v2" >
+<div class="modal no-bg fade" style="color: #212529; font-size: 12pt;" id="onboarding_v2" tabindex="-1" role="dialog" aria-labelledby="onboarding_v2" >
   <div class="modal-dialog modal-lg " role="document">
     <div class="modal-content" >
       <img src="{% static 'v2/images/hackathon/onboarding_v2/achievement.svg'%}" class="achievement-img d-none d-lg-inline"/>
@@ -154,16 +154,17 @@
             </div>
           </div>
           {% if next %}
-            <a class="btn fe-pulse mb-3" href="{{ next }}" style="display: block; margin: auto; padding: 8px 14px;">I’m ready to explore
-            hackathons!</a>
+            <a class="btn btn-outline-primary px-5 my-3 mx-auto d-table" href="{{ next }}">
+              I’m ready to explore hackathons!
+            </a>
           {% else %}
-          <div class="d-block mx-auto text-center pt-2 custom-control custom-checkbox">
-            <input onchange="hideNextTime(this)" type="checkbox" class="custom-control-input" id="hide-hackaton-onboarding">
-            <label class="custom-control-label pb-2" for="hide-hackaton-onboarding">Got it! Don’t show me again</label>
-          </div>
-          <button class="button button--primary px-5 mb-5 d-block mx-auto"  onclick="dismiss()">I’m ready to explore
-            hackathons!
-          </button>
+            <div class="d-block mx-auto text-center pt-2 custom-control custom-checkbox">
+              <input onchange="hideNextTime(this)" type="checkbox" class="custom-control-input" id="hide-hackaton-onboarding">
+              <label class="custom-control-label pb-2" for="hide-hackaton-onboarding">Got it! Don’t show me again</label>
+            </div>
+            <button class="btn btn-outline-primary px-5 mb-5 d-block mx-auto"  onclick="dismiss()">
+              I’m ready to explore hackathons!
+            </button>
           {% endif %}
         </div>
       </div>

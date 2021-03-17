@@ -19,7 +19,7 @@
                       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
                     ></textarea>
                     <div id="textarea-dropdown" class="dropdown-menu" style="left: initial;"></div>
-                    <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0px;">
+                    <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.8em; right: 0; top: 0px;">
                       <button id="emoji-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0;"><i class="far fa-fw fa-smile"></i></button>
                       {% if is_alpha_tester %}
                       <button id="background-button" class="btn btn-sm p-1" style="bottom: 3.5em; right: 0em;"><i class="fas fa-paint-roller" data-toggle="tooltip" title="Add a background to post"></i></i></button>
@@ -50,7 +50,7 @@
                     <div class="btn-group-toggle text-left activity_type_selector" data-toggle="buttons">
                       {% if tags %}
                         {% for tag in tags %}
-                          <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2 {% if tab == tag.2 %}active focus{% endif %}" >
+                          <label class="btn btn-radio mr-2 mb-2 frontend font-weight-semibold font-caption py-1 px-2 {% if tab == tag.2 %}active focus{% endif %}" >
                             <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
                           <i class="fas fa-{{tag.1}} mr-1 "></i>
                           {{tag.0}}
@@ -58,7 +58,7 @@
                         {% endfor %}
                       {% endif %}
                     </div>
-                    <button class="btn btn-gc-blue font-smaller-7 font-weight-bold h-100" id="btn_post" disabled="true">POST</button>
+                    <button class="btn btn-primary btn-sm h-100" id="btn_post" disabled="true">POST</button>
                   </div>
                   <div id="attach-dropdown" class="attach text-left ml-2 mr-2 mt-3" style="display: none">
                     <div class="row">

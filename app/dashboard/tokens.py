@@ -29,8 +29,8 @@ def addr_to_token(addr, network='mainnet'):
     return False
 
 
-def token_by_name(name):
-    for token in get_tokens():
+def token_by_name(name, network='mainnet'):
+    for token in get_tokens(network):
         if token['name'].lower() == name.lower():
             return token
     return False

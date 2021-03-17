@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import connection, transaction
 
 from app.services import RedisService
@@ -20,21 +21,22 @@ def increment_view_counts(self, pks, retry=False):
     :param pks:
     :return:
     """
-    with redis.lock("tasks:increment_view_counts", timeout=LOCK_TIMEOUT):
+    if settings.FLUSH_QUEUE:
+        return
 
-        if len(pks) == 0:
-            return
-        # update DB directly
-        with connection.cursor() as cursor:
-            id_as_str = ",".join(str(id) for id in pks)
-            query = f"UPDATE dashboard_activity SET view_count = view_count + 1 WHERE id in ({id_as_str});"
-            cursor.execute(query)
-            cursor.close()
+    if len(pks) == 0:
+        return
+    # update DB directly
+    with connection.cursor() as cursor:
+        id_as_str = ",".join(str(id) for id in pks)
+        query = f"UPDATE dashboard_activity SET view_count = view_count + 1 WHERE id in ({id_as_str});"
+        cursor.execute(query)
+        cursor.close()
 
-        # invalidate cache
-        activities = Activity.objects.filter(pk__in=pks)
-        for obj in activities:
-            invalidate_obj(obj)
+    # invalidate cache
+    activities = Activity.objects.filter(pk__in=pks)
+    for obj in activities:
+        invalidate_obj(obj)
 
 @app.shared_task(bind=True, max_retries=3)
 def increment_offer_view_counts(self, pks, retry=False):

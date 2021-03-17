@@ -599,7 +599,7 @@ def about(request):
             "semovita with afang soup",
             "",
             "OSS Freedom Fighter",
-            "stchibe",
+            "stchibie",
             True
         ),
         (
@@ -834,11 +834,11 @@ def products(request):
         },
         {
             'name': 'kernel',
-            'heading': _("Accelerate your web3 entrepenurial career."),
+            'heading': _("Accelerate your web3 entrepreneurial career."),
             'description': _("An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies."),
             'link': 'https://kernel.community/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('landingpage/kernel.svg'),
+            'logo': static('v2/images/top-bar/kernel-symbol-neg.svg'),
             'service_level': 'Full Service',
             'traction': '100s of top devs',
         },
@@ -1076,7 +1076,7 @@ def create_status_update(request):
         attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
 
-        if request.user.is_authenticated and request.user.profile.is_blocked:
+        if request.user.is_authenticated and (request.user.profile.is_blocked or request.user.profile.shadowbanned):
             response['status'] = 200
             response['message'] = 'Status updated!'
             return JsonResponse(response, status=400)
@@ -1158,8 +1158,12 @@ def create_status_update(request):
             mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
-                if 'Email Grant Funders' in activity.metadata.get('ask'):
-                    grant_update_email_task.delay(activity.pk)
+                if activity.grant and activity.grant.is_on_team(request.user.profile):
+                    grant = activity.grant
+                    grant.last_update = timezone.now()
+                    grant.save()
+                    if 'Email Grant Funders' in activity.metadata.get('ask'):
+                        grant_update_email_task.delay(activity.pk)
                 else:
                     wall_post_email(activity)
 
@@ -1443,6 +1447,7 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+@cached_view(timeout=60)
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1452,6 +1457,7 @@ def tokens(request):
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
 
+@cached_view(timeout=60)
 def json_tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']

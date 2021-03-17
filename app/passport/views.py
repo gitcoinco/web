@@ -58,7 +58,7 @@ def index(request):
     # sign message
     message = contract.functions.getMessageHash(player, 0, tokenURI, nonce).call()
     message_hash = defunct_hash_message(primitive=message)
-    private_key = settings.PASSPORT_PK_RINKEBY if network =='rinkeby' settings.PASSPORT_PK_MAINNET
+    private_key = settings.PASSPORT_PK_RINKEBY if network == 'rinkeby' else settings.PASSPORT_PK_MAINNET
     signed_message = w3.eth.account.signHash(message_hash, private_key=private_key).signature.hex()
 
     context = {

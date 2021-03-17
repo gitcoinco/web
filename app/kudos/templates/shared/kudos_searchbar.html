@@ -39,11 +39,11 @@
         </datalist>
         <div class="input-group-append">
           <a href="{% url 'kudos_marketplace' %}" class="btn btn-dark btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
-          <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+          <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
         </div>
       </div>
-      <div class="mt-3 white">
-        <span class="white">Search suggestions:</span>
+      <div class="mt-3">
+        <span>Search suggestions:</span>
         <a href="{% url 'kudos_marketplace' %}?q=rare&network={{network}}">rare</a> -
         <a href="{% url 'kudos_marketplace' %}?q=common&network={{network}}">common</a> -
         <a href="{% url 'kudos_marketplace' %}?q=ninja&network={{network}}">ninja</a> -

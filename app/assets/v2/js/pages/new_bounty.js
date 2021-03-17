@@ -262,14 +262,16 @@ Vue.mixin({
           .then(function(response) {
             return response.text();
           }).then(function(html) {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const guide = doc.querySelector('.btn-closeguide');
 
             doc.querySelector('.show_video').href = 'https://www.youtube.com/watch?v=m1X0bDpVcf4';
             doc.querySelector('.show_video').target = '_blank';
-            doc.querySelector('.btn-closeguide').dataset.dismiss = 'modal';
 
-            let docArticle = doc.querySelector('.content').innerHTML;
+            guide.dataset.dismiss = 'modal';
+
+            const docArticle = doc.querySelector('.content').innerHTML;
             const content = $.parseHTML(
               `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-xl" style="max-width:95%">
@@ -281,7 +283,7 @@ Vue.mixin({
                     </div>
                     ${docArticle}
                     <div class="col-12 my-4 d-flex justify-content-around">
-                      <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
                     </div>
                   </div>
                 </div>

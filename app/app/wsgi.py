@@ -27,4 +27,5 @@ if os.environ.get('ENV') in ['prod', 'stage']:
     from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
     application = Sentry(get_wsgi_application())
 else:
-    application = get_wsgi_application()
+    from dj_static import Cling
+    application = Cling(get_wsgi_application())

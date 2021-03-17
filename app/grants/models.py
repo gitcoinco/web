@@ -47,7 +47,7 @@ from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
-from townsquare.models import Favorite
+from townsquare.models import Favorite, Comment
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
@@ -102,7 +102,8 @@ class GrantType(SuperModel):
     name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
     is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
-    categories  = models.ManyToManyField(
+    is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
+    categories = models.ManyToManyField(
         GrantCategory,
         help_text="Grant Categories associated with Grant Type"
     )
@@ -219,15 +220,30 @@ class GrantCLR(SuperModel):
         return f"{self.round_num}"
 
     @property
+    def happening_now(self):
+        # returns true if we are within the time range for this round
+        now = timezone.now()
+        return now >= self.start_date and now <= self.end_date
+
+    @property
+    def happened_recently(self):
+        # returns true if we are within a week or 2 of this round
+        days = 14
+        now = timezone.now()
+        then = timezone.now() - timezone.timedelta(days=days)
+        return now >= self.start_date and then <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**self.collection_filters).values_list('grants', flat=True)
+            grants = grants.filter(pk__in=grant_ids)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
         if self.subscription_filters:
             grants = grants.filter(**self.subscription_filters)
-        if self.collection_filters:
-            grants = grants.filter(**self.collection_filters)
 
         return grants
 
@@ -243,6 +259,30 @@ class GrantCLR(SuperModel):
             clr_prediction_curve=clr_prediction_curve,
             latest=True,
         )
+
+
+class GrantAPIKey(SuperModel):
+    """Define the structure of a GrantAPIKey."""
+
+    key = models.CharField(
+        max_length=255,
+        blank=True,
+        db_index=True,
+        help_text="the api key"
+    )
+    secret = models.CharField(
+        max_length=255,
+        blank=True,
+        db_index=True,
+        help_text="the api secret"
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grant_apikey',
+        on_delete=models.CASCADE,
+        help_text=_('The GrantAPI key\'s profile.'),
+        null=True,
+    )
 
 
 class Grant(SuperModel):
@@ -275,6 +315,8 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    admin_message = models.TextField(default='', blank=True, help_text=_('An admin message that will be shown to visitors of this grant.'))
+    visible = models.BooleanField(default=True, help_text="Is grant visible on the site")
     region = models.CharField(
         max_length=30,
         null=True,
@@ -543,17 +585,22 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
+    def is_on_team(self, profile):
+        return is_grant_team_member(self, profile)
+
 
     def calc_clr_round(self):
         clr_round = None
 
         # create_grant_active_clr_mapping
-        clr_rounds = GrantCLR.objects.filter(is_active=True)
+        clr_rounds = GrantCLR.objects.all()
         for this_clr_round in clr_rounds:
-            if self in this_clr_round.grants.all():
+            add_to_round = self.active and not self.hidden and this_clr_round.is_active and this_clr_round.happening_now and self in this_clr_round.grants.all()
+            if add_to_round:
                 self.in_active_clrs.add(this_clr_round)
             else:
-                self.in_active_clrs.remove(this_clr_round)
+                if this_clr_round in self.in_active_clrs.all():
+                    self.in_active_clrs.remove(this_clr_round)
 
         # create_grant_clr_cache
         if self.in_active_clrs.count() > 0 and self.is_clr_eligible:
@@ -596,8 +643,18 @@ class Grant(SuperModel):
 
     @property
     def calc_clr_round_nums(self):
+        """Generates CLR rounds sub_round_slug seperated by comma"""
         if self.pk:
             round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            return ", ".join(round_nums)
+        return ''
+
+
+    @property
+    def calc_clr_round_label(self):
+        """Generates CLR rounds display text seperated by comma"""
+        if self.pk:
+            round_nums = [ele for ele in self.in_active_clrs.values_list('display_text', flat=True)]
             return ", ".join(round_nums)
         return ''
 
@@ -695,11 +752,8 @@ class Grant(SuperModel):
     @property
     def get_contribution_count(self):
         num = 0
-        for sub in self.subscriptions.filter(is_postive_vote=True):
-            for contrib in sub.subscription_contribution.filter(success=True):
-                num += 1
-        for pf in self.phantom_funding.all():
-            num+=1
+        num += self.subscriptions.filter(is_postive_vote=True, subscription_contribution__success=True).count()
+        num += self.phantom_funding.all().count()
         return num
 
     @property
@@ -715,14 +769,10 @@ class Grant(SuperModel):
     def get_contributor_count(self, since=None, is_postive_vote=True):
         if not since:
             since = timezone.datetime(1990, 1, 1)
-        contributors = []
-        for sub in self.subscriptions.filter(is_postive_vote=is_postive_vote):
-            for contrib in sub.subscription_contribution.filter(success=True, created_on__gt=since):
-                contributors.append(contrib.subscription.contributor_profile.handle)
+        num = self.subscriptions.filter(is_postive_vote=is_postive_vote, subscription_contribution__success=True, created_on__gt=since).distinct('contributor_profile').count()
         if is_postive_vote:
-            for pf in self.phantom_funding.filter(created_on__gt=since).all():
-                contributors.append(pf.profile.handle)
-        return len(set(contributors))
+            num += self.phantom_funding.filter(created_on__gt=since).exclude(profile__in=self.subscriptions.values_list('contributor_profile')).all().count()
+        return num
 
 
     @property
@@ -897,6 +947,7 @@ class Grant(SuperModel):
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url or '',
                 'funding_info': self.funding_info,
+                'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
             }
@@ -908,7 +959,7 @@ class Grant(SuperModel):
         """Override the Grant save to optionally handle modified_on logic."""
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
-        self.clr_round_num = self.calc_clr_round_nums
+        self.clr_round_num = self.calc_clr_round_label
 
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
@@ -1666,6 +1717,16 @@ class Contribution(SuperModel):
     )
     anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
+    @property
+    def blockexplorer_url(self):
+        if self.checkout_type == 'eth_zksync':
+            return f'https://zkscan.io/explorer/transactions/{self.split_tx_id.replace("sync-tx:", "")}'
+        if self.checkout_type == 'eth_std':
+            network_sub = f"{{self.subscription.network}}." if self.subscription and self.subscription.network != 'mainnet' else ''
+            return f'https://{network_sub}etherscan.io/tx/{self.split_tx_id}'
+        # TODO: support all block explorers for diff chains
+        return ''
+
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
 
@@ -1686,7 +1747,25 @@ class Contribution(SuperModel):
         if mechanism == 'originated_address':
             return self.originated_address
         else:
-            return self.subscription.contributor_profile.id
+            return self.profile_for_clr.id
+
+    def leave_gitcoinbot_comment_for_status(self, status):
+        try:
+            from dashboard.models import Profile
+            comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
+            profile = Profile.objects.get(handle='gitcoinbot')
+            activity = self.subscription.activities.first()
+            Comment.objects.update_or_create(
+                profile=profile,
+                activity=activity,
+                defaults={
+                    "comment":comment,
+                    "is_edited":True,
+                }
+                );
+        except Exception as e:
+            print(e)
+
 
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
@@ -1731,14 +1810,35 @@ class Contribution(SuperModel):
                 PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
                 w3 = Web3(Web3.WebsocketProvider(PROVIDER))
 
-                # Handle replaced transactions
+                # Handle dropped/replaced transactions
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
                 if split_tx_status in ['pending', 'dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
                     if new_tx:
                         self.split_tx_id = new_tx
+                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+
+                # Handle pending txns
+                if split_tx_status in ['pending']:
+                    then = timezone.now() - timezone.timedelta(hours=1)
+                    if self.created_on > then:
+                        print('txn pending')
+                        self.leave_gitcoinbot_comment_for_status('pending')
                     else:
-                        print('TODO: do stuff related to long running pending txns')
+                        self.success = False
+                        self.validator_passed = False
+                        self.validator_comment = "txn pending for more than 1 hours, assuming failure"
+                        print(self.validator_comment)
+                        self.leave_gitcoinbot_comment_for_status('dropped')
+                    return
+
+                # Handle dropped txns
+                if split_tx_status in ['dropped', 'unknown', '']:
+                    self.success = False
+                    self.validator_passed = False
+                    self.validator_comment = "txn not found"
+                    print('txn not found')
+                    self.leave_gitcoinbot_comment_for_status('dropped')
                     return
 
                 # Validate that the token transfers occurred
@@ -1753,21 +1853,25 @@ class Contribution(SuperModel):
 
             else:
                 # This validator is only for eth_std and eth_zksync, so exit for other contribution types
+                self.leave_gitcoinbot_comment_for_status('unknown')
                 return
 
             # Validator complete!
 
-            if self.success:
-                print("TODO: do stuff related to successful contribs, like emails")
-            else:
-                print("TODO: do stuff related to failed contribs, like emails")
         except Exception as e:
+            self.leave_gitcoinbot_comment_for_status('error')
             self.validator_passed = False
             self.validator_comment = str(e)
             print(f"Exception: {self.validator_comment}")
             self.tx_cleared = False
             self.split_tx_confirmed = False
             self.success = False
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('success')
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('failed')
 
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
@@ -1791,6 +1895,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "txid":instance.subscription.split_tx_id,
                     "token_name":instance.subscription.token_symbol,
                     "token_value":instance.subscription.amount_per_period,
+                    "success":instance.success,
                 }
             )
         except:
@@ -2019,6 +2124,7 @@ class GrantCollection(SuperModel):
     cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
     featured = models.BooleanField(default=False, help_text=_('Show grant as featured'))
     objects = CollectionsQuerySet.as_manager()
+    shuffle_rank = models.PositiveIntegerField(default=1, db_index=True)
     curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
 
     def generate_cache(self):
@@ -2033,7 +2139,7 @@ class GrantCollection(SuperModel):
         }
 
         try:
-            cover = generate_collection_thumbnail(self, 348, 175)
+            cover = generate_collection_thumbnail(self, 348 * 5, 175 * 5)
             filename = f'thumbnail_{self.id}.png'
             buffer = BytesIO()
             cover.save(fp=buffer, format='PNG')
@@ -2132,7 +2238,7 @@ class GrantBrandingRoutingPolicy(SuperModel):
         blank=True,
         null=True
     )
-    url_pattern = models.CharField(max_length=50, help_text=_("A regex url pattern"))
+    url_pattern = models.CharField(max_length=255, help_text=_("A regex url pattern"))
     banner_image = models.ImageField(
         upload_to=get_upload_filename,
         help_text=_('The banner image for a grant page'),

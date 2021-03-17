@@ -311,7 +311,7 @@ def grants():
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
     total = contributions.count() + pfs.count()
 
-    current_carts = CartActivity.objects.filter(latest=True)#, grant__in=grants_pks)
+    current_carts = CartActivity.objects.filter(created_on__gt=start, latest=True)#, grant__in=grants_pks)
     num_carts = 0
     amount_in_carts = {}
     discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000

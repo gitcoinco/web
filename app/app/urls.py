@@ -56,6 +56,7 @@ import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
+from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -120,6 +121,7 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
+    path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
 
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
@@ -595,6 +597,7 @@ urlpatterns = [
         name='admin_subscription_terminated'
     ),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
+    path('_administration/email/new_grant_approved', retail.emails.new_grant_approved, name='admin_new_grant_approved'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path(
         '_administration/email/thank_you_for_supporting',

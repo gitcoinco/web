@@ -40,14 +40,15 @@ from retail.emails import (
     render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute,
     render_grant_txn_failed, render_grant_update, render_kudos_email, render_match_distribution, render_match_email,
     render_mention, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
-    render_no_applicant_reminder, render_nth_day_email_campaign, render_pending_contribution_email,
-    render_quarterly_stats, render_remember_your_cart, render_request_amount_email, render_reserved_issue,
-    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
-    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
-    render_tax_report, render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_new_bounty_roundup, render_new_grant_approved_email, render_new_grant_email, render_new_supporter_email,
+    render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
+    render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
+    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
+    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
+    render_tribe_hackathon_prizes, render_unread_notification_email_weekly_roundup, render_wallpost,
+    render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -131,7 +132,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
     # debug logs
-    logger.info(f"-- Sending Mail '{subject}' to {to_email}")
+    logger.info(f"-- Sending Mail '{subject}' to {to_email.email}")
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
@@ -222,7 +223,7 @@ def featured_funded_bounty(from_email, bounty):
 
 def new_grant_flag_admin(flag):
     from_email = settings.CONTACT_EMAIL
-    to_email = 'kevin@gitcoin.co'
+    to_email = 'new-grants@gitcoin.co'
 
     cur_language = translation.get_language()
 
@@ -264,6 +265,27 @@ def new_grant(grant, profile):
         translation.activate(cur_language)
 
 
+def new_grant_approved(grant, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_new_grant_approved_email(grant)
+
+        if not should_suppress_notification_email(to_email, 'new_grant_approved'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
 def new_grant_match_pledge(matchpledge):
     to_email = 'founders@gitcoin.co'
     from_email = matchpledge.profile.email
@@ -288,7 +310,10 @@ def new_supporter(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     if not to_email:
-        to_email = grant.admin_profile.user.email
+        if grant.admin_profile:
+            to_email = grant.admin_profile.email
+        else:
+            return
     cur_language = translation.get_language()
 
     try:
@@ -702,7 +727,7 @@ def new_faucet_request(fr):
 
 
 def new_grant_admin(grant):
-    to_emails = [settings.PERSONAL_CONTACT_EMAIL, 'scott.moore@consensys.net']
+    to_emails = ['new-grants@gitcoin.co']
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     for to_email in to_emails:
@@ -1091,6 +1116,42 @@ For corporations:
 
 Thanks,
 Gitcoin Grants KYC Team
+</pre>
+
+        """
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
+def grant_more_info_required(grant, more_info):
+    to_email = grant.admin_profile.email
+    cc_emails = [profile.email for profile in grant.team_members.all()]
+    from_email = 'new-grants@gitcoin.co'
+    cc_emails.append(from_email)
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"More Info Requested for {grant.url}"
+        body = f"""
+<pre>
+Hello @{grant.admin_profile.handle},
+
+This email is in regards to your Gitcoin Grant: {grant.url}
+
+We require more information to approve your application. {more_info}
+
+Thanks,
+Gitcoin Grant Team
 </pre>
 
         """

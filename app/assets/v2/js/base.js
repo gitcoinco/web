@@ -128,25 +128,6 @@ $(document).ready(function() {
     Cookies.set('last_github_auth_mutation', timestamp);
   });
 
-
-  // preload hover image
-  var url = $('#logo').data('hover');
-
-  $.get(url, function() {
-    // …
-  });
-
-  $('#logo').mouseover(function(e) {
-    $(this).attr('old-src', $(this).attr('src'));
-    var new_src = $(this).data('hover');
-
-    $(this).attr('src', new_src);
-    e.preventDefault();
-  });
-
-  $('#logo').mouseleave(function(e) {
-    $(this).attr('src', $(this).attr('old-src'));
-  });
   if (!$.fn.collapse) {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
@@ -162,19 +143,21 @@ $(document).ready(function() {
     });
   }
 
+  // control display of #top_nav_notification
+  var $top_nav_notif = $('#top_nav_notification');
   var top_nav_salt = document.nav_salt;
   var remove_top_row = function() {
-    $('#top_nav_notification').parents('.row').remove();
+    $top_nav_notif.parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
-
-  if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
+  
+  // display (if it holds a message and hasn't been closed) or remove #top_nav_notification
+  if (top_nav_salt == 0 || localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
+  } else {
+    $top_nav_notif.parents('.row').removeClass('d-none');
   }
-  if (top_nav_salt == 0) {
-    remove_top_row();
-  }
-  $('#top_nav_notification').click(remove_top_row);
+  $top_nav_notif.click(remove_top_row);
 
   // pulse animation on click
   $('.pulseClick').on('click', (event) => {
@@ -220,7 +203,7 @@ $(document).ready(function() {
         $(this).parents('.offer_container').addClass('animate').removeClass('empty');
         $(this).removeAttr('data-time');
 
-        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+        // let btn = `<a class="btn btn-block btn-primary btn-sm mt-2" href="${timeUrl}">View Action</a>`;
         // return $(this).parent().next().html(btn);
         return $(this).parent().append('<div>Refresh to view offer!</div>');
       }
@@ -340,8 +323,8 @@ var show_persona_modal = function(e) {
             <p class="mb-0">${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
           <div class="col-12 my-4 text-center">
-            <button type="button" class="btn btn-gc-blue px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
+            <button type="button" class="btn btn-primary px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-primary px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
@@ -434,7 +417,7 @@ const gitcoinUpdates = () => {
               ${response.body}
             </div>
             <div class="col-12 my-4 d-flex justify-content-around">
-              <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
             </div>
           </div>
         </div>

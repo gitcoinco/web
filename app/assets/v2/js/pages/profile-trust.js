@@ -39,7 +39,7 @@ Vue.component('sms-verify-modal', {
                   <p class="mb-4 font-subheader text-left">read more about <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                     href="https://twitter.com/owocki/status/1271088915982675974">why we are asking for your phone number</a> or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                       href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy.</a></p>
-                  <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify
+                  <b-button @click="validationStep='requestVerification'" variant="primary" class="btn-primary mb-2" size="lg">Verify
                   Phone Number</b-button>
                   <div class="mb-1 font-subheader text-center">
                     <a id="verify_offline" href="#">
@@ -71,7 +71,7 @@ Vue.component('sms-verify-modal', {
                   <div v-if="errorMessage">
                     <span class="label-warning">[[ errorMessage ]]</span>
                   </div>
-                  <b-button @click="requestVerification()" class="btn-gc-blue mt-5 mb-2" size="lg">Send verification
+                  <b-button @click="requestVerification()" variant="primary" class="btn-primary mt-5 mb-2" size="lg">Send verification
                     code</b-button>
                   <br />
                   <b-button @click="hide()" variant="link">Cancel</b-button>
@@ -90,7 +90,7 @@ Vue.component('sms-verify-modal', {
                   <div v-if="errorMessage">
                     <span class="label-warning">[[ errorMessage ]]</span>
                   </div>
-                  <b-button @click="validateCode()" class="btn-gc-blue mt-5" size="lg">Submit</b-button>
+                  <b-button @click="validateCode()" variant="primary" class="btn-primary mt-5" size="lg">Submit</b-button>
                   <br />
                   <b-button @click="startVerification()" variant="link">Change number</b-button>
                   <b-button @click="resendCode()" variant="link">Resend Code</b-button>
@@ -246,7 +246,7 @@ Vue.component('twitter-verify-modal', {
                         <em>[[tweetText]]</em>
                       </p>
                       <div class="mt-2 mb-2">
-                        <a :href="tweetIntentURL" @click="clickedSendTweet" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
+                        <a :href="tweetIntentURL" @click="clickedSendTweet" role="button" style="font-size: 1.3em" class="btn btn-primary mb-2" target="_blank">
                           Send Tweet
                         </a>
                       </div>
@@ -267,7 +267,7 @@ Vue.component('twitter-verify-modal', {
                       <div v-if="validationError !== ''" style="color: red">
                         <small>[[validationError]]</small>
                       </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" variant="primary" class="btn-primary mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
@@ -278,7 +278,7 @@ Vue.component('twitter-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validation-complete'">
                       Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                      <a href="" class="btn btn-primary px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
                     </div>
                   </div>
                 </template>
@@ -385,7 +385,7 @@ Vue.component('poap-verify-modal', {
                       </p>
 
                       <div class="mt-2 mb-2">
-                        <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="button button--primary mb-2" target="_blank">
+                        <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="btn btn-primary mb-2" target="_blank">
                           Pull from Wallet
                         </a>
                       </div>
@@ -400,7 +400,7 @@ Vue.component('poap-verify-modal', {
                       <div v-if="validationError !== ''" style="color: red">
                         <small>[[validationError]]</small>
                       </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" variant="primary" class="btn-primary mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
@@ -415,7 +415,7 @@ Vue.component('poap-verify-modal', {
                     </div>
                     <div v-if="validationStep === 'validation-complete'">
                       Your POAP verification was successful. Thank you for helping make Gitcoin more sybil resistant!
-                      <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                      <a href="" class="btn btn-primary px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
                     </div>
                   </div>
                 </template>
@@ -592,7 +592,7 @@ Vue.component('brightid-verify-modal', {
                         </div>
                       </p>
                       <div class="col-12 my-4 text-center">
-                        <a href="" class="btn btn-gc-blue px-5 mb-2 mx-2">Done Connecting</a>
+                        <a href="" class="btn btn-primary px-5 mb-2 mx-2">Done Connecting</a>
                       </div>
                     </div>
                   </template>
@@ -610,9 +610,48 @@ Vue.component('brightid-verify-modal', {
                       </p>
                     </div>
                   </template>
+
+                  <template v-else-if="validationStep === 'verify-brightid'">
+                    <div class="col-12 pt-2 pb-2 text-center">
+                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
+                      <h2 class="font-title mt-2">Verify Your BrightID</h2>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <p>
+                        BrightID is a digital identity solution that ensures accounts in any application are created by real humans; each user is unique and only has one account.
+                        <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
+                      </p>
+                      <p>
+                        Now that you've connected your BrightID, you need to get verified by connecting with other real humans.
+                      </p>
+                      <p>
+                        <strong>Join a Gitcoin + BrightID Verification Party</strong><br />
+                        <small class="text-muted">
+                          You can learn more about how BrightID works and make connections that will help you get verified on the verifications parties.
+                          Register for one of the events.
+                        </small>
+                        <template v-for="call in calls">
+                          <div class="row mb-3">
+                            <div class="col-md-8">
+                              <strong class="d-block">[[call.when]]</strong>
+                              <div class="font-caption">
+                                <template v-for="date in call.dates">
+                                  At <span>[[formatDate(date.timeStart)]]</span> - <span>[[formatDate(date.timeEnd)]]</span><br />
+                                </template>
+                              </div>
+                            </div>
+                            <div class="col-md-4 my-auto">
+                              <a :href="call.link" target="_blank" class="btn btn-sm btn-block btn-primary px-4">Register <br> on [[call.platform]]</a>
+                            </div>
+                          </div>
+                        </template>
+                      </p>
+                    </div>
+                  </template>
                 </div>
               </template>
             </b-modal>`,
+
   methods: {
     dismissVerification() {
       this.$emit('modal-dismissed');
@@ -687,7 +726,7 @@ Vue.component('active-trust-row-template', {
     }
   },
   template: `
-      <div class="row mb-4">
+      <div class="row mb-4 pb-4" style="border-bottom: 1px solid #eee;">
         <div class="col-12 col-md-1 mx-auto text-center">
           <div v-if="iconType === 'markup'">
             <slot name="icon"></slot>
@@ -709,7 +748,7 @@ Vue.component('active-trust-row-template', {
             +[[matchPercent]]%
           </div>
           <div style="color:grey">
-            <small>Grants CLR Match</small>
+            <small>Grants Match Bonus</small>
           </div>
         </div>
         <div class="col-6 col-md-2">
@@ -721,7 +760,7 @@ Vue.component('active-trust-row-template', {
               <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
             </template>
             <template v-else>
-              <a @click="didClick" href="" role="button" class="button button--primary text-nowrap">[[buttonText]]</a>
+              <a @click="didClick" href="" role="button" class="btn btn-primary text-nowrap">[[buttonText]]</a>
             </template>
           </template>
         </div>
