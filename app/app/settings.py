@@ -153,6 +153,7 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
+    'passport',
 ]
 
 MIDDLEWARE = [
@@ -566,6 +567,7 @@ CELERY_ROUTES = [
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
+    ('dashboard.tasks.increment_view_count', {'queue': 'analytics'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
@@ -734,6 +736,10 @@ KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
 KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
+
+# Passport
+PASSPORT_PK_MAINNET = env('PASSPORT_PK_MAINNET', default='')
+PASSPORT_PK_RINKEBY = env('PASSPORT_PK_RINKEBY', default='')
 
 # Grants
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')

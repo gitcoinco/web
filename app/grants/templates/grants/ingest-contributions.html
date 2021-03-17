@@ -49,7 +49,7 @@
                 <h1 class="text-center font-title-xl">Add Missing Contributions</h1>
                 <p class="text-center font-smaller-1 text-black-60">
                   If you completed a Gitcoin Grants checkout, but don't see evidence of this in your
-                  email or the Gitcoin interface, you can use this form to fix that!
+                  email or the Gitcoin interface, you can use this form to fix that! This form supports both L1 transactions and L2 transactions (on zkSync).
                 </p>
               </div>
 
@@ -66,8 +66,8 @@
                 <p class="font-body mb-1">
                   <ul>
                     <li>Make sure your wallet is connected to mainnet with the same address you used to checkout</li>
-                    <li>If you donated using L1 (Standard Checkout), please enter the transaction hash</li>
-                    <li>If you donated using L2 (zkSync Checkout), please enter your wallet address</li>
+                    <li>If you donated using L1 (Standard Checkout), please enter the transaction hash. There is no need to also enter your wallet for L1 transactions. *Do not enter a transaction hash for L2 transactions*</li>
+                    <li>If you donated using L2 (zkSync Checkout), please enter your wallet address, *Do not enter a transaction hash for L2 transactions*</li>
                     <li>At least one of these two is required</li>
                   </ul>
                 </p>
@@ -81,7 +81,7 @@
 
               <!-- Transaction hash -->
               <div class="col-12 mb-3">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash</label>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">L1 Transaction Hash</label>
                 <input id="amount" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
               </div>
               <div class="col-12 text-danger" v-if="errors.txHash">
@@ -90,7 +90,7 @@
 
               <!-- User address -->
               <div class="col-12 mb-3">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address</label>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address for L2 transactions</label>
                 <input id="amount" v-model="form.userAddress" name="amount" class="form__input form__input-lg" />
               </div>
 
@@ -111,7 +111,7 @@
                 <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="ingest($event)">Add Contributions</button>
               </div>
               <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
-                Please verify forms errors and try again
+                Please review the form errors and try again.
               </div>
               <div class="col-12 text-center" v-else-if="submitted">
                 Processing your contributions. This may take a minute or two...

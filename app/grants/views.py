@@ -117,90 +117,6 @@ round_types = ['media', 'tech', 'change']
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
 
-def get_stats(round_type):
-    if not round_type:
-        round_type = 'tech'
-    created_on = next_round_start + timezone.timedelta(days=1)
-    charts = []
-    minute = 15 if not settings.DEBUG else 60
-    key_titles = [
-        ('_match', 'Estimated Matching Amount ($)', '-positive_round_contributor_count', 'grants' ),
-        ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
-        ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
-        ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
-        ('_admt1', 'Estimated Matching Amount (in cents) / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
-        ('count_', 'Top Contributors by Num Contributations', '-val', 'profile' ),
-        ('sum_', 'Top Contributors by Value Contributed', '-val', 'profile' ),
-    ]
-    for ele in key_titles:
-        key = ele[0]
-        title = ele[1]
-        order_by = ele[2]
-        if key == '_nctrbs' and round_type != 'media':
-            continue
-        keys = []
-        if ele[3] == 'grants':
-            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).order_by(order_by)[0:50]
-            keys = [grant.title[0:43] + key for grant in top_grants]
-        if ele[3] == 'profile':
-            startswith = f"{ele[0]}{round_type}_"
-            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=startswith).values_list('key', flat=True))
-        charts.append({
-            'title': f"{title} Over Time ({round_type.title()} Round)",
-            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=minute),
-            })
-    results = []
-    counter = 0
-    for chart in charts:
-        try:
-            source = chart['db']
-            rankdata = \
-                PivotDataPool(
-                   series=
-                    [{'options': {
-                       'source': source,
-                        'legend_by': 'key',
-                        'categories': ['created_on'],
-                        'top_n_per_cat': 10,
-                        },
-                      'terms': {
-                        'val': Avg('val'),
-                        }}
-                     ])
-
-            #Step 2: Create the Chart object
-            cht = PivotChart(
-                    datasource = rankdata,
-                    series_options =
-                      [{'options':{
-                          'type': 'line',
-                          'stacking': False
-                          },
-                        'terms':
-                            ['val']
-
-                    }],
-                    chart_options =
-                      {'title': {
-                           'text': chart['title']},
-                       'xAxis': {
-                            'title': {
-                               'text': 'Time'}
-                            },
-                        'renderTo':f'container{counter}',
-                        'height': '800px',
-                        'legend': {
-                            'enabled': False,
-                        },
-                        },
-                    )
-            results.append(cht)
-            counter += 1
-        except Exception as e:
-            logger.exception(e)
-    chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
-    return results, chart_list_str
-
 def get_fund_reward(request, grant):
     token = Token.objects.filter(
         id__in=kudos_reward_pks,
@@ -457,30 +373,6 @@ def grants_addr_as_json(request):
     response = list(set(_grants.values_list('title', 'admin_address')))
     return JsonResponse(response, safe=False)
 
-@cache_page(60 * 60)
-def grants_stats_view(request):
-    cht, chart_list = None, None
-    try:
-        cht, chart_list = get_stats(request.GET.get('category'))
-    except Exception as e:
-        logger.exception(e)
-        raise Http404
-    active_clrs = GrantCLR.objects.filter(is_active=True)
-    pks = []
-    for active_clr in active_clrs:
-        pk = active_clr.grant_filters.get('grant_type', 0)
-        if pk and active_clr.happened_recently:
-            pks.append(pk)
-    round_types = GrantType.objects.filter(pk__in=pks)
-    params = {
-        'cht': cht,
-        'chart_list': chart_list,
-        'round_types': round_types,
-    }
-    response =  TemplateResponse(request, 'grants/shared/landing_stats.html', params)
-    response['X-Frame-Options'] = 'SAMEORIGIN'
-    return response
-
 
 def grants(request):
     """Handle grants explorer."""
@@ -673,24 +565,25 @@ def get_grants(request):
         grants = paginator.get_page(page)
 
     contributions = Contribution.objects.none()
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and only_contributions:
         contributions = Contribution.objects.filter(
             id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
                 'subscription_contribution__id')).prefetch_related('subscription')
 
     contributions_by_grant = {}
-    for contribution in contributions:
-        grant_id = str(contribution.subscription.grant_id)
-        group = contributions_by_grant.get(grant_id, [])
+    if only_contributions:
+        for contribution in contributions:
+            grant_id = str(contribution.subscription.grant_id)
+            group = contributions_by_grant.get(grant_id, [])
 
-        group.append({
-            **contribution.normalized_data,
-            'id': contribution.id,
-            'grant_id': contribution.subscription.grant_id,
-            'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
-        })
+            group.append({
+                **contribution.normalized_data,
+                'id': contribution.id,
+                'grant_id': contribution.subscription.grant_id,
+                'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
+            })
 
-        contributions_by_grant[grant_id] = group
+            contributions_by_grant[grant_id] = group
 
     grants_array = []
     for grant in grants:
@@ -1419,6 +1312,8 @@ def grant_details(request, grant_id, grant_slug):
                 pk=grant_id
             )
 
+        if not grant.visible:
+            raise Http404
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.none()
         cancelled_subscriptions = grant.subscriptions.none()
@@ -1699,6 +1594,10 @@ def grant_edit(request, grant_id):
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
+
+        if grant.active:
+            is_clr_eligible = json.loads(request.POST.get('is_clr_eligible', 'true'))
+            grant.is_clr_eligible = is_clr_eligible
 
         eth_payout_address = request.POST.get('eth_payout_address', '0x0')
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')

@@ -43,6 +43,7 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import passport.views
 import perftools.views
 import ptokens.views
 import quests.views
@@ -120,8 +121,6 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
-
-
     path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
 
     # mailing list
@@ -264,6 +263,10 @@ urlpatterns = [
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
     re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
     re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
+
+    #passport
+    re_path(r'^passport/$', passport.views.index, name='passport_gen'),
+    path('passport/<str:pattern>', passport.views.passport, name='view_passport'),
 
     # Contributor dashboard
     path(

@@ -595,6 +595,21 @@ Vue.component('brightid-verify-modal', {
                       </div>
                     </div>
                   </template>
+                  <template v-if="validationStep === 'pull_status'">
+                    <div class="col-12 pt-2 pb-2 text-center">
+                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
+                      <h2 class="font-title mt-2">Check With BrightID</h2>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <p>
+                      Check your BrightID status to continue.
+                      <br>
+                        <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Check</a>
+                      
+                      </p>
+                    </div>
+                  </template>
+
                   <template v-else-if="validationStep === 'verify-brightid'">
                     <div class="col-12 pt-2 pb-2 text-center">
                       <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
@@ -635,6 +650,7 @@ Vue.component('brightid-verify-modal', {
                 </div>
               </template>
             </b-modal>`,
+
   methods: {
     dismissVerification() {
       this.$emit('modal-dismissed');
@@ -1041,4 +1057,76 @@ $(document).ready(function() {
     $(this).remove();
     $('#verify_offline_target').css('display', 'block');
   });
+
+  jQuery.fn.shake = function(interval, distance, times) {
+    interval = typeof interval == 'undefined' ? 100 : interval;
+    distance = typeof distance == 'undefined' ? 10 : distance;
+    times = typeof times == 'undefined' ? 3 : times;
+    var jTarget = $(this);
+
+    jTarget.css('position', 'relative');
+    for (var iter = 0; iter < (times + 1); iter++) {
+      jTarget.animate({ top: ((iter % 2 == 0 ? distance : distance * -1))}, interval);
+    }
+    return jTarget.animate({ top: 0}, interval);
+  };
+
+  $(document).on('click', '#gen_passport', function(e) {
+    e.preventDefault();
+    if (document.web3network != 'rinkeby') {
+      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'error', 1000);
+      return;
+    }
+    const accounts = web3.eth.getAccounts();
+
+    $.when(accounts).then((result) => {
+      const ethAddress = result[0];
+      let params = {
+        'network': document.web3network,
+        'coinbase': ethAddress
+      };
+
+      $.get('/passport/', params, function(response) {
+        let status = response['status'];
+
+        if (status == 'error') {
+          _alert(response['msg'], 'error', 5000);
+          return;
+        }
+
+        let contract_address = response.contract_address;
+        let contract_abi = response.contract_abi;
+        let nonce = response.nonce;
+        let hash = response.hash;
+        let tokenURI = response.tokenURI;
+        var passport = new web3.eth.Contract(contract_abi, contract_address);
+
+        var callback = function(err, txid) {
+          if (err) {
+            _alert(err, 'error', 5000);
+            return;
+          }
+          let url = 'https://rinkeby.etherscan.io/tx/' + txid;
+          var html = `
+<strong>Woo hoo!</strong> - Your passport is being generated.  View the transaction <a href='` + url + `' target=_blank>here</a>.
+<br><br>
+<strong>Whats next?</strong>
+<br>
+1. Please add the token contract address (` + contract_address + `) as a token to your wallet provider.
+<br>
+2. Use the Trust you've built up on Gitcoin across the dWeb!  Learn more at <a target=_blank href=https://proofofpersonhood.com>proofofpersonhood.com</a>
+
+          `;
+
+          $('.modal-body .subbody').html(html);
+          $('.modal-dialog').shake();
+        };
+
+        passport.methods.createPassport(tokenURI, hash, nonce).send({from: ethAddress}, callback);
+      });
+
+    });
+  });
+
+  
 });

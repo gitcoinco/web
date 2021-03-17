@@ -2988,9 +2988,19 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['login_idena_url'] = idena_callback_url(request, profile)
 
         today = datetime.today()
-        context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-        if settings.DEBUG:
-            context['brightid_status'] = 'not_verified'
+
+        # states:
+        #0. not_connected - start state, user has no brightid_uuid
+        #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
+        #2. not_verified - connected, but not verified
+        #3. verified - connected, and verified
+        context['brightid_status'] = 'not_connected'
+        if profile.brightid_uuid:
+            context['brightid_status'] = 'unknown'
+        if profile.is_brightid_verified:
+            context['brightid_status'] = 'verified'
+        if request.GET.get('pull_bright_id_status'):
+            context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
 
         try:
             context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data

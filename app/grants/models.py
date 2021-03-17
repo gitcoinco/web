@@ -47,7 +47,7 @@ from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
-from townsquare.models import Favorite
+from townsquare.models import Favorite, Comment
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
@@ -315,6 +315,8 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    admin_message = models.TextField(default='', blank=True, help_text=_('An admin message that will be shown to visitors of this grant.'))
+    visible = models.BooleanField(default=True, help_text="Is grant visible on the site")
     region = models.CharField(
         max_length=30,
         null=True,
@@ -945,6 +947,7 @@ class Grant(SuperModel):
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url or '',
                 'funding_info': self.funding_info,
+                'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
             }
@@ -1746,6 +1749,24 @@ class Contribution(SuperModel):
         else:
             return self.profile_for_clr.id
 
+    def leave_gitcoinbot_comment_for_status(self, status):
+        try:
+            from dashboard.models import Profile
+            comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
+            profile = Profile.objects.get(handle='gitcoinbot')
+            activity = self.subscription.activities.first()
+            Comment.objects.update_or_create(
+                profile=profile,
+                activity=activity,
+                defaults={
+                    "comment":comment,
+                    "is_edited":True,
+                }
+                );
+        except Exception as e:
+            print(e)
+
+
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
         try:
@@ -1789,14 +1810,35 @@ class Contribution(SuperModel):
                 PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
                 w3 = Web3(Web3.WebsocketProvider(PROVIDER))
 
-                # Handle replaced transactions
+                # Handle dropped/replaced transactions
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
                 if split_tx_status in ['pending', 'dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
                     if new_tx:
                         self.split_tx_id = new_tx
+                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+
+                # Handle pending txns
+                if split_tx_status in ['pending']:
+                    then = timezone.now() - timezone.timedelta(hours=1)
+                    if self.created_on > then:
+                        print('txn pending')
+                        self.leave_gitcoinbot_comment_for_status('pending')
                     else:
-                        print('TODO: do stuff related to long running pending txns')
+                        self.success = False
+                        self.validator_passed = False
+                        self.validator_comment = "txn pending for more than 1 hours, assuming failure"
+                        print(self.validator_comment)
+                        self.leave_gitcoinbot_comment_for_status('dropped')
+                    return
+
+                # Handle dropped txns
+                if split_tx_status in ['dropped', 'unknown', '']:
+                    self.success = False
+                    self.validator_passed = False
+                    self.validator_comment = "txn not found"
+                    print('txn not found')
+                    self.leave_gitcoinbot_comment_for_status('dropped')
                     return
 
                 # Validate that the token transfers occurred
@@ -1811,21 +1853,25 @@ class Contribution(SuperModel):
 
             else:
                 # This validator is only for eth_std and eth_zksync, so exit for other contribution types
+                self.leave_gitcoinbot_comment_for_status('unknown')
                 return
 
             # Validator complete!
 
-            if self.success:
-                print("TODO: do stuff related to successful contribs, like emails")
-            else:
-                print("TODO: do stuff related to failed contribs, like emails")
         except Exception as e:
+            self.leave_gitcoinbot_comment_for_status('error')
             self.validator_passed = False
             self.validator_comment = str(e)
             print(f"Exception: {self.validator_comment}")
             self.tx_cleared = False
             self.split_tx_confirmed = False
             self.success = False
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('success')
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('failed')
 
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
@@ -1849,6 +1895,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "txid":instance.subscription.split_tx_id,
                     "token_name":instance.subscription.token_symbol,
                     "token_value":instance.subscription.amount_per_period,
+                    "success":instance.success,
                 }
             )
         except:

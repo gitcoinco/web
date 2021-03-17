@@ -599,7 +599,7 @@ def about(request):
             "semovita with afang soup",
             "",
             "OSS Freedom Fighter",
-            "stchibe",
+            "stchibie",
             True
         ),
         (
