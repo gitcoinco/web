@@ -697,8 +697,8 @@ Vue.component('duniter-verify-modal', {
                         <h2 class="font-bigger-4 font-weight-bold"> You need to have these requirements:</h2>
                         <ol>
                           <li>Let's check if there is already a record with your account.</li>
-                          <li>If there is a link to your gitcoin account in your Duniter record </li>
-                          <li>If you are is a qualified member</li>
+                          <li>Link to your gitcoin account in your Duniter record </li>
+                          <li>If you are a qualified Duniter member</li>
                         </ol>
                       </div>
                     </div>
