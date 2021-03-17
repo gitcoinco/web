@@ -7,6 +7,7 @@ from celery.utils.log import get_task_logger
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
+from marketing.utils import should_suppress_notification_email
 
 logger = get_task_logger(__name__)
 
@@ -26,8 +27,13 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     if settings.FLUSH_QUEUE:
         redis.sadd('bounty_daily_retry', email_subscriber_id)
         return
+
     # actually do the task
     es = EmailSubscriber.objects.get(pk=email_subscriber_id)
+
+    if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+        return
+
     new_bounty_daily_email(es)
 
 @app.shared_task(bind=True, rate_limit=rate_limit)

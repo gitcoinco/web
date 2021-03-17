@@ -1799,13 +1799,13 @@ class Contribution(SuperModel):
 
                 # Handle pending txns
                 if split_tx_status in ['pending']:
-                    then = timezone.now() - timezone.timedelta(days=1)
+                    then = timezone.now() - timezone.timedelta(hours=1)
                     if self.created_on > then:
                         print('txn pending')
                     else:
                         self.success = False
                         self.validator_passed = False
-                        self.validator_comment = "txn pending for more than 1 days, assuming failure"
+                        self.validator_comment = "txn pending for more than 1 hours, assuming failure"
                         print(self.validator_comment)
                     return
 
