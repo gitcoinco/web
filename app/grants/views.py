@@ -1595,6 +1595,10 @@ def grant_edit(request, grant_id):
         if not description_rich:
             description_rich = description
 
+        if grant.active:
+            is_clr_eligible = json.loads(request.POST.get('is_clr_eligible', 'true'))
+            grant.is_clr_eligible = is_clr_eligible
+
         eth_payout_address = request.POST.get('eth_payout_address', '0x0')
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
         celo_payout_address = request.POST.get('celo_payout_address', '0x0')
