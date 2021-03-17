@@ -3254,9 +3254,17 @@ def verify_user_google(request):
             'message': 'Invalid code',
         })
 
+    identity_data_google = r.json()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        return JsonResponse({
+            'ok': False,
+            'message': 'A user with this google account already exists!',
+        })
+
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
-    profile.identity_data_google = r.json()
+    profile.identity_data_google = identity_data_google
+    profile.google_user_id = identity_data_google['id']
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
