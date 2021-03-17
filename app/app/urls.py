@@ -182,7 +182,13 @@ urlpatterns = [
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_facebook',
+        dashboard.views.request_verify_facebook,
+        name='request_verify_facebook'
+    ),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
+    url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
