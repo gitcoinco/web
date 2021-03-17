@@ -65,7 +65,6 @@ import requests
 import tweepy
 from ens.auto import ns
 from ens.utils import name_to_hash
-import asyncio
 import getpass
 
 from app.services import RedisService, TwilioService
