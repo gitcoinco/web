@@ -147,6 +147,7 @@ from .utils import (
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
     re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
+from dashboard.duniter import CERTIFICATIONS_SCHEMA
 
 logger = logging.getLogger(__name__)
 
@@ -154,63 +155,6 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-
-MODULE = "wot"
-
-CERTIFICATIONS_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "pubkey": {"type": "string"},
-        "uid": {"type": "string"},
-        "isMember": {"type": "boolean"},
-        "certifications": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "pubkey": {"type": "string"},
-                    "uid": {"type": "string"},
-                    "cert_time": {
-                        "type": "object",
-                        "properties": {
-                            "block": {"type": "number"},
-                            "medianTime": {"type": "number"},
-                        },
-                        "required": ["block", "medianTime"],
-                    },
-                    "sigDate": {"type": "string"},
-                    "written": {
-                        "oneOf": [
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "number": {"type": "number"},
-                                    "hash": {"type": "string"},
-                                },
-                                "required": ["number", "hash"],
-                            },
-                            {"type": "null"},
-                        ]
-                    },
-                    "isMember": {"type": "boolean"},
-                    "wasMember": {"type": "boolean"},
-                    "signature": {"type": "string"},
-                },
-                "required": [
-                    "pubkey",
-                    "uid",
-                    "cert_time",
-                    "sigDate",
-                    "written",
-                    "wasMember",
-                    "isMember",
-                    "signature",
-                ],
-            },
-        },
-    },
-    "required": ["pubkey", "uid", "isMember", "certifications"],
-}
 
 
 @protected_resource()
@@ -3364,7 +3308,7 @@ async def verify_user_duniter(request, handle):
                 :return:
                 """
                 return await client.get(
-                    MODULE + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
+                    'wot' + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
                 )
 
             wot = certifiers_of(public_key_duniter)
