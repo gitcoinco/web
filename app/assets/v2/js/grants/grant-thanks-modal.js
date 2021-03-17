@@ -33,13 +33,16 @@ Vue.component('contribution-thanks-modal', {
   methods: {
     close() {
       this.$bvModal.hide(this.modalId);
-      this.$bvModal.show('trust-bonus');
     },
     handleHide() {
       CartData.clearCheckedOut();
+      this.$bvModal.show('trust-bonus');
     },
     showSaveAsCollection() {
       this.$bvModal.show('create-collection');
+    },
+    shareOnTwitter() {
+      window.open(this.tweetUrl, '_blank');
     }
   }
 });

@@ -218,7 +218,7 @@ class ProfileAdmin(admin.ModelAdmin):
         if "_unsquelch_sybil" in request.POST:
             from townsquare.models import SquelchProfile
             obj.squelches.delete()
-            self.message_user(request, "Unsquelch done")
+            self.message_user(request, "UnShadowBan done")
             return redirect(obj.admin_url)
         if "_squelch_sybil" in request.POST:
             from townsquare.models import SquelchProfile
@@ -226,7 +226,7 @@ class ProfileAdmin(admin.ModelAdmin):
                 profile=obj,
                 comments=f"squelched by {request.user.username}"
                 )
-            self.message_user(request, "Squelch done")
+            self.message_user(request, "ShadowBan done")
             return redirect(obj.admin_url)
         if "_recalc_sybil" in request.POST:
             Investigation.investigate_sybil(obj)

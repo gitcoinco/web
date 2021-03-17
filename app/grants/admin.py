@@ -31,7 +31,7 @@ from grants.models import (
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
-from marketing.mails import new_grant_approved
+from marketing.mails import grant_more_info_required, new_grant_approved
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -100,18 +100,20 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
+        'title',
+        'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
-        'title', 'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 'active',
+        'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 
         'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_prediction_curve', 'hidden', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs',
+        'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails', 'admin_message'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -194,12 +196,17 @@ class GrantAdmin(GeneralAdmin):
         if "_mark_fraud" in request.POST:
             obj.active = False
             obj.is_clr_eligible = False
+            obj.visible = False
             obj.save()
             self.message_user(request, "Marked Grant as Fraudulent. Consider blocking the grant admin next?")
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
             self.message_user(request, "recaclulation of clr queued")
+        if "_request_more_info" in request.POST:
+            more_info = request.POST.get('more_info')
+            grant_more_info_required(obj, more_info)
+            self.message_user(request, "Grant has been successfully approved")
         if "_approve_grant" in request.POST:
             obj.active = True
             obj.is_clr_eligible = True

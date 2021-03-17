@@ -23,8 +23,13 @@
 .activity_stream{
   margin-bottom: 50px;
 }
-.activity_stream .content{
+.activity_stream .content {
   cursor: pointer;
+}
+.activity_stream .content:not(.cursor-none):hover {
+  p:first-of-type, .title {
+    text-decoration: underline;
+  }
 }
 #new_activity_notifier {
   text-align: center;

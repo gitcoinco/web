@@ -47,7 +47,7 @@ from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
-from townsquare.models import Favorite
+from townsquare.models import Favorite, Comment
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
@@ -226,6 +226,14 @@ class GrantCLR(SuperModel):
         return now >= self.start_date and now <= self.end_date
 
     @property
+    def happened_recently(self):
+        # returns true if we are within a week or 2 of this round
+        days = 14
+        now = timezone.now()
+        then = timezone.now() - timezone.timedelta(days=days)
+        return now >= self.start_date and then <= self.end_date
+
+    @property
     def grants(self):
 
         grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -307,6 +315,8 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, null=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
+    admin_message = models.TextField(default='', blank=True, help_text=_('An admin message that will be shown to visitors of this grant.'))
+    visible = models.BooleanField(default=True, help_text="Is grant visible on the site")
     region = models.CharField(
         max_length=30,
         null=True,
@@ -574,6 +584,9 @@ class Grant(SuperModel):
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
+
+    def is_on_team(self, profile):
+        return is_grant_team_member(self, profile)
 
 
     def calc_clr_round(self):
@@ -934,6 +947,7 @@ class Grant(SuperModel):
                 'reference_url': self.reference_url,
                 'github_project_url': self.github_project_url or '',
                 'funding_info': self.funding_info,
+                'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
             }
@@ -1733,7 +1747,25 @@ class Contribution(SuperModel):
         if mechanism == 'originated_address':
             return self.originated_address
         else:
-            return self.subscription.contributor_profile.id
+            return self.profile_for_clr.id
+
+    def leave_gitcoinbot_comment_for_status(self, status):
+        try:
+            from dashboard.models import Profile
+            comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
+            profile = Profile.objects.get(handle='gitcoinbot')
+            activity = self.subscription.activities.first()
+            Comment.objects.update_or_create(
+                profile=profile,
+                activity=activity,
+                defaults={
+                    "comment":comment,
+                    "is_edited":True,
+                }
+                );
+        except Exception as e:
+            print(e)
+
 
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
@@ -1788,14 +1820,16 @@ class Contribution(SuperModel):
 
                 # Handle pending txns
                 if split_tx_status in ['pending']:
-                    then = timezone.now() - timezone.timedelta(days=1)
+                    then = timezone.now() - timezone.timedelta(hours=1)
                     if self.created_on > then:
                         print('txn pending')
+                        self.leave_gitcoinbot_comment_for_status('pending')
                     else:
                         self.success = False
                         self.validator_passed = False
-                        self.validator_comment = "txn pending for more than 1 days, assuming failure"
+                        self.validator_comment = "txn pending for more than 1 hours, assuming failure"
                         print(self.validator_comment)
+                        self.leave_gitcoinbot_comment_for_status('dropped')
                     return
 
                 # Handle dropped txns
@@ -1804,6 +1838,7 @@ class Contribution(SuperModel):
                     self.validator_passed = False
                     self.validator_comment = "txn not found"
                     print('txn not found')
+                    self.leave_gitcoinbot_comment_for_status('dropped')
                     return
 
                 # Validate that the token transfers occurred
@@ -1818,21 +1853,25 @@ class Contribution(SuperModel):
 
             else:
                 # This validator is only for eth_std and eth_zksync, so exit for other contribution types
+                self.leave_gitcoinbot_comment_for_status('unknown')
                 return
 
             # Validator complete!
 
-            if self.success:
-                print("TODO: do stuff related to successful contribs, like emails")
-            else:
-                print("TODO: do stuff related to failed contribs, like emails")
         except Exception as e:
+            self.leave_gitcoinbot_comment_for_status('error')
             self.validator_passed = False
             self.validator_comment = str(e)
             print(f"Exception: {self.validator_comment}")
             self.tx_cleared = False
             self.split_tx_confirmed = False
             self.success = False
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('success')
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+            self.leave_gitcoinbot_comment_for_status('failed')
 
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
@@ -1856,6 +1895,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "txid":instance.subscription.split_tx_id,
                     "token_name":instance.subscription.token_symbol,
                     "token_value":instance.subscription.amount_per_period,
+                    "success":instance.success,
                 }
             )
         except:
