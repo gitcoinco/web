@@ -603,8 +603,9 @@ Vue.component('brightid-verify-modal', {
                     </div>
                     <div class="col-12 pt-2">
                       <p>
-                      Pull your BrightID status to continue.
-                        <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Connect</a>
+                      Check your BrightID status to continue.
+                      <br>
+                        <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Check</a>
                       
                       </p>
                     </div>
@@ -752,21 +753,22 @@ $(document).ready(function() {
     $('#verify_offline_target').css('display', 'block');
   });
 
-  jQuery.fn.shake = function(interval,distance,times){
-     interval = typeof interval == "undefined" ? 100 : interval;
-     distance = typeof distance == "undefined" ? 10 : distance;
-     times = typeof times == "undefined" ? 3 : times;
-     var jTarget = $(this);
-     jTarget.css('position','relative');
-     for(var iter=0;iter<(times+1);iter++){
-        jTarget.animate({ top: ((iter%2==0 ? distance : distance*-1))}, interval);
-     }
-     return jTarget.animate({ top: 0},interval);
-  }
+  jQuery.fn.shake = function(interval, distance, times) {
+    interval = typeof interval == 'undefined' ? 100 : interval;
+    distance = typeof distance == 'undefined' ? 10 : distance;
+    times = typeof times == 'undefined' ? 3 : times;
+    var jTarget = $(this);
+
+    jTarget.css('position', 'relative');
+    for (var iter = 0; iter < (times + 1); iter++) {
+      jTarget.animate({ top: ((iter % 2 == 0 ? distance : distance * -1))}, interval);
+    }
+    return jTarget.animate({ top: 0}, interval);
+  };
 
   $(document).on('click', '#gen_passport', function(e) {
     e.preventDefault();
-    if(document.web3network != 'rinkeby'){
+    if (document.web3network != 'rinkeby') {
       _alert('Please connect your web3 wallet to rinkeby + unlock it', 'error', 1000);
       return;
     }
@@ -776,13 +778,15 @@ $(document).ready(function() {
       const ethAddress = result[0];
       let params = {
         'network': document.web3network,
-        'coinbase': ethAddress,
-      }
-      $.get("/passport/", params, function(response){
+        'coinbase': ethAddress
+      };
+
+      $.get('/passport/', params, function(response) {
         let status = response['status'];
-        if (status == 'error'){
+
+        if (status == 'error') {
           _alert(response['msg'], 'error', 5000);
-          return
+          return;
         }
 
         let contract_address = response.contract_address;
@@ -793,9 +797,9 @@ $(document).ready(function() {
         var passport = new web3.eth.Contract(contract_abi, contract_address);
 
         var callback = function(err, txid) {
-          if(err){
+          if (err) {
             _alert(err, 'error', 5000);
-            return
+            return;
           }
           let url = 'https://rinkeby.etherscan.io/tx/' + txid;
           var html = `
@@ -808,9 +812,11 @@ $(document).ready(function() {
 2. Use the Trust you've built up on Gitcoin across the dWeb!  Learn more at <a target=_blank href=https://proofofpersonhood.com>proofofpersonhood.com</a>
 
           `;
+
           $('.modal-body .subbody').html(html);
-          $(".modal-dialog").shake();
+          $('.modal-dialog').shake();
         };
+
         passport.methods.createPassport(tokenURI, hash, nonce).send({from: ethAddress}, callback);
       });
 

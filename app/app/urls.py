@@ -43,9 +43,9 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import passport.views
 import perftools.views
 import ptokens.views
-import passport.views
 import quests.views
 import retail.emails
 import retail.views
@@ -161,11 +161,7 @@ urlpatterns = [
         dashboard.views.authenticate_idena,
         name='authenticate_idena'
     ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
-        dashboard.views.logout_idena,
-        name='logout_idena'
-    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/logout_idena', dashboard.views.logout_idena, name='logout_idena'),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
         dashboard.views.recheck_idena_status,

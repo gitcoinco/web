@@ -1,6 +1,8 @@
-from django.db import models
-from economy.models import SuperModel
 import uuid
+
+from django.db import models
+
+from economy.models import SuperModel
 
 
 class PassportRequest(SuperModel):
