@@ -3517,13 +3517,6 @@ def connect_facebook():
 @login_required
 @require_POST
 def request_verify_facebook(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
-
     profile = profile_helper(handle, True)
     if profile.is_facebook_verified:
         return redirect('profile_by_tab', 'trust')
