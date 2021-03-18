@@ -3404,6 +3404,13 @@ def connect_google():
 @login_required
 @require_POST
 def request_verify_google(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
 
     profile = profile_helper(handle, True)
     if profile.is_google_verified:

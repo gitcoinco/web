@@ -9,6 +9,7 @@ ARG BUILD_DEPS="gcc g++ postgresql libxml2-dev libxslt-dev libfreetype6 libffi-d
 WORKDIR /code
 
 # Inkscape
+RUN apt-get upgrade
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:inkscape.dev/stable
