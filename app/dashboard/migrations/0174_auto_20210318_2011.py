@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='identity_data_facebook',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, null=True),
+            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name='profile',
