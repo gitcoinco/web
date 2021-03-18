@@ -3555,10 +3555,12 @@ def verify_user_facebook(request):
             'ok': False,
             'message': 'Invalid code',
         })
-
+    
+    facebook_data = r.json()
     profile = profile_helper(request.user.username, True)
     profile.is_facebook_verified = True
-    profile.identity_data_facebook = r.json()
+    profile.identity_data_facebook = facebook_data
+    profile.facebook_id = facebook_data['id']
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
