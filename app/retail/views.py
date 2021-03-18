@@ -1220,7 +1220,7 @@ def presskit(request):
         ),
         (
             "Polaris Blue",
-            "#3E00FF",
+            "#6F3FF5",
             "62, 0, 255"
         ),
         (

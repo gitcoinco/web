@@ -32,12 +32,12 @@
 }
 
 .form__radio label::before {
-  background-color: #3E00FF;
-  border: 2px solid #3E00FF;
+  background-color: #6F3FF5;
+  border: 2px solid #6F3FF5;
 }
 
 .form__radio input:checked + label::after {
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   border: 2px solid #fff;
   transform: scale(0.7);
 }

@@ -195,7 +195,7 @@ span {
 }
 
 p a {
-  color: #3E00FF;
+  color: #6F3FF5;
 }
 
 .modal a.close-modal {
@@ -394,7 +394,7 @@ input[type=text].loading {
 }
 
 #primary_form {
-  max-width: 550px; /* TODO: REMOVE */
+  max-width: 740px; /* TODO: REMOVE */
   margin: 0 auto;
   padding: 0 2em;
 }
@@ -460,7 +460,7 @@ input[type=text].loading {
 
 .alert:not(.bs-alert) {
   align-items: center;
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   border-radius: 0px;
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
   color: white;
@@ -569,7 +569,7 @@ input[type=text].loading {
 
 .bottom_notification {
   padding: 10px 30px;
-  background: #3e00ff;
+  background: #6F3FF5;
   color: white;
   width: 100%;
   margin-left: 0px;
@@ -629,12 +629,12 @@ input[type=text].loading {
 }
 
 #gitcoin_buttons .btn.delta_2 {
-  background-color: #3e00ff;
+  background-color: #6F3FF5;
   border: 1px solid white;
 }
 
 #gitcoin_buttons .btn.delta_2 span {
-  color: #3e00ff;
+  color: #6F3FF5;
   background-color: white;
 }
 
@@ -787,7 +787,7 @@ input.is-invalid {
 .ui-selectmenu-button.ui-button:focus {
   border: none !important;
   background: #FFF !important;
-  color: #3E00FF;
+  color: #6F3FF5;
   outline: none;
   font-weight: 600;
 }
@@ -817,8 +817,8 @@ input.is-invalid {
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-button.ui-state-active:hover {
-  border: 1px solid #3E00FF !important;
-  background: #3E00FF !important;
+  border: 1px solid #6F3FF5 !important;
+  background: #6F3FF5 !important;
 }
 
 .ui-button:hover,
@@ -1463,7 +1463,7 @@ div.busyOverlay {
 
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
-  background-color: #3E00FF !important;
+  background-color: #6F3FF5 !important;
 }
 
 .daterangepicker .ranges li.active {
