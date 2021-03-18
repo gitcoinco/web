@@ -1,0 +1,19 @@
+{
+  "symbol": "MATTER",
+  "address": "0x1C9491865a1DE77C5b6e19d2E6a5F1D7a6F2b25F",
+  "overview": {
+    "en": "AntiMatter is a lightweight on-chain DeFi perpetual derivative protocol based on a polarized token model.",
+    "zh": "AntiMatter是基于极化令牌模型的轻量级链上DeFi永久衍生协议。"
+  },
+  "email": "contact@antimatter.finance",
+  "website": "https://antimatter.finance/",
+  "whitepaper": "https://antimatter.finance/",
+  "state": "NORMAL",
+  "published_on": "2021-02-19",
+  "links": {
+    "blog": "https://antimatterdefi.medium.com/",
+    "twitter": "https://twitter.com/antimatterdefi",
+    "telegram": "https://t.me/antimatterchat",
+    "medium": "https://antimatterdefi.medium.com/"
+  }
+}
