@@ -1,8 +1,6 @@
 {% load i18n  %}
 
-{% trans "The funder has denied your request to work on this issue.
-Checkout the issue explorer for other projects on the platform!
- " %}
+{% trans "The funder has denied your request to work on this issue. Checkout the issue explorer for other projects on the platform!" %}
 
 
 {% url 'explorer' %}

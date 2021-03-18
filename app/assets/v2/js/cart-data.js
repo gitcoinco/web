@@ -19,7 +19,8 @@ class CartData {
   }
 
   static share_url(title) {
-    const donations = this.loadCart();
+    const checkedOut = this.loadCheckedOut();
+    const donations = (checkedOut.length > 0 ? checkedOut : this.loadCart());
     let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
 
     let network = document.web3network;
@@ -138,7 +139,7 @@ class CartData {
         grantData.grant_donation_amount = 0.0001;
       }
       if (!grantData.grant_donation_currency) {
-        grantData.grant_donation_currency = 'R-BTC';
+        grantData.grant_donation_currency = 'RBTC';
       }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
@@ -169,7 +170,7 @@ class CartData {
       fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
         action: 'ADD_ITEM',
         metadata: JSON.stringify(cartList)
-      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+      }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
     }
   }
 
@@ -183,7 +184,7 @@ class CartData {
     fetchData(`/grants/${grantId}/activity`, 'POST', {
       action: 'REMOVE_ITEM',
       metadata: JSON.stringify(newList)
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     this.setCart(newList);
   }
@@ -218,7 +219,7 @@ class CartData {
       action: 'CLEAR_CART',
       metadata: JSON.stringify(cartList),
       bulk: true
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     localStorage.setItem('grants_cart', JSON.stringify([]));
     applyCartMenuStyles();
@@ -243,5 +244,29 @@ class CartData {
   static setCart(list) {
     localStorage.setItem('grants_cart', JSON.stringify(list));
     applyCartMenuStyles();
+  }
+
+  static loadCheckedOut() {
+    const checkedOutList = localStorage.getItem('contributions_were_successful');
+
+    if (!checkedOutList) {
+      return [];
+    }
+
+    const parsedCheckout = JSON.parse(checkedOutList);
+
+    if (!Array.isArray(parsedCheckout)) {
+      return [];
+    }
+
+    return parsedCheckout;
+  }
+
+  static setCheckedOut(list) {
+    localStorage.setItem('contributions_were_successful', JSON.stringify(list));
+  }
+
+  static clearCheckedOut() {
+    localStorage.removeItem('contributions_were_successful');
   }
 }

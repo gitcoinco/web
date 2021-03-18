@@ -30,7 +30,7 @@ python-twitter==3.2
 sendgrid==5.6.0
 slackclient==2.0.0
 eth-tester
-elasticsearch
+elasticsearch==7.10.0
 websockets
 web3==4.5.0
 eth-abi==1.1.1
@@ -104,5 +104,6 @@ ed25519
 tweepy
 oogway==0.7.0
 icalendar==4.0.7
-duniterpy==1.8.1
+duniterpy
 numpy==1.19.5
+attrs==20.2.0

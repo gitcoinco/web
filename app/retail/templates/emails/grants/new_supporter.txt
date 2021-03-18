@@ -4,7 +4,7 @@
 
 {% trans "You have a new supporter!" %}
 
-{{ subscriber.contributor_profile.avatar_url }}
+{{ subscriber.contributor_profile.avatar_url }}?{{ utm_tracking }}
 
 {{ subscriber.contributor_profile }}
 
@@ -12,9 +12,9 @@
 
 {{ subscription.amount_per_period|floatformat:4|intcomma }}
 
-{% trans " has begun contributing" %}
+{% trans " has contributed" %}
 
-{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
 
 {% trans "You can see the transaction on Etherscan" %} at
 {% if subscription.network == 'mainnet' %}

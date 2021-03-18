@@ -40,7 +40,7 @@ Vue.component('sms-verify-modal', {
                   <p class="mb-4 font-subheader text-left">read more about <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                     href="https://twitter.com/owocki/status/1271088915982675974">why we are asking for your phone number</a> or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                       href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy.</a></p>
-                  <b-button @click="validationStep='requestVerification'" class="btn-primary mb-2" size="lg">Verify
+                  <b-button @click="validationStep='requestVerification'" variant="primary" class="btn-primary mb-2" size="lg">Verify
                   Phone Number</b-button>
                   <div class="mb-1 font-subheader text-center">
                     <a id="verify_offline" href="#">
@@ -72,7 +72,7 @@ Vue.component('sms-verify-modal', {
                   <div v-if="errorMessage">
                     <span class="label-warning">[[ errorMessage ]]</span>
                   </div>
-                  <b-button @click="requestVerification()" class="btn-primary mt-5 mb-2" size="lg">Send verification
+                  <b-button @click="requestVerification()" variant="primary" class="btn-primary mt-5 mb-2" size="lg">Send verification
                     code</b-button>
                   <br />
                   <b-button @click="hide()" variant="link">Cancel</b-button>
@@ -90,7 +90,7 @@ Vue.component('sms-verify-modal', {
                   <div v-if="errorMessage">
                     <span class="label-warning">[[ errorMessage ]]</span>
                   </div>
-                  <b-button @click="validateCode()" class="btn-primary mt-5" size="lg">Submit</b-button>
+                  <b-button @click="validateCode()" variant="primary" class="btn-primary mt-5" size="lg">Submit</b-button>
                   <br />
                   <b-button @click="startVerification()" variant="link">Change number</b-button>
                   <b-button @click="resendCode()" variant="link">Resend Code</b-button>
@@ -267,7 +267,7 @@ Vue.component('twitter-verify-modal', {
                       <div v-if="validationError !== ''" style="color: red">
                         <small>[[validationError]]</small>
                       </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-primary mt-3 mb-2" size="lg">
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" variant="primary" class="btn-primary mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
@@ -399,7 +399,7 @@ Vue.component('poap-verify-modal', {
                       <div v-if="validationError !== ''" style="color: red">
                         <small>[[validationError]]</small>
                       </div>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-primary mt-3 mb-2" size="lg">
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" variant="primary" class="btn-primary mt-3 mb-2" size="lg">
                         <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
@@ -816,7 +816,7 @@ Vue.component('active-trust-row-template', {
     }
   },
   template: `
-      <div class="row mb-4">
+      <div class="row mb-4 pb-4" style="border-bottom: 1px solid #eee;">
         <div class="col-12 col-md-1 mx-auto text-center">
           <div v-if="iconType === 'markup'">
             <slot name="icon"></slot>
@@ -838,7 +838,7 @@ Vue.component('active-trust-row-template', {
             +[[matchPercent]]%
           </div>
           <div style="color:grey">
-            <small>Grants CLR Match</small>
+            <small>Grants Match Bonus</small>
           </div>
         </div>
         <div class="col-6 col-md-2">

@@ -132,7 +132,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
     # debug logs
-    logger.info(f"-- Sending Mail '{subject}' to {to_email}")
+    logger.info(f"-- Sending Mail '{subject}' to {to_email.email}")
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
@@ -310,7 +310,10 @@ def new_supporter(grant, subscription):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     if not to_email:
-        to_email = grant.admin_profile.user.email
+        if grant.admin_profile:
+            to_email = grant.admin_profile.email
+        else:
+            return
     cur_language = translation.get_language()
 
     try:
@@ -1113,6 +1116,42 @@ For corporations:
 
 Thanks,
 Gitcoin Grants KYC Team
+</pre>
+
+        """
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
+def grant_more_info_required(grant, more_info):
+    to_email = grant.admin_profile.email
+    cc_emails = [profile.email for profile in grant.team_members.all()]
+    from_email = 'new-grants@gitcoin.co'
+    cc_emails.append(from_email)
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"More Info Requested for {grant.url}"
+        body = f"""
+<pre>
+Hello @{grant.admin_profile.handle},
+
+This email is in regards to your Gitcoin Grant: {grant.url}
+
+We require more information to approve your application. {more_info}
+
+Thanks,
+Gitcoin Grant Team
 </pre>
 
         """
