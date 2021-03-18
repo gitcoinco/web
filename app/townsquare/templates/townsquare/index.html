@@ -163,7 +163,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="townsquare_block-header accordion closed" data-target="search-area" >
                       Search
                     </div>
-                    <div class="search font-caption mb-2 text-left hidden" id="search-area">
+                    <div class="search font-caption text-left hidden py-3" id="search-area">
                       <div class="search-area">
                         <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
                       </div>
@@ -175,6 +175,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </div>
                       </div>
                     </div>
+                  <hr>
                   {% include 'townsquare/shared/feednav.html' %}
                   </div>
                 {% endif %}
@@ -221,7 +222,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
                   </div>
-                  <div id="actions" class="panel-active">
+                  <div id="actions" class="panel-active mt-3 mb-4">
                     <div class="offer_coming font-caption">
                       <div class="checkbox_container font-smaller-5">
                         <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />

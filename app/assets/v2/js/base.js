@@ -150,7 +150,7 @@ $(document).ready(function() {
     $top_nav_notif.parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
-  
+
   // display (if it holds a message and hasn't been closed) or remove #top_nav_notification
   if (top_nav_salt == 0 || localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
@@ -229,16 +229,15 @@ $(document).ready(function() {
     if (panel) {
       if (element.hasClass('active')) {
         panel.style.maxHeight = 0;
-        panel.style.marginBottom = 0 + 'px';
       } else {
         panel.style.maxHeight = panel.scrollHeight + 'px';
-        panel.style.marginBottom = 10 + 'px';
       }
     }
     element.toggleClass('active');
   });
   attach_close_button();
 });
+
 
 const attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
