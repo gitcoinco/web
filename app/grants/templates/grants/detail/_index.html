@@ -165,14 +165,14 @@
                                   </span>
                                 </div>
                                 <div class="row justify-content-end text-secondary">
-                                  <span v-if="!transaction.success">
-                                    (Failed)
-                                  </span>
-                                  <span v-if="!transaction.tx_cleared">
-                                    (Pending)&nbsp;
-                                  </span>
                                   <span v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
                                     [[transaction.subscription.amount_per_period_usdt | formatNumberWithDecimal ]] USD
+                                  </span>
+                                  <span v-if="!transaction.success">
+                                    - (Failed)
+                                  </span>
+                                  <span v-else-if="!transaction.tx_cleared">
+                                    - (Pending)&nbsp;
                                   </span>
                                 </div>
                               </div>

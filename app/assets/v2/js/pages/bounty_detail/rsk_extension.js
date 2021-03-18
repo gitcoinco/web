@@ -20,7 +20,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
       _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'error');
       return;
     }
-    
+
     if (!ethereum.selectedAddress) {
       modal.closeModal();
       return onConnect().then(() => {
@@ -32,12 +32,12 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   // 2. construct + sign txn via nifty
   let txArgs;
 
-  if (token_name == 'R-BTC') {
+  if (token_name == 'RBTC') {
 
     balanceInWei = await rskClient.eth.getBalance(ethereum.selectedAddress);
 
     rbtcBalance = rskClient.utils.fromWei(balanceInWei, 'ether');
-  
+
     if (Number(rbtcBalance) < amount) {
       _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
       return;
@@ -57,9 +57,9 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     tokenContract = new rskClient.eth.Contract(token_abi, vm.bounty.token_address);
 
     balance = tokenContract.methods.balanceOf(
-      ethereum.selectedAddress).call({from: ethereum.selectedAddress});
+      ethereum.selectedAddress).call({ from: ethereum.selectedAddress });
 
-    amountInWei  = amount * 1.0 * Math.pow(10, vm.decimals);
+    amountInWei = amount * 1.0 * Math.pow(10, vm.decimals);
 
     if (Number(balance) < amountInWei) {
       _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
@@ -117,7 +117,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function(error) {
+      }).catch(function (error) {
         _alert('Unable to make payout bounty. Please try again later', 'error');
         console.log(error);
       });

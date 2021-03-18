@@ -10,4 +10,4 @@
 
 {% trans "Description" %} : {{ grant.description }}
 
-{% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}
+{% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}?{{ utm_tracking }}

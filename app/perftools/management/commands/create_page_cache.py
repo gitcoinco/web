@@ -67,11 +67,10 @@ def create_email_inventory_cache():
 
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
+    from grants.tasks import update_grant_metadata
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
-        grant = Grant.objects.get(pk=pk)
-        grant.calc_clr_round()
-        grant.save()
+        update_grant_metadata.delay(pk)
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
@@ -91,35 +90,21 @@ def create_grant_type_cache():
 
 def create_grant_active_clr_mapping():
     print('create_grant_active_clr_mapping')
-    # Upate grants mppping to active CLR rounds
-    # NOTE: deprecated; this has been replaced by create_grant_clr_cache
-    # by Owocki 12/16/2020
-    # return
-    from grants.models import Grant, GrantCLR
 
-    grants = Grant.objects.all()
-    clr_rounds = GrantCLR.objects.all()
+    # removes grants who are not in an active matching round from having a match prediction curve
+    # waits 14 days from removing them tho
+    from grants.models import GrantCLRCalculation
+    from_date = timezone.now() - timezone.timedelta(days=14)
+    gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
+    for gclr in gclrs:
+        gclr.latest = False
+        gclr.save()
+        grant = gclr.grant
+        grant.calc_clr_round()
+        grant.save()
 
-    # remove all old mapping
-    for clr_round in clr_rounds:
-        _grants = clr_round.grants
-        for _grant in grants:
-            _grant.in_active_clrs.remove(clr_round)
-            _grant.save()
 
     return
-
-    # update new mapping
-    # active_clr_rounds = clr_rounds.filter(is_active=True)
-    # for clr_round in active_clr_rounds:
-    #     grants_in_clr_round = grants.filter(**clr_round.grant_filters)
-
-    #     for grant in grants_in_clr_round:
-    #         grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
-
-    #         if not grant_has_mapping_to_round:
-    #             grant.in_active_clrs.add(clr_round)
-    #             grant.save()
 
 def create_hack_event_cache():
     from dashboard.models import HackathonEvent

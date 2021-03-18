@@ -42,8 +42,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
-      
-      
+
+
       <div id="gc-grants-cart" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div class="container">
@@ -52,13 +52,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <h1 class="text-left text-black mt-5 mb-3">Grants Cart</h1>
 
             {% comment %} Main container {% endcomment %}
-            <div v-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row">
-              Your cart is empty.
-            </div>
 
-            <div v-else-if="isLoading" class="text-center mb-5">
+            <div v-if="isLoading" class="text-center mb-5">
               <loading-screen class="my-5"></loading-screen>
               <div>Fetching cart data...</div>
+            </div>
+
+            <div v-else-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row">
+              Your cart is empty.
             </div>
 
             <div v-else class="m-auto" style="padding-bottom: 10rem;">
@@ -136,33 +137,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         document.isFullyVerified = '{{is_fully_verified}}' === 'True';
       </script>
       <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
-
-      <!-- <template v-if="grantsCountByTenant.BINANCE !== undefined"> -->
-        <script src="{% static "v2/js/grants/cart/rsk_extension.js" %}"></script>
-      <!-- </template> -->
-
-      <!-- <template v-if="grantsCountByTenant.HARMONY !== undefined"> -->
-        <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
-        <script src="{% static "v2/js/lib/harmony/HarmonyJs.browser.js" %}"></script>
-        <script src="{% static "v2/js/lib/harmony/HarmonyAccount.browser.js" %}"></script>
-        <script src="{% static "v2/js/lib/harmony/HarmonyCrypto.browser.js" %}"></script>
-        <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
-        <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
-        <script src="{% static "v2/js/grants/cart/harmony_extension.js" %}"></script>
-      <!-- </template> -->
-
-      <!-- <template v-if="grantsCountByTenant.POLKADOT !== undefined || grantsCountByTenant.KUSAMA !== undefined"> -->
-        <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
-        <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
-        <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
-        <script src="{% static "v2/js/grants/cart/polkadot_extension.js" %}"></script>
-      <!-- </template> -->
-
-      <!-- <template v-if="grantsCountByTenant.BINANCE !== undefined"> -->
-        <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
-        <script src="{% static "v2/js/grants/cart/binance_extension.js" %}"></script>
-      <!-- </template> -->
-
       <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
       <script src="{% static "v2/js/cart.js" %}"></script>
     </div>

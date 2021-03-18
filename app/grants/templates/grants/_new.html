@@ -117,7 +117,7 @@
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
                   <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
-                  <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" maxlength="50" type="url" placeholder="https://human.fund/" required />
+                  <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
 
                   <div class="text-danger" v-if="errors.reference_url">
                     [[errors.reference_url]]
@@ -177,7 +177,7 @@
                 <!-- Github -->
                 <div class="col-12 mb-3">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
-                  <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" maxlength="150" type="url" placeholder="https://github.com/humanfund"/>
+                  <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/humanfund"/>
                 </div>
 
 

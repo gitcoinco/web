@@ -269,8 +269,7 @@ Vue.mixin({
             doc.querySelector('.show_video').href = 'https://www.youtube.com/watch?v=m1X0bDpVcf4';
             doc.querySelector('.show_video').target = '_blank';
 
-            if (guide && guide.dataset)
-              guide.dataset.dismiss = 'modal';
+            guide.dataset.dismiss = 'modal';
 
             const docArticle = doc.querySelector('.content').innerHTML;
             const content = $.parseHTML(

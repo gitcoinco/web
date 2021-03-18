@@ -67,7 +67,6 @@ Vue.component('grant-sidebar', {
       this.filter_grants(me);
 
       this.search = me.keyword;
-      console.log('searchkey', this.search);
     },
     filterLink: function(params) {
 
@@ -79,7 +78,6 @@ Vue.component('grant-sidebar', {
       }
 
       this.timeout = setTimeout(() => {
-        console.log('searchkey', this.search);
         this.filter_grants({keyword: this.search});
       }, 1000);
     },
@@ -323,12 +321,13 @@ if (document.getElementById('grants-showcase')) {
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
 
+      },
+      changeBanner: function() {
         this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
             return new RegExp(policy.url_pattern).test(window.location.href);
           });
-        this.toggleStyle(this.regex_style || current_style);
-
+        this.toggleStyle(this.regex_style || document.current_style);
       },
       clearSingleCollection: function() {
         this.grants = [];
@@ -430,6 +429,7 @@ if (document.getElementById('grants-showcase')) {
         vm.grantsNumPages = getGrants.num_pages;
         vm.grantsHasNext = getGrants.has_next;
         vm.numGrants = getGrants.count;
+        vm.changeBanner();
 
         if (vm.grantsHasNext) {
           vm.page = ++vm.page;

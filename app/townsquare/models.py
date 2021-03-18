@@ -112,7 +112,8 @@ def presave_comment(sender, instance, **kwargs):
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email
     if created:
-        send_comment_email.delay(instance.pk)
+        if not instance.is_edited:
+            send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
