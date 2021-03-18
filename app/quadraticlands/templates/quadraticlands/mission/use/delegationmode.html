@@ -41,7 +41,7 @@
 					</div>					
 				</div>
 
-				<p id="explain_text">I don’t want to govern and prefer to delegate my voting power to a Gitcoin Senator or another Ethereum Adress.</p>
+				<p id="explain_text">I prefer to delegate my voting power to a Gitcoin Steward, so that I can earn a reward passively.</p>
 
 			</div>
 
@@ -151,7 +151,7 @@ function updateInterface(status){
 	// ENABLED
 	if (status=="enabled")
 	{
-		explain_text.innerHTML = "I don’t want to govern and prefer to delegate my voting power to a Gitcoin Senator or another Ethereum Adress."
+		explain_text.innerHTML = "I prefer to delegate my voting power to a Gitcoin Steward, so that I can earn a reward passively."
 		btn_continue.href = "/quadraticlands/mission/use/delegate"
 		console.debug("INTERFACE:ENABLED")
 	}
@@ -159,7 +159,7 @@ function updateInterface(status){
 	// DISABLED
 	if (status=="disabled")
 	{
-		explain_text.innerHTML = "I want to use my voting power and participate in governance. Some more text here to have 2 rows again."
+		explain_text.innerHTML = "I want to use my voting power to actively participate in Gitcoin’s governance and only earn a reward through my active participation."
 		btn_continue.href = "/quadraticlands/mission/use/vote"
 		console.debug("INTERFACE:ENABLED")
 	}

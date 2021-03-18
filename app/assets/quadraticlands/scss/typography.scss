@@ -11,7 +11,7 @@ html{
 h1{
     font-family: 'Space Mono', monospace;
     color: var(--white);
-    font-size: 180%;
+    font-size: 170%;
     font-weight: 400;
     line-height: 1.5em;
     margin-bottom: 2rem;
@@ -41,6 +41,19 @@ h3{
     }
 }
 
+
+.intro{
+    margin: 2em 0em;
+    font-size: 110%;
+    line-height: 1.8em;
+    color: var(--aqua);
+    span{
+        color: var(--pink);
+    }
+}
+
+
+
 p{
     font-size: 100%;
     font-weight: 400;
@@ -50,12 +63,31 @@ p{
         margin-bottom: 0px;
     }
 
+
+    span{
+        color: var(--pink);
+    }
+
 }
 
 
-ol, ul{
+ul{
     margin-bottom: 2rem; 
+    list-style: inside;
 }
+
+
+ol{
+    margin-bottom: 2rem; 
+    list-style: inside;
+
+    &.decimal{
+        list-style-type: decimal;
+    }
+}
+
+
+
 
 li{
     margin-bottom: 0.5em;

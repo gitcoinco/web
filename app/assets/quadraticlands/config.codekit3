@@ -27,16 +27,6 @@
 		"oAP": "/css/app.css.map",
 		"oF": 0
 		},
-	"/images/about_hero.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/about_hero.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
 	"/images/background/_old/background-01.svg": {
 		"ft": 2097152,
 		"miP": 0,
@@ -340,16 +330,6 @@
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/background/wrong.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/background_blue_rain_animated.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 2,
-		"oAP": "/images/background_blue_rain_animated.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -781,11 +761,41 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/mission/antisybil.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/antisybil.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
 	"/images/mission/back-card.svg": {
 		"ft": 2097152,
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/mission/back-card.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/discourse.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/discourse.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/governance.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/governance.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -851,21 +861,31 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
-	"/images/mission/sybil-end.svg": {
+	"/images/mission/propose.svg": {
 		"ft": 2097152,
 		"miP": 0,
 		"oA": 1,
-		"oAP": "/images/mission/sybil-end.svg",
+		"oAP": "/images/mission/propose.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
 		"prP": 0
 		},
-	"/images/mission/sybil-start.svg": {
+	"/images/mission/snapshot.svg": {
 		"ft": 2097152,
 		"miP": 0,
 		"oA": 1,
-		"oAP": "/images/mission/sybil-start.svg",
+		"oAP": "/images/mission/snapshot.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/sybilhunt.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/sybilhunt.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
