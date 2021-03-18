@@ -139,9 +139,9 @@ Vue.mixin({
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
 
-      if (!vm.$refs.formNewGrant.reportValidity()) {
-        return false;
-      }
+      // if (!vm.$refs.formNewGrant.reportValidity()) {
+      //   return false;
+      // }
 
       if (Object.keys(vm.errors).length) {
         return false; // there are errors the user must correct

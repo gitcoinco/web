@@ -1,3 +1,28 @@
+// Hover effects
 .hover-underline:not(:disabled):not(.disabled):not(.active):hover {
   text-decoration: underline!important
+}
+
+.text-primary-hover:hover {
+  color: $gc-violet-500!important;
+}
+
+// Invalid form state
+.invalid {
+
+  input.invalid, input:invalid, .form__checkbox input:invalid + .form__label::before,
+  & > .btn-radio:not(.disabled), & > .btn-group-toggle .btn-radio:not(.disabled),
+  .quill-editor.invalid .ql-snow {
+    border-color:#D44D6E;
+  }
+
+  .vs__selected-options > input:invalid {
+    box-shadow:
+      -7px -9px 0px 0px #fff, 30px -9px 0px 0px #fff, 30px 5px 0px 0px #fff, -7px 5px 0px 0px #fff,
+      -8px -10px 0px 0px #D44D6E, 31px -10px 0px 0px #D44D6E, 31px 6px 0px 0px #D44D6E, -8px 6px 0px 0px #D44D6E;
+    border-radius: 1px;
+    border: none;
+    z-index: 0;
+  }
+
 }

@@ -516,11 +516,6 @@
   padding: 12px 25px;
 }
 
-// .dropdown-menu .dropdown-item:hover {
-//   background-color: #3E00FF;
-//   color: #FFFFFF !important;
-// }
-
 #why-gitcoin .dropdown-item {
   padding-left: 15px;
 }
@@ -939,4 +934,23 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .web3modal-modal-lightbox {
   z-index: 1001;
+}
+
+.btn-radio.chain-btn:hover {
+  background-color: #f9f9f9;
+  border-color: #3E00FF!important;
+}
+
+.vs__dropdown-toggle {
+  padding: 5px 5px 5px 5px;
+  border-radius: 2px;
+}
+
+.vs__dropdown-toggle .vs__no-options {
+  text-align: left;
+  padding-left: 1em;
+}
+
+.vs__dropdown-toggle .vs__selected {
+  margin: 0px 2px 0px 2px;
 }
