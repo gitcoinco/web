@@ -33,6 +33,8 @@ from dashboard.models import Profile
 from dashboard.views import verify_user_duniter
 from duniterpy.api import bma
 from duniterpy.api.client import RESPONSE_AIOHTTP, Client
+from duniterpy.documents import BlockUID
+from duniterpy.documents.certification import Certification, Identity
 
 CERTIFICATIONS_SCHEMA = {
     "type": "object",
