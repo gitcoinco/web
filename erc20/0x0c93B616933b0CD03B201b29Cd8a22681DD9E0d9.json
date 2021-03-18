@@ -1,0 +1,22 @@
+{
+    "symbol": "HGOLD",
+    "address": "0x0c93B616933b0CD03B201b29Cd8a22681DD9E0d9",
+    "overview":{
+          "en": "HollyGold Coin (HGOLD) was created by HOLLY.GOLD PTE, LTD., a Singapore registered corporation.  The origination and creation of HollyGold came about as a result of a partnership between successful Taiwanese crypto currency experts including the godfater of blockchain, Dior Wu and many of the top producers in Hollywood.  Hollygold features an esteemed board of advisors with 1600+ films experience including: Mark Damon, Chris Bremble, Gerald R Molen, Grant Cramer, Kevin Robl…and more.",
+          "zh": "HollyGold(HGOLD)由新加坡HOLLY.GOLD PTE, LTD. HOLLYGOLD投資組建而成的新創公司。 HollyGold( HGOLD)的團隊成員和好萊塢資深電影產業專業顧問群已製作出高達1600部電影，其中包括奧斯卡獎和艾美獲獎電影以及許多百事達熱門影片。這個掌握龐大好萊塢電影產業資源的顧問團成員有：Mark Damon, Chris Bremble, Gerald R Molen, Grant Cramer, Kevin Robl….等"
+    },
+    "email": "contact@holly.gold",
+    "website": "https://www.holly.gold/",
+    "whitepaper": "https://www.holly.gold/hollygold_hgold_whitepaper-english-version/",
+    "state": "NORMAL",
+    "published_on": "2020-05-25",
+    "initial_price":{
+          "USD":"3.00 USD"
+    },
+    "links": {
+      "telegram": "https://t.me/hollygoldofficial",
+      "twitter": "https://twitter.com/HollyGoldWorld",
+      "facebook": "https://www.facebook.com/Hollygoldworld/",
+      "reddit": "https://www.reddit.com/user/HollyGold2020"
+    }
+  }
