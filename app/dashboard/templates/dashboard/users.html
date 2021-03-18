@@ -45,7 +45,7 @@
                 <div class="input-group w-50">
                   <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
                   <div class="input-group-append">
-                    <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
+                    <button type="submit" class="btn input-group-text text-primary bg-white border-left-0" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
                   </div>
                 </div>
               </form>
@@ -128,7 +128,7 @@
                   <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
                 </div>
               </div>
-              <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
+              <button class="btn text-primary text-primary-hover hover-underline font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
               {% if is_staff %}
                 <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 alpha-warning">
                   <span class="font-weight-bold">[[ numUsers ]]</span> users found
@@ -140,12 +140,12 @@
             </nav>
           </transition>
           <div class="container pt-4" @scroll.passive="onScroll($event)">
-            <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+            <button v-if="!hideFilterButton" class="btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
             <div class="py-5 mt-4">
               <div v-if="noResults" class="text-center">
                 <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
                 <p class="mt-4 font-weight-bold mb-0">No users found</p>
-                <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+                <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchUsers()">Reset Filters</button>
               </div>
               <div class="grid-4">
                 <div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key="user.id">
