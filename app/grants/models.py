@@ -1719,11 +1719,22 @@ class Contribution(SuperModel):
 
     @property
     def blockexplorer_url(self):
+            return self.blockexplorer_url_helper(self.split_tx_id)
+
+    @property
+    def blockexplorer_url_split_txid(self):
+            return self.blockexplorer_url_helper(self.split_tx_id)
+
+    @property
+    def blockexplorer_url_txid(self):
+            return self.blockexplorer_url_helper(self.tx_id)
+
+    def blockexplorer_url_helper(self, tx_id):
         if self.checkout_type == 'eth_zksync':
-            return f'https://zkscan.io/explorer/transactions/{self.split_tx_id.replace("sync-tx:", "")}'
+            return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
         if self.checkout_type == 'eth_std':
             network_sub = f"{{self.subscription.network}}." if self.subscription and self.subscription.network != 'mainnet' else ''
-            return f'https://{network_sub}etherscan.io/tx/{self.split_tx_id}'
+            return f'https://{network_sub}etherscan.io/tx/{tx_id}'
         # TODO: support all block explorers for diff chains
         return ''
 
