@@ -8,12 +8,15 @@ section.hero{
 	z-index: -5;
 
 	div.content{
+		
 		align-self: center;
 		grid-column: 1;
 		grid-row: 1;
-		max-width: 600px;
+		max-width: 700px;
 		margin-left: 3em;
 		user-select: none;
+
+		padding-top: 130px; /*navigation*/
 
 		&.centered{
 
@@ -23,6 +26,12 @@ section.hero{
 				margin:0;
 			}
 		}
+
+		.btn{
+			margin:0px;
+		}
+
+
 
 	}
 
@@ -46,59 +55,45 @@ section.hero{
 	h1{
 		color: var(--white);
 		animation: inherit;
-		
+		line-height: 1.6em;
+
 		span {
 			background-color: var(--space_pink);
 		}
 		
 	}
 
-}
 
+	/* hover knight rider effect  */
 
+	&.knightrider{
 
+		svg{
+			#floor{
 
-/* hover knight rider effect for floor on start page */
+				polygon, path {
+					stroke-width: 1;
+					stroke: var(--smoke);
+					fill: transparent;
+					pointer-events: visible;
+					transition: all 700ms ease;
 
-/*
-section.hero svg #floor{
+					&:hover{
 
-	polygon, path {
-		stroke-width: 1;
-		stroke: var(--smoke);
-		fill: transparent;
-		pointer-events: visible;
-		transition: all 700ms ease;
+					fill: var(--aqua_light);
+					transition: padding 0s;
 
-		&:hover{
+					};
+				}
 
-		fill: var(--aqua_light);
-		transition: padding 0s;
+			}
+		}
 
-		};
-	}
-
-}
-*/
-
-
-
-/* lights for buildings */
-
-/*
-section.hero svg .light{
-
-	fill: var(--aqua);
-	pointer-events: visible;
-	transition: all 700ms ease;
-
-	&:hover{
-		fill: var(--pink);
 	};
 
-}
-*/
 
+
+}
 
 
 
