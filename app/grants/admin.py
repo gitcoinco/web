@@ -92,7 +92,8 @@ class CLRMatchAdmin(admin.ModelAdmin):
     """Define the CLRMatch administration layout."""
 
     ordering = ['-id']
-    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
+    list_display = ['id', 'created_on', '__str__']
+    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution', 'clr']
 
 
 class GrantAdmin(GeneralAdmin):

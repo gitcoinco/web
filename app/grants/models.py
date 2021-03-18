@@ -217,7 +217,7 @@ class GrantCLR(SuperModel):
     )
 
     def __str__(self):
-        return f"{self.round_num}"
+        return f"{self.customer_name} {self.round_num} ${self.total_pot}"
 
     @property
     def happening_now(self):
@@ -1940,6 +1940,13 @@ class CLRMatch(SuperModel):
 
     round_number = models.PositiveIntegerField(blank=True, null=True)
     amount = models.FloatField()
+    clr = models.ForeignKey(
+        'grants.GrantCLR',
+        related_name='clr_rounds',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant CLR.'),
+    )
     grant = models.ForeignKey(
         'grants.Grant',
         related_name='clr_matches',
@@ -1984,7 +1991,7 @@ class CLRMatch(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, grant: {self.grant.pk}, round: {self.round_number}, amount: {self.amount}"
+        return f"id: {self.pk}, grant: {self.grant.pk}, round_number: {self.round_number}, amount: {self.amount}"
 
 
 

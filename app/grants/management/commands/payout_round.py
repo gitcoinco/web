@@ -115,6 +115,7 @@ class Command(BaseCommand):
                 ready_for_test_payout = not needs_kyc
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
+                    clr=grant.in_active_clrs.first(),
                     amount=amount,
                     grant=grant,
                     comments=comments,
