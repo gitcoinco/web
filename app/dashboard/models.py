@@ -3042,15 +3042,11 @@ class Profile(SuperModel):
         if self.is_idena_verified:
             tb *= 1.25
         if self.is_facebook_verified:
-<<<<<<< HEAD
             tb *= 1.001
         if self.is_ens_verified:
             tb *= 1.001
         if self.is_duniter_verified:
             tb *= 1.001
-=======
-            tb *= 1.00
->>>>>>> Fix conflicts
         return tb
 
 
