@@ -32,7 +32,7 @@ warnings.filterwarnings("ignore")
 
 override_in_dev = True
 
-THROTTLE_S = 0.001
+THROTTLE_S = 0.02
 
 
 class Command(BaseCommand):
