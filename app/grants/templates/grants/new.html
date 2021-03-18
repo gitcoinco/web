@@ -117,6 +117,12 @@
                   </div>
 
                   <div class="form__group-horizontal pb-3">
+                    <label class="font-body" for="funding_info">{% trans "Other Funding Info" %}</label>
+                    <input type="url" class="form__input form__input-lg " id="funding_info" name="funding_info" value="{{project_data.funding_info}}" required placeholder="Raised $1m from VC.Fund"/>
+                  </div>
+
+
+                  <div class="form__group-horizontal pb-3">
                     <label class="font-body" for="github_project_url">{% trans "Github Project URL" %}</label>
                     <input type="url" class="form__input form__input-lg " id="github_project_url" name="github_project_url" value="{{project_data.work_url}}" placeholder="https://github.com/human-fund"/>
                   </div>

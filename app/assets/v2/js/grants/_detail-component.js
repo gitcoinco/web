@@ -107,7 +107,6 @@ Vue.mixin({
               vm.grant.verified = false;
             }
             vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
-            vm.funding_info = vm.grant.funding_info;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 

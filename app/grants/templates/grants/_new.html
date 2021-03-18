@@ -124,6 +124,20 @@
                   </div>
                 </div>
 
+                <!-- Funding Info -->
+                <div class="col-12 mb-3">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funding_info">Project Funding</label>
+                  <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                  <input id="funding_info" v-model="form.funding_info" name="funding_info" class="form__input form__input-lg" type="url" placeholder="Raised $1m from VC.Fund" required />
+
+                  <div class="text-danger" v-if="errors.funding_info">
+                    [[errors.funding_info]]
+                  </div>
+                </div>
+
+
+
                 <!-- Team -->
                 <div class="col-12 mb-3">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>

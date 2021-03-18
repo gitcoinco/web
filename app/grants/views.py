@@ -1843,6 +1843,7 @@ def grant_new(request):
         metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
         reference_url = request.POST.get('reference_url', '')
+        funding_info = request.POST.get('funding_info', '')
         github_project_url = request.POST.get('github_project_url', None)
         network = request.POST.get('network', 'mainnet')
         twitter_handle_1 = request.POST.get('handle1', '').strip('@')
@@ -1875,6 +1876,7 @@ def grant_new(request):
             'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
             'rsk_payout_address': rsk_payout_address if rsk_payout_address else '0x0',
             'token_symbol': token_symbol,
+            'funding_info': funding_info,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
             'network': network,
