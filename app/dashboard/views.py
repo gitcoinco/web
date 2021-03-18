@@ -3550,6 +3550,13 @@ def verify_user_facebook(request):
         })
     
     facebook_data = r.json()
+    check_facebook_id = Profile.objects.filter(facebook_id = facebook_data['id'])        
+    if check_facebook_id:
+        return JsonResponse({
+            'ok': False,
+            'message': 'Facebook account already exist',
+        })
+    
     profile = profile_helper(request.user.username, True)
     profile.is_facebook_verified = True
     profile.identity_data_facebook = facebook_data
