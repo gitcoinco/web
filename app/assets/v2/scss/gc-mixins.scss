@@ -8,9 +8,9 @@
 // define borders for $position of $width
 @mixin border($position, $minWidth, $maxWidth) {
   @for $i from $minWidth through $maxWidth {
-      .border-#{$position}-#{$i} {
-          border-#{$position}: #{$i}px solid;
-      }
+    .border-#{$position}-#{$i} {
+      border-#{$position}: #{$i}px solid;
+    }
   }
 }
 
@@ -18,7 +18,7 @@
 @mixin border-colors($colors...) {
   @each $i in $colors {
     .border-#{nth($i, 1)} {
-        border-color: #{nth($i, 2)};
+      border-color: #{nth($i, 2)};
     }
   }
 }
