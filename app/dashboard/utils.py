@@ -23,16 +23,13 @@ import logging
 import re
 from json.decoder import JSONDecodeError
 
-import ens
 from django.conf import settings
 from django.urls import URLPattern, URLResolver
 from django.utils import timezone
 
+import ens
 import ipfshttpclient
 import requests
-from ens.auto import ns
-from ens.utils import name_to_hash
-
 from app.utils import sync_profile
 from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
@@ -51,6 +48,8 @@ from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
 from dashboard.sync.zil import sync_zil_payout
+from ens.auto import ns
+from ens.utils import name_to_hash
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time

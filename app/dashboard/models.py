@@ -2018,6 +2018,7 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "txid":instance.txid,
                 "token_name":instance.tokenName,
                 "token_value":value_true,
+                "success":instance.tx_status == 'success',
             }
             )
 
@@ -2112,6 +2113,7 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
+                "success":instance.payout_status == 'done',
             }
             )
 
@@ -3039,11 +3041,11 @@ class Profile(SuperModel):
         if self.is_idena_verified:
             tb *= 1.25
         if self.is_facebook_verified:
-            tb *= 1.00
+            tb *= 1.001
         if self.is_ens_verified:
-            tb *= 1.00
+            tb *= 1.001
         if self.is_duniter_verified:
-            tb *= 1.00
+            tb *= 1.001
         return tb
 
 
@@ -5471,6 +5473,8 @@ class Earning(SuperModel):
     token_name = models.CharField(max_length=255, default='')
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
+    success = models.BooleanField(default=False, help_text=_('Was txn successful?'))
+
 
     def has_read_perms(self, profile):
         if self.source_type_human == 'grant':

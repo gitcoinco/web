@@ -68,6 +68,7 @@ Vue.mixin({
         'team_members[]': JSON.stringify(vm.teamFormatted),
         'handle1': vm.grant.twitter_handle_1,
         'handle2': vm.grant.twitter_handle_2,
+        'is_clr_eligible': vm.grant.is_clr_eligible,
         'eth_payout_address': vm.grant.admin_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'celo_payout_address': vm.grant.celo_payout_address,

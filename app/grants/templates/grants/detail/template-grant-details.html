@@ -220,12 +220,22 @@
 
       <!-- Grant Management -->
       <div class="grant-managment">
+        <div class="my-0 mx-0" v-if="grant.admin_message">
+          <div class="bs-alert alert alert-warning p-2 d-flex">
+            <div class="text-center w-100">
+              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
+              <div class="d-inline-block uppercase font-weight-semibold w-100">
+                [[grant.admin_message]]
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
-          <div class="bs-alert alert alert-warning pt-2 pb-2 pr-2 pl-2 d-flex">
+          <div class="bs-alert alert alert-warning p-2 d-flex">
             <div class="text-center">
               <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
               <div class="d-inline-block uppercase">
-                Warning: This grant has not verified their ownership of the twitter account listed.
+                <span class="font-weight-semibold">Warning:</span> This grant has not verified their ownership of the twitter account listed.
               </div>
               <template v-if="grant.is_on_team && user_code">
                 <div class="my-2 d-inline-block text-center w-100">
@@ -481,6 +491,16 @@
               <span class="font-weight-semibold">[[ option.label ]]</span>
             </template>
           </v-select>
+        </div>
+
+        <!-- Is CLR Eligible -->
+        <div class="col-12 mb-3">
+          <b-form-checkbox v-model="grant.is_clr_eligible" name="is_clr_eligible">
+            <label class="font-caption letter-spacing text-black-60 text-uppercase">OPT IN FOR CLR</label>
+            <span class="font-smaller-6 text-black-60 text-capitalize ml-2">
+              (If unchecked, your grant will not be able part of the CLR rounds on Gitcoin)
+            </span>
+          </b-form-checkbox>
         </div>
 
         <!-- Save/Cancel -->

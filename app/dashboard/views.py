@@ -18,7 +18,9 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import asyncio
 import base64
+import getpass
 import hashlib
 import html
 import json
@@ -29,7 +31,6 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-import ens
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -56,22 +57,17 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
-
-import asyncio
 import dateutil.parser
+import ens
 import magic
 import pytz
 import requests
 import tweepy
-from ens.auto import ns
-from ens.utils import name_to_hash
-import asyncio
-import getpass
-
 from app.services import RedisService, TwilioService
 from app.settings import (
-    EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
-    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, ES_USER_ENDPOINT, BMAS_ENDPOINT, ES_CORE_ENDPOINT
+    BMAS_ENDPOINT, EMAIL_ACCOUNT_VALIDATION, ES_CORE_ENDPOINT, ES_USER_ENDPOINT, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES,
+    SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
+    TWITTER_CONSUMER_SECRET,
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -82,15 +78,19 @@ from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
+from dashboard.duniter import CERTIFICATIONS_SCHEMA
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
-    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    get_poap_earliest_owned_token_timestamp, profile_helper, get_ens_resolver_contract, get_ens_contract_addresss,
+    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
+    get_ens_contract_addresss, get_ens_resolver_contract, get_orgs_perms, get_poap_earliest_owned_token_timestamp,
+    profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from ens.auto import ns
+from ens.utils import name_to_hash
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -109,12 +109,12 @@ from marketing.mails import (
 )
 from marketing.models import EmailSubscriber, Keyword, UpcomingDate
 from oauth2_provider.decorators import protected_resource
+from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from perftools.models import JSONStore
 from ptokens.models import PersonalToken, PurchasePToken, RedemptionToken
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
-from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
@@ -154,63 +154,6 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-
-MODULE = "wot"
-
-CERTIFICATIONS_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "pubkey": {"type": "string"},
-        "uid": {"type": "string"},
-        "isMember": {"type": "boolean"},
-        "certifications": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "pubkey": {"type": "string"},
-                    "uid": {"type": "string"},
-                    "cert_time": {
-                        "type": "object",
-                        "properties": {
-                            "block": {"type": "number"},
-                            "medianTime": {"type": "number"},
-                        },
-                        "required": ["block", "medianTime"],
-                    },
-                    "sigDate": {"type": "string"},
-                    "written": {
-                        "oneOf": [
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "number": {"type": "number"},
-                                    "hash": {"type": "string"},
-                                },
-                                "required": ["number", "hash"],
-                            },
-                            {"type": "null"},
-                        ]
-                    },
-                    "isMember": {"type": "boolean"},
-                    "wasMember": {"type": "boolean"},
-                    "signature": {"type": "string"},
-                },
-                "required": [
-                    "pubkey",
-                    "uid",
-                    "cert_time",
-                    "sigDate",
-                    "written",
-                    "wasMember",
-                    "isMember",
-                    "signature",
-                ],
-            },
-        },
-    },
-    "required": ["pubkey", "uid", "isMember", "certifications"],
-}
 
 
 @protected_resource()
@@ -2988,9 +2931,19 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['login_idena_url'] = idena_callback_url(request, profile)
 
         today = datetime.today()
-        context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-        if settings.DEBUG:
-            context['brightid_status'] = 'not_verified'
+
+        # states:
+        #0. not_connected - start state, user has no brightid_uuid
+        #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
+        #2. not_verified - connected, but not verified
+        #3. verified - connected, and verified
+        context['brightid_status'] = 'not_connected'
+        if profile.brightid_uuid:
+            context['brightid_status'] = 'unknown'
+        if profile.is_brightid_verified:
+            context['brightid_status'] = 'verified'
+        if request.GET.get('pull_bright_id_status'):
+            context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
 
         try:
             context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
@@ -3354,7 +3307,7 @@ async def verify_user_duniter(request, handle):
                 :return:
                 """
                 return await client.get(
-                    MODULE + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
+                    'wot' + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
                 )
 
             wot = certifiers_of(public_key_duniter)
