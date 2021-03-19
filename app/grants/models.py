@@ -1380,15 +1380,17 @@ next_valid_timestamp: {next_valid_timestamp}
 
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
-                return Decimal(float(amount) * float(eth_usd_conv_rate()))
+                return Decimal(float(amount) * float(eth_usd_conv_rate(self.created_on)))
             else:
                 value_token_to_eth = Decimal(convert_amount(
                     amount,
                     self.token_symbol,
-                    "ETH")
+                    "ETH",
+                    self.created_on
+                    )
                 )
 
-            value_eth_to_usdt = Decimal(eth_usd_conv_rate())
+            value_eth_to_usdt = Decimal(eth_usd_conv_rate(self.created_on))
             value_usdt = value_token_to_eth * value_eth_to_usdt
             return value_usdt
 
@@ -1397,7 +1399,8 @@ next_valid_timestamp: {next_valid_timestamp}
                 return Decimal(convert_amount(
                     amount,
                     self.token_symbol,
-                    "USDT"))
+                    "USDT",
+                    self.created_on))
             except ConversionRateNotFoundError as no_conversion_e:
                 logger.info(no_conversion_e)
                 return None
@@ -1900,7 +1903,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "from_profile":instance.subscription.contributor_profile,
                     "org_profile":instance.subscription.grant.org_profile,
                     "to_profile":instance.subscription.grant.admin_profile,
-                    "value_usd":instance.subscription.get_converted_amount(False),
+                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.grant.network,
                     "txid":instance.subscription.split_tx_id,
