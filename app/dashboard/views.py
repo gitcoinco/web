@@ -3475,6 +3475,20 @@ def verify_profile_with_ens(request):
             }
         })
 
+    # Check if address already was registered.
+    address_registered = Profile.objects.filter(ens_verification_address__iexact=user_address).exists()
+    if address_registered:
+        return JsonResponse({
+            'error': 'ADDRESS_ALREADY_REGISTERED',
+            'msg': f'This address {registered_address[0:5]} was already  registered.',
+            'data': {
+                'step': 4,
+                'verified': profile.is_ens_verified,
+                'address': user_address,
+                'ens_domain': node,
+            }
+        })
+
     if request.method == 'POST':
         profile.is_ens_verified = True
         profile.ens_verification_address = user_address
