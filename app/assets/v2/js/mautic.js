@@ -173,12 +173,12 @@ class MauticEvent {
 /**  Mautic code to handle form embeds * */
 /** This section is only needed once per page if manually copying * */
 
-var MauticSDKLoaded;
+let MauticSDKLoaded;
 
 if (typeof MauticSDKLoaded == 'undefined') {
   MauticSDKLoaded = true;
-  var head = document.getElementsByTagName('head')[0];
-  var script = document.createElement('script');
+  const head = document.getElementsByTagName('head')[0];
+  const script = document.createElement('script');
 
   script.type = 'text/javascript';
   script.src = 'https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf';
@@ -186,8 +186,8 @@ if (typeof MauticSDKLoaded == 'undefined') {
     MauticSDK.onLoad();
   };
   head.appendChild(script);
-  var MauticDomain = 'https://engage.gitcoin.co';
-  var MauticLang = {
+  const MauticDomain = 'https://engage.gitcoin.co';
+  const MauticLang = {
     'submittingMessage': 'Please wait...'
   };
 }
