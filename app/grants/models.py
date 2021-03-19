@@ -1718,6 +1718,10 @@ class Contribution(SuperModel):
     anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
 
     @property
+    def value_in_usdt_then(self):
+        return self.subscription.amount_per_period_usdt
+
+    @property
     def blockexplorer_url(self):
             return self.blockexplorer_url_helper(self.split_tx_id)
 
