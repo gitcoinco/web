@@ -26,12 +26,15 @@ def forwards(apps, schema_editor):
         120: 20,
         121: 21,
     }
-
-    for key, val in mapping.items():
-        gclr = GrantCLR.objects.get(pk=val)
-        for clrm in CLRMatch.objects.filter(round_number=key):
-            clrm.clr = gclr
-            clrm.save()
+    try:
+        for key, val in mapping.items():
+            gclr = GrantCLR.objects.get(pk=val)
+            if gclr:
+                for clrm in CLRMatch.objects.filter(round_number=key):
+                    clrm.clr = gclr
+                    clrm.save()
+    except Exception as e:
+        print(e)
 
 def backwards(apps, schema_editor):
     pass
