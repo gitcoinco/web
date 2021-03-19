@@ -170,3 +170,20 @@ class MauticEvent {
 // MauticEvent.create('hackathon', 'hackathon', {'hackathon-slug':'hackathon-event'})
 // MauticEvent.create('products', 'product', {'product':'bounties', 'persona': 'bounty-hunter'})
 
+/**  Mautic code to handle form embeds **/
+/** This section is only needed once per page if manually copying **/
+if (typeof MauticSDKLoaded == 'undefined') {
+  var MauticSDKLoaded = true;
+  var head            = document.getElementsByTagName('head')[0];
+  var script          = document.createElement('script');
+  script.type         = 'text/javascript';
+  script.src          = 'https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf';
+  script.onload       = function() {
+      MauticSDK.onLoad();
+  };
+  head.appendChild(script);
+  var MauticDomain = 'https://engage.gitcoin.co';
+  var MauticLang   = {
+      'submittingMessage': "Please wait..."
+  }
+}
