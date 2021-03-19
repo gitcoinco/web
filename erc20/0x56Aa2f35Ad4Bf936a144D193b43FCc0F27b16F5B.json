@@ -1,0 +1,16 @@
+{
+    "symbol": "SUNNY",
+    "address": "0x56Aa2f35Ad4Bf936a144D193b43FCc0F27b16F5B",
+    "overview": {
+        "en": "A highly scalable decentralized algorithm protocol based on Ethereum."
+    },
+    "whitepaper": "https://github.com/RevelationDAO/whitepaper/raw/master/Revelation%20Project%20White%20Paper(%20English).pdf",
+    "website": "https://sunnyswap.space/#/home",
+    "state": "NORMAL",
+    "links": {
+        "telegram": "https://t.me/joinchat/TdL6xhnj3J3a87ftBnYJjw",
+        "github": "https://github.com/RevelationDAO",
+        "reddit": "https://www.reddit.com/user/RevelationDAO/",
+        "medium": "https://medium.com/@revelationdao"
+    }
+} 
