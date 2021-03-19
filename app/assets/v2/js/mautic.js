@@ -174,8 +174,8 @@ class MauticEvent {
 /** This section is only needed once per page if manually copying * */
 
 let MauticSDKLoaded;
-const MauticDomain = 'https://engage.gitcoin.co';
-const MauticLang = {
+let MauticDomain = 'https://engage.gitcoin.co';
+let MauticLang = {
   'submittingMessage': 'Please wait...'
 };
 
