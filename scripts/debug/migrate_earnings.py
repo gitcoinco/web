@@ -11,8 +11,9 @@ for earning in Earning.objects.filter(source_type=ContentType.objects.get(app_la
 models = [KudosTransfer, Tip, BountyFulfillment, Contribution]
 for model in models:
     for obj in model.objects.all():
-    	try:
-	        print(model, obj.pk)
-	        obj.save()
-	    except Exception as e:
-	    	print(e)
+        try:
+            print(model, obj.pk)
+            obj.save()
+        except Exception as e:
+            print(e)
+
