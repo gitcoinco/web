@@ -16,7 +16,9 @@ section.hero{
 		margin-left: 3em;
 		user-select: none;
 
-		padding-top: 130px; /*navigation*/
+		&.pushdown{
+			padding-top: 130px; /*navigation*/
+		}
 
 		&.centered{
 
