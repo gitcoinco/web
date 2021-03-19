@@ -6457,7 +6457,7 @@ def verify_user_poap(request, handle):
 
     message_hash = defunct_hash_message(text="verify_poap_badges")
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
-    if eth_address != signer:
+    if eth_address.lower() != signer.lower():
         return JsonResponse({
             'ok': False,
             'msg': 'Invalid signature',
@@ -6475,9 +6475,20 @@ def verify_user_poap(request, handle):
             'ok': False,
             'msg': 'No qualifying POAP badges (ERC721 NFTs held for at least 15 days) found for this account.',
         })
+    
+    # Make sure this poap badge owner account wasn't used previously.
+    try:
+        profile = Profile.objects.get(poap_owner_account=signer.lower())
+        return JsonResponse({
+            'ok': False,
+            'msg': 'the PAOP badge owner account already used by another Gitcoin profile',
+        })
+    except Profile.DoesNotExist:
+        pass
 
     profile = profile_helper(handle, True)
     profile.is_poap_verified = True
+    profile.poap_owner_account = signer.lower()
     profile.save()
     return JsonResponse({
                 'ok': True,
