@@ -42,7 +42,7 @@ if (document.getElementById('gc-search')) {
         let vm = this;
         let thisDate = new Date();
 
-        if (vm.term.length >= 2) {
+        if (vm.term.length >= 4) {
           vm.isLoading = true;
           document.current_search = thisDate;
 

@@ -44,7 +44,7 @@ class SearchResult(SuperModel):
         res = es.index(index="search-index", id=self.pk, body=doc)
 
 
-def search(query, num_results=150):
+def search(query, num_results=500):
     if not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
