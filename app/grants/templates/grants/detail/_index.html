@@ -38,7 +38,7 @@
   </head>
 
   <body class="interior {{ active }} grant g-font-muli">
-    <div class="content__main min-vh-100 d-md-flex flex-column">
+    <div class="content__main min-vh-100 d-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
       <div class="container-fluid header dash px-0">
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -105,7 +105,7 @@
                     {% include 'shared/activity_container.html' with pinned=False %}
                   </div>
                 </b-tab>
-          
+
                 <!-- Contributions -->
                 <b-tab :title-link-class="'nav-line'" lazy @click="fetchTransactions">
                   <template v-slot:title>Contributions</template>
@@ -128,7 +128,7 @@
                                   Export Transactions (OWNER ONLY)
                                 </a> |
                               {% endif %}
-          
+
                               <a href="/grants/v1/api/export_addresses/grant{{grant.pk}}.json" target="_blank">
                                 All Contributor Addresses for this Grant (TEAM ONLY)
                               </a>
@@ -154,9 +154,9 @@
                                       </a>
                                     </div>
                                   </div>
-                                </div>  
+                                </div>
                               </div>
-        
+
                               <div class="col">
                                 <div class="row justify-content-end text-secondary" >
                                   <span v-b-tooltip.hover.top="transaction.subscription.amount_per_period">
@@ -187,7 +187,7 @@
                       </div>
                     </div>
                   </div>
-        
+
                   <b-skeleton-wrapper :loading="loadingTx">
                     <template #loading>
                       <b-row class="mb-3">
@@ -217,7 +217,7 @@
                     <button class="btn btn-outline-primary btn-sm mt-n4 mb-4" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
                   </div>
                 </b-tab>
-                
+
                 <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
                   <template v-slot:title>Related Grants <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
                   <h3 class="pt-2 pb-3">
@@ -274,10 +274,10 @@
                 {% if is_staff %}
                 <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
                   <template v-slot:title>Sybil Profile</template>
-  
-  
+
+
                     <h4>Grant Sybil Profile</h4>
-  
+
                     <hr>
                     <i class="fa fa-lock" aria-hidden="true"></i>
                     SybilScore ™️: {{ grant.sybil_score }}
@@ -285,7 +285,7 @@
                     <i class="fa fa-lock" aria-hidden="true"></i>
                     RiskScore ™️: {{ grant.weighted_risk_score }}
                     <pre>
-  
+
                     A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
                     - Account Metadata
                     - Suspicious Interactions
@@ -293,7 +293,7 @@
                     - BrightID Trust Score (coming soon)
                     - KYC (maybe coming soon)
                     - MACI (maybe coming soon)
-  
+
                     a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
                     </pre>
                     <div id="section-nav-sybil">
@@ -351,8 +351,8 @@
                       {% endfor %}
                       </table>
                         <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
-  
-  
+
+
                       {% endfor %}
                     </div>
                 </b-tab>
@@ -363,7 +363,7 @@
                   {% if tab == 'stats' %}
                     <div id=grant_stats_graph class="content-block content-block--white">
                       <div class="container">
-  
+
                         <div class="value-container">
                           <div class="chart_container chart_container--big">
                             {% if stats_history|length %}
@@ -401,7 +401,7 @@
                             {% endfor %}
                             </table>
                             {% endif %}
-  
+
                             <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
                             <div class="chart_container__content">
                               <div id="grant_chart"></div>
@@ -412,7 +412,7 @@
                             </div>
                           </div>
                         </div>
-  
+
                       </div>
                     </div>
                   {% endif %}
@@ -424,10 +424,36 @@
           </div>
         </div>
 
+        <!-- Sticky add/remove cart and contribution details -->
+        <div class="bg-white border-grey border-top-2 bottom-0 p-4 position-sticky text-center w-100 d-block d-md-none">
 
-        <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+          <!-- Contribution details -->
+          <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && (index == 1 || index == 3)" :class="`text-center w-100 pb-2 ${grant.clr_round_num && grant.is_clr_eligible ? 'mb-3' : 'd-none'}`">
+            <span>$[[prediction[0] ]] contribution</span>
+            <span class="text-secondary">receives <b>$[[prediction[2] || 0 | round]] match</b></span>
+          </div>
+
+          <!-- Add/remove from cart -->
+          <template v-if="grant.link_to_new_grant">
+            <a :href="grant.link_to_new_grant" class="btn btn-primary btn-block py-3">Visit the active grant to fund</a>
+          </template>
+          <template v-else-if="!grant.active">
+            <button type="button" class="btn btn-primary btn-block py-3" disabled>
+              {% trans "This Grant Is Not Active" %}
+            </button>
+          </template>
+          <template v-else>
+            <button class="btn btn-outline-danger btn-block py-3" @click="removeFromCart()" v-if="grant.isInCart">Remove From Cart</button>
+            <button class="btn btn-primary btn-block py-3" @click="addToCart()" v-else >Add to Cart</button>
+          </template>
+
+        </div>
+
+        <!-- Side-cart -->
+        <div id="side-cart" class="grant-side-cart pb-md-0 pt-md-0 px-0 border-top-2 border-grey mt-n1 mt-md-0" style="display: none;">
           {% include 'grants/detail/side-cart.html' %}
         </div>
+
       </div>
       {% include 'grants/detail/template-grant-details.html' %}
 

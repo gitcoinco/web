@@ -121,13 +121,13 @@
           <b-button @click="quickView($event)" variant="outline-primary" class="font-body btn-block mt-2">
             <i class="far fa-fw fa-eye"></i>
           </b-button>
-          <button @click.prevent="removeFromCart(grant)" class="btn btn-outline-danger btn-block font-body mb-md-5" v-if="grant.isInCart">
+          <button @click.prevent="removeFromCart(grant)" :class="`btn btn-outline-danger btn-block font-body ${collection && isCurator ? '' : 'mb-md-5'}`" v-if="grant.isInCart">
             - <span class="btn-cart-action">Remove from Cart</span>
           </button>
-          <button @click.prevent="addToCart(grant)" class="btn btn-primary btn-block font-body mb-md-5" v-else>
+          <button @click.prevent="addToCart(grant)" :class="`btn btn-primary btn-block font-body ${collection && isCurator ? '' : 'mb-md-5'}`" v-else>
             + <span class="btn-cart-action">Add to Cart</span>
           </button>
-          <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})"  class="btn btn-block btn-outline-danger font-body" v-if="collection && isCurator">
+          <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mb-md-5" v-if="collection && isCurator">
             - Remove from collection
           </button>
           <div class="add-to-collection d-flex float-right mt-2 mr-3" v-if="isUserLogged && has_collections">
