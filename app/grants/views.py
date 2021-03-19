@@ -590,7 +590,7 @@ def get_grants(request):
         grant_json = grant.repr(request.user, request.build_absolute_uri)
         if not request.user.is_staff:
             del grant_json['sybil_score']
-            del grant_json['risk_score']
+            del grant_json['weighted_risk_score']
         grants_array.append(grant_json)
 
     has_next = False
