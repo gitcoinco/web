@@ -39,7 +39,11 @@ class Command(BaseCommand):
             pk = instance.pk
             print(pk)
             related = {}
-            for subscription in instance.subscriptions.all():
+            then = timezone.now() - timezone.timedelta(days=90)
+            subs = instance.subscriptions.filter(created_on__gt=then).all()
+            # for perf reasons, bound this
+            subs = subs[0:2000]
+            for subscription in subs:
                 _from = subscription.created_on - timezone.timedelta(hours=1)
                 _to = subscription.created_on + timezone.timedelta(hours=1)
                 profile = subscription.contributor_profile
