@@ -7,7 +7,9 @@ section.column{
 	figure{
 		margin:0;
 		padding:0;
-		background-color: var(--smoke);
+		background-color: var(--space_light_alpha);
+		max-width: 1200px;
+		margin: auto;
 	}
 
 	p{

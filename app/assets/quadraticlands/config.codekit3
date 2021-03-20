@@ -267,66 +267,6 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
-	"/images/background/proof-of-know-end.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/background/proof-of-know-end.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/background/proof-of-know-start.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/background/proof-of-know-start.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/background/proof-of-receive-end.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/background/proof-of-receive-end.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/background/proof-of-receive-start.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/background/proof-of-receive-start.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/background/proof-of-use-end.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/background/proof-of-use-end.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/images/background/proof-of-use-start.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 1,
-		"oAP": "/images/background/proof-of-use-start.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
 	"/images/background/quest.svg": {
 		"ft": 2097152,
 		"miP": 0,
@@ -460,6 +400,16 @@
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/dummy.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/empower.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/empower.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -811,11 +761,41 @@
 		"plM": 52780316221407,
 		"prP": 0
 		},
+	"/images/graph-2.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/graph-2.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/graph.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/graph.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
 	"/images/gtctoken_coin.svg": {
 		"ft": 2097152,
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/gtctoken_coin.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/antisybil.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/antisybil.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -846,6 +826,66 @@
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/mission/governance.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/proof-of-know-end.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/proof-of-know-end.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/proof-of-know-start.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/proof-of-know-start.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/proof-of-receive-end.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/proof-of-receive-end.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/proof-of-receive-start.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/proof-of-receive-start.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/proof-of-use-end.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/proof-of-use-end.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/mission/proof-of-use-start.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/mission/proof-of-use-start.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
@@ -982,6 +1022,16 @@
 		"miP": 0,
 		"oA": 1,
 		"oAP": "/images/quadratic2.svg",
+		"oF": 0,
+		"opt": 0,
+		"plM": 52780316221407,
+		"prP": 0
+		},
+	"/images/quote.svg": {
+		"ft": 2097152,
+		"miP": 0,
+		"oA": 1,
+		"oAP": "/images/quote.svg",
 		"oF": 0,
 		"opt": 0,
 		"plM": 52780316221407,
