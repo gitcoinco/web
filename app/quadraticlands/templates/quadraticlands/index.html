@@ -141,75 +141,48 @@
 	<script src="/static/quadraticlands/js/app.js"></script>
 
 
+
+
+
+	<!-- animate town ( index page hero > town.svg ) -->
+
 	<script>
 
+		document.addEventListener("DOMContentLoaded",function(){
+			// random floor polygones coloring / lights of town
+			polygones = document.querySelectorAll("svg #floor polygon")
+			lights = document.querySelectorAll("svg .light")
+			last = 0;
+			console.debug("ANIMATE TOWN")
+			animate_town()
+		});	
 
+		function animate_town(now){
 
-	// random floor polygones coloring / lights of town
+		    if(!last || now - last >= 200) {
+		        
+				// pick a random poly from the floor grid in section hero > town.svg
+				// to randomly color up with a little animation
+				polygone = polygones[Math.floor(Math.random() * polygones.length)]
+				polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+					{ duration: 400, delay: 0, iterations: 1
+				});
 
-	document.addEventListener("DOMContentLoaded",function(){
+				// pick a random light from the houses in section hero > town.svg
+				// to randomly color up with a little animation
+				light = lights[Math.floor(Math.random() * lights.length)]
+				duration = Math.random() * (5000 - 500) + 500
 
-		// the knightrider effect for floor is in section_hero.scss
-		// but deactivated as its to much.
+				light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+					{ duration: duration, delay: 0, iterations: 1
+				});
 
-		// the #floor polygones 
-		polygones = document.querySelectorAll("svg #floor polygon")
-		lights = document.querySelectorAll("svg .light")
+				last = now;
+			}
 
+			requestAnimationFrame(animate_town)
 
-		setInterval(() => {
-
-
-			polygone = polygones[Math.floor(Math.random() * polygones.length)]
-			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-				{ duration: 500, delay: 0, iterations: 1
-			});
-
-			light = lights[Math.floor(Math.random() * lights.length)]
-			duration = Math.random() * (5000 - 500) + 500
-
-			light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-				{ duration: duration, delay: 0, iterations: 1
-			});
-
-
-		}, 200);
-
-
-	
-
-
-		// all .light fill's
-		/*
-		lights = document.querySelectorAll("svg .light")
-		lights.forEach(light => {
-
-			duration = Math.random() * (5000 - 500) + 500
-			delay = Math.random() * 2000
-			light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-				{ duration: duration, delay: delay, iterations: Infinity
-			});
-		});
-		*/
-		
-
-
-
-		// all .light2 stroke's
-		/*
-		lights2 = document.querySelectorAll("svg .light2")
-		lights2.forEach(light => {
-			duration = Math.random() * (5000 - 500) + 500
-			delay = Math.random() * 2000
-			light.animate({ stroke: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-				{ duration: duration, delay: delay, iterations: Infinity
-			});
-		});
-		*/
-
-	});	
-
-
+		}
 
 	</script>
 

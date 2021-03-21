@@ -255,9 +255,6 @@
 
 
 
-
-
-
 {% endblock %}
 
 
@@ -269,35 +266,37 @@
 	<script src="/static/quadraticlands/js/sal_init.js"></script>
 	<script src="/static/quadraticlands/js/app.js"></script>
 
+	<!-- animate about page header image ( hero-about.svg ) -->
 	<script>
 
+		document.addEventListener("DOMContentLoaded",function(){
+			// random floor polygones coloring / lights of town
+			polygones = document.querySelectorAll("svg #floor path")
+			last = 0;
+			console.debug("ANIMATE TOWN")
+			animate_about()
+		});	
 
-	// random floor polygones coloring / lights of town
+		function animate_about(now){
 
-	document.addEventListener("DOMContentLoaded",function(){
+		    if(!last || now - last >= 100) {
+		        
+				// pick a random poly from hero-about.svg
+				// to randomly color up with a little animation
+				polygone = polygones[Math.floor(Math.random() * polygones.length)]
+				polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+					{ duration: 500, delay: 0, iterations: 1
+				});
 
-		// the #floor polygones 
-		polygones = document.querySelectorAll("svg #floor path")
+				last = now;
+			}
 
-		setInterval(() => {
+			requestAnimationFrame(animate_about)
 
-			polygone = polygones[Math.floor(Math.random() * polygones.length)]
-			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-				{ duration: 500, delay: 0, iterations: 1
-			});
-
-
-		}, 200);
-
-
-	});	
-
+		}
 
 	</script>
 
 
-	
 {% endblock %}
-
-
 

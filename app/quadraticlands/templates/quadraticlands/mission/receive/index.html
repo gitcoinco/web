@@ -14,7 +14,7 @@
 
 {% block 'content' %}
 
-<!--PROOF OF KNOWLEDGE -->
+<!--PROOF OF RECEIVE -->
 
 <section class="grid">
 	
@@ -22,16 +22,30 @@
 		<img src="/static/quadraticlands/images/mission/proof-of-receive-start.svg">
 	</figure>
 
-	<div>
+	<!--interface : nowallet-->
+	<div id="interface_nowallet" class="hide">
 		<h3><span>#</span>Chapter 3 of 3</h3>
 		<h1>Proof of receive</h1>
-		<p id="receiveMessage"></p>
-		<span id="receiveAddress" class="receiveAddress hide" ></span>
-		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn hide">Continue</a>
+		<p>Please connect to your Wallet!</p>
+		<a id="buttonConnect" class="btn">Connect</a>
+	</div>
+
+	<!--interface : ready-->
+	<div id="interface_ready" class="hide">
+		<h3><span>#</span>Chapter 3 of 3</h3>
+		<h1>Proof of receive</h1>
+		<p>We will deposit your tokens to</p>
+
+		<div class="address">
+			<span id="receiveAddress"></span>
+		</div>
+
+		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn">Continue</a>
+		
+	
 	</div>
 
 </section>
-
 
 {% endblock %}
 
@@ -42,71 +56,66 @@
 <script src="/static/quadraticlands/js/sal_init.js"></script>
 <script src="/static/quadraticlands/js/app.js"></script>
 
+
+
+
 <script>
 
-// DOMContentLoaded
 document.addEventListener("DOMContentLoaded",function(){
 
-	// expect the worst by default : no wallet
-	updateInterface("nowallet");
+	updateInterface("nowallet")
 
-	// wallet found
+	const receiveAddress = document.getElementById("receiveAddress")
+
 	window.addEventListener("dataWalletReady", () => {
-		updateInterface("continue");		
+		receiveAddress.innerHTML = selectedAccount
+		updateInterface("ready")			
 	});
 
-	//user manualy disconnect wallet by button
-	const buttonDisconnect = document.getElementById("btn-disconnect");
-	buttonDisconnect.addEventListener("click", () => {
-		updateInterface("nowallet");
-	});	
-
-	//user disconnect somehow else - eg by log out from metamask
+	//check each 2 seconds if user is still connected fetch
+	// the edgecase of user logout / gets disconnected
 	setInterval(() => {
 		if(!selectedAccount) { 
 			updateInterface("nowallet");
 		}
 	}, 2000);
 
+	// map buttonConnect button to popup web3modal
+	const buttonConnect = document.getElementById("buttonConnect")
+	buttonConnect.addEventListener("click", () => {
+		onConnect()
+	});
+
 });
+
 
 
 function updateInterface(status){
 
-	const receiveMessage = document.getElementById("receiveMessage");
-	const receiveAddress = document.getElementById("receiveAddress");
-	const buttonContinue = document.getElementById("buttonContinue");
+	interface_nowallet = document.getElementById("interface_nowallet");
+	interface_ready = document.getElementById("interface_ready");
 
-	// no wallet > warning
 	if (status=="nowallet")
 	{
-		receiveMessage.innerHTML = "Please connect to your Wallet in the top right corner!";
-		receiveAddress.classList.add("hide");
-		buttonContinue.classList.add("hide");
+		interface_nowallet.classList.remove("hide")
+		interface_ready.classList.add("hide")
 		console.log("INTERFACE:NOWALLET");
 	}
 
-	// wallet existing > continue
-	if (status=="continue")
+	if (status=="ready")
 	{
-		receiveMessage.innerHTML = "We will deposit your GTC governance tokens to";
-		receiveAddress.classList.remove("hide");
-		//receiveAddress.innerHTML = shortenAdress(selectedAccount);
-		receiveAddress.innerHTML = selectedAccount;
-		buttonContinue.classList.remove("hide");
-		console.log("INTERFACE:CONTINUE");
+		interface_nowallet.classList.add("hide")
+		interface_ready.classList.remove("hide")
+		console.log("INTERFACE:READY");
 	}
 
 }
-
-
-
-
 
 
 </script>
 
 
 {% endblock %}
+
 
 
