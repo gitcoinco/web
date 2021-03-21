@@ -103,7 +103,7 @@ $(document).ready(function() {
       });
   };
 
-  if(document.visitorId){
+  if (document.visitorId) {
     Cookies.set('visitorId', document.visitorId);
   }
   record_campaign_to_cookie();
