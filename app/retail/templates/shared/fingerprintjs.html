@@ -1,7 +1,7 @@
 <script>
   function initFingerprintJS() {
     FingerprintJS.load({token: 'W0FUPDGsTv97t0sPFbgI'})
-      .then(fp => fp.get())
+      .then(fp => fp.get({ pid: document.contxt.profile_id}))
       .then(result => document.visitorId = result.visitorId);
   }
 </script>
