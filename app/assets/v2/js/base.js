@@ -103,7 +103,11 @@ $(document).ready(function() {
       });
   };
 
+  if(document.visitorId){
+    Cookies.set('visitorId', document.visitorId);
+  }
   record_campaign_to_cookie();
+
 
   if (!$('.header > .minihero').length && $('.header > .navbar').length) {
     $('.header').css('overflow', 'visible');

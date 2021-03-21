@@ -1133,6 +1133,12 @@ class Subscription(SuperModel):
         help_text=_('The amount per contribution period in USDT'),
     )
     tenant = models.CharField(max_length=10, null=True, blank=True, default="ETH", choices=TENANT, help_text="specific tenant in which contribution is made")
+    visitorId = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The visitorID of the contributor'),
+        blank=True,
+    )
 
     @property
     def negative(self):

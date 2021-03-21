@@ -271,8 +271,6 @@ class SubscriptionAdmin(GeneralAdmin):
     raw_id_fields = ['grant', 'contributor_profile']
     readonly_fields = [
         'contributions_links',
-        'error_email_copy_insufficient_balance',
-        'error_email_copy_not_active',
     ]
 
     def contributions_links(self, instance):
