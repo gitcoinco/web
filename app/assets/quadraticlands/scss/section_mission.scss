@@ -22,8 +22,8 @@ section.mission .card{
 
 	.card-image{
 
-		background-color: var(--space_light);
-		border: 2px solid var(--space_light);
+		background-color: var(--space_light_alpha);
+		border: 2px solid var(--space_light_alpha);
 
 		transition: all 200ms ease-in-out;	
 		img, svg{

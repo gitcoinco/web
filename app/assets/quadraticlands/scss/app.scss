@@ -90,23 +90,25 @@
 
 
 
-.receiveAddress{
-	display: block;
-	padding: 0.5em 1em;
+div.address{
+
+	margin: 2em 0em !important;
+	padding: 0.5em 1em !important;
+	margin-bottom: 4em !important;
+	text-align: left !important;
 
 	color : var(--aqua_light);
-	font-family: 'Space Mono', monospace;
 	background-color: var(--smoke);
-	
-	font-size: 90%;
-	text-align: center;
 
-	word-break: break-all;
-	margin-bottom: 1em;
+	span{
+		font-family: 'Space Mono', monospace;
+		font-size: 100%;
+		word-break: break-all;
+
+	}
+
+
 }
-
-
-
 
 
 

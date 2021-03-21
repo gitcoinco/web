@@ -7,7 +7,7 @@ section.dashboard{
 	grid-gap: 2em;
 
 	.section{
-		background-color: var(--space_light);
+		background-color: var(--space_light_alpha);
 
 		&.full{
 			grid-column: 1 / span 2;
