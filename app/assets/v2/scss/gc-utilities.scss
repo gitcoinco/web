@@ -1,3 +1,31 @@
+// import variables and mixins
+@import "./gc-mixins";
+
+// .border-top-[1-5]
+@include border('top', 1, 5);
+
+// .border-left-[1-5]
+@include border('left', 1, 5);
+
+// .border-[grey, primary, secondary, danger, info, dark, light]
+@include border-colors(
+  'grey' lightgray,
+  'primary' $blue,
+  'secondary' $green,
+  'danger' $red,
+  'info' $yellow,
+  'dark' $dark,
+  'light' $light
+);
+
 .hover-underline:not(:disabled):not(.disabled):not(.active):hover {
   text-decoration: underline!important
+}
+
+.bottom-0 {
+  bottom: 0px;
+}
+
+.top-0 {
+  top: 0px;
 }
