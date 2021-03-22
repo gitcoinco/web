@@ -331,12 +331,13 @@ def recalc_clr(self, grant_id, retry: bool = True) -> None:
             from_date=timezone.now(),
             clr_round=clr_round,
             network=network,
-            only_grant_pk=obj.pk
+            only_grant_pk=obj.pk,
+            what='slim'
         )
 
 
 @app.shared_task(bind=True, max_retries=1)
-def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None:
+def process_predict_clr(self, save_to_db, from_date, clr_round, network, what) -> None:
     from grants.clr import predict_clr
 
     print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
@@ -345,7 +346,8 @@ def process_predict_clr(self, save_to_db, from_date, clr_round, network) -> None
         save_to_db,
         from_date,
         clr_round,
-        network
+        network,
+        what=what,
     )
 
     print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
