@@ -767,6 +767,10 @@
     hr {
       width: 100%;
     }
+
+    .footer-links {
+      margin: 3em 1.4em;
+    }
   }
 
   @media only screen and (min-width: 600px) {
@@ -793,6 +797,10 @@
     hr {
       width: 90%;
     }
+
+    .footer-links {
+      margin: auto;
+    }
   }
 
   #content-body {
@@ -810,12 +818,17 @@
   }
 
   .footer-links {
-    display: flex;
     max-width: 800px;
-    margin: auto;
+    text-align: justify;
+    /* margin: auto; */
     margin-top: 3em;
-    margin-bottom: 3em;
-    justify-content: space-around;
+    margin-bottom: 2em;
+  }
+
+  .footer-links:after {
+    content: "";
+    display: inline-block;
+    width: 100%;
   }
 
   .footer-socials {

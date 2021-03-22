@@ -1507,6 +1507,8 @@ class BountyFulfillment(SuperModel):
                 return float(self.payout_amount / 10 ** 6)
             if self.token_name in settings.STABLE_COINS:
                 return float(self.payout_amount / 10 ** 18)
+            if self.token_name in ['ETH']:
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
             try:
                 return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
             except ConversionRateNotFoundError:

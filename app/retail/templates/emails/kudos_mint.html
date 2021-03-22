@@ -21,41 +21,6 @@ along with this program. If not, see
 
 {% block content %}
 
-<style>
-  .kudos-box {
-    margin-bottom: 2em;
-  }
-
-  .cols {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    width: 65%;
-    align-items: center;
-    margin: 3em auto;
-    /* flex-direction: column; */
-  }
-
-  .col-img {
-    margin: 0 2em;
-  }
-
-  .col-txt {
-    text-align: left;
-    line-height: 2;
-  }
-
-  hr {
-    width: 80%;
-  }
-
-  @media screen and (max-width: 48em) {
-    .cols {
-      flex-direction: column;
-    }
-  }
-</style>
-
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/kudos.png' %}">
   <h1>{% trans "A New Kudos Is Being Minted" %}</h1>
@@ -67,7 +32,7 @@ along with this program. If not, see
   <img src="{% static 'v2/images/emails/generic-kudos.png' %}" width="200"
     style="margin: 3em auto 3em; display: block;">
 
-  <div class="kudos-box">
+  <div style="margin-bottom: 2em;">
     <div class="kudos">
         {% if comments_public %}
         <p>

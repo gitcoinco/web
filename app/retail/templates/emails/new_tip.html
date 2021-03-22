@@ -22,20 +22,7 @@ along with this program. If not, see
 {% block content %}
 
 <style>
-  .tip-box {
-    margin-bottom: 2em;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #e0e0e0;
-    padding-left: 1em;
-  }
-
-  .tip-contents {
-    text-align: left;
-  }
-
   .tip {
-    display: flex;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     padding-right: 1em;
@@ -62,58 +49,56 @@ along with this program. If not, see
 
   <div>
     <div class="tip">
-      <div class="tip-contents">
-        {% if tip.github_url %}
-        <p>
-          {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a
-            href="{{tip.github_url}}">{{tip.github_url}}</a>.
-          {% if comments %}
-          {% trans "They had the following comments:" %}
+      {% if tip.github_url %}
+      <p>
+        {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a
+          href="{{tip.github_url}}">{{tip.github_url}}</a>.
+      {% if comments %}
+        {% trans "They had the following comments:" %}
         <pre>
-                  {{comments}}
-                </pre>
-        {% endif %}
-        </p>
-        {% endif %}
+          {{comments}}
+        </pre>
+      {% endif %}
+      </p>
+      {% endif %}
 
-        {% if comments_priv and not tip.is_programmatic_comment %}
-        <p>
-          {% trans "They had the following private comments:" %}
-        <pre>
-              {{comments_priv}}
+      {% if comments_priv and not tip.is_programmatic_comment %}
+      <p>
+        {% trans "They had the following private comments:" %}
+      <pre>
+            {{comments_priv}}
+          </pre>
+      </p>
+      {% endif %}
+
+      {% if comments_priv and tip.is_programmatic_comment %}
+      <p>
+        The tip was attached to <a href="{{tip.attached_object.url}}?{{ utm_tracking }}">this activity feed item</a>.
+      </p>
+      {% endif %}
+
+      {% if comments_public %}
+      <p>
+        {% trans "They had the following public comments:" %}
+      <pre>
+              {{comments_public}}
             </pre>
-        </p>
-        {% endif %}
-
-        {% if comments_priv and tip.is_programmatic_comment %}
-        <p>
-          The tip was attached to <a href="{{tip.attached_object.url}}?{{ utm_tracking }}">this activity feed item</a>.
-        </p>
-        {% endif %}
-
-        {% if comments_public %}
-        <p>
-          {% trans "They had the following public comments:" %}
-        <pre>
-                {{comments_public}}
-              </pre>
-        </p>
-        {% endif %}
-        {% if already_redeemed %}
-        <p>
-          {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a
-            href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid" %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
-        </p>
-        {% elif show_expires %}
-        <p>
-          {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
-        </p>
-        {% else %}
-        <p>
-          {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
-        </p>
-        {% endif %}
-      </div>
+      </p>
+      {% endif %}
+      {% if already_redeemed %}
+      <p>
+        {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a
+          href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid" %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
+      </p>
+      {% elif show_expires %}
+      <p>
+        {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
+      </p>
+      {% else %}
+      <p>
+        {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
+      </p>
+      {% endif %}
     </div>
     {% if not already_redeemed %}
     <div style="margin-bottom: 1.5em;">
