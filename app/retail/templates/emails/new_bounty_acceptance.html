@@ -30,28 +30,28 @@ along with this program. If not, see
 
   <br>
   <div class=""
-    style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 20px 50px; text-align: center">
-    <div style="display: flex;">
+    style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 20px 0 20px 0;">
+    <div>
       <div>
         <img style="border-radius: 100%;" height="85" src="{{ bounty.avatar_url }}">
         <b>{{ bounty.org_name }}</b>
       </div>
       <div>
         {% if bounty.title %}
-        <p class="" style="text-align: left; padding-left: 1em;">
+        <p class="" style="text-align: left;">
           <a style="color:#15003e; font-size: 18px;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{{ bounty.title }}</a>
         </p>
         {% endif %}
         <div style="text-align: left;">
           <span
-            style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #e7f0fa; color: var(--gc-blue);    display: inline-block;">
+            style="text-align: center; border-radius: 2px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #e7f0fa; color: var(--gc-blue);    display: inline-block;">
             <p style="font-size:15px; margin:0.6em;">
               {{ bounty.value_true }}
               <span>{{ bounty.token_name }}</span>
             </p>
           </span>
           <span
-            style="text-align: center; border-radius: 2px; margin: 4px; padding: 3px 6px; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #d6fbeb; color: #00A55E;    display: inline-block;">
+            style="border-radius: 2px; padding: 3px 0 3px 0; font-size: 11px; font-weight: 400; white-space: nowrap; background-color: #d6fbeb; color: #00A55E; display: inline-block;">
             <p style="font-size:15px; margin:0.6em;">
               {% if bounty.value_in_usdt_now %}
               {{ bounty.value_in_usdt_now }}
