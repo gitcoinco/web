@@ -210,7 +210,7 @@ def refresh_conv_rate(when, token_name):
         try:
             price = cc.get_historical_price(token_name, to_currency, when)
 
-            if price and price[token_name]:
+            if price and price.get('token_name'):
                 to_amount = price[token_name][to_currency]
                 ConversionRate.objects.create(
                     from_amount=1,
