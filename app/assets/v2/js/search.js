@@ -44,11 +44,11 @@ if (document.getElementById('gc-search')) {
       },
       search: async function(e) {
         let vm = this;
-        this.isDirty = false;
         let thisDate = new Date();
 
+        vm.isDirty = false;
         // prevent 2x search at once
-        if (this.isLoading) {
+        if (vm.isLoading) {
           return;
         }
 
