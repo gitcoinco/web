@@ -1,10 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 
 from dashboard.models import *
 from grants.models import *
 from kudos.models import *
-
-from django.utils import timezone
 
 sums = {}
 write = True

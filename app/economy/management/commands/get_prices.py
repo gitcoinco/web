@@ -210,16 +210,17 @@ def refresh_conv_rate(when, token_name):
         try:
             price = cc.get_historical_price(token_name, to_currency, when)
 
-            to_amount = price[token_name][to_currency]
-            ConversionRate.objects.create(
-                from_amount=1,
-                to_amount=to_amount,
-                source='cryptocompare',
-                from_currency=token_name,
-                to_currency=to_currency,
-                timestamp=when,
-            )
-            print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
+            if price and price[token_name]:
+                to_amount = price[token_name][to_currency]
+                ConversionRate.objects.create(
+                    from_amount=1,
+                    to_amount=to_amount,
+                    source='cryptocompare',
+                    from_currency=token_name,
+                    to_currency=to_currency,
+                    timestamp=when,
+                )
+                print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
         except Exception as e:
             logger.exception(e)
 
