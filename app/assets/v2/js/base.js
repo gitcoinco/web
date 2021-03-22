@@ -272,12 +272,12 @@ const _alert = function(msg, _class, remove_after_ms) {
     };
   }
   var numAlertsAlready = $('body > .alert:visible').length;
-  var top = numAlertsAlready * 44;
+  var top = numAlertsAlready * 70;
   var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
-      `<div id="${id}" class="alert ${_class} g-font-muli" style="top: ${top}px">
+      `<div id="${id}" class="alert alert-fixed bs-alert alert-${_class} g-font-muli d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}

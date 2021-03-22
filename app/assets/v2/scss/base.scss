@@ -458,22 +458,12 @@ input[type=text].loading {
 
 /* The alert message box */
 
-.alert:not(.bs-alert) {
-  align-items: center;
-  background-color: #6F3FF5;
-  border-radius: 0px;
-  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 20px;
-  margin-bottom: 1px;
+.alert-fixed {
+  width: 99.6%;
   position: fixed;
   top: 0px;
-  width: 100%;
+  left: 0.2%;
   z-index: 999999;
-  font-weight: 600;
-  font-size: 14px;
 }
 
 .alert .message {
@@ -488,54 +478,39 @@ input[type=text].loading {
 
 .alert .message::before {
   font-family: 'Font Awesome\ 5 Pro', sans-serif;
-  content: "\f06a";
+  content: "\f05a";
   margin-right: 10px;
   font-size: 1.25rem;
   position: relative;
   top: 1px;
 }
 
-.alert:not(.bs-alert) a {
-  color: white;
-  text-decoration: underline;
+.alert-success .message::before {
+  content: "\f058";
+  color: #11BC92;
 }
 
-.alert.error {
-  background-color: #C70018;
+.alert-warning .message::before {
+  content: "\f071";
+  color: #E1B815;
 }
 
-.alert.error .message::before {
+.alert-danger .message::before {
+  content: "\f06a";
+  color: #D44D6E;
+}
+
+.alert-error .message::before {
   content: "\f057";
 }
 
-.alert.success {
-  background-color: #00A652;
-}
-
-.alert.success .message::before {
-  content: "\f058";
-}
-
-.alert.info {
-  background-color: #008EFF;
-}
-
-.alert.info .message::before {
+.alert-info .message::before {
   content: "\f05a";
-}
-
-.alert.warning {
-  background-color: #FF7F00;
-}
-
-.alert.warning .message::before {
-  content: "\f071";
 }
 
 /* The close button */
 
 .closebtn {
-  color: white;
   cursor: pointer;
   font-weight: bold;
   float: right;
