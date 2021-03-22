@@ -174,13 +174,13 @@ class MauticEvent {
 /** This section is only needed once per page if manually copying * */
 
 let MauticSDKLoaded;
-let MauticDomain = 'https://engage.gitcoin.co';
-let MauticLang = {
-  'submittingMessage': 'Please wait...'
-};
 
 if (typeof MauticSDKLoaded == 'undefined') {
   MauticSDKLoaded = true;
+  var MauticDomain = 'https://engage.gitcoin.co';
+  var MauticLang = {
+    'submittingMessage': 'Please wait...'
+  };
   const head = document.getElementsByTagName('head')[0];
   const script = document.createElement('script');
 
