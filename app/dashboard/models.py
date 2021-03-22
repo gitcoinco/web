@@ -1476,6 +1476,58 @@ class BountyFulfillment(SuperModel):
         """
         return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
 
+    @property
+    def get_value_in_usdt_now(self):
+        return self.value_in_usdt_at_time(None)
+
+    @property
+    def get_value_in_usdt(self):
+        if self.status in self.OPEN_STATUSES:
+            return self.value_in_usdt_now
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        return self.value_in_usdt_at_time(self.created_on)
+
+    # TODO: DRY
+    def get_natural_value(self):
+        token = token_by_name(self.token_name, self.bounty.network)
+        decimals = token['decimals']
+        amount = self.payout_amount if self.payout_amount else 0
+        return float(amount) / 10**decimals
+
+    @property
+    def value_true(self):
+        return self.get_natural_value()
+
+    def value_in_usdt_at_time(self, at_time):
+        try:
+            if self.token_name in ['USDT', 'USDC']:
+                return float(self.payout_amount / 10 ** 6)
+            if self.token_name in settings.STABLE_COINS:
+                return float(self.payout_amount / 10 ** 18)
+            if self.token_name in ['ETH']:
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
+            try:
+                return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
+            except ConversionRateNotFoundError:
+                try:
+                    in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
+                    return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
+                except ConversionRateNotFoundError:
+                    return None
+        except:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        if self.token_name in settings.STABLE_COINS:
+            return 1
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def fulfiller_email(self):
@@ -1968,6 +2020,7 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "txid":instance.txid,
                 "token_name":instance.tokenName,
                 "token_value":value_true,
+                "success":instance.tx_status == 'success',
             }
             )
 
@@ -2056,12 +2109,13 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "org_profile":instance.bounty.org_profile,
                 "from_profile":instance.bounty.bounty_owner_profile,
                 "to_profile":instance.profile,
-                "value_usd":instance.bounty.value_in_usdt_then,
+                "value_usd":instance.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
                 "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
+                "success":instance.payout_status == 'done',
             }
             )
 
@@ -5410,6 +5464,8 @@ class Earning(SuperModel):
     token_name = models.CharField(max_length=255, default='')
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
+    success = models.BooleanField(default=False, help_text=_('Was txn successful?'))
+
 
     def has_read_perms(self, profile):
         if self.source_type_human == 'grant':

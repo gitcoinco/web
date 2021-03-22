@@ -27,11 +27,11 @@ def gas_price_to_confirm_time_minutes(gas_price):
     return gp.mean_time_to_confirm_minutes
 
 
-def eth_usd_conv_rate():
+def eth_usd_conv_rate(when=None):
     from_amount = 1
     from_currency = 'ETH'
     to_currency = 'USDT'
-    return convert_amount(from_amount, from_currency, to_currency)
+    return convert_amount(from_amount, from_currency, to_currency, when)
 
 
 def conf_time_spread(max_gas_price=9999):

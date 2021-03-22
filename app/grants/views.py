@@ -1312,6 +1312,8 @@ def grant_details(request, grant_id, grant_slug):
                 pk=grant_id
             )
 
+        if not grant.visible:
+            raise Http404
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.none()
         cancelled_subscriptions = grant.subscriptions.none()
@@ -1450,9 +1452,8 @@ def grant_details(request, grant_id, grant_slug):
     }
     # Stats
     if tab == 'stats':
-        params['max_graph'] = grant.history_by_month_max
-        params['history'] = json.dumps(grant.history_by_month)
-        params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')
+        import hashlib
+        params['secret_id'] = hashlib.md5((settings.SECRET_KEY + str(grant.id)).encode('utf')).hexdigest()
 
     return TemplateResponse(request, 'grants/detail/_index.html', params)
 
@@ -1592,6 +1593,10 @@ def grant_edit(request, grant_id):
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
+
+        if grant.active:
+            is_clr_eligible = json.loads(request.POST.get('is_clr_eligible', 'true'))
+            grant.is_clr_eligible = is_clr_eligible
 
         eth_payout_address = request.POST.get('eth_payout_address', '0x0')
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')

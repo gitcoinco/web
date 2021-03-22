@@ -49,7 +49,7 @@
                 <h1 class="text-center font-title-xl">Add Missing Contributions</h1>
                 <p class="text-center font-smaller-1 text-black-60">
                   If you completed a Gitcoin Grants checkout, but don't see evidence of this in your
-                  email or the Gitcoin interface, you can use this form to fix that!
+                  email or the Gitcoin interface, you can use this form to fix that! This form supports both L1 transactions and L2 transactions (on zkSync).
                 </p>
               </div>
 
@@ -127,7 +127,7 @@
                 <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="ingest($event)">Add Contributions</button>
               </div>
               <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
-                Please verify forms errors and try again
+                Please review the form errors and try again.
               </div>
               <div class="col-12 text-center" v-else-if="submitted">
                 Processing your contributions. This may take a minute or two...

@@ -49,7 +49,7 @@ IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
 OVERRIDE_NETWORK = env('OVERRIDE_NETWORK', default=None)
-SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
+SECRET_KEY = env('SECRET_KEY', default='i5epf*^#x1*vn+uqte9x!gpxawwhxt3^1ew#+pb7#kx0#01_m&')
 ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
 #social integrations

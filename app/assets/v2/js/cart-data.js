@@ -139,7 +139,7 @@ class CartData {
         grantData.grant_donation_amount = 0.0001;
       }
       if (!grantData.grant_donation_currency) {
-        grantData.grant_donation_currency = 'R-BTC';
+        grantData.grant_donation_currency = 'RBTC';
       }
     } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
@@ -170,7 +170,7 @@ class CartData {
       fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
         action: 'ADD_ITEM',
         metadata: JSON.stringify(cartList)
-      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+      }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
     }
   }
 
@@ -184,7 +184,7 @@ class CartData {
     fetchData(`/grants/${grantId}/activity`, 'POST', {
       action: 'REMOVE_ITEM',
       metadata: JSON.stringify(newList)
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     this.setCart(newList);
   }
@@ -219,7 +219,7 @@ class CartData {
       action: 'CLEAR_CART',
       metadata: JSON.stringify(cartList),
       bulk: true
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     localStorage.setItem('grants_cart', JSON.stringify([]));
     applyCartMenuStyles();
