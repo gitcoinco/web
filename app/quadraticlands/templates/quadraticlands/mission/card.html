@@ -1,6 +1,7 @@
 {% if playable %}
-<a href="{{url}}">
+	<a href="{{url}}"  {% if external %} target="_blank" {% endif %} >
 {% endif %}
+
 
 	<div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %} {% if done %}done{% endif %}">
 		<div class="card-image">
