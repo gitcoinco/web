@@ -1,7 +1,8 @@
+from django.contrib.contenttypes.models import ContentType
+
 from dashboard.models import *
 from grants.models import *
 from kudos.models import *
-from django.contrib.contenttypes.models import ContentType
 
 for earning in Earning.objects.filter(source_type=ContentType.objects.get(app_label='townsquare', model='matchranking')):
     earning.success = True
