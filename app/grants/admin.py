@@ -379,8 +379,8 @@ class ContributionAdmin(GeneralAdmin):
         return " , ".join(visits)
 
     def etherscan_links(self, instance):
-        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id[0:25]}...</a><BR>"
-        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id[0:25]}...</a>"
+        html = f"<a href='https://etherscan.io/tx/{instance.blockexplorer_url_txid}' target=new>TXID: {instance.tx_id[0:25]}...</a><BR>"
+        html += f"<a href='{instance.blockexplorer_url_split_txid}' target=new>SPLITTXID: {instance.split_tx_id[0:25]}...</a>"
         return mark_safe(html)
 
     def amount_per_period(self, instance):

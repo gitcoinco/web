@@ -26,13 +26,7 @@ along with this program. If not, see
     border-width: 1px;
     border-color: #e0e0e0;
   }
-
-  .tip-contents {
-    text-align: left;
-  }
-
   .tip {
-    display: flex;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     padding-left: 1em;
@@ -55,14 +49,12 @@ along with this program. If not, see
 
   <div class="tip-box">
     <div class="tip">
-      <div class="tip-contents">
-        <p>
-          {% trans "They had the following comments:" %}
-        <pre>
-              {{comments}}
-            </pre>
-        </p>
-      </div>
+      <p>
+        {% trans "They had the following comments:" %}
+      <pre>
+            {{comments}}
+          </pre>
+      </p>
     </div>
     {% if not already_redeemed %}
     <div style="margin-bottom: 1.5em;">

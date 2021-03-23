@@ -652,7 +652,6 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {};
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
@@ -660,7 +659,6 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.$set(vm.form, 'token', result[0]);
       return result;
     }
   },
