@@ -785,6 +785,12 @@ Vue.mixin({
         });
       }
       return activities;
+    },
+    isExpired: function() {
+      return moment(document.result['expires_date']).isBefore();
+    },
+    expiresAfterAYear: function() {
+      return moment().diff(document.result['expires_date'], 'years') < -1;
     }
   }
 });

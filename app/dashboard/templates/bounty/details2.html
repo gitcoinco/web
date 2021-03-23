@@ -101,7 +101,10 @@
             <div id="bounty-info-row" class="row font-body bounty-info">
               <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
                 <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-                <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
+
+                <span v-if="isExpired" class="bounty-info-text pr-sm-3 pr-md-5">Expired</span>
+                <span v-else-if="expiresAfterAYear" class="bounty-info-text pr-sm-3 pr-md-5">More than a year</span>
+                <time v-else class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
                   [[ bounty.expires_date | moment ]]
                 </time>
               </div>
