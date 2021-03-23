@@ -2,8 +2,8 @@
   "symbol": "CNHC",
   "address": "0x9293C7B4B4FB90FB3EE76f7C6189aA841E57E5c0",
   "overview":{
-        "en": "CNHC is an ERC20 token that is Centrally Minted and Burned by CGL, representing the trusted party backing the token with CNH.",
-        "zh": "CNHC是由CGL组织mint和burn的ERC20 token，代表CNH支持的token受信任方。"
+        "en": "CNHC is a crypto currency that is CNH-pegged. Each CNHC is backed by 1 offshore RMB (CNH), in compliance with regulated U.S. trust and banks for fund custody. Audit reports will be published by an independent audit firm on a regular basis. CNHC is supported by top international investment institutions and Internet giants, and will be promoted globally, including but not limited to application scenarios such as international payment, global trade, and decentralized finance.",
+        "zh": "CNHC是与CNH挂钩的加密货币。 每个CNHC均由1个离岸人民币（CNH）作为后盾，符合受监管的美国信托和银行的资金托管规定。 审计报告将由独立的审计公司定期发布。 CNHC得到了顶级国际投资机构和互联网巨头的支持，并将在全球范围内推广，包括但不限于国际支付，全球贸易和去中心化金融等应用场景。"
   },
   "email": "contact@cnhc.to",
   "website": "https://www.cnhc.to/",
@@ -13,7 +13,7 @@
   "initial_price":{
   },
   "links": {
-    "twitter": "https://twitter.com/CNHC93231472",
+    "twitter": "https://twitter.com/CNHC_TO",
     "github": "https://github.com/nnnggel/cnhc-contracts",
     "facebook": "https://www.facebook.com/CNHCto",
     "medium": "https://medium.com/@cnhcto"
