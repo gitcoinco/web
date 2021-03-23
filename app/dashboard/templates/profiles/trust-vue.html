@@ -73,7 +73,7 @@
           <img class="float-right p-2" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
           <strong>STAFF ONLY</strong> Take your TrustBonus with you across the web <br>with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
           <br>
-          <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="button button--primary float-right text-nowrap">Try It!</a>
+          <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="btn btn-primary float-right text-nowrap">Try It!</a>
         </div>
         {% endif %}
 
@@ -105,11 +105,11 @@
                 Check your <a href="https://brightid.org" target="new">BrightID</a> verification status to continue.
 
               {% elif brightid_status == 'not_verified' %}
-                Verify yourself on <a href="https://brightid.org" target="new">BrightID</a> by proving you're human to other humans. 
+                Verify yourself on <a href="https://brightid.org" target="new">BrightID</a> by proving you're human to other humans.
 
                 <br><br>Connect
                 with other users and join groups to meet the threshold.
-                
+
               {% elif brightid_status == 'verified' %}
                 You're verified with <a href="https://brightid.org" target="new">BrightID</a>, the unique, decentralized digital identity solution.
                 <br><br>
@@ -163,7 +163,7 @@
             @verify-button-pressed="showModal('poap-modal')"
             >
             <template v-slot:description>
-              <a href="https://www.poap.xyz/" target="new">POAP</a> is The Proof of Attendance Protocol 
+              <a href="https://www.poap.xyz/" target="new">POAP</a> is The Proof of Attendance Protocol
               <br><br>
               Verify your POAP badges.
             </template>
@@ -228,7 +228,7 @@
               To protect your privacy, <a href="https://twitter.com/owocki/status/1272149204287160320">Gitcoin doesn't store your phone number.
               </a>
               <br><br>
-              Verify your phone number through SMS. 
+              Verify your phone number through SMS.
             </template>
           </active-trust-row-template>
 
@@ -238,7 +238,7 @@
         <div class="container mt-4">
           <h5>Coming Soon ™️</h5>
           <p>
-            Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds. 
+            Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds.
           </p>
 
           <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"

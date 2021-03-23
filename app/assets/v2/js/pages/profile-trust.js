@@ -605,7 +605,7 @@ Vue.component('brightid-verify-modal', {
                       Check your BrightID status to continue.
                       <br>
                         <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Check</a>
-                      
+
                       </p>
                     </div>
                   </template>
@@ -667,7 +667,6 @@ Vue.component('duniter-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
     return {
-      showValidation: false,
       validationStep: 'validate-duniter',
       validationError: '',
       publicKey: ''
@@ -1127,5 +1126,5 @@ $(document).ready(function() {
     });
   });
 
-  
+
 });
