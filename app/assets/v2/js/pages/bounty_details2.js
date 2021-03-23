@@ -139,6 +139,8 @@ Vue.mixin({
         case 'RBTC':
         case 'RDOC':
         case 'DOC':
+        case 'RIF':
+        case 'SOV':
           url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
@@ -193,6 +195,8 @@ Vue.mixin({
         case 'RBTC':
         case 'RDOC':
         case 'DOC':
+        case 'RIF':
+        case 'SOV':
           url = `https://explorer.rsk.co/address/${address}`;
           break;
 
@@ -414,6 +418,8 @@ Vue.mixin({
         case 'RBTC':
         case 'DOC':
         case 'RDOC':
+        case 'RIF':
+        case 'SOV':
           tenant = 'RSK';
           break;
 
