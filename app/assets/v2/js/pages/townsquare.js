@@ -186,7 +186,7 @@ $(document).ready(function() {
         const item = localStorage.getItem(target_id.replace(/^#/, ''));
 
         if ($('body').width() > 992) {
-          if (item && item == "true") {
+          if (item && item == 'true') {
             $(this).removeClass('collapsed');
             $(target_id).addClass('show');
           }
