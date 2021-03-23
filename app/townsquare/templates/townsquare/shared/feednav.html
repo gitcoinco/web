@@ -1,10 +1,10 @@
 <div class="townsquare_nav-list">
   <div class="feed-container my-3">
-    <div class="townsquare_block-header accordion closed" data-target="feeds" >
+    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#feeds" >
       Feeds
     </div>
-    <div class="panel-active">
-      <ul id=feeds class="nav d-inline-block font-body hidden py-2">
+    <div>
+      <ul id=feeds class="nav d-inline-block font-body py-2 collapse">
         {% for this_tab in tabs %}
           {% include 'townsquare/shared/thistab.html' %}
         {% endfor %}
@@ -16,11 +16,11 @@
 
   {% if hackathon_tabs|length %}
     <div class="hacktathon-feed-container my-3">
-      <div class="townsquare_block-header mt-2 accordion closed" data-target="hackathons">
+      <div class="townsquare_block-header mt-2 accordion collapsed" data-toggle="collapse" data-target="#hackathons">
         Hackathons
       </div>
-      <div class="panel-active">
-        <ul id=hackathons class="nav d-inline-block font-caption panel-active hidden py-2">
+      <div>
+        <ul id=hackathons class="nav d-inline-block font-caption py-2 collapse">
           {% for this_tab in hackathon_tabs %}
             {% include 'townsquare/shared/thistab.html' %}
           {% endfor %}
@@ -32,11 +32,11 @@
   {% endif %}
 
   <div class="filter-feed-container my-3">
-    <div class="townsquare_block-header accordion closed" data-target="filter">
+    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#filter">
       Filter
     </div>
-    <div class="panel-active">
-      <ul id=filter class="nav d-inline-block font-caption hidden py-2">
+    <div>
+      <ul id=filter class="nav d-inline-block font-caption py-2 collapse">
         {% for tag in tags %}
           {% include 'townsquare/shared/tag.html' %}
         {% endfor %}
@@ -47,10 +47,10 @@
   <hr>
 
   <div class="my-tribes-container my-3 tribe">
-    <div class="townsquare_block-header accordion tribe closed" data-target="tribes">
+    <div class="townsquare_block-header accordion tribe collapsed" data-toggle="collapse" data-target="#tribes">
       My Tribes
     </div>
-    <div id="tribes" class="panel-active hidden">
+    <div id="tribes" class="collapse">
       <ul class="nav d-inline-block font-caption py-2">
         {% for tribe in following_tribes %}
           <li class="nav-item">
@@ -77,10 +77,10 @@
   <hr>
 
   <div class="suggested-tribes-container my-3 tribe">
-    <div class="townsquare_block-header accordion closed" data-target="suggested-tribes">
+    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#suggested-tribes">
       Suggested Tribes
     </div>
-    <div id="suggested-tribes" class="panel-active mb-0 hidden">
+    <div id="suggested-tribes" class="mb-0 collapse">
       <ul class="nav d-inline-block font-body col-sm-9 col-lg-9 pr-2 py-2" style="padding-right: 0">
         {% for tribe in suggested_tribes %}
           <li class="nav-item d-flex justify-content-between align-items-center my-1">

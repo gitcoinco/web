@@ -1,6 +1,6 @@
 {% if REFER_LINK %}
   <div>
-    <div class="townsquare_block-header accordion active my-1" data-target="reflink_container">
+    <div class="townsquare_block-header accordion my-1 collapsed" data-toggle="collapse" data-target="#reflink_container">
       Refer a friend!
       <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
         <p class='text-left font-weight-bold'> Gitcoin is better with friends!</p>
@@ -11,7 +11,7 @@
         <p class='text-left'>3. You will earn credit for their Quests, and access to special limited edition goodies - like exclusive Gitcoin Actions, Gitcoin Kudos, or other unannounced (but exciting) rewards.</p>
       "></i>
     </div>
-    <div id="reflink_container" class="mt-3 mb-4">
+    <div id="reflink_container" class="mt-3 mb-4 collapse">
       <input id="reflink" type="text" value="{{REFER_LINK}}" class="w-100 copy_me py-2 rounded pl-3 font-caption text-mode-color" readonly="readonly">
     </div>
   </div>

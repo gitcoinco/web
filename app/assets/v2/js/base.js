@@ -221,20 +221,6 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-
-  $('body').on('click', '.accordion', event => {
-    const element = $(event.target);
-    const panel = element[0].nextElementSibling;
-
-    if (panel) {
-      if (element.hasClass('active')) {
-        panel.style.maxHeight = 0;
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + 'px';
-      }
-    }
-    element.toggleClass('active');
-  });
   attach_close_button();
 });
 
