@@ -60,8 +60,11 @@ VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
+XINFIN_API_KEY = env('XINFIN_API_KEY', default='')
 
 # Ratelimit
+
+MARKETING_FLUSH_QUEUE = env.bool('MARKETING_FLUSH_QUEUE', default=False)
 FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')

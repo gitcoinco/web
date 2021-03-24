@@ -95,6 +95,7 @@ def preprocess(request):
             except Exception as e:
                 logger.exception(e)
             metadata = {
+                'visitorId': request.COOKIES.get("visitorId", None),
                 'useragent': request.META['HTTP_USER_AGENT'],
                 'referrer': request.META.get('HTTP_REFERER', None),
                 'path': request.META.get('PATH_INFO', None),

@@ -100,7 +100,6 @@
   }
 
   h4, .h4 {
-    text-align: center;
     padding-top: 40px;
   }
 
@@ -767,6 +766,29 @@
     hr {
       width: 100%;
     }
+
+    #footer {
+      padding-top: 40px;
+      color: #757087 !important;
+    }
+
+    .footer-links {
+      margin: -53px 0px 110px 20px;
+    }
+
+    .footer-links div {
+      width: 25%;
+      float: left;
+    }
+
+    .footer-links div img {
+      float: right;
+    }
+
+    .footer-socials {
+      width: 3em;
+      height: auto;
+    }
   }
 
   @media only screen and (min-width: 600px) {
@@ -793,6 +815,30 @@
     hr {
       width: 90%;
     }
+
+    #footer {
+      padding-top: 40px;
+      margin: 0px 180px 0px 180px;
+      color: #757087 !important;
+    }
+
+    .footer-links {
+      margin: -53px 0px 110px 0px;
+    }
+
+    .footer-links div {
+      width: 25%;
+      float: left;
+    }
+
+    .footer-links div img {
+      float: right;
+    }
+
+    .footer-socials {
+      width: 3em;
+      height: auto;
+    }
   }
 
   #content-body {
@@ -803,24 +849,6 @@
   .center-img {
     display: block;
     margin: 0.5em auto 0.5em auto;
-  }
-
-  #footer {
-    color: #757087 !important;
-  }
-
-  .footer-links {
-    display: flex;
-    max-width: 800px;
-    margin: auto;
-    margin-top: 3em;
-    margin-bottom: 3em;
-    justify-content: space-around;
-  }
-
-  .footer-socials {
-    width: 3em;
-    height: auto;
   }
 
   .bounties-img {
@@ -839,17 +867,17 @@
     {% endblock %}
   </div>
   <div id="footer">
+    <a href="https://www.facebook.com/GetGitcoin"><img class="footer-socials" src="{% static "v2/images/emails/facebook.png" %}"></a>
     <div class="footer-links">
       {% block footer_links %}
-        <a href="https://www.facebook.com/GetGitcoin"><img class="footer-socials" src="{% static "v2/images/emails/facebook.png" %}"></a>
 
-        <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="footer-socials" src="{% static "v2/images/emails/youtube.png" %}"></a>
+        <div><a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="footer-socials" src="{% static "v2/images/emails/youtube.png" %}"></a></div>
     
-        <a href="https://www.twitter.com/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/twitter.png" %}"></a>
+        <div><a href="https://www.twitter.com/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/twitter.png" %}"></a></div>
     
-        <a href="https://github.com/gitcoinco/"><img class="footer-socials" src="{% static "v2/images/emails/github.png" %}"></a>
+        <div><a href="https://github.com/gitcoinco/"><img class="footer-socials" src="{% static "v2/images/emails/github.png" %}"></a></div>
         
-        <a href="mailto:team@gitcoin.co"><img class="footer-socials" src="{% static "v2/images/emails/email.png" %}"></a>
+        <div><a href="mailto:team@gitcoin.co"><img class="footer-socials" src="{% static "v2/images/emails/email.png" %}"></a></div>
       {% endblock %}
     </div>
     <center style="margin-bottom: 80px;">
@@ -861,7 +889,7 @@
         <p>
           {% trans "Want to change how you receive these emails?" %}
           <br>
-          {% trans "You can update your " %} <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "preferences" %}</a> or <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+          {% trans "You can update your " %} <a href="{% url 'email_settings' subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "preferences" %}</a> or <a href="{% url 'email_settings' subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
         </p>
     </center>
   </div>

@@ -13,7 +13,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-rate_limit = '3/s' if not settings.FLUSH_QUEUE else '30000/s'
+rate_limit = '30000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else '7/m'
 
 @app.shared_task(bind=True, rate_limit=rate_limit)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
@@ -25,6 +25,10 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
 
     # dont send emails on this server, dispurse them back into the queue
     if settings.FLUSH_QUEUE:
+        redis.sadd('bounty_daily_retry', email_subscriber_id)
+        return
+
+    if settings.MARKETING_FLUSH_QUEUE:
         redis.sadd('bounty_daily_retry', email_subscriber_id)
         return
 
@@ -45,6 +49,10 @@ def weekly_roundup(self, to_email, retry: bool = True) -> None:
     """
 
     # dont send emails on this server, dispurse them back into the queue
+    if settings.MARKETING_FLUSH_QUEUE:
+        redis.sadd('weekly_roundup_retry', to_email)
+        return
+
     if settings.FLUSH_QUEUE:
         redis.sadd('weekly_roundup_retry', to_email)
         return

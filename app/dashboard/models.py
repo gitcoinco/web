@@ -295,6 +295,7 @@ class Bounty(SuperModel):
         ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
+        ('xinfin_ext', 'Xinfin Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1412,6 +1413,7 @@ class BountyFulfillment(SuperModel):
         ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
+        ('xinfin_ext', 'xinfin_ext'),
         ('manual', 'manual')
     ]
 
@@ -1427,6 +1429,7 @@ class BountyFulfillment(SuperModel):
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
+        ('XINFIN', 'XINFIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1507,6 +1510,8 @@ class BountyFulfillment(SuperModel):
                 return float(self.payout_amount / 10 ** 6)
             if self.token_name in settings.STABLE_COINS:
                 return float(self.payout_amount / 10 ** 18)
+            if self.token_name in ['ETH']:
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
             try:
                 return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
             except ConversionRateNotFoundError:
@@ -2994,10 +2999,11 @@ class Profile(SuperModel):
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
     ens_verification_address = models.CharField(max_length=255, default='', blank=True)
     is_ens_verified = models.BooleanField(default=False)
-    is_google_verified=models.BooleanField(default=False)
-    identity_data_google = JSONField(blank=True, default=dict, null=True)
     is_facebook_verified = models.BooleanField(default=False)
     identity_data_facebook = JSONField(blank=True, default=dict, null=True)
+    is_google_verified = models.BooleanField(default=False)
+    identity_data_google = JSONField(blank=True, default=dict, null=True)
+    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)

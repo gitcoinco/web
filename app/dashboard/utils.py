@@ -47,6 +47,7 @@ from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
+from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
 from ens.auto import ns
 from ens.utils import name_to_hash
@@ -586,6 +587,9 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'rsk_ext':
         sync_rsk_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'xinfin_ext':
+        sync_xinfin_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):

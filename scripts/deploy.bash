@@ -56,7 +56,7 @@ find . -name \*.pyc -delete
 
 if [ "$UPDATE_CRONTAB" ] && [ "$JOBS_NODE" ]; then
     echo "- updating crontab"
-    crontab scripts/crontab
+    crontab scripts/$CRONTABFILE
 fi
 
 mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
