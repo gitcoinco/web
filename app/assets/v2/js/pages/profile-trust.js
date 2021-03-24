@@ -672,8 +672,6 @@ Vue.component('duniter-verify-modal', {
       publicKey: ''
     };
   },
-  computed: {
-  },
   props: {
     showValidation: {
       type: Boolean,
@@ -705,8 +703,8 @@ Vue.component('duniter-verify-modal', {
                       <p class="mb-4">
                         You fulfill all the requirements, if you just need to click on validate to confirm that your duniter account is valid
                       </p>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'validate-duniter'" class="btn-gc-blue mt-3 mb-2" size="lg">
-                        <b-spinner v-if="validationStep === 'validate-duniter'" type="grow"></b-spinner>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
                       <div v-if="validationError !== ''" style="color: red">
@@ -738,7 +736,7 @@ Vue.component('duniter-verify-modal', {
 
       this.validationError = '';
 
-      this.validationStep = 'perform-validation';
+      this.validationStep = 'validate-duniter';
       this.getUserHandle();
       this.verifyDuniter();
     },
