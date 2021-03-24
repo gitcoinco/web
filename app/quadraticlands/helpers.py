@@ -40,69 +40,11 @@ from django.views.decorators.http import require_http_methods
 import requests
 from dashboard.models import Profile
 from eth_utils import is_address, is_checksum_address, to_checksum_address
-from quadraticlands.models import Choice, InitialTokenDistribution, MissionStatus, Proposal, QuadLandsFAQ, Question
+from quadraticlands.models import InitialTokenDistribution, MissionStatus, QuadLandsFAQ
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
-
-def get_all_proposals(request):
-    '''get all proposals and questions'''
-    proposal_container ={}
-    context = {}
-    try:
-        all_proposals = Proposal.objects.all()
-        for p in all_proposals :
-            q = Question.objects.select_related().get(id=p.id)
-            proposal = {
-                "title" : p.title,
-                "start_block" : p.start_block,
-                "end_block" : p.end_block,
-                "question" : q.question_text,
-            }
-            proposal_container[p.id] = proposal
-        context['all_proposals'] = proposal_container
-        return context 
-
-    except Exception as e:
-        logger.error(f'QuadLands: There was an error getting proposals {e}')
-        return {'proposals': 'false'}
-    
-
-def get_proposal(request, proposal_id):
-    '''get proposal, question, and choices'''
-    
-    # hit the DB for proposal objects 
-    try: 
-        p = Proposal.objects.get(pk=proposal_id)
-        q = Question.objects.select_related().get(id=proposal_id)
-        c = Choice.objects.filter(question_id=q.id)
-    except Exception as e:
-        logger.error(f'QuadLands: There was an issue retrieving proposal {proposal_id} from db: {e}')
-        empty_proposal = {
-            "title" : '',
-            "start_block" : '',
-            "end_block" : '',
-            "question" : '',
-            "choices" : '',
-        }
-        return empty_proposal 
-        
-    # no error, lets craft and return proposal 
-    choices = {}
-    count = 1
-    for choice in c:
-        choices[str(count)] = choice
-        count +=1
-
-    proposal = {
-        "title" : p.title,
-        "start_block" : p.start_block,
-        "end_block" : p.end_block,
-        "question" : q.question_text,
-        "choices" : choices,
-    }
-    return proposal
-    
+   
 def get_FAQ(request):
     '''Get FAQ objects from the db and bundle them up to be added to faq context'''
     faq_dict = {}
@@ -224,19 +166,6 @@ def get_initial_dist(request):
 
     return context
 
-def wake_the_ESMS(request):
-    '''
-    In dev mode the Heroku server sleeps when not being used on the free plan
-    while I recently switch to a paid plan, it seems like it's sleeping still.
-    This GET request will be kicked off in the background when /claim page is loaded
-    to wake up the ESMS so that when the actual claim is placed, there wont be a delay 
-    '''
-    try: 
-        wake_up_ESMS = requests.get('https://gtc-request-signer.herokuapp.com/')
-    except Exception as e:
-        logger.info(f'QuadLands - Issue Pinging ESMS - {e}')
-        pass
-    return True    
 
 @require_http_methods(["POST"])
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

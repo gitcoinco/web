@@ -34,7 +34,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from quadraticlands.helpers import (
-    get_all_proposals, get_FAQ, get_initial_dist, get_mission_status, get_proposal, wake_the_ESMS,
+    get_FAQ, get_initial_dist, get_mission_status
 )
 from ratelimit.decorators import ratelimit
 
@@ -52,9 +52,6 @@ def base(request, base):
     context.update(game_status)
     if base == 'faq':
         context.update(get_FAQ(request))
-    if base == 'proposal':
-        context = get_all_proposals(request)
-        print(f'CONTEXT! {context}')
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 def mission_index(request):
@@ -85,7 +82,6 @@ def mission_state(request, mission_name, mission_state):
         return redirect('/login/github/?next=' + request.get_full_path())
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
-    # wake_the_ESMS(request) # hack to wake up ESMS so there isn't a delay on token claim (remove for prod or upgrade Heroku dyno)
     if not request.user.is_authenticated and mission_state == 'claim': # probably can remove this but leaving in case we want/need it
          return redirect('quadraticlands/mission/index.html')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
@@ -105,8 +101,3 @@ def mission_answer(request, mission_name, question_num, answer):
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)
-
-def proposal(request, proposal_id):
-    '''Used to load view for a given proposal quadraticlands/proposal/<id>'''
-    context = get_proposal(request, proposal_id)
-    return TemplateResponse(request, 'quadraticlands/proposal/vote.html', context)  
