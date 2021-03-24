@@ -144,6 +144,10 @@ Vue.mixin({
           url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
+        case 'XDC':
+          url = `https://explorer.xinfin.network/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -198,6 +202,10 @@ Vue.mixin({
         case 'RIF':
         case 'SOV':
           url = `https://explorer.rsk.co/address/${address}`;
+          break;
+
+        case 'XDC':
+          url = `https://explorer.xinfin.network/addr/${address}`;
           break;
 
         default:
@@ -423,6 +431,10 @@ Vue.mixin({
           tenant = 'RSK';
           break;
 
+        case 'XDC':
+          tenant = 'XINFIN';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -508,6 +520,10 @@ Vue.mixin({
 
         case 'rsk_ext':
           payWithRSKExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'xinfin_ext':
+          payWithXinfinExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -714,18 +730,16 @@ Vue.mixin({
       let vm = this;
 
       switch (fulfillment.payout_type) {
-        case 'fiat':
-          vm.fulfillment_context.active_step = 'payout_amount';
-          break;
-
         case 'qr':
         case 'manual':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
           break;
 
+        case 'fiat':
         case 'web3_modal':
         case 'polkadot_ext':
         case 'rsk_ext':
+        case 'xinfin_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
