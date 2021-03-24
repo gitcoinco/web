@@ -1,15 +1,6 @@
  {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
-{% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
-{% endblock %}
 
 {% block 'content' %}
 
@@ -19,9 +10,8 @@
 
 
 <section class="background">
-	<img id="background" src="/static/quadraticlands/images/background/claim.svg">
+	<img id="background" src='{% static "v2/quadraticlands/images/background/claim.svg" %}' />
 </section>
-
 
 
 
@@ -157,21 +147,22 @@
 
 {% block 'scripts' %}
 
-<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-<script src="/dynamic/js/tokens_dynamic.js"></script>
+<!-- @zach do we realy need ALL these here ? -->
+<!-- <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/ipfs.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/tokens.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/abi.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/amounts.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/lib/secrets.min.js" %}"></script> -->
+<!-- <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script> -->
+<!-- <script src="/dynamic/js/tokens_dynamic.js"></script> -->
 
-<!--APP - burger menu, wallet menu, provider select, collapse, flashMessage-->
-<script src="/static/quadraticlands/js/app.js"></script>
 
-<!-- this page NEEDS a Wallet and will force the Web3Modal -->
-<script src="/static/quadraticlands/js/forceWallet.js"></script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
 
+<!-- force web3modal to popup automaticaly when no provider selected-->
+<script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>
 
 
 
@@ -452,7 +443,7 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimedButton.classList.add("hide")
 
 		// background
-		background.src = "/static/quadraticlands/images/background/claim.svg";
+		background.src = '{% static "v2/quadraticlands/images/background/claim.svg" %}';
 
 	}
 
@@ -471,7 +462,7 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimedButton.classList.add("hide")
 
 		// background
-		background.src = "/static/quadraticlands/images/background/claiming.svg";		
+		background.src = '{% static "v2/quadraticlands/images/background/claiming.svg" %}';		
 
 		// build an etherscan link for this transaction
 		link = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>"
@@ -498,7 +489,7 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimedButton.classList.remove("hide")
 
 		// background
-		background.src = "/static/quadraticlands/images/background/claimed.svg";
+		background.src = '{% static "v2/quadraticlands/images/background/claimed.svg" %}';
 
 		// notification
     	flashMessage("Transaction Confirmed",5000);
@@ -519,7 +510,7 @@ function updateInterface(status="init", transactionHash="") {
 		divClaimedButton.classList.add("hide")
 
 		// background
-		background.src = "/static/quadraticlands/images/background/claim.svg";
+		background.src = '{% static "v2/quadraticlands/images/background/claim.svg" %}';
 
 		// notification
 		flashMessage("Error",5000);

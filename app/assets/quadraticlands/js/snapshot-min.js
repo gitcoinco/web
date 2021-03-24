@@ -1,2 +1,0 @@
-const url="https://hub.snapshot.page/api/"+space+"/proposal/"+proposal,refresh=5e3;function checkApi(){fetch(url).then((e=>e.json())).then((e=>{console.log(e);for(const[s]of Object.entries(e))if(s==userAddress){console.log("checkAPi : true (userAddress is in Proposal)");document.getElementById("waitingSpinner").classList.add("hide");document.getElementById("nextButton").classList.remove("hide")}}))}setInterval(checkApi,5e3);
-//# sourceMappingURL=snapshot-min.js.map

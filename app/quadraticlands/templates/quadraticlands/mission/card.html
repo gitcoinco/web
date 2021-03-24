@@ -1,11 +1,13 @@
+{% load static %}
+
+
 {% if playable %}
 	<a href="{{url}}"  {% if external %} target="_blank" {% endif %} >
 {% endif %}
 
-
 	<div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %} {% if done %}done{% endif %}">
 		<div class="card-image">
-			<img src="/static/quadraticlands/images/mission/{{svg}}">
+			<img src='{% static "v2/quadraticlands/images/mission" %}/{{svg}}' />
 		</div>
 		<div class="card-body">
 			<div class="card-text">
