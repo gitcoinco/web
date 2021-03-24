@@ -29,7 +29,7 @@ class PrimaryDBRouter:
         db_set = {'default', 'read_replica_1'}
         if obj1._state.db in db_set and obj2._state.db in db_set:
             return True
-        return None
+        return True # TODO: be more stringent about this IFF we ever have a situation in which diff tables are on diff DBs
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """

@@ -595,7 +595,7 @@ class Grant(SuperModel):
         # create_grant_active_clr_mapping
         clr_rounds = GrantCLR.objects.all()
         for this_clr_round in clr_rounds:
-            add_to_round = self.active and not self.hidden and this_clr_round.is_active and this_clr_round.happening_now and self in this_clr_round.grants.all()
+            add_to_round = self.active and not self.hidden and this_clr_round.is_active and this_clr_round.happening_now and self.pk in this_clr_round.grants.all().values_list('pk', flat=True)
             if add_to_round:
                 self.in_active_clrs.add(this_clr_round)
             else:
