@@ -1,16 +1,6 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
-{% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
-{% endblock %}
-
 
 {% block 'content' %}
 
@@ -19,7 +9,7 @@
 
 
 <section class="background">
-	<img src="/static/quadraticlands/images/background/anim-9.svg">
+	<img src='{% static "v2/quadraticlands/images/background/anim-9.svg" %}' />
 </section>
 
 
@@ -92,12 +82,11 @@
 
 {% block 'scripts' %}
 
-<!--APP - burger menu, wallet menu, provider select, collapse, flashMessage-->
-<script src="/static/quadraticlands/js/app.js"></script>
+<!-- custom particles-->
+<!--<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>-->
 
-<!-- this page NEEDS a Wallet and will force the Web3Modal -->
-<script src="/static/quadraticlands/js/forceWallet.js"></script>
-
+<!-- force web3modal to popup automaticaly when no provider selected-->
+<script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>
 
 
 <script>

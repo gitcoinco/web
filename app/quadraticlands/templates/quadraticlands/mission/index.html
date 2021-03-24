@@ -1,19 +1,19 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+
 {% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
+<!-- twitter card -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Quadratic Lands – Missions" />
+<meta name="twitter:description" content="With the launch of GTC, Gitcoin begins our second chapter focused on decentralizing from a product into a protocol." />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/missions.png" %}" />
+<!-- end twitter card -->
 {% endblock %}
 
 
 {% block 'content' %}
-
 
 <section class="introduction" style="margin-bottom: 3em;">
 	<h1>Token Distribution</h1>	
@@ -169,14 +169,9 @@
 
 {% block 'scripts' %}
 
-	<!--some custom particles-->
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	
-	<!--Scroll Animation Library (sal) INIT-->
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
 
-	<!--APP - burger menu, wallet menu, provider select-->
-	<script src="/static/quadraticlands/js/app.js"></script>
 
 {% endblock %}
 

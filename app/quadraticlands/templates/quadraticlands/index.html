@@ -1,33 +1,14 @@
 {% extends 'quadraticlands/components/base.html' %}
-{% load humanize static i18n %}
+{% load humanize static i18n compress %}
+
 
 {% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Quadratic Lands" />
+<meta name="twitter:description" content="With the launch of GTC, Gitcoin begins our second chapter focused on decentralizing from a product into a protocol." />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/default.png" %}" />
 {% endblock %}
-
-
-{% comment %}
-  Copyright (C) 2020 Gitcoin Core
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
-
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-{% endcomment %}
 
 
 {% block 'content' %}
@@ -51,7 +32,7 @@
 	<section class="grid reverse">
 		
 		<figure>
-			<img src="/static/quadraticlands/images/token.svg">
+			<img src="{% static "v2/quadraticlands/images/token.svg" %}" />
 		</figure>
 
 		<div>
@@ -66,7 +47,8 @@
 	<section class="grid">
 		
 		<figure class="laptop-cover tablet-cover phone-cover ">
-			<img src="/static/quadraticlands/images/governance.svg">
+			
+			<img src="{% static "v2/quadraticlands/images/governance.svg" %}" />
 		</figure>
 
 		<div>
@@ -81,7 +63,7 @@
 	<section class="grid reverse particleMode" data-mode="space">
 		
 		<figure>
-			<img src="/static/quadraticlands/images/quadratic.svg">
+			<img src="{% static "v2/quadraticlands/images/quadratic.svg" %}" />
 		</figure>
 
 		<div>
@@ -100,7 +82,7 @@
 	<section class="grid">
 		
 		<figure class="floating particleMode" data-mode="wind" style="padding:0px;">
-			<img src="/static/quadraticlands/images/uni.svg" >
+			<img src="{% static "v2/quadraticlands/images/uni.svg" %}" />
 		</figure>
 
 		<div>
@@ -129,62 +111,64 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 {% block 'scripts' %}
 
-	<!--some custom particles-->
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	
-	<!--Scroll Animation Library (sal) INIT-->
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
-
-	<!--APP - burger menu, wallet menu, provider select-->
-	<script src="/static/quadraticlands/js/app.js"></script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
 
 
 
+<!-- animate town ( index page hero > town.svg ) -->
 
+<script>
 
-	<!-- animate town ( index page hero > town.svg ) -->
+	document.addEventListener("DOMContentLoaded",function(){
+		// random floor polygones coloring / lights of town
+		polygones = document.querySelectorAll("svg #floor polygon")
+		lights = document.querySelectorAll("svg .light")
+		last = 0;
+		console.debug("ANIMATE TOWN")
+		animate_town()
+	});	
 
-	<script>
+	function animate_town(now){
 
-		document.addEventListener("DOMContentLoaded",function(){
-			// random floor polygones coloring / lights of town
-			polygones = document.querySelectorAll("svg #floor polygon")
-			lights = document.querySelectorAll("svg .light")
-			last = 0;
-			console.debug("ANIMATE TOWN")
-			animate_town()
-		});	
+	    if(!last || now - last >= 200) {
+	        
+			// pick a random poly from the floor grid in section hero > town.svg
+			// to randomly color up with a little animation
+			polygone = polygones[Math.floor(Math.random() * polygones.length)]
+			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: 400, delay: 0, iterations: 1
+			});
 
-		function animate_town(now){
+			// pick a random light from the houses in section hero > town.svg
+			// to randomly color up with a little animation
+			light = lights[Math.floor(Math.random() * lights.length)]
+			duration = Math.random() * (5000 - 500) + 500
 
-		    if(!last || now - last >= 200) {
-		        
-				// pick a random poly from the floor grid in section hero > town.svg
-				// to randomly color up with a little animation
-				polygone = polygones[Math.floor(Math.random() * polygones.length)]
-				polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-					{ duration: 400, delay: 0, iterations: 1
-				});
+			light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: duration, delay: 0, iterations: 1
+			});
 
-				// pick a random light from the houses in section hero > town.svg
-				// to randomly color up with a little animation
-				light = lights[Math.floor(Math.random() * lights.length)]
-				duration = Math.random() * (5000 - 500) + 500
-
-				light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-					{ duration: duration, delay: 0, iterations: 1
-				});
-
-				last = now;
-			}
-
-			requestAnimationFrame(animate_town)
-
+			last = now;
 		}
 
-	</script>
+		requestAnimationFrame(animate_town)
+
+	}
+
+</script>
 
 
 	

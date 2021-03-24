@@ -1,16 +1,6 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
-{% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
-{% endblock %}
-
 
 {% block 'content' %}
 
@@ -19,7 +9,7 @@
 <section class="grid">
 	
 	<figure class="intro">
-		<img src="/static/quadraticlands/images/mission/proof-of-know-end.svg">
+		<img src='{% static "v2/quadraticlands/images/mission/proof-of-know-start.svg" %}' />
 	</figure>
 
 	<div>
@@ -37,14 +27,10 @@
 
 {% block 'scripts' %}
 
-	<!--some custom particles-->
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	
-	<!--Scroll Animation Library (sal) INIT-->
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
 
-	<!--APP - burger menu, wallet menu, provider select-->
-	<script src="/static/quadraticlands/js/app.js"></script>
+
 
 	
 {% endblock %}

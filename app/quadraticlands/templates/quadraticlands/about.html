@@ -1,26 +1,22 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+
 {% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Quadratic Lands – About" />
+<meta name="twitter:description" content="Own where you Earn" />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/about.png" %}" />
 {% endblock %}
-
-
-
 
 
 {% block 'content' %}
 
 
 <!-- Hero -->
-
 <section class="hero knightrider">
+
 	<div class="background" >
 		<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
 		{% include "quadraticlands/_inlinesvg/hero-about.svg" %}
@@ -31,8 +27,6 @@
 	</div>
 	
 </section>
-
-
 
 
 
@@ -55,13 +49,13 @@
 <!-- Economically Empower Builders of the open web -->
 
 <article>
-	<section class="column">
+	<section class="column" >
 		<h2>Economically Empower Builders of the open web</h2>
 	</section>
 
 	<section class="column full">
 		<figure>
-			<img src="{% static 'quadraticlands/images/empower.svg' %}">
+			<img src="{% static "v2/quadraticlands/images/empower.svg" %}" />
 		</figure>
 	</section>
 
@@ -82,7 +76,7 @@
 
 	<section class="column full">
 		<figure>
-			<img src="{% static 'quadraticlands/images/help.svg' %}">
+			<img src="{% static "v2/quadraticlands/images/help.svg" %}" />
 		</figure>
 	</section>
 
@@ -109,7 +103,7 @@
 
 	<section class="column full">
 		<figure>
-			<img src="{% static 'quadraticlands/images/quote.svg' %}">
+			<img src="{% static "v2/quadraticlands/images/quote.svg" %}" />
 		</figure>
 	</section>
 
@@ -121,7 +115,7 @@
 
 	<section class="column full">
 		<figure>
-			<img src="{% static 'quadraticlands/images/graph.svg' %}">
+			<img src="{% static "v2/quadraticlands/images/graph.svg" %}" />
 		</figure>
 	</section>
 
@@ -132,7 +126,7 @@
 
 	<section class="column full">
 		<figure>
-			<img src="{% static 'quadraticlands/images/graph-2.svg' %}">
+			<img src="{% static "v2/quadraticlands/images/graph-2.svg" %}" />
 		</figure>
 	</section>
 </article>
@@ -150,12 +144,12 @@
 
 	<section class="column full">
 		<div class="logowall">
-			<figure><img src="{% static 'quadraticlands/images/brands/arweave.svg' %}"></figure>
-			<figure><img src="{% static 'quadraticlands/images/brands/chainlink.svg' %}"></figure>
-			<figure><img src="{% static 'quadraticlands/images/brands/ethereumfoundation.svg' %}"></figure>
-			<figure><img src="{% static 'quadraticlands/images/brands/near.svg' %}"></figure>
-			<figure><img src="{% static 'quadraticlands/images/brands/protocollabs.svg' %}"></figure>
-			<figure><img src="{% static 'quadraticlands/images/brands/sia.svg' %}"></figure>
+			<figure><img src="{% static 'v2/quadraticlands/images/brands/arweave.svg' %}"></figure>
+			<figure><img src="{% static 'v2/quadraticlands/images/brands/chainlink.svg' %}"></figure>
+			<figure><img src="{% static 'v2/quadraticlands/images/brands/ethereumfoundation.svg' %}"></figure>
+			<figure><img src="{% static 'v2/quadraticlands/images/brands/near.svg' %}"></figure>
+			<figure><img src="{% static 'v2/quadraticlands/images/brands/protocollabs.svg' %}"></figure>
+			<figure><img src="{% static 'v2/quadraticlands/images/brands/sia.svg' %}"></figure>
 		</div>
 	</section>
 </article>
@@ -184,7 +178,7 @@
 
 	<section class="column full">
 		<figure>
-			<img src="{% static 'quadraticlands/images/pie.svg' %}">
+			<img src="{% static 'v2/quadraticlands/images/pie.svg' %}">
 		</figure>
 	</section>
 </article>
@@ -250,11 +244,6 @@
 
 
 
-
-
-
-
-
 {% endblock %}
 
 
@@ -262,40 +251,40 @@
 
 {% block 'scripts' %}
 
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
-	<script src="/static/quadraticlands/js/app.js"></script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
 
-	<!-- animate about page header image ( hero-about.svg ) -->
-	<script>
 
-		document.addEventListener("DOMContentLoaded",function(){
-			// random floor polygones coloring / lights of town
-			polygones = document.querySelectorAll("svg #floor path")
-			last = 0;
-			console.debug("ANIMATE TOWN")
-			animate_about()
-		});	
+<!-- animate about page header image ( hero-about.svg ) -->
+<script>
 
-		function animate_about(now){
+	document.addEventListener("DOMContentLoaded",function(){
+		// random floor polygones coloring / lights of town
+		polygones = document.querySelectorAll("svg #floor path")
+		last = 0;
+		console.debug("ANIMATE TOWN")
+		animate_about()
+	});	
 
-		    if(!last || now - last >= 100) {
-		        
-				// pick a random poly from hero-about.svg
-				// to randomly color up with a little animation
-				polygone = polygones[Math.floor(Math.random() * polygones.length)]
-				polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
-					{ duration: 500, delay: 0, iterations: 1
-				});
+	function animate_about(now){
 
-				last = now;
-			}
+	    if(!last || now - last >= 100) {
+	        
+			// pick a random poly from hero-about.svg
+			// to randomly color up with a little animation
+			polygone = polygones[Math.floor(Math.random() * polygones.length)]
+			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: 500, delay: 0, iterations: 1
+			});
 
-			requestAnimationFrame(animate_about)
-
+			last = now;
 		}
 
-	</script>
+		requestAnimationFrame(animate_about)
+
+	}
+
+</script>
 
 
 {% endblock %}
