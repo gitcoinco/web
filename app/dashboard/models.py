@@ -4544,6 +4544,14 @@ class Profile(SuperModel):
         return ips
 
     @property
+    def last_known_ip(self):
+        ips = self.ips
+        if len(ips) > 0:
+            return ips[0]
+        return ''
+
+
+    @property
     def locations(self):
         from app.utils import get_location_from_ip
         locations = []

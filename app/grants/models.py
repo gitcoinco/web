@@ -1949,6 +1949,11 @@ def presave_contrib(sender, instance, **kwargs):
         'tx_id': ele.tx_id,
     }
 
+    if instance.subscription.contributor_profile:
+        scp = instance.subscription.contributor_profile
+        instance.normalized_data['handle'] = scp.handle
+        instance.normalized_data['last_known_ip'] = scp.last_known_ip
+
 
 def next_month():
     """Get the next month time."""
