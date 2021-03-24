@@ -214,7 +214,7 @@ if ENV in ['prod']:
         'default': env.db(),
         'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL')
         }
-    DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
+    DATABASE_ROUTERS = ['app.app.db.PrimaryDBRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
