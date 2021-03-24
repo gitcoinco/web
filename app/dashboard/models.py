@@ -1510,6 +1510,8 @@ class BountyFulfillment(SuperModel):
                 return float(self.payout_amount / 10 ** 6)
             if self.token_name in settings.STABLE_COINS:
                 return float(self.payout_amount / 10 ** 18)
+            if self.token_name in ['ETH']:
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
             try:
                 return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
             except ConversionRateNotFoundError:
@@ -2994,8 +2996,9 @@ class Profile(SuperModel):
     is_twitter_verified=models.BooleanField(default=False)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
-    is_google_verified=models.BooleanField(default=False)
+    is_google_verified = models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)

@@ -91,7 +91,7 @@ from git.utils import (
 from grants.models import Grant
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from mailchimp3 import MailChimp
+# from mailchimp3 import MailChimp
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
@@ -3254,9 +3254,17 @@ def verify_user_google(request):
             'message': 'Invalid code',
         })
 
+    identity_data_google = r.json()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        return JsonResponse({
+            'ok': False,
+            'message': 'A user with this google account already exists!',
+        })
+
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
-    profile.identity_data_google = r.json()
+    profile.identity_data_google = identity_data_google
+    profile.google_user_id = identity_data_google['id']
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
@@ -4915,36 +4923,36 @@ def hackathon_registration(request):
     except Exception as e:
         logger.error('Error while saving registration', e)
 
-    try:
-        client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
-        mailchimp_data = {
-                'email_address': email,
-                'status_if_new': 'subscribed',
-                'status': 'subscribed',
+    # try:
+    #     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+    #     mailchimp_data = {
+    #             'email_address': email,
+    #             'status_if_new': 'subscribed',
+    #             'status': 'subscribed',
 
-                'merge_fields': {
-                    'HANDLE': profile.handle,
-                    'HACKATHON': hackathon,
-                },
-            }
+    #             'merge_fields': {
+    #                 'HANDLE': profile.handle,
+    #                 'HACKATHON': hackathon,
+    #             },
+    #         }
 
-        user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
+    #     user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
-        client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
+    #     client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
 
-        client.lists.members.tags.update(
-            settings.MAILCHIMP_LIST_ID_HACKERS,
-            user_email_hash,
-            {
-                'tags': [
-                    {'name': hackathon, 'status': 'active'},
-                ],
-            }
-        )
-        print('pushed_to_list')
-    except Exception as e:
-        logger.error(f"error in record_action: {e}")
-        pass
+    #     client.lists.members.tags.update(
+    #         settings.MAILCHIMP_LIST_ID_HACKERS,
+    #         user_email_hash,
+    #         {
+    #             'tags': [
+    #                 {'name': hackathon, 'status': 'active'},
+    #             ],
+    #         }
+    #     )
+    #     print('pushed_to_list')
+    # except Exception as e:
+    #     logger.error(f"error in record_action: {e}")
+    #     pass
 
     if referer and '/issue/' in referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))

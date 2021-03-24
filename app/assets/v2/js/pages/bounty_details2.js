@@ -139,6 +139,8 @@ Vue.mixin({
         case 'RBTC':
         case 'RDOC':
         case 'DOC':
+        case 'RIF':
+        case 'SOV':
           url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
@@ -197,6 +199,8 @@ Vue.mixin({
         case 'RBTC':
         case 'RDOC':
         case 'DOC':
+        case 'RIF':
+        case 'SOV':
           url = `https://explorer.rsk.co/address/${address}`;
           break;
 
@@ -422,6 +426,8 @@ Vue.mixin({
         case 'RBTC':
         case 'DOC':
         case 'RDOC':
+        case 'RIF':
+        case 'SOV':
           tenant = 'RSK';
           break;
 
@@ -799,6 +805,12 @@ Vue.mixin({
         });
       }
       return activities;
+    },
+    isExpired: function() {
+      return moment(document.result['expires_date']).isBefore();
+    },
+    expiresAfterAYear: function() {
+      return moment().diff(document.result['expires_date'], 'years') < -1;
     }
   }
 });
