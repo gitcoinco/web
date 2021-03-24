@@ -1,16 +1,16 @@
   {% comment %}
   Copyright (C) 2020 Gitcoin Core
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
   by the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Affero General Public License for more details.
-  
+
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
   {% endcomment %}
@@ -82,7 +82,7 @@
             <h2 class="h5 gc-font-base">
               [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
             </h2>
-            
+
             <div :class="`d-flex ${!collection.hideButtons ? 'mb-2' : 'mb-4'}`" >
               <a :href="collection.owner.url" class="mr-2" target="_blank" rel="noopener noreferrer">
                 <div class="d-flex">
@@ -103,21 +103,21 @@
           </div>
           <div v-if="!collection.hideButtons" class="collection-item__footer">
             <div class="col pb-4 d-flex justify-content-between">
-              <button @click.stop="shareCollection()" class="btn btn-outline-primary font-weight-semibold mr-1">
+              <button @click.stop="shareCollection()" class="btn btn-outline-primary mr-1">
                 <i class="fa fa-fw fa-share" aria-hidden="true"></i>
                 <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/collections?collection_id=${collection.id}`">
               </button>
-              
+
               <template v-if="$parent.activeCollection">
-                <button @click.stop="addToCart()" class="btn btn-primary font-weight-semibold ml-1" style="flex: 1 1 0px;">
+                <button @click.stop="addToCart()" class="btn btn-primary ml-1" style="flex: 1 1 0px;">
                   <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add to Cart
                 </button>
               </template>
               <template v-else>
-                <a class="btn btn-primary font-weight-semibold ml-1" :href="`/grants/explorer/collections?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
+                <a class="btn btn-primary ml-1" :href="`/grants/explorer/collections?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
                   <i class="fas fa-fw fa-arrow-right"></i> View
                 </a>
-                <button class="btn btn-primary font-weight-semibold ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>
+                <button class="btn btn-primary ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>
                   <i class="fas fa-fw fa-arrow-right"></i> View
                 </button>
               </template>

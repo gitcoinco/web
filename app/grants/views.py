@@ -1455,9 +1455,8 @@ def grant_details(request, grant_id, grant_slug):
     }
     # Stats
     if tab == 'stats':
-        params['max_graph'] = grant.history_by_month_max
-        params['history'] = json.dumps(grant.history_by_month)
-        params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')
+        import hashlib
+        params['secret_id'] = hashlib.md5((settings.SECRET_KEY + str(grant.id)).encode('utf')).hexdigest()
 
     return TemplateResponse(request, 'grants/detail/_index.html', params)
 
@@ -2199,6 +2198,7 @@ def bulk_fund(request):
                 'real_period_seconds': request.POST.get('real_period_seconds'),
                 'recurring_or_not': request.POST.get('recurring_or_not'),
                 'signature': request.POST.get('signature'),
+                'visitorId': request.POST.get('visitorId'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
                 'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
@@ -2243,7 +2243,6 @@ def bulk_fund(request):
 
     from grants.tasks import batch_process_grant_contributions
     batch_process_grant_contributions.delay(grants_with_payload, profile.pk)
-
     return JsonResponse({
         'success': True,
         'grant_ids': grant_ids_list,

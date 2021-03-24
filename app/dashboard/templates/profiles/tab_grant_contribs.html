@@ -19,7 +19,7 @@
   <div class="grants-container">
     <h2 class="font-title my-3 pb-3 title">
       {% trans "Grant Contribution History" %}
-      {% if total_grant_contributions %} ({{total_grant_contributions}}) {% endif %}
+      {% if history|length %} ({{history|length}}) {% endif %}
     </h2>
     <h3 class="font-body mt-1 mb-2 font-weight-semibold">Monthly Summary</h3>
 
