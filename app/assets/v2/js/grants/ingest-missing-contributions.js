@@ -39,7 +39,7 @@ Vue.component('grants-ingest-contributions', {
         this.$set(this.errors, 'invalidForm', 'Please enter a valid transaction hash OR a valid wallet address, but not both');
       } else {
         // Form was filled out, so validate the inputs
-        isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString('0x');
+        isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
         isValidAddress = ethers.utils.isAddress(userAddress);
         
         if (txHash && !isValidTxHash) {
@@ -118,7 +118,13 @@ Vue.component('grants-ingest-contributions', {
         }
 
         // Make sure wallet is connected
-        const walletAddress = web3 ? (await web3.eth.getAccounts())[0] : undefined;
+        let walletAddress = selectedAccount;
+
+        if (!walletAddress) {
+          initWallet();
+          await onConnect();
+          walletAddress = selectedAccount;
+        }
 
         if (!walletAddress) {
           throw new Error('Please connect a wallet');
