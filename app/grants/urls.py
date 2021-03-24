@@ -20,17 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail, clr_grants,
+    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail, clr_grants, collage,
     collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
     contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
     contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
     flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
     get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
-    grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel,
-    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
+    grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grants,
+    grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
-    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, subscription_cancel,
-    toggle_grant_favorite, verify_grant, collage
+    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, toggle_grant_favorite,
+    verify_grant,
 )
 
 app_name = 'grants/'
@@ -65,7 +65,6 @@ urlpatterns = [
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
-    re_path(r'^matic/new', grant_new_whitelabel, name='new_whitelabel'),
     re_path(r'^new/?$', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
@@ -74,11 +73,6 @@ urlpatterns = [
     path('manage-ethereum-cart-data', manage_ethereum_cart_data, name='manage_ethereum_cart_data'),
     path('get-ethereum-cart-data', get_ethereum_cart_data, name='get_ethereum_cart_data'),
     path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
-    path(
-        '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',
-        subscription_cancel,
-        name='subscription_cancel'
-    ),
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),

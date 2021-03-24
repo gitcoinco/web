@@ -1,8 +1,4 @@
 // outside of document.ready to be in global scope
-var compiledSubscription;
-var compiledSplitter;
-var contractVersion;
-
 function grantCategoriesSelection(target, apiUrl) {
   $(target).select2({
     ajax: {
@@ -170,23 +166,6 @@ const show_error_banner = (result, web3_not_found) => {
     }
   }
 };
-
-$(document).ready(function() {
-
-  contractVersion = $('#contract_version').val();
-
-  if (contractVersion) {
-    if (contractVersion == 0) {
-      compiledSubscription = compiledSubscription0;
-    } else if (contractVersion == 1) {
-      compiledSubscription = compiledSubscription1;
-    }
-  }
-
-  compiledSplitter = typeof compiledSplitter0 != 'undefined' ? compiledSplitter0 : null;
-
-});
-
 
 const getFormData = object => {
   const formData = new FormData();
