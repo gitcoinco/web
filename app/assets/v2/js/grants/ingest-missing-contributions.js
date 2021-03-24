@@ -130,11 +130,11 @@ Vue.component('grants-ingest-contributions', {
           throw new Error('Please connect a wallet');
         }
 
-        // Parse out provided form inputs
+        // Parse out provided form inputs and verify them, but bypass address checks if user is staff
         ({ txHash, userAddress } = formParams);
 
         // If user entered an address, verify that it matches the user's connected wallet address
-        if (userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
+        if (!document.contxt.is_staff && userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
           throw new Error('Provided wallet address does not match connected wallet address');
         }
 
@@ -145,7 +145,7 @@ Vue.component('grants-ingest-contributions', {
           if (!receipt) {
             throw new Error('Transaction hash not found. Are you sure this transaction was confirmed?');
           }
-          if (ethers.utils.getAddress(receipt.from) !== ethers.utils.getAddress(walletAddress)) {
+          if (!document.contxt.is_staff && ethers.utils.getAddress(receipt.from) !== ethers.utils.getAddress(walletAddress)) {
             throw new Error('Sender of the provided transaction does not match connected wallet address. Please contact Gitcoin and we can ingest your contributions for you');
           }
         }
