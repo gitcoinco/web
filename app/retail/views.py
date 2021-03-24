@@ -1574,3 +1574,11 @@ def admin_index(request):
     }
 
     return TemplateResponse(request, 'admin_index.html', context)
+
+
+def styleguide_components(request):
+    if settings.ENV == 'prod':
+        raise Http404
+    else:
+        context = {}
+        return TemplateResponse(request, 'styleguide_components.html', context)
