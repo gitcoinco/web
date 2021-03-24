@@ -4251,8 +4251,9 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     what = f'hackathon:{hackathon_event.id}{filter}'
 
-    num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
-    num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
+    all_participants =  BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, bounty__in=query_prizes)
+    num_participants = all_participants.count()
+    num_submissions = all_participants.filter(event_type='submit_work').count()
 
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
