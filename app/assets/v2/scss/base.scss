@@ -473,7 +473,7 @@ input[type=text].loading {
 
 .alert .message .content{
   display: inline;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .alert .message::before {

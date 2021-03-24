@@ -19,7 +19,7 @@
   align-items: center;
   position: absolute;
   background: #fff;
-  border: 2px solid #D2D2D2;
+  border: 1px solid #D2D2D2;
   border-radius: 100%;
   content: '';
   display: inline-flex;
@@ -33,11 +33,11 @@
 
 .form__radio label::before {
   background-color: #6F3FF5;
-  border: 2px solid #6F3FF5;
+  border: 1px solid #6F3FF5;
 }
 
 .form__radio input:checked + label::after {
   background-color: #6F3FF5;
   border: 2px solid #fff;
-  transform: scale(0.7);
+  transform: scale(0.9);
 }

@@ -228,10 +228,10 @@ $(document).ready(function() {
 const attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
-    $('.alert').each(function(index) {
+    $('.alert').not('.alert-static').each(function(index) {
       if (index == 0) $(this).css('top', 0);
       else {
-        let new_top = (index * 66) + 'px';
+        let new_top = (index * 70) + 'px';
 
         $(this).css('top', new_top);
       }
@@ -263,7 +263,7 @@ const _alert = function(msg, _class, remove_after_ms) {
 
   var html = function() {
     return (
-      `<div id="${id}" class="alert alert-fixed bs-alert alert-${_class} g-font-muli d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body" style="top: ${top}px">
+      `<div id="${id}" class="alert alert-fixed bs-alert alert-${_class} d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}

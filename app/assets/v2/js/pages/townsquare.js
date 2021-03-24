@@ -63,10 +63,10 @@ $(document).ready(function() {
       const item = localStorage.getItem(target_id.replace(/^#/, ''));
 
       if (window_width <= 992) {
-        if (item !== 'false' && !$(this).hasClass('collapsed')) {
+        if (item && item !== 'false' && !$(this).hasClass('collapsed')) {
           $(this).trigger('click', true);
         }
-      } else if (item !== 'false' && $(this).hasClass('collapsed')) {
+      } else if (item && item !== 'false' && $(this).hasClass('collapsed')) {
         $(this).trigger('click', true);
       }
     });
