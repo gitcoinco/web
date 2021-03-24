@@ -3304,7 +3304,21 @@ def ingest_contributions(request):
     # Setup web3
     w3 = get_web3(network)
 
+    def get_profile(profile):
+        """
+        If a staff called this endpoint, we use the username passed with the payload. Otherwise, we use the
+        caller's profile
+        """
+        return Profile.objects.filter(handle=request.POST.get('handle')).first() if profile.is_staff else profile
+
     def verify_signature(signature, message, expected_address):
+        """
+        Used to verify that the user ingesting actually owns the address they are ingesting for. This
+        may not work for contract wallets or wallets that use relayers, so those will need to be ingested by staff
+        to bypass this check
+        """
+        if profile.is_staff:
+            return # Skip signature verification for staff so staff can ingest contributions on behalf of a user
         message_hash = defunct_hash_message(text=message)
         recovered_address = w3.eth.account.recoverHash(message_hash, signature=signature)
         if recovered_address.lower() != expected_address.lower():
@@ -3329,7 +3343,7 @@ def ingest_contributions(request):
             address_lowercase = address.lower()
             return FTokens.objects.filter(network=network, address=address_lowercase, approved=True).first().to_dict
 
-    def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type):
+    def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address):
         """
         Creates contribution and subscription and saves it to database if no matching one exists
         """
@@ -3362,7 +3376,7 @@ def ingest_contributions(request):
             subscription.is_postive_vote = True
             subscription.active = False
             subscription.error = True
-            subscription.contributor_address = "N/A"
+            subscription.contributor_address = Web3.toChecksumAddress(from_address)
             subscription.amount_per_period = amount
             subscription.real_period_seconds = 2592000
             subscription.frequency = 30
@@ -3425,6 +3439,7 @@ def ingest_contributions(request):
     def process_bulk_checkout_tx(w3, txid, profile, network, do_write):
         # Make sure tx was successful
         receipt = w3.eth.getTransactionReceipt(txid)
+        from_address = receipt['from'] # this means wallets like Argent that use relayers will have the wrong from address
         if receipt.status == 0:
             raise Exception("Transaction was not successful")
 
@@ -3467,7 +3482,7 @@ def ingest_contributions(request):
                 continue
 
             if do_write:
-                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std')
+                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std', from_address)
         return
 
     def handle_ingestion(profile, network, identifier, do_write):
@@ -3499,6 +3514,19 @@ def ingest_contributions(request):
             r.raise_for_status()
             transactions = r.json()  # array of zkSync transactions
 
+            # Paginate if required. API returns last 100 transactions by default, so paginate if response length was 100
+            if len(transactions) == 100:
+                max_length = 500 # only paginate until a max of most recent 500 transactions or no transaction are left
+                last_tx_id = transactions[-1]["tx_id"]
+                while len(transactions) < max_length:
+                    r = requests.get(f"{base_url}/account/{user_address}/history/older_than?tx_id={last_tx_id}") # gets next 100 zkSync transactions
+                    r.raise_for_status()
+                    new_transactions = r.json()
+                    if (len(new_transactions) == 0):
+                        break
+                    transactions.extend(new_transactions) # append to array
+                    last_tx_id = transactions[-1]["tx_id"]
+
             for transaction in transactions:
                 # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
                 if transaction["tx"]["type"] != "Transfer":
@@ -3516,6 +3544,10 @@ def ingest_contributions(request):
                 # Find the grant
                 try:
                     grant = Grant.objects.filter(admin_address__iexact=to).order_by("-positive_round_contributor_count").first()
+                    if not grant:
+                        logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                        logger.warning("Skipping unknown grant\n")
+                        continue
                     logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
                 except Exception as e:
                     logger.exception(e)
@@ -3526,13 +3558,13 @@ def ingest_contributions(request):
                 if do_write:
                     txid = transaction['hash']
                     created_on = dateutil.parser.parse(transaction['created_at'])
-                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync')
+                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync', user_address)
 
     if txHash != '':
-        handle_ingestion(profile, network, txHash, True)
+        handle_ingestion(get_profile(profile), network, txHash, True)
         ingestion_types.append('L1')
     if userAddress != '':
-        handle_ingestion(profile, network, userAddress, True)
+        handle_ingestion(get_profile(profile), network, userAddress, True)
         ingestion_types.append('L2')
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })

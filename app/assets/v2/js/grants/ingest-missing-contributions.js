@@ -12,7 +12,8 @@ Vue.component('grants-ingest-contributions', {
     return {
       form: {
         txHash: undefined, // user transaction hash, used to ingest L1 donations
-        userAddress: undefined // user address, used to ingest zkSync (L2) donations
+        userAddress: undefined, // user address, used to ingest zkSync (L2) donations
+        handle: undefined // user to ingest under -- ignored unless you are a staff
       },
       errors: {}, // keys are errors that occurred
       submitted: false // true if form has been submitted and we are waiting on response
@@ -26,23 +27,28 @@ Vue.component('grants-ingest-contributions', {
       let isValidTxHash;
       let isValidAddress;
 
-      // Validate that at least one of txHash and userAddress is provided
+      // Validate that only one of txHash and userAddress is provided. We only allow one because (1) that will be the
+      // most common use case, and (2) later when we update cart.js to fallback to manual ingestion if regular POSTing
+      // fails, that will make DRYing the manual ingestion code simpler. Reference implementation of DRY code for
+      // fallback to manual ingestion here: https://github.com/gitcoinco/web/pull/8563
       const { txHash, userAddress } = this.form;
-      const isFormComplete = txHash || userAddress;
+      const isFormComplete = Boolean(txHash) != Boolean(userAddress);
 
       if (!isFormComplete) {
         // Form was not filled out
-        this.$set(this.errors, 'invalidForm', 'Please enter a valid transaction hash or a valid wallet address');
+        this.$set(this.errors, 'invalidForm', 'Please enter a valid transaction hash OR a valid wallet address, but not both');
       } else {
         // Form was filled out, so validate the inputs
-        isValidTxHash = txHash && txHash.length === 66 && txHash.startsWith('0x');
+        isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
         isValidAddress = ethers.utils.isAddress(userAddress);
         
         if (txHash && !isValidTxHash) {
           this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
-        }
-        if (userAddress && !isValidAddress) {
+        } else if (userAddress && !isValidAddress) {
           this.$set(this.errors, 'address', 'Please enter a valid address');
+        }
+        if (document.contxt.is_staff && !this.form.handle) {
+          this.$set(this.errors, 'handle', 'Since you are staff, you must enter the handle of the profile to ingest for');
         }
       }
 
@@ -50,6 +56,8 @@ Vue.component('grants-ingest-contributions', {
         return false; // there are errors the user must correct
       }
 
+      // Returns the values. We use an empty string to tell the backend when we're not ingesting (e.g. empty txHash
+      // means we're only validating based on an address)
       return {
         txHash: isValidTxHash ? txHash : '',
         // getAddress returns checksum address required by web3py, and throws if address is invalid
@@ -98,52 +106,51 @@ Vue.component('grants-ingest-contributions', {
     },
 
     async ingest(event) {
+      let txHash;
+      let userAddress;
+
       try {
         event.preventDefault();
-
-        // Return if form is not valid
         const formParams = this.checkForm();
 
         if (!formParams) {
-          return;
+          return; // return if form is not valid
         }
 
         // Make sure wallet is connected
-        let walletAddress;
+        let walletAddress = selectedAccount;
 
-        if (web3) {
-          walletAddress = (await web3.eth.getAccounts())[0];
+        if (!walletAddress) {
+          initWallet();
+          await onConnect();
+          walletAddress = selectedAccount;
         }
+
         if (!walletAddress) {
           throw new Error('Please connect a wallet');
         }
 
-        // TODO if user is staff, add a username field and bypass the below checks
-
         // Parse out provided form inputs
-        const { txHash, userAddress } = formParams;
-        
+        ({ txHash, userAddress } = formParams);
+
         // If user entered an address, verify that it matches the user's connected wallet address
         if (userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
           throw new Error('Provided wallet address does not match connected wallet address');
         }
-        
-        // If user entered an tx hash, verify that the tx's from address matches the connected wallet address
-        let fromAddress;
 
+        // If user entered an tx hash, verify that the tx's from address matches the connected wallet address
         if (txHash) {
           const receipt = await this.getTxReceipt(txHash);
 
           if (!receipt) {
             throw new Error('Transaction hash not found. Are you sure this transaction was confirmed?');
           }
-          fromAddress = receipt.from;
-
-          if (ethers.utils.getAddress(fromAddress) !== ethers.utils.getAddress(walletAddress)) {
-            throw new Error('Sender of the provided transaction does not match connected wallet address');
+          if (ethers.utils.getAddress(receipt.from) !== ethers.utils.getAddress(walletAddress)) {
+            throw new Error('Sender of the provided transaction does not match connected wallet address. Please contact Gitcoin and we can ingest your contributions for you');
           }
         }
-        
+
+
         // If we are here, the provided form data is valid. However, someone could just POST directly to the endpoint,
         // so to workaround that we ask the user for a signature, and the backend will verify that signature
         const { signature, message } = await this.signMessage(walletAddress);
@@ -158,7 +165,8 @@ Vue.component('grants-ingest-contributions', {
           userAddress,
           signature,
           message,
-          network: document.web3network || 'mainnet'
+          network: document.web3network || 'mainnet',
+          handle: this.form.handle
         };
         const postParams = {
           method: 'POST',
