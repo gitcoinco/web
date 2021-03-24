@@ -22,40 +22,6 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-
-class Proposal(models.Model):
-    '''Table for storing quadlands proposals'''
-    created_on = models.DateTimeField(auto_now=True)
-    start_block = models.BigIntegerField(blank=False)
-    end_block = models.BigIntegerField(blank=False)
-    title = models.TextField(default='', blank=True)
-    ipfs_hash = models.CharField(max_length=256, default='', blank=True)
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.title}'
-
-class Question(models.Model):
-    '''Table for storing proposal questions'''
-    proposal_id = models.ForeignKey(
-        'Proposal', related_name='proposal', on_delete=models.CASCADE
-    )
-    question_text = models.CharField(max_length=200)
-    # ipfs_hash = models.CharField(max_length=256, default='', blank=True)
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.question_text}'
-
-class Choice(models.Model):
-    '''Table for storing proposal question choices'''
-    question_id = models.ForeignKey(
-        'Question', related_name='question', on_delete=models.CASCADE
-    )
-    choice_text = models.CharField(max_length=200)
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.choice_text}'
-
-
 class QuadLandsFAQ(models.Model):
     '''Table for storing quadlands FAQ items'''
     position = models.IntegerField(blank=False, unique=True)
@@ -91,7 +57,7 @@ class Uint256Field(models.DecimalField):
         return int(value)
 
 class InitialTokenDistribution(models.Model):
-    '''Table for storing the initial gitcoin retroactive token distribution details''' 
+    '''Table for storing the initial gitcoin retroactive token distribution details'''
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='initial_distribution', on_delete=models.CASCADE
     ) 

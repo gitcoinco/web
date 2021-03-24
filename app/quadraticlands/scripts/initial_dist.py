@@ -22,7 +22,8 @@ with open('scripts/test_initial_dist.csv') as csvfile:
         try:
             p = Profile.objects.get(handle=row['handle']) # retrieve user
             amount_in_wei = (Decimal(row['value_created_usd']) * 10**18)
-            c = InitialTokenDistribution(profile=p, claim_total=amount_in_wei) # create initial dist record 
+            print(row)
+            c = InitialTokenDistribution(profile=p, claim_total=amount_in_wei, distribution=row['distribution']) # create initial dist record 
             c.save() # save record 
         except Exception as error:
             print(f"User: {row['handle']} was not added. Error: {error}")
