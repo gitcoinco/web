@@ -43,6 +43,7 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import passport.views
 import perftools.views
 import ptokens.views
 import quests.views
@@ -181,8 +182,19 @@ urlpatterns = [
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
-    url(r'^api/v0.1/profile/verify_user_google',dashboard.views.verify_user_google, name='verify_user_google'),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_duniter', dashboard.views.verify_user_duniter, name='verify_user_duniter'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_facebook',
+        dashboard.views.request_verify_facebook,
+        name='request_verify_facebook'
+    ),
+    path('api/v0.1/profile/verify_ens', dashboard.views.verify_profile_with_ens, name='verify_with_ens'),
+    url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
+    url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_duniter',
+        dashboard.views.verify_user_duniter,
+        name='verify_user_duniter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -254,6 +266,10 @@ urlpatterns = [
     re_path(r'^quests/(?P<obj_id>\d+)/(?P<name>\w*)', quests.views.details, name='quest_details'),
     re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
     re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
+
+    #passport
+    re_path(r'^passport/$', passport.views.index, name='passport_gen'),
+    path('passport/<str:pattern>', passport.views.passport, name='view_passport'),
 
     # Contributor dashboard
     path(

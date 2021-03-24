@@ -595,6 +595,21 @@ Vue.component('brightid-verify-modal', {
                       </div>
                     </div>
                   </template>
+                  <template v-if="validationStep === 'pull_status'">
+                    <div class="col-12 pt-2 pb-2 text-center">
+                      <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
+                      <h2 class="font-title mt-2">Check With BrightID</h2>
+                    </div>
+                    <div class="col-12 pt-2">
+                      <p>
+                      Check your BrightID status to continue.
+                      <br>
+                        <a href="/profile/trust?pull_bright_id_status=1" class="btn btn-gc-blue px-5 float-right">Check</a>
+
+                      </p>
+                    </div>
+                  </template>
+
                   <template v-else-if="validationStep === 'verify-brightid'">
                     <div class="col-12 pt-2 pb-2 text-center">
                       <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
@@ -635,6 +650,7 @@ Vue.component('brightid-verify-modal', {
                 </div>
               </template>
             </b-modal>`,
+
   methods: {
     dismissVerification() {
       this.$emit('modal-dismissed');
@@ -651,13 +667,10 @@ Vue.component('duniter-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
     return {
-      showValidation: false,
       validationStep: 'validate-duniter',
       validationError: '',
       publicKey: ''
     };
-  },
-  computed: {
   },
   props: {
     showValidation: {
@@ -674,25 +687,24 @@ Vue.component('duniter-verify-modal', {
                       <p>
                         Duniter is a free software for free currencies: a P2P, <a href="https://en.wikipedia.org/wiki/Web_of_trust">Web of Trust</a> & <a href="https://en.wikipedia.org/wiki/Social_credit">Universal Dividend system.</a>
                         <p class="mb-4">
-                          <a href="https://duniter.org/en/introduction/">Learn more.</a>
+                          <a href="https://duniter.org/en/introduction/" target=_blank>Learn more.</a>
                         </p>
                       </p>
                       <div>
                         <h2 class="font-bigger-4 font-weight-bold"> You need to have these requirements:</h2>
                         <ol>
-                          <li>let's check if there is already a record with your account.</li>
-                          <li>if there is a link to your gitcoin account in your Duniter record </li>
-                          <li>if you are is a qualified member</li>
+                          <li>Let's check if there is already a record with your account.</li>
+                          <li>Link to your gitcoin account in your Duniter record </li>
+                          <li>If you are a qualified Duniter member</li>
                         </ol>
-                         <p>read more about Web of <a href="https://en.wikipedia.org/wiki/Web_of_trust">trust</a></p>
                       </div>
                     </div>
                     <div v-if="validationStep === 'validate-duniter' || validationStep == 'perform-validation'">
                       <p class="mb-4">
                         You fulfill all the requirements, if you just need to click on validate to confirm that your duniter account is valid
                       </p>
-                      <b-button @click="clickedValidate" :disabled="validationStep === 'validate-duniter'" class="btn-gc-blue mt-3 mb-2" size="lg">
-                        <b-spinner v-if="validationStep === 'validate-duniter'" type="grow"></b-spinner>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" class="btn-gc-blue mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
                         Validate
                       </b-button>
                       <div v-if="validationError !== ''" style="color: red">
@@ -724,7 +736,7 @@ Vue.component('duniter-verify-modal', {
 
       this.validationError = '';
 
-      this.validationStep = 'perform-validation';
+      this.validationStep = 'validate-duniter';
       this.getUserHandle();
       this.verifyDuniter();
     },
@@ -858,6 +870,166 @@ Vue.component('active-trust-row-template', {
   `
 });
 
+Vue.component('ens-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      ethAddress: '',
+      static_url: document.contxt.STATIC_URL,
+      ensDomain: '',
+      validationStep: 0,
+      validationError: '',
+      validationErrorMsg: '',
+      url: '',
+      validated: false,
+      verificationEthAddress: ''
+    };
+  },
+  props: {
+    showValidation: {
+      type: Boolean,
+      required: false,
+      'default': false
+    }
+  },
+  mounted: function() {
+    $(document).on('click', '#verify-ens-link', function(event) {
+      event.preventDefault();
+      this.showValidation = true;
+    }.bind(this));
+    this.checkENSValidation();
+  },
+  template: `<b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
+    <template v-slot:default="{ hide }">
+      <div class="mx-5 mt-5 mb-4 text-center">
+        <div class="mb-3">
+          <h1 class="font-bigger-4 font-weight-bold">Verify with ENS</h1>
+          <p>
+            ENS is a name service built on Ethereum. It offers a secure and decentralized way to address resources using human-readable names.
+            <p class="mb-4">
+              <a href="https://ens.domains/about">Learn more.</a>
+            </p>
+          </p>
+          <div>
+            <h4 class="mb-4 font-weight-semibold font-subheader">You need to have these requirements:</h4>
+            <ol class="text-left pl-0" style="list-style: none">
+              <li class="mb-3">
+                <span :class="\`mr-2 fas fa-\${validationStep > 1 ? 'check check gc-text-green' : 'times gc-text-pink'}\`"></span>  Setup your address.
+                <input v-model="verificationEthAddress" class="form-control" type="text" @keyup="onchange">
+                <a href="#" @click.prevent.stop="pullEthAddress()">Pull address from Metamask</a><br>
+              </li>
+              <li class="mb-3"><span :class="\`mr-2 fas fa-\${validationStep > 2 ? 'check gc-text-green' : 'times gc-text-pink'}\`"></span> Your address has an ENS domain associated, [[ ensDomain ? '' : 'you can get one' ]] <a :href="\`https://app.ens.domains/\${ensDomain ? 'name/'+ ensDomain : ''}\`">[[ ensDomain ? ensDomain  : 'here' ]]</a>.</li>
+              <li class="mb-3"><span :class="\`mr-2 fas fa-\${validationStep > 4 ? 'check gc-text-green' : 'times gc-text-pink'}\`"></span> Your address should match with the address associated to the ENS domain.</li>
+            </ol>
+          </div>
+        </div>
+        <div>
+          <p class="mb-4" v-if="!validated && validationError !== false">
+            [[ validationErrorMsg ]] <a v-if="url" :href="url">[[url]]</a>
+          </p>
+          <p class="mb-4" v-if="!validated && validationError === false">
+            You fulfill all the requirements, just click on validate to confirm that your ENS account is valid
+          </p>
+          <b-button @click="verifyENS" class="btn-gc-blue mt-3 mb-2" size="lg" v-if="!validated && validationError === false">
+            Validate
+          </b-button>
+          <div v-if="validationError & validationErrorMsg !== ''" style="color: red">
+            <small>[[validationErrorMsg]]</small>
+          </div>
+          <br />
+          <a href="" v-if="validationError" @click.f="dismissVerification()">
+            Go Back
+          </a>
+        </div>
+        <div v-if="validated && !validationError">
+          Your ENS verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+          <a href="" class="btn btn-gc-blue px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+        </div>
+      </div>
+    </template>
+  </b-modal>`,
+  methods: {
+    dismissVerification() {
+      this.$emit('modal-dismissed');
+      this.showValidation = false;
+    },
+    verifyENS() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+      const data = {};
+
+      if (typeof web3 !== 'undefined' && web3.utils.isAddress(this.verificationEthAddress)) {
+        data['verification_address'] = this.verificationEthAddress;
+      }
+
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_ens', 'POST', data, headers);
+
+      this.onResponse(verificationRequest);
+    },
+    onchange() {
+      if (typeof web3 !== 'undefined' && web3.utils.isAddress(this.verificationEthAddress)) {
+        this.checkENSValidation();
+      }
+    },
+    onResponse(verificationRequest) {
+      let vm = this;
+
+      $.when(verificationRequest).then(response => {
+        vm.validationError = response.error;
+        vm.validationErrorMsg = response.msg;
+        vm.validated = response.data.verified;
+        vm.validationStep = response.data.step;
+        vm.url = response.data.url;
+        vm.verificationEthAddress = response.data.address;
+        vm.ensDomain = response.data.ens_domain;
+      });
+    },
+    checkENSValidation() {
+      let vm = this;
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const headers = {'X-CSRFToken': csrfmiddlewaretoken};
+      const data = {};
+
+      if (typeof web3 !== 'undefined' && web3.utils.isAddress(this.verificationEthAddress)) {
+        data['verification_address'] = this.verificationEthAddress;
+      }
+
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_ens', 'GET', data, headers);
+
+      this.onResponse(verificationRequest);
+    },
+    getEthAddress() {
+      const accounts = web3.eth.getAccounts();
+
+      $.when(accounts).then((result) => {
+        this.verificationEthAddress = result[0];
+        this.onchange();
+        this.showValidation = true;
+      }).catch((_error) => {
+        this.validationError = 'Error getting ethereum accounts';
+        this.showValidation = true;
+      });
+    },
+    connectWeb3Wallet() {
+      this.showValidation = false;
+      onConnect().then((result) => {
+        this.getEthAddress();
+      }).catch((_error) => {
+        this.validationError = 'Error connecting ethereum accounts';
+        this.showValidation = true;
+      });
+    },
+    pullEthAddress() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        this.connectWeb3Wallet();
+      } else {
+        this.getEthAddress();
+      }
+    }
+  }
+});
+
 if (document.getElementById('gc-trust-manager-app')) {
 
   const trustManagerApp = new Vue({
@@ -881,4 +1053,76 @@ $(document).ready(function() {
     $(this).remove();
     $('#verify_offline_target').css('display', 'block');
   });
+
+  jQuery.fn.shake = function(interval, distance, times) {
+    interval = typeof interval == 'undefined' ? 100 : interval;
+    distance = typeof distance == 'undefined' ? 10 : distance;
+    times = typeof times == 'undefined' ? 3 : times;
+    var jTarget = $(this);
+
+    jTarget.css('position', 'relative');
+    for (var iter = 0; iter < (times + 1); iter++) {
+      jTarget.animate({ top: ((iter % 2 == 0 ? distance : distance * -1))}, interval);
+    }
+    return jTarget.animate({ top: 0}, interval);
+  };
+
+  $(document).on('click', '#gen_passport', function(e) {
+    e.preventDefault();
+    if (document.web3network != 'rinkeby') {
+      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'error', 1000);
+      return;
+    }
+    const accounts = web3.eth.getAccounts();
+
+    $.when(accounts).then((result) => {
+      const ethAddress = result[0];
+      let params = {
+        'network': document.web3network,
+        'coinbase': ethAddress
+      };
+
+      $.get('/passport/', params, function(response) {
+        let status = response['status'];
+
+        if (status == 'error') {
+          _alert(response['msg'], 'error', 5000);
+          return;
+        }
+
+        let contract_address = response.contract_address;
+        let contract_abi = response.contract_abi;
+        let nonce = response.nonce;
+        let hash = response.hash;
+        let tokenURI = response.tokenURI;
+        var passport = new web3.eth.Contract(contract_abi, contract_address);
+
+        var callback = function(err, txid) {
+          if (err) {
+            _alert(err, 'error', 5000);
+            return;
+          }
+          let url = 'https://rinkeby.etherscan.io/tx/' + txid;
+          var html = `
+<strong>Woo hoo!</strong> - Your passport is being generated.  View the transaction <a href='` + url + `' target=_blank>here</a>.
+<br><br>
+<strong>Whats next?</strong>
+<br>
+1. Please add the token contract address (` + contract_address + `) as a token to your wallet provider.
+<br>
+2. Use the Trust you've built up on Gitcoin across the dWeb!  Learn more at <a target=_blank href=https://proofofpersonhood.com>proofofpersonhood.com</a>
+
+          `;
+
+          $('.modal-body .subbody').html(html);
+          $('.modal-dialog').shake();
+        };
+
+        passport.methods.createPassport(tokenURI, hash, nonce).send({from: ethAddress}, callback);
+      });
+
+    });
+  });
+
+
 });

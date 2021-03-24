@@ -2992,8 +2992,12 @@ class Profile(SuperModel):
     is_twitter_verified=models.BooleanField(default=False)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
+    ens_verification_address = models.CharField(max_length=255, default='', blank=True)
+    is_ens_verified = models.BooleanField(default=False)
     is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    is_facebook_verified = models.BooleanField(default=False)
+    identity_data_facebook = JSONField(blank=True, default=dict, null=True)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -3036,6 +3040,12 @@ class Profile(SuperModel):
             tb *= 1.10
         if self.is_idena_verified:
             tb *= 1.25
+        if self.is_facebook_verified:
+            tb *= 1.001
+        if self.is_ens_verified:
+            tb *= 1.001
+        if self.is_duniter_verified:
+            tb *= 1.001
         return tb
 
 
@@ -5762,6 +5772,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'POAP Verified: {instance.is_poap_verified}')
         if instance.is_poap_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'Facebook Verified: {instance.is_facebook_verified}')
+        if instance.is_facebook_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 
