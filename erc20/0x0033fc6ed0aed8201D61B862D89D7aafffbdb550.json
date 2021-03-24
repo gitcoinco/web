@@ -1,0 +1,18 @@
+{
+    "symbol": "BFI",
+    "address": "0x0033fc6ed0aed8201D61B862D89D7aafffbdb550",
+    "overview": {
+        "zh": "BFI基于去中心化Defi新生态，拥有信用挖矿、借贷、货币市场、稳定币互换、聚合交易、分层债券、跨链、预言机、资产上链、数字矿业、分布式存储、新公链等应用价值，这也让社区和SMN---Defi商业模式更具区块链意义和数字资产金融价值。"
+    },
+    "email": "hailang9103@163.com",
+    "website": "http://smncoin.net/zh/",
+    "whitepaper": "http://smncoin.net/BFI%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+    "state": "NORMAL",
+    "published_on": "2021-01-01",
+    "initial_price":{
+        "USD":"0.05 USD"
+      },
+    "links": {
+      "medium": "http://xiha.top/fast/2020/1007/33444.html"
+      }
+}
