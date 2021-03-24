@@ -3055,6 +3055,51 @@ def add_grant_from_collection(request, collection_id):
         'grants': grants,
     })
 
+des_urls = '''
+https://c.gitcoin.co/grants/585d392a242103745b40d0e763ef5c17/Screen_Shot_2020-01-08_at_16.58.17.png
+https://c.gitcoin.co/grants/b6511284c11682532274e0a34342249f/bitcoinmalaysia.png
+https://c.gitcoin.co/grants/e1cf1b8778f29c49dff65ed3be4928d0/CheeseLogo_250px.png
+https://c.gitcoin.co/grants/3ecf3eb0214a58fc3b068fae9f45ffbe/BANKLESS_logo_text_noLV.jpg
+https://c.gitcoin.co/grants/f1c27815bc10332bff4a6264ae971fca/2.jpg
+https://c.gitcoin.co/grants/46305a72ce062b63a53b0ebe12becda7/Picture1.png
+https://c.gitcoin.co/grants/5d05dcc46be53030475cdbdf646b8afd/Mol_LeArt_-_White.png
+https://c.gitcoin.co/grants/6ae1a8d3a8752d352247615b877cd02d/contraktor.png
+https://c.gitcoin.co/grants/ce84fcbf185bd593e54f5c810d060aac/triad_gw_2.jpg
+https://c.gitcoin.co/grants/b8fcf1833fee32fc4be6fba254c1d912/cashu.png
+'''
+
+import math
+def get_urls(scale):
+    import random
+    global des_urls
+    urls = des_urls.split("\n")
+
+    return_me = []
+    scale_by = scale
+    # set default, for when no CLR match enabled
+    for grant in Grant.objects.filter(is_clr_active=True).order_by('-clr_prediction_curve__0__1'):
+        url = None
+        if grant.logo:
+            url = grant.logo.url
+            if settings.DEBUG:
+                url = urls[random.randint(0, len(urls) - 2)]
+        else:
+            url = f'https://gitcoin.co/static/v2/images/grants/logos/{grant.id % 3}.png'
+        size = scale_by * math.sqrt(math.sqrt(grant.clr_match_estimate_this_round))
+        return_me.append((url, size))
+    return return_me
+
+
+def collage(request):
+    scale = float(request.GET.get('scale', 0.03))
+    context = {
+        'urls': get_urls(scale)
+    }
+
+    response = TemplateResponse(request, 'grants/collage.html', context=context)
+    return response
+
+
 @cache_page(60 * 60)
 def cart_thumbnail(request, profile, grants):
     width = int(request.GET.get('w', 348 * 5))
