@@ -34,7 +34,7 @@ from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
-from economy.models import EncodeAnything, SuperModel
+from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
@@ -48,6 +48,157 @@ from retail.views import get_contributor_landing_page_context, get_specific_acti
 from townsquare.views import tags
 
 logger = logging.getLogger(__name__)
+
+
+def fetch_jtbd_hackathons():
+    hackathons = JSONStore.objects.get(key='hackathons', view='hackathons').data[1][0:2]
+    fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date']
+    return [{k: v for k, v in event.items() if k in fields} for event in hackathons]
+
+
+def create_jtbd_earn_cache():
+    print('create_jtbd_earn_cache')
+    import datetime
+    from bleach import clean
+    from app.utils import ellipses
+    from marketing.models import LeaderboardRank
+
+    leaderboard = LeaderboardRank.objects.filter(
+        active=True, product='bounties', leaderboard='monthly_earners',
+    ).order_by('-amount')[0:3].cache()
+
+    thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
+
+    bounties_qs = Bounty.objects.current().filter(
+        network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
+    ).order_by('-_val_usd_db')
+
+    top_earners = bounties = []
+
+    for earner in leaderboard:
+        top_earners.append({
+            'rank': earner.rank,
+            'amount': earner.amount,
+            'avatar_url': earner.avatar_url,
+            'username': earner.github_username,
+        })
+
+    for bounty in bounties_qs:
+        # TODO: find longest combination of comprehensive sentences without headings/newlines
+        issue_description = ellipses(clean(bounty.issue_description, strip=True), 255)
+
+        bounties.append({
+            'amount': bounty._val_usd_db,
+            'title': bounty.title,
+            'description': issue_description,
+            'avatar_url': bounty.avatar_url,
+            'url': bounty.url,
+        })
+
+    # WalletConnect
+    featured_grant = Grant.objects.filter(pk=275).first()
+
+    # TODO: replace sample handles with real user handles
+    users = ['chibie', 'octavioamu', 'owocki']
+    users_info = [(u.avatar_url, u.twitter_handle) for u in Profile.objects.filter(
+        Q(handle=users[0]) | Q(handle=users[1]) | Q(handle=users[2])
+    )]
+
+    testimonials [
+        {
+            'handle': users[0],
+            'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
+            'avatar_url': [s for s in users_info if users[0] in s][0][0],
+            'twitter': [s for s in users_info if users[0] in s][0][1],
+            'role': 'Python Developer',
+        },
+        {
+            'handle': users[1],
+            'comment': "I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the opportunity to work with amazing top technology projects and earn some money in a way I'm visible to the developer community. Open source is amazing, and it’s awesome to make a living from it. I think this is the future of development.",
+            'avatar_url': [s for s in users_info if users[1] in s][0][0],
+            'twitter': [s for s in users_info if users[1] in s][0][1],
+            'role': 'Front End Developer',
+        },
+        {
+            'handle': users[2],
+            'comment': "I see Gitcoin as the next level of freelance, where you can not only help repositories on Github but get money out of it. It is that simple and it works.",
+            'avatar_url': [s for s in users_info if users[2] in s][0][0],
+            'twitter': [s for s in users_info if users[2] in s][0][1],
+            'role': 'Python Developer',
+        },
+    ]
+
+    data = {
+        'top_earners': top_earners,
+        'hackathons': fetch_jtbd_hackathons(),
+        'bounties': bounties,
+        'featured_grant': {
+            'title': featured_grant.title,
+            'description': featured_grant.description,
+            'url': featured_grant.url,
+            'logo': featured_grant.logo.url if featured_grant.logo else None,
+        },
+        'amount_received': featured_grant.amount_received, # or amount_received_in_round
+        'testimonials': testimonials,
+    }
+    view = 'jtbd'
+    keyword = 'earn'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
+def create_jtbd_learn_cache():
+    print('create_jtbd_learn_cache')
+
+    alumni = [
+        {
+            'name': 'Linda Xie',
+            'role': 'Scalar Capital',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Andy Tudhope',
+            'role': 'Author of KERNEL Learn Track',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Shawn Cheng',
+            'role': 'Partner Consensys Mesh',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Corey Petty',
+            'role': 'CSO at Status',
+            'avatar_url': '',
+        }
+    ]
+
+    data = {
+        'hackathons': fetch_jtbd_hackathons(),
+        'alumni': alumni,
+        'testimonial': {
+            'name': 'Arya Soltanieh',
+            'role': 'Founder, Myco Ex-Coinbase'
+            'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
+            'avatar_url': '',
+            'social': 'https://www.linkedin.com/in/asoltanieh',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'learn'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
 
 def create_email_inventory_cache():
     print('create_email_inventory_cache')
@@ -71,6 +222,7 @@ def create_grant_clr_cache():
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
         update_grant_metadata.delay(pk)
+
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
@@ -103,8 +255,8 @@ def create_grant_active_clr_mapping():
         grant.calc_clr_round()
         grant.save()
 
-
     return
+
 
 def create_hack_event_cache():
     from dashboard.models import HackathonEvent
@@ -121,6 +273,7 @@ def create_grant_category_size_cache():
             key = f"grant_category_{g_type.name}_{category.category}"
             val = Grant.objects.filter(active=True, hidden=False, grant_type=g_type, categories__category__contains=category.category).count()
             redis.set(key, val)
+
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -156,13 +309,13 @@ def create_top_grant_spenders_cache():
                     )
 
 
-
 def fetchPost(qt='2'):
     import requests
     """Fetch last post from wordpress blog."""
     url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
     last_posts = requests.get(url=url).json()
     return last_posts
+
 
 def create_hidden_profiles_cache():
 
