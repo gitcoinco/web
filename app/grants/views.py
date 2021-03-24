@@ -3090,6 +3090,7 @@ def get_urls(scale):
     return return_me
 
 
+@staff_member_required
 def collage(request):
     scale = float(request.GET.get('scale', 0.03))
     context = {
