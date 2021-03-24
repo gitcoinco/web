@@ -55,7 +55,7 @@ import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
-from grants.views import cart_thumbnail, collage
+from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -482,7 +482,6 @@ urlpatterns = [
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
-    path('activitycollage', collage, name='collage'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
     re_path(r'^$', townsquare.views.landing_toggle, name='index'),
