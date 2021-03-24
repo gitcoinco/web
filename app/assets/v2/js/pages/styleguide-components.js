@@ -9,7 +9,7 @@ const djangoExample = `{% load i18n static compress %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/*.scss" %} />
 {% endcompress %}`;
 
-const buttonExample = `<button class="btn btn-primary">...</button>`;
+const buttonExample = '<button class="btn btn-primary">...</button>';
 
 const inputExample = `<label for="text" class="font-caption letter-spacing text-black-60 text-uppercase">Example <span class="badge badge-greylight text-capitalize">Required</span></label>
 
@@ -129,7 +129,7 @@ const alertExample = `<div class="alert alert-static bs-alert alert-primary d-fl
   <span class="closebtn">×</span>
 </div>`;
 
-const alertExample2 = `_alert(msg, type, closeAfter);`;
+const alertExample2 = '_alert(msg, type, closeAfter);';
 
 const accordionExample = `<div class="accordion-group gc-accordion" id="accordion-group">
   <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
@@ -157,7 +157,7 @@ const tabsExample = `<b-tabs content-class="mt-3" v-model="tabSelected" >
 Vue.mixin({
   methods: {
     openAlert: function(type) {
-      _alert("Message", type)
+      _alert('Message', type);
     }
   }
 });
@@ -218,9 +218,6 @@ if (document.getElementById('styleguide-components')) {
           placeholder: 'Example rich text-editor'
         }
       };
-    },
-    mounted() {
-
     }
   });
 }

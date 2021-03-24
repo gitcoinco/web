@@ -12,8 +12,8 @@
 
   input.invalid, input:invalid, .form__checkbox input:invalid + .form__label::before,
   & > .btn-radio:not(.disabled), & > .btn-group-toggle .btn-radio:not(.disabled),
-  .quill-editor.invalid .ql-snow, .form__radio input:invalid+label:after,
-  .checkbox_container input:invalid + span + .filter-label>label:before  {
+  .quill-editor.invalid .ql-snow, .form__radio input:invalid + label:after,
+  .checkbox_container input:invalid + span + .filter-label > label:before  {
     border-color:#D44D6E;
   }
 
