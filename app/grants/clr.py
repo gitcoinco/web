@@ -414,7 +414,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         for grant_calc in grants_clr:
             pk = grant_calc['id']
             grant = clr_round.grants.get(pk=pk)
-            latest_calc = grant.clr_calculations.get(latest=True, grantclr=clr_round)
+            latest_calc = grant.clr_calculations.filter(latest=True, grantclr=clr_round).order_by('-pk').first()
             if not latest_calc:
                 print("- - could not find latest clr calc for {grant.pk} ")
                 continue
