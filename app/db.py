@@ -2,7 +2,7 @@ from django.conf import settings
 
 import random
 
-class PrimaryRouter:
+class PrimaryDBRouter:
     def db_for_read(self, model, **hints):
         """
         Reads go to a randomly-chosen replica if backend node
@@ -35,4 +35,7 @@ class PrimaryRouter:
         """
         All non-auth models end up in this pool.
         """
-        return True
+        if db == 'default':
+        	return True
+        return False
+        
