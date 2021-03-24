@@ -40,10 +40,6 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-# TODO - add a new envar for Token Request Siging micro service URL
-# TODO - add a new envar for HMAC or other auth key for communicating with micro service 
-# TODO - add a new envar for CF KV url in helpers.py 
-
 def index(request):
     '''render template for base index page'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
