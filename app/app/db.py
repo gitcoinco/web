@@ -13,7 +13,7 @@ class PrimaryDBRouter:
         	return random.choice(replicas)
         if settings.CELERY_NODE:
         	return random.choice(replicas)
-        return 'defeault'
+        return 'default'
 
     def db_for_write(self, model, **hints):
         """
@@ -38,4 +38,3 @@ class PrimaryDBRouter:
         if db == 'default':
         	return True
         return False
-        
