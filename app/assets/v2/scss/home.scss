@@ -1,7 +1,3 @@
-.navbar {
-  // background-color: #0d023b;
-}
-
 .banner {
   background-image: url(/static/v2/images/tribes-bg.png);
   background-size: contain;
@@ -32,14 +28,6 @@
 .testimonial-card {
   border: 4px solid #6F3FF5;
   width: 32rem;
-}
-
-.testimonial-card:first-child {
-  /* margin-left: -25%; */
-}
-
-.testimonial-card:last-child {
-  /* margin-right: -25%; */
 }
 
 .card-description {
@@ -121,24 +109,9 @@
   font-size: 12px;
 }
 
-// .navbar .interior .dropdown-item:hover span {
-//   color: #fff;
-// }
-
-// .navbar .nav-link:hover,
-// .navbar .nav-link:active {
-//   border-bottom: 3px solid #fff;
-//   border-radius: 0;
-//   background-color: transparent;
-// }
-
 .banner__h2 {
   font-size: 2.4rem;
   line-height: 3rem;
-}
-
-.homepage .banner #fund-issue {
-  // border: 2px solid #6F3FF5;
 }
 
 .optimize_oss p,
@@ -477,13 +450,6 @@ figure:hover::before {
     transform: rotate(50deg);
   }
 }
-
-// @media (min-width: 992px) {
-//   .mx-auto .nav-item {
-//     margin-left: 0.75rem;
-//     margin-right: 0.75rem;
-//   }
-// }
 
 
 @media (max-width: 1024px) {
