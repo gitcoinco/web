@@ -80,11 +80,6 @@ def index(request):
     }
     return TemplateResponse(request, 'home/index2020.html', context)
 
-def sass_experiment(request):
-    context = {
-    }
-    return TemplateResponse(request, 'home/sass_experiment.html', context)
-
 def index_old(request):
     products = [
         {
