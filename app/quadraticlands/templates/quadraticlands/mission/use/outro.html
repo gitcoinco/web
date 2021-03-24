@@ -1,23 +1,13 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
-{% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
-{% endblock %}
-
 
 {% block 'content' %}
 
 <section class="grid">
 	
 	<figure class="outro">
-		<img src="/static/quadraticlands/images/mission/proof-of-use-end.svg">
+		<img src='{% static "v2/quadraticlands/images/mission/proof-of-use-end.svg" %}' />
 	</figure>
 
 	<div>
@@ -35,32 +25,32 @@
 
 {% block 'scripts' %}
 
-	<!--some custom particles-->
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	
-	<!--Scroll Animation Library (sal) INIT-->
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
 
-	<!--APP - burger menu, wallet menu, provider select-->
-	<script src="/static/quadraticlands/js/app.js"></script>
-   
-	<script>
-		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-		document.addEventListener("DOMContentLoaded",function(){
-			// update user state
-			var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_use'}, {'X-CSRFToken': csrftoken});
-			$.when(setMissionStatus).then((response, status, statusCode) => {
-				//for debugging, remove for prod 
-				console.log('POST RETURNED!', statusCode, response, status);
-	
-				// if we don't get from set_mission_status console log the response (maybe remove for prod) 
-				if (statusCode.status != 200) {
-					console.log('getClaimData response: ', statusCode.status )
-					return 
-				}
-		   });
-		});
-	</script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
+
+
+
+
+<script>
+
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+document.addEventListener("DOMContentLoaded",function(){
+	// update user state
+	var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_use'}, {'X-CSRFToken': csrftoken});
+	$.when(setMissionStatus).then((response, status, statusCode) => {
+		//for debugging, remove for prod 
+		console.log('POST RETURNED!', statusCode, response, status);
+
+		// if we don't get from set_mission_status console log the response (maybe remove for prod) 
+		if (statusCode.status != 200) {
+			console.log('getClaimData response: ', statusCode.status )
+			return 
+		}
+   });
+});
+
+</script>
 
 
 {% endblock %}

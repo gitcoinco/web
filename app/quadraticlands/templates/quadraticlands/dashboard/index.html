@@ -2,13 +2,11 @@
 {% load humanize static i18n %}
 
 {% block 'twittercard' %}
-	<!-- twitter card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@gitcoin" />
-	<meta name="twitter:title" content="title" />
-	<meta name="twitter:description" content="description" />
-	<meta name="twitter:image" content="https://s.gitcoin.co/static/quadraticlands/twittercards/xxxxx.gif" />
-	<!-- end twitter card -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Quadratic Lands – Dashboard" />
+<meta name="twitter:description" content="With the launch of GTC, Gitcoin begins our second chapter focused on decentralizing from a product into a protocol." />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/default.png" %}" />
 {% endblock %}
 
 
@@ -51,16 +49,11 @@
 
 {% block 'scripts' %}
 
-	<script src="/static/quadraticlands/js/particles.js"></script>
-	<script src="/static/quadraticlands/js/sal_init.js"></script>
-	<script src="/static/quadraticlands/js/app.js"></script>
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
 
-	<!-- this page NEEDS a Wallet and will force the Web3Modal -->
-	<script src="/static/quadraticlands/js/forceWallet.js"></script>
-
-	<!-- abi to fetch balance -->
-	<script src="{% static "v2/js/abi.js" %}"></script>
-
+<!-- force web3modal to popup automaticaly when no provider selected-->
+<script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>
 
 	
 {% endblock %}
