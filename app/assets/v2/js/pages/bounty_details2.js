@@ -766,6 +766,18 @@ Vue.mixin({
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
+    },
+    showWorkSubmitted: function(handle) {
+      let vm = this;
+
+      if (
+        vm.contxt.is_staff ||
+        vm.isOwner ||
+        (handle && handle == vm.contxt.github_handle)
+      ) {
+        return true;
+      }
+      return false;
     }
   },
   computed: {
