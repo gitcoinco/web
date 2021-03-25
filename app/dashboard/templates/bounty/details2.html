@@ -41,7 +41,6 @@
             </span>
             <a v-for="link in quickLinks" class="btn btn-outline-primary px-2 mx-2 btn-sm" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
             <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="contactFunder()">Contact Funder</button>
-            <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="overrideStatus()">Override Status</button>
           </div>
           <div class="col-12" v-if="loadingState === 'resolved'">
             {% if event_tag %}
@@ -157,7 +156,7 @@
 
             <div class="row">
               <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
-                <template v-if="isOwner">
+                <template v-if="isOwner || contxt.is_staff">
                   <div v-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
                     <a class="btn btn-primary btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
                       <i class="fas fa-check mr-2"></i>
