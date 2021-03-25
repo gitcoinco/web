@@ -22,6 +22,7 @@ import hashlib
 import html
 import json
 import logging
+import math
 import re
 import time
 import uuid
@@ -3071,7 +3072,6 @@ https://c.gitcoin.co/grants/ce84fcbf185bd593e54f5c810d060aac/triad_gw_2.jpg
 https://c.gitcoin.co/grants/b8fcf1833fee32fc4be6fba254c1d912/cashu.png
 '''
 
-import math
 def get_urls(scale):
     import random
     global des_urls
