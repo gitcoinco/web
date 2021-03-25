@@ -240,20 +240,13 @@ def create_jtbd_fund_cache():
     print('create_jtbd_fund_cache')
 
     # WalletConnect / ethers.js / TheDefiant
-    projects_qs = Grant.objects.filter(Q(pk=275) | Q(pk=13) | Q(pk=567))
-
-    projects = []
-
-    for grant in projects_qs:
-        projects.append({
-            'logo': grant.logo.url if grant.logo else None,
-            'title': grant.title,
-            'admin_handle': grant.admin_profile.handle,
-            'description': grant.description,
-            'amount_raised': grant.amount_received_in_round,
-            'contributors_count': grant.get_contributor_count(),
-            'amount_matched': grant.clr_prediction_curve[0][1],
-        })
+    projects = list(Grant.objects.filter(
+        Q(pk=275) | Q(pk=13) | Q(pk=567)
+    ).values(
+        'logo', 'title', 'admin_profile__handle',
+        'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
+        'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
+    ))
 
     data = {
         'projects': projects,
