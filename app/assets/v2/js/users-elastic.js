@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
@@ -9,13 +11,6 @@ const EventBus = new Vue();
 
 Vue.mixin({
   methods: {
-    messageUser: function(handle) {
-      let vm = this;
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
-
-      chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
-    },
-
     fetchUsers: function(newPage) {
       let vm = this;
 
@@ -317,8 +312,8 @@ Vue.mixin({
           user.is_following = false;
         }
 
-        event.target.classList.toggle('btn-outline-green');
-        event.target.classList.toggle('btn-gc-blue');
+        event.target.classList.toggle('btn-outline-secondary');
+        event.target.classList.toggle('btn-primary');
       }).fail(function(error) {
         event.target.disabled = false;
       });
@@ -439,7 +434,6 @@ if (document.getElementById('gc-users-elastic')) {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {},

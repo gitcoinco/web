@@ -577,10 +577,10 @@ div.button-pink {
   padding: 12px 25px;
 }
 
-.dropdown-menu .dropdown-item:hover {
+/* .dropdown-menu .dropdown-item:hover {
   background-color: #3E00FF;
   color: #FFFFFF !important;
-}
+} */
 
 #why-gitcoin .dropdown-item {
   padding-left: 15px;
@@ -648,7 +648,7 @@ div.button-pink {
 
 @media (min-width: 768px) and (max-width: 1240px) {
   .navbar-expand-md .navbar-nav .nav-link,
-  .navbar-nav .btn-gc-blue.button--fund {
+  .navbar-nav .btn-primary.button--fund {
     font-size: 0.8rem;
   }
 
@@ -664,7 +664,7 @@ div.button-pink {
   }
 
   .navbar-expand-md .navbar-nav .nav-link,
-  .navbar-nav .btn-gc-blue.button--fund {
+  .navbar-nav .btn-primary.button--fund {
     font-size: 0.7rem;
   }
 
@@ -697,7 +697,7 @@ div.button-pink {
 }
 
 #codefund .cf-wrapper {
-  font-family: 'Muli', sans-serif !important;
+  font-family: 'Libre Franklin', sans-serif !important;
   text-align: center !important;
 }
 

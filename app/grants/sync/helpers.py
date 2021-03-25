@@ -1,9 +1,25 @@
 
 import logging
+from datetime import datetime
+
+from django.utils import timezone
 
 from townsquare.models import Comment
 
 logger = logging.getLogger(__name__)
+
+
+def is_txn_done_recently(time_of_txn, before_hours=500):
+    if not time_of_txn:
+        return False
+
+    now = timezone.now().replace(tzinfo=None)
+    txn_should_be_done_before = now - timezone.timedelta(hours=before_hours)
+    time_of_txn = datetime.fromtimestamp(int(time_of_txn))
+
+    if time_of_txn > txn_should_be_done_before:
+        return True
+    return False
 
 
 def txn_already_used(txn, token_symbol):
@@ -59,7 +75,11 @@ def record_contribution_activity(contribution):
         # successful_contribution(grant, subscription, contribution)
         # update_grant_metadata.delay(grant.pk)
         new_supporter(grant, subscription)
-        thank_you_for_supporting(grant, subscription)
+        grants_with_subscription = [{
+            'grant': grant,
+            'subscription': subscription
+        }]
+        thank_you_for_supporting(grants_with_subscription)
 
     except Exception as e:
         logger.error(f"error in record_contribution_activity: {e} - {contribution}")

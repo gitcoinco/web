@@ -3,7 +3,7 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
-let web3;
+var web3 = typeof (web3) != 'undefined' ? web3 : null;
 let web3Modal;
 let provider;
 let selectedAccount;
@@ -207,7 +207,7 @@ function createImg(source) {
   if (!imgProvider) {
     imgProvider = document.createElement('img');
     imgProvider.classList.add('image-provider');
-    elem.appendChild(imgProvider);
+    elem.insertBefore(imgProvider, icon);
   }
 
   if (!source) {

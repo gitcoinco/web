@@ -294,6 +294,18 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/spring.svg',
         },
+        'masks': {
+            'preview_viewbox': {
+                #section: x_pos y_pox x_size y_size
+                'background': '0 0 350 350',
+                'avatar': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'background_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/masks.svg',
+        },
         'metacartel': {
             'preview_viewbox': {
                 #section: x_pos y_pox x_size y_size
@@ -686,6 +698,24 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/bender.svg',
+        },
+        'qpix': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/qlands_pix.svg',
+        },
+        'unicorn': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/qlands_unicorn.svg',
         },
         'bendy': {
             'preview_viewbox': {

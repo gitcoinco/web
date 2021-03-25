@@ -29,7 +29,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
-    help = 'gets the tx status of PTokens'
+    help = 'gets the tx status of Time Tokens'
 
     def process_ptokens(self):
         non_terminal_states = ['pending', 'na', 'unknown']

@@ -30,7 +30,7 @@
             <img class="project__logo mr-3" v-if="project.logo_url" :src="project.logo_url">
             <img class="project__logo mr-3" v-else :src="project.prize.avatar">
             <div class="ml-md-3">
-              <a class="text-decoration-none" :href="project.url"><h1 class="project-title mb-2 font-weight-bold">[[ project.name ]]</h1></a>
+              <a class="text-decoration-none" :href="project.url"><h1 class="project-title mb-2 font-weight-bold" v-html="project.name"></h1></a>
               <div class="d-flex align-items-baseline">
                 <i class="fab fa-github mr-2"></i> <a class="project__url link-white font-body" :href="project.work_url">[[project.work_url]]</a>
               </div>
@@ -50,6 +50,9 @@
           {% endif %}
 
           {% if is_member %}
+            {% if not project_obj.grant_url %}
+              <a :href="`/grants/new?title=${project.name}&description_rich=${project.summary}&reference_url=${project.work_url}&github_project_url=${project.work_url}&related_hackathon_project_id=${project.id}`" target="_blank" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-plus mr-2"></i>CONVERT TO GRANT</a>
+            {% endif %}
             <button @click="$emit('project:edit')" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
           {% endif %}
         </div>

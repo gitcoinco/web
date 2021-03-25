@@ -4,17 +4,20 @@ from django.db import migrations
 
 
 def forwards(apps, schema_editor):
-    from quests.models import Quest
-    for quest in Quest.objects.filter(visible=True):
-        if quest.kudos_reward.on_xdai:
-            quest.kudos_reward = quest.kudos_reward.on_xdai
-            quest.save()
-            print(f'migrated {quest.pk}');
-        else:
-            print(f'could not migrate {quest.pk}');
-            quest.visible=False
-            quest.save()
+    Quest = apps.get_model('quests', 'Quest')
 
+    for quest in Quest.objects.filter(visible=True):
+        try:
+            if quest.kudos_reward.on_xdai:
+                quest.kudos_reward = quest.kudos_reward.on_xdai
+                quest.save()
+                print(f'migrated {quest.pk}')
+            else:
+                print(f'could not migrate {quest.pk}')
+                quest.visible=False
+                quest.save()
+        except:
+            pass
 
 def backwards(apps, schema_editor):
     pass

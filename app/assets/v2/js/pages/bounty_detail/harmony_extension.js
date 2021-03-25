@@ -1,4 +1,4 @@
-const payWithHarmonyExtension = async (fulfillment_id, to_address, vm, modal) => {
+const payWithHarmonyExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
@@ -8,7 +8,8 @@ const payWithHarmonyExtension = async (fulfillment_id, to_address, vm, modal) =>
   let hmy = harmony_utils.initHarmony();
 
   // step 2: check balance
-  const account_balance = await harmony_utils.getAddressBalance(hmy, from_address)
+  const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
+
   if (account_balance < amount) {
     _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'error');
     return;
@@ -37,7 +38,7 @@ const payWithHarmonyExtension = async (fulfillment_id, to_address, vm, modal) =>
     } else {
       callback('error in signing transaction');
     }
-  }).catch(err => callback(err))
+  }).catch(err => callback(err));
 
 
   function callback(error, from_address, txn) {
@@ -52,7 +53,7 @@ const payWithHarmonyExtension = async (fulfillment_id, to_address, vm, modal) =>
         amount: amount,
         token_name: token_name,
         funder_address: from_address,
-        payout_tx_id: txn,
+        payout_tx_id: txn
       };
 
       modal.closeModal();
@@ -69,10 +70,10 @@ const payWithHarmonyExtension = async (fulfillment_id, to_address, vm, modal) =>
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         _alert('Unable to make payout bounty. Please try again later', 'error');
         console.log(error);
       });
     }
   }
-}
+};

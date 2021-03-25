@@ -1,68 +1,69 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2018 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
 <style>
-  .etherscan-link {
-    display: inline-block;
-    font-family: 'Muli', sans-serif;
-    color: #3E00FF;
-  }
-
-  .grant-txn-msg, .grant-txn-id {
+  .grant-txn-id {
     margin: 0 auto;
   }
 
   .grant-txn-id a {
     overflow-wrap: break-word;
   }
+
   .grant-txn-msg li,
-  .grant-txn-msg a{
+  .grant-txn-msg a {
     line-height: 16px;
     margin-top: 3px;
     margin-bottom: 10px;
   }
 </style>
 
-<h1>Grants transaction failed, try again?</h1>
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
 
-<div class="grant-txn-msg">
-  <p>
-    Your contribution to these grants failed due to a technical issue.
-    {% for grant in grants %}
-      <li st><a href="{{grant.url}}">{{grant.title}}</a></li>
-    {% endfor %}
-  </p>
-</div>
+  <h1>Grants transaction failed, try again?</h1>
 
-<div class="grant-txn-id">
-  <p>
-    Transaction ID: <br>
-    <a href="{{ tx_url }}">{{ tx_id }}</a>
-  </p>
-</div>
+  <div class="grant-txn-msg">
+    <p>
+      Your contribution to these grants failed due to a technical issue.
+      {% for grant in grants %}
+      <li><a href="{{grant.url}}?{{ utm_tracking }}">{{grant.title}}</a></li>
+      {% endfor %}
+    </p>
+  </div>
 
-<div style="margin-bottom: 3em; margin-top: 3em;">
-  <a class="button" href="{{ bulk_add_url }}">{% trans "Resubmit Transaction" %}</a>
-  <br>
-  <a class="etherscan-link" href="{{ tx_url }}">View on Etherscan</a>
+  <div class="grant-txn-id">
+    <p>
+      Transaction ID: <br>
+      <a href="{{ tx_url }}">{{ tx_id }}</a>
+    </p>
+  </div>
+
+  <div style="margin-bottom: 3em; margin-top: 3em;">
+    <a class="button" href="{{ bulk_add_url }}?{{ utm_tracking }}">{% trans "Resubmit Transaction" %}</a>
+    <br><br>
+    <a href="{{ tx_url }}">View on Etherscan</a>
+  </div>
+
 </div>
 
 {% endblock %}

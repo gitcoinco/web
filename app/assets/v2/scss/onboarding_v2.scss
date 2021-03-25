@@ -1,0 +1,119 @@
+.testimonial {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
+  max-height: 92px;
+  align-items: center;
+}
+
+.testimonial > * > * {
+  display: block;
+}
+
+.benefits {
+  margin: 16px 0 24px;
+}
+
+.benefits p > * {
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+
+.benefits > div {
+  border-bottom: 1px solid #ccc;
+  padding: 16px 6px 8px;
+}
+
+.benefits > div:nth-child(2n) {
+  border-left: 1px solid #ccc;
+}
+
+.benefits > div:nth-child(5),
+.benefits > div:nth-child(6) {
+  border-bottom: 0;
+}
+
+.benefits .fa {
+  width: 48px;
+}
+
+#onboarding_v2 .modal-content {
+  margin-top: 285px;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+  background-image: url(static('v2/images/tribes/promo-decoration.svg'));
+  background-color: rgba(106, 72, 199, 0.98);
+  background-size: cover;
+}
+
+.no-bg {
+  background: none !important;
+}
+
+.achievement-img,
+.achievement-img-sm{
+  position: absolute;
+  top: -286px;
+  width: 170%;
+  right: -35%;
+  z-index: -1;
+}
+
+.achievement-img-sm {
+  top: -430px;
+  height: 600px;
+  width: 110vw;
+  right: calc(50% - 55vw);
+}
+
+.height-auto {
+  height: auto;
+}
+
+@media only screen and (max-width:992px) {
+  .testimonial img {
+    height: 64px;
+    width: 64px;
+  }
+
+  #onboarding_v2 .modal-content {
+    margin-top: 356px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .border-lg-0 {
+    border: 0;
+  }
+
+  .benefits p,
+  .benefits p > * {
+    display: flex;
+    text-align: left;
+  }
+
+  .text-lg-center {
+    text-align: center !important;
+  }
+
+  .benefits p > * {
+    margin: 0;
+  }
+
+  .benefits .fa {
+    display: inherit;
+    width: 48px;
+  }
+
+  .benefits > div {
+    border: 0 !important;
+  }
+
+  .testimonial img {
+    height: 100px;
+    width: 100px;
+  }
+}

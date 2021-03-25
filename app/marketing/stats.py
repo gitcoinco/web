@@ -91,55 +91,6 @@ def slack_users_active():
         )
 
 
-def chat_users():
-    from chat.tasks import get_driver
-    try:
-        chat_driver = get_driver()
-        stats_request = chat_driver.system.get_analytics({'name': 'standard', 'team_id': ''})
-        stats_request = { ele['name']: ele["value"] for ele in stats_request }
-        Stat.objects.create(
-            key='chat_total_users',
-            val=stats_request['unique_user_count'],
-        )
-        Stat.objects.create(
-            key='chat_daily_active_users',
-            val=stats_request['daily_active_users'],
-        )
-        Stat.objects.create(
-            key='chat_monthly_active_users',
-            val=stats_request['monthly_active_users'],
-        )
-        Stat.objects.create(
-            key='chat_total_post_counts',
-            val=stats_request['post_count'],
-        )
-        Stat.objects.create(
-            key='chat_total_public_channels',
-            val=stats_request['channel_open_count'],
-        )
-        Stat.objects.create(
-            key='chat_total_private_channels',
-            val=stats_request['channel_private_count'],
-        )
-        hack_team_stats = chat_driver.teams.get_team_stats(
-            settings.GITCOIN_HACK_CHAT_TEAM_ID
-        )
-        core_team_stats = chat_driver.teams.get_team_stats(
-            settings.GITCOIN_CHAT_TEAM_ID
-        )
-
-        active_user_count = hack_team_stats['active_member_count'] + core_team_stats['active_member_count']
-
-        Stat.objects.create(
-            key='chat_active_users',
-            val=active_user_count,
-        )
-
-    except Exception as e:
-        logging.info(str(e))
-
-
-
 def profiles_ingested():
     from dashboard.models import Profile
 

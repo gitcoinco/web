@@ -68,7 +68,7 @@ onboard.watchMetamask = function() {
   } else if (typeof web3 == 'undefined') {
     $('.step #metamask').html(`
       <div class="locked">
-        <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
+        <a class="btn btn-primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
           <img src="` + static_url + `v2/images/metamask.svg">
           <span>` + gettext('Install Metamask') + `</span>
         </a>
@@ -77,7 +77,7 @@ onboard.watchMetamask = function() {
   } else if (!web3.eth.getCoinbase) {
     $('.step #metamask').html(`
       <div class="locked">
-        <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
+        <a class="btn btn-primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
           <img src="` + static_url + `v2/images/metamask.svg">
           <span>` + gettext('Unlock Metamask') + `</span>
         </a>

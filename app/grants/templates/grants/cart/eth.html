@@ -1,0 +1,280 @@
+<!-- Ethereum flow. used zksync and bulk checkout -->
+{% load static i18n %}
+<b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
+
+  <div class="mt-5" v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
+    <div class="row justify-content-between align-items-center mt-4 ml-1">
+      <!-- ALL DEVICES: Grant name and logo -->
+      <div class="col-10 col-md-4 align-self-start">
+        <div class="row align-items-center">
+          <div class="logo-container col pl-0">
+            <img :src="grant.grant_logo" alt="Grant logo" width="65" class="mr-2">
+          </div>
+          <div class="col pl-2 pr-2">
+            <div class="font-weight-semibold line-clamp">
+              <a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE: Delete icon -->
+      <div class="col-1 d-none d-block d-md-none">
+        <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
+      </div>
+
+      <!-- ALL DEVICES: Contribution amount and currency-->
+      <div class="col-8 col-md-3 d-block mt-2 mt-md-0">
+        <div class="row align-items-center form-inline">
+          <input v-model="grant.grant_donation_amount" class="col-auto form-control w-50" type="number" min="0" step="any" placeholder="Amount" />
+          <div class="flex-shrink-0 w-50 pl-1" style="min-width:60px;">
+            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" style="height: 38px;">
+              <template v-slot:option="option">
+                <span class="font-weight-semibold">[[ option.symbol ]]</span>
+              </template>
+            </v-select>
+          </div>
+          <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
+            Apply to all
+          </small>
+        </div>
+      </div>
+
+      <!-- ALL DEVICES: CLR match amount-->
+      <div class="col col-md-3 d-block text-md-left text-right pr-2 pl-2 ml-5">
+        <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div>
+        <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
+        <div v-else class="text-success font-weight-bold">+[[grant.grant_donation_clr_match]] DAI</div>
+      </div>
+
+      <!-- DESKTOP: Delete icon -->
+      <div class="col-auto d-none d-md-flex align-self-center inputs-height">
+        <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted pt-1"></i>
+      </div>
+
+      <!-- ALL DEVICES: Add comments -->
+      <div class="col-12 mt-3" >
+        <div class="row align-items-center text-muted inputs-height">
+          <div class="flex-shrink-1">
+            <div class="cursor-pointer px-0 col-auto">
+              <input v-model="grant.grant_comments_bool" :id="`comment-${grant.grant_id}-blank`" type="checkbox" class="d-none" :name="`comment-${grant.grant_id}`"
+                :checked="grant.grant_comments_bool || !!grant.grant_comments"
+                :disabled="!!grant.grant_comments"
+              />
+              <label class="border rounded-circle mb-0 cursor-pointer" :for="`comment-${grant.grant_id}-blank`">
+                <i class="far fa-comment p-2" aria-hidden="true"></i>
+              </label>
+            </div>
+          </div>
+          <div class="flex-grow-1 ml-2">
+            <input v-if="grant.grant_comments_bool || !!grant.grant_comments" class="col-12 form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-5">
+
+  </div>
+
+  <!-- Cart total -->
+  <div class="row justify-content-between text-left mt-5">
+    <div class="col-12 col-md-auto mr-3"><h4 class="gc-font-base text-dark pt-0">Total</h4></div>
+    <div class="col-12 col-md text-left"><h4 class="gc-font-base text-dark pt-0">[[donationsTotalString]]</h4></div>
+    {% comment %} <div class="col d-none d-md-block"></div>
+    <div class="col-auto d-none d-md-block"></div> {% endcomment %}
+  </div>
+
+  <hr class="my-5">
+
+  <!-- Preferences -->
+  <div>
+    <!-- Optional contribution to Gitcon -->
+    <div class="ml-1 mt-3">
+      {% trans "Contribute to" %}
+      <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin Grants Development Fund</a>
+    </div>
+    <div class="row justify-content-start align-items-center ml-1 mt-3">
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2 mr-2 my-2" :class="{ 'border-primary': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
+      <div class="col-5 col-md-auto cursor-pointer border rounded pr-5 pl-3 py-2" :class="{ 'border-primary': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+      <div class="col-12 col-lg-auto form-inline d-inline-block d-lg-block mt-2 mt-lg-0 pl-0 pl-lg-5">
+        <span class="font-caption ml-0 mr-1 d-inline-block">Custom</span>
+        <input v-model="gitcoinFactorRaw" class="border cursor-pointer d-inline-block form-control mr-0 pr-0 rounded w-auto" type="number"
+          min="0" max="99" step="any" id="gitcoin-grant-input-amount"
+          name="gitcoin-grant-input-amount" :class="{inactive: [0,5,10,15].includes(gitcoinFactorRaw)}" value="5"
+        /> %
+      </div>
+    </div>
+    <!-- CLR matching -->
+    <div class="row justify-content-start align-items-center ml-1 mt-3">
+      <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2" />
+      <label class="mb-0" for="include_for_clr">{% trans "Include this contribution to CLR matching" %}</label>
+    </div>
+    <!-- Hide wallet -->
+    <div class="row justify-content-start align-items-center ml-1 mt-3">
+      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2" />
+      <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
+    </div>
+  </div>
+
+  <hr class="my-5">
+
+  <!-- Summary -->
+  <div>
+    <h4 class="col gc-font-base text-dark p-0">Summary</h4>
+    <p>
+      <ul>
+        <li>You are contributing [[donationsToGrantsString]]</li>
+        <li>You are additionally contributing [[donationsToGitcoinString]] to the Gitcoin Maintainer Grant</li>
+        <li>
+          Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
+          <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Read how this works</a>.
+        </li>
+      </ul>
+    </p>
+  </div>
+
+  <!-- Checkout recommendation -->
+  <div class="row justify-content-end mb-3">
+    <small class="col-auto bg-lightpurple p-2">
+      <div v-if="zkSyncUnsupportedTokens.length > 0">
+        zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+      </div>
+      <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
+        💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
+        on gas fees with [[ checkoutRecommendation.name ]]!
+      </div>
+    </small>
+  </div>
+
+  <!-- Checkout buttons -->
+  <div class="row justify-content-end">
+    <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
+      <grants-cart-ethereum-zksync
+        inline-template
+        @zksync-data-updated="onZkSyncUpdate"
+        :current-tokens="currentTokens"
+        :donation-inputs="donationInputs"
+        :max-cart-items="maxCartItems"
+        :grants-by-tenant="grantsByTenant"
+        :network="network"
+      >
+        <div class="w-100">
+        <!-- Checkout with zkSync button -->
+          <button
+            @click="zksync.showModal = true"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap"
+            :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems"
+            id='js-zkSyncfundGrants-button'
+            v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
+          >
+            Checkout with zkSync
+          </button>
+
+          <!-- Modal shown when clicking button -->
+          <b-modal
+            id="zksync-modal" :visible="zksync.showModal"
+            @hide="zksync.showModal=false; zksync.showChangeToken=false"
+            class="modal-dialog modal-lg" header-border-variant="transparent"
+            center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+          >
+            <!-- Modal close button -->
+            <template v-slot:modal-header="{ close }">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                @click="close()"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </template>
+
+            <!-- Main content -->
+            <template v-slot:default="{ hide }">
+              <div class="px-4 pb-4">
+                <!-- Header -->
+                <div class="mx-2 mb-4 pb-2 text-center">
+                  <img src="{% static 'v2/images/grants/zksync.svg' %}" alt="zkSync Logo" width="150">
+                  <h1 class="font-weight-bold mt-2">Pay with zkSync</h1>
+                </div>
+
+                <!-- If checkout not started -->
+                <div v-if="zksync.checkoutStatus === 'not-started'">
+                  <p>
+                    zkSync is powered by zkRollup with a universal setup &mdash; an L2
+                    scaling solution. Save gas fees and get faster confirmations.
+                    <a href="https://zksync.io/" target="_blank">Learn more</a>.
+                  </p>
+                  <p>Upon clicking Proceed, a new browser tab will be opened for you to finish checkout on zkSync's website.</p>
+                  <small class="mb-4">
+                    <p>
+                      zkSync fee amount will be displayed on the zkSync website.
+                      This fee will be paid in <span class="font-weight-bold">[[zksync.feeTokenSymbol]]</span>.
+                      <span v-if="cart.tokenList.length > 1 && !zksync.showChangeToken">
+                        <span @click="zksync.showChangeToken=true" class="hyperlink">Change token</span>.
+                      </span>
+                    </p>
+                    <div v-if="zksync.showChangeToken">
+                      <div>Select fee token</div>
+                      <v-select v-model="zksync.feeTokenSymbol" :options="cart.tokenList" :clearable="false"/>
+                    </div>
+                  </small>
+                </div>
+
+                <!-- If checkout is pending -->
+                <div v-else-if="zksync.checkoutStatus === 'pending'">
+                  <div class="text-center mb-3 h4 pt-0">
+                    <i class="fas fa-spinner fa-spin text-primary"></i>
+                  </div>
+                  <p>Checkout in progress. Please complete the checkout process on the zkSync website.</p>
+                </div>
+
+                <!-- Shared warning -->
+                <div class="mt-2 p-2 text-left bg-warning w-100 border rounded">
+                  <div class="font-weight-bold">IMPORTANT: Do not close this tab or the zkSync tab until your transfers are complete!</div>
+                </div>
+
+                <!-- If checkout not started -->
+                <div v-if="zksync.checkoutStatus === 'not-started'" class="text-center pt-4">
+                  <button @click="checkoutWithZksync" class="btn btn-gc-blue shadow-none">
+                  Proceed
+                  </button>
+                  <div class="font-smaller-2 font-italic mt-2">
+                    If the zkSync page does not open, your browser may have blocked it.
+                    Please allow popups from https://gitcoin.co in your browser settings.
+                  </div>
+                </div>
+              </div>
+            </template>
+          </b-modal>
+        </div>
+      </grants-cart-ethereum-zksync>
+    
+      <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
+        @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems"
+        v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
+      >
+        Standard Checkout
+      </button>
+    </div>
+  </div>
+
+  <small class="row justify-content-end mt-2">
+    <div v-if="grantsByTenant.length > maxCartItems">
+    Cart must have a maximum of [[maxCartItems]] items, but has [[ grantsByTenant.length ]] items.
+    Please remove [[ grantsByTenant.length - maxCartItems ]] item<span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
+    from your cart to continue checkout.
+    </div>
+    <div v-else-if="isZkSyncDown">
+      zkSync is down at the moment, so if you'd like to checkout now you may need to use standard checkout
+    </div>
+  </small>
+
+  <!-- Add some empty space before the footer -->
+  <div class="m-5"></div>
+</b-tab>

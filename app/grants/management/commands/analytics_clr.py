@@ -40,9 +40,9 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
 
     print(total_pot)
 
-    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+    grants, contributions = fetch_data(clr_round, network)
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions,  clr_round)
 
     # calculate clr analytics output
     for grant in grants:
@@ -82,14 +82,14 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                print(f"calculating CLR results for round: {clr_round.round_num}")
+                print(f"calculating CLR results for round: {clr_round.round_num} {clr_round.sub_round_slug}")
                 analytics = analytics_clr(
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
                 print(analytics)
-                print(f"finished CLR results for round: {clr_round.round_num}")
+                print(f"finished CLR results for round: {clr_round.round_num} {clr_round.sub_round_slug}")
 
         else:
             print("No active CLRs found")

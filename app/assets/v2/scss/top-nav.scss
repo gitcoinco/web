@@ -1,0 +1,90 @@
+
+// SVGs for mobile nav
+html {
+  --navbar-toggle-open: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='30'%20height='30'%20viewBox='0%200%2030%2030'%3E%3Cpath%20stroke='currentColor'%20stroke-linecap='round'%20stroke-miterlimit='10'%20stroke-width='2'%20d='M4%207h22M4%2015h22M4%2023h22'%20/%3E%3C/svg%3E");
+  --navbar-toggle-close: url("data:image/svg+xml,%3Csvg%20width='30px'%20height='30px'%20viewBox='0%200%2030%2030'%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg%20id='Page-1'%20stroke='none'%20stroke-width='1'%20fill='none'%20fill-rule='evenodd'%3E%3Cg%20id='Artboard'%20transform='translate(-146.000000,%20-156.000000)'%20fill-rule='nonzero'%3E%3Cg%20id='download'%20transform='translate(77.000000,%2045.000000)'%3E%3Cpath%20d='M73,118%20L95,134%20M73,134%20L95,118'%20id='Shape-Copy-2'%20stroke='currentColor'%20stroke-width='2'%20stroke-linecap='round'%3E%3C/path%3E%3Crect%20id='Path'%20x='69'%20y='111'%20width='30'%20height='30'%3E%3C/rect%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.top-nav {
+  color: #9E9E9E;
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  background: #0D023B;
+  justify-content: space-around;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.top-nav a {
+  filter: grayscale(1);
+  opacity: 0.6;
+  transition: all 0.2s linear;
+}
+
+.top-nav a.selected {
+  filter: grayscale(0);
+  opacity: 0.8;
+}
+
+.top-nav .link {
+  text-decoration: none;
+  color: #9E9E9E;
+}
+
+.top-nav a img {
+  height: 30px;
+}
+
+@media (min-width: 768px) {
+  .top-nav {
+    flex: 1 0 45px;
+    background: black;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+  }
+}
+
+.top-nav a:hover img,
+.top-nav a.selected img {
+  /* opacity: 1; */
+}
+
+.top-nav a:hover {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+.navbar-toggler[aria-expanded="false"] .navbar-toggler-icon {
+  mask: var(--navbar-toggle-open);
+  -webkit-mask: var(--navbar-toggle-open);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  mask: var(--navbar-toggle-close);
+  -webkit-mask: var(--navbar-toggle-close);
+}
+
+.dark-mode .navbar-toggler-icon {
+  background-color: rgba(255,255,255,0.5)
+}
+
+.navbar-toggler-icon {
+  background-color: rgba(0,0,0,0.5)
+}
+
+.brand-hover .logo-animated {
+  display: none;
+}
+.brand-hover:hover .logo-animated {
+  display: block;
+}
+.brand-hover:hover .logo-static {
+  display: none;
+}
+

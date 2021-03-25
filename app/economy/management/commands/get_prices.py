@@ -148,6 +148,8 @@ def coingecko(source, tokens):
 
     url =  f'https://api.coingecko.com/api/v3/simple/price?ids={token_str}&vs_currencies=usd,eth'
 
+    print(url)
+
     response = requests.get(url).json()
 
     for token in tokens:
@@ -208,16 +210,17 @@ def refresh_conv_rate(when, token_name):
         try:
             price = cc.get_historical_price(token_name, to_currency, when)
 
-            to_amount = price[token_name][to_currency]
-            ConversionRate.objects.create(
-                from_amount=1,
-                to_amount=to_amount,
-                source='cryptocompare',
-                from_currency=token_name,
-                to_currency=to_currency,
-                timestamp=when,
-            )
-            print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
+            if price and price.get(token_name):
+                to_amount = price[token_name][to_currency]
+                ConversionRate.objects.create(
+                    from_amount=1,
+                    to_amount=to_amount,
+                    source='cryptocompare',
+                    from_currency=token_name,
+                    to_currency=to_currency,
+                    timestamp=when,
+                )
+                print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
         except Exception as e:
             logger.exception(e)
 
@@ -358,21 +361,21 @@ class Command(BaseCommand):
         except Exception as e:
             print(e)
 
-        if not options['perform_obj_updates']:
-            return
-
-        try:
-            print('cryptocompare')
-            cryptocompare()
-        except Exception as e:
-            print(e)
-
         try:
             source = 'coingecko'
             coingecko_tokens = approved_tokens.filter(conversion_rate_source=source)
             if coingecko_tokens.count() > 0:
                 print(source)
                 coingecko(source, coingecko_tokens)
+        except Exception as e:
+            print(e)
+
+        if not options['perform_obj_updates']:
+            return
+
+        try:
+            print('cryptocompare')
+            cryptocompare()
         except Exception as e:
             print(e)
 

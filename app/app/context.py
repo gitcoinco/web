@@ -27,7 +27,6 @@ from django.utils import timezone
 import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
-from chat.tasks import get_chat_url
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
@@ -73,9 +72,6 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
-    chat_url = get_chat_url(front_end=True)
-    chat_access_token = ''
-    chat_id = ''
     ptoken = None
 
     search_url = ''
@@ -99,9 +95,11 @@ def preprocess(request):
             except Exception as e:
                 logger.exception(e)
             metadata = {
+                'visitorId': request.COOKIES.get("visitorId", None),
                 'useragent': request.META['HTTP_USER_AGENT'],
                 'referrer': request.META.get('HTTP_REFERER', None),
                 'path': request.META.get('PATH_INFO', None),
+                'session_key': request.session._session_key,
             }
             ip_address = get_ip(request)
             UserAction.objects.create(
@@ -117,10 +115,16 @@ def preprocess(request):
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
 
-        chat_access_token = profile.gitcoin_chat_access_token
-        chat_id = profile.chat_id
-
         ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
+
+    # Check if user's location supports pTokens
+    try:
+        current_location = profile.locations[-1]
+        is_location_blocked_for_ptokens = current_location['country_code'] == settings.PTOKEN_BLOCKED_REGION['country_code'] \
+            and current_location['region'] == settings.PTOKEN_BLOCKED_REGION['region']
+    except:
+        # If user is not logged in
+        is_location_blocked_for_ptokens = False
 
     # handles marketing callbacks
     if request.GET.get('cb'):
@@ -147,16 +151,10 @@ def preprocess(request):
         'max_length': max_length,
         'max_length_offset': max_length_offset,
         'search_url': f'{settings.BASE_URL}user_lookup',
-        'chat_url': chat_url,
         'base_url': settings.BASE_URL,
-        'chat_id': chat_id,
-        'chat_access_token': chat_access_token,
         'github_handle': request.user.username.lower() if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'last_chat_status':
-            request.user.profile.last_chat_status if
-            (hasattr(request.user, 'profile') and user_is_authenticated) else False,
         'raven_js_version': settings.RAVEN_JS_VERSION,
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
@@ -171,6 +169,7 @@ def preprocess(request):
         'fortmatic_test_key': settings.FORTMATIC_TEST_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
+        'is_pro': profile.is_pro if profile else False,
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
             'host': settings.JS_IPFS_HOST,
@@ -178,7 +177,6 @@ def preprocess(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
-        'chat_persistence_frequency': 90 * 1000,
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
@@ -194,7 +192,11 @@ def preprocess(request):
         'ptoken_factory_address': settings.PTOKEN_FACTORY_ADDRESS,
         'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI,
         'ptoken_address': ptoken.token_address if ptoken else '',
-        'ptoken_id': ptoken.id if ptoken else None
+        'ptoken_id': ptoken.id if ptoken else None,
+        'is_location_blocked_for_ptokens': is_location_blocked_for_ptokens,
+        'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
+        'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
+        'mautic_id': profile.mautic_id if profile else None,
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

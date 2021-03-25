@@ -3,14 +3,8 @@ Vue.mixin({
     const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
 
     return {
-      isMobile,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co'
+      isMobile
     };
-  },
-  methods: {
-    chatWindow: function(channel) {
-      window.chatSidebar.chatWindow(channel);
-    }
   }
 });
 
@@ -639,9 +633,9 @@ Vue.component('project-card', {
       projectModal(project.bounty.pk, project.pk);
     }
   },
-  template: `<div class="card card-user shadow-sm border-0">
+  template: `<div class="card card-user border-0">
     <div class="card card-project">
-      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <button v-on:click="projectModal" class="position-absolute btn btn-success btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
       <img v-if="project.grant_obj" class="position-absolute" style="left: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
       <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
       <div class="card-bg rounded-top">
@@ -650,15 +644,15 @@ Vue.component('project-card', {
         <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
       </div>
       <div class="card-body">
-        <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+        <h5 class="card-title font-weight-bold text-left" v-html="project.name"></h5>
         <div class="my-2">
           <p class="text-left text-muted font-smaller-1">
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-            <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-            <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2 font-weight-semibold">View Bounty</a>
+            <b-dropdown variant="outline-primary" toggle-class="btn btn-sm" split-class="btn-sm btn-primary">
             <template v-slot:button-content>
               <i class='fas fa-comment-dots'></i>
             </template>
@@ -798,8 +792,8 @@ Vue.component('suggested-profile', {
         </p>
     </span>
     <p class="row font-caption mb-0 mt-1">
-      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-green font-smaller-5">following</b-button>
-      <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-gc-blue font-smaller-5">follow</b-button>
+      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" variant="success" class="btn font-smaller-5">following</b-button>
+      <b-button v-else @click="followTribe(profile.handle, $event)" variant="primary" class="btn font-smaller-5">follow</b-button>
     </p>
   </div>
 </b-media>
@@ -869,6 +863,43 @@ Vue.component('copy-clipboard', {
           _alert('Could not copy text to clipboard', 'error', 5000);
         });
       }
+    }
+  }
+});
+
+
+Vue.component('render-quill', {
+  props: ['delta'],
+  template: '<div>{{this.renderHtml}}</div>',
+  data() {
+    return {
+      jqEl: null,
+      renderHtml: ''
+
+    };
+  },
+  methods: {
+    transform: function() {
+      let vm = this;
+
+      if (!vm.delta) {
+        return;
+      }
+
+      vm.jqEl = this.$el;
+      const quill = new Quill(vm.jqEl);
+
+      quill.enable(false);
+      vm.renderHtml = quill.setContents(JSON.parse(vm.delta));
+    }
+
+  },
+  mounted() {
+    this.transform();
+  },
+  watch: {
+    delta: function() {
+      return this.transform();
     }
   }
 });

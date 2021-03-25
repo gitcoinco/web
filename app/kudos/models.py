@@ -171,6 +171,9 @@ class Token(SuperModel):
                 return_me.append((network, ref))
         return return_me
 
+    @property
+    def on_other_networks(self):
+        return [ele for ele in self.on_networks if ele[0] != self.contract.network]
 
     def on_network(self, network):
         if self.contract.network == network:
@@ -582,11 +585,12 @@ def psave_kt(sender, instance, **kwargs):
             "org_profile":instance.org_profile,
             "to_profile":instance.recipient_profile,
             "value_usd":instance.value_in_usdt_then,
-            "url":instance.kudos_token_cloned_from.url,
+            "url":instance.kudos_token_cloned_from.url if instance.kudos_token_cloned_from else '',
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
             "token_value":token.price_in_eth,
+            "success":instance.tx_status == 'success',
         }
         )
 
