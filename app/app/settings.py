@@ -62,7 +62,7 @@ FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-F
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
-
+MARKETING_QUEUE_RATE_LIMIT = env('MARKETING_QUEUE_RATE_LIMIT', default='32/m')
 MARKETING_FLUSH_QUEUE = env.bool('MARKETING_FLUSH_QUEUE', default=False)
 FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
