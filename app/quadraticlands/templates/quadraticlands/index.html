@@ -13,37 +13,42 @@
 
 {% block 'content' %}
 
-	<!-- HERO IMAGE -->
+<!-- HERO IMAGE -->
 
-	<section class="hero">
-		<div class="background" style="z-index: -5555">
-			<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
-			{% include "quadraticlands/_inlinesvg/town.svg" %}
-		</div>
+<section class="hero">
+	<div class="background" style="z-index: -5555">
+		<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+		{% include "quadraticlands/_inlinesvg/town.svg" %}
+	</div>
 
-		<div class="content pushdown">
-			<h1><span>With the launch of GTC, Gitcoin begins our second chapter focused on decentralizing from a product into a protocol.</span></h1>
-			<a href="/quadraticlands/mission" class="btn" data-particlesize="200">Get started</a>
-		</div>
-		
-	</section>
+	<div class="content pushdown">
+		<h1><span>With the launch of GTC, Gitcoin begins our second chapter focused on decentralizing from a product into a protocol.</span></h1>
+		<a href="/quadraticlands/mission" class="btn" data-particlesize="200">Get started</a>
+	</div>
+</section>
 
-	<!-- TOKEN -->
+
+
+<!-- TOKEN -->
+<article>
 	<section class="grid reverse">
-		
 		<figure>
 			<img src="{% static "v2/quadraticlands/images/token.svg" %}" />
 		</figure>
 
 		<div>
 			<h3><span>#</span>GTC</h3>
-			<h1>Here is your Gitcoin token</h1>
-			<p class="no-margin">GTC governs the Gitcoin Network to decentralise Grants, manage disputes and govern the treasury. It will soon prevent sybil attacks by launching a decentralized reputation system. With your help, we are accelerating the flywheel of Gitcoin from web2 to web3. Let’s see what this thing can do. </p>
+			<h1>Gitcoin’s token is here</h1>
+			<p class="no-margin">To start, GTC governs the Gitcoin Network to decentralise Grants, manage disputes and govern the treasury. It will soon prevent sybil attacks by launching a decentralized reputation system. With your help, we are accelerating the flywheel of Gitcoin from web2 to web3. Let’s see what this thing can do.</p>
 		</div>
-
 	</section>
+</article>
 
-	<!-- GOVERNANCE -->
+
+
+
+<!-- GOVERNANCE -->
+<article>
 	<section class="grid">
 		
 		<figure class="laptop-cover tablet-cover phone-cover ">
@@ -54,12 +59,16 @@
 		<div>
 			<h3><span>#</span>Governance</h3>
 			<h1>Governance means we all are part of something.</h1>
-			<p class="no-margin">We believe  the future of Gitcoin is community governance. GTC is the first step in Gitcoin’s progressive decentralization.</p>	
+			<p class="no-margin">We believe the future of Gitcoin is united, as a community, engaged in governance. GTC is the first step in our path towards the progressive decentralization of the Gitcoin platform, where each voice of our community can be heard and used to shape our future.</p>	
 		</div>
 
 	</section>
+</article>
 
-	<!-- PORTAL -->
+
+
+<!-- PORTAL -->
+<article>
 	<section class="grid reverse particleMode" data-mode="space">
 		
 		<figure>
@@ -69,52 +78,54 @@
 		<div>
 			<h3><span>#</span>Quadratic Voting</h3>
 			<h1>Nobody can exclude you, you have a voice.</h1>
-			<p class="no-margin">With Quadratic Funding (QF), whales & central power brokers no longer control an ecosystem. Quadratic Funding is a foundational part of the Gitcoin Social contract. We have found QF to be the mathematically optimal way to fund an ecosystem. The Gitcoin team will introduce a proposal to do Quadratic Voting for Gitcoin’s governance as soon as we sufficiently solved for Sybil attacks.</p>	
+			<p class="no-margin">With Quadratic Funding (QF), whales & central power brokers no longer control an ecosystem. We have found QF to be the mathematically optimal way to fund public goods. The Gitcoin team will introduce a proposal to do Quadratic Voting for Gitcoin’s governance as soon as we sufficiently solved for Sybil attacks.</p>	
 		</div>
 
 	</section>
+</article>
 
 
 
 
-
-	<!-- INFORMATION AGE -->
+<!-- INFORMATION AGE -->
+<article>	
 	<section class="grid">
 		
-		<figure class="floating particleMode" data-mode="wind" style="padding:0px;">
+		<figure class="floating particleMode" data-mode="wind">
 			<img src="{% static "v2/quadraticlands/images/uni.svg" %}" />
 		</figure>
 
 		<div>
 			<h3><span>#</span>Information Age</h3>
 			<h1>Powering Public Goods in the Information Age</h1>
-			<p class="no-margin">Our deep reason for being is to economically empower builders of the open web .  Open Source Software is a public good. Public Goods Funding is an important unsolved coordination problem in the information age. Gitcoin is solving public goods problems, and we take seriously the precedent we are setting in how to fund Open Source Software development. We aspire to demonstrate a sustainable & decentralized model for building public goods.</p>
+			<p class="no-margin">Our deep reason for being is to economically empower builders of the open web.   Open Source Software is a public good and its funding is an important unsolved coordination problem in the information age. Gitcoin is solving this problem and we aspire to demonstrate a sustainable & decentralized model for building public goods.</p>
 		</div>
 
 	</section>
+</article>
 
 
 
-
-	<!-- MISSION -->
+<!-- MISSION -->
+<article class="gap">
 	<section class="column centered">
 		<div>
 			<h3><span>#</span>Earn your first Tokens.</h3>
-			<h1>Earn your first Tokens.</h1>
-			<p>Complete your “Proof of Knowledge” to git your distribution of GTC. Click below to get started.</p>
-			<a href="/quadraticlands/mission" class="btn" data-particlesize="200">Get Started</a>
+			<h1>Welcome to the Quadratic Lands</h1>
+			<p>Complete your first mission, “Proof of Knowledge,” to git your distribution of GTC. In less than 5 minutes, you will be a proud owner of part of the Gitcoin network.</p>
+			<div style="margin-top:1.5em;">
+				<a href="/quadraticlands/mission" class="btn" data-particlesize="200">Get Started</a>
+			</div>
+			
 		</div>
 	</section>
+</article>
+
+
+
 
 
 {% endblock %}
-
-
-
-
-
-
-
 
 
 
