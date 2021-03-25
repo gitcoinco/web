@@ -61,8 +61,6 @@ def fetch_jtbd_hackathons():
 def create_jtbd_earn_cache():
     print('create_jtbd_earn_cache')
     import datetime
-    from bleach import clean
-    from app.utils import ellipses
     from marketing.models import LeaderboardRank
 
     top_earners = list(LeaderboardRank.objects.active().filter(
@@ -70,54 +68,37 @@ def create_jtbd_earn_cache():
     ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-
-    bounties_qs = Bounty.objects.current().filter(
+    
+    bounties = list(Bounty.objects.filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
-    ).order_by('-_val_usd_db')[0:2]
-
-    bounties = []
-
-    for bounty in bounties_qs:
-        # TODO: find longest combination of comprehensive sentences without headings/newlines
-        issue_description = ellipses(clean(bounty.issue_description, strip=True), 255)
-
-        bounties.append({
-            'amount': bounty._val_usd_db,
-            'title': bounty.title,
-            'description': issue_description,
-            'avatar_url': bounty.avatar_url,
-            'url': bounty.url,
-        })
+    ).order_by('-_val_usd_db').values('_val_usd_db', 'title', 'issue_description')[0:2])
 
     # WalletConnect
     featured_grant = Grant.objects.filter(pk=275).first()
 
     # TODO: replace sample handles with real user handles
     users = ['chibie', 'octavioamu', 'owocki']
-    users_info = [(u.avatar_url, u.twitter_handle) for u in Profile.objects.filter(
+    users_info = Profile.objects.filter(
         Q(handle=users[0]) | Q(handle=users[1]) | Q(handle=users[2])
-    )]
+    ).values('twitter_handle', 'handle')
 
     testimonials = [
         {
             'handle': users[0],
             'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
-            'avatar_url': [s[0] for s in users_info if users[0] in s[0]][0],
-            'twitter': [s[1] for s in users_info if users[0] in s[0]][0],
+            'twitter': users_info.get(handle=users[0])['twitter_handle'],
             'role': 'Python Developer',
         },
         {
             'handle': users[1],
             'comment': "I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the opportunity to work with amazing top technology projects and earn some money in a way I'm visible to the developer community. Open source is amazing, and it’s awesome to make a living from it. I think this is the future of development.",
-            'avatar_url': [s[0] for s in users_info if users[1] in s[0]][0],
-            'twitter': [s[1] for s in users_info if users[1] in s[0]][0],
+            'twitter': users_info.get(handle=users[1])['twitter_handle'],
             'role': 'Front End Developer',
         },
         {
             'handle': users[2],
             'comment': "I see Gitcoin as the next level of freelance, where you can not only help repositories on Github but get money out of it. It is that simple and it works.",
-            'avatar_url': [s[0] for s in users_info if users[2] in s[0]][0],
-            'twitter': [s[1] for s in users_info if users[2] in s[0]][0],
+            'twitter': users_info.get(handle=users[2])['twitter_handle'],
             'role': 'Python Developer',
         },
     ]
@@ -258,12 +239,6 @@ def create_jtbd_connect_cache():
 def create_jtbd_fund_cache():
     print('create_jtbd_fund_cache')
 
-    # TODO: replace sample handles with real user handles: ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun']
-    builders = ['chibie', 'octavioamu', 'thelostone-mc', 'owocki']
-    builders_info = [u.avatar_url for u in Profile.objects.filter(
-        Q(handle=builders[0]) | Q(handle=builders[1]) | Q(handle=builders[2]) | Q(handle=builders[3])
-    )]
-
     # WalletConnect / ethers.js / TheDefiant
     projects_qs = Grant.objects.filter(Q(pk=275) | Q(pk=13) | Q(pk=567))
 
@@ -282,24 +257,8 @@ def create_jtbd_fund_cache():
 
     data = {
         'projects': projects,
-        'builders': [
-            {
-                'handle': builders[0],
-                'avatar_url': [s for s in builders_info if builders[0] in s][0],
-            },
-            {
-                'handle': builders[1],
-                'avatar_url': [s for s in builders_info if builders[1] in s][0],
-            },
-            {
-                'handle': builders[2],
-                'avatar_url': [s for s in builders_info if builders[2] in s][0],
-            },
-            {
-                'handle': builders[3],
-                'avatar_url': [s for s in builders_info if builders[3] in s][0],
-            },
-        ],
+        # TODO: replace sample handles with real user handles: ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun']
+        'builders': ['chibie', 'octavioamu', 'thelostone-mc', 'owocki'],
         'testimonial': {
             'handle': 'sebastian',
             'role': 'Python Developer',
