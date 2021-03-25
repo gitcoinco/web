@@ -383,3 +383,11 @@ def process_grant_creation_admin_email(self, grant_id):
         new_grant_admin(grant)
     except Exception as e:
         print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def save_contribution(self, contrib_id):
+    from grants.models import Contribution
+    contrib = Contribution.objects.get(pk=contrib_id)
+    contrib.save()
+
