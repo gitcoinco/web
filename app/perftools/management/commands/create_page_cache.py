@@ -51,9 +51,11 @@ logger = logging.getLogger(__name__)
 
 
 def fetch_jtbd_hackathons():
-    hackathons = JSONStore.objects.get(key='hackathons', view='hackathons').data[1][0:2]
-    fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date']
-    return [{k: v for k, v in event.items() if k in fields} for event in hackathons]
+    db = JSONStore.objects.get(key='hackathons', view='hackathons')
+    status = db.data[0]
+    hackathons = db.data[1][0:2]
+    fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
+    return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'current']
 
 
 def create_jtbd_earn_cache():
@@ -65,13 +67,13 @@ def create_jtbd_earn_cache():
 
     leaderboard = LeaderboardRank.objects.filter(
         active=True, product='bounties', leaderboard='monthly_earners',
-    ).order_by('-amount')[0:3].cache()
+    ).order_by('-amount')[0:4].cache()
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
 
     bounties_qs = Bounty.objects.current().filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
-    ).order_by('-_val_usd_db')
+    ).order_by('-_val_usd_db')[0:2]
 
     top_earners = bounties = []
 
@@ -135,10 +137,9 @@ def create_jtbd_earn_cache():
         'featured_grant': {
             'title': featured_grant.title,
             'description': featured_grant.description,
-            'url': featured_grant.url,
             'logo': featured_grant.logo.url if featured_grant.logo else None,
+            'amount_received': featured_grant.amount_received, # or amount_received_in_round
         },
-        'amount_received': featured_grant.amount_received, # or amount_received_in_round
         'testimonials': testimonials,
     }
     view = 'jtbd'
@@ -186,11 +187,138 @@ def create_jtbd_learn_cache():
             'role': 'Founder, Myco Ex-Coinbase'
             'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
             'avatar_url': '',
-            'social': 'https://www.linkedin.com/in/asoltanieh',
+            'twitter': '',
+            'github': '',
         },
     }
     view = 'jtbd'
     keyword = 'learn'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
+def create_jtbd_connect_cache():
+    print('create_jtbd_connect_cache')
+
+    alumni = [
+        {
+            'name': 'Alex Masmej',
+            'role': 'TryShowtime',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Simona Pop',
+            'role': 'Status',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Devin Walsh',
+            'role': 'Ex-Coinfund',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Val Mack',
+            'role': 'Cornell Alum',
+            'avatar_url': '',
+        }
+    ]
+
+    data = {
+        'projects': [
+            {
+                'name': 'Swivel Finance',
+                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/swivel-finance.png',
+                'description': 'Swivel a the decentralized protocol for fixed-rate lending and interest-rate derivatives. Swivel v1 will facilitate trustless interest-rate swaps, allowing cautious lenders to lock in a guaranteed yield, and speculators to leverage their rate exposure.',
+            },
+            {
+                'name': 'EPNS',
+                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/epns.png',
+                'description': 'EPNS is a decentralized DeFi notifications protocol which enables users (wallet addresses) to receive notifications. Using the protocol, any dApp, smart contract or service can send notifications to users(wallet addresses) in a platform agnostic fashion (mobile, web, or user wallets)',
+            },
+        ],
+        'alumni', alumni,
+        'hackathons': fetch_jtbd_hackathons(),
+        'testimonial': {
+            'handle': 'sebastian',
+            'role': 'Python Developer'
+            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'avatar_url': '',
+            'twitter': '',
+            'github': '',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'connect'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
+def create_jtbd_fund_cache():
+    print('create_jtbd_fund_cache')
+
+    # TODO: replace sample handles with real user handles: ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun']
+    builders = ['chibie', 'octavioamu', 'thelostone-mc', 'gdixon']
+    builders_info = [u.avatar_url for u in Profile.objects.filter(
+        Q(handle=builders[0]) | Q(handle=builders[1]) | Q(handle=builders[2]) | Q(handle=builders[3])
+    )]
+
+    # WalletConnect / ethers.js / TheDefiant
+    projects_qs = Grant.objects.filter(Q(pk=275) | Q(pk=13) | Q(pk=567))
+
+    projects = []
+
+    for grant in projects_qs:
+        projects.append({
+            'logo': grant.logo.url if grant.logo else None,
+            'title': grant.title,
+            'admin_handle': grant.admin_profile.handle,
+            'description': grant.description,
+            'amount_raised': grant.amount_received_in_round,
+            'contributors_count': grant.get_contributor_count(),
+            'amount_matched': grant.clr_prediction_curve[0][1],
+        })
+
+    data = {
+        'projects': projects,
+        'builders': [
+            {
+                'handle': builders[0],
+                'avatar_url': [s for s in builders_info if builders[0] in s][0],
+            },
+            {
+                'handle': builders[1],
+                'avatar_url': [s for s in builders_info if builders[1] in s][0],
+            },
+            {
+                'handle': builders[2],
+                'avatar_url': [s for s in builders_info if builders[2] in s][0],
+            },
+            {
+                'handle': builders[3],
+                'avatar_url': [s for s in builders_info if builders[3] in s][0],
+            },
+        ],
+        'testimonial': {
+            'handle': 'sebastian',
+            'role': 'Python Developer'
+            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'avatar_url': '',
+            'twitter': '',
+            'github': '',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'fund'
     JSONStore.objects.filter(view=view, key=keyword).all().delete()
     data = json.loads(json.dumps(data, cls=EncodeAnything))
     JSONStore.objects.create(
@@ -541,6 +669,13 @@ class Command(BaseCommand):
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
+
+        # generate jtdb data
+        operations.append(create_jtbd_earn_cache)
+        operations.append(create_jtbd_learn_cache)
+        operations.append(create_jtbd_connect_cache)
+        operations.append(create_jtbd_fund_cache)
+
         if not settings.DEBUG:
             operations.append(create_results_cache)
             operations.append(create_hack_event_cache)
@@ -557,7 +692,7 @@ class Command(BaseCommand):
             operations.append(create_hackathon_list_page_cache)
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
-                # do dailyi updates
+                # do daily updates
                 operations.append(create_email_inventory_cache)
         for func in operations:
             try:
