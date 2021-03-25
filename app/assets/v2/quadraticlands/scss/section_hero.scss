@@ -12,7 +12,7 @@ section.hero{
 		align-self: center;
 		grid-column: 1;
 		grid-row: 1;
-		max-width: 700px;
+		max-width: 800px;
 		margin-left: 3em;
 		user-select: none;
 
@@ -99,16 +99,16 @@ section.hero{
 
 
 
-
-
-
-@media #{$phone} { 
+@media #{$tablet} { 
 	section.hero{
 		div.content{
+			max-width: 600px;
 			margin-left: 1.5em;
 			max-width: 80%;
 		}
 	}
 }
+
+
 
 
