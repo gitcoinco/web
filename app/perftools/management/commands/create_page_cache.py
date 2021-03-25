@@ -111,7 +111,9 @@ def create_jtbd_earn_cache():
             'title': featured_grant.title,
             'description': featured_grant.description,
             'logo': featured_grant.logo.url if featured_grant.logo else None,
-            'amount_received': featured_grant.amount_received, # or amount_received_in_round
+            'amount_received_in_round': featured_grant.amount_received_in_round,
+            'amount_received': featured_grant.amount_received,
+            'in_active_clrs': featured_grant.in_active_clrs,
         },
         'testimonials': testimonials,
     }
