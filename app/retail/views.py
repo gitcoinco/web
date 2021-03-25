@@ -1577,14 +1577,6 @@ def admin_index(request):
     return TemplateResponse(request, 'admin_index.html', context)
 
 
-@cached_as(JSONStore.objects.filter(view='posts', key='posts'), timeout=1200)
-@cached_view
-def fetchPost(qt='2'):
-    jsonstores = JSONStore.objects.filter(view='posts', key='posts')
-    if jsonstores.exists():
-        return jsonstores.first().data
-
-
 @cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_earn(request):
