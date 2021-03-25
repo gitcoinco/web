@@ -1381,7 +1381,7 @@ def new_bounty_daily(es):
     dates = list(upcoming_hackathon()) + list(upcoming_dates())
     announcements = email_announcements()
     town_square_enabled = is_email_townsquare_enabled(to_email)
-    should_send = bounties.count() or town_square_enabled
+    should_send = (len(bounties) > 0) or town_square_enabled
     if not should_send:
         return False
 
