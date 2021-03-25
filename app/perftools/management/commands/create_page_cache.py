@@ -65,9 +65,9 @@ def create_jtbd_earn_cache():
     from app.utils import ellipses
     from marketing.models import LeaderboardRank
 
-    leaderboard = LeaderboardRank.objects.filter(
-        active=True, product='bounties', leaderboard='monthly_earners',
-    ).order_by('-amount')[0:4].cache()
+    top_earners = list(LeaderboardRank.objects.active().filter(
+        product='bounties', leaderboard='monthly_earners'
+    ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
 
@@ -75,15 +75,7 @@ def create_jtbd_earn_cache():
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
     ).order_by('-_val_usd_db')[0:2]
 
-    top_earners = bounties = []
-
-    for earner in leaderboard:
-        top_earners.append({
-            'rank': earner.rank,
-            'amount': earner.amount,
-            'avatar_url': earner.avatar_url,
-            'username': earner.github_username,
-        })
+    bounties = []
 
     for bounty in bounties_qs:
         # TODO: find longest combination of comprehensive sentences without headings/newlines
