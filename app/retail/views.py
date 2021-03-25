@@ -39,6 +39,7 @@ from django.utils import timezone
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
@@ -1574,3 +1575,39 @@ def admin_index(request):
     }
 
     return TemplateResponse(request, 'admin_index.html', context)
+
+
+@cached_as(JSONStore.objects.filter(view='posts', key='posts'), timeout=1200)
+@cached_view
+def fetchPost(qt='2'):
+    jsonstores = JSONStore.objects.filter(view='posts', key='posts')
+    if jsonstores.exists():
+        return jsonstores.first().data
+
+
+@cached_view(timeout=86400) # cached for 24 hours
+@require_http_methods(["GET",])
+def jtbd_earn(request):
+    context = JSONStore.objects.filter(view='jtbd', key='earn').first().data
+    return TemplateResponse(request, 'jtbd/earn.html', context)
+
+
+@cached_view(timeout=86400) # cached for 24 hours
+@require_http_methods(["GET",])
+def jtbd_learn(request):
+    context = JSONStore.objects.filter(view='jtbd', key='learn').first().data
+    return TemplateResponse(request, 'jtbd/learn.html', context)
+
+
+@cached_view(timeout=86400) # cached for 24 hours
+@require_http_methods(["GET",])
+def jtbd_connect(request):
+    context = JSONStore.objects.filter(view='jtbd', key='connect').first().data
+    return TemplateResponse(request, 'jtbd/connect.html', context)
+
+
+@cached_view(timeout=86400) # cached for 24 hours
+@require_http_methods(["GET",])
+def jtbd_fund(request):
+    context = JSONStore.objects.filter(view='jtbd', key='fund').first().data
+    return TemplateResponse(request, 'jtbd/fund.html', context)

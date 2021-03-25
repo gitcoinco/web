@@ -32,7 +32,7 @@ from django.utils.functional import Promise
 
 from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
-from dashboard.models import Activity, HackathonEvent, Profile
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
@@ -55,7 +55,7 @@ def fetch_jtbd_hackathons():
     status = db.data[0]
     hackathons = db.data[1][0:2]
     fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
-    return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'current']
+    return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming']
 
 
 def create_jtbd_earn_cache():
@@ -106,26 +106,26 @@ def create_jtbd_earn_cache():
         Q(handle=users[0]) | Q(handle=users[1]) | Q(handle=users[2])
     )]
 
-    testimonials [
+    testimonials = [
         {
             'handle': users[0],
             'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
-            'avatar_url': [s for s in users_info if users[0] in s][0][0],
-            'twitter': [s for s in users_info if users[0] in s][0][1],
+            'avatar_url': [s[0] for s in users_info if users[0] in s[0]][0],
+            'twitter': [s[1] for s in users_info if users[0] in s[0]][0],
             'role': 'Python Developer',
         },
         {
             'handle': users[1],
             'comment': "I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the opportunity to work with amazing top technology projects and earn some money in a way I'm visible to the developer community. Open source is amazing, and it’s awesome to make a living from it. I think this is the future of development.",
-            'avatar_url': [s for s in users_info if users[1] in s][0][0],
-            'twitter': [s for s in users_info if users[1] in s][0][1],
+            'avatar_url': [s[0] for s in users_info if users[1] in s[0]][0],
+            'twitter': [s[1] for s in users_info if users[1] in s[0]][0],
             'role': 'Front End Developer',
         },
         {
             'handle': users[2],
             'comment': "I see Gitcoin as the next level of freelance, where you can not only help repositories on Github but get money out of it. It is that simple and it works.",
-            'avatar_url': [s for s in users_info if users[2] in s][0][0],
-            'twitter': [s for s in users_info if users[2] in s][0][1],
+            'avatar_url': [s[0] for s in users_info if users[2] in s[0]][0],
+            'twitter': [s[1] for s in users_info if users[2] in s[0]][0],
             'role': 'Python Developer',
         },
     ]
@@ -184,7 +184,7 @@ def create_jtbd_learn_cache():
         'alumni': alumni,
         'testimonial': {
             'name': 'Arya Soltanieh',
-            'role': 'Founder, Myco Ex-Coinbase'
+            'role': 'Founder, Myco Ex-Coinbase',
             'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
             'avatar_url': '',
             'twitter': '',
@@ -241,11 +241,11 @@ def create_jtbd_connect_cache():
                 'description': 'EPNS is a decentralized DeFi notifications protocol which enables users (wallet addresses) to receive notifications. Using the protocol, any dApp, smart contract or service can send notifications to users(wallet addresses) in a platform agnostic fashion (mobile, web, or user wallets)',
             },
         ],
-        'alumni', alumni,
+        'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
             'handle': 'sebastian',
-            'role': 'Python Developer'
+            'role': 'Python Developer',
             'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
             'avatar_url': '',
             'twitter': '',
@@ -267,7 +267,7 @@ def create_jtbd_fund_cache():
     print('create_jtbd_fund_cache')
 
     # TODO: replace sample handles with real user handles: ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun']
-    builders = ['chibie', 'octavioamu', 'thelostone-mc', 'gdixon']
+    builders = ['chibie', 'octavioamu', 'thelostone-mc', 'owocki']
     builders_info = [u.avatar_url for u in Profile.objects.filter(
         Q(handle=builders[0]) | Q(handle=builders[1]) | Q(handle=builders[2]) | Q(handle=builders[3])
     )]
@@ -310,7 +310,7 @@ def create_jtbd_fund_cache():
         ],
         'testimonial': {
             'handle': 'sebastian',
-            'role': 'Python Developer'
+            'role': 'Python Developer',
             'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
             'avatar_url': '',
             'twitter': '',
@@ -670,7 +670,7 @@ class Command(BaseCommand):
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
 
-        # generate jtdb data
+        # generate jtbd data
         operations.append(create_jtbd_earn_cache)
         operations.append(create_jtbd_learn_cache)
         operations.append(create_jtbd_connect_cache)
