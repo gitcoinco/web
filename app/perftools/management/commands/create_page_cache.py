@@ -220,14 +220,15 @@ def create_jtbd_fund_cache():
     print('create_jtbd_fund_cache')
 
     # WalletConnect / ethers.js / TheDefiant
-    projects = list(Grant.objects.filter(
-        Q(pk=275) | Q(pk=13) | Q(pk=567)
-    ).values(
-        'logo', 'title', 'admin_profile__handle',
+        # Q(pk=275) | Q(pk=13) | Q(pk=567)
+    id_tuple= (275,13,567)
+    # id_tuple= (6,13,4)
+    projects = list(Grant.objects.filter(id__in=id_tuple).values(
+        'id', 'logo', 'title', 'admin_profile__handle',
         'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
         'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
-    ))
-
+    ).order_by('id', '-created_on').distinct('id'))
+    print(projects)
     data = {
         'projects': projects,
         'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],
