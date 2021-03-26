@@ -55,7 +55,7 @@ def fetch_jtbd_hackathons():
     status = db.data[0]
     hackathons = db.data[1][0:2]
     fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
-    return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming']
+    return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming' or status == 'current']
 
 
 def create_jtbd_earn_cache():
@@ -68,7 +68,7 @@ def create_jtbd_earn_cache():
     ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-    
+
     bounties = list(Bounty.objects.filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
     ).order_by('-_val_usd_db').values('_val_usd_db', 'title', 'issue_description')[0:2])
@@ -312,7 +312,7 @@ def create_hack_event_cache():
     from dashboard.models import HackathonEvent
     for he in HackathonEvent.objects.all():
         he.save()
-        
+
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
