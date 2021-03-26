@@ -32,9 +32,9 @@ from django.utils.functional import Promise
 
 from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
-from dashboard.models import Activity, HackathonEvent, Profile
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
-from economy.models import EncodeAnything, SuperModel
+from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
@@ -48,6 +48,207 @@ from retail.views import get_contributor_landing_page_context, get_specific_acti
 from townsquare.views import tags
 
 logger = logging.getLogger(__name__)
+
+
+def fetch_jtbd_hackathons():
+    db = JSONStore.objects.get(key='hackathons', view='hackathons')
+    status = db.data[0]
+    hackathons = db.data[1][0:2]
+    fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
+    return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming']
+
+
+def create_jtbd_earn_cache():
+    print('create_jtbd_earn_cache')
+    import datetime
+    from marketing.models import LeaderboardRank
+
+    top_earners = list(LeaderboardRank.objects.active().filter(
+        product='bounties', leaderboard='monthly_earners'
+    ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
+
+    thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
+    
+    bounties = list(Bounty.objects.filter(
+        network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
+    ).order_by('-_val_usd_db').values('_val_usd_db', 'title', 'issue_description')[0:2])
+
+    # WalletConnect
+    featured_grant = Grant.objects.filter(pk=275).first()
+
+    data = {
+        'top_earners': top_earners,
+        'hackathons': fetch_jtbd_hackathons(),
+        'bounties': bounties,
+        'featured_grant': {
+            'title': featured_grant.title,
+            'description': featured_grant.description,
+            'logo': featured_grant.logo.url if featured_grant.logo else None,
+            'amount_received_in_round': featured_grant.amount_received_in_round,
+            'amount_received': featured_grant.amount_received,
+            'in_active_clrs': featured_grant.in_active_clrs,
+        },
+        'testimonial': {
+            'handle': 'sebastian',
+            'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
+            'twitter': 'sebastian',
+            'role': 'Python Developer',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'earn'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
+def create_jtbd_learn_cache():
+    print('create_jtbd_learn_cache')
+
+    alumni = [
+        {
+            'name': 'Linda Xie',
+            'role': 'Scalar Capital',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Andy Tudhope',
+            'role': 'Author of KERNEL Learn Track',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Shawn Cheng',
+            'role': 'Partner Consensys Mesh',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Corey Petty',
+            'role': 'CSO at Status',
+            'avatar_url': '',
+        }
+    ]
+
+    data = {
+        'hackathons': fetch_jtbd_hackathons(),
+        'alumni': alumni,
+        'testimonial': {
+            'name': 'Arya Soltanieh',
+            'role': 'Founder, Myco Ex-Coinbase',
+            'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
+            'avatar_url': '',
+            'twitter': '',
+            'github': '',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'learn'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
+def create_jtbd_connect_cache():
+    print('create_jtbd_connect_cache')
+
+    alumni = [
+        {
+            'name': 'Alex Masmej',
+            'role': 'TryShowtime',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Simona Pop',
+            'role': 'Status',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Devin Walsh',
+            'role': 'Ex-Coinfund',
+            'avatar_url': '',
+        },
+        {
+            'name': 'Val Mack',
+            'role': 'Cornell Alum',
+            'avatar_url': '',
+        }
+    ]
+
+    data = {
+        'projects': [
+            {
+                'name': 'Swivel Finance',
+                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/swivel-finance.png',
+                'description': 'Swivel a the decentralized protocol for fixed-rate lending and interest-rate derivatives. Swivel v1 will facilitate trustless interest-rate swaps, allowing cautious lenders to lock in a guaranteed yield, and speculators to leverage their rate exposure.',
+            },
+            {
+                'name': 'EPNS',
+                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/epns.png',
+                'description': 'EPNS is a decentralized DeFi notifications protocol which enables users (wallet addresses) to receive notifications. Using the protocol, any dApp, smart contract or service can send notifications to users(wallet addresses) in a platform agnostic fashion (mobile, web, or user wallets)',
+            },
+        ],
+        'alumni': alumni,
+        'hackathons': fetch_jtbd_hackathons(),
+        'testimonial': {
+            'handle': 'sebastian',
+            'role': 'Python Developer',
+            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'avatar_url': '',
+            'twitter': '',
+            'github': '',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'connect'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
+def create_jtbd_fund_cache():
+    print('create_jtbd_fund_cache')
+
+    # WalletConnect / ethers.js / TheDefiant
+    projects = list(Grant.objects.filter(
+        Q(pk=275) | Q(pk=13) | Q(pk=567)
+    ).values(
+        'logo', 'title', 'admin_profile__handle',
+        'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
+        'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
+    ))
+
+    data = {
+        'projects': projects,
+        'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],
+        'testimonial': {
+            'handle': 'sebastian',
+            'role': 'Python Developer',
+            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'twitter': '',
+            'github': '',
+        },
+    }
+    view = 'jtbd'
+    keyword = 'fund'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
 
 def create_email_inventory_cache():
     print('create_email_inventory_cache')
@@ -71,6 +272,7 @@ def create_grant_clr_cache():
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
         update_grant_metadata.delay(pk)
+
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
@@ -103,8 +305,8 @@ def create_grant_active_clr_mapping():
         grant.calc_clr_round()
         grant.save()
 
-
     return
+
 
 def create_hack_event_cache():
     from dashboard.models import HackathonEvent
@@ -121,6 +323,7 @@ def create_grant_category_size_cache():
             key = f"grant_category_{g_type.name}_{category.category}"
             val = Grant.objects.filter(active=True, hidden=False, grant_type=g_type, categories__category__contains=category.category).count()
             redis.set(key, val)
+
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -156,13 +359,13 @@ def create_top_grant_spenders_cache():
                     )
 
 
-
 def fetchPost(qt='2'):
     import requests
     """Fetch last post from wordpress blog."""
     url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
     last_posts = requests.get(url=url).json()
     return last_posts
+
 
 def create_hidden_profiles_cache():
 
@@ -388,6 +591,13 @@ class Command(BaseCommand):
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
+
+        # generate jtbd data
+        operations.append(create_jtbd_earn_cache)
+        operations.append(create_jtbd_learn_cache)
+        operations.append(create_jtbd_connect_cache)
+        operations.append(create_jtbd_fund_cache)
+
         if not settings.DEBUG:
             operations.append(create_results_cache)
             operations.append(create_hack_event_cache)
@@ -404,7 +614,7 @@ class Command(BaseCommand):
             operations.append(create_hackathon_list_page_cache)
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
-                # do dailyi updates
+                # do daily updates
                 operations.append(create_email_inventory_cache)
         for func in operations:
             try:
