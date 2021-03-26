@@ -100,9 +100,9 @@ along with this program. If not,see
           Gitcoin is home to an exceptional blockchain community. Develop lasting relationships and technologies here.
         </h3>
         <div class="row mt-5 mx-0">
-          <button class="btn btn-primary col-12 col-md-auto p-3 px-5 scrollToBottom">
+          <a class="btn btn-primary col-12 col-md-auto p-3 px-5 scrollToReady" href="#readyToConnect">
             I'm ready to connect
-          </button>
+          </a>
         </div>
       </div>
       <div class="d-none d-md-inline col-md-4 m-auto ">
@@ -349,7 +349,7 @@ along with this program. If not,see
       </div>
     </div>
 
-    <div class="row my-4 mb-md-5">
+    <div class="row my-4 mb-md-5" id="readyToConnect">
       <h2 class="pb-4 pt-5">Ready to connect?</h2>
       <div class="col-12">
         <div class="row">
@@ -379,8 +379,12 @@ along with this program. If not,see
 {% include 'shared/footer_scripts.html' with slim=1 %}
 
 <script>
-  $(".scrollToBottom").click(function() {
-    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+  $(".scrollToReady").click(function(e) {
+    // prevent the href from being called
+    e.preventDefault();
+    // slow scroll to the element
+    $("html, body").animate({ scrollTop: $('#readyToConnect').offset().top }, "slow");
+
     return false;
   });
 </script>
