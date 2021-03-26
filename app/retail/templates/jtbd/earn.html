@@ -24,7 +24,6 @@ along with this program. If not, see
 
 <body>
   {% include 'shared/tag_manager_2.html' %}
-  {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'home/nav.html' %}
 
   <div class="container-fluid mb-5">
@@ -41,7 +40,7 @@ along with this program. If not, see
               Break free from your 9–5 to work on open source projects that matter.
           </h1>
           <h4 class="text-wrap mb-5 text-grey-400">
-            Millions of dollars flow into Gitcoin projects.<br>Earn by participating in sponsored hackathons, <br>bug bounties, and funded community grants.
+            Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
           </h4>
           <div class="my-5">
             <a class="btn btn-lg btn-primary px-5" href="{% url 'grants:grants_explorer' %}">{% trans "I'm ready to earn" %}</a>
@@ -55,16 +54,45 @@ along with this program. If not, see
         {% include 'grants/shared/landing_grants.html' %}
       </div>
       <section id="ways-to-earn">
-        <h4 class="py-0 my-0 pl-0 text-grey-500">Ways to earn</h4>
+        <h4 class="text-grey-500 mb-5">Ways to earn</h4>
         <div class="row">
-          <div class="accordion-group gc-accordion" id="accordion-group">
-            <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
-              <span class="accordion-title">
-                Accordion Title 1
-              </span>
-            </h5>
-            <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
-              <p>Accordion 1 content</p>
+          <div class="col-12 col-md-3 mr-5 pl-5 img-parent">
+            <div id="collapseOne" class="collapse" data-parent=".img-parent">
+              <img src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" width="250" alt="">
+            </div>
+            <div id="collapseTwo" class="collapse" data-parent=".img-parent">
+              <img src="{% static 'v2/images/jtbd/earn-hackathons.svg' %}" width="250" alt="">
+            </div>
+            <div id="collapseThree" class="collapse" data-parent=".img-parent">
+              <img src="{% static 'v2/images/jtbd/earn-grants.svg' %}" width="250" alt="">
+            </div>
+          </div>
+          <div class="col-12 col-md-5 ml-5">
+            <div class="accordion-group gc-accordion ml-0" id="accordion-group">
+              <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
+                <span class="accordion-title">
+                  Earn through bounties
+                </span>
+              </h5>
+              <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+                <p>Tackle bounties for all skill levels hosted by Web3’s most exciting projects. From open security contests and new feature builds, to UX/UI design and content creation.</p>
+              </div>
+              <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseTwo" aria-controls="collapseTwo">
+                <span class="accordion-title">
+                  Earn through sponsored hackathons
+                </span>
+              </h5>
+              <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+                <p>Collect rewards and tokens as you hack your way through creative solutions on a variety of protocols. Team up with other Web3 builders to advance the technology that will shape our future.</p>
+              </div>
+              <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseThree" aria-controls="collapseThree">
+                <span class="accordion-title">
+                  Earn through grant funding
+                </span>
+              </h5>
+              <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+                <p>Start an open source, public goods project and begin crowdsourcing funds through Gitcoin Grants. Participate in our quarterly Grants Rounds for the opportunity to earn a portion of the generous matching pool that has helped launch thousands of projects.</p>
+              </div>
             </div>
           </div>
         </div>
