@@ -68,7 +68,7 @@ def create_jtbd_earn_cache():
     ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-    
+
     bounties = list(Bounty.objects.filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
     ).order_by('-_val_usd_db').values('_val_usd_db', 'title', 'issue_description')[0:2])
@@ -162,22 +162,22 @@ def create_jtbd_connect_cache():
         {
             'name': 'Alex Masmej',
             'role': 'TryShowtime',
-            'avatar_url': '',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/alexmasmej.png',
         },
         {
             'name': 'Simona Pop',
             'role': 'Status',
-            'avatar_url': '',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/simonapop.png',
         },
         {
             'name': 'Devin Walsh',
             'role': 'Ex-Coinfund',
-            'avatar_url': '',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/devinwalsh.png',
         },
         {
             'name': 'Val Mack',
             'role': 'Cornell Alum',
-            'avatar_url': '',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/valmack.png',
         }
     ]
 
@@ -197,8 +197,8 @@ def create_jtbd_connect_cache():
         'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
-            'handle': 'sebastian',
-            'role': 'Python Developer',
+            'handle': 'Matt Solomon',
+            'role': 'Front end Developer',
             'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
             'avatar_url': '',
             'twitter': '',
@@ -312,7 +312,7 @@ def create_hack_event_cache():
     from dashboard.models import HackathonEvent
     for he in HackathonEvent.objects.all():
         he.save()
-        
+
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
