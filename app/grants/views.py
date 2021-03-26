@@ -22,6 +22,7 @@ import hashlib
 import html
 import json
 import logging
+import math
 import re
 import time
 import uuid
@@ -1455,9 +1456,8 @@ def grant_details(request, grant_id, grant_slug):
     }
     # Stats
     if tab == 'stats':
-        params['max_graph'] = grant.history_by_month_max
-        params['history'] = json.dumps(grant.history_by_month)
-        params['stats_history'] = grant.stats.filter(snapshot_type='increment').order_by('-created_on')
+        import hashlib
+        params['secret_id'] = hashlib.md5((settings.SECRET_KEY + str(grant.id)).encode('utf')).hexdigest()
 
     return TemplateResponse(request, 'grants/detail/_index.html', params)
 
@@ -2199,6 +2199,7 @@ def bulk_fund(request):
                 'real_period_seconds': request.POST.get('real_period_seconds'),
                 'recurring_or_not': request.POST.get('recurring_or_not'),
                 'signature': request.POST.get('signature'),
+                'visitorId': request.POST.get('visitorId'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
                 'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
@@ -2243,7 +2244,6 @@ def bulk_fund(request):
 
     from grants.tasks import batch_process_grant_contributions
     batch_process_grant_contributions.delay(grants_with_payload, profile.pk)
-
     return JsonResponse({
         'success': True,
         'grant_ids': grant_ids_list,
@@ -3059,6 +3059,51 @@ def add_grant_from_collection(request, collection_id):
         'grants': grants,
     })
 
+des_urls = '''
+https://c.gitcoin.co/grants/585d392a242103745b40d0e763ef5c17/Screen_Shot_2020-01-08_at_16.58.17.png
+https://c.gitcoin.co/grants/b6511284c11682532274e0a34342249f/bitcoinmalaysia.png
+https://c.gitcoin.co/grants/e1cf1b8778f29c49dff65ed3be4928d0/CheeseLogo_250px.png
+https://c.gitcoin.co/grants/3ecf3eb0214a58fc3b068fae9f45ffbe/BANKLESS_logo_text_noLV.jpg
+https://c.gitcoin.co/grants/f1c27815bc10332bff4a6264ae971fca/2.jpg
+https://c.gitcoin.co/grants/46305a72ce062b63a53b0ebe12becda7/Picture1.png
+https://c.gitcoin.co/grants/5d05dcc46be53030475cdbdf646b8afd/Mol_LeArt_-_White.png
+https://c.gitcoin.co/grants/6ae1a8d3a8752d352247615b877cd02d/contraktor.png
+https://c.gitcoin.co/grants/ce84fcbf185bd593e54f5c810d060aac/triad_gw_2.jpg
+https://c.gitcoin.co/grants/b8fcf1833fee32fc4be6fba254c1d912/cashu.png
+'''
+
+def get_urls(scale):
+    import random
+    global des_urls
+    urls = des_urls.split("\n")
+
+    return_me = []
+    scale_by = scale
+    # set default, for when no CLR match enabled
+    for grant in Grant.objects.filter(is_clr_active=True).order_by('-clr_prediction_curve__0__1'):
+        url = None
+        if grant.logo:
+            url = grant.logo.url
+            if settings.DEBUG:
+                url = urls[random.randint(0, len(urls) - 2)]
+        else:
+            url = f'https://gitcoin.co/static/v2/images/grants/logos/{grant.id % 3}.png'
+        size = scale_by * math.sqrt(math.sqrt(grant.clr_match_estimate_this_round))
+        return_me.append((url, size))
+    return return_me
+
+
+@staff_member_required
+def collage(request):
+    scale = float(request.GET.get('scale', 0.03))
+    context = {
+        'urls': get_urls(scale)
+    }
+
+    response = TemplateResponse(request, 'grants/collage.html', context=context)
+    return response
+
+
 @cache_page(60 * 60)
 def cart_thumbnail(request, profile, grants):
     width = int(request.GET.get('w', 348 * 5))
@@ -3308,7 +3353,21 @@ def ingest_contributions(request):
     # Setup web3
     w3 = get_web3(network)
 
+    def get_profile(profile):
+        """
+        If a staff called this endpoint, we use the username passed with the payload. Otherwise, we use the
+        caller's profile
+        """
+        return Profile.objects.filter(handle=request.POST.get('handle')).first() if profile.is_staff else profile
+
     def verify_signature(signature, message, expected_address):
+        """
+        Used to verify that the user ingesting actually owns the address they are ingesting for. This
+        may not work for contract wallets or wallets that use relayers, so those will need to be ingested by staff
+        to bypass this check
+        """
+        if profile.is_staff:
+            return # Skip signature verification for staff so staff can ingest contributions on behalf of a user
         message_hash = defunct_hash_message(text=message)
         recovered_address = w3.eth.account.recoverHash(message_hash, signature=signature)
         if recovered_address.lower() != expected_address.lower():
@@ -3333,7 +3392,7 @@ def ingest_contributions(request):
             address_lowercase = address.lower()
             return FTokens.objects.filter(network=network, address=address_lowercase, approved=True).first().to_dict
 
-    def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type):
+    def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address):
         """
         Creates contribution and subscription and saves it to database if no matching one exists
         """
@@ -3366,7 +3425,7 @@ def ingest_contributions(request):
             subscription.is_postive_vote = True
             subscription.active = False
             subscription.error = True
-            subscription.contributor_address = "N/A"
+            subscription.contributor_address = Web3.toChecksumAddress(from_address)
             subscription.amount_per_period = amount
             subscription.real_period_seconds = 2592000
             subscription.frequency = 30
@@ -3429,6 +3488,7 @@ def ingest_contributions(request):
     def process_bulk_checkout_tx(w3, txid, profile, network, do_write):
         # Make sure tx was successful
         receipt = w3.eth.getTransactionReceipt(txid)
+        from_address = receipt['from'] # this means wallets like Argent that use relayers will have the wrong from address
         if receipt.status == 0:
             raise Exception("Transaction was not successful")
 
@@ -3471,7 +3531,7 @@ def ingest_contributions(request):
                 continue
 
             if do_write:
-                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std')
+                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std', from_address)
         return
 
     def handle_ingestion(profile, network, identifier, do_write):
@@ -3503,6 +3563,19 @@ def ingest_contributions(request):
             r.raise_for_status()
             transactions = r.json()  # array of zkSync transactions
 
+            # Paginate if required. API returns last 100 transactions by default, so paginate if response length was 100
+            if len(transactions) == 100:
+                max_length = 500 # only paginate until a max of most recent 500 transactions or no transaction are left
+                last_tx_id = transactions[-1]["tx_id"]
+                while len(transactions) < max_length:
+                    r = requests.get(f"{base_url}/account/{user_address}/history/older_than?tx_id={last_tx_id}") # gets next 100 zkSync transactions
+                    r.raise_for_status()
+                    new_transactions = r.json()
+                    if (len(new_transactions) == 0):
+                        break
+                    transactions.extend(new_transactions) # append to array
+                    last_tx_id = transactions[-1]["tx_id"]
+
             for transaction in transactions:
                 # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
                 if transaction["tx"]["type"] != "Transfer":
@@ -3520,6 +3593,10 @@ def ingest_contributions(request):
                 # Find the grant
                 try:
                     grant = Grant.objects.filter(admin_address__iexact=to).order_by("-positive_round_contributor_count").first()
+                    if not grant:
+                        logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                        logger.warning("Skipping unknown grant\n")
+                        continue
                     logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
                 except Exception as e:
                     logger.exception(e)
@@ -3530,13 +3607,13 @@ def ingest_contributions(request):
                 if do_write:
                     txid = transaction['hash']
                     created_on = dateutil.parser.parse(transaction['created_at'])
-                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync')
+                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync', user_address)
 
     if txHash != '':
-        handle_ingestion(profile, network, txHash, True)
+        handle_ingestion(get_profile(profile), network, txHash, True)
         ingestion_types.append('L1')
     if userAddress != '':
-        handle_ingestion(profile, network, userAddress, True)
+        handle_ingestion(get_profile(profile), network, userAddress, True)
         ingestion_types.append('L2')
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })

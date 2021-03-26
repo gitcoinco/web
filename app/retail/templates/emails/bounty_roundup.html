@@ -22,7 +22,7 @@
   body {
     background-color: #E0FDDF !important;
   }
-  
+
   .intro li{
     margin-top: 15px;
     margin-bottom: 15px;
@@ -36,7 +36,7 @@
   }
 
   .intro a{
-    color: #3E00FF;
+    color: #6F3FF5;
   }
 
   .text-left {
@@ -53,7 +53,7 @@
   }
 
   .highlight li a{
-    color:#3E00FF;
+    color:#6F3FF5;
     text-decoration:none;
     font-size:16px;
     line-height:26px;
@@ -108,7 +108,7 @@
   </div>
       <div class="full-width text-center" style="padding:20px 0; background-color: #f2f6f9; text-align: center; margin: 0 auto;">
         <div class="sponsor-text" style="margin-left: auto; margin-right: auto;">
-        <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #3E00FF;">{{ sponsor.name }}</a></p>
+        <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #6F3FF5;">{{ sponsor.name }}</a></p>
         <a href="{{ sponsor.link }}" style="text-align: center; color: #000000; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
         {% for paragraph in sponsor.body %}
           <p style="font-size: 14px; text-align: center; line-height: 18px;">{{ paragraph | safe }}</p>
@@ -131,18 +131,18 @@
   {% for new in news %}
   <div style="text-align: left">
     <h4 style="padding-top:40px; font-weight:500; text-transform:capitalize; font-size:1.1rem; text-align:left; margin-top:10px">
-      <a href="{{ new.link }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">
+      <a href="{{ new.link }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">
         {{ new.title }}
       </a>
     </h4>
     <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em;">
       {{ new.description }}
     </p>
-    <code>via <a href="{% if new.profile_url %}{{ new.profile_url }}{% else %}https://gitcoin.co/{{ new.via }}{% endif %}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">@{{ new.via }}</a> {% if new.source %} / <a href="{{ new.source_url }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ new.source }}</a>{% endif %}</code>
+    <code>via <a href="{% if new.profile_url %}{{ new.profile_url }}{% else %}https://gitcoin.co/{{ new.via }}{% endif %}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">@{{ new.via }}</a> {% if new.source %} / <a href="{{ new.source_url }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ new.source }}</a>{% endif %}</code>
   </div>
   {% endfor %}
   <center>
-    <br><strong>Got something to share? <a href="https://forms.gle/G5LJkVWaFYTyqesA9" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Submit it here</a>.</strong>
+    <br><strong>Got something to share? <a href="https://forms.gle/G5LJkVWaFYTyqesA9" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Submit it here</a>.</strong>
   </center>
   <br>
 
@@ -160,10 +160,10 @@
       {% for hackathon in updates.hackathons.active %}
       <div>
         <h3 style="font-weight:bold; text-transform:capitalize; line-height:30px; color:#000; margin-bottom:10px; margin-top:40px; font-size:1.4rem; text-align: left">
-          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
+          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
         </h3>
         <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em; text-align: left">
-        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>.{% endif %}
+        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>.{% endif %}
         </p>
         <br>
         <center>
@@ -176,10 +176,10 @@
       {% for hackathon in updates.hackathons.coming_soon %}
       <div class="text-left">
         <h3 style="font-weight:bold; text-transform:capitalize; line-height:30px; color:#000; margin-bottom:10px; margin-top:40px; font-size:1.4rem; text-align: left">
-          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
+          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
         </h3>
         <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em; text-align: left">
-        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>{% endif %}.
+        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>{% endif %}.
         </p>
         <br>
         <center>
@@ -230,8 +230,8 @@
       {% for highlight in highlights %}
         <li style="margin-top: 2.5em; text-align: left;">
           <p>
-          - <a style="color:#3E00FF; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>:
-            {{ highlight.what }} {% if highlight.id %}<a style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em" href="https://gitcoin.co/townsquare?tab=activity:{{ highlight.id }}">Like or comment</a>{% endif %}
+          - <a style="color:#6F3FF5; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>:
+            {{ highlight.what }} {% if highlight.id %}<a style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em" href="https://gitcoin.co/townsquare?tab=activity:{{ highlight.id }}">Like or comment</a>{% endif %}
           </p>
         </li>
       {% endfor %}
@@ -250,7 +250,7 @@
     {% for kudos in new_kudos %}
       <a href='{{ kudos.airdrop }}'>
         <img style="max-width: 100%; border-style:none; vertical-align:middle" valign="middle" src="{{ kudos.img_url }}" width="300px" alt="{{kudos.name}}">
-        <p style="color:#3E00FF; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">  <strong>Get Your Kudos</strong></p>
+        <p style="color:#6F3FF5; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">  <strong>Get Your Kudos</strong></p>
       </a>
 
     {% endfor %}

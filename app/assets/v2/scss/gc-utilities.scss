@@ -1,3 +1,58 @@
+// import variables and mixins
+@import "./gc-mixins";
+
+// .border-top-[1-5]
+@include border('top', 1, 5);
+
+// .border-left-[1-5]
+@include border('left', 1, 5);
+
+// .border-[grey, primary, secondary, danger, info, dark, light]
+@include border-colors(
+  'grey' lightgray,
+  'primary' $blue,
+  'secondary' $green,
+  'danger' $red,
+  'info' $yellow,
+  'dark' $dark,
+  'light' $light
+);
+
+// Hover effects
 .hover-underline:not(:disabled):not(.disabled):not(.active):hover {
   text-decoration: underline!important
+}
+
+.text-primary-hover:hover {
+  color: $gc-violet-500!important;
+}
+
+// Invalid form state
+.invalid {
+
+  input.invalid, input:invalid, .form__checkbox input:invalid + .form__label::before,
+  & > .btn-radio:not(.disabled), & > .btn-group-toggle .btn-radio:not(.disabled),
+  .quill-editor.invalid .ql-snow, .form__radio input:invalid + label:after,
+  .checkbox_container input:invalid + span + .filter-label > label:before  {
+    border-color:#D44D6E;
+  }
+
+  .vs__selected-options > input:invalid {
+    min-height: 21px;
+    box-shadow:
+      -7px -9px 0px 0px #fff, 30px -9px 0px 0px #fff, 30px 5px 0px 0px #fff, -7px 5px 0px 0px #fff,
+      -8px -10px 0px 0px #D44D6E, 31px -10px 0px 0px #D44D6E, 31px 6px 0px 0px #D44D6E, -8px 6px 0px 0px #D44D6E;
+    border-radius: 1px;
+    border: none;
+    z-index: 0;
+  }
+}
+
+// Helpers to fix top and bottom positions
+.bottom-0 {
+  bottom: 0px;
+}
+
+.top-0 {
+  top: 0px;
 }

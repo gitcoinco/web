@@ -51,7 +51,7 @@ var start_quiz = async function() {
       await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
       await toggle_character_class($('#enemy'), [ 'harm', '' ]);
     }
-    
+
     var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
     var prefix = '(' + question_number + '/' + question_count + ') - ';
     var question = prefix + response['question']['question'];
@@ -387,5 +387,5 @@ $(document).ready(function() {
   if (document.quest) {
     start_quest();
   }
-  
+
 });

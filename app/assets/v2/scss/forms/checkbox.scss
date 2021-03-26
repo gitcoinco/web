@@ -15,7 +15,7 @@
 .form__checkbox .form__label::before {
   background: #fff;
   border: 1px solid #dbdbdb;
-  border-radius: 2px;
+  border-radius: 4px;
   content: '';
   display: inline-flex;
   justify-content: center;
@@ -41,7 +41,7 @@
 }
 
 .form__checkbox input:checked ~ .form__label::before {
-  background-color: #3E00FF;
-  border-color: #3E00FF;
+  background-color: #6F3FF5;
+  border-color: #6F3FF5;
   content: url('/static/v2/images/check.svg');
 }

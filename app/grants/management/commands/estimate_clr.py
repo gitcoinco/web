@@ -35,13 +35,17 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
         parser.add_argument('clr_pk', type=str, default="all")
+        parser.add_argument('what', type=str, default="full")
+        # slim = just run 0 contribution match upcate calcs
+        # full, run [0, 1, 10, 100, calcs across all grants]
 
 
     def handle(self, *args, **options):
 
         network = options['network']
         clr_pk = options['clr_pk']
-        print (network, clr_pk)
+        what = options['what']
+        print (network, clr_pk, what)
 
         if clr_pk == "all":
             active_clr_rounds = GrantCLR.objects.filter(is_active=True)
@@ -54,7 +58,8 @@ class Command(BaseCommand):
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
-                    network=network
+                    network=network,
+                    what=what,
                 )
         else:
             print("No active CLRs found")

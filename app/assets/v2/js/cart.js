@@ -1032,6 +1032,7 @@ Vue.component('grants-cart', {
         signature: 'onetime',
         splitter_contract_address: contractAddress,
         subscription_hash: 'onetime',
+        visitorId: document.visitorId,
         // Values that vary by donation
         'gitcoin-grant-input-amount': [],
         admin_address: [],
