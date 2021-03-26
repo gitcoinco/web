@@ -76,33 +76,6 @@ def create_jtbd_earn_cache():
     # WalletConnect
     featured_grant = Grant.objects.filter(pk=275).first()
 
-    # TODO: replace sample handles with real user handles
-    users = ['chibie', 'octavioamu', 'owocki']
-    users_info = Profile.objects.filter(
-        Q(handle=users[0]) | Q(handle=users[1]) | Q(handle=users[2])
-    ).values('twitter_handle', 'handle')
-
-    testimonials = [
-        {
-            'handle': users[0],
-            'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
-            'twitter': users_info.get(handle=users[0])['twitter_handle'],
-            'role': 'Python Developer',
-        },
-        {
-            'handle': users[1],
-            'comment': "I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the opportunity to work with amazing top technology projects and earn some money in a way I'm visible to the developer community. Open source is amazing, and it’s awesome to make a living from it. I think this is the future of development.",
-            'twitter': users_info.get(handle=users[1])['twitter_handle'],
-            'role': 'Front End Developer',
-        },
-        {
-            'handle': users[2],
-            'comment': "I see Gitcoin as the next level of freelance, where you can not only help repositories on Github but get money out of it. It is that simple and it works.",
-            'twitter': users_info.get(handle=users[2])['twitter_handle'],
-            'role': 'Python Developer',
-        },
-    ]
-
     data = {
         'top_earners': top_earners,
         'hackathons': fetch_jtbd_hackathons(),
@@ -115,7 +88,12 @@ def create_jtbd_earn_cache():
             'amount_received': featured_grant.amount_received,
             'in_active_clrs': featured_grant.in_active_clrs,
         },
-        'testimonials': testimonials,
+        'testimonial': {
+            'handle': 'sebastian',
+            'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
+            'twitter': 'sebastian',
+            'role': 'Python Developer',
+        },
     }
     view = 'jtbd'
     keyword = 'earn'
@@ -252,13 +230,11 @@ def create_jtbd_fund_cache():
 
     data = {
         'projects': projects,
-        # TODO: replace sample handles with real user handles: ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun']
-        'builders': ['chibie', 'octavioamu', 'thelostone-mc', 'owocki'],
+        'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],
         'testimonial': {
             'handle': 'sebastian',
             'role': 'Python Developer',
             'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
-            'avatar_url': '',
             'twitter': '',
             'github': '',
         },
