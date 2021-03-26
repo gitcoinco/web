@@ -81,11 +81,6 @@ def index(request):
     }
     return TemplateResponse(request, 'home/index2020.html', context)
 
-def sass_experiment(request):
-    context = {
-    }
-    return TemplateResponse(request, 'home/sass_experiment.html', context)
-
 def index_old(request):
     products = [
         {
@@ -1221,7 +1216,7 @@ def presskit(request):
         ),
         (
             "Polaris Blue",
-            "#3E00FF",
+            "#6F3FF5",
             "62, 0, 255"
         ),
         (
@@ -1578,6 +1573,15 @@ def admin_index(request):
 
 
 @cached_view(timeout=86400) # cached for 24 hours
+def styleguide_components(request):
+    if settings.ENV == 'prod':
+        raise Http404
+    else:
+        context = {}
+        return TemplateResponse(request, 'styleguide_components.html', context)
+
+
+@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_earn(request):
     context = JSONStore.objects.filter(view='jtbd', key='earn').first().data
@@ -1603,3 +1607,4 @@ def jtbd_connect(request):
 def jtbd_fund(request):
     context = JSONStore.objects.filter(view='jtbd', key='fund').first().data
     return TemplateResponse(request, 'jtbd/fund.html', context)
+

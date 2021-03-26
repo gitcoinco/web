@@ -46,6 +46,7 @@ from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
+from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
@@ -565,6 +566,9 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'rsk_ext':
         sync_rsk_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'xinfin_ext':
+        sync_xinfin_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):

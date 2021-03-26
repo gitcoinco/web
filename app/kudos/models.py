@@ -585,7 +585,7 @@ def psave_kt(sender, instance, **kwargs):
             "org_profile":instance.org_profile,
             "to_profile":instance.recipient_profile,
             "value_usd":instance.value_in_usdt_then,
-            "url":instance.kudos_token_cloned_from.url,
+            "url":instance.kudos_token_cloned_from.url if instance.kudos_token_cloned_from else '',
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',

@@ -13,13 +13,13 @@
 .checkbox_container label::after {
   content: '';
   position: absolute;
-  width: 0.5em;
-  height: 0.9em;
+  width: 0.4em;
+  height: 0.8em;
   border: solid white;
   border-width: 0 0.15em 0.15em 0;
-  -webkit-transform: rotate(45deg) translate(-0.7em, -1.25em);
-  -ms-transform: rotate(45deg) translate(-0.7em, -1.25em);
-  transform: rotate(45deg) translate(-0.7em, -1.25em);
+  -webkit-transform: rotate(45deg) translate(-0.6em, -1.2em);
+  -ms-transform: rotate(45deg) translate(-0.6em, -1.2em);
+  transform: rotate(45deg) translate(-0.6em, -1.2em);
   display: none;
 }
 
@@ -49,8 +49,8 @@
 
 .checkbox_container input:checked ~ label::before,
 .checkbox_container input:checked ~ * label::before {
-  background-color:#3E00FF;
-  border: 1px solid #3E00FF;
+  background-color:#6F3FF5;
+  border: 1px solid #6F3FF5;
   display: block;
 }
 
