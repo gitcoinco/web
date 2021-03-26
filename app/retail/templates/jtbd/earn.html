@@ -18,8 +18,72 @@ along with this program. If not, see
 
 <head>
   {% include 'shared/head.html' with slim=1 %}
-  {% compress css file grants %}
+  <meta name="title" content="Earn | Gitcoin">
+  <meta name="description" content="Earn">
+
+  {% compress css file jtbd_earn %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
   {% endcompress %}
+
+  <style>
+    section {
+      margin-top: 7em;
+    }
+
+    .border-top-1 {
+      border-top: 1px solid;
+    }
+    .border-bottom-1 {
+      border-bottom: 1px solid;
+    }
+    .border-grey {
+      border-color:#D0D0D0
+    }
+
+    .img-accordion .collapsing {
+      transition: none !important;
+    }
+
+    .accordion:not(.collapsed) {
+      pointer-events: none;
+    }
+
+    .accordion-panel {
+      line-height: 36px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .img-accordion > div {
+        left: 0;
+      }
+    }
+
+    @media screen and (min-width: 768px) {
+      .row > .col-gaps-2:nth-of-type(1) {
+        padding-right: 0.5rem!important;
+      }
+      .row > .col-gaps-2:nth-of-type(2) {
+        padding-left: 0.5rem!important;
+      }
+
+      .row > .col-gaps-3:nth-of-type(1) {
+        padding-right: 0.25rem!important;
+      }
+      .row > .col-gaps-3:nth-of-type(2) {
+        padding-left: 0.25rem!important;
+        padding-right: 0.25rem!important;
+      }
+      .row > .col-gaps-3:nth-of-type(3) {
+        padding-left: 0.25rem!important;
+      }
+
+      .row > .col-gap-border {
+        box-sizing: border-box;
+        border: 0.5rem solid transparent;
+        background-clip: padding-box;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -42,59 +106,121 @@ along with this program. If not, see
           <h4 class="text-wrap mb-5 text-grey-400">
             Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
           </h4>
-          <div class="my-5">
+          <div class="mt-5">
             <a class="btn btn-lg btn-primary px-5" href="{% url 'grants:grants_explorer' %}">{% trans "I'm ready to earn" %}</a>
           </div>
         </div>
         <div class="col-auto d-none d-md-block mx-5 pt-0">
-          <img src="{% static 'v2/images/jtbd/break-free.png' %}" />
+          <img src="{% static 'v2/images/jtbd/break-free.png' %}" height="238px" />
         </div>
       </div>
-      <div class="">
-        {% include 'grants/shared/landing_grants.html' %}
-      </div>
       <section id="ways-to-earn">
-        <h4 class="text-grey-500 mb-5">Ways to earn</h4>
-        <div class="row">
-          <div class="col-12 col-md-3 mr-5 pl-5 img-parent">
-            <div id="collapseOne" class="collapse" data-parent=".img-parent">
-              <img src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" width="250" alt="">
-            </div>
-            <div id="collapseTwo" class="collapse" data-parent=".img-parent">
-              <img src="{% static 'v2/images/jtbd/earn-hackathons.svg' %}" width="250" alt="">
-            </div>
-            <div id="collapseThree" class="collapse" data-parent=".img-parent">
-              <img src="{% static 'v2/images/jtbd/earn-grants.svg' %}" width="250" alt="">
+        <h2 class="text-grey-500 mb-5">Ways to earn</h2>
+        <div class="row" id="accordion-group">
+          <div class="col-12 col-md-4 mr-5 ml-md-3">
+            <div class="accordion-group img-accordion" style="min-height: min(110vw, 33rem)">
+              <div class="p-4 position-absolute h-100 w-100" style="z-index: -1">
+                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" style="max-width: 21rem"/>
+              </div>
+              <div class="collapseOne p-4 position-absolute h-100 w-100 collapse show bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" style="max-width: 21rem"/>
+              </div>
+              <div class="collapseTwo p-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-hackathons.svg' %}" style="max-width: 21rem"/>
+              </div>
+              <div class="collapseThree p-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-grants.svg' %}" style="max-width: 21rem"/>
+              </div>
             </div>
           </div>
-          <div class="col-12 col-md-5 ml-5">
-            <div class="accordion-group gc-accordion ml-0" id="accordion-group">
-              <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
-                <span class="accordion-title">
-                  Earn through bounties
-                </span>
+          <div class="col-12 col-md-5 pt-4">
+            <div class="accordion-group gc-accordion">
+              <h5 class="accordion" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
+                <span class="accordion-title">Earn through bounties</span>
               </h5>
-              <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+              <div class="accordion-panel collapse show font-subheader text-grey-500 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
                 <p>Tackle bounties for all skill levels hosted by Web3’s most exciting projects. From open security contests and new feature builds, to UX/UI design and content creation.</p>
               </div>
-              <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseTwo" aria-controls="collapseTwo">
-                <span class="accordion-title">
-                  Earn through sponsored hackathons
-                </span>
+    
+              <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
+                <span class="accordion-title">Earn through sponsored hackathons</span>
               </h5>
-              <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+              <div class="accordion-panel collapse font-subheader text-grey-500 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
                 <p>Collect rewards and tokens as you hack your way through creative solutions on a variety of protocols. Team up with other Web3 builders to advance the technology that will shape our future.</p>
               </div>
-              <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseThree" aria-controls="collapseThree">
-                <span class="accordion-title">
-                  Earn through grant funding
-                </span>
+    
+              <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
+                <span class="accordion-title">Earn through grant funding</span>
               </h5>
-              <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+              <div class="accordion-panel collapse font-subheader text-grey-500 collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
                 <p>Start an open source, public goods project and begin crowdsourcing funds through Gitcoin Grants. Participate in our quarterly Grants Rounds for the opportunity to earn a portion of the generous matching pool that has helped launch thousands of projects.</p>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="top-earners">
+        <h2 class="text-grey-500 mb-5">See top earners on Gitcoin</h2>
+        <div class="row">
+          {% for earner in top_earners %}
+          <div class="col-12 col-md-6 col-lg-3 py-5 mb-2">
+            <div class="row">
+              <div class="col-5 col-md-12">
+                <img class="rounded-circle w-100" style="max-width: 10rem;" src="{% url 'org_avatar' earner.github_username %}" />
+              </div>
+              <div class="col-7 col-md-12 pt-2 m-auto">
+                <span class="d-block w-100 font-bigger-1">#{{ earner.rank }}</span>
+                <span class="d-block w-100 text-grey-400">@{{ earner.github_username }}</span>
+                <span class="d-block w-100 text-grey-400">{{ earner.amount|floatformat:"0" }} DAI</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section id="hackathons">
+        <h2 class="text-grey-500 mb-5">Earn in hackathons</h2>
+        <div class="row">
+          {% for hackathon in hackathons %}
+          <div class="col-12 col-md-4 col-gaps-5 font-body">
+            <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ MEDIA_URL }}{{ hackathon.logo }}" height="202px"/>
+            <p class="font-bigger-2 font-weight-bold mt-4 mb-2 text-wrap" style="min-height: 74px">{{ hackathon.name }}</p>
+            <p class="text-grey-400" style="min-height: 100px">{{ hackathon.summary }}</p>
+            <p class="text-grey-400">
+              {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+            </p>
+            <p class="text-grey-400">
+              <span class="pr-2">Sponsored by</span>
+              {% for sponsor in hackathon.sponsor_profiles %}
+                <img class="rounded-circle" style="max-height: 1rem; object-fit: contain;" src="https://gitcoin.co/dynamic/avatar/{{ sponsor.handle }}" alt="{{ sponsor.handle }}" />
+              {% endfor %}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section id="bounties">
+        <h2 class="text-grey-500 mb-5">Earn in bounties</h2>
+        <div class="row">
+          {% for bounty in bounties %}
+          <div class="col-12 col-md-5 font-body m-2">
+            <div class="row border py-4 px-3">
+              <div class="col-2 px-0">
+              <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="" width="56" height="56" class="rounded-circle">
+              </div>
+              <div class="col-10 pl-md-0">
+                <p class="font-weight-bold text-wrap">{{ bounty.title }}</p>
+                <div class="d-flex">
+                  <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
+                  <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </section>
     </div>
