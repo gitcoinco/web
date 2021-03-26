@@ -8,7 +8,7 @@
 .sticky-top {
   position: sticky!important;
   top: 0;
-  z-index: 2;
+  z-index: 3;
 }
 
 .no-gutter {
@@ -513,6 +513,10 @@
 
   .accordion:not(.collapsed) {
     border-left: 4px solid #02e2ac;
+
+    .accordion-title {
+      font-weight: bold;
+    }
   }
 
   .accordion-panel  {

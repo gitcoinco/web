@@ -38,6 +38,7 @@
   }
 
   .vs__selected-options > input:invalid {
+    min-height: 21px;
     box-shadow:
       -7px -9px 0px 0px #fff, 30px -9px 0px 0px #fff, 30px 5px 0px 0px #fff, -7px 5px 0px 0px #fff,
       -8px -10px 0px 0px #D44D6E, 31px -10px 0px 0px #D44D6E, 31px 6px 0px 0px #D44D6E, -8px 6px 0px 0px #D44D6E;
