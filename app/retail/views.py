@@ -1588,21 +1588,21 @@ def jtbd_earn(request):
     return TemplateResponse(request, 'jtbd/earn.html', context)
 
 
-#@cached_view(timeout=86400) # cached for 24 hours
+@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_learn(request):
     context = JSONStore.objects.filter(view='jtbd', key='learn').first().data
     return TemplateResponse(request, 'jtbd/learn.html', context)
 
 
-#@cached_view(timeout=86400) # cached for 24 hours
+@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_connect(request):
     context = JSONStore.objects.filter(view='jtbd', key='connect').first().data
     return TemplateResponse(request, 'jtbd/connect.html', context)
 
 
-#@cached_view(timeout=86400) # cached for 24 hours
+@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_fund(request):
     context = JSONStore.objects.filter(view='jtbd', key='fund').first().data

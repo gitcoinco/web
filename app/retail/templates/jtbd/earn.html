@@ -34,55 +34,7 @@ along with this program. If not, see
       background-color: #F8F8F8;
     }
 
-    .border-top-1 {
-      border-top: 1px solid;
-    }
-
-    .border-bottom-1 {
-      border-bottom: 1px solid;
-    }
-
-    .border-grey {
-      border-color:#D0D0D0
-    }
-
-    .img-accordion .collapsing {
-      transition: none !important;
-    }
-
-    .accordion:not(.collapsed) {
-      pointer-events: none;
-    }
-
-    .accordion-panel {
-      line-height: 36px;
-    }
-
-    @media screen and (max-width: 768px) {
-      .img-accordion > div {
-        left: 0;
-      }
-    }
-
     @media screen and (min-width: 768px) {
-      .row > .col-gaps-2:nth-of-type(1) {
-        padding-right: 0.5rem!important;
-      }
-      .row > .col-gaps-2:nth-of-type(2) {
-        padding-left: 0.5rem!important;
-      }
-
-      .row > .col-gaps-3:nth-of-type(1) {
-        padding-right: 0.25rem!important;
-      }
-      .row > .col-gaps-3:nth-of-type(2) {
-        padding-left: 0.25rem!important;
-        padding-right: 0.25rem!important;
-      }
-      .row > .col-gaps-3:nth-of-type(3) {
-        padding-left: 0.25rem!important;
-      }
-
       .row > .col-gap-border {
         box-sizing: border-box;
         border: 0.5rem solid transparent;
@@ -163,7 +115,7 @@ along with this program. If not, see
             </div>
           </div>
           <div class="col-12 col-md-5 pt-4">
-            <div class="accordion-group gc-accordion">
+            <div class="accordion-group gc-accordion ml-md-5">
               <h5 class="accordion" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
                 <span class="accordion-title">Earn through bounties</span>
               </h5>
@@ -199,9 +151,11 @@ along with this program. If not, see
                 <img class="rounded-circle w-100" style="max-width: 10rem;" src="{% url 'org_avatar' earner.github_username %}" />
               </div>
               <div class="col-7 col-md-12 pt-2 m-auto">
-                <span class="d-block w-100 font-bigger-1">#{{ earner.rank }}</span>
-                <span class="d-block w-100 text-grey-400">@{{ earner.github_username }}</span>
-                <span class="d-block w-100 text-grey-400">{{ earner.amount|floatformat:"0" }} DAI</span>
+                <h2 class="d-inline w-100 gc-font-base text-grey-500">#{{ earner.rank }}</h2>
+                <div>
+                  <span class="d-block w-100 text-grey-400">@{{ earner.github_username }}</span>
+                  <span class="d-block w-100 text-grey-400">{{ earner.amount|floatformat:"0" }} DAI</span>
+                </div>
               </div>
             </div>
           </div>
