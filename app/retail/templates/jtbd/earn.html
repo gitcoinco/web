@@ -1,9 +1,81 @@
-top earners: <pre>{{ top_earners | pprint }}</pre>
-<br>
-hackathons: <pre>{{ hackathons | pprint }}</pre>
-<br>
-bounties: <pre>{{ bounties | pprint }}</pre>
-<br>
-featured grant: <pre>{{ featured_grant | pprint }}</pre>
-<br>
-testimonials: <pre>{{ testimonials | pprint }}</pre>
+{% comment %}
+Copyright (C) 2020 Gitcoin Core
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load humanize static i18n compress %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' with slim=1 %}
+  {% compress css file grants %}
+  {% endcompress %}
+</head>
+
+<body>
+  {% include 'shared/tag_manager_2.html' %}
+  {% include 'shared/top_nav.html' with class='d-md-flex' %}
+  {% include 'home/nav.html' %}
+
+  <div class="container-fluid mb-5">
+    {% if announcement %}
+    <div class="py-3 text-center" style="background-color: #3e00ff">
+      <p class="mb-0 white">{{announcement.desc | safe}}</p>
+    </div>
+    {% endif %}
+    <div class="container bg-white">
+      <!--  Header section -->
+      <div class="row justify-content-between my-5">
+        <div class="col">
+          <h1 class="mb-4">
+              Break free from your 9–5 to work on open source projects that matter.
+          </h1>
+          <h4 class="text-wrap mb-5 text-grey-400">
+            Millions of dollars flow into Gitcoin projects.<br>Earn by participating in sponsored hackathons, <br>bug bounties, and funded community grants.
+          </h4>
+          <div class="my-5">
+            <a class="btn btn-lg btn-primary px-5" href="{% url 'grants:grants_explorer' %}">{% trans "I'm ready to earn" %}</a>
+          </div>
+        </div>
+        <div class="col-auto d-none d-md-block mx-5 pt-0">
+          <img src="{% static 'v2/images/jtbd/break-free.png' %}" />
+        </div>
+      </div>
+      <div class="">
+        {% include 'grants/shared/landing_grants.html' %}
+      </div>
+      <section id="ways-to-earn">
+        <h4 class="py-0 my-0 pl-0 text-grey-500">Ways to earn</h4>
+        <div class="row">
+          <div class="accordion-group gc-accordion" id="accordion-group">
+            <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
+              <span class="accordion-title">
+                Accordion Title 1
+              </span>
+            </h5>
+            <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+              <p>Accordion 1 content</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    {% csrf_token %}
+  </div>
+
+  {% include 'shared/footer.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+</body>
+
+</html>
