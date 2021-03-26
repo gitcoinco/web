@@ -30,12 +30,18 @@ along with this program. If not, see
       margin-top: 7em;
     }
 
+    .bg-lighter {
+      background-color: #F8F8F8;
+    }
+
     .border-top-1 {
       border-top: 1px solid;
     }
+
     .border-bottom-1 {
       border-bottom: 1px solid;
     }
+
     .border-grey {
       border-color:#D0D0D0
     }
@@ -107,7 +113,7 @@ along with this program. If not, see
             Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
           </p>
           <div class="mt-5">
-            <a class="btn btn-lg btn-primary px-5" href="{% url 'grants:grants_explorer' %}">{% trans "I'm ready to earn" %}</a>
+            <a class="col-12 col-md-auto btn btn-lg btn-primary px-5" href="{% url 'grants:grants_explorer' %}">{% trans "I'm ready to earn" %}</a>
           </div>
         </div>
         <div class="col-auto d-none d-md-block mx-5 pt-0">
@@ -249,39 +255,75 @@ along with this program. If not, see
 
       <section id="grants">
         <h2 class="text-grey-500 mb-5">Earn through grants</h2>
-        <div style="max-width: 47rem;">
+        <div style="max-width: 55rem;">
           <p class="font-subheader">Gitcoin grants enables your open source project to get funding through community support and Quadratic matching. The more people support your project, the more matching funds you receive.</p>
         </div>
-        <img class="d-block m-auto ml-md-0 w-100" src="{{ featured_grant.logo }}" style="max-width: 35rem;" />
+        <img class="d-block m-auto ml-md-0 w-100" src="{{ featured_grant.logo }}" style="max-width: 43rem;" />
         <p class="font-bigger-2 mt-4 text-wrap text-grey-500">{{ featured_grant.title }}</p>
-        <div style="max-width: 35rem;">
-          <p class="text-grey-400">{{ featured_grant.description }}</p>
+        <div style="max-width: 43rem;">
+          <p class="text-grey-400 font-subheader">{{ featured_grant.description }}</p>
         </div>
+        {% if featured_grant.in_active_clrs %}
+          <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>
+        {% else %}
+          <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received|floatformat:2 }} Raised</p>
+        {% endif %}
       </section>
 
       <section id="testimonial">
         <h2 class="text-grey-500 mb-5">What developers are saying</h2>
-        <div class="row" style="max-width: 45rem;">
+        <div class="row" style="max-width: 65rem;">
           <div class="col-12 col-md-6 order-1 order-md-0 font-body">
             <div class="row">
               <div class="col-auto m-0 p-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
-              <div class="col text-grey-400">
+              <div class="col text-grey-400 pr-5">
                 <div class="row">
                   <p>{{ testimonial.comment }}</p>
                 </div>
                 <div class="row">
-                  <p>{{ testimonial.handle }}<br>{{ testimonial.role }}</p>
+                  <p>@{{ testimonial.handle }}<br>{{ testimonial.role }}</p>
                 </div>
                 <div class="row">
                   <a class="pr-2" rel=nofollow href="https://www.twitter.com/{{ testimonial.twitter_handle }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
-                  <a class="pl-2" rel=nofollow href="https://github.com/{{ testimonial.github_handle }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  <a class="pl-2" rel=nofollow href="https://github.com/{{ testimonial.handle }}?tab=repositories" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-12 col-md-2 order-0 order-md-1">
             <div class="row mb-5">
-              <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="https://gitcoin.co/dynamic/avatar/{{ testimonial.avatar_url }}" alt="{{ testimonial.handle }}" />
+              <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% url 'org_avatar' testimonial.handle %}" alt="{{ testimonial.handle }}" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cta">
+        <h2 class="text-grey-500 mb-5">Ready to connect?</h2>
+        <div class="row">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 col-md-4 py-5 px-3 col-gap-border bg-lighter mt-2">
+                <div style="min-height: 170px;">
+                  <h3 class="py-2">Earn in bounties</h3>
+                  <p class="py-2 pb-md-5 font-subheader">Earn while building meaningful open source projects.</p>
+                </div>
+                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+              </div>
+              <div class="col-12 col-md-4 py-5 px-3 col-gap-border bg-lighter mt-2">
+                <div style="min-height: 170px;">
+                  <h3 class="py-2">Earn in hackathons</h3>
+                  <p class="py-2 pb-md-3 font-subheader" style="line-height: 28px;">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects</p>
+                </div>
+                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
+              </div>
+              <div class="col-12 col-md-4 py-5 px-3 col-gap-border bg-lighter mt-2">
+                <div style="min-height: 170px;">
+                  <h3 class="py-2">Earn in grants</h3>
+                  <p class="py-2 font-subheader">Get community support and matched funds for public goods projects.</p>
+                </div>
+                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
+              </div>
             </div>
           </div>
         </div>
