@@ -23,8 +23,8 @@ MONTH=`date +"%m"`
 DAY=`date +"%d"`
 YEAR=`date +"%Y"`
 PG_DUMP="/usr/lib/postgresql/9.6/bin/pg_dump"
-export PGPASSWORD=$(cat app/app/.env | grep "DATABASE_URL" | awk -F "=" '{print $2}' | awk -F "@" '{print $1}' | awk -F ":" '{print $3}')
-export HOST=$(cat app/app/.env | grep "DATABASE_URL" | awk -F "=" '{print $2}' | awk -F "@" '{print $2}' | awk -F ":" '{print $1}')
+export PGPASSWORD=$(cat app/app/.env | grep "DATABASE_URL" | grep -v REPLICA | awk -F "=" '{print $2}' | awk -F "@" '{print $1}' | awk -F ":" '{print $3}')
+export HOST=$(cat app/app/.env | grep "DATABASE_URL" | grep -v REPLICA | awk -F "=" '{print $2}' | awk -F "@" '{print $2}' | awk -F ":" '{print $1}')
 IS_PROD=$(cat app/app/.env | grep ENV | grep prod | wc -l)
 if [ "$IS_PROD" -eq "1" ]; then
     # full backup
