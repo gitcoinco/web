@@ -193,6 +193,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '59':
         case '58':
           // 58 - polkadot, 59 - kusama

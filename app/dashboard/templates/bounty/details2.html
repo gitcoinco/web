@@ -41,7 +41,6 @@
             </span>
             <a v-for="link in quickLinks" class="btn btn-outline-primary px-2 mx-2 btn-sm" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
             <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="contactFunder()">Contact Funder</button>
-            <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="overrideStatus()">Override Status</button>
           </div>
           <div class="col-12" v-if="loadingState === 'resolved'">
             {% if event_tag %}
@@ -157,7 +156,7 @@
 
             <div class="row">
               <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
-                <template v-if="isOwner">
+                <template v-if="isOwner || contxt.is_staff">
                   <div v-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
                     <a class="btn btn-primary btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
                       <i class="fas fa-check mr-2"></i>
@@ -365,11 +364,13 @@
                     </div>
                     <div class="col-12">
                       <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
-                        <i class="far fa-link mr-1"></i>
-                        <span class="font-weight-bold mb-2">PR:</span>
-                        <a :href="fulfillment.fulfiller_github_url" target="_blank">
-                          [[ fulfillment.fulfiller_github_url ]]
-                        </a>
+                        <template v-if="showWorkSubmitted(fulfillment.fulfiller_github_username)">
+                          <i class="far fa-link mr-1"></i>
+                          <span class="font-weight-bold mb-2">PR:</span>
+                          <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                            [[ fulfillment.fulfiller_github_url ]]
+                          </a>
+                        </template>
                         <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
                           <i class="far fa-clock font-caption mr-1"></i>
                           <span class="font-weight-bold">Hours worked:</span>
@@ -439,7 +440,7 @@
                             </div>
 
                             <!-- WEB3 MODAL FLOW -->
-                            <div v-else-if="fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
+                            <div v-else-if="fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
 
                               <div class="text-center pb-3">
                                 <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -1125,10 +1126,15 @@
       <script src="{% static "v2/js/pages/bounty_detail/harmony_extension.js" %}"></script>
 
     {% elif web3_type == 'rsk_ext' %}
-
       <script src="{% static "v2/js/pages/bounty_detail/rsk_extension.js" %}"></script>
 
+    {% elif web3_type == 'xinfin_ext' %}
+
+      <script src="{% static "v2/js/lib/xinfin/xdc3.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/xinfin_extension.js" %}"></script>
+
     {% elif web3_type == 'fiat' %}
+
       {% if PYPL_CLIENT_ID %}
         <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
       {% endif %}

@@ -295,6 +295,7 @@ class Bounty(SuperModel):
         ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
+        ('xinfin_ext', 'Xinfin Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1412,6 +1413,7 @@ class BountyFulfillment(SuperModel):
         ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
+        ('xinfin_ext', 'xinfin_ext'),
         ('manual', 'manual')
     ]
 
@@ -1427,6 +1429,7 @@ class BountyFulfillment(SuperModel):
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
+        ('XINFIN', 'XINFIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -4539,6 +4542,14 @@ class Profile(SuperModel):
             if login.ip_address:
                 ips.append(login.ip_address)
         return ips
+
+    @property
+    def last_known_ip(self):
+        ips = self.ips
+        if len(ips) > 0:
+            return ips[0]
+        return ''
+
 
     @property
     def locations(self):
