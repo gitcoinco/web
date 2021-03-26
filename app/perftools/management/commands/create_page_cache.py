@@ -197,9 +197,9 @@ def create_jtbd_connect_cache():
         'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
-            'handle': 'Matt Solomon',
-            'role': 'Front end Developer',
-            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'handle': 'John wilkinson',
+            'role': 'Developer',
+            'comment': "I LOVE IT… The community has been outstanding. I have made contact outside of slack with a couple people. William Schwab was kind enough to ZOOM with me for an hour and tell me his story, let me pick his brain, and he shared some valuable resources with me.",
             'avatar_url': '',
             'twitter': '',
             'github': '',
