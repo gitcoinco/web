@@ -16,7 +16,7 @@ def find_txn_on_rsk_explorer(contribution):
     if subscription.tenant != 'RSK':
         return None
 
-    if token_symbol not in ['RBTC', 'RDOC', 'DOC']:
+    if token_symbol not in ['RBTC', 'RDOC', 'DOC', 'RIF', 'SOV']:
         return None
 
     to_address = grant.rsk_payout_address
@@ -58,7 +58,7 @@ def get_rsk_txn_status(contribution, network='mainnet'):
     from_address = subscription.contributor_address
     # amount = subscription.amount_per_period
 
-    if token_symbol not in ['RBTC', 'RDOC', 'DOC']:
+    if token_symbol not in ['RBTC', 'RDOC', 'DOC', 'RIF', 'SOV']:
         return None
 
 

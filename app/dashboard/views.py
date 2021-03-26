@@ -91,7 +91,7 @@ from git.utils import (
 from grants.models import Grant
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from mailchimp3 import MailChimp
+# from mailchimp3 import MailChimp
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
@@ -3254,9 +3254,17 @@ def verify_user_google(request):
             'message': 'Invalid code',
         })
 
+    identity_data_google = r.json()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        return JsonResponse({
+            'ok': False,
+            'message': 'A user with this google account already exists!',
+        })
+
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
-    profile.identity_data_google = r.json()
+    profile.identity_data_google = identity_data_google
+    profile.google_user_id = identity_data_google['id']
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
@@ -4243,8 +4251,9 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     what = f'hackathon:{hackathon_event.id}{filter}'
 
-    num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
-    num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
+    all_participants =  BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, bounty__in=query_prizes)
+    num_participants = all_participants.count()
+    num_submissions = all_participants.filter(event_type='submit_work').count()
 
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
@@ -4915,36 +4924,36 @@ def hackathon_registration(request):
     except Exception as e:
         logger.error('Error while saving registration', e)
 
-    try:
-        client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
-        mailchimp_data = {
-                'email_address': email,
-                'status_if_new': 'subscribed',
-                'status': 'subscribed',
+    # try:
+    #     client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+    #     mailchimp_data = {
+    #             'email_address': email,
+    #             'status_if_new': 'subscribed',
+    #             'status': 'subscribed',
 
-                'merge_fields': {
-                    'HANDLE': profile.handle,
-                    'HACKATHON': hackathon,
-                },
-            }
+    #             'merge_fields': {
+    #                 'HANDLE': profile.handle,
+    #                 'HACKATHON': hackathon,
+    #             },
+    #         }
 
-        user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
+    #     user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
-        client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
+    #     client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
 
-        client.lists.members.tags.update(
-            settings.MAILCHIMP_LIST_ID_HACKERS,
-            user_email_hash,
-            {
-                'tags': [
-                    {'name': hackathon, 'status': 'active'},
-                ],
-            }
-        )
-        print('pushed_to_list')
-    except Exception as e:
-        logger.error(f"error in record_action: {e}")
-        pass
+    #     client.lists.members.tags.update(
+    #         settings.MAILCHIMP_LIST_ID_HACKERS,
+    #         user_email_hash,
+    #         {
+    #             'tags': [
+    #                 {'name': hackathon, 'status': 'active'},
+    #             ],
+    #         }
+    #     )
+    #     print('pushed_to_list')
+    # except Exception as e:
+    #     logger.error(f"error in record_action: {e}")
+    #     pass
 
     if referer and '/issue/' in referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
@@ -5837,7 +5846,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -5954,8 +5963,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6021,7 +6030,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)

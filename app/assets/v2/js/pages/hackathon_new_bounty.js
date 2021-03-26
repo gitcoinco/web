@@ -154,6 +154,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '58':
           // polkadot
           type = 'polkadot_ext';
@@ -327,7 +331,6 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {};
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
@@ -335,7 +338,6 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.form.token = result[0];
       return result;
     }
   },

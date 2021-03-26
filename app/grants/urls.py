@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail, clr_grants,
+    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail, clr_grants, collage,
     collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
     contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
     contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
@@ -58,6 +58,7 @@ urlpatterns = [
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
     path('bulk_cart', bulk_grants_for_cart, name='bulk_grants_for_cart'),
     path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
+    path('collage', collage, name='collage'),
     path('activity', grant_activity, name='log_activity'),
 
     path('cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),

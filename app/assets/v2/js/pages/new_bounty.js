@@ -193,6 +193,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '59':
         case '58':
           // 58 - polkadot, 59 - kusama
@@ -652,7 +656,6 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {};
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
@@ -660,7 +663,6 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.$set(vm.form, 'token', result[0]);
       return result;
     }
   },

@@ -1,9 +1,9 @@
 {% load humanize static i18n %}
       {% for announce in announcements %}
-        <div class="container">
+        <div class="container-fluid">
           <div class="row">
-            <div class="col pt-2">
-              <div class="alert bs-alert alert-{{announce.style}} alert-dismissible " role="alert">
+            <div class="col">
+              <div class="alert bs-alert alert-{{announce.style}} alert-dismissible mt-4 mb-0" role="alert">
                 <div>
                   <strong>{{announce.title}}</strong> <small>{{announce.valid_from | naturaltime}}</small>
                 </div>
