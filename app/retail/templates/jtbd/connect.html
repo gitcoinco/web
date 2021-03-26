@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static to_date %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,15 +28,6 @@ along with this program. If not,see
 
 
 <style>
-  .border-top-1 {
-    border-top: 1px solid;
-  }
-  .border-bottom-1 {
-    border-bottom: 1px solid;
-  }
-  .border-grey {
-    border-color:#D0D0D0
-  }
 
   .img-accordion .collapsing {
     transition: none !important;
@@ -102,14 +93,14 @@ along with this program. If not,see
 
     <div class="row mt-5">
       <div class="col-12 col-md-8 p-0">
-        <h1 class="my-4">
+        <h1 class="mb-4">
           Connect And Build With Top Open Source Developers
         </h1>
-        <p class="font-bigger-2 text-grey-400 my-4">
+        <h3 class="font-bigger-2 text-grey-400 mb-5">
           Gitcoin is home to an exceptional blockchain community. Develop lasting relationships and technologies here.
-        </p>
-        <div class="row my-4 mx-0">
-          <button class="btn btn-primary col-12 col-md-auto p-3 px-5">
+        </h3>
+        <div class="row mt-5 mx-0">
+          <button class="btn btn-primary col-12 col-md-auto p-3 px-5 scrollToBottom">
             I'm ready to connect
           </button>
         </div>
@@ -183,26 +174,26 @@ along with this program. If not,see
 
 
     <div class="row my-5" id="accordion-group">
-      <h2 class="d-block w-100 my-4">
+      <h2 class="d-block w-100 my-5 pt-4">
         Connect on Gitcoin
       </h2>
-      <div class="col-12 col-md-6">
-        <div class="accordion-group img-accordion" style="min-height: min(110vw, 33rem)">
-          <div class="p-4 position-absolute h-100 w-100" style="z-index: -1">
-            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-7.svg" %}" style="max-width: 21rem"/>
+      <div class="col-12 col-md-6 pl-0">
+        <div class="accordion-group img-accordion" style="min-height: min(115vw, 30rem);">
+          <div class="pr-md-4 position-absolute h-100 w-100" style="z-index: -1">
+            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-7.svg" %}" style="max-width: 19rem;"/>
           </div>
-          <div class="collapseOne p-4 position-absolute h-100 w-100 collapse show bg-white" data-parent="#accordion-group">
-            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-7.svg" %}" style="max-width: 21rem"/>
+          <div class="collapseOne pr-md-4 position-absolute h-100 w-100 collapse show bg-white" data-parent="#accordion-group">
+            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-7.svg" %}" style="max-width: 19rem;"/>
           </div>
-          <div class="collapseTwo p-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
-            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-8.svg" %}" style="max-width: 21rem"/>
+          <div class="collapseTwo pr-md-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
+            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-8.svg" %}" style="max-width: 19rem;"/>
           </div>
-          <div class="collapseThree p-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
-            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-9.svg" %}" style="max-width: 21rem"/>
+          <div class="collapseThree pr-md-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
+            <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-9.svg" %}" style="max-width: 19rem;"/>
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 pt-4">
+      <div class="col-12 col-md-5 pt-4">
         <div class="accordion-group gc-accordion">
           <h5 class="accordion" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
             <span class="accordion-title">Join the Kernel Fellowship</span>
@@ -277,14 +268,14 @@ along with this program. If not,see
 
       <div class="col-12">
         <div class="row my-4">
-          <button class="btn btn-primary col-12 col-md-auto p-3 px-5">Apply to Kernel</button>
+          <a class="btn btn-primary col-12 col-md-auto p-3 px-5" href="https://gitcoin.typeform.com/to/Sy0qlDwu" target="_blank">Apply to Kernel</a>
         </div>
       </div>
     </div>
 
 
     <div class="row my-5">
-      <h2 class="d-block w-100 mt-3">Meet other passionate builders in hackathons</h2>
+      <h2 class="d-block w-100 mt-5">Meet other passionate builders in hackathons</h2>
       <div class="col-12">
         <div class="row">
           {% for hackathon in hackathons %}
@@ -293,7 +284,7 @@ along with this program. If not,see
             <p class="font-bigger-3 mt-4 mb-2" style="min-height: 74px">{{ hackathon.name }}</p>
             <p class="text-grey-400" style="min-height: 100px">{{ hackathon.summary }}</p>
             <p class="text-grey-400">
-              {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+              {{ hackathon.start_date|to_date|date:"M j, Y"}} - {{ hackathon.end_date|to_date|date:"M j, Y" }}
             </p>
             <p class="text-grey-400">
               Sponsored by
@@ -342,7 +333,7 @@ along with this program. If not,see
         <h2>Have questions before you start with Gitcoin?</h2>
         <p class="text-grey-400 font-bigger-2">Connect with the Gitcoin community in Discord</p>
         <div class="row mt-4 mx-0">
-          <button class="btn btn-primary col-12 col-md-auto p-3 px-5">Join Discord</button>
+          <a class="btn btn-primary col-12 col-md-auto p-3 px-5" href="https://discord.com/invite/83BK5z55yB" target="_blank">Join Discord</a>
         </div>
       </div>
       <div class="d-none d-md-inline col-md-3 p-0 align-self-center">
@@ -362,15 +353,15 @@ along with this program. If not,see
       <h2 class="pb-4 pt-5">Ready to connect?</h2>
       <div class="col-12">
         <div class="row">
-          <div class="col-12 col-md-6 p-5 col-gap-border bg-light mt-2">
+          <div class="col-12 col-md-6 p-5 col-gap-border bg-lighter mt-2">
             <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
             <h4 class="py-2 pb-md-5 mb-md-5 font-weight-normal">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</h4>
-            <button class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore">Explore Kernel</button>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="/hackathon-list/" target="_self">Explore Kernel</a>
           </div>
-          <div class="col-12 col-md-6 p-5 col-gap-border bg-light mt-2">
+          <div class="col-12 col-md-6 p-5 col-gap-border bg-lighter mt-5 mb-4 mt-md-2 mb-md-0">
             <h4 class="py-2 font-weight-normal">Connect through Fellowship</h4>
             <h4 class="py-2 pb-md-5 mb-md-5 font-weight-normal">Connect with your peers while working on top open source projects.</h4>
-            <button class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore">Explore Hackathons</button>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
           </div>
         </div>
       </div>
@@ -381,9 +372,17 @@ along with this program. If not,see
 
   {% include 'shared/footer.html' %}
 </div>
+
 </body>
 
 {% include 'shared/analytics.html' %}
 {% include 'shared/footer_scripts.html' with slim=1 %}
+
+<script>
+  $(".scrollToBottom").click(function() {
+    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    return false;
+  });
+</script>
 
 </html>
