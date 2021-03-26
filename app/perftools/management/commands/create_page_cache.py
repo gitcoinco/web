@@ -233,11 +233,11 @@ def create_jtbd_fund_cache():
         'projects': projects,
         'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],
         'testimonial': {
-            'handle': 'sebastian',
+            'handle': 'Austin Griffith',
             'role': 'Python Developer',
             'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
-            'twitter': '',
-            'github': '',
+            'twitter_handle': 'austingriffith',
+            'github_handle': 'austintgriffith',
         },
     }
     view = 'jtbd'

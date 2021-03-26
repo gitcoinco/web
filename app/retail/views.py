@@ -1602,7 +1602,7 @@ def jtbd_connect(request):
     return TemplateResponse(request, 'jtbd/connect.html', context)
 
 
-@cached_view(timeout=86400) # cached for 24 hours
+# @cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_fund(request):
     context = JSONStore.objects.filter(view='jtbd', key='fund').first().data
