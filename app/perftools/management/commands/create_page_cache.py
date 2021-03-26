@@ -112,23 +112,23 @@ def create_jtbd_learn_cache():
     alumni = [
         {
             'name': 'Linda Xie',
-            'role': 'Scalar Capital',
-            'avatar_url': '',
+            'role': '@ljxie',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/ljxie.png',
         },
         {
-            'name': 'Andy Tudhope',
-            'role': 'Author of KERNEL Learn Track',
-            'avatar_url': '',
+            'name': 'Simona Pop',
+            'role': '@sim_pop',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/simonapop.png',
         },
         {
-            'name': 'Shawn Cheng',
-            'role': 'Partner Consensys Mesh',
-            'avatar_url': '',
+            'name': 'Sebnem Rusitschka',
+            'role': '@sebnem',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/sebnem.png',
         },
         {
-            'name': 'Corey Petty',
-            'role': 'CSO at Status',
-            'avatar_url': '',
+            'name': 'Pranay Valson',
+            'role': '@valsonay',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/valsonay.png',
         }
     ]
 
@@ -136,12 +136,12 @@ def create_jtbd_learn_cache():
         'hackathons': fetch_jtbd_hackathons(),
         'alumni': alumni,
         'testimonial': {
-            'name': 'Arya Soltanieh',
+            'handle': 'Arya Soltanieh',
             'role': 'Founder, Myco Ex-Coinbase',
             'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
-            'avatar_url': '',
+            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/arya.png',
             'twitter': '',
-            'github': '',
+            'github': 'lostcodingsomewhere',
         },
     }
     view = 'jtbd'
@@ -197,7 +197,7 @@ def create_jtbd_connect_cache():
         'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
-            'handle': 'John wilkinson',
+            'handle': 'John Wilkinson',
             'role': 'Developer',
             'comment': "I LOVE IT… The community has been outstanding. I have made contact outside of slack with a couple people. William Schwab was kind enough to ZOOM with me for an hour and tell me his story, let me pick his brain, and he shared some valuable resources with me.",
             'avatar_url': '',
