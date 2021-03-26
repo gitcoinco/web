@@ -323,10 +323,10 @@ body {
 }
 
 .navigation .nav-link.active {
-  background-color: transparent !important;
   font-weight: bold !important;
-  color: #4700FF !important;
-  border-bottom: 4px solid #4700FF !important;
+  border-bottom: 4px solid #6F3FF5!important;
+  color: #6F3FF5;
+  background-color: transparent !important;
 }
 
 li.navigation > a.nav-link {

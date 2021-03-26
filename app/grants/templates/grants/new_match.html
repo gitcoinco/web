@@ -37,7 +37,7 @@
       </div>
 
       <div class="container-fluid bg-lightblue pb-5 pt-5" v-cloak id="gc-new-match">
-        <form action="" @submit="checkForm">
+        <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
           <div class="text-center">
             <img style="width:6rem;" src="{% static "v2/images/grants/torchbearer.svg" %}">
           </div>
@@ -63,9 +63,17 @@
                 </label>
                 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
-                <v-select :options="why_options" label="label" v-model="form.why" />
-
-                <div class="text-danger" v-if="errors.why">
+                <v-select :options="why_options" label="label" v-model="form.why">
+                  <template #search="{attributes, events}">
+                    <input
+                      class="vs__search"
+                      :required="!form.why"
+                      v-bind="attributes"
+                      v-on="events"
+                    />
+                  </template>
+                </v-select>
+                <div class="text-danger" v-if="errors.why && !form.why">
                   [[errors.why]]
                 </div>
               </div>
@@ -89,7 +97,7 @@
                     </label>
                   </div>
 
-                  <div class="text-danger" v-if="errors.grants_to_fund">
+                  <div class="text-danger" v-if="errors.grants_to_fund && !grants_to_fund">
                     [[errors.grants_to_fund]]
                   </div>
                 </div>
@@ -103,12 +111,20 @@
                     <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
                     <v-select placeholder="Select categories" :options="grant_types" label="name" v-model="form.grant_types" :reduce="state => state.id" multiple>
+                      <template #search="{attributes, events}">
+                        <input
+                          class="vs__search"
+                          :required="!form.grant_types.length"
+                          v-bind="attributes"
+                          v-on="events"
+                        />
+                      </template>
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.name ]]</span>
                       </template>
                     </v-select>
 
-                    <div class="text-danger" v-if="errors.grant_types">
+                    <div class="text-danger" v-if="errors.grant_types && !form.grant_types.length">
                       [[errors.grant_types]]
                     </div>
                   </div>
@@ -122,7 +138,7 @@
                       </template>
                     </v-select>
 
-                    <div class="text-danger" v-if="errors.grant_categories">
+                    <div class="text-danger" v-if="errors.grant_categories && !form.grant_categories.length">
                       [[errors.grant_categories]]
                     </div>
                   </div>
@@ -133,12 +149,20 @@
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Collection</label>
                   <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
                   <v-select placeholder="Pick collections" :options="grant_collections" label="name" v-model="form.grant_collections" :reduce="state => state.id" multiple>
+                    <template #search="{attributes, events}">
+                      <input
+                        class="vs__search"
+                        :required="!form.grant_collections.length"
+                        v-bind="attributes"
+                        v-on="events"
+                      />
+                    </template>
                     <template v-slot:option="option">
                       <span class="font-weight-semibold">[[ option.name ]]</span>
                     </template>
                   </v-select>
 
-                  <div class="text-danger" v-if="errors.grant_collections">
+                  <div class="text-danger" v-if="errors.grant_collections && !form.grant_collections.length">
                     [[errors.grant_collections]]
                   </div>
                 </div>
@@ -154,6 +178,14 @@
                 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
 
                 <v-select placeholder="Contact / Send Funds" :options="stage_options" label="val" v-model="form.stage" :reduce="state => state.key">
+                  <template #search="{attributes, events}">
+                    <input
+                      class="vs__search"
+                      :required="!form.stage"
+                      v-bind="attributes"
+                      v-on="events"
+                    />
+                  </template>
                   <template v-slot:option="option">
                     <span class="font-weight-semibold">[[ option.val ]]</span>
                   </template>
@@ -163,7 +195,7 @@
                   This will popup a metamask prompt to transfer funds to Gitcoin
                 </p>
 
-                <div class="text-danger" v-if="errors.stage">
+                <div class="text-danger" v-if="errors.stage && !form.stage">
                   [[errors.stage]]
                 </div>
               </div>
@@ -173,9 +205,9 @@
               <div class="col-12 mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Amount (in Dai)</label>
                 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-                <input id="amount" v-model="form.amount" name="amount" class="form__input form__input-lg" required />
+                <input id="amount" v-model="form.amount" name="amount" :class="`form__input form__input-lg ${errors.amount && Number(form.amount) <= 0 ? 'invalid' : ''}`" required />
 
-                <div class="text-danger" v-if="errors.reference_url">
+                <div class="text-danger" v-if="errors.amount && Number(form.amount) <= 0">
                   [[errors.amount]]
                 </div>
               </div>
