@@ -2804,6 +2804,7 @@ def grants_info(request):
     }
 
     pks = request.GET.get('pks', None)
+    slim = request.GET.get('slim', False)
 
     if not pks:
         response['message'] = 'error: missing parameter pks'
@@ -2813,7 +2814,10 @@ def grants_info(request):
 
     try:
         for grant in Grant.objects.filter(pk__in=pks.split(',')):
-            grants.append(grant.repr(request.user, request.build_absolute_uri))
+            if slim:
+                grants.append(grant.cart_payload(request.build_absolute_uri, request.user))
+            else:
+                grants.append(grant.repr(request.user, request.build_absolute_uri))
     except Exception as e:
         print(e)
         response = {

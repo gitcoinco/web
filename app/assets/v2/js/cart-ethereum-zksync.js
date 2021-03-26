@@ -190,7 +190,7 @@ Vue.component('grantsCartEthereumZksync', {
     async setupZkSync() {
       const network = this.network || 'mainnet'; // fallback to mainnet if no wallet is connected
 
-      if (!web3) {
+      if (!web3Modal || !provider) {
         return; // exit if web3 isn't defined, and we'll run this function later
       }
 
