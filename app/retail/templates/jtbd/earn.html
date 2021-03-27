@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n compress %}
+{% load humanize static i18n compress to_date %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,6 +46,7 @@ along with this program. If not, see
 
 <body>
   {% include 'shared/tag_manager_2.html' %}
+  {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'home/nav.html' %}
 
   <div class="container-fluid mb-5">
@@ -65,7 +66,7 @@ along with this program. If not, see
             Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
           </p>
           <div class="mt-5">
-            <a class="col-12 col-md-auto btn btn-lg btn-primary px-5" href="{% url 'grants:grants_explorer' %}">{% trans "I'm ready to earn" %}</a>
+            <a class="col-12 col-md-auto btn btn-lg btn-primary px-5 scrollToReady" href="#readyToConnect">{% trans "I'm ready to earn" %}</a>
           </div>
         </div>
         <div class="col-auto d-none d-md-block mx-5 pt-0">
@@ -143,24 +144,29 @@ along with this program. If not, see
 
       <section id="top-earners">
         <h2 class="text-grey-500 mb-5">See top earners on Gitcoin</h2>
-        <div class="row">
+        <div class="row pt-3 mb-0">
           {% for earner in top_earners %}
-          <div class="col-12 col-md-6 col-lg-3 py-5 mb-2">
+          <div class="col-12 col-md-6 col-lg-3 mb-5">
             <div class="row">
               <div class="col-5 col-md-12">
                 <img class="rounded-circle w-100" style="max-width: 10rem;" src="{% url 'org_avatar' earner.github_username %}" />
               </div>
               <div class="col-7 col-md-12 pt-2 m-auto">
-                <h2 class="d-inline w-100 gc-font-base text-grey-500">#{{ earner.rank }}</h2>
-                <div>
-                  <span class="d-block w-100 text-grey-400">@{{ earner.github_username }}</span>
-                  <span class="d-block w-100 text-grey-400">{{ earner.amount|floatformat:"0" }} DAI</span>
+                <div class="row pl-md-4 mt-3">
+                  <div class="col-12 col-md-2 p-0">
+                    <h2 class="d-inline w-100 gc-font-base text-grey-500 p-0">#{{ earner.rank }}</h2>
+                  </div>
+                  <div class="col-12 col-md-8 pt-2 pl-md-2 pl-0" style="line-height: 10px;">
+                    <p class="w-100 text-grey-400 font-subheader">@{{ earner.github_username }}</p>
+                    <p class="w-100 text-grey-400 font-subheader">{{ earner.amount|floatformat:"0" }} DAI</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           {% endfor %}
         </div>
+        <a class="text-primary font-bigger-1" href="{{ BASE_URL }}/leaderboard/earners?cadence=monthly&keyword=all&product=bounties" target="_blank">View Leaderboard</a>
       </section>
 
       <section id="hackathons">
@@ -170,14 +176,14 @@ along with this program. If not, see
           <div class="col-12 col-md-4 col-gap-border font-body">
             <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ MEDIA_URL }}{{ hackathon.logo }}" height="202px"/>
             <p class="font-bigger-2 mt-4 mb-2 text-wrap" style="min-height: 74px">{{ hackathon.name }}</p>
-            <p class="text-grey-400" style="min-height: 100px">{{ hackathon.summary }}</p>
-            <p class="text-grey-400">
-              {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+            <p class="text-grey-400 font-subheader" style="min-height: 100px">{{ hackathon.summary }}</p>
+            <p class="text-grey-400 font-subheader">
+              {{ hackathon.start_date|to_date|date:"M j, Y" }} - {{ hackathon.end_date|to_date|date:"M j, Y" }}
             </p>
-            <p class="text-grey-400">
+            <p class="text-grey-400 font-subheader">
               <span class="pr-2">Sponsored by</span>
               {% for sponsor in hackathon.sponsor_profiles %}
-                <img class="rounded-circle" style="max-height: 1rem; object-fit: contain;" src="https://gitcoin.co/dynamic/avatar/{{ sponsor.handle }}" alt="{{ sponsor.handle }}" />
+                <img class="rounded-circle" style="max-height: 1.5rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ sponsor.handle }}" alt="{{ sponsor.handle }}" />
               {% endfor %}
             </p>
           </div>
@@ -190,12 +196,13 @@ along with this program. If not, see
         <div class="row">
           {% for bounty in bounties %}
           <div class="col-12 col-md-5 font-body m-2">
-            <div class="row border py-4 px-3" style="min-height: 140px;">
+            <div class="row border py-4 px-3" style="min-height: 200px;">
               <div class="col-2 px-0">
               <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="" width="56" height="56" class="rounded-circle">
               </div>
               <div class="col-10 pl-md-0">
-                <p class="text-wrap">{{ bounty.title }}</p>
+                <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
+                <p class="text-grey-400 font-subheader">{{ bounty.metadata.issueKeywords.lower }}</p>
                 <div class="d-flex">
                   <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
                   <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
@@ -252,7 +259,7 @@ along with this program. If not, see
         </div>
       </section>
 
-      <section id="cta">
+      <section id="readyToConnect">
         <h2 class="text-grey-500 mb-5">Ready to connect?</h2>
         <div class="row">
           <div class="col-12">
@@ -262,21 +269,21 @@ along with this program. If not, see
                   <h3 class="py-2">Earn in bounties</h3>
                   <p class="py-2 pb-md-5 font-subheader">Earn while building meaningful open source projects.</p>
                 </div>
-                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'explorer' %}" target="_blank">{% trans "Explore Bounties" %}</a>
               </div>
               <div class="col-12 col-md-4 py-5 px-3 col-gap-border bg-lighter mt-2">
                 <div style="min-height: 170px;">
                   <h3 class="py-2">Earn in hackathons</h3>
                   <p class="py-2 pb-md-3 font-subheader" style="line-height: 28px;">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects</p>
                 </div>
-                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
+                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'get_hackathons4' %}" target="_blank">{% trans "Explore Hackathons" %}</a>
               </div>
               <div class="col-12 col-md-4 py-5 px-3 col-gap-border bg-lighter mt-2">
                 <div style="min-height: 170px;">
                   <h3 class="py-2">Earn in grants</h3>
                   <p class="py-2 font-subheader">Get community support and matched funds for public goods projects.</p>
                 </div>
-                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
+                <a class="col-12 col-md-auto btn btn-lg btn-primary" href="{% url 'grants:grants' %}" target="_blank">{% trans "Earn through Grants" %}</a>
               </div>
             </div>
           </div>
@@ -287,8 +294,20 @@ along with this program. If not, see
   </div>
 
   {% include 'shared/footer.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
 </body>
+
+{% include 'shared/analytics.html' %}
+{% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+
+<script>
+  $(".scrollToReady").click(function(e) {
+    // prevent the href from being called
+    e.preventDefault();
+    // slow scroll to the element
+    $("html, body").animate({ scrollTop: $('#readyToConnect').offset().top }, "slow");
+
+    return false;
+  });
+</script>
 
 </html>
