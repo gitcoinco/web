@@ -21,6 +21,8 @@ particleForce.forEach(element => {
 });
 
 
+/*  lets get rid of that fade in animations , it sucks. 
+
 const h1 = document.querySelectorAll("h1");
 h1.forEach(element => {
     element.setAttribute("data-sal", "flip-up");
@@ -43,6 +45,7 @@ figure.forEach(element => {
     element.setAttribute("data-sal-delay", "100");
     element.setAttribute("data-sal-duration", "1800");
 });
+*/
 
 
 // init sal

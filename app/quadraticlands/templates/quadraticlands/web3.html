@@ -31,4 +31,37 @@
 <!--zachs playground for web3 tests with his ql-web3.js file-->
 <script src="{% static "v2/quadraticlands/js/web3-samples.js" %}"></script>
 
+
+<script>
+	
+
+document.addEventListener("DOMContentLoaded",function(){
+	// every time web3 is ready / address changes this calls the async function delegationInterface()
+	document.addEventListener("dataWalletReady", getWeb3Id);
+});
+
+
+// 1 : Mainnet
+// 4 : Rinkeby
+
+async function getWeb3Id() {
+	try {
+        let id = await web3.eth.net.getId()
+        console.log("Network", id)
+
+    } catch(e) {
+        console.log(e);
+    }
+
+}
+
+
+function 
+
+
+</script>
+
+
+
+
 {% endblock %}

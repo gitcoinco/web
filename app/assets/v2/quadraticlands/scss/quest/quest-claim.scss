@@ -4,20 +4,6 @@
 	align-self: center;
 
 
-	.claiming, .claimed, .error{
-		padding: 2em;
-		text-align: center;
-		animation: menu-background 4s ease-in-out infinite;
-
-		figure{
-			img{
-				width: 300px;
-				margin: auto;
-				margin-bottom: 1em;
-				
-			}
-		}
-	}
 
 	.error{
 		max-width: 600px;
@@ -26,9 +12,13 @@
 
 	.claim{
 		
-		padding: 2em;
 		text-align: center;
-		animation: menu-background 4s ease-in-out infinite;  
+		animation: claim 4s ease-in-out infinite;
+
+		padding: 3em;
+		margin: 2em;
+		
+
 
 		p{
 			margin-bottom: initial;
@@ -73,7 +63,8 @@
 				padding: 0em;
 				margin: 0em;
 
-				width: 350px;
+				width: 280px;
+	
 				height: auto;
 				
 				font-family: 'Space Mono', monospace;
@@ -138,6 +129,30 @@
 
 
 
+	.claiming{
+
+		animation: claim 2s ease-in-out infinite; 
+
+		figure{
+			img{
+				width: 280px;
+				margin: auto;
+				margin-bottom: 1em;
+			}
+		}
+
+
+	}
+
+
+
+
+	.claimed{
+
+		animation: claim 4s ease-in-out infinite; 
+
+	}
+
 
 
 
@@ -172,8 +187,9 @@
 @media #{$phone} { 
 	.quest-claim{
 		.claim{
-			padding: 2em 1em;
-			margin: 1em;
+			padding: 1em;
+			margin: 0em;
+			animation: inherit;
 		}
 	}
 }

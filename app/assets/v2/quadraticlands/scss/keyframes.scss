@@ -29,15 +29,6 @@
 } 
 
 
-
-@keyframes colorcycle-shadow-pink-purple { 
-    0% { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)) ; }  
-    50%   { filter: drop-shadow(0px 0px 44px var(--purple)) drop-shadow(0px 0px 6px var(--purple)); }
-    100%   { filter: drop-shadow(0px 0px 44px var(--pink)) drop-shadow(0px 0px 6px var(--pink)); }      
-} 
-
-
-
 @keyframes menu-background { 
     0% { box-shadow: 0px 0px 100px 0px var(--pink); } 
     33%  { box-shadow: 0px 0px 100px 0px var(--aqua); } 
@@ -94,6 +85,14 @@
     100% { transform: perspective(1000px) rotateY(360deg); }    
 } 
 
+
+
+@keyframes claim { 
+    0% { box-shadow: 0px 0px 100px 0px var(--pink); } 
+    33%  { box-shadow: 0px 0px 100px 0px var(--aqua); } 
+    66%   { box-shadow: 0px 0px 100px 0px var(--purple); }
+    100%   { box-shadow: 0px 0px 100px 0px var(--pink); }      
+}
 
 
 

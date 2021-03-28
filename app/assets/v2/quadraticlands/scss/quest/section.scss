@@ -110,7 +110,20 @@ section.quest{
 
 
 @media #{$phone} { 
+	section.quest{
 
+		div.seperator{
+			background-color: var(--space_light);
+			bottom: 80px;
+		}
+
+		nav{
+			height: 80px;
+			font-size: 70%;
+			background-color: var(--space_light);
+		}
+
+	}
 }
 
 
