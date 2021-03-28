@@ -4,8 +4,7 @@
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 1em;
 	margin: 0em 3em;
-	
-	//background-color: green;
+
 	
 	user-select: none;
 
@@ -16,6 +15,7 @@
 		padding: 0.5em;
 		text-decoration: none;
 		cursor: pointer;
+		position: relative;
 
 		label, div{
 			display: inline;
@@ -29,7 +29,7 @@
 			color: var(--white);
 			margin: 0em 1em;
 			//background-color: green;
-			word-break: break-all;
+			//word-break: break-all;
 
 		}
 
@@ -94,11 +94,11 @@
 
 		&.active{
 			background-color: var(--space);
-			animation: colorcycle-shadow 3s ease-in-out infinite;
+			animation: colorcycle-shadow-big 3s ease-in-out infinite;
 		}
 
 		&:hover{
-			animation: colorcycle-shadow 3s ease-in-out infinite;
+			animation: colorcycle-shadow-big 3s ease-in-out infinite;
 			backdrop-filter: none;
 			background-color: var(--space);
 		};
@@ -132,6 +132,17 @@
 		grid-template-columns: 1fr;
 
 		.option{
+
+			label{
+				
+			}
+
+			/* sadly removed as it do not work proper right now*/
+			.bar{
+				// display:none;
+			}
+
+		
 			
 		}
 

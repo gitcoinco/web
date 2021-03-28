@@ -1,14 +1,17 @@
-/* glass background*/
-
 .glass{
 	background-color: var(--space_glass_firefox);
 }
 
-/* if backdrop support: transparent and blurred background */
-
-@supports ((-webkit-backdrop-filter: blur(2em)) or (backdrop-filter: blur(2em))) {
+@supports ((-webkit-backdrop-filter: blur(18px)) or (backdrop-filter: blur(18px))) {
 	.glass{
 		background-color: var(--space_glass);
 		backdrop-filter: blur(18px);
+		-webkit-backdrop-filter: blur(18px);
 	}
 }
+
+
+
+
+
+

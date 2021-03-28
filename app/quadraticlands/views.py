@@ -60,6 +60,13 @@ def mission_index(request):
     context.update(game_status)
     return TemplateResponse(request, 'quadraticlands/mission/index.html', context)  
 
+def test_index(request):
+    '''render quadraticlands/mission/index.html'''
+    context, game_status = get_initial_dist(request), get_mission_status(request)
+    context.update(game_status)
+    return TemplateResponse(request, 'quadraticlands/test.html', context) 
+
+
 def mission_base(request, mission_name):
     '''used to handle quadraticlands/<mission_name>'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
