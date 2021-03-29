@@ -21,8 +21,8 @@
 
 	<!-- view : claim -->
 	<main id="claim" class="hide">
-		<div class="quest-claim glass">
-			<div class="claim">
+		<div class="quest-claim">
+			<div class="claim glass">
 				<h3>Token Distribution</h3>
 
 				<!-- claim and delegate address -->
@@ -49,7 +49,7 @@
 				<div id="claimListing" class="grid">
 					<span class="description">Member of Gitcoin</span><span class="token">+200 GTC</span>
 					<span class="description">Helpful Person</span><span class="token">+100 GTC</span>
-					<span class="description">Have a Grand</span><span class="token">+100 GTC</span>
+					<span class="description">Have a Grand</span><span class="token">+100 GTC</span>					
 				</div>
 
 				<!-- sum of this X tokens -->
@@ -64,8 +64,8 @@
 
 	<!-- view : claiming -->
 	<main id="claiming" class="hide">
-		<div class="quest-claim glass">
-			<div class="claiming">
+		<div class="quest-claim">
+			<div class="claiming glass">
 				<h3>Claiming <span>(Pending)</span></h3>
 				<figure><img src="/static/quadraticlands/images/uni.svg"></figure>
 				<h1>+{{ total_claimable_gtc }} GTC</h1>
@@ -77,8 +77,8 @@
 
 	<!-- view : claimed -->
 	<main id="claimed" class="hide">
-		<div class="quest-claim glass">
-			<div class="claimed">
+		<div class="quest-claim">
+			<div class="claimed glass">
 				<h3>Claimed</h3>
 				<figure><img src="/static/quadraticlands/images/uni.svg"></figure>
 				<h1>+{{ total_claimable_gtc }} GTC</h1>
@@ -90,8 +90,8 @@
 
 	<!-- view : error -->
 	<main id="error" class="hide">
-		<div class="quest-claim glass">
-			<div class="error">
+		<div class="quest-claim">
+			<div class="error glass">
 				<h3>Error</h3>
 				<p>We're sorry, we were not able to process your claim. Please check <span id="transaction_link_error"></span> for more info, try again, and/or contact support@gitcoin.co </p>
 			</div>
@@ -159,7 +159,7 @@
 
 
 <!-- custom particles-->
-<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
+<!--<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>-->
 
 <!-- force web3modal to popup automaticaly when no provider selected-->
 <script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>

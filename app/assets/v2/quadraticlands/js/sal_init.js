@@ -37,7 +37,10 @@ btn.forEach(element => {
     element.setAttribute("data-sal-delay", "300");
     element.setAttribute("data-sal-duration", "500");
 });
+*/
 
+
+// need this to init particles
 
 const figure = document.querySelectorAll("figure");
 figure.forEach(element => {
@@ -45,7 +48,7 @@ figure.forEach(element => {
     element.setAttribute("data-sal-delay", "100");
     element.setAttribute("data-sal-duration", "1800");
 });
-*/
+
 
 
 // init sal
