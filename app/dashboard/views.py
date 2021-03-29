@@ -6471,9 +6471,11 @@ def verify_user_poap(request, handle):
 
     for network in ['mainnet', 'xdai']:
         timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
-        if timestamp or timestamp == 0 and timestamp <= fitteen_days_ago_ts:
+        # only break if we find a token that has been held for longer than 15 days
+        if timestamp and timestamp <= fitteen_days_ago_ts:
             break
 
+    # fail cases (no qualifying tokens / network failure)
     if timestamp is None or timestamp > fitteen_days_ago_ts:
         return JsonResponse({
             'ok': False,

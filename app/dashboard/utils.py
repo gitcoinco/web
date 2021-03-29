@@ -429,7 +429,7 @@ def get_poap_earliest_owned_token_timestamp(network, sockets, address):
         # Make sure the filter is registered before claiming entries
         time.sleep(1)
         log_entries = transfer_filter.get_all_entries()
-        # If no entries are returned then we should hard fail -- there should be at least some entries if we have a balance present
+        # If no entries are returned then we should return 0 to denote a failure (there should be at least some entries if we have a balance present)
         if len(log_entries) == 0:
             # No Transfer events we're retrieved for this address
             return 0
