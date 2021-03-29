@@ -324,7 +324,7 @@ $(document).ready(function() {
         function(error, result) {
           indicateMetamaskPopup(true);
           if (error) {
-            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'danger');
             console.log(error);
           } else {
             saveAttestationData(
@@ -362,7 +362,7 @@ $(document).ready(function() {
               result.responseJSON.error :
               'Something went wrong. Please reload the page and try again.';
 
-            _alert({ message: alertMsg }, 'error');
+            _alert({ message: alertMsg }, 'danger');
           }
         );
       };
