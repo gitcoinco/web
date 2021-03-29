@@ -75,6 +75,27 @@ header{
 @media #{$phone} { 
 	header{
 		margin: 0em 10px;
+
+		.logos{
+
+			.gitcoin{
+				display: none;
+			}
+
+			.arrow{
+				display: none;
+			}
+
+			.quadraticlands{
+				svg, img{
+					width: 32px;
+					height: 32px;
+				}
+			}
+
+
+		}
+
 	}
 }
 

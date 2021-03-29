@@ -133,6 +133,11 @@
 
 		animation: claim 2s ease-in-out infinite; 
 
+		padding: 3em;
+		margin: 2em;
+		text-align: center;
+
+
 		figure{
 			img{
 				width: 280px;
@@ -149,10 +154,34 @@
 
 	.claimed{
 
+		padding: 3em;
+		margin: 2em;
+		text-align: center;
+
+
 		animation: claim 4s ease-in-out infinite; 
+
+		figure{
+			img{
+				width: 280px;
+				margin: auto;
+				margin-bottom: 1em;
+			}
+		}
+
+
 
 	}
 
+
+	.error{
+
+		animation: claim 4s ease-in-out infinite;
+		
+		padding: 3em;
+		margin: 2em;
+		text-align: center;		
+	}
 
 
 
@@ -186,11 +215,38 @@
 
 @media #{$phone} { 
 	.quest-claim{
+
 		.claim{
 			padding: 1em;
 			margin: 0em;
 			animation: inherit;
 		}
+
+		.claiming{
+			figure{
+				img{
+					width: 100%;
+					height: auto;
+				}
+			}
+		}
+
+
+		.claimed{
+			figure{
+				img{
+					width: 100%;
+					height: auto;
+				}
+			}
+		}
+
+
+		.error{
+
+		}
+
+
 	}
 }
 
