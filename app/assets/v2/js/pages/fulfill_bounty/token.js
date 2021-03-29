@@ -17,6 +17,9 @@ fulfillBounty = data => {
     _alert({ message: gettext('Add valid address you would want the bounty to be sent to') }, 'error');
     unloading_button($('.js-submit'));
     return;
+  } else if (!is_valid_address(data.payoutAddress)) {
+    unloading_button($('.js-submit'));
+    return;
   }
 
   const url = '/api/v1/bounty/fulfill';
@@ -68,3 +71,73 @@ fulfillBounty = data => {
     }
   });
 };
+
+
+const is_valid_address = (address) => {
+  switch (web3_type) {
+
+    // etc
+    // celo
+    // rsk
+
+    case 'binance_ext':
+      if (!address.toLowerCase().startsWith('bnb')) {
+        _alert('Enter a valid binance address', 'error');
+        return false;
+      }
+      return true;
+
+    case 'harmony_ext':
+      if (!address.toLowerCase().startsWith('one')) {
+        _alert('Enter a valid harmony address', 'error')
+        return false;
+      }
+      return true;
+
+
+    case 'polkadot_ext':
+      if (address.toLowerCase().startsWith('0x')) {
+        _alert('Enter a valid polkadot address', 'error')
+        return false;
+      }
+      return true;
+
+
+    case 'xinfin_ext':
+      if (!address.toLowerCase().startsWith('xdc')) {
+        _alert('Enter a valid xinfin address', 'error');
+        return false;
+      }
+      return true;
+
+    case 'qr':
+
+      if (token_name == 'BTC') {
+        if (address.toLowerCase().startsWith('0x')) {
+          _alert('Enter a valid bitcoin address', 'error');
+          return false;
+        }
+        return true;
+      }
+
+      if (token_name == 'FIL') {
+        if (!address.toLowerCase().startsWith('fil')) {
+          _alert('Enter a valid filecoin address', 'error');
+          return false;
+        }
+        return true;
+      }
+
+      if (token_name == 'ZIL') {
+        if (!address.toLowerCase().startsWith('zil')) {
+          _alert('Enter a valid zilliqa address', 'error');
+          return false;
+        }
+        return true;
+      }
+
+    default:
+      return true;
+  }
+
+}
