@@ -131,6 +131,10 @@
                           title="Address to which bounty will be sent upon being accepted">
                         </i>
                         <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Enter {{ bounty.token_name }} Wallet Address"/>
+
+                        <div id="payoutAddress-error" class="text-danger hidden">
+                          Enter a valid {{ bounty.token_name }} address
+                        </div>
                       </div>
                     {% endif %}
 

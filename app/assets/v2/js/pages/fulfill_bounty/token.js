@@ -18,8 +18,11 @@ fulfillBounty = data => {
     unloading_button($('.js-submit'));
     return;
   } else if (!is_valid_address(data.payoutAddress)) {
+    $('#payoutAddress-error').removeClass('hidden');
     unloading_button($('.js-submit'));
     return;
+  } else {
+    $('#payoutAddress-error').addClass('hidden');
   }
 
   const url = '/api/v1/bounty/fulfill';
@@ -83,7 +86,6 @@ const is_valid_address = (address) => {
 
     case 'harmony_ext':
       if (!address.toLowerCase().startsWith('one')) {
-        _alert('Enter a valid harmony address', 'error')
         return false;
       }
       return true;
@@ -91,7 +93,6 @@ const is_valid_address = (address) => {
 
     case 'polkadot_ext':
       if (address.toLowerCase().startsWith('0x')) {
-        _alert('Enter a valid polkadot address', 'error')
         return false;
       }
       return true;
@@ -99,7 +100,6 @@ const is_valid_address = (address) => {
 
     case 'xinfin_ext':
       if (!address.toLowerCase().startsWith('xdc')) {
-        _alert('Enter a valid xinfin address', 'error');
         return false;
       }
       return true;
@@ -108,7 +108,6 @@ const is_valid_address = (address) => {
 
       if (token_name == 'BTC') {
         if (address.toLowerCase().startsWith('0x')) {
-          _alert('Enter a valid bitcoin address', 'error');
           return false;
         }
         return true;
@@ -116,7 +115,6 @@ const is_valid_address = (address) => {
 
       if (token_name == 'FIL') {
         if (!address.toLowerCase().startsWith('fil')) {
-          _alert('Enter a valid filecoin address', 'error');
           return false;
         }
         return true;
@@ -124,7 +122,6 @@ const is_valid_address = (address) => {
 
       if (token_name == 'ZIL') {
         if (!address.toLowerCase().startsWith('zil')) {
-          _alert('Enter a valid zilliqa address', 'error');
           return false;
         }
         return true;
