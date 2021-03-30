@@ -1,0 +1,28 @@
+{
+    "symbol": "SGB",
+    "address": "0x4B4Eb5C44D50Bfd44124688c6754633f7e258b01",
+    "overview":{
+          "en": "Subgame is a parallel chain of game and payment module engine for many developers around the world to participate in the construction of Boca Ecology. Subgame adopts Subscript as the underlying language and follows the syntax of JavaScript, and completes the encapsulation of Substrate smart contract API and SDK in Assembly Script. In short, Subscript implements the ability for any Web developer to quickly start deploying Poca's native smart contract.",
+          "zh": "SubGame是一个面向全球众多开发者参与波卡生态建设的游戏和支付模组引擎平行链。SubGame采用Subscript为底层语言，沿用了Javascript的语法，并在Assembly Script中完成了对Substrate智能合约API和SDK的封装。简单来说，Subscript实现了支持任何Web开发者快速入手部署波卡原生智能合约的能力。"
+    },
+    "email": "service@subgame.org",
+    "website": "https://www.subgame.org/",
+    "whitepaper": "https://subgame.guanfantech.com/api/assets/whitePaper/en/技術白皮書_英文_v7.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-12",
+    "initial_price":{
+          "ETH":"0.000169 ETH",
+          "USD":"0.3 USD",
+          "BTC":"0.00000526 BTC"
+    },
+    "links": {
+      "blog": "",
+      "twitter": "https://twitter.com/SubgameBase",
+      "telegram": "https://t.me/subgamenetwork",
+      "github": "https://github.com/SubGame-Network",
+      "facebook": "https://www.facebook.com/SubGame.netwrok/",
+      "reddit": "https://www.reddit.com/user/SubgameBase_2021/",
+      "slack": "",
+      "medium": ""
+    }
+  }
