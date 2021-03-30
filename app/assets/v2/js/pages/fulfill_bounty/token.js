@@ -5,16 +5,16 @@
 fulfillBounty = data => {
 
   if (!data.githubPRLink) {
-    _alert({ message: gettext('Add Github Link to let the funder know where they can check out your work') }, 'error');
+    _alert({ message: gettext('Add Github Link to let the funder know where they can check out your work') }, 'danger');
     unloading_button($('.js-submit'));
     return;
   }
 
   if (web3_type == 'fiat' && !data.fulfiller_identifier) {
-    _alert({ message: gettext('Add valid email you would want the bounty to be sent to') }, 'error');
+    _alert({ message: gettext('Add valid email you would want the bounty to be sent to') }, 'danger');
     unloading_button($('.js-submit'));
   } else if (web3_type != 'fiat' && !data.payoutAddress) {
-    _alert({ message: gettext('Add valid address you would want the bounty to be sent to') }, 'error');
+    _alert({ message: gettext('Add valid address you would want the bounty to be sent to') }, 'danger');
     unloading_button($('.js-submit'));
     return;
   }
@@ -62,7 +62,7 @@ fulfillBounty = data => {
       console.log('success', response);
       window.location.href = response.bounty_url;
     } else {
-      _alert('Unable to fulfill bounty. Please try again later', 'error');
+      _alert('Unable to fulfill bounty. Please try again later', 'danger');
       unloading_button($('.js-submit'));
       console.error(`error: bounty fulfillment failed with status: ${response.status} and message: ${response.message}`);
     }
