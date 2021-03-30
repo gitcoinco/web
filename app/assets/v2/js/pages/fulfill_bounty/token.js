@@ -18,11 +18,17 @@ fulfillBounty = data => {
     unloading_button($('.js-submit'));
     return;
   } else if (!is_valid_address(data.payoutAddress)) {
-    $('#payoutAddress-error').removeClass('hidden');
+    $('#payoutAddress-container input').removeClass('valid');
+    $('#payoutAddress-container input').addClass('invalid');
+    $('#payoutAddress-container').addClass('invalid');
+    $('#payoutAddress-container .text-danger').removeClass('hidden');
     unloading_button($('.js-submit'));
     return;
   } else {
-    $('#payoutAddress-error').addClass('hidden');
+    $('#payoutAddress-container input').addClass('valid');
+    $('#payoutAddress-container input').removeClass('invalid');
+    $('#payoutAddress-container').removeClass('invalid')
+    $('#payoutAddress-container .text-danger').addClass('hidden');
   }
 
   const url = '/api/v1/bounty/fulfill';
