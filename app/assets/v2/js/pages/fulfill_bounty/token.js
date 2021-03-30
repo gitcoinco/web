@@ -79,13 +79,7 @@ const is_valid_address = (address) => {
     // etc
     // celo
     // rsk
-
-    case 'binance_ext':
-      if (!address.toLowerCase().startsWith('bnb')) {
-        _alert('Enter a valid binance address', 'error');
-        return false;
-      }
-      return true;
+    // binance
 
     case 'harmony_ext':
       if (!address.toLowerCase().startsWith('one')) {
