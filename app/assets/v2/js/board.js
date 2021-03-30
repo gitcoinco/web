@@ -435,7 +435,7 @@ Vue.mixin({
 
               await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
             })
-            .on('danger', function(err) {
+            .on('error', function(err) {
               handleError(err);
             });
         }
@@ -459,7 +459,7 @@ Vue.mixin({
                 const errorMsg = 'Oops, something went wrong increasing your token supply. Please try again or contact support@gitcoin.co';
 
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
-              }).on('danger', function(err) {
+              }).on('error', function(err) {
                 handleError(err);
               });
           } else {
@@ -479,7 +479,7 @@ Vue.mixin({
                 const errorMsg = 'Oops, something went wrong decreased your token supply. Please try again or contact support@gitcoin.co';
 
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
-              }).on('danger', function(err) {
+              }).on('error', function(err) {
                 handleError(err);
               });
           }
@@ -545,7 +545,7 @@ Vue.mixin({
         const errorMsg = 'Oops, something went wrong trying to create your time token. Please try again or contact support@gitcoin.co';
 
         await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
-      }).on('danger', function(err) {
+      }).on('error', function(err) {
         handleError(err);
       });
     },
@@ -623,7 +623,7 @@ Vue.mixin({
 
             await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
             vm.checkData('personal-tokens');
-          }).on('danger', async(error, receipt) => {
+          }).on('error', async(error, receipt) => {
             handleError(error);
             await this.checkTokenStatus(successMsg, errorMsg);
             vm.checkData('personal-tokens');
