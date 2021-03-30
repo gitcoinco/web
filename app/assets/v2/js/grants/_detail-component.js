@@ -78,6 +78,7 @@ Vue.mixin({
         'polkadot_payout_address': vm.grant.polkadot_payout_address,
         'kusama_payout_address': vm.grant.kusama_payout_address,
         'rsk_payout_address': vm.grant.rsk_payout_address,
+        'xinfin_payout_address': vm.grant.xinfin_payout_address,
         'region': vm.grant.region?.name || undefined
       };
 

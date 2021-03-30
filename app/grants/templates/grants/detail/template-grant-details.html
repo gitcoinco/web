@@ -143,6 +143,18 @@
                 </div>
               </template>
 
+              <template v-if="grant.tenants && grant.tenants.indexOf('XINFIN') > -1">
+                <div class="d-flex align-items-center">
+                  <img class="mr-1 text-grey-300" src="{% static 'v2/images/chains/xinfin.svg' %}" alt="" width="16">
+                  <a target="_blank" :href="`https://explorer.xinfin.network/addr/${grant.xinfin_payout_address}`">
+                    <span id="xinfin-address" class="wallet-address" v-b-tooltip.hover.bottom="grant.xinfin_payout_address">
+                      [[grant.xinfin_payout_address | truncateHash]]
+                    </span>
+                  </a>
+                  <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.xinfin_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+                </div>
+              </template>
+
             </div>
             <div class="col-auto text-center my-auto">
               <div class="d-flex justify-content-end font-body">

@@ -89,6 +89,11 @@ Vue.component('grants-cart', {
         ],
         'RSK': [
           `${static_url}v2/js/grants/cart/rsk_extension.js`
+        ],
+        'XINFIN': [
+          'https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js',
+          `${static_url}v2/js/lib/xinfin/xdc3.min.js`,
+          `${static_url}v2/js/grants/cart/xinfin_extension.js`
         ]
       }
     };

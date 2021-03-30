@@ -158,6 +158,9 @@ function tokenOptionsForGrant(grant) {
   } else if (grant.tenants && grant.tenants.includes('RSK')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 30);
     tokenDefault = 'RBTC';
+  } else if (grant.tenants && grant.tenants.includes('XINFIN')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 50);
+    tokenDefault = 'XDC';
   } else {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
   }

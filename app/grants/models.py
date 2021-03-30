@@ -408,6 +408,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The rsk wallet address where subscription funds will be sent.'),
     )
+    xinfin_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The xinfin wallet address where subscription funds will be sent')
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -637,6 +644,8 @@ class Grant(SuperModel):
             tenants.append('BINANCE')
         if self.rsk_payout_address and self.rsk_payout_address != '0x0':
             tenants.append('RSK')
+        if self.xinfin_payout_address and self.xinfin_payout_address != '0x0':
+            tenants.append('XINFIN')
 
         return tenants
 
@@ -876,7 +885,8 @@ class Grant(SuperModel):
             'binance_payout_address': self.binance_payout_address,
             'kusama_payout_address': self.kusama_payout_address,
             'harmony_payout_address': self.harmony_payout_address,
-            'rsk_payout_address': self.rsk_payout_address
+            'rsk_payout_address': self.rsk_payout_address,
+            'xinfin_payout_address': self.xinfin_payout_address
         }
 
     def repr(self, user, build_absolute_uri):
@@ -934,6 +944,7 @@ class Grant(SuperModel):
                 'harmony_payout_address': self.harmony_payout_address,
                 'binance_payout_address': self.binance_payout_address,
                 'rsk_payout_address': self.rsk_payout_address,
+                'xinfin_payout_address': self.xinfin_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
