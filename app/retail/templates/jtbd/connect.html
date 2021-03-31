@@ -316,15 +316,14 @@ along with this program. If not,see
                 <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
               </div>
               <div class="row">
-                <a class="pr-2" rel=nofollow href="https://www.twitter.com/{{testimonial.twitter_handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
-                <a class="pl-2" rel=nofollow href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                <a rel=nofollow href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
               </div>
             </div>
           </div>
         </div>
         <div class="col-12 col-md-2 order-0 order-md-1">
           <div class="row mb-5">
-            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ testimonial.avatar_url }}" alt="{{ testimonial.handle }}" />
+            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ testimonial.github_handle}}" alt="{{ testimonial.github_handle }}" />
           </div>
         </div>
       </section>
