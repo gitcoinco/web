@@ -1,0 +1,17 @@
+{
+  "symbol": "xLON",
+  "address": "0xf88506B0F1d30056B9e5580668D5875b9cd30F23",
+  "overview":{
+        "en": "xLON 是用户参与 LON 质押的质押凭证，xLON 代币可自由转账和捕获 LON 质押奖励，xLON 与 LON 的兑换比率将会随着 Tokenlon 协议质押奖励分配的增加而持续上升。",
+        "zh": "xLON is the pledge certificate for users to participate in LON pledge. xLON tokens can be transferred freely and capture LON pledge rewards. The exchange ratio between xLON and LON will continue to rise as the Tokenlon agreement pledge reward distribution increases."
+  },
+  "email": "support@tokenlon.im",
+  "website": "https://tokenlon.im",
+  "whitepaper": "https://tokenlon.im/files/Tokenlon-Litepaper_zh-cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-04-01",
+  "links": {
+    "twitter": "https://twitter.com/tokenlon",
+    "medium": "https://medium.com/@tokenlon"
+  }
+}
