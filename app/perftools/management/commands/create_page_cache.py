@@ -26,6 +26,7 @@ from django.db import models, transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
@@ -185,12 +186,12 @@ def create_jtbd_connect_cache():
         'projects': [
             {
                 'name': 'Swivel Finance',
-                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/swivel-finance.png',
+                'logo_url': static('v2/images/jtbd/swivel-finance.png'),
                 'description': 'Swivel a the decentralized protocol for fixed-rate lending and interest-rate derivatives. Swivel v1 will facilitate trustless interest-rate swaps, allowing cautious lenders to lock in a guaranteed yield, and speculators to leverage their rate exposure.',
             },
             {
                 'name': 'EPNS',
-                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/epns.png',
+                'logo_url': static('v2/images/jtbd/epns.png'),
                 'description': 'EPNS is a decentralized DeFi notifications protocol which enables users (wallet addresses) to receive notifications. Using the protocol, any dApp, smart contract or service can send notifications to users(wallet addresses) in a platform agnostic fashion (mobile, web, or user wallets)',
             },
         ],
@@ -580,7 +581,6 @@ def create_contributor_landing_page_context():
         JSONStore.objects.bulk_create(items)
 
 
-
 class Command(BaseCommand):
 
     help = 'generates some /results data'
@@ -591,12 +591,6 @@ class Command(BaseCommand):
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
-
-        # generate jtbd data
-        operations.append(create_jtbd_earn_cache)
-        operations.append(create_jtbd_learn_cache)
-        operations.append(create_jtbd_connect_cache)
-        operations.append(create_jtbd_fund_cache)
 
         if not settings.DEBUG:
             operations.append(create_results_cache)
@@ -612,6 +606,13 @@ class Command(BaseCommand):
             operations.append(create_contributor_landing_page_context)
             operations.append(create_hackathon_cache)
             operations.append(create_hackathon_list_page_cache)
+
+            # generate jtbd data
+            operations.append(create_jtbd_earn_cache)
+            operations.append(create_jtbd_learn_cache)
+            operations.append(create_jtbd_connect_cache)
+            operations.append(create_jtbd_fund_cache)
+
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
                 # do daily updates

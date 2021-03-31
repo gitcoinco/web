@@ -1607,4 +1607,3 @@ def jtbd_connect(request):
 def jtbd_fund(request):
     context = JSONStore.objects.filter(view='jtbd', key='fund').first().data
     return TemplateResponse(request, 'jtbd/fund.html', context)
-
