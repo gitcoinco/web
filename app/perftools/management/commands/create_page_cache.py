@@ -114,22 +114,22 @@ def create_jtbd_learn_cache():
         {
             'name': 'Linda Xie',
             'role': '@ljxie',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/ljxie.png',
+            'avatar_url': static('v2/images/jtbd/ljxie.png'),
         },
         {
             'name': 'Simona Pop',
             'role': '@sim_pop',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/simonapop.png',
+            'avatar_url': static('v2/images/jtbd/simonapop.png'),
         },
         {
             'name': 'Sebnem Rusitschka',
             'role': '@sebnem',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/sebnem.png',
+            'avatar_url': static('v2/images/jtbd/sebnem.png'),
         },
         {
             'name': 'Pranay Valson',
             'role': '@valsonay',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/valsonay.png',
+            'avatar_url': static('v2/images/jtbd/valsonay.png'),
         }
     ]
 
@@ -140,9 +140,9 @@ def create_jtbd_learn_cache():
             'handle': 'Arya Soltanieh',
             'role': 'Founder, Myco Ex-Coinbase',
             'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/arya.png',
+            'avatar_url': static('v2/images/jtbd/arya.png'),
             'twitter': '',
-            'github': 'lostcodingsomewhere',
+            'github_handle': 'lostcodingsomewhere',
         },
     }
     view = 'jtbd'
