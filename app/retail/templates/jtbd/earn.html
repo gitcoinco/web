@@ -30,6 +30,14 @@ along with this program. If not, see
       margin-top: 7em;
     }
 
+    .img-accordion .collapsing {
+      transition: none !important;
+    }
+
+    .accordion:not(.collapsed) {
+      pointer-events: none;
+    }
+
     .bg-lighter {
       background-color: #F8F8F8;
     }
@@ -50,11 +58,6 @@ along with this program. If not, see
   {% include 'home/nav.html' %}
 
   <div class="container-fluid mb-5">
-    {% if announcement %}
-    <div class="py-3 text-center" style="background-color: #3e00ff">
-      <p class="mb-0 white">{{announcement.desc | safe}}</p>
-    </div>
-    {% endif %}
     <div class="container bg-white">
       <!--  Header section -->
       <div class="row justify-content-between my-5">
@@ -66,7 +69,7 @@ along with this program. If not, see
             Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
           </p>
           <div class="mt-5">
-            <a class="col-12 col-md-auto btn btn-lg btn-primary px-5 scrollToReady" href="#readyToConnect">{% trans "I'm ready to earn" %}</a>
+            <a class="col-12 col-md-auto btn btn-lg btn-primary px-5 scrollToReady" href="#readyToEarn">{% trans "I'm ready to earn" %}</a>
           </div>
         </div>
         <div class="col-auto d-none d-md-block mx-5 pt-0">
@@ -195,7 +198,7 @@ along with this program. If not, see
         <h2 class="text-grey-500 mb-5">Earn in bounties</h2>
         <div class="row">
           {% for bounty in bounties %}
-          <div class="col-12 col-md-5 font-body m-2">
+          <div class="col-12 col-md-6 mt-3 mt-md-0 font-body col-gap-border">
             <div class="row border py-4 px-3" style="min-height: 200px;">
               <div class="col-2 px-0">
               <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="" width="56" height="56" class="rounded-circle">
@@ -259,8 +262,8 @@ along with this program. If not, see
         </div>
       </section>
 
-      <section id="readyToConnect">
-        <h2 class="text-grey-500 mb-5">Ready to connect?</h2>
+      <section id="readyToEarn">
+        <h2 class="text-grey-500 mb-5">Ready to earn?</h2>
         <div class="row">
           <div class="col-12">
             <div class="row">
@@ -290,7 +293,6 @@ along with this program. If not, see
         </div>
       </section>
     </div>
-    {% csrf_token %}
   </div>
 
   {% include 'shared/footer.html' %}
@@ -304,7 +306,7 @@ along with this program. If not, see
     // prevent the href from being called
     e.preventDefault();
     // slow scroll to the element
-    $("html, body").animate({ scrollTop: $('#readyToConnect').offset().top }, "slow");
+    $("html, body").animate({ scrollTop: $('#readyToEarn').offset().top }, "slow");
 
     return false;
   });

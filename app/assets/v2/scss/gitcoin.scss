@@ -519,9 +519,14 @@
     }
   }
 
-  .accordion-panel  {
+  .accordion-panel {
     padding-left: 28px;
-    line-height: 36px;
+  }
+
+  .accordion-panel p {
+    line-height: 2.2rem;
+    padding-bottom: 1.6rem;
+    margin-bottom: 0px;
   }
 
   .accordion:after {
