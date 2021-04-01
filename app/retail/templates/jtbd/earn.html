@@ -223,20 +223,25 @@ along with this program. If not,see
       </section>
 
       <section id="grants">
-        <h2 class="text-grey-500 mb-5">Earn through grants</h2>
-        <div style="max-width: 55rem;">
-          <p class="font-subheader">Gitcoin grants enables your open source project to get funding through community support and Quadratic matching. The more people support your project, the more matching funds you receive.</p>
+
+        <div class="row">
+          <div class="col-md-7 col-12">
+            <h2 class="text-grey-500 mb-5">Earn through grants</h2>
+            <div>
+              <p class="font-subheader">Gitcoin grants enables your open source project to get funding through community support and Quadratic matching. The more people support your project, the more matching funds you receive.</p>
+            </div>
+            <img class="d-block m-auto ml-md-0 w-100" src="{{ featured_grant.logo }}"/>
+            <p class="font-bigger-2 mt-4 text-wrap text-grey-500">{{ featured_grant.title }}</p>
+            <div>
+              <p class="text-grey-400 font-subheader">{{ featured_grant.description }}</p>
+            </div>
+            {% if featured_grant.in_active_clrs %}
+              <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>
+            {% else %}
+              <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received|floatformat:2 }} Raised</p>
+            {% endif %}
+          </div>
         </div>
-        <img class="d-block m-auto ml-md-0 w-100" src="{{ featured_grant.logo }}" style="max-width: 43rem;" />
-        <p class="font-bigger-2 mt-4 text-wrap text-grey-500">{{ featured_grant.title }}</p>
-        <div style="max-width: 43rem;">
-          <p class="text-grey-400 font-subheader">{{ featured_grant.description }}</p>
-        </div>
-        {% if featured_grant.in_active_clrs %}
-          <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>
-        {% else %}
-          <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received|floatformat:2 }} Raised</p>
-        {% endif %}
       </section>
 
       <section id="testimonial">
