@@ -66,12 +66,6 @@ along with this program. If not,see
         padding-left: 2rem!important;
       }
 
-      .row > .col-gap-border {
-        box-sizing: border-box;
-        border: 0.5rem solid transparent;
-        background-clip: padding-box;
-      }
-
       .btn-explore {
         position: absolute;
         bottom: 4em;
@@ -180,7 +174,7 @@ along with this program. If not,see
             Connect on Gitcoin
           </h2>
         </header>
-        <div class="col-12 col-md-6 pl-0 pt-5">
+        <div class="col-12 col-md-5 pl-0 pt-5 mr-0 mr-md-5">
           <div class="accordion-group img-accordion mb-4 mb-md-0" style="min-height: min(125vw, 28rem);">
             <div class="pr-md-4 position-absolute h-100 w-100" style="z-index: -1">
               <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-7.svg" %}" style="max-width: 19rem;"/>
@@ -223,7 +217,7 @@ along with this program. If not,see
       </section>
 
       <section class="row" id="connect-with-top-developers">
-        <header class="col-12 px-0">
+        <header class="col-12 p-0">
           <h2 class="mb-5">
             Connect with top developers
           </h2>
@@ -238,15 +232,15 @@ along with this program. If not,see
           <div class="col-12 mb-5">
             <div class="row">
               {% for project in projects %}
-              {% with name=project.name logo_url=project.logo_url description=project.description %}
-              <div class="col-12 col-md-6 p-0 col-gaps-2">
-                <div class="w-100 rounded shadow-sm">
-                  <img class="w-100 rounded p-4" style="max-height: 10rem; object-fit: contain;" src="{{ logo_url }}"/>
-                </div>
-                <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">{{ name }}</p>
-                <p class="text-grey-400">{{ description }}</p>
-              </div>
-              {% endwith %}
+                {% with name=project.name logo_url=project.logo_url description=project.description %}
+                  <div class="col-12 col-md-6 p-0 col-gaps-2">
+                    <div class="w-100 rounded shadow-sm">
+                      <img class="w-100 rounded p-4" style="max-height: 10rem; object-fit: contain;" src="{{ logo_url }}"/>
+                    </div>
+                    <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">{{ name }}</p>
+                    <p class="text-grey-400">{{ description }}</p>
+                  </div>
+                {% endwith %}
               {% endfor %}
             </div>
           </div>
@@ -257,19 +251,19 @@ along with this program. If not,see
         <div class="col-12">
           <div class="row">
             {% for alumn in alumni %}
-            {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
-            <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
-              <div class="row">
-                <div class="col-5 col-md-12">
-                  <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
+              {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
+                <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
+                  <div class="row">
+                    <div class="col-5 col-md-12">
+                      <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
+                    </div>
+                    <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
+                      <span class="d-block w-100">{{ name }}</span>
+                      <span class="d-block w-100">{{ role }}</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
-                  <span class="d-block w-100">{{ name }}</span>
-                  <span class="d-block w-100">{{ role }}</span>
-                </div>
-              </div>
-            </div>
-            {% endwith %}
+              {% endwith %}
             {% endfor %}
           </div>
           <div class="row my-4">
@@ -279,26 +273,28 @@ along with this program. If not,see
       </section>
 
       <section class="row" id="meet-passionate-builders">
-        <header>
+        <header class="col-12 p-0">
           <h2 class="d-block w-100 mb-5">Meet other passionate builders in hackathons</h2>
         </header>
         <div class="col-12">
           <div class="row">
             {% for hackathon in hackathons %}
-            <div class="col-12 col-md-4 p-0 col-gaps-3 font-body pb-0">
-              <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ hackathon.logo }}"/>
-              <p class="font-bigger-3 mt-4 mb-2" style="min-height: 74px">{{ hackathon.name }}</p>
-              <p class="text-grey-400" style="min-height: 100px">{{ hackathon.summary }}</p>
-              <p class="text-grey-400">
-                {{ hackathon.start_date|to_date|date:"M j, Y"}} - {{ hackathon.end_date|to_date|date:"M j, Y" }}
-              </p>
-              <p class="text-grey-400">
-                Sponsored by
-                {% for sponsor in hackathon.sponsor_profiles %}
-                  <img class="rounded-circle" style="max-height: 1rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ sponsor.handle }}" alt="{{ sponsor.handle }}" />
-                {% endfor %}
-              </p>
-            </div>
+              {% with logo_url=hackathon.logo name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
+                <div class="col-12 col-md-4 p-0 col-gaps-3 font-body pb-0">
+                  <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ logo_url }}"/>
+                  <p class="font-bigger-3 mt-4 mb-2" style="min-height: 74px">{{ name }}</p>
+                  <p class="text-grey-400" style="min-height: 100px">{{ summary }}</p>
+                  <p class="text-grey-400">
+                    {{ start_date | to_date | date:"M j, Y"}} - {{ end_date | to_date | date:"M j, Y" }}
+                  </p>
+                  <p class="text-grey-400">
+                    Sponsored by
+                    {% for sponsor in sponsor_profiles %}
+                      <img class="rounded-circle" style="max-height: 1rem; object-fit: contain;" src="{% url 'org_avatar' sponsor.handle %}" alt="{{ sponsor.handle }}" />
+                    {% endfor %}
+                  </p>
+                </div>
+              {% endwith %}
             {% endfor %}
           </div>
         </div>
@@ -323,7 +319,7 @@ along with this program. If not,see
         </div>
         <div class="col-12 col-md-2 order-0 order-md-1">
           <div class="row mb-5">
-            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ testimonial.github_handle}}" alt="{{ testimonial.github_handle }}" />
+            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% url 'org_avatar' testimonial.github_handle %}" alt="{{ testimonial.github_handle }}" />
           </div>
         </div>
       </section>
@@ -343,24 +339,22 @@ along with this program. If not,see
         </div>
       </section>
 
-      <section class="row" id="ready-to-connect">
-        <header>
+      <section class="row mb-5" id="ready-to-connect">
+        <header class="col-12 p-0">
           <h2 class="pt-4">Ready to connect?</h2>
         </header>
-        <div class="d-flex mb-5 pt-2">
-          <div class="col-12">
-            <div class="row">
-              <div class="col-12 col-md-6 p-5 col-gap-border bg-lighter mt-2">
-                <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
-                <h4 class="py-2 pb-md-5 mb-md-5 font-weight-normal">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</h4>
-                <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="/hackathon-list/" target="_self">Explore Kernel</a>
-              </div>
-              <div class="col-12 col-md-6 p-5 col-gap-border bg-lighter mt-5 mt-md-2">
-                <h4 class="py-2 font-weight-normal">Connect through Fellowship</h4>
-                <h4 class="py-2 pb-md-5 mb-md-5 font-weight-normal">Connect with your peers while working on top open source projects.</h4>
-                <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
-              </div>
-            </div>
+        <div class="col-12 col-md-6 mt-4 p-0 pr-0 pr-md-1">
+          <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
+            <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
+            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Kernel</a>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mt-4 p-0 p-0 pl-0 pl-md-1">
+          <div class="bg-lighter p-5 ml-0 ml-md-2 h-100">
+            <h4 class="py-2 font-weight-normal">Connect through building</h4>
+            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Connect with your peers while working on top open source projects.</p>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
           </div>
         </div>
       </section>
