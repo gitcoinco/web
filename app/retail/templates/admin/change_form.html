@@ -90,7 +90,7 @@
     {% elif 'quests/quest' in request.build_absolute_uri %}
       <input type="submit" value="Approve Request" name="_approve_quest" value="1">
     {% elif 'dashboard/hackathonevent/' in request.build_absolute_uri %}
-      <input type="submit" value="Update Related Bounties Expiry Date" name="_auto_update_expiry" value="1">
+      <input type="submit" value="Update Related Bounties Expiry Date" name="_bulk_update_expiry" value="1">
     {% endif %}
   </div>
 {% endblock %}
