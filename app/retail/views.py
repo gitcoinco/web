@@ -1584,33 +1584,50 @@ def styleguide_components(request):
 @cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_earn(request):
-    context = JSONStore.objects.filter(view='jtbd', key='earn').first().data
+    data = JSONStore.objects.filter(view='jtbd', key='earn').first().data
+    context = {
+        'title': _('Earn | Gitcoin'),
+        'card_title': _('Gitcoin - Support public goods, support open source'),
+        'card_desc': _('Break free from your 9–5 to work on open source projects that matter')
+    }
+    context.update(data)
     return TemplateResponse(request, 'jtbd/earn.html', context)
 
 
 @cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_learn(request):
-    context = JSONStore.objects.filter(view='jtbd', key='learn').first().data
+    data = JSONStore.objects.filter(view='jtbd', key='learn').first().data
+    context = {
+        'title': _('Learn | Gitcoin'),
+        'card_title': _('Gitcoin - Support public goods, support open source'),
+        'card_desc': _('Learn how to build the decentralized web')
+    }
+    context.update(data)
     return TemplateResponse(request, 'jtbd/learn.html', context)
 
 
 @cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_connect(request):
-    context = JSONStore.objects.filter(view='jtbd', key='connect').first().data
+    data = JSONStore.objects.filter(view='jtbd', key='connect').first().data
+    context = {
+        'title': _('Connect | Gitcoin'),
+        'card_title': _('Gitcoin - Support public goods, support open source'),
+        'card_desc': _('Connect And Build With Top Open Source Developers')
+    }
+    context.update(data)
     return TemplateResponse(request, 'jtbd/connect.html', context)
 
 
-# @cached_view(timeout=86400) # cached for 24 hours
+@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_fund(request):
     data = JSONStore.objects.filter(view='jtbd', key='fund').first().data
     context = {
         'title': _('Fund | Gitcoin'),
         'card_title': _('Gitcoin - Support public goods, support open source'),
-        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
+        'card_desc': _('There’s No Better Way To Fund Open Source Projects')
     }
     context.update(data)
-
     return TemplateResponse(request, 'jtbd/fund.html', context)
