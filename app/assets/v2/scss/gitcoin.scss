@@ -487,7 +487,6 @@
 }
 
 .gc-accordion {
-  margin-left: -38px;
 
   &:after {
     content: "";
@@ -495,7 +494,7 @@
     border-bottom: 1px solid #eee;
     position: relative;
     left: 26px;
-    width: calc(100% - 16px);
+    width: calc(100% - 26px);
   }
 
   .accordion {
@@ -545,7 +544,7 @@
     content: "";
     display: block;
     min-height: 4px;
-    width: calc(100% + 10px);
+    width: 100%;
     position: relative;
     top: -22px;
     border-top: 1px solid #eee;
