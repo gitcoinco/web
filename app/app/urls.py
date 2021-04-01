@@ -469,7 +469,6 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    re_path(r'^sass_experiment/?', retail.views.sass_experiment, name='sass_experiment'),
     re_path(r'^homeold/?$', retail.views.index_old, name='homeold'),
     re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),
@@ -485,6 +484,7 @@ urlpatterns = [
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
     re_path(r'^$', townsquare.views.landing_toggle, name='index'),
+    re_path(r'^styleguide/components/?', retail.views.styleguide_components, name='styleguide_components'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
     path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
     path(

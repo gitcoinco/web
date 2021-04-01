@@ -40,7 +40,7 @@
       </div>
 
       <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-new-grant">
-        <form action="" @submit="checkForm" ref="formNewGrant" v-cloak>
+        <form action="" @submit="checkForm" ref="formNewGrant" :class="`${Object.keys(errors).length ? 'invalid' : ''}`" v-cloak>
           <div class="container mt-3 mb-3  position-relative col-lg-6 mx-auto">
             <img :src="grant_type_logo" v-if="grant_type_logo" class="d-block m-auto mw-100">
 
@@ -102,8 +102,8 @@
 
                   <quill-editor
                     ref="quillEditorDesc"
-                    class="editor"
                     v-model="form.description_rich"
+                    :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
                     :options="editorOptionPrio"
                   ></quill-editor>
 
@@ -199,7 +199,7 @@
                   <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0" for="bounty_chain">Chain</label>
                   <p class="font-body">Pick the chain you're accepting grant funding from</p>
 
-                  <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
+                  <div :class="`btn-group-toggle d-flex flex-column flex-lg-row flex-wrap ${errors.chainId && !chainId ? 'invalid' : ''}`">
                     <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'eth'}">
                       <input type="radio" name="grant_chain" id="eth_chain" value="eth" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
                     </label>
@@ -213,7 +213,7 @@
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'zilliqa'}">
-                      <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="18"> zilliqa
+                      <input type="radio" name="grant_chain" id="zilliqa_chain" value="zilliqa" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="16"> zilliqa
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'harmony'}">
@@ -239,7 +239,7 @@
                     {% endif %}
                   </div>
 
-                  <div class="text-danger" v-if="errors.chainId">
+                  <div class="text-danger" v-if="errors.chainId && !chainId">
                     [[errors.chainId]]
                   </div>
                 </div>
@@ -411,6 +411,14 @@
                     <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Category</label>
                     <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
                     <v-select placeholder="Pick a category" :options="grant_types" label="label" v-model="form.grant_type" :reduce="state => state.name">
+                      <template #search="{attributes, events}">
+                        <input
+                          class="vs__search"
+                          :required="!form.grant_type"
+                          v-bind="attributes"
+                          v-on="events"
+                        />
+                      </template>
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.label ]]</span>
                       </template>
@@ -424,6 +432,14 @@
                     <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
                     <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
                     <v-select placeholder="Select categories" :options="type_to_category_mapping()" label="name" v-model="form.grant_categories" :reduce="state => state.id" multiple>
+                      <template #search="{attributes, events}">
+                        <input
+                          class="vs__search"
+                          :required="!form.grant_categories.length"
+                          v-bind="attributes"
+                          v-on="events"
+                        />
+                      </template>
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.name ]]</span>
                       </template>

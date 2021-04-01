@@ -212,7 +212,7 @@
   document.gas_amount = {{gas_amount}};
   $(document).ready(function(){
     {% if error %}
-      _alert('{{error}}', 'error');
+      _alert('{{error}}', 'danger');
     {% endif %}
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;

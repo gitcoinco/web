@@ -404,7 +404,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="nextStepAndLoadPYPLButton(fulfillment.pk, fulfillment.fulfiller_identifier)"
                                 >
@@ -464,7 +464,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('payout', 'payout_amount')"
                                 >
@@ -494,7 +494,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="payWithExtension(fulfillment.pk, fulfillment.fulfiller_address, fulfillment.payout_type, $event)"
                                 >
                                   Payout
@@ -541,7 +541,7 @@
                                   </a>
 
                                 </p>
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-4"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
                                 >
                                   Yes, I understand
@@ -557,7 +557,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button  class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button  class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('submit_transaction', 'payout_amount')"
                                 >
@@ -612,7 +612,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
                                   I have Paid
@@ -660,7 +660,7 @@
                                   </a>
 
                                 </p>
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-4"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
                                 >
                                   Yes, I understand
@@ -683,13 +683,13 @@
                                 </p>
 
                                 <button v-if="fulfillment_context.flow == 'access_to_wallet'"
-                                  class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                  class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('scan_qr_code', 'payout_amount')"
                                 >
                                   Next
                                 </button>
-                                <button v-else class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button v-else class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('submit_transaction', 'payout_amount')"
                                 >
@@ -740,7 +740,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >I have paid
                                 </button>
@@ -800,7 +800,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
                                   I have Paid

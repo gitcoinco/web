@@ -37,7 +37,7 @@
       </div>
 
       <grants-ingest-contributions class="container-fluid bg-lightblue pb-5 pt-5" v-cloak id="gc-grants-ingest-contributions" inline-template>
-        <form action="" @submit="checkForm">
+        <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
           <div class="text-center">
             <img style="width:6rem;" src="{% static "v2/images/grants/torchbearer.svg" %}">
           </div>

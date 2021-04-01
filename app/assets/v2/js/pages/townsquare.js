@@ -50,12 +50,9 @@ $(document).ready(function() {
   $('body').on('click', '.townsquare_block-header', function(e, triggered) {
     const target_id = $(this).data('target');
 
-    $('#' + target_id).toggleClass('hidden');
-    $(this).toggleClass('closed');
     if (!triggered) {
-      localStorage.setItem(target_id, $(this).hasClass('closed'));
+      localStorage.setItem(target_id.replace(/^#/, ''), $(this).hasClass('collapsed'));
     }
-
   });
 
   $(window).on('resize', () => {
@@ -63,13 +60,13 @@ $(document).ready(function() {
 
     $('.townsquare_block-header').each(function(e) {
       const target_id = $(this).data('target');
-      const item = localStorage.getItem(target_id);
+      const item = localStorage.getItem(target_id.replace(/^#/, ''));
 
       if (window_width <= 992) {
-        if (item == 'false' && !$(this).hasClass('closed')) {
+        if (item && item !== 'false' && !$(this).hasClass('collapsed')) {
           $(this).trigger('click', true);
         }
-      } else if (item == 'false' && $(this).hasClass('closed')) {
+      } else if (item && item !== 'false' && $(this).hasClass('collapsed')) {
         $(this).trigger('click', true);
       }
     });
@@ -186,11 +183,12 @@ $(document).ready(function() {
       }
       $('.townsquare_block-header').each(function() {
         const target_id = $(this).data('target');
-        const item = localStorage.getItem(target_id);
+        const item = localStorage.getItem(target_id.replace(/^#/, ''));
 
         if ($('body').width() > 992) {
-          if (item && item !== String($(this).hasClass('closed'))) {
-            $(this).trigger('click', true);
+          if (item && item == 'true') {
+            $(this).removeClass('collapsed');
+            $(target_id).addClass('show');
           }
         }
       });

@@ -14,7 +14,7 @@ cancelBounty = data => {
       console.log('success', response);
       window.location.href = response.bounty_url;
     } else {
-      _alert('Unable to cancel a bounty. Please try again later', 'error');
+      _alert('Unable to cancel a bounty. Please try again later', 'danger');
       console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
     }
   });

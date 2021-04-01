@@ -675,7 +675,7 @@ Vue.component('grants-cart', {
       else if (typeof err === 'string')
         message = err;
 
-      _alert(message, 'error');
+      _alert(message, 'danger');
       this.isCheckoutOngoing = false;
       indicateMetamaskPopup(true);
     },
