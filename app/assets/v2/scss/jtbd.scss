@@ -1,0 +1,20 @@
+// JTBD specific stylings
+section {
+  margin-top: 7em;
+}
+
+.img-accordion .collapsing {
+  transition: none !important;
+}
+
+.accordion:not(.collapsed) {
+  pointer-events: none;
+}
+
+@media screen and (min-width: 768px) {
+  .btn-explore {
+    position: absolute;
+    bottom: 4em;
+    min-width: 14rem;
+  }
+}

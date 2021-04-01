@@ -16,152 +16,20 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static humanize %}
+{% load humanize i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
-  <style>
 
-    .line-height-1 {
-      line-height: 1em;
-    }
-    .line-height-2 {
-      line-height: 1.4em;
-    }
-    .line-height-3 {
-      line-height: 1.8em;
-    }
-    .line-height-4 {
-      line-height: 2.2em;
-    }
-    .line-height-5 {
-      line-height: 2.5em;
-    }
-
-    .gap-1 {
-      gap: 1em;
-    }
-    .gap-2 {
-      gap: 2em;
-    }
-    .gap-3 {
-      gap: 3em;
-    }
-    .gap-4 {
-      gap: 4em;
-    }
-    .gap-5 {
-      gap: 5em;
-    }
-
-    .flex-basis-auto {
-      flex-basis: auto;
-    }
-    .flex-basis-25 {
-      flex-basis: 25%;
-    }
-    .flex-basis-33 {
-      flex-basis: 33%;
-    }
-    .flex-basis-50 {
-      flex-basis: 50%;
-    }
-    .flex-basis-100 {
-      flex-basis: 100%;
-    }
-
-    @media (min-width: 768px) {
-      .flex-basis-md-auto {
-        flex-basis: auto;
-      }
-      .flex-basis-md-25 {
-        flex-basis: 25%;
-      }
-      .flex-basis-md-33 {
-        flex-basis: 33%;
-      }
-      .flex-basis-md-50 {
-        flex-basis: 50%;
-      }
-      .flex-basis-md-100 {
-        flex-basis: 100%;
-      }
-    }
-
-    @media (min-width: 992px) {
-      .flex-basis-lg-auto {
-        flex-basis: auto;
-      }
-      .flex-basis-lg-25 {
-        flex-basis: 25%;
-      }
-      .flex-basis-lg-33 {
-        flex-basis: 33%;
-      }
-      .flex-basis-lg-50 {
-        flex-basis: 50%;
-      }
-      .flex-basis-lg-100 {
-        flex-basis: 100%;
-      }
-    }
-
-    .img-accordion .collapsing {
-      transition: none !important;
-    }
-
-    .accordion:not(.collapsed) {
-      pointer-events: none;
-    }
-
-    @media screen and (max-width: 768px) {
-      .img-accordion > div {
-        left: 0;
-      }
-    }
-
-    @media screen and (min-width: 768px) {
-      .row > .col-gaps-2:nth-of-type(1) {
-        padding-right: 0.5rem!important;
-      }
-      .row > .col-gaps-2:nth-of-type(2) {
-        padding-left: 0.5rem!important;
-      }
-
-      .row > .col-gaps-3:nth-of-type(1) {
-        padding-right: 0.25rem!important;
-      }
-      .row > .col-gaps-3:nth-of-type(2) {
-        padding-left: 0.25rem!important;
-        padding-right: 0.25rem!important;
-      }
-      .row > .col-gaps-3:nth-of-type(3) {
-        padding-left: 0.25rem!important;
-      }
-
-      .row > .col-gap-border {
-        box-sizing: border-box;
-        border: 0.5rem solid transparent;
-        background-clip: padding-box;
-      }
-
-      .btn-explore {
-        position: absolute;
-        bottom: 3em;
-        min-width: 15rem;
-      }
-    }
-
-
-  </style>
-
-
+  {% compress css file jtbd %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
+  {% endcompress %}
 </head>
 
-<body class="{{ active }} g-font-muli">
+<body>
   <div class="content__main min-vh-100 d-md-flex flex-column">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -169,7 +37,7 @@ along with this program. If not,see
       {% include 'home/nav.html' %}
     </div>
 
-    <div class="container-xl px-5">
+    <div class="container px-5">
 
       <div class="row mt-5">
         <div class="col-12 col-md-8 p-0">
@@ -180,9 +48,9 @@ along with this program. If not,see
             Gitcoin Grants uses quadratic funding, ensuring that projects doing the greatest public good get the most support.
           </h3>
           <div class="row mt-5 mx-0">
-            <button class="btn btn-primary col-12 col-md-auto p-3 px-5 scrollToBottom">
+            <a class="btn btn-primary col-12 col-md-auto p-3 px-5 scroll-to-ready" href="#ready-to-fund">
               I’m ready to fund
-            </button>
+            </a>
           </div>
         </div>
         <div class="d-none d-md-inline col-md-4 m-auto ">
@@ -272,35 +140,35 @@ along with this program. If not,see
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
           {% for project in projects %}
 
-          <div class="col mb-4">
-            <div class="card">
-              <img class="card-img-top" style="height: 14rem; object-fit: cover;" src="{{ MEDIA_URL}}{{ project.logo }}"/>
-              <div class="card-body">
-                <h4 class="gc-font-base card-title text-truncate">{{ project.title }}</h4>
-                <p class="text-grey-400">by @{{ project.admin_profile__handle }}</p>
-                <p class="text-grey-400">{{ project.description | truncatechars_html:380 }}</p>
-                {% if project.in_active_clrs %}
-                  <div class="d-flex flex-wrap justify-content-between">
-                    <div class="flex-shrink-0" style="flex-basis: 50%;">
-                      <span class="font-bigger-2 font-weight-semibold">${{project.amount_received_in_round|floatformat:0|intcomma}}</span>
-                      <span class="d-block text-grey-400">raised from {{project.positive_round_contributor_count}} contributors</span>
+            <div class="col mb-4">
+              <div class="card">
+                <img class="card-img-top" style="height: 14rem; object-fit: cover;" src="{{ MEDIA_URL}}{{ project.logo }}"/>
+                <div class="card-body">
+                  <h4 class="gc-font-base card-title text-truncate">{{ project.title }}</h4>
+                  <p class="text-grey-400">by @{{ project.admin_profile__handle }}</p>
+                  <p class="text-grey-400">{{ project.description | truncatechars_html:380 }}</p>
+                  {% if project.in_active_clrs %}
+                    <div class="d-flex flex-wrap justify-content-between">
+                      <div class="flex-shrink-0" style="flex-basis: 50%;">
+                        <span class="font-bigger-2 font-weight-semibold">${{project.amount_received_in_round|floatformat:0|intcomma}}</span>
+                        <span class="d-block text-grey-400">raised from {{project.positive_round_contributor_count}} contributors</span>
+                      </div>
+                      <div class="flex-shrink-0" style="flex-basis: 50%;">
+                        <span class="font-bigger-2 font-weight-semibold text-highlight-green">${{ project.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}</span>
+                        <span class="d-block text-grey-400">matched</span>
+                      </div>
                     </div>
-                    <div class="flex-shrink-0" style="flex-basis: 50%;">
-                      <span class="font-bigger-2 font-weight-semibold text-highlight-green">${{ project.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}</span>
-                      <span class="d-block text-grey-400">matched</span>
+                  {% else %}
+                    <div class="d-flex flex-wrap justify-content-between">
+                      <div class="flex-shrink-0" style="flex-basis: 50%;">
+                        <span class="font-bigger-2 font-weight-semibold">${{project.amount_received|floatformat:0|intcomma}}</span>
+                        <span class="d-block text-grey-400">raised from {{project.contributor_count}} contributors</span>
+                      </div>
                     </div>
-                  </div>
-                {% else %}
-                  <div class="d-flex flex-wrap justify-content-between">
-                    <div class="flex-shrink-0" style="flex-basis: 50%;">
-                      <span class="font-bigger-2 font-weight-semibold">${{project.amount_received|floatformat:0|intcomma}}</span>
-                      <span class="d-block text-grey-400">raised from {{project.contributor_count}} contributors</span>
-                    </div>
-                  </div>
-                {% endif %}
+                  {% endif %}
+                </div>
               </div>
             </div>
-          </div>
 
           {% endfor %}
         </div>
@@ -366,7 +234,7 @@ along with this program. If not,see
         </div>
       </div>
 
-      <div class="row my-4 cta-area">
+      <div class="row my-4" id="#ready-to-fund">
         <h2 class="pb-4 pt-5 w-100">Ready to fund?</h2>
         <div class="d-flex flex-column flex-md-row gap-2">
           <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 p-5">
@@ -399,8 +267,11 @@ along with this program. If not,see
   {% include 'shared/footer_scripts.html' with slim=1 %}
 
   <script>
-    $(".scrollToBottom").click(function() {
-      document.querySelector('.cta-area').scrollIntoView({
+    $(".scroll-to-ready").click(function(e) {
+      // prevent the href from being called
+      e.preventDefault();
+      // slow scroll to the element
+      document.querySelector('#ready-to-fund').scrollIntoView({
         behavior: 'smooth'
       });
     });

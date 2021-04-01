@@ -17,92 +17,17 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static date_fromisoformat %}
+{% load i18n static compress date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
-  <meta name="title" content="Connect | Gitcoin">
-  <meta name="description" content="Connect">
 
-  <style>
-
-    section {
-      margin-top: 7em;
-    }
-
-    .bg-img-cover {
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-
-    .img-accordion .collapsing {
-      transition: none !important;
-    }
-
-    .accordion:not(.collapsed) {
-      pointer-events: none;
-    }
-
-    @media screen and (max-width: 768px) {
-      .img-accordion > div {
-        left: 0;
-      }
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .line-clamp-4 {
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    @media screen and (min-width: 768px) {
-      .row > .col-gaps-2-sm:nth-of-type(1) {
-        padding-right: 0.5rem!important;
-      }
-      .row > .col-gaps-2-sm:nth-of-type(2) {
-        padding-left: 0.5rem!important;
-      }
-
-      .row > .col-gaps-2:nth-of-type(1) {
-        padding-right: 2rem!important;
-      }
-      .row > .col-gaps-2:nth-of-type(2) {
-        padding-left: 2rem!important;
-      }
-
-      .row > .col-gaps-3:nth-of-type(1) {
-        padding-right: 2rem!important;
-      }
-      .row > .col-gaps-3:nth-of-type(2) {
-        padding-left: 1rem!important;
-        padding-right: 1rem!important;
-      }
-      .row > .col-gaps-3:nth-of-type(3) {
-        padding-left: 2rem!important;
-      }
-
-      .btn-explore {
-        position: absolute;
-        bottom: 4em;
-        min-width: 15rem;
-      }
-    }
-
-  </style>
-
+  {% compress css file jtbd %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
+  {% endcompress %}
 </head>
 
 <body>
@@ -394,14 +319,14 @@ along with this program. If not,see
           <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
             <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Kernel</a>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Kernel</a>
           </div>
         </div>
         <div class="col-12 col-md-6 mt-4 p-0 p-0 pl-0 pl-md-1">
           <div class="bg-lighter p-5 ml-0 ml-md-2 h-100">
             <h4 class="py-2 font-weight-normal">Connect through building</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Connect with your peers while working on top open source projects.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Hackathons</a>
           </div>
         </div>
       </section>
@@ -419,7 +344,9 @@ along with this program. If not,see
       // prevent the href from being called
       e.preventDefault();
       // slow scroll to the element
-      $("html, body").animate({ scrollTop: $('#ready-to-connect').offset().top }, "slow");
+      document.querySelector('#ready-to-connect').scrollIntoView({
+        behavior: 'smooth'
+      });
 
       return false;
     });

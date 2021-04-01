@@ -16,92 +16,17 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static date_fromisoformat %}
+{% load i18n static compress date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-{% include 'shared/head.html' %}
-{% include 'shared/cards_pic.html' %}
-<meta name="title" content="Learn | Gitcoin">
-<meta name="description" content="Learn">
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards_pic.html' %}
 
-<style>
-
-  section {
-    margin-top: 7em;
-  }
-
-  .bg-img-cover {
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-
-  .img-accordion .collapsing {
-    transition: none !important;
-  }
-
-  .accordion:not(.collapsed) {
-    pointer-events: none;
-  }
-
-  @media screen and (max-width: 768px) {
-    .img-accordion > div {
-      left: 0;
-    }
-  }
-
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  .line-clamp-4 {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  @media screen and (min-width: 768px) {
-    .row > .col-gaps-2-sm:nth-of-type(1) {
-      padding-right: 0.5rem!important;
-    }
-    .row > .col-gaps-2-sm:nth-of-type(2) {
-      padding-left: 0.5rem!important;
-    }
-
-    .row > .col-gaps-2:nth-of-type(1) {
-      padding-right: 2rem!important;
-    }
-    .row > .col-gaps-2:nth-of-type(2) {
-      padding-left: 2rem!important;
-    }
-
-    .row > .col-gaps-3:nth-of-type(1) {
-      padding-right: 2rem!important;
-    }
-    .row > .col-gaps-3:nth-of-type(2) {
-      padding-left: 1rem!important;
-      padding-right: 1rem!important;
-    }
-    .row > .col-gaps-3:nth-of-type(3) {
-      padding-left: 2rem!important;
-    }
-
-    .btn-explore {
-      position: absolute;
-      bottom: 3em;
-      min-width: 15rem;
-    }
-  }
-
-</style>
-
+  {% compress css file jtbd %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
+  {% endcompress %}
 </head>
 
 <body>
