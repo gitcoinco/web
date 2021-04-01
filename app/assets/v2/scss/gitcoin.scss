@@ -498,12 +498,6 @@
     width: calc(100% - 16px);
   }
 
-  &.gc-accordion-border {
-    .accordion, .accordion-panel {
-      border-left: 4px solid #DDDDDD
-    }
-  }
-
   .accordion {
     padding: 20px 0px 20px 22px;
     margin-bottom: 0px;
