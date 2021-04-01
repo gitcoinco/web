@@ -226,8 +226,8 @@ def create_jtbd_fund_cache():
 
     # WalletConnect / ethers.js / TheDefiant
         # Q(pk=275) | Q(pk=13) | Q(pk=567)
-    id_tuple= (275,13,567)
-    # id_tuple= (6,13,4)
+    # id_tuple= (275,13,567)
+    id_tuple= (6,13,4)
     projects = list(Grant.objects.filter(id__in=id_tuple).values(
         'id', 'logo', 'title', 'admin_profile__handle',
         'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
@@ -238,11 +238,11 @@ def create_jtbd_fund_cache():
         'projects': projects,
         'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],
         'testimonial': {
-            'handle': 'sebastian',
+            'handle': 'Austin Griffith',
             'role': 'Python Developer',
-            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
-            'twitter': '',
-            'github': '',
+            'comment': "As one of the first quadratic freelancers to go through the platform, I know from personal experience that Gitcoin Grants empowers builders to create the future on Ethereum. My grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem",
+            'twitter_handle': 'austingriffith',
+            'github_handle': 'austintgriffith',
         },
     }
     view = 'jtbd'

@@ -1,5 +1,4 @@
 from django import template
-
 import dateutil
 
 register = template.Library()
