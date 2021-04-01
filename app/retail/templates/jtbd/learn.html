@@ -23,9 +23,8 @@ along with this program. If not,see
 <head>
 {% include 'shared/head.html' %}
 {% include 'shared/cards_pic.html' %}
-<meta name="title" content="Connect | Gitcoin">
-<meta name="description" content="Connect">
-
+<meta name="title" content="Learn | Gitcoin">
+<meta name="description" content="Learn">
 
 <style>
 
@@ -66,12 +65,6 @@ along with this program. If not,see
       padding-left: 2rem!important;
     }
 
-    .row > .col-gap-border {
-      box-sizing: border-box;
-      border: 0.5rem solid transparent;
-      background-clip: padding-box;
-    }
-
     .btn-explore {
       position: absolute;
       bottom: 3em;
@@ -79,9 +72,7 @@ along with this program. If not,see
     }
   }
 
-
 </style>
-
 
 </head>
 
@@ -221,8 +212,8 @@ along with this program. If not,see
             Everything you need to learn on Gitcoin
           </h2>
         </header>
-        <div class="col-12 col-md-6 pl-0 pt-5">
-          <div class="accordion-group img-accordion mb-4 mb-md-0" style="min-height: min(125vw, 24rem);">
+        <div class="col-12 col-md-5 pl-0 pt-5 mr-0 mr-md-5">
+          <div class="accordion-group img-accordion mb-4 mb-md-0" style="min-height: min(95vw, 24rem);">
             <div class="pr-md-4 position-absolute h-100 w-100" style="z-index: -1">
               <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-4.svg" %}" style="max-width: 20rem;"/>
             </div>
@@ -263,35 +254,39 @@ along with this program. If not,see
         </div>
       </section>
 
-      <section class="row" id="learn-by-doing">
-        <header>
-          <h2 class="d-block w-100 mb-5">Learn by doing</h2>
+      <section class="row" id="meet-passionate-builders">
+        <header class="col-12 p-0 mb-5">
+          <h2>
+            Learn by doing
+          </h2>
         </header>
         <div class="col-12">
           <div class="row">
             {% for hackathon in hackathons %}
-            <div class="col-12 col-md-4 p-0 col-gaps-3 font-body pb-0">
-              <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ hackathon.logo }}"/>
-              <p class="font-bigger-3 mt-4 mb-2" style="min-height: 74px">{{ hackathon.name }}</p>
-              <p class="text-grey-400" style="min-height: 100px">{{ hackathon.summary }}</p>
-              <p class="text-grey-400">
-                {{ hackathon.start_date|to_date|date:"M j, Y"}} - {{ hackathon.end_date|to_date|date:"M j, Y" }}
-              </p>
-              <p class="text-grey-400">
-                Sponsored by
-                {% for sponsor in hackathon.sponsor_profiles %}
-                  <img class="rounded-circle" style="max-height: 1rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ sponsor.handle }}" alt="{{ sponsor.handle }}" />
-                {% endfor %}
-              </p>
-            </div>
+              {% with logo_url=hackathon.logo name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
+                <div class="col-12 col-md-4 p-0 col-gaps-3 font-body pb-0">
+                  <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ logo_url }}"/>
+                  <p class="font-bigger-3 mt-4 mb-2" style="min-height: 74px">{{ name }}</p>
+                  <p class="text-grey-400" style="min-height: 100px">{{ summary }}</p>
+                  <p class="text-grey-400">
+                    {{ start_date | to_date | date:"M j, Y"}} - {{ end_date | to_date | date:"M j, Y" }}
+                  </p>
+                  <p class="text-grey-400">
+                    Sponsored by
+                    {% for sponsor in sponsor_profiles %}
+                      <img class="rounded-circle" style="max-height: 1rem; object-fit: contain;" src="{% url 'org_avatar' sponsor.handle %}" alt="{{ sponsor.handle }}" />
+                    {% endfor %}
+                  </p>
+                </div>
+              {% endwith %}
             {% endfor %}
           </div>
         </div>
       </section>
 
       <section class="row" id="join-community">
-        <header class="col-12 px-0">
-          <h2 class="mb-5">
+        <header class="col-12 p-0 mb-5">
+          <h2>
             Join a community of life-long learners
           </h2>
         </header>
@@ -325,24 +320,23 @@ along with this program. If not,see
         <div class="col-12">
           <div class="row">
             {% for alumn in alumni %}
-            {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
-            <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
-              <div class="row">
-                <div class="col-5 col-md-12">
-                  <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
+              {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
+                <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
+                  <div class="row">
+                    <div class="col-5 col-md-12">
+                      <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
+                    </div>
+                    <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
+                      <span class="d-block w-100">{{ name }}</span>
+                      <span class="d-block w-100">{{ role }}</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
-                  <span class="d-block w-100">{{ name }}</span>
-                  <span class="d-block w-100">{{ role }}</span>
-                </div>
-              </div>
-            </div>
-            {% endwith %}
+              {% endwith %}
             {% endfor %}
           </div>
         </div>
       </section>
-
 
       <section class="row" id="testimonial">
         <div class="col-12 col-md-6 order-1 order-md-0 font-body">
@@ -368,23 +362,24 @@ along with this program. If not,see
         </div>
       </section>
 
-      <section class="row" id="ready-to-learn">
-        <header>
-          <h2 class="pt-4">Ready to learn?</h2>
+      <section class="row mb-5" id="ready-to-learn">
+        <header class="col-12 p-0 pt-4">
+          <h2>
+            Ready to learn?
+          </h2>
         </header>
-        <div class="d-flex mb-5 pt-2">
-          <div class="col-12">
-          <div class="row">
-            <div class="col-12 col-md-6 p-5 col-gap-border bg-lighter mt-2">
-              <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
-              <h4 class="py-2 pb-md-5 mb-md-5 font-weight-normal">Learn and earn with your peers while working on top open source projects.</h4>
-              <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
-            </div>
-            <div class="col-12 col-md-6 p-5 col-gap-border bg-lighter mt-5 mt-md-2">
-              <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
-              <h4 class="py-2 pb-md-5 mb-md-5 font-weight-normal">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</h4>
-              <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="/hackathon-list/" target="_self">Explore Kernel</a>
-            </div>
+        <div class="col-12 col-md-6 mt-4 p-0 pr-0 pr-md-1">
+          <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
+            <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
+            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Kernel</a>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mt-4 p-0 p-0 pl-0 pl-md-1">
+          <div class="bg-lighter p-5 ml-0 ml-md-2 h-100">
+            <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
+            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
           </div>
         </div>
       </section>
