@@ -40,7 +40,7 @@ along with this program. If not,see
     <div class="container px-5">
 
       <div class="row mt-5">
-        <div class="col-12 col-md-8 p-0">
+        <div class="col-12 col-md-8">
           <h1 class="mb-4">
             Learn how to build the decentralized web.
           </h1>
@@ -159,29 +159,26 @@ along with this program. If not,see
       </div>
 
 
-      <section class="row py-5 my-5" id="accordion-group">
-        <header class="col-12 pt-5 px-0">
+      <section class="row py-5" id="accordion-group">
+        <header class="col-12 pt-5">
           <h2>
             Everything you need to learn on Gitcoin
           </h2>
         </header>
-        <div class="col-12 col-md-6 col-lg-5 pl-0 pt-5 mr-0 mr-md-5">
-          <div class="accordion-group img-accordion mb-4 mb-md-0" style="min-height: min(95vw, 24rem);">
-            <div class="pr-md-4 position-absolute h-100 w-100" style="z-index: -1">
-              <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-4.svg" %}" style="max-width: 20rem;"/>
+        <div class="col-12 col-lg-6 pt-5">
+          <div class="accordion-group img-accordion mb-4 mb-md-0">
+            <div class="collapseOne w-100 collapse show bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-4.svg" %}" style="max-width: 20rem;"/>
             </div>
-            <div class="collapseOne pr-md-4 position-absolute h-100 w-100 collapse show bg-white" data-parent="#accordion-group">
-              <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-4.svg" %}" style="max-width: 20rem;"/>
+            <div class="collapseTwo w-100 collapse bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-5.svg" %}" style="max-width: 20rem;"/>
             </div>
-            <div class="collapseTwo pr-md-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
-              <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-5.svg" %}" style="max-width: 20rem;"/>
-            </div>
-            <div class="collapseThree pr-md-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
-              <img class="d-block m-auto ml-md-0" src="{% static "v2/images/jtbd/jtbd-6.svg" %}" style="max-width: 20rem;"/>
+            <div class="collapseThree w-100 collapse bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-6.svg" %}" style="max-width: 20rem;"/>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-5 pt-5">
+        <div class="col-12 col-lg-6 pt-5">
           <div class="accordion-group gc-accordion gc-accordion-border">
             <h5 class="accordion" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
               <span class="accordion-title">Learn in sponsored hackathons</span>
@@ -209,7 +206,7 @@ along with this program. If not,see
 
       {% if hackathons|length > 0 %}
         <section class="row" id="learn-by-doing">
-          <header class="col-12 p-0 mb-5">
+          <header class="col-12 mb-5">
             <h2>
               Learn by doing
             </h2>
@@ -218,7 +215,7 @@ along with this program. If not,see
             <div class="row">
               {% for hackathon in hackathons %}
                 {% with logo_url=hackathon.logo name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
-                  <div class="col-12 p-0 {% if hackathons|length <= 2 %}col-md-6 col-gaps-2{% else %}col-md-4 col-gaps-3{% endif %} font-body mb-4 mb-md-0">
+                  <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">
                     <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 bg-img-cover" style="height: 297.74px; background-image: url('{{ logo_url }}');"></div>
                     <h3 class="mt-4 mb-3 line-clamp-2">{{ name }}</h3>
                     <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
@@ -240,7 +237,7 @@ along with this program. If not,see
                 {% endwith %}
               {% endfor %}
               {% if hackathons|length == 1 %}
-                <div class="col-12 col-md-6 p-0 {% if hackathons|length <= 2 %}col-gaps-2{% else %}col-gaps-3{% endif %} font-body mb-4 mb-md-0">
+                <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
                   <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
                   <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
                   <p class="text-grey-400" style="min-height: 100px">Stay tuned for more great hackathons coming your way!</p>
@@ -252,55 +249,57 @@ along with this program. If not,see
       {% endif %}
 
       <section class="row" id="join-community">
-        <header class="col-12 p-0 mb-5">
+        <header class="col-12 mb-5">
           <h2>
             Join a community of life-long learners
           </h2>
         </header>
-        <div class="col-12 px-0 mb-2">
-          <h4 class="col-10 font-weight-300 gc-font-base mb-5 p-0">An eight-week fellowship program designed to help you supercharge your path forward. Learn from the best! Status, Yearn, IdeoCoLabs, Consensys, DeFi Alliance, and many thought leaders in the space — all open source.</h4>
+        <div class="col-12 mb-2">
+          <div class="row">
+            <h4 class="col-10 font-weight-300 gc-font-base mb-5">An eight-week fellowship program designed to help you supercharge your path forward. Learn from the best! Status, Yearn, IdeoCoLabs, Consensys, DeFi Alliance, and many thought leaders in the space — all open source.</h4>
 
-          <div class="col-12">
-            <div class="row">
+            <div class="col-12">
+              <div class="row">
 
-              <div class="col-12 col-md-6 p-0 col-gaps-2-sm">
-                <div class="w-100 rounded shadow-sm" style="background: #212242;">
-                  <img class="w-100 rounded" style="max-height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-iii.png' %}"/>
+                <div class="col-12 col-md-6">
+                  <div class="w-100 rounded shadow-sm" style="background: #212242;">
+                    <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-iii.png' %}"/>
+                  </div>
+                  <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Learn</p>
+                  <p class="text-grey-400">The objective of our syllabus is to start with wisdom, and work backwards. We’ll build long-term thinking skills, provide context and technical history, and introduce you to the patterns and modes required to flourish in decentralized, open communities like Web3.</p>
                 </div>
-                <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Learn</p>
-                <p class="text-grey-400">The objective of our syllabus is to start with wisdom, and work backwards. We’ll build long-term thinking skills, provide context and technical history, and introduce you to the patterns and modes required to flourish in decentralized, open communities like Web3.</p>
-              </div>
 
-              <div class="col-12 col-md-6 p-0 col-gaps-2-sm">
-                <div class="w-100 rounded shadow-sm" style="background: #212242;">
-                  <img class="w-100 rounded" style="max-height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-core.png' %}"/>
+                <div class="col-12 col-md-6">
+                  <div class="w-100 rounded shadow-sm" style="background: #212242;">
+                    <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-core.png' %}"/>
+                  </div>
+                  <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Tracks</p>
+                  <p class="text-grey-400">In KERNEL, we also build. 75+ Web3 projects are built every KERNEL alongside peers and 100+ industry leaders. These projects are supported by Build Tracks (DeFi, Tokens, Gaming, and Security) facilitated by leaders in Web3.</p>
                 </div>
-                <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Tracks</p>
-                <p class="text-grey-400">In KERNEL, we also build. 75+ Web3 projects are built every KERNEL alongside peers and 100+ industry leaders. These projects are supported by Build Tracks (DeFi, Tokens, Gaming, and Security) facilitated by leaders in Web3.</p>
               </div>
             </div>
+            <div class="col-12 col-md-8 mt-5 font-bigger-1">
+              <p>The Kernel fellowship program is an opportunity to build relationships with a network of experienced mentors in blockchain.</p>
+            </div>
           </div>
-          <div class="col-12 col-md-8 p-0 mt-5 font-bigger-1">
-            <p>The Kernel fellowship program is an opportunity to build relationships with a network of experienced mentors in blockchain.</p>
-          </div>
-        </div>
-        <div class="col-12">
-          <div class="row">
-            {% for alumn in alumni %}
-              {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
-                <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
-                  <div class="row">
-                    <div class="col-5 col-md-12">
-                      <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
-                    </div>
-                    <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
-                      <span class="d-block w-100">{{ name }}</span>
-                      <span class="d-block w-100">{{ role }}</span>
+          <div class="col-12">
+            <div class="row">
+              {% for alumn in alumni %}
+                {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
+                  <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
+                    <div class="row">
+                      <div class="col-5 col-md-12">
+                        <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
+                      </div>
+                      <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
+                        <span class="d-block w-100">{{ name }}</span>
+                        <span class="d-block w-100">{{ role }}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              {% endwith %}
-            {% endfor %}
+                {% endwith %}
+              {% endfor %}
+            </div>
           </div>
         </div>
       </section>
@@ -308,7 +307,7 @@ along with this program. If not,see
       <section class="row" id="testimonial">
         <div class="col-12 col-md-6 order-1 order-md-0 font-body">
           <div class="row">
-            <div class="col-auto m-0 p-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
+            <div class="col-auto m-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
             <div class="col text-grey-400 pr-5 pb-4">
               <div class="row">
                 <p>{{ testimonial.comment }}</p>
@@ -330,19 +329,19 @@ along with this program. If not,see
       </section>
 
       <section class="row mb-5" id="ready-to-learn">
-        <header class="col-12 p-0 pt-4">
+        <header class="col-12 pt-4">
           <h2>
             Ready to learn?
           </h2>
         </header>
-        <div class="col-12 col-md-6 mt-4 p-0 pr-0 pr-md-1">
+        <div class="col-12 col-md-6 mt-4 pr-0 pr-md-1">
           <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
             <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
             <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Kernel</a>
           </div>
         </div>
-        <div class="col-12 col-md-6 mt-4 p-0 p-0 pl-0 pl-md-1">
+        <div class="col-12 col-md-6 mt-4 p-0 pl-0 pl-md-1">
           <div class="bg-lighter p-5 ml-0 ml-md-2 h-100">
             <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
@@ -364,7 +363,9 @@ along with this program. If not,see
       // prevent the href from being called
       e.preventDefault();
       // slow scroll to the element
-      $("html, body").animate({ scrollTop: $('#ready-to-learn').offset().top }, "slow");
+      document.querySelector('#ready-to-learn').scrollIntoView({
+        behavior: 'smooth'
+      });
 
       return false;
     });

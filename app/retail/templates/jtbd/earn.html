@@ -58,7 +58,7 @@ along with this program. If not,see
             <a class="col-12 col-md-auto btn btn-lg btn-primary px-5 scroll-to-ready" href="#ready-to-earn">{% trans "I'm ready to earn" %}</a>
           </div>
         </div>
-        <div class="col-auto d-none d-md-block mx-5 pt-0">
+        <div class="d-none d-md-inline col-md-4 m-auto">
           <svg width="385" height="238" viewBox="0 0 385 238" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M382.725 197.669C398.348 207.491 330.206 222.075 279.515 228.868C167.413 243.894 11.4346 238.042 0.631665 228.015C-4.10503 223.575 18.6643 217.665 39.9379 215.018C85.4766 209.373 119.049 220.87 191.013 216.665C200.819 216.077 234.225 213.313 254.086 205.844C283.67 194.7 208.88 195.376 213.284 191.965C220.431 186.437 363.113 185.319 382.725 197.669Z" fill="#FFE0EB"/>
             <path d="M96.2 161.801L82.7 170.201L81.2 167.701L94.7 159.301L96.2 161.801Z" fill="#8C65F7"/>
@@ -85,27 +85,24 @@ along with this program. If not,see
             </svg>
         </div>
       </div>
-      <section id="ways-to-earn">
-        <h2 class="text-grey-500 mb-5">Ways to earn</h2>
+      <section class="py-5" id="ways-to-earn">
+        <h2 class="text-grey-500 pt-5">Ways to earn</h2>
         <div class="row" id="accordion-group">
-          <div class="col-12 col-md-4 mr-5 ml-md-3">
-            <div class="accordion-group img-accordion" style="min-height: min(110vw, 33rem)">
-              <div class="p-4 position-absolute h-100 w-100" style="z-index: -1">
-                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" style="max-width: 21rem"/>
+          <div class="col-12 col-lg-6 pt-5">
+            <div class="accordion-group img-accordion">
+              <div class="collapseOne p-4 w-100 collapse show bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-lg-0" src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" style="max-width: 21rem"/>
               </div>
-              <div class="collapseOne p-4 position-absolute h-100 w-100 collapse show bg-white" data-parent="#accordion-group">
-                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" style="max-width: 21rem"/>
+              <div class="collapseTwo p-4 w-100 collapse bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-lg-0" src="{% static 'v2/images/jtbd/earn-hackathons.svg' %}" style="max-width: 21rem"/>
               </div>
-              <div class="collapseTwo p-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
-                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-hackathons.svg' %}" style="max-width: 21rem"/>
-              </div>
-              <div class="collapseThree p-4 position-absolute h-100 w-100 collapse bg-white" data-parent="#accordion-group">
-                <img class="d-block m-auto ml-md-0" src="{% static 'v2/images/jtbd/earn-grants.svg' %}" style="max-width: 21rem"/>
+              <div class="collapseThree p-4 w-100 collapse bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-lg-0" src="{% static 'v2/images/jtbd/earn-grants.svg' %}" style="max-width: 21rem"/>
               </div>
             </div>
           </div>
-          <div class="col-12 col-md-5 pt-4">
-            <div class="accordion-group gc-accordion ml-md-5 gc-accordion-border">
+          <div class="col-12 col-lg-6 pt-5">
+            <div class="accordion-group gc-accordion gc-accordion-border">
               <h5 class="accordion" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
                 <span class="accordion-title">Earn through bounties</span>
               </h5>
@@ -169,7 +166,7 @@ along with this program. If not,see
             <div class="row">
               {% for hackathon in hackathons %}
                 {% with logo_url=hackathon.logo name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
-                  <div class="col-12 p-0 {% if hackathons|length <= 2 %}col-md-6 col-gaps-2{% else %}col-md-4 col-gaps-3{% endif %} font-body mb-4 mb-md-0">
+                  <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">
                     <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 bg-img-cover" style="height: 297.74px; background-image: url('{{ logo_url }}');"></div>
                     <h3 class="mt-4 mb-3 line-clamp-2">{{ name }}</h3>
                     <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
@@ -191,7 +188,7 @@ along with this program. If not,see
                 {% endwith %}
               {% endfor %}
               {% if hackathons|length == 1 %}
-                <div class="col-12 col-md-6 p-0 {% if hackathons|length <= 2 %}col-gaps-2{% else %}col-gaps-3{% endif %} font-body mb-4 mb-md-0">
+                <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
                   <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
                   <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
                   <p class="text-grey-400" style="min-height: 100px">Stay tuned for more great hackathons coming your way!</p>
@@ -270,26 +267,26 @@ along with this program. If not,see
       </section>
 
       <section class="row mb-5" id="ready-to-earn">
-        <header class="col-12 p-0 pt-4">
+        <header class="col-12 pt-4">
           <h2>
             Ready to earn?
           </h2>
         </header>
-        <div class="col-12 col-md-6 col-xl-4 mt-4 p-0 pr-md-1">
+        <div class="col-12 col-md-6 col-xl-4 mt-4 pr-md-1">
           <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
             <h4 class="py-2 font-weight-normal">Earn in bounties</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Earn while building meaningful open source projects.</p>
             <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'explorer' %}" target="_self">{% trans "Explore Bounties" %}</a>
           </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-4 mt-4 p-0 pl-md-1 pr-xl-1">
+        <div class="col-12 col-md-6 col-xl-4 mt-4 pl-md-1 pr-xl-1">
           <div class="bg-lighter p-5 ml-0 ml-md-2 mr-0 mr-xl-2 h-100">
             <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects.</p>
             <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons4' %}" target="_self">{% trans "Explore Hackathons" %}</a>
           </div>
         </div>
-        <div class="col-12 col-md-12 col-xl-4 mt-4 p-0 pl-xl-1">
+        <div class="col-12 col-md-12 col-xl-4 mt-4 pl-xl-1">
           <div class="bg-lighter p-5 ml-0 ml-xl-2 h-100">
             <h4 class="py-2 font-weight-normal">Earn in grants</h4>
             <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Get community support and matched funds for public goods projects.</p>
