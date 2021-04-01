@@ -170,6 +170,10 @@ Vue.mixin({
           // harmony
           type = 'harmony_ext';
           break;
+        case '1001':
+          // algorand
+          type = 'algorand_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
