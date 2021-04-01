@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n compress to_date %}
+{% load humanize static i18n compress date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,7 +95,7 @@ along with this program. If not, see
           <path d="M211.1 64.9003C190 46.6003 161.2 45.2003 146.8 61.7003C132.4 78.3003 137.8 106.6 158.9 124.9C180 143.2 208.8 144.6 223.1 128C237.6 111.5 232.2 83.2003 211.1 64.9003ZM220.1 125.3C207.8 139.5 181.8 139.2 161.7 121.7C141.6 104.2 137.7 78.5003 150 64.3003C162.3 50.1003 188.3 50.4003 208.4 67.9003C228.5 85.5003 232.4 111.2 220.1 125.3Z" fill="#8C65F7"/>
           <path d="M177.556 71.1385C176.146 70.6422 174.627 71.5356 174.519 72.9255L173 96.9498C173 97.744 173.434 98.439 174.193 98.836L201.637 112.734C203.156 113.529 205 112.437 205 110.848L204.132 81.7609C204.132 80.9667 203.59 80.1725 202.722 79.8747L177.556 71.1385Z" fill="#DAD1FF"/>
           <path d="M175.8 71.1005C174.5 70.6005 173.1 71.5005 173 72.9005L171.6 97.1005C171.6 97.9005 172 98.6005 172.7 99.0005L198 113C199.4 113.8 201.1 112.7 201.1 111.1L200.3 81.8005C200.3 81.0005 199.8 80.2005 199 79.9005L175.8 71.1005ZM168.9 72.7005C169.1 68.5005 173.4 65.8005 177.3 67.3005L200.4 76.2005C202.7 77.1005 204.3 79.3005 204.4 81.8005L205.2 111C205.3 115.8 200.2 118.9 196 116.6L170.7 102.6C168.6 101.5 167.4 99.2005 167.5 96.8005L168.9 72.7005Z" fill="#8C65F7"/>
-          </svg>            
+          </svg>
       </div>
     </div>
     <section id="ways-to-earn">
@@ -125,14 +125,14 @@ along with this program. If not, see
             <div class="accordion-panel collapse show font-subheader text-grey-500 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
               <p class="font-header font-bigger-1">Tackle bounties for all skill levels hosted by Web3’s most exciting projects. From open security contests and new feature builds, to UX/UI design and content creation.</p>
             </div>
-  
+
             <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
               <span class="accordion-title">Earn through sponsored hackathons</span>
             </h5>
             <div class="accordion-panel collapse font-subheader text-grey-500 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
               <p class="font-header font-bigger-1">Collect rewards and tokens as you hack your way through creative solutions on a variety of protocols. Team up with other Web3 builders to advance the technology that will shape our future.</p>
             </div>
-  
+
             <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
               <span class="accordion-title">Earn through grant funding</span>
             </h5>
@@ -171,27 +171,49 @@ along with this program. If not, see
       <a class="text-primary font-bigger-1" href="{{ BASE_URL }}/leaderboard/earners?cadence=monthly&keyword=all&product=bounties" target="_blank">View Leaderboard</a>
     </section>
 
-    <section id="hackathons">
-      <h2 class="text-grey-500 mb-5">Earn in hackathons</h2>
-      <div class="row">
-        {% for hackathon in hackathons %}
-        <div class="col-12 col-md-4 col-gap-border font-body">
-          <img class="w-100 rounded shadow-sm" style="object-fit: cover;" src="{{ MEDIA_URL }}{{ hackathon.logo }}" height="202px"/>
-          <p class="font-bigger-2 mt-4 mb-2 text-wrap" style="min-height: 74px">{{ hackathon.name }}</p>
-          <p class="text-grey-400 font-subheader" style="min-height: 100px">{{ hackathon.summary }}</p>
-          <p class="text-grey-400 font-subheader">
-            {{ hackathon.start_date|to_date|date:"M j, Y" }} - {{ hackathon.end_date|to_date|date:"M j, Y" }}
-          </p>
-          <p class="text-grey-400 font-subheader">
-            <span class="pr-2">Sponsored by</span>
-            {% for sponsor in hackathon.sponsor_profiles %}
-              <img class="rounded-circle" style="max-height: 1.5rem; object-fit: contain;" src="{{ BASE_URL }}/dynamic/avatar/{{ sponsor.handle }}" alt="{{ sponsor.handle }}" />
+    {% if hackathons|length > 0 %}
+      <section class="row" id="meet-passionate-builders">
+        <header class="col-12 p-0 mb-5">
+          <h2>
+            Earn in hackathons
+          </h2>
+        </header>
+        <div class="col-12">
+          <div class="row">
+            {% for hackathon in hackathons %}
+              {% with logo_url=hackathon.logo name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
+                <div class="col-12 p-0 {% if hackathons|length <= 2 %}col-md-6 col-gaps-2{% else %}col-md-4 col-gaps-3{% endif %} font-body mb-4 mb-md-0">
+                  <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 bg-img-cover" style="height: 297.74px; background-image: url('{{ logo_url }}');"></div>
+                  <h3 class="mt-4 mb-3 line-clamp-2">{{ name }}</h3>
+                  <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
+                  <p class="text-grey-400 mb-3">
+                    {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
+                  </p>
+                  <p class="text-grey-400">
+                    Sponsored by
+                    {% for sponsor in sponsor_profiles %}
+                      {% if forloop.counter <= 4 %}
+                        <img class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;" src="{% url 'org_avatar' sponsor.handle %}" alt="{{ sponsor.handle }}" />
+                      {% endif %}
+                    {% endfor %}
+                    {% if sponsor_profiles|length > 4 %}
+                      <span class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;"><i class="fas fa-plus"></i></span>
+                    {% endif %}
+                  </p>
+                </div>
+              {% endwith %}
             {% endfor %}
-          </p>
+            {% if hackathons|length == 1 %}
+              <div class="col-12 col-md-6 p-0 {% if hackathons|length <= 2 %}col-gaps-2{% else %}col-gaps-3{% endif %} font-body mb-4 mb-md-0">
+                <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
+                <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
+                <p class="text-grey-400" style="min-height: 100px">Stay tuned for more great hackathons coming your way!</p>
+              </div>
+            {% endif %}
+          </div>
         </div>
-        {% endfor %}
-      </div>
-    </section>
+      </section>
+    {% endif %}
 
     <section id="bounties">
       <h2 class="text-grey-500 mb-5">Earn in bounties</h2>
