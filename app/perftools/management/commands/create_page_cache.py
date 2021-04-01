@@ -235,7 +235,7 @@ def create_jtbd_fund_cache():
         'testimonial': {
             'handle': 'Austin Griffith',
             'role': 'Python Developer',
-            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'comment': "As one of the first quadratic freelancers to go through the platform, I know from personal experience that Gitcoin Grants empowers builders to create the future on Ethereum. My grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem",
             'twitter_handle': 'austingriffith',
             'github_handle': 'austintgriffith',
         },
