@@ -489,7 +489,6 @@
 .gc-accordion {
   margin-left: -38px;
 
-
   &:after {
     content: "";
     display: block;
@@ -504,6 +503,12 @@
     margin-bottom: 0px;
     transition: none;
     border-left: 4px solid transparent;
+  }
+
+  &.gc-accordion-border {
+    .accordion, .accordion-panel {
+      border-left: 4px solid #DDDDDD
+    }
   }
 
   .accordion-title {
@@ -521,6 +526,11 @@
 
   .accordion-panel  {
     padding-left: 28px;
+
+    p {
+      margin-bottom: 0;
+      padding-bottom: 1rem;
+    }
   }
 
   .accordion:after {

@@ -7,6 +7,12 @@
 // .border-left-[1-5]
 @include border('left', 1, 5);
 
+// .border-bottom-[1-5]
+@include border('bottom', 1, 5);
+
+// .border-right-[1-5]
+@include border('right', 1, 5);
+
 // .border-[grey, primary, secondary, danger, info, dark, light]
 @include border-colors(
   'grey' lightgray,
@@ -17,6 +23,15 @@
   'dark' $dark,
   'light' $light
 );
+
+// Lighter grey styling
+.bg-lighter {
+  background-color: $gc-grey-100;
+}
+
+.text-lighter {
+  color: $gc-grey-100;
+}
 
 // Hover effects
 .hover-underline:not(:disabled):not(.disabled):not(.active):hover {

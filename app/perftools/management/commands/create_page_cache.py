@@ -163,22 +163,22 @@ def create_jtbd_connect_cache():
         {
             'name': 'Alex Masmej',
             'role': 'TryShowtime',
-            'avatar_url': '',
+            'avatar_url': static('v2/images/jtbd/alexmasmej.png'),
         },
         {
             'name': 'Simona Pop',
             'role': 'Status',
-            'avatar_url': '',
+            'avatar_url': static('v2/images/jtbd/simonapop.png'),
         },
         {
             'name': 'Devin Walsh',
             'role': 'Ex-Coinfund',
-            'avatar_url': '',
+            'avatar_url': static('v2/images/jtbd/devinwalsh.png'),
         },
         {
             'name': 'Val Mack',
             'role': 'Cornell Alum',
-            'avatar_url': '',
+            'avatar_url': static('v2/images/jtbd/valmack.png'),
         }
     ]
 
@@ -198,12 +198,12 @@ def create_jtbd_connect_cache():
         'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
-            'handle': 'sebastian',
-            'role': 'Python Developer',
-            'comment': "Transitioning to a career in crypto can be tough, but Gitcoin was a big help for me. Completing Gitcoin bounties and participating in Hackathons were invaluable for gaining exposure, experience, and of course making some money!",
+            'handle': 'Magenta Ceiba',
+            'role': 'Developer',
+            'comment': "I was surprised to learn I could progres on building the next phase of Bloom Network in parallel to deep dive of learning more about Web3 quickly. This fellowship has so far been the fastest skill upleveling experience I’ve ever had. Also wins - developing deeper relationships with people and projects I already knew of.",
             'avatar_url': '',
             'twitter': '',
-            'github': '',
+            'github_handle': 'magentaceiba',
         },
     }
     view = 'jtbd'
