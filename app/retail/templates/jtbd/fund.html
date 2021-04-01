@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize i18n static compress cache %}
+{% load humanize i18n static compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,7 +36,6 @@ along with this program. If not,see
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
-    {% cache 3600 fund %}
     <div class="container px-5">
 
       <div class="row mt-5">
@@ -244,7 +243,7 @@ along with this program. If not,see
 
           <h2 class="pb-4 pt-5 w-100">Ready to fund?</h2>
           <div class="row">
-            <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="col-12 col-md-6 mb-3">
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
                 <div class="mb-4">
                   <h4 class="py-2 font-weight-normal">Make an Impact</h4>
@@ -256,19 +255,8 @@ along with this program. If not,see
 
               </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="col-12 col-md-6 mb-3">
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
-                <div class="mb-4">
-                  <h4 class="py-2 font-weight-normal">Become a matching partner</h4>
-                  <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
-                </div>
-                <div class="">
-                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'grants:new_matching_partner' %}" target="_self">Pledge Support</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-12 col-lg-4 mb-3">
-              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
                 <div class="mb-4">
                   <h4 class="py-2 font-weight-normal">Become a matching partner</h4>
                   <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
@@ -282,8 +270,6 @@ along with this program. If not,see
         </div>
       </div>
     </div>
-    {% endcache %}
-
 
     {% include 'shared/footer.html' %}
   </div>

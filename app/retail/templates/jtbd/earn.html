@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat cache %}
+{% load i18n static compress date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +43,7 @@ along with this program. If not,see
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
-    {% cache 3600 earn %}
+
     <div class="container px-5">
       <!--  Header section -->
       <div class="row justify-content-between my-5">
@@ -318,7 +318,6 @@ along with this program. If not,see
         </div>
       </section>
     </div>
-    {% endcache %}
 
     {% include 'shared/footer.html' %}
 
