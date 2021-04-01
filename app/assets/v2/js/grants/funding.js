@@ -136,8 +136,7 @@ function tokenOptionsForGrant(grant) {
   if (grant.tenants && grant.tenants.includes('ZCASH')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 123123);
     tokenDefault = 'ZEC';
-  }
-  if (grant.tenants && grant.tenants.includes('CELO')) {
+  } else if (grant.tenants && grant.tenants.includes('CELO')) {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 42220);
     tokenDefault = 'CELO';
   } else if (grant.tenants && grant.tenants.includes('ZIL')) {
