@@ -63,6 +63,9 @@
     what TRIGGER another div to pop up (components/wallet-provider.html) -->
     <div id="nav-wallet" class="">
 
+      <!-- NETWORK -->
+      <span id="web3network" class="web3network hide"></span>
+
       <!-- CLAIMABLE AMOUNT -->
       <!-- IF :  and not proof_of_receive and total_claimable_gtc != 0 -->
       {% if user.is_authenticated and total_claimable_gtc != 0 %}
@@ -99,4 +102,33 @@
 </header>
 
 
+
+
+
+
+<!-- check for web3network -->
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  const web3network = document.querySelector("#web3network")
+  document.addEventListener("dataWalletReady", getWeb3Network)
+});
+
+async function getWeb3Network() {
+  try {
+      let network = await web3.eth.net.getNetworkType()
+      if (network == "main") {
+        web3network.classList.add("hide")
+        web3network.innerHTML = ""
+      }
+      else{
+        web3network.innerHTML = network
+        web3network.classList.remove("hide")    
+      }
+      
+    } catch(e) {
+        console.log(e);
+    }
+}
+</script>
 
