@@ -57,19 +57,55 @@ along with this program. If not,see
       gap: 5em;
     }
 
+    .flex-basis-auto {
+      flex-basis: auto;
+    }
+    .flex-basis-25 {
+      flex-basis: 25%;
+    }
+    .flex-basis-33 {
+      flex-basis: 33%;
+    }
     .flex-basis-50 {
       flex-basis: 50%;
     }
+    .flex-basis-100 {
+      flex-basis: 100%;
+    }
 
     @media (min-width: 768px) {
+      .flex-basis-md-auto {
+        flex-basis: auto;
+      }
+      .flex-basis-md-25 {
+        flex-basis: 25%;
+      }
+      .flex-basis-md-33 {
+        flex-basis: 33%;
+      }
       .flex-basis-md-50 {
         flex-basis: 50%;
+      }
+      .flex-basis-md-100 {
+        flex-basis: 100%;
       }
     }
 
     @media (min-width: 992px) {
+      .flex-basis-lg-auto {
+        flex-basis: auto;
+      }
+      .flex-basis-lg-25 {
+        flex-basis: 25%;
+      }
+      .flex-basis-lg-33 {
+        flex-basis: 33%;
+      }
       .flex-basis-lg-50 {
         flex-basis: 50%;
+      }
+      .flex-basis-lg-100 {
+        flex-basis: 100%;
       }
     }
 
@@ -333,7 +369,7 @@ along with this program. If not,see
       <div class="row my-4 cta-area">
         <h2 class="pb-4 pt-5 w-100">Ready to fund?</h2>
         <div class="d-flex flex-column flex-md-row gap-2">
-          <div class="bg-lighter flex-basis-auto flex-basis-md-50 p-5">
+          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 p-5">
             <div class="mb-4">
               <h4 class="py-2 font-weight-normal">Make an Impact</h4>
               <p class="font-bigger-1">With Gitcoin Grants you can support the most impactful projects in web3.</p>
@@ -343,7 +379,7 @@ along with this program. If not,see
             </div>
 
           </div>
-          <div class="bg-lighter flex-basis-auto flex-basis-md-50 p-5">
+          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 p-5">
             <div class="mb-4">
               <h4 class="py-2 font-weight-normal">Become a matching partner</h4>
               <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
