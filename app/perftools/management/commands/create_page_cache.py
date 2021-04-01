@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 def fetch_jtbd_hackathons():
     db = JSONStore.objects.get(key='hackathons', view='hackathons')
     status = db.data[0]
-    hackathons = db.data[1][0:2]
+    hackathons = db.data[1][0:3]
     fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
     return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming' or status == 'current']
 
@@ -69,10 +69,14 @@ def create_jtbd_earn_cache():
     ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-
+    
     bounties = list(Bounty.objects.filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
-    ).order_by('-_val_usd_db').values('_val_usd_db', 'title', 'issue_description')[0:2])
+    ).order_by('-_val_usd_db').extra(
+        select={'val_usd_db': '_val_usd_db'}
+    ).values(
+        'val_usd_db', 'title', 'token_name', 'value_true', 'bounty_owner_github_username', 'metadata'
+    )[0:4])
 
     # WalletConnect
     featured_grant = Grant.objects.filter(pk=275).first()
@@ -90,10 +94,10 @@ def create_jtbd_earn_cache():
             'in_active_clrs': featured_grant.in_active_clrs,
         },
         'testimonial': {
-            'handle': 'sebastian',
-            'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
-            'twitter': 'sebastian',
-            'role': 'Python Developer',
+            'handle': 'cryptomental',
+            'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
+            'twitter': 'cryptomental',
+            'role': 'Front End Developer',
         },
     }
     view = 'jtbd'
