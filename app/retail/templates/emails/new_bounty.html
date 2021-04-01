@@ -33,10 +33,6 @@ along with this program. If not, see
     color: #6F3FF5;
   }
 
-  #content-body {
-    padding: 1.5em 11% 1.5em 11%;
-  }
-
   .section-header {
     font-weight: bold;
     margin-bottom: 0;
@@ -52,6 +48,7 @@ along with this program. If not, see
     border: none;
     margin-top: 0;
     margin-bottom: 1em;
+    text-align: left;
   }
 
   @media only screen and (max-width: 600px) {
@@ -67,15 +64,10 @@ along with this program. If not, see
     .digest-img {
       width: 80%;
     }
-
-    #content-body {
-      text-align: left;
-    }
   }
 
   @media only screen and (min-width: 600px) {
     .section-header {
-      text-align: center !important;
       margin-left: 0 !important
     }
 
@@ -83,13 +75,10 @@ along with this program. If not, see
       width: 60%;
     }
 
-    .avatar-bounty {
-      display: block;
-      margin: 1em auto 1em auto;
-    }
-
-    #content-body {
-      text-align: center !important;
+    .primary-content {
+      background-color: white;
+      overflow: hidden;
+      margin: 0 25% 0 25%;
     }
   }
 
@@ -99,7 +88,7 @@ along with this program. If not, see
 
   .avatar {
     display: block;
-    margin: 4em auto 1em auto;
+    margin: 2em 0 2em 0;
     max-width: 200px;
     height: 200px;
     border-radius: 100px;
@@ -122,6 +111,22 @@ along with this program. If not, see
   <p class="text-left" style="line-height: 24px; word-wrap: break-word;">{{email_announcements.desc|safe}}</p>
   {% endif %}
 
+  {% if not email_announcements %}
+  <h3 class="section-header">{% trans "Announcements" %}</h3>
+  <hr>
+  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">
+    Hey all!
+
+    Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇
+    
+    This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the News Submissions as well as the good and critical feedback. 🙏 It's been GR8. 😎
+    
+    Enjoy the rest of the email, and we'll catch you next week year.™
+    
+    — Justin & The Gitcoin Team
+  </p>
+  {% endif %}
+
   {% if upcoming_events or upcoming_dates %}
   <h3 class="section-header">{% trans "Save the Date" %}</h3>
   <hr>
@@ -135,52 +140,34 @@ along with this program. If not, see
   {% endfor %}
   {% endif %}
 
-  {% if trending_avatar %}
-  <br>
-  <h3 class="section-header">{% trans "Trending Avatar" %}</h3>
+  {% if not bounties %}
+  <h3 class="section-header">{% trans "Start Earning" %}</h3>
   <hr>
-  <a href="{{trending_avatar.url}}&{{ utm_tracking }}">
-    <img class="avatar" src='{{trending_avatar.img_url}}'>
-  </a>
-  <br>
-  <div style="margin-top: 25px;">
-    <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}&{{ utm_tracking }}">Try Avatar</a>
+  <img class="avatar-bounty" src="{{trending_avatar.img_url}}">
+  <div style="color: #15003E;">
+    <p class="font-weight-bold mb-0">DimensionDev</p>
+    <p style="margin-top:0; margin-bottom: 0;">[Bounty] Solana and Serum in Maskbook</p>
   </div>
-  {% endif %}
-
-  {% if quest_of_the_day %}
-  <h3 class="text-center section-header">{% trans "Quests Daily" %}</h3>
-  <hr>
-  {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
-  <img class="avatar" src={{base_url}}static/v2/images/emails/kudos_template.png>
-  {% else %}
-  <img class="avatar" src="{{quest.enemy_img_url}}">
-  {% endif %}
-  <div style="margin: 0 18% 0 18%">
-    <div class="text-left" style="color: #15003E;">
-      <p class="font-weight-bold mb-0">{{quest.title}}</p>
-      <p style="margin-top:0; width: 385px; margin-bottom: 0;">
-        {{quest.description}}
-      </p>
-    </div>
-  </div>
-  <div style="margin-top: 25px;">
-    <a class="button" style="text-decoration: none;" href="{{quest.absolute_url}}&{{ utm_tracking }}">Play Quest</a>
+  <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">5000 USDT</p>
+  <div style="margin-top: 25px; ">
+    <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
   </div>
   {% endif %}
 
   {% if bounties %}
   {% for bounty in bounties %}
+  <h3 class="section-header">{% trans "Start Earning" %}</h3>
+  <hr>
   {% if bounty.avatar_url %}
   <img class="avatar-bounty" src="{{ bounty.avatar_url }}">
   <div style="color: #15003E;">
     {% if not prize %}
-    <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' highlight.who %}?{{ utm_tracking }}">{{ bounty.org_name }}</a>
+    <a class="font-weight-bold mb-0" style="text-decoration: none;" href="{% url 'profile' highlight.who %}?{{ utm_tracking }}">{{ bounty.org_name }}</a>
     {% endif %}
     {% else %}
-    * <strong>{{ bounty.org_name }}</strong>
+    <p class="font-weight-bold mb-0">{{ bounty.org_name }}</p>
     {% endif %}
-    <p style="margin-top: 3px; margin-bottom: 3px;">
+    <p style="margin-top: 0; margin-bottom: 0;">
       {% if prize %}<b>{% endif %}
         {% if primer %}
         {{ primer }}
@@ -190,7 +177,7 @@ along with this program. If not, see
         {% if prize %}</b>{% endif %}
     </p>
   </div>
-  <p style="color:#15ebb7; font-weight: 600; margin-top: 3px; margin-bottom: 3px;">
+  <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">
     {% if bounty.value_true and bounty.token_name %}
     {{ bounty.value_true|floatformat }} {{ bounty.token_name }}
     {% endif %}
@@ -198,8 +185,42 @@ along with this program. If not, see
   <div style="margin-top: 25px; ">
     <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
   </div>
-  <br>
   {% endfor %}
+  {% endif %}
+
+  {% if trending_avatar %}
+  <br>
+  <h3 class="section-header">{% trans "Trending Avatar" %}</h3>
+  <hr>
+  <img class="avatar" src="{{trending_avatar.img_url}}">
+  <div style="margin-top: 25px;">
+    <a class="button" style="text-decoration: none;" href="{{trending_avatar.url}}&{{ utm_tracking }}">Try Avatar</a>
+  </div>
+  {% endif %}
+
+  {% if not quest_of_the_day %}
+  <h3 class="section-header">{% trans "Quests Daily" %}</h3>
+  <hr>
+  {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
+  <img class="avatar" style="height: 120px; width: auto;" src={{base_url}}static/v2/images/emails/kudos_template.png>
+  {% else %}
+  <img class="avatar" src="{{quest.enemy_img_url}}">
+  {% endif %}
+  <!-- <div class="text-left" style="color: #15003E;">
+    <p class="font-weight-bold mb-0">{{quest.title}}</p>
+    <p style="margin-top:0; width: 385px; margin-bottom: 0;">
+      {{quest.description}}
+    </p>
+  </div> -->
+  <div class="text-left" style="color: #15003E;">
+    <p class="font-weight-bold mb-0">Decisions Discussions Decentralized Design Dungeons</p>
+    <p style="margin-top:0; width: 385px; margin-bottom: 0;">
+Considering the design elements / approaches to a very new world. How that approach can heavily impact usability, accessibility, and repeatability.
+    </p>
+  </div>
+  <div style="margin-top: 25px;">
+    <a class="button" style="text-decoration: none;" href="{{quest.absolute_url}}&{{ utm_tracking }}">Play Quest</a>
+  </div>
   {% endif %}
 
 </div>
