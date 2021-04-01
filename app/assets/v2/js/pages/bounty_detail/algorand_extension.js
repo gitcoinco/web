@@ -3,6 +3,7 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
   const from_address = (vm.bounty.bounty_owner_address).toUpperCase();
+  const asset_index = tokenNameToDetails('mainnet', token_name);
   // const NETWORK = 'TestNet';
   const NETWORK = 'MainNet';
 
@@ -20,8 +21,12 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
       // step2: get connected accounts
       const accounts = await AlgoSigner.accounts({ ledger: NETWORK });
 
-      if (!accounts.reduce(account=> account.address == from_address)) {
-        _alert({ message: `Please loggin into wallet with address ${from_address}` }, 'danger');
+      let is_account_present = false;
+      accounts.map(account=> {
+        if (account.address == from_address) is_account_present = true;
+      });
+      if (!is_account_present) {
+        _alert({ message: `Unable to access address ${from_address} in wallet` }, 'danger');
         modal.closeModal();
         return;
       }
@@ -32,10 +37,42 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
         path: `/v2/accounts/${from_address}`,
       })
 
-      if (balance.amount <= amount * 10 ** vm.decimals) {
+      if (
+        token_name == 'ALGO' &&
+        balance.amount <= amount * 10 ** vm.decimals
+      ) {
+        // ALGO token
         _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
         modal.closeModal();
         return;
+
+      } else {
+        // ALGO assets
+        let is_asset_present = false;
+
+        if (balance.assets && balance.assets.length > 0) {
+          balance.assets.map(asset => {
+            if (asset['asset-id'] == asset_index) is_asset_present = true;
+          })
+        }
+
+        if (is_asset_present) {
+          _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
+          modal.closeModal();
+          return;
+        }
+
+        let has_enough_asset_balance = false;
+        balance.assets.map(asset => {
+          if (asset['asset-id'] == asset_index && asset['amount'] <= amount * 10 ** vm.decimals)
+            has_enough_asset_balance = true;
+        })
+
+        if (has_enough_asset_balance) {
+          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          modal.closeModal();
+          return;
+        }
       }
 
       // step4: get txnParams
@@ -44,19 +81,38 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
         path: '/v2/transactions/params'
       });
 
+      let txn;
       // step5: sign transaction
-      const txn = {
-        from: from_address,
-        to: to_address,
-        fee: txParams['fee'],
-        type: 'pay',
-        amount: amount * 10 ** vm.decimals,
-        firstRound: txParams['last-round'],
-        lastRound: txParams['last-round'] + 1000,
-        genesisID: txParams['genesis-id'],
-        genesisHash: txParams['genesis-hash'],
-        note: 'paying out gitcoin bounty',
-      };
+      if (token_name == 'ALGO') {
+        // ALGO token
+        txn = {
+          from: from_address,
+          to: to_address,
+          fee: txParams['fee'],
+          type: 'pay',
+          amount: amount * 10 ** vm.decimals,
+          firstRound: txParams['last-round'],
+          lastRound: txParams['last-round'] + 1000,
+          genesisID: txParams['genesis-id'],
+          genesisHash: txParams['genesis-hash'],
+          note: 'paying out gitcoin bounty',
+        };
+      } else {
+        // ALGO assets
+        txn = {
+          from: from_address,
+          to: to_address,
+          assetIndex: Number(asset_index.addr),
+          note: 'paying out gitcoin bounty',
+          amount: amount * 10 ** vm.decimals,
+          type: 'axfer',
+          fee: txParams['min-fee'],
+          firstRound: txParams['last-round'],
+          lastRound: txParams['last-round'] + 1000,
+          genesisID: txParams['genesis-id'],
+          genesisHash: txParams['genesis-hash']
+        }
+      }
 
       AlgoSigner.sign(txn).then(signedTx => {
 

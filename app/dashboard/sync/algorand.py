@@ -25,10 +25,14 @@ def get_algorand_txn_status(fulfillment):
             if not response["pool-error"] == "":
                 return None
 
+            # asset / algo token
+            rcv = txn['rcv'] if txn.get('rcv') else txn['arcv']
+            amt = txn['amt'] if txn.get('amt') else txn['aamt']
+
             if (
                 txn['snd'].lower() == funderAddress.lower() and
-                txn['rcv'].lower() == payeeAddress.lower() and
-                float(float(txn['amt'])/ 10**6) == float(amount) and
+                rcv.lower() == payeeAddress.lower() and
+                float(float(amt)/ 10**6) == float(amount) and
                 not txn_already_used(txnid, token_name)
             ):
                 return 'success'    
@@ -57,11 +61,14 @@ def get_algorand_txn_status_paid_explorer(fulfillment):
         if response.get("confirmed-round") and response.get("txn"):
             txn = response["transaction"]
 
+            # asset / algo token
+            payment_txn = txn['payment-transaction'] if txn.get('payment-transaction') else txn['asset-transfer-transaction']
+
             if (
                 txn['confirmed-round'] > 0 and
                 txn['sender'].lower() == funderAddress.lower() and
-                txn['payment-transaction']['receiver'].lower() == payeeAddress.lower() and
-                float(float(txn['payment-transaction']['amount'])/ 10**6) == float(amount) and
+                payment_txn['receiver'].lower() == payeeAddress.lower() and
+                float(float(payment_txn['amount'])/ 10**6) == float(amount) and
                 not txn_already_used(txnid, token_name)
             ):
                 return 'success'

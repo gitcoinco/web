@@ -149,6 +149,8 @@ Vue.mixin({
           break;
 
         case 'ALGO':
+        case 'USDTa':
+        case 'USDCa':
           url = `https://algoexplorer.io/tx/${txn}`;
           break;
 
@@ -213,6 +215,8 @@ Vue.mixin({
           break;
 
         case 'ALGO':
+        case 'USDTa':
+        case 'USDCa':
           url = `https://algoexplorer.io/tx/${address}`;
           break;
 
@@ -444,6 +448,8 @@ Vue.mixin({
           break;
 
         case 'ALGO':
+        case 'USDTa':
+        case 'USDCa':
           tenant = 'ALGORAND';
           break;
 
