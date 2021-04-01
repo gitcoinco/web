@@ -163,22 +163,22 @@ def create_jtbd_connect_cache():
         {
             'name': 'Alex Masmej',
             'role': 'TryShowtime',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/alexmasmej.png',
+            'avatar_url': static('v2/images/jtbd/alexmasmej.png'),
         },
         {
             'name': 'Simona Pop',
             'role': 'Status',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/simonapop.png',
+            'avatar_url': static('v2/images/jtbd/simonapop.png'),
         },
         {
             'name': 'Devin Walsh',
             'role': 'Ex-Coinfund',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/devinwalsh.png',
+            'avatar_url': static('v2/images/jtbd/devinwalsh.png'),
         },
         {
             'name': 'Val Mack',
             'role': 'Cornell Alum',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/valmack.png',
+            'avatar_url': static('v2/images/jtbd/valmack.png'),
         }
     ]
 
@@ -198,12 +198,12 @@ def create_jtbd_connect_cache():
         'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
-            'handle': 'John Wilkinson',
+            'handle': 'Magenta Ceiba',
             'role': 'Developer',
-            'comment': "I LOVE IT… The community has been outstanding. I have made contact outside of slack with a couple people. William Schwab was kind enough to ZOOM with me for an hour and tell me his story, let me pick his brain, and he shared some valuable resources with me.",
+            'comment': "I was surprised to learn I could progres on building the next phase of Bloom Network in parallel to deep dive of learning more about Web3 quickly. This fellowship has so far been the fastest skill upleveling experience I’ve ever had. Also wins - developing deeper relationships with people and projects I already knew of.",
             'avatar_url': '',
             'twitter': '',
-            'github': '',
+            'github_handle': 'magentaceiba',
         },
     }
     view = 'jtbd'
