@@ -265,32 +265,46 @@ along with this program. If not,see
           </div>
         </div>
       </section>
-
-      <section class="row mb-5" id="ready-to-earn">
-        <header class="col-12 pt-4">
-          <h2>
+      <section class="row my-4" id="ready-to-earn">
+        <div class="col-12">
+          <h2 class="pb-4 pt-5 w-100">
             Ready to earn?
           </h2>
-        </header>
-        <div class="col-12 col-md-6 col-xl-4 mt-4 pr-md-1">
-          <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
-            <h4 class="py-2 font-weight-normal">Earn in bounties</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Earn while building meaningful open source projects.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'explorer' %}" target="_self">{% trans "Explore Bounties" %}</a>
-          </div>
-        </div>
-        <div class="col-12 col-md-6 col-xl-4 mt-4 pl-md-1 pr-xl-1">
-          <div class="bg-lighter p-5 ml-0 ml-md-2 mr-0 mr-xl-2 h-100">
-            <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons4' %}" target="_self">{% trans "Explore Hackathons" %}</a>
-          </div>
-        </div>
-        <div class="col-12 col-md-12 col-xl-4 mt-4 pl-xl-1">
-          <div class="bg-lighter p-5 ml-0 ml-xl-2 h-100">
-            <h4 class="py-2 font-weight-normal">Earn in grants</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Get community support and matched funds for public goods projects.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'grants:grants' %}" target="_self">{% trans "Earn through Grants" %}</a>
+
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Earn in bounties</h4>
+                  <p class="font-bigger-1">Earn while building meaningful open source projects.</p>
+                </div>
+                <div class="">
+                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
+                  <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects.</p>
+                </div>
+                <div class="">
+                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Earn in grants</h4>
+                  <p class="font-bigger-1">Get community support and matched funds for public goods projects.</p>
+                </div>
+                <div class="">
+                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
