@@ -59,7 +59,7 @@ along with this program. If not,see
           </div>
         </div>
         <div class="d-none d-md-inline col-md-4 m-auto">
-          <svg width="385" height="238" viewBox="0 0 385 238" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 385 238" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M382.725 197.669C398.348 207.491 330.206 222.075 279.515 228.868C167.413 243.894 11.4346 238.042 0.631665 228.015C-4.10503 223.575 18.6643 217.665 39.9379 215.018C85.4766 209.373 119.049 220.87 191.013 216.665C200.819 216.077 234.225 213.313 254.086 205.844C283.67 194.7 208.88 195.376 213.284 191.965C220.431 186.437 363.113 185.319 382.725 197.669Z" fill="#FFE0EB"/>
             <path d="M96.2 161.801L82.7 170.201L81.2 167.701L94.7 159.301L96.2 161.801Z" fill="#8C65F7"/>
             <path d="M271.5 44.5L258 52.9L256.5 50.4L270 42L271.5 44.5Z" fill="#8C65F7"/>
@@ -85,6 +85,7 @@ along with this program. If not,see
             </svg>
         </div>
       </div>
+
       <section class="py-5" id="ways-to-earn">
         <h2 class="text-grey-500 pt-5">Ways to earn</h2>
         <div class="row" id="accordion-group">
@@ -128,8 +129,8 @@ along with this program. If not,see
         </div>
       </section>
 
-      <section id="top-earners">
-        <h2 class="text-grey-500 mb-5">See top earners on Gitcoin</h2>
+      <section class="pt-5" id="top-earners">
+        <h2 class="text-grey-500 mb-5 pt-5">See top earners on Gitcoin</h2>
         <div class="row pt-3 mb-0">
           {% for earner in top_earners %}
           <div class="col-12 col-md-6 col-lg-3 mb-5">
@@ -156,8 +157,8 @@ along with this program. If not,see
       </section>
 
       {% if hackathons|length > 0 %}
-        <section class="row" id="meet-passionate-builders">
-          <header class="col-12 p-0 mb-5">
+        <section class="row pt-5" id="earn-in-hackathons">
+          <header class="col-12 mb-5 pt-5">
             <h2>
               Earn in hackathons
             </h2>
@@ -199,8 +200,8 @@ along with this program. If not,see
         </section>
       {% endif %}
 
-      <section id="bounties">
-        <h2 class="text-grey-500 mb-5">Earn in bounties</h2>
+      <section class="pt-5" id="bounties">
+        <h2 class="text-grey-500 mb-5 pt-5">Earn in bounties</h2>
         <div class="row">
           {% for bounty in bounties %}
           <div class="col-12 col-md-6 mt-2 mt-md-0 font-body col-gap-border">
@@ -222,11 +223,11 @@ along with this program. If not,see
         </div>
       </section>
 
-      <section id="grants">
+      <section class="pt-5" id="grants">
 
         <div class="row">
           <div class="col-12">
-            <h2 class="text-grey-500 mb-5">Earn through grants</h2>
+            <h2 class="text-grey-500 mb-5 pt-5">Earn through grants</h2>
             <div>
               <p class="font-subheader">Gitcoin grants enables your open source project to get funding through community support and Quadratic matching. The more people support your project, the more matching funds you receive.</p>
             </div>
@@ -246,8 +247,8 @@ along with this program. If not,see
         </div>
       </section>
 
-      <section id="testimonial">
-        <h2 class="text-grey-500 mb-5">What developers are saying</h2>
+      <section class="pt-5" id="testimonial">
+        <h2 class="text-grey-500 mb-5 pt-5">What developers are saying</h2>
         <div class="row">
           <div class="col-12 col-md-6 order-1 order-md-0 font-body">
             <div class="row">
@@ -272,7 +273,8 @@ along with this program. If not,see
           </div>
         </div>
       </section>
-      <section class="row my-4" id="ready-to-earn">
+
+      <section class="row pt-5 mb-5" id="ready-to-earn">
         <div class="col-12">
           <h2 class="pb-4 pt-5 w-100">
             Ready to earn?
@@ -301,7 +303,7 @@ along with this program. If not,see
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-4 mb-3">
+            <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3">
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
                 <div class="mb-4">
                   <h4 class="py-2 font-weight-normal">Earn in grants</h4>
