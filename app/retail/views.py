@@ -1572,7 +1572,6 @@ def admin_index(request):
     return TemplateResponse(request, 'admin_index.html', context)
 
 
-@cached_view(timeout=86400) # cached for 24 hours
 def styleguide_components(request):
     if settings.ENV == 'prod':
         raise Http404
@@ -1581,7 +1580,6 @@ def styleguide_components(request):
         return TemplateResponse(request, 'styleguide_components.html', context)
 
 
-@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_earn(request):
     data = JSONStore.objects.filter(view='jtbd', key='earn').first().data
@@ -1594,7 +1592,6 @@ def jtbd_earn(request):
     return TemplateResponse(request, 'jtbd/earn.html', context)
 
 
-@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_learn(request):
     data = JSONStore.objects.filter(view='jtbd', key='learn').first().data
@@ -1607,7 +1604,6 @@ def jtbd_learn(request):
     return TemplateResponse(request, 'jtbd/learn.html', context)
 
 
-@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_connect(request):
     data = JSONStore.objects.filter(view='jtbd', key='connect').first().data
@@ -1620,7 +1616,6 @@ def jtbd_connect(request):
     return TemplateResponse(request, 'jtbd/connect.html', context)
 
 
-@cached_view(timeout=86400) # cached for 24 hours
 @require_http_methods(["GET",])
 def jtbd_fund(request):
     data = JSONStore.objects.filter(view='jtbd', key='fund').first().data

@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress date_fromisoformat %}
+{% load i18n static compress date_fromisoformat cache %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,7 +36,7 @@ along with this program. If not,see
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
-
+    {% cache 3600 learn %}
     <div class="container px-5">
 
       <div class="row mt-5">
@@ -351,6 +351,7 @@ along with this program. If not,see
       </section>
 
     </div>
+    {% endcache %}
 
     {% include 'shared/footer.html' %}
 
