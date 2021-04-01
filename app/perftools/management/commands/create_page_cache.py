@@ -26,6 +26,7 @@ from django.db import models, transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
@@ -53,7 +54,7 @@ logger = logging.getLogger(__name__)
 def fetch_jtbd_hackathons():
     db = JSONStore.objects.get(key='hackathons', view='hackathons')
     status = db.data[0]
-    hackathons = db.data[1][0:2]
+    hackathons = db.data[1][0:3]
     fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
     return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming' or status == 'current']
 
@@ -68,10 +69,14 @@ def create_jtbd_earn_cache():
     ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-
+    
     bounties = list(Bounty.objects.filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
-    ).order_by('-_val_usd_db').values('_val_usd_db', 'title', 'issue_description')[0:2])
+    ).order_by('-_val_usd_db').extra(
+        select={'val_usd_db': '_val_usd_db'}
+    ).values(
+        'val_usd_db', 'title', 'token_name', 'value_true', 'bounty_owner_github_username', 'metadata'
+    )[0:4])
 
     # WalletConnect
     featured_grant = Grant.objects.filter(pk=275).first()
@@ -89,10 +94,10 @@ def create_jtbd_earn_cache():
             'in_active_clrs': featured_grant.in_active_clrs,
         },
         'testimonial': {
-            'handle': 'sebastian',
-            'comment': "Since 2020 began, flipping bits on Gitcoin got me cool friends, a Macbook, rent without a 9 to 5 job, tons of fun, and crypto. Start hacking for the open internet folks. It’s the red pill.",
-            'twitter': 'sebastian',
-            'role': 'Python Developer',
+            'handle': 'cryptomental',
+            'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
+            'twitter': 'cryptomental',
+            'role': 'Front End Developer',
         },
     }
     view = 'jtbd'
@@ -112,23 +117,23 @@ def create_jtbd_learn_cache():
     alumni = [
         {
             'name': 'Linda Xie',
-            'role': 'Scalar Capital',
-            'avatar_url': '',
+            'role': '@ljxie',
+            'avatar_url': static('v2/images/jtbd/ljxie.png'),
         },
         {
-            'name': 'Andy Tudhope',
-            'role': 'Author of KERNEL Learn Track',
-            'avatar_url': '',
+            'name': 'Simona Pop',
+            'role': '@sim_pop',
+            'avatar_url': static('v2/images/jtbd/simonapop.png'),
         },
         {
-            'name': 'Shawn Cheng',
-            'role': 'Partner Consensys Mesh',
-            'avatar_url': '',
+            'name': 'Sebnem Rusitschka',
+            'role': '@sebnem',
+            'avatar_url': static('v2/images/jtbd/sebnem.png'),
         },
         {
-            'name': 'Corey Petty',
-            'role': 'CSO at Status',
-            'avatar_url': '',
+            'name': 'Pranay Valson',
+            'role': '@valsonay',
+            'avatar_url': static('v2/images/jtbd/valsonay.png'),
         }
     ]
 
@@ -136,12 +141,12 @@ def create_jtbd_learn_cache():
         'hackathons': fetch_jtbd_hackathons(),
         'alumni': alumni,
         'testimonial': {
-            'name': 'Arya Soltanieh',
+            'handle': 'Arya Soltanieh',
             'role': 'Founder, Myco Ex-Coinbase',
             'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
-            'avatar_url': '',
+            'avatar_url': static('v2/images/jtbd/arya.png'),
             'twitter': '',
-            'github': '',
+            'github_handle': 'lostcodingsomewhere',
         },
     }
     view = 'jtbd'
@@ -162,22 +167,22 @@ def create_jtbd_connect_cache():
         {
             'name': 'Alex Masmej',
             'role': 'TryShowtime',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/alexmasmej.png',
+            'avatar_url': static('v2/images/jtbd/alexmasmej.png'),
         },
         {
             'name': 'Simona Pop',
             'role': 'Status',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/simonapop.png',
+            'avatar_url': static('v2/images/jtbd/simonapop.png'),
         },
         {
             'name': 'Devin Walsh',
             'role': 'Ex-Coinfund',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/devinwalsh.png',
+            'avatar_url': static('v2/images/jtbd/devinwalsh.png'),
         },
         {
             'name': 'Val Mack',
             'role': 'Cornell Alum',
-            'avatar_url': f'{settings.STATIC_URL}v2/images/jtbd/valmack.png',
+            'avatar_url': static('v2/images/jtbd/valmack.png'),
         }
     ]
 
@@ -185,24 +190,24 @@ def create_jtbd_connect_cache():
         'projects': [
             {
                 'name': 'Swivel Finance',
-                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/swivel-finance.png',
+                'logo_url': static('v2/images/jtbd/swivel-finance.png'),
                 'description': 'Swivel a the decentralized protocol for fixed-rate lending and interest-rate derivatives. Swivel v1 will facilitate trustless interest-rate swaps, allowing cautious lenders to lock in a guaranteed yield, and speculators to leverage their rate exposure.',
             },
             {
                 'name': 'EPNS',
-                'logo_url': f'{settings.STATIC_URL}v2/images/jtbd/epns.png',
+                'logo_url': static('v2/images/jtbd/epns.png'),
                 'description': 'EPNS is a decentralized DeFi notifications protocol which enables users (wallet addresses) to receive notifications. Using the protocol, any dApp, smart contract or service can send notifications to users(wallet addresses) in a platform agnostic fashion (mobile, web, or user wallets)',
             },
         ],
         'alumni': alumni,
         'hackathons': fetch_jtbd_hackathons(),
         'testimonial': {
-            'handle': 'John wilkinson',
+            'handle': 'Magenta Ceiba',
             'role': 'Developer',
-            'comment': "I LOVE IT… The community has been outstanding. I have made contact outside of slack with a couple people. William Schwab was kind enough to ZOOM with me for an hour and tell me his story, let me pick his brain, and he shared some valuable resources with me.",
+            'comment': "I was surprised to learn I could progres on building the next phase of Bloom Network in parallel to deep dive of learning more about Web3 quickly. This fellowship has so far been the fastest skill upleveling experience I’ve ever had. Also wins - developing deeper relationships with people and projects I already knew of.",
             'avatar_url': '',
             'twitter': '',
-            'github': '',
+            'github_handle': 'magentaceiba',
         },
     }
     view = 'jtbd'
@@ -581,7 +586,6 @@ def create_contributor_landing_page_context():
         JSONStore.objects.bulk_create(items)
 
 
-
 class Command(BaseCommand):
 
     help = 'generates some /results data'
@@ -592,12 +596,6 @@ class Command(BaseCommand):
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
-
-        # generate jtbd data
-        operations.append(create_jtbd_earn_cache)
-        operations.append(create_jtbd_learn_cache)
-        operations.append(create_jtbd_connect_cache)
-        operations.append(create_jtbd_fund_cache)
 
         if not settings.DEBUG:
             operations.append(create_results_cache)
@@ -613,6 +611,13 @@ class Command(BaseCommand):
             operations.append(create_contributor_landing_page_context)
             operations.append(create_hackathon_cache)
             operations.append(create_hackathon_list_page_cache)
+
+            # generate jtbd data
+            operations.append(create_jtbd_earn_cache)
+            operations.append(create_jtbd_learn_cache)
+            operations.append(create_jtbd_connect_cache)
+            operations.append(create_jtbd_fund_cache)
+
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
                 # do daily updates

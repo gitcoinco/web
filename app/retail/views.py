@@ -1614,4 +1614,3 @@ def jtbd_fund(request):
     context.update(data)
 
     return TemplateResponse(request, 'jtbd/fund.html', context)
-
