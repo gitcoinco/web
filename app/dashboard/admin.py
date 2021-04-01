@@ -488,7 +488,7 @@ class HackathonEventAdmin(admin.ModelAdmin):
 
 
     def response_change(self, request, obj):
-        if "_auto_update_expiry" in request.POST:
+        if "_bulk_update_expiry" in request.POST:
             try:
                 bounties_to_extend = Bounty.objects.filter(event=obj)
                 for bounty in bounties_to_extend:
