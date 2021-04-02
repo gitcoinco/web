@@ -8,9 +8,8 @@
 }
 
 @media screen and (min-width: 768px) {
-  .btn-explore {
-    position: absolute;
-    bottom: 4em;
-    min-width: 13rem;
+  .btn-cta {
+    width: 13rem;
+    max-width: 100%;
   }
 }

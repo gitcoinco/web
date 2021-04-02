@@ -32,7 +32,6 @@ along with this program. If not,see
   {% compress css file jtbd_earn %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
   {% endcompress %}
-
 </head>
 
 <body>
@@ -133,24 +132,24 @@ along with this program. If not,see
         <h2 class="text-grey-500 mb-5 pt-5">See top earners on Gitcoin</h2>
         <div class="row pt-3 mb-0">
           {% for earner in top_earners %}
-          <div class="col-12 col-md-6 col-lg-3 mb-5">
-            <div class="row">
-              <div class="col-5 col-md-12">
-                <img class="rounded-circle w-100" style="max-width: 10rem;" src="{% url 'org_avatar' earner.github_username %}" />
-              </div>
-              <div class="col-7 col-md-12 pt-2 m-auto">
-                <div class="row pl-md-4 mt-3">
-                  <div class="col-12 col-md-2 p-0">
-                    <h2 class="d-inline w-100 gc-font-base text-grey-500 p-0">#{{ earner.rank }}</h2>
-                  </div>
-                  <div class="col-12 col-md-8 pt-2 pl-md-2 pl-0" style="line-height: 10px;">
-                    <p class="w-100 text-grey-400 font-subheader">@{{ earner.github_username }}</p>
-                    <p class="w-100 text-grey-400 font-subheader">{{ earner.amount|floatformat:"0" }} DAI</p>
+            <div class="col-12 col-md-6 col-lg-3 mb-5">
+              <div class="row">
+                <div class="col-5 col-md-12">
+                  <img class="rounded-circle w-100" style="max-width: 10rem;" src="{% url 'org_avatar' earner.github_username %}" />
+                </div>
+                <div class="col-7 col-md-12 pt-2 m-auto">
+                  <div class="row pl-md-4 mt-3">
+                    <div class="col-12 col-md-2 p-0">
+                      <h2 class="d-inline w-100 gc-font-base text-grey-500 p-0">#{{ earner.rank }}</h2>
+                    </div>
+                    <div class="col-12 col-md-8 pt-2 pl-md-2 pl-0" style="line-height: 10px;">
+                      <p class="w-100 text-grey-400 font-subheader">@{{ earner.github_username }}</p>
+                      <p class="w-100 text-grey-400 font-subheader">{{ earner.amount|floatformat:"0" }} DAI</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           {% endfor %}
         </div>
         <a class="text-primary font-bigger-1" href="{{ BASE_URL }}/leaderboard/earners?cadence=monthly&keyword=all&product=bounties" target="_blank">View Leaderboard</a>
@@ -202,23 +201,25 @@ along with this program. If not,see
 
       <section class="pt-5" id="bounties">
         <h2 class="text-grey-500 mb-5 pt-5">Earn in bounties</h2>
-        <div class="row">
+        <div class="d-flex flex-column flex-md-row flex-wrap">
           {% for bounty in bounties %}
-          <div class="col-12 col-md-6 mt-2 mt-md-0 font-body col-gap-border">
-            <div class="row border py-4 px-3" style="min-height: 200px;">
-              <div class="col-2 px-0">
-              <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="" width="56" height="56" class="rounded-circle">
-              </div>
-              <div class="col-10 pl-md-0">
-                <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
-                <p class="text-grey-400 font-subheader">{{ bounty.metadata.issueKeywords.lower }}</p>
-                <div class="d-flex">
-                  <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
-                  <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
+            <div class="flex-basis-md-50 mt-2 mt-md-0 font-body p-1">
+              <div class="border py-4 px-3" style="min-height: 200px;">
+                <div class="row">
+                  <div class="col-2 px-0">
+                  <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="" width="56" height="56" class="rounded-circle">
+                  </div>
+                  <div class="col-10 pl-md-0">
+                    <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
+                    <p class="text-grey-400 font-subheader">{{ bounty.metadata.issueKeywords.lower }}</p>
+                    <div class="d-flex">
+                      <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
+                      <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           {% endfor %}
         </div>
       </section>
@@ -279,7 +280,6 @@ along with this program. If not,see
           <h2 class="pb-4 pt-5 w-100">
             Ready to earn?
           </h2>
-
           <div class="row">
             <div class="col-12 col-md-6 col-lg-4 mb-3">
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
@@ -287,8 +287,8 @@ along with this program. If not,see
                   <h4 class="py-2 font-weight-normal">Earn in bounties</h4>
                   <p class="font-bigger-1">Earn while building meaningful open source projects.</p>
                 </div>
-                <div class="">
-                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+                <div>
+                  <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
                 </div>
               </div>
             </div>
@@ -298,19 +298,19 @@ along with this program. If not,see
                   <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
                   <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects.</p>
                 </div>
-                <div class="">
-                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
+                <div>
+                  <a class="col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3">
+            <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3 mt-lg-0">
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
                 <div class="mb-4">
                   <h4 class="py-2 font-weight-normal">Earn in grants</h4>
                   <p class="font-bigger-1">Get community support and matched funds for public goods projects.</p>
                 </div>
-                <div class="">
-                  <a class="col-md-auto btn btn-primary py-3 px-5" href="{% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
+                <div>
+                  <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
                 </div>
               </div>
             </div>

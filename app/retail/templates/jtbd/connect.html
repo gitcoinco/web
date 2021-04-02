@@ -148,14 +148,12 @@ along with this program. If not,see
             <div class="accordion-panel collapse show font-subheader text-grey-400 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
               <p class="font-header font-bigger-1">Join a cohort of Web3’s brightest minds and create the next great open source project. Build a lifetime community through weekly workshops, roundtable discussions, and direct connection with accomplished mentors.</p>
             </div>
-
             <h5 class="accordion gc-font-base collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
               <span class="accordion-title">Build with your peers</span>
             </h5>
             <div class="accordion-panel collapse font-subheader text-grey-400 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
               <p class="font-header font-bigger-1">Gitcoin is the town square of Web3. Find collaborators and squad up to take on bigger and better projects.</p>
             </div>
-
             <h5 class="accordion gc-font-base collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
               <span class="accordion-title">Connect to Web3 projects</span>
             </h5>
@@ -182,7 +180,7 @@ along with this program. If not,see
           <div class="row">
             {% for project in projects %}
               {% with name=project.name logo_url=project.logo_url description=project.description %}
-                <div class="col-12 col-md-6 col-gaps-2-sm">
+                <div class="col-12 col-md-6">
                   <div class="w-100 rounded shadow-sm">
                     <img class="w-100 rounded p-4" style="max-height: 10rem; object-fit: contain;" src="{{ logo_url }}"/>
                   </div>
@@ -313,17 +311,21 @@ along with this program. If not,see
           </h2>
         </header>
         <div class="col-12 col-md-6 mt-4 pr-md-1">
-          <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
-            <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Kernel</a>
+          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 mr-0 mr-md-2 h-100">
+            <div class="mb-4">
+              <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
+              <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+            </div>
+            <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/" target="_self">Explore Kernel</a>
           </div>
         </div>
         <div class="col-12 col-md-6 mt-4 pl-md-1">
-          <div class="bg-lighter p-5 ml-0 ml-md-2 h-100">
-            <h4 class="py-2 font-weight-normal">Connect through building</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Connect with your peers while working on top open source projects.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Hackathons</a>
+          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 ml-0 ml-md-2 h-100">
+            <div class="mb-4">
+              <h4 class="py-2 font-weight-normal">Connect through building</h4>
+              <p class="py-2 font-bigger-1">Connect with your peers while working on top open source projects.</p>
+            </div>
+            <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}" target="_self">Explore Hackathons</a>
           </div>
         </div>
       </section>
@@ -333,6 +335,7 @@ along with this program. If not,see
     {% include 'shared/footer.html' %}
 
   </div>
+
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 %}
 

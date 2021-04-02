@@ -186,14 +186,12 @@ along with this program. If not,see
             <div class="accordion-panel collapse show font-subheader text-grey-400 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
               <p class="font-header font-bigger-1">Learn to build on a variety of Web3 protocols. Tag team projects with peers, and collect rewards while upleveling your skills. Learn while working on the technology that will shape our future.</p>
             </div>
-
             <h5 class="accordion gc-font-base collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
               <span class="accordion-title">Learn through fellowship</span>
             </h5>
             <div class="accordion-panel collapse font-subheader text-grey-400 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
               <p class="font-header font-bigger-1">The Kernel Fellowship for open source builders is an exclusive 8-week learning program that occurs 3 times per year. Learn the first principles of decentralized Web3 development, and make a lifelong network of peers.</p>
             </div>
-
             <h5 class="accordion gc-font-base collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
               <span class="accordion-title">Learn in workshops</span>
             </h5>
@@ -257,10 +255,8 @@ along with this program. If not,see
         <div class="col-12 mb-2">
           <div class="row">
             <h4 class="col-10 font-weight-300 gc-font-base mb-5">An eight-week fellowship program designed to help you supercharge your path forward. Learn from the best! Status, Yearn, IdeoCoLabs, Consensys, DeFi Alliance, and many thought leaders in the space — all open source.</h4>
-
             <div class="col-12">
               <div class="row">
-
                 <div class="col-12 col-md-6">
                   <div class="w-100 rounded shadow-sm" style="background: #212242;">
                     <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-iii.png' %}"/>
@@ -268,7 +264,6 @@ along with this program. If not,see
                   <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Learn</p>
                   <p class="text-grey-400">The objective of our syllabus is to start with wisdom, and work backwards. We’ll build long-term thinking skills, provide context and technical history, and introduce you to the patterns and modes required to flourish in decentralized, open communities like Web3.</p>
                 </div>
-
                 <div class="col-12 col-md-6">
                   <div class="w-100 rounded shadow-sm" style="background: #212242;">
                     <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-core.png' %}"/>
@@ -334,18 +329,26 @@ along with this program. If not,see
             Ready to learn?
           </h2>
         </header>
-        <div class="col-12 col-md-6 mt-4 pr-0 pr-md-1">
-          <div class="bg-lighter p-5 mr-0 mr-md-2 h-100">
-            <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="{% url 'get_hackathons' %}" target="_self">Explore Kernel</a>
+        <div class="col-12 col-md-6 mt-4 pr-md-1">
+          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 mr-0 mr-md-2 h-100">
+            <div class="mb-4">
+              <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
+              <p class="py-2 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
+            </div>
+            <div>
+              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}" target="_self">Explore Hackathons</a>
+            </div>
           </div>
         </div>
-        <div class="col-12 col-md-6 mt-4 p-0 pl-0 pl-md-1">
-          <div class="bg-lighter p-5 ml-0 ml-md-2 h-100">
-            <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
-            <p class="py-2 pb-md-5 mb-md-5 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
-            <a class="col-12 col-md-auto btn btn-primary mt-3 p-3 btn-explore" href="https://kernel.community/" target="_self">Explore Hackathons</a>
+        <div class="col-12 col-md-6 mt-4 pl-md-1">
+          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 ml-0 ml-md-2 h-100">
+            <div class="mb-4">
+              <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
+              <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+            </div>
+            <div>
+              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/" target="_self">Explore Kernel</a>
+            </div>
           </div>
         </div>
       </section>
@@ -355,6 +358,7 @@ along with this program. If not,see
     {% include 'shared/footer.html' %}
 
   </div>
+
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 %}
 

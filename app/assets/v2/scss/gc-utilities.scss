@@ -151,36 +151,3 @@
   }
 }
 
-// col-gaps for > md when using .row
-@media (min-width: 768px) {
-  .row > .col-gap-border {
-    box-sizing: border-box;
-    border: 0.5rem solid transparent;
-    background-clip: padding-box;
-  }
-
-  .row > .col-gaps-2-sm:nth-of-type(1) {
-    padding-right: 0.5rem!important;
-  }
-  .row > .col-gaps-2-sm:nth-of-type(2) {
-    padding-left: 0.5rem!important;
-  }
-
-  .row > .col-gaps-2:nth-of-type(1) {
-    padding-right: 2rem!important;
-  }
-  .row > .col-gaps-2:nth-of-type(2) {
-    padding-left: 2rem!important;
-  }
-
-  .row > .col-gaps-3:nth-of-type(1) {
-    padding-right: 2rem!important;
-  }
-  .row > .col-gaps-3:nth-of-type(2) {
-    padding-left: 1rem!important;
-    padding-right: 1rem!important;
-  }
-  .row > .col-gaps-3:nth-of-type(3) {
-    padding-left: 2rem!important;
-  }
-}
