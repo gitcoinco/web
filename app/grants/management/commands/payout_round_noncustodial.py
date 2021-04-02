@@ -213,16 +213,20 @@ class Command(BaseCommand):
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
             full_payouts_mapping_dict = {} 
             for match in target_matches.order_by('amount'):
-                # Amounts to set
-                recipient = w3.toChecksumAddress(match.grant.admin_address)
-                amount = Decimal(match.amount) * SCALE # convert to wei
 
-                # This ensures that even when multiple grants have the same receiving address,
-                # all match funds are accounted for
-                if recipient in full_payouts_mapping_dict.keys():
-                    full_payouts_mapping_dict[recipient] += amount
-                else:
-                    full_payouts_mapping_dict[recipient] = amount
+                try:
+                    # Amounts to set
+                    recipient = w3.toChecksumAddress(match.grant.admin_address)
+                    amount = Decimal(match.amount) * SCALE # convert to wei
+
+                    # This ensures that even when multiple grants have the same receiving address,
+                    # all match funds are accounted for
+                    if recipient in full_payouts_mapping_dict.keys():
+                        full_payouts_mapping_dict[recipient] += amount
+                    else:
+                        full_payouts_mapping_dict[recipient] = amount
+                except Exception as e:
+                    print(f"could not payout grant:{match.grant.pk} bc exceptoin{e}")
 
             # Convert dict to array to use it as inputs to the contract
             full_payouts_mapping = []
