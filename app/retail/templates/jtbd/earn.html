@@ -55,7 +55,9 @@ along with this program. If not,see
             Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
           </p>
           <div class="mt-5">
-            <a class="col-12 col-md-auto btn btn-lg btn-primary px-5 scroll-to-ready" href="#ready-to-earn">{% trans "I'm ready to earn" %}</a>
+            <a class="btn btn-primary col-12 col-md-auto p-3 px-5 scroll-to-ready" href="#ready-to-earn">
+              {% trans "I'm ready to earn" %}
+            </a>
           </div>
         </div>
         <div class="d-none d-md-inline col-md-4 m-auto">
@@ -87,7 +89,7 @@ along with this program. If not,see
       </div>
 
       <section class="py-5" id="ways-to-earn">
-        <h2 class="text-grey-500 pt-5">Ways to earn</h2>
+        <h2 class="pt-4">Ways to earn</h2>
         <div class="row" id="accordion-group">
           <div class="col-12 col-lg-6 pt-5">
             <div class="accordion-group img-accordion">
@@ -107,19 +109,19 @@ along with this program. If not,see
               <h5 class="accordion gc-font-base" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
                 <span class="accordion-title">Earn through bounties</span>
               </h5>
-              <div class="accordion-panel collapse show font-subheader text-grey-500 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+              <div class="accordion-panel collapse show font-subheader text-grey-400 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
                 <p class="font-header font-bigger-1">Tackle bounties for all skill levels hosted by Web3’s most exciting projects. From open security contests and new feature builds, to UX/UI design and content creation.</p>
               </div>
               <h5 class="accordion collapsed gc-font-base" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
                 <span class="accordion-title">Earn through sponsored hackathons</span>
               </h5>
-              <div class="accordion-panel collapse font-subheader text-grey-500 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+              <div class="accordion-panel collapse font-subheader text-grey-400 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
                 <p class="font-header font-bigger-1">Collect rewards and tokens as you hack your way through creative solutions on a variety of protocols. Team up with other Web3 builders to advance the technology that will shape our future.</p>
               </div>
               <h5 class="accordion collapsed gc-font-base" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
                 <span class="accordion-title">Earn through grant funding</span>
               </h5>
-              <div class="accordion-panel collapse font-subheader text-grey-500 collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+              <div class="accordion-panel collapse font-subheader text-grey-400 collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
                 <p class="font-header font-bigger-1">Start an open source, public goods project and begin crowdsourcing funds through Gitcoin Grants. Participate in our quarterly Grants Rounds for the opportunity to earn a portion of the generous matching pool that has helped launch thousands of projects.</p>
               </div>
             </div>
@@ -172,7 +174,7 @@ along with this program. If not,see
                     <p class="text-grey-400 mb-3">
                       {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
                     </p>
-                    <p class="text-grey-400">
+                    <p class="text-grey-400 mb-0">
                       Sponsored by
                       {% for sponsor in sponsor_profiles %}
                         {% if forloop.counter <= 4 %}
@@ -199,7 +201,7 @@ along with this program. If not,see
       {% endif %}
 
       <section class="pt-5" id="bounties">
-        <h2 class="text-grey-500 mb-5 pt-5">Earn in bounties</h2>
+        <h2 class="mb-5 pt-5">Earn in bounties</h2>
         <div class="d-flex flex-column flex-md-row flex-wrap">
           {% for bounty in bounties %}
             <div class="flex-basis-md-50 mt-2 mt-md-0 font-body p-1">
@@ -226,7 +228,7 @@ along with this program. If not,see
       <section class="pt-5" id="grants">
         <div class="row">
           <div class="col-12">
-            <h2 class="text-grey-500 mb-5 pt-5">Earn through grants</h2>
+            <h2 class="mb-5 pt-5">Earn through grants</h2>
             <div>
               <p class="font-subheader">Gitcoin grants enables your open source project to get funding through community support and Quadratic matching. The more people support your project, the more matching funds you receive.</p>
             </div>
@@ -238,16 +240,16 @@ along with this program. If not,see
               <p class="text-grey-400 font-subheader">{{ featured_grant.description }}</p>
             </div>
             {% if featured_grant.in_active_clrs %}
-              <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>
+              <p class="text-secondary font-bigger-1 mb-0">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>
             {% else %}
-              <p class="text-secondary font-bigger-1">${{ featured_grant.amount_received|floatformat:2 }} Raised</p>
+              <p class="text-secondary font-bigger-1 mb-0">${{ featured_grant.amount_received|floatformat:2 }} Raised</p>
             {% endif %}
           </div>
         </div>
       </section>
 
       <section class="pt-5" id="testimonial">
-        <h2 class="text-grey-500 mb-5 pt-5">What developers are saying</h2>
+        <h2 class="mb-5 pt-5">What developers are saying</h2>
         <div class="row">
           <div class="col-12 col-md-6 order-1 order-md-0 font-body">
             <div class="row">

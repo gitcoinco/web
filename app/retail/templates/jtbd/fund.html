@@ -41,13 +41,13 @@ along with this program. If not,see
     <div class="container px-5">
 
       <div class="row mt-5">
-        <div class="col-12 col-md-8 p-0">
+        <div class="col-12 col-md-8">
           <h1 class="mb-4 line-height-2">
             There’s No Better Way To Fund Open Source Projects
           </h1>
-          <h3 class="font-bigger-2 text-grey-400 mb-5">
+          <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
             Gitcoin Grants uses quadratic funding, ensuring that projects doing the greatest public good get the most support.
-          </h3>
+          </p>
           <div class="row mt-5 mx-0">
             <a class="btn btn-primary col-12 col-md-auto p-3 px-5 scroll-to-ready" href="#ready-to-fund">
               I’m ready to fund
@@ -59,35 +59,45 @@ along with this program. If not,see
         </div>
       </div>
 
-      <section class="row my-5">
-        <header class="col-12 mb-4">
+      <section class="row my-5 pt-5">
+        <header class="col-12 mb-4 pt-4">
           <h2>Why Quadratic Funding?</h2>
         </header>
-        <div class="col-12 col-lg-6 ">
-          <p class="font-bigger-2 line-height-3 text-grey-400">
-            Quadratic Funding is the optimal way to fund public goods in a democratic community. It works like a crowdfunding campaign that matches contributions from individuals with a pool from bigger donors. The higher the number of individual donors, the more matched funds a project gets.
-          </p>
-          <h2 class="mt-5">Traditional matching</h2>
-          <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
-            <li>Grant 1 gets $100</li>
-            <li>Grant 2 gets $100</li>
-            <li>At the end of the round, both grants get $100 in matching</li>
-          </ul>
-        </div>
-        <div class="col-12 col-lg-6">
-          <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/HJljTtLnymE?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-lg-6 ">
+              <p class="font-bigger-2 line-height-3 text-grey-400">
+                Quadratic Funding is the optimal way to fund public goods in a democratic community. It works like a crowdfunding campaign that matches contributions from individuals with a pool from bigger donors. The higher the number of individual donors, the more matched funds a project gets.
+              </p>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/HJljTtLnymE?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            </div>
           </div>
-          <h2 class="mt-5">Gitcoin Quadratic matching</h2>
-          <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
-            <li>Grant 1 gets $100 from 1 funder.</li>
-            <li>Grant 2 gets $100 from 10 funders.</li>
-            <li>At the end of the round, Grant 1 gets $10 in matching, Grant 2 gets $190 in matching</li>
-          </ul>
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <h2 class="mt-5">Traditional matching</h2>
+              <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
+                <li>Grant 1 gets $100</li>
+                <li>Grant 2 gets $100</li>
+                <li>At the end of the round, both grants get $100 in matching</li>
+              </ul>
+            </div>
+            <div class="col-12 col-lg-6">
+              <h2 class="mt-5">Gitcoin Quadratic matching</h2>
+              <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
+                <li>Grant 1 gets $100 from 1 funder.</li>
+                <li>Grant 2 gets $100 from 10 funders.</li>
+                <li>At the end of the round, Grant 1 gets $10 in matching, Grant 2 gets $190 in matching</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div class="row my-5" id="accordion-group">
+      <div class="row my-5 py-5" id="accordion-group">
         <div class="col-12 col-lg-6 pt-5">
           <div class="accordion-group img-accordion">
             <div class="collapseOne w-100 collapse show bg-white" data-parent="#accordion-group">
@@ -126,41 +136,45 @@ along with this program. If not,see
       </div>
 
       <section class="row mb-5">
-        <h2 class="d-block w-100 mt-5 mb-4">
-          Projects making an impact
-        </h2>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-          {% for project in projects %}
-            <div class="col mb-4">
-              <div class="card">
-                <img class="card-img-top" style="height: 14rem; object-fit: cover;" src="{{ MEDIA_URL}}{{ project.logo }}"/>
-                <div class="card-body">
-                  <h4 class="gc-font-base card-title text-truncate">{{ project.title }}</h4>
-                  <p class="text-grey-400">by @{{ project.admin_profile__handle }}</p>
-                  <p class="text-grey-400">{{ project.description | truncatechars_html:380 }}</p>
-                  {% if project.in_active_clrs %}
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <div class="flex-shrink-0" style="flex-basis: 50%;">
-                        <span class="font-bigger-2 font-weight-semibold">${{project.amount_received_in_round|floatformat:0|intcomma}}</span>
-                        <span class="d-block text-grey-400">raised from {{project.positive_round_contributor_count}} contributors</span>
+        <div class="col-12 mt-5 mb-4">
+          <h2>
+            Projects making an impact
+          </h2>
+        </div>
+        <div class="col-12">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {% for project in projects %}
+              <div class="col mb-4">
+                <div class="card">
+                  <img class="card-img-top" style="height: 14rem; object-fit: cover;" src="{{ MEDIA_URL}}{{ project.logo }}"/>
+                  <div class="card-body">
+                    <h4 class="gc-font-base card-title text-truncate">{{ project.title }}</h4>
+                    <p class="text-grey-400">by @{{ project.admin_profile__handle }}</p>
+                    <p class="text-grey-400">{{ project.description | truncatechars_html:380 }}</p>
+                    {% if project.in_active_clrs %}
+                      <div class="d-flex flex-wrap justify-content-between">
+                        <div class="flex-shrink-0" style="flex-basis: 50%;">
+                          <span class="font-bigger-2 font-weight-semibold">${{project.amount_received_in_round|floatformat:0|intcomma}}</span>
+                          <span class="d-block text-grey-400">raised from {{project.positive_round_contributor_count}} contributors</span>
+                        </div>
+                        <div class="flex-shrink-0" style="flex-basis: 50%;">
+                          <span class="font-bigger-2 font-weight-semibold text-highlight-green">${{ project.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}</span>
+                          <span class="d-block text-grey-400">matched</span>
+                        </div>
                       </div>
-                      <div class="flex-shrink-0" style="flex-basis: 50%;">
-                        <span class="font-bigger-2 font-weight-semibold text-highlight-green">${{ project.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}</span>
-                        <span class="d-block text-grey-400">matched</span>
+                    {% else %}
+                      <div class="d-flex flex-wrap justify-content-between">
+                        <div class="flex-shrink-0" style="flex-basis: 50%;">
+                          <span class="font-bigger-2 font-weight-semibold">${{project.amount_received|floatformat:0|intcomma}}</span>
+                          <span class="d-block text-grey-400">raised from {{project.contributor_count}} contributors</span>
+                        </div>
                       </div>
-                    </div>
-                  {% else %}
-                    <div class="d-flex flex-wrap justify-content-between">
-                      <div class="flex-shrink-0" style="flex-basis: 50%;">
-                        <span class="font-bigger-2 font-weight-semibold">${{project.amount_received|floatformat:0|intcomma}}</span>
-                        <span class="d-block text-grey-400">raised from {{project.contributor_count}} contributors</span>
-                      </div>
-                    </div>
-                  {% endif %}
+                    {% endif %}
+                  </div>
                 </div>
               </div>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          </div>
         </div>
       </section>
 
@@ -182,7 +196,7 @@ along with this program. If not,see
         {% endfor %}
       </section>
 
-      <div class="row my-5">
+      <div class="row my-5 py-5">
         <div class="col-12 col-md-6 order-1 order-md-0 font-body">
           <div class="row">
             <div class="col-auto m-0 p-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
