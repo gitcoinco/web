@@ -257,17 +257,22 @@ along with this program. If not,see
                   <p>{{ testimonial.comment }}</p>
                 </div>
                 <div class="row">
-                  <p>@{{ testimonial.handle }}<br>{{ testimonial.role }}</p>
+                  <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
                 </div>
                 <div class="row">
-                  <a href="https://github.com/{{ testimonial.handle }}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  {% if testimonial.twitter_handle %}
+                    <a class="{% if testimonial.github_handle %}pr-2{% endif %}" href="https://www.twitter.com/{{testimonial.twitter_handle}}" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  {% endif %}
+                  {% if testimonial.github_handle %}
+                    <a class="{% if testimonial.twitter_handle %}pl-2{% endif %}" href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  {% endif %}
                 </div>
               </div>
             </div>
           </div>
           <div class="col-12 col-md-2 order-0 order-md-1">
             <div class="row mb-5">
-              <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% url 'org_avatar' testimonial.handle %}" alt="{{ testimonial.handle }}" />
+              <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.handle }}" />
             </div>
           </div>
         </div>

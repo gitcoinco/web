@@ -94,9 +94,11 @@ def create_jtbd_earn_cache():
             'in_active_clrs': featured_grant.in_active_clrs,
         },
         'testimonial': {
-            'handle': 'cryptomental',
+            'handle': '@cryptomental',
             'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
-            'twitter': 'cryptomental',
+            'avatar_url': '',
+            'github_handle': 'cryptomental',
+            'twitter_handle': 'cryptomental',
             'role': 'Front End Developer',
         },
     }
@@ -145,8 +147,8 @@ def create_jtbd_learn_cache():
             'role': 'Founder, Myco Ex-Coinbase',
             'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
             'avatar_url': static('v2/images/jtbd/arya.png'),
-            'twitter': '',
             'github_handle': 'lostcodingsomewhere',
+            'twitter_handle': '',
         },
     }
     view = 'jtbd'
@@ -206,8 +208,8 @@ def create_jtbd_connect_cache():
             'role': 'Developer',
             'comment': "I was surprised to learn I could progres on building the next phase of Bloom Network in parallel to deep dive of learning more about Web3 quickly. This fellowship has so far been the fastest skill upleveling experience I’ve ever had. Also wins - developing deeper relationships with people and projects I already knew of.",
             'avatar_url': '',
-            'twitter': '',
             'github_handle': 'magentaceiba',
+            'twitter_handle': '',
         },
     }
     view = 'jtbd'
@@ -241,8 +243,9 @@ def create_jtbd_fund_cache():
             'handle': 'Austin Griffith',
             'role': 'Javascript Developer',
             'comment': "As one of the first quadratic freelancers to go through the platform, I know from personal experience that Gitcoin Grants empowers builders to create the future on Ethereum. My grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem",
-            'twitter_handle': 'austingriffith',
+            'avatar_url': '',
             'github_handle': 'austintgriffith',
+            'twitter_handle': 'austingriffith',
         },
     }
     view = 'jtbd'

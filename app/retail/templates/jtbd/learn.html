@@ -247,7 +247,7 @@ along with this program. If not,see
       {% endif %}
 
       <section class="row pt-5" id="join-community">
-        <header class="col-12 mb-5 pt-5">
+        <header class="col-12 pt-5 pb-4 mb-1">
           <h2>
             Join a community of life-long learners
           </h2>
@@ -273,7 +273,7 @@ along with this program. If not,see
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-8 mt-4 font-bigger-1">
+            <div class="col-12 col-md-8 mt-5 font-bigger-1">
               <p>The Kernel fellowship program is an opportunity to build relationships with a network of experienced mentors in blockchain.</p>
             </div>
           </div>
@@ -311,14 +311,19 @@ along with this program. If not,see
                 <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
               </div>
               <div class="row">
-                <a href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% if testimonial.twitter_handle %}
+                  <a class="{% if testimonial.github_handle %}pr-2{% endif %}" href="https://www.twitter.com/{{testimonial.twitter_handle}}" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% endif %}
+                {% if testimonial.github_handle %}
+                  <a class="{% if testimonial.twitter_handle %}pl-2{% endif %}" href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
         <div class="col-12 col-md-2 order-0 order-md-1">
           <div class="row mb-5">
-            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{{ testimonial.avatar_url }}" alt="{{ testimonial.github_handle }}" />
+            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.github_handle }}" />
           </div>
         </div>
       </section>
