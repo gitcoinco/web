@@ -220,7 +220,7 @@ along with this program. If not,see
                     <p class="text-grey-400 mb-3">
                       {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
                     </p>
-                    <p class="text-grey-400 mb-0">
+                    <p class="text-grey-400">
                       Sponsored by
                       {% for sponsor in sponsor_profiles %}
                         {% if forloop.counter <= 4 %}
@@ -247,7 +247,7 @@ along with this program. If not,see
       {% endif %}
 
       <section class="row pt-5" id="join-community">
-        <header class="col-12 pt-5 pb-4 mb-1">
+        <header class="col-12 py-4 mb-1">
           <h2>
             Join a community of life-long learners
           </h2>
@@ -300,7 +300,7 @@ along with this program. If not,see
       </section>
 
       <section class="row pt-2" id="testimonial">
-        <div class="col-12 col-md-6 order-1 order-md-0 font-body pt-5">
+        <div class="col-12 col-md-6 order-1 order-md-0 font-body pt-4 pt-md-5">
           <div class="row">
             <div class="col-auto m-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
             <div class="col text-grey-400 pr-5 pb-4">
@@ -321,8 +321,8 @@ along with this program. If not,see
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-2 order-0 order-md-1 pt-5">
-          <div class="row mb-5">
+        <div class="col-12 col-md-2 order-0 order-md-1 pt-4 pt-md-5">
+          <div class="row mb-4 mb-md-0">
             <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.handle }}" />
           </div>
         </div>

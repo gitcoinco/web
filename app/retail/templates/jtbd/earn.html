@@ -174,7 +174,7 @@ along with this program. If not,see
                     <p class="text-grey-400 mb-3">
                       {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
                     </p>
-                    <p class="text-grey-400 mb-0">
+                    <p class="text-grey-400">
                       Sponsored by
                       {% for sponsor in sponsor_profiles %}
                         {% if forloop.counter <= 4 %}
@@ -201,7 +201,7 @@ along with this program. If not,see
       {% endif %}
 
       <section class="pt-5" id="bounties">
-        <h2 class="mb-5 pt-5">Earn in bounties</h2>
+        <h2 class="mb-5 pt-4">Earn in bounties</h2>
         <div class="d-flex flex-column flex-md-row flex-wrap">
           {% for bounty in bounties %}
             <div class="flex-basis-md-50 mt-2 mt-md-0 font-body p-1">
@@ -273,7 +273,7 @@ along with this program. If not,see
             </div>
           </div>
           <div class="col-12 col-md-2 order-0 order-md-1">
-            <div class="row mb-5">
+            <div class="row mb-4 mb-md-0">
               <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.handle }}" />
             </div>
           </div>
