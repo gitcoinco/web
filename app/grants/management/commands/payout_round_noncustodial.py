@@ -21,6 +21,11 @@
     contract is deployed on both mainnet and Rinkeby at 0xAf32BDf2e2720f6C6a2Fce8B50Ed66fd2b46d478
 '''
 
+# run me like this
+# deploy contract
+# ./manage.py payout_round set_payouts 131,121,120,119,118 9
+# ./manage.py payout_round_noncustodial set_payouts mainnet --clr_pks=131,121,120,119,118 --clr_round=9 --process_all
+
 import json
 import time
 from decimal import Decimal
@@ -263,7 +268,7 @@ class Command(BaseCommand):
                 if is_real_payout:
                     match.payout_tx = tx_id
                     match.payout_tx_date = timezone.now()
-                    grant_match_distribution_final_txn(match, True)
+                    #grant_match_distribution_final_txn(match, True)
                 else:
                     match.test_payout_tx = tx_id
                     match.test_payout_tx_date = timezone.now()
