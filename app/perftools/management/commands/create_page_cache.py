@@ -69,7 +69,7 @@ def create_jtbd_earn_cache():
     ).values('rank', 'amount', 'github_username').order_by('-amount')[0:4].cache())
 
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-    
+
     bounties = list(Bounty.objects.filter(
         network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
     ).order_by('-_val_usd_db').extra(
@@ -239,7 +239,7 @@ def create_jtbd_fund_cache():
         'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],
         'testimonial': {
             'handle': 'Austin Griffith',
-            'role': 'Python Developer',
+            'role': 'Javascript Developer',
             'comment': "As one of the first quadratic freelancers to go through the platform, I know from personal experience that Gitcoin Grants empowers builders to create the future on Ethereum. My grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem",
             'twitter_handle': 'austingriffith',
             'github_handle': 'austintgriffith',

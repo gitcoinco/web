@@ -36,18 +36,19 @@ along with this program. If not,see
 
 <body>
   <div class="content__main min-vh-100 d-md-flex flex-column">
-
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
+
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
 
     <div class="container px-5">
+
       <!--  Header section -->
       <div class="row justify-content-between my-5">
         <div class="col">
-          <h1 class="mb-4">
+          <h1 class="mb-4 line-height-2">
             Break free from your 9–5 to work on open source projects that matter.
           </h1>
           <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
@@ -109,14 +110,12 @@ along with this program. If not,see
               <div class="accordion-panel collapse show font-subheader text-grey-500 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
                 <p class="font-header font-bigger-1">Tackle bounties for all skill levels hosted by Web3’s most exciting projects. From open security contests and new feature builds, to UX/UI design and content creation.</p>
               </div>
-
               <h5 class="accordion collapsed gc-font-base" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
                 <span class="accordion-title">Earn through sponsored hackathons</span>
               </h5>
               <div class="accordion-panel collapse font-subheader text-grey-500 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
                 <p class="font-header font-bigger-1">Collect rewards and tokens as you hack your way through creative solutions on a variety of protocols. Team up with other Web3 builders to advance the technology that will shape our future.</p>
               </div>
-
               <h5 class="accordion collapsed gc-font-base" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
                 <span class="accordion-title">Earn through grant funding</span>
               </h5>
@@ -191,7 +190,7 @@ along with this program. If not,see
                 <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
                   <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
                   <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
-                  <p class="text-grey-400" style="min-height: 100px">Stay tuned for more great hackathons coming your way!</p>
+                  <p class="text-grey-400">Stay tuned for more great hackathons coming your way!</p>
                 </div>
               {% endif %}
             </div>
@@ -204,12 +203,12 @@ along with this program. If not,see
         <div class="d-flex flex-column flex-md-row flex-wrap">
           {% for bounty in bounties %}
             <div class="flex-basis-md-50 mt-2 mt-md-0 font-body p-1">
-              <div class="border py-4 px-3" style="min-height: 200px;">
-                <div class="row">
-                  <div class="col-2 px-0">
-                  <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="" width="56" height="56" class="rounded-circle">
+              <div class="border" style="min-height: 200px;">
+                <div class="row py-4 px-3">
+                  <div class="col-3 col-lg-2">
+                  <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" class="rounded-circle w-100">
                   </div>
-                  <div class="col-10 pl-md-0">
+                  <div class="col-9 col-lg-10 pl-0 pl-lg-2">
                     <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
                     <p class="text-grey-400 font-subheader">{{ bounty.metadata.issueKeywords.lower }}</p>
                     <div class="d-flex">
@@ -225,7 +224,6 @@ along with this program. If not,see
       </section>
 
       <section class="pt-5" id="grants">
-
         <div class="row">
           <div class="col-12">
             <h2 class="text-grey-500 mb-5 pt-5">Earn through grants</h2>
@@ -262,7 +260,7 @@ along with this program. If not,see
                   <p>@{{ testimonial.handle }}<br>{{ testimonial.role }}</p>
                 </div>
                 <div class="row">
-                  <a class="pl-2" rel=nofollow href="https://github.com/{{ testimonial.handle }}?tab=repositories" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  <a href="https://github.com/{{ testimonial.handle }}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
                 </div>
               </div>
             </div>

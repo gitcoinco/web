@@ -33,6 +33,28 @@
   5 2.5
 );
 
+// .line-height-md-[1-5]
+@media (min-width: 768px) {
+  @include line-height(
+    'md-1' 1,
+    'md-2' 1.4,
+    'md-3' 1.8,
+    'md-4' 2.2,
+    'md-5' 2.5
+  );
+}
+
+// .line-height-lg-[1-5]
+@media (min-width: 992px) {
+  @include line-height(
+    'lg-1' 1,
+    'lg-2' 1.4,
+    'lg-3' 1.8,
+    'lg-4' 2.2,
+    'lg-5' 2.5
+  );
+}
+
 // .line-clamp-[1-5]
 @include line-clamp(1, 5);
 

@@ -34,6 +34,7 @@ along with this program. If not,see
   <div class="content__main min-vh-100 d-md-flex flex-column">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
+
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
@@ -42,7 +43,7 @@ along with this program. If not,see
 
       <div class="row mt-5">
         <div class="col-12 col-md-8">
-          <h1 class="mb-4">
+          <h1 class="mb-4 line-height-2">
             Connect And Build With Top Open Source Developers
           </h1>
           <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
@@ -165,12 +166,12 @@ along with this program. If not,see
       </section>
 
       <section class="row pt-5" id="connect-with-top-developers">
-        <header class="col-12 mb-5 pt-5">
+        <header class="col-12 mb-4 pt-5">
           <h2>
             Connect with top developers
           </h2>
         </header>
-        <h3 class="col-10 mb-5">
+        <h3 class="col-10 mb-5 line-height-2">
           If you were in a room with 250 of the brightest minds in Web3 for 8 weeks, what would you build?
         </h3>
         <h4 class="pl-3 w-100 mb-3">
@@ -191,8 +192,8 @@ along with this program. If not,see
             {% endfor %}
           </div>
         </div>
-        <div class="col-12 col-md-8 pt-4 mt-5 font-bigger-1">
-          <p>The Kernel fellowship program is an opportunity to join a lifelong network of talented individuals and mentors in blockchain.</p>
+        <div class="col-12 col-md-10 mt-4 font-bigger-1">
+          <p class="mb-0">The Kernel fellowship program is an opportunity to join a lifelong network of talented individuals and mentors in blockchain.</p>
         </div>
         <div class="col-12">
           <div class="row">
@@ -254,7 +255,7 @@ along with this program. If not,see
                 <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
                   <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
                   <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
-                  <p class="text-grey-400" style="min-height: 100px">Stay tuned for more great hackathons coming your way!</p>
+                  <p class="text-grey-400">Stay tuned for more great hackathons coming your way!</p>
                 </div>
               {% endif %}
             </div>
@@ -275,7 +276,7 @@ along with this program. If not,see
                 <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
               </div>
               <div class="row">
-                <a rel=nofollow href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                <a href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
               </div>
             </div>
           </div>
@@ -316,7 +317,7 @@ along with this program. If not,see
               <h4 class="py-2 font-weight-normal">Connect through fellowship</h4>
               <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
             </div>
-            <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/" target="_self">Explore Kernel</a>
+            <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/>Explore Kernel</a>
           </div>
         </div>
         <div class="col-12 col-md-6 mt-4 pl-md-1">
@@ -325,7 +326,7 @@ along with this program. If not,see
               <h4 class="py-2 font-weight-normal">Connect through building</h4>
               <p class="py-2 font-bigger-1">Connect with your peers while working on top open source projects.</p>
             </div>
-            <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}" target="_self">Explore Hackathons</a>
+            <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
           </div>
         </div>
       </section>

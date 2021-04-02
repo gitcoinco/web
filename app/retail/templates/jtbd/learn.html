@@ -33,6 +33,7 @@ along with this program. If not,see
   <div class="content__main min-vh-100 d-md-flex flex-column">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
+
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
@@ -41,7 +42,7 @@ along with this program. If not,see
 
       <div class="row mt-5">
         <div class="col-12 col-md-8">
-          <h1 class="mb-4">
+          <h1 class="mb-4 line-height-2">
             Learn how to build the decentralized web.
           </h1>
           <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
@@ -158,7 +159,6 @@ along with this program. If not,see
         </div>
       </div>
 
-
       <section class="row py-5 mt-5" id="accordion-group">
         <header class="col-12 pt-5">
           <h2>
@@ -238,7 +238,7 @@ along with this program. If not,see
                 <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
                   <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
                   <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
-                  <p class="text-grey-400" style="min-height: 100px">Stay tuned for more great hackathons coming your way!</p>
+                  <p class="text-grey-400">Stay tuned for more great hackathons coming your way!</p>
                 </div>
               {% endif %}
             </div>
@@ -254,17 +254,17 @@ along with this program. If not,see
         </header>
         <div class="col-12 mb-2">
           <div class="row">
-            <h4 class="col-10 font-weight-300 gc-font-base mb-5">An eight-week fellowship program designed to help you supercharge your path forward. Learn from the best! Status, Yearn, IdeoCoLabs, Consensys, DeFi Alliance, and many thought leaders in the space — all open source.</h4>
+            <h4 class="col-10 font-weight-300 text-grey-400 line-height-md-3 gc-font-base mb-5">An eight-week fellowship program designed to help you supercharge your path forward. Learn from the best! Status, Yearn, IdeoCoLabs, Consensys, DeFi Alliance, and many thought leaders in the space — all open source.</h4>
             <div class="col-12">
               <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 mb-4">
                   <div class="w-100 rounded shadow-sm" style="background: #212242;">
                     <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-iii.png' %}"/>
                   </div>
                   <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Learn</p>
                   <p class="text-grey-400">The objective of our syllabus is to start with wisdom, and work backwards. We’ll build long-term thinking skills, provide context and technical history, and introduce you to the patterns and modes required to flourish in decentralized, open communities like Web3.</p>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 mb-4">
                   <div class="w-100 rounded shadow-sm" style="background: #212242;">
                     <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-core.png' %}"/>
                   </div>
@@ -273,7 +273,7 @@ along with this program. If not,see
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-8 mt-5 font-bigger-1">
+            <div class="col-12 col-md-8 mt-4 font-bigger-1">
               <p>The Kernel fellowship program is an opportunity to build relationships with a network of experienced mentors in blockchain.</p>
             </div>
           </div>
@@ -311,7 +311,7 @@ along with this program. If not,see
                 <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
               </div>
               <div class="row">
-                <a rel=nofollow href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                <a href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
               </div>
             </div>
           </div>
@@ -336,7 +336,7 @@ along with this program. If not,see
               <p class="py-2 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
             </div>
             <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}" target="_self">Explore Hackathons</a>
+              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
             </div>
           </div>
         </div>
@@ -347,7 +347,7 @@ along with this program. If not,see
               <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
             </div>
             <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/" target="_self">Explore Kernel</a>
+              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/">Explore Kernel</a>
             </div>
           </div>
         </div>
