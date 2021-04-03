@@ -33,7 +33,7 @@
 <article>
 	<section class="grid reverse">
 		<figure>
-			<img loading="lazy" src="{% static "v2/quadraticlands/images/token.svg" %}" />
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/token.svg" %}" />
 		</figure>
 
 		<div>
@@ -53,7 +53,7 @@
 		
 		<figure class="laptop-cover tablet-cover phone-cover ">
 			
-			<img loading="lazy" src="{% static "v2/quadraticlands/images/governance.svg" %}" />
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/governance.svg" %}" />
 		</figure>
 
 		<div>
@@ -69,10 +69,10 @@
 
 <!-- PORTAL -->
 <article>
-	<section class="grid reverse particleMode" data-mode="space">
+	<section class="grid reverse">
 		
 		<figure>
-			<img loading="lazy" src="{% static "v2/quadraticlands/images/quadratic.svg" %}" />
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/quadratic.svg" %}" />
 		</figure>
 
 		<div>
@@ -88,11 +88,11 @@
 
 
 <!-- INFORMATION AGE -->
-<article>	
+<article class="kinetics-wind">	
 	<section id="unicorn" class="grid">
 		
-		<figure class="floating particleMode" data-mode="wind">
-			<img loading="lazy" src="{% static "v2/quadraticlands/images/uni.svg" %}" />
+		<figure class="floating">
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/uni.svg" %}" />
 		</figure>
 
 		<div>
@@ -139,7 +139,8 @@
 
 
 
-<!-- animate town ( index page hero > town.svg ) -->
+
+<!-- animate town ( index page hero > town.svg ) + intersection observer for particles mode wind  -->
 
 <script>
 
@@ -150,8 +151,29 @@
 		last = 0;
 		console.debug("ANIMATE TOWN")
 		animate_town()
+
+
+
+		// INTERSECTION OBSERVER for manipulating particles based on sections.
+
+		let observerConfig = { root: null, rootMargin: '0px 0px 0px 0px', threshold: 0.1 };
+		const observer = new IntersectionObserver(handleIntersection, observerConfig);
+		const wind = document.querySelectorAll('.kinetics-wind');
+		wind.forEach(element => observer.observe(element));
+
+		function handleIntersection(entries) {
+		  entries.map((entry) => {
+		    if (entry.isIntersecting) { setMode('wind') }
+		    else{ setMode('space') }
+		  });
+		}
+
+
+
 	});
 	
+
+
 
 	function animate_town(now){
 

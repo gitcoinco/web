@@ -7,7 +7,7 @@
 	<a class="noparticles">
 		<div class="header">
 			<div class="icon">
-				{% include "quadraticlands/_inlinesvg/delegation.svg" %}
+				<img loading="lazy" src="{% static "v2/quadraticlands/images/icons/delegation.svg" %}" />
 			</div>
 			<div class="title">
 				Delegation Mode:
@@ -28,17 +28,17 @@
 				<!--enabled button-->
 				<div id="toggle_enabled" class="delegation-toggle hide">
 					<div class="label">Delegation Mode</div>
-					<div id="mode_toggle" class="toggle enabled">
+					<div id="toggle_button_enabled" class="toggle enabled">
 						<div class="enabled">Enabled</div>
 						<div class="circle"></div>
-						<div class="disabled">Disabled</div>
+						<div class="disabled">Disable</div>
 					</div>					
 				</div>
 
 				<!--disabled button-->
-				<div id="toggle_disabled" class="delegation-toggle hide">
+				<div id="toggle_disabled" class="delegation-toggle disablehover hide">
 					<div class="label">Delegation Mode</div>
-					<div id="mode_toggle" class="toggle disabled disablehover">
+					<div class="toggle disabled disablehover">
 						<div class="enabled">Enabled</div>
 						<div class="circle"></div>
 						<div class="disabled">Disabled</div>
@@ -120,6 +120,8 @@ document.addEventListener("DOMContentLoaded",function(){
 	const txt_disable_delegate = document.getElementById("txt_disable_delegate")
 	const delegate_button = document.getElementById("delegate_button")
 	const delegate_input = document.getElementById("delegate_input")
+	const toggle_button_enabled = document.getElementById("toggle_button_enabled")
+
 	
 
 	// validate delegate address input field > recolor delegate button
@@ -140,6 +142,18 @@ document.addEventListener("DOMContentLoaded",function(){
 			setDelegateAddress(selectedAccount, gtc_address());
 		}
 	});
+
+
+	// special effect : on enbled button on hover show disabled button
+	toggle_enabled.addEventListener("mouseover", () => {
+		toggle_button_enabled.classList.add("disabled")
+		toggle_button_enabled.classList.remove("enabled")
+	});
+	toggle_enabled.addEventListener("mouseout", () => {
+		toggle_button_enabled.classList.add("enabled")
+		toggle_button_enabled.classList.remove("disabled")
+	});
+
 
 	// defining the delegate button : web3 delegate(delegate_input.value)
 	delegate_button.addEventListener("click", () => {

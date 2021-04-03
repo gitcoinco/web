@@ -9,6 +9,10 @@
 
 	cursor: pointer;
 
+	&.disablehover{
+		cursor: initial;
+	}
+
 
 	.label{
 		margin: 0em 1em;
