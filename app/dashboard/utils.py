@@ -408,7 +408,7 @@ def get_poap_earliest_owned_token_timestamp(network, address):
     poap_contract = get_poap_contract(network)
     from_block = 7844308
     if network == "ropsten":
-        from_block = 5592255 
+        from_block = 5592255
     # Filter the contract events by owner address
     transfer_filter = poap_contract.events.Transfer.createFilter(argument_filters={'to': address}, fromBlock=from_block, toBlock='latest')
     log_entries = transfer_filter.get_all_entries()
@@ -1194,6 +1194,7 @@ def set_hackathon_event(type, event):
             {
                 'absolute_url': sponsor.absolute_url,
                 'avatar_url': sponsor.avatar_url,
+                'handle': sponsor.handle,
             }
             for sponsor in event.sponsor_profiles.all()
         ],
