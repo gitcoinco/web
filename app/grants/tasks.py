@@ -389,4 +389,3 @@ def save_contribution(self, contrib_id):
     from grants.models import Contribution
     contrib = Contribution.objects.get(pk=contrib_id)
     contrib.save()
-
