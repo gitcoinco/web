@@ -78,8 +78,12 @@ def create_jtbd_earn_cache():
         'val_usd_db', 'title', 'token_name', 'value_true', 'bounty_owner_github_username', 'metadata'
     )[0:4])
 
-    # WalletConnect
-    featured_grant = Grant.objects.filter(pk=275).first()
+    if not settings.DEBUG:
+        # WalletConnect
+        featured_grant = Grant.objects.filter(pk=275).first()
+    else:
+        featured_grant = Grant.objects.filter(pk=19).first()
+
 
     data = {
         'top_earners': top_earners,
@@ -225,17 +229,18 @@ def create_jtbd_connect_cache():
 
 def create_jtbd_fund_cache():
     print('create_jtbd_fund_cache')
+    if not settings.DEBUG:
+        # WalletConnect / ethers.js / TheDefiant
+        id_tuple= (275,13,567)
+    else:
+        id_tuple= (6,13,4)
 
-    # WalletConnect / ethers.js / TheDefiant
-        # Q(pk=275) | Q(pk=13) | Q(pk=567)
-    # id_tuple= (275,13,567)
-    id_tuple= (6,13,4)
     projects = list(Grant.objects.filter(id__in=id_tuple).values(
         'id', 'logo', 'title', 'admin_profile__handle',
         'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
         'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
     ).order_by('id', '-created_on').distinct('id'))
-    print(projects)
+
     data = {
         'projects': projects,
         'builders': ['austintgriffith', 'alexmasmej', 'cryptomental', 'samczsun'],

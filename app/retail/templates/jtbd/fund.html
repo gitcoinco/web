@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize i18n static compress %}
+{% load humanize i18n static compress grants_extra %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -146,7 +146,7 @@ along with this program. If not,see
             {% for project in projects %}
               <div class="col mb-4">
                 <div class="card">
-                  <img class="card-img-top" style="height: 14rem; object-fit: cover;" src="{{ MEDIA_URL}}{{ project.logo }}"/>
+                  <img class="card-img-top" style="height: 14rem; object-fit: cover;" src={% if project.logo %}"{{ MEDIA_URL}}{{ project.logo }}"{% else %}{% with placeholder='v2/images/grants/logos/' id=project.id|modulo:3 %}"{% static placeholder|addstr:id|add:'.png' %}"{% endwith %}{% endif %}/>
                   <div class="card-body">
                     <h4 class="gc-font-base card-title text-truncate">{{ project.title }}</h4>
                     <p class="text-grey-400">by @{{ project.admin_profile__handle }}</p>
