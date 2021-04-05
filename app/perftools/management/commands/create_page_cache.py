@@ -55,7 +55,7 @@ def fetch_jtbd_hackathons():
     db = JSONStore.objects.get(key='hackathons', view='hackathons')
     status = db.data[0]
     hackathons = db.data[1][0:3]
-    fields = ['logo', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
+    fields = ['logo', 'logo_svg', 'name', 'slug', 'summary', 'start_date', 'end_date', 'sponsor_profiles']
     return [{k: v for k, v in event.items() if k in fields} for event in hackathons if status == 'upcoming' or status == 'current']
 
 

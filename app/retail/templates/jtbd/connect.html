@@ -229,9 +229,9 @@ along with this program. If not,see
           <div class="col-12">
             <div class="row">
               {% for hackathon in hackathons %}
-                {% with logo_url=hackathon.logo name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
-                  <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">
-                    <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 bg-img-cover" style="height: 297.74px; background-image: url('{{ logo_url }}');"></div>
+                {% with logo_svg=hackathon.logo_svg logo=hackathon.logo  name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
+                  <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">{{ logo_svg }}
+                    <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100" style="height: 297.74px; background: url('{{ MEDIA_URL}}{% if logo_svg %}{{ logo_svg }}{% else %}{{ logo }}{% endif %}') no-repeat center / contain;"></div>
                     <h3 class="mt-4 mb-3 line-clamp-2">{{ name }}</h3>
                     <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
                     <p class="text-grey-400 mb-3">
@@ -241,7 +241,7 @@ along with this program. If not,see
                       Sponsored by
                       {% for sponsor in sponsor_profiles %}
                         {% if forloop.counter <= 4 %}
-                          <img class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;" src="{% url 'org_avatar' sponsor.handle %}" alt="{{ sponsor.handle }}" />
+                          <img class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;" src="{{ sponsor.avatar_url }}" />
                         {% endif %}
                       {% endfor %}
                       {% if sponsor_profiles|length > 4 %}
