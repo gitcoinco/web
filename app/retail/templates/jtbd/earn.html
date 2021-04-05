@@ -168,7 +168,7 @@ along with this program. If not,see
               {% for hackathon in hackathons %}
                 {% with logo=hackathon.logo  name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
                   <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">
-                    <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 p-1" style="height: 297.74px; background: {{hackathon.background_color}} ">
+                    <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 overflow-hidden" style="height: 297.74px; background: {{hackathon.background_color}} ">
                       <img src="{{ MEDIA_URL}}{{ logo }}" class="img-fluid" alt="">
                     </div>
                     <h3 class="mt-4 mb-3 line-clamp-2">{{ name }}</h3>
