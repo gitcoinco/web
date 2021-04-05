@@ -48,7 +48,7 @@ from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
+match_payouts_address = Web3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
 SCALE = Decimal(1e18) # scale factor for converting Dai units
 WAIT_TIME_BETWEEN_TXS = 15 # seconds
 
