@@ -236,7 +236,7 @@ along with this program. If not,see
             </div>
           </div>
           <div class="col-md-7 col-12">
-            <img class="d-block m-auto ml-md-0 w-100" src="{{ featured_grant.logo }}"/>
+            <img class="d-block m-auto ml-md-0 w-100" src={% if featured_grant.logo %}"{{ MEDIA_URL}}{{ featured_grant.logo }}"{% else %}{% with placeholder='v2/images/grants/logos/' id=project.id|modulo:3 %}"{% static placeholder|addstr:id|add:'.png' %}"{% endwith %}{% endif %}/>
             <p class="font-bigger-2 mt-4 text-wrap text-grey-500">{{ featured_grant.title }}</p>
             <div>
               <p class="text-grey-400 font-subheader">{{ featured_grant.description }}</p>

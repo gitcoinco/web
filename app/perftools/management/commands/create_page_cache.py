@@ -80,9 +80,17 @@ def create_jtbd_earn_cache():
 
     if not settings.DEBUG:
         # WalletConnect
-        featured_grant = Grant.objects.filter(pk=275).first()
+        featured_grant = Grant.objects.filter(pk=275).values(
+        'id', 'logo', 'title', 'admin_profile__handle',
+        'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
+        'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
+    ).first()
     else:
-        featured_grant = Grant.objects.filter(pk=19).first()
+        featured_grant = Grant.objects.filter(pk=19).values(
+        'id', 'logo', 'title', 'admin_profile__handle',
+        'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
+        'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
+    ).first()
 
 
     data = {
