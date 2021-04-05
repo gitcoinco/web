@@ -257,7 +257,7 @@ class Command(BaseCommand):
 
                 # Pause until the next one
                 print("SLEEPING")
-                time.sleep(WAIT_TIME_BETWEEN_TXS)
+                #time.sleep(WAIT_TIME_BETWEEN_TXS)
                 print("DONE SLEEPING")
 
             user_input = input("continue? (y/n) ")
@@ -272,7 +272,7 @@ class Command(BaseCommand):
                 if is_real_payout:
                     match.payout_tx = tx_id
                     match.payout_tx_date = timezone.now()
-                    #grant_match_distribution_final_txn(match, True)
+                    grant_match_distribution_final_txn(match, True)
                 else:
                     match.test_payout_tx = tx_id
                     match.test_payout_tx_date = timezone.now()
