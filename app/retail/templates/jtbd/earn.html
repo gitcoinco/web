@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat %}
+{% load i18n static compress date_fromisoformat grants_extra %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -236,10 +236,11 @@ along with this program. If not,see
             </div>
           </div>
           <div class="col-md-7 col-12">
-            <img class="d-block m-auto ml-md-0 w-100" src={% if featured_grant.logo %}"{{ MEDIA_URL}}{{ featured_grant.logo }}"{% else %}{% with placeholder='v2/images/grants/logos/' id=project.id|modulo:3 %}"{% static placeholder|addstr:id|add:'.png' %}"{% endwith %}{% endif %}/>
+            <img class="d-block m-auto ml-md-0 w-100 img-thumbnail p-0" style="height: 16rem; object-fit: cover;" src={% if featured_grant.logo %}"{{ MEDIA_URL}}{{ featured_grant.logo }}"{% else %}{% with placeholder='v2/images/grants/logos/' id=featured_grant.id|modulo:3 %}"{% static placeholder|addstr:id|add:'.png' %}"{% endwith %}{% endif %}/>
+
             <p class="font-bigger-2 mt-4 text-wrap text-grey-500">{{ featured_grant.title }}</p>
             <div>
-              <p class="text-grey-400 font-subheader">{{ featured_grant.description }}</p>
+              <p class="text-grey-400 font-subheader">{{ featured_grant.description | truncatechars_html:380}}</p>
             </div>
             {% if featured_grant.in_active_clrs %}
               <p class="text-secondary font-bigger-1 mb-0">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>

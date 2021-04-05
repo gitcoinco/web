@@ -78,33 +78,30 @@ def create_jtbd_earn_cache():
         'val_usd_db', 'title', 'token_name', 'value_true', 'bounty_owner_github_username', 'metadata'
     )[0:4])
 
+    featured_grant = None
+
     if not settings.DEBUG:
         # WalletConnect
-        featured_grant = Grant.objects.filter(pk=275).values(
-        'id', 'logo', 'title', 'admin_profile__handle',
-        'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
-        'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
-    ).first()
+        grant_id = 275
     else:
-        featured_grant = Grant.objects.filter(pk=19).values(
-        'id', 'logo', 'title', 'admin_profile__handle',
-        'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
-        'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
-    ).first()
+        grant_id = 19
 
+    try:
+        grant_data = Grant.objects.filter(pk=grant_id).values(
+            'id', 'logo', 'title', 'admin_profile__handle',
+            'description', 'amount_received', 'amount_received_in_round', 'contributor_count',
+            'positive_round_contributor_count', 'in_active_clrs', 'clr_prediction_curve'
+        ).first()
+    except Grant.DoesNotExist:
+        grant_data = None
+
+    featured_grant = grant_data
 
     data = {
         'top_earners': top_earners,
         'hackathons': fetch_jtbd_hackathons(),
         'bounties': bounties,
-        'featured_grant': {
-            'title': featured_grant.title,
-            'description': featured_grant.description,
-            'logo': featured_grant.logo.url if featured_grant.logo else None,
-            'amount_received_in_round': featured_grant.amount_received_in_round,
-            'amount_received': featured_grant.amount_received,
-            'in_active_clrs': featured_grant.in_active_clrs,
-        },
+        'featured_grant': featured_grant,
         'testimonial': {
             'handle': '@cryptomental',
             'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
