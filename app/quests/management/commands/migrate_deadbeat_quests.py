@@ -17,10 +17,12 @@
 '''
 
 
+import random
+
 from django.core.management.base import BaseCommand
 
 from marketing.mails import notify_deadbeat_quest
-import random
+
 
 class Command(BaseCommand):
 

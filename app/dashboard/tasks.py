@@ -329,4 +329,3 @@ def recalculate_earning(self, pk, retry: bool = True) -> None:
     earning = Earning.objects.get(pk=pk)
     src = earning.source
     src.save()
-
