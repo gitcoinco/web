@@ -143,7 +143,7 @@ Vue.mixin({
         let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
 
         console.log(error.responseJSON.error);
-        _alert({ message: gettext(msg) }, 'error');
+        _alert({ message: gettext(msg) }, 'danger');
       });
     },
     stopWork(key, bountyPk, profileId, obj, section) {
@@ -163,7 +163,7 @@ Vue.mixin({
           vm.disabledBtn = '';
           let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
 
-          _alert({ message: gettext(msg) }, 'error');
+          _alert({ message: gettext(msg) }, 'danger');
         });
       } else {
         vm.disabledBtn = '';
@@ -185,7 +185,7 @@ Vue.mixin({
           vm.disabledBtn = '';
           let msg = error.responseJSON.error || 'got an error. please try again, or contact support@gitcoin.co';
 
-          _alert({ message: gettext(msg) }, 'error');
+          _alert({ message: gettext(msg) }, 'danger');
         });
       } else {
         vm.disabledBtn = '';
@@ -370,7 +370,7 @@ Vue.mixin({
         // For the redemption case, we must hide the "tx pending" modal
         $('#redemptionCompleteReceiptModal').bootstrapModal('hide');
       } else {
-        _alert(errorMsg, 'error');
+        _alert(errorMsg, 'danger');
       }
     },
 
@@ -566,7 +566,7 @@ Vue.mixin({
       const supportedNetworks = [ 'rinkeby', 'mainnet' ];
 
       if (!supportedNetworks.includes(document.web3network)) {
-        _alert('Unsupported network', 'error');
+        _alert('Unsupported network', 'danger');
         throw new Error('Please connect a wallet');
       }
       return document.web3network;
@@ -662,7 +662,7 @@ Vue.mixin({
       else if (typeof err === 'string')
         message = err;
 
-      _alert(message, 'error');
+      _alert(message, 'danger');
       indicateMetamaskPopup(true);
     },
 

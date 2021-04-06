@@ -341,7 +341,7 @@ const sendPersonal = (persona) => {
 
   $.when(postPersona).then((response, status, statusCode) => {
     if (statusCode.status != 200) {
-      return _alert(response.msg, 'error');
+      return _alert(response.msg, 'danger');
     }
     $('#persona_modal').bootstrapModal('hide');
 

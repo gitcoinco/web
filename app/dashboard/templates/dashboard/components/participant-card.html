@@ -16,96 +16,51 @@
 
 {% endcomment %}
 {% load i18n static %}
-<div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key="user.id">
-  <div class="d-flex flex-column py-1">
-    <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
-    <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
-      <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
-        <i class="fab fa-ethereum mr-2"></i>
-        Fund Bounty
-      </a>
-      <div class="dropdown-divider"></div>
-      <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
-        <i class="fas fa-user mr-2"></i>
-        View profile
-      </a>
-    </div>
-    <a :href="`/profile/${ user.handle }`" class="mx-auto">
-      <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
+<div v-for="user in users" class="border-top-1 border-grey border-bottom-0 border-left-0 border-right-0 py-4" :key="user.id">
+  <div class="d-flex flex-column flex-md-row">
+    <a :href="`/profile/${ user.handle }`" class="d-none d-md-block col-2 text-center">
+      <img class="rounded-circle mb-3" width="80" height="80" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
     </a>
-    <h5 class="text-center card-user_name">
-      [[ user.name || user.handle ]]
-      <span v-if="user.verification">
-        <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
-      </span>
-    </h5>
-    <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
-      @[[ user.handle ]]
-    </a>
-    <div v-if="!user.is_org" class="card-user_stars text-center my-2">
-      <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
-      ([[ user.avg_rating.total_rating ]] ratings)
-    </div>
-    <template v-if="user.is_org">
-      <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
-      </div>
-      <div class="text-center">
-        <p class="mb-0">
-          <i class="fas fa-user font-smaller-4 mr-1"></i>
-          <b>[[ user.follower_count ]]</b> followers
-        </p>
-        <p class="mb-0">
-          <i class="fas fa-trophy font-smaller-4 mr-1"></i>
-          <b>[[ user.count_bounties_on_repo ]]</b> Bounties Funded
-          (<b>[[ user.sum_eth_on_repos ]] ETH</b>)
-        </p>
-      </div>
-    </template>
-
-    <!-- User : Funder / Contributor-->
-    <template v-else>
-      <div v-if="user.keywords" class="text-center mt-1">
-        <template v-for="keyword in user.keywords.slice(0,4)">
-          <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
-        </template>
-      </div>
-
-      <div class="text-center my-1 font-smaller-1">
-        <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
-          <i class="fab fa-github"></i>
+    <div class="col-12 col-md-7">
+      <h5 class="card-user_name d-flex">
+        <a :href="`/profile/${ user.handle }`" style="min-width: 60px" class="d-inline-block d-md-none text-center">
+          <img class="rounded-circle mb-3" width="46" height="46" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
         </a>
-        <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
-          <i class="fas fa-home"></i>
-        </a>
-        <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
+        <div>
+          [[ user.name || user.handle ]] <span class="text-muted font-smaller-3 mx-1">@[[user.handle]]</span>
+          <span v-if="user.verification">
+            <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
+          </span>
+          <br class="d-block d-md-none">
+          <span class="ml-md-3" v-if="user.country">
+            <i class="fas fa-map-marker-alt"></i> <span class="text-muted font-smaller-3">[[ user.country ]]</span>
+          </span>
+        </div>
+      </h5>
+      <p class="font-smaller-3 text-muted mt-1 mb-2">[[ user.desc ]]</p>
+      <div>
+        <b style="min-width: 50px" class="font-smaller-5 mt-1 mr-2">Why am I here?</b>
+        <p class="text-muted mb-2 font-smaller-3">[[ user.intro ]]</p>
       </div>
-      <div class="text-center" id="job_status" v-if="user.show_job_status">
-        <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
-          <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
-        </a>
+      <div class="my-1 d-flex">
+        <b style="min-width: 50px" class="font-smaller-5 mt-2 mr-2">Projects</b>
+        <div>
+          <img v-if="user.project_logo" :src="user.project_logo" style="max-width: 23px" class="rounded-circle mr-2">
+          <span v-if="user.project_name" class="font-smaller-4 mr-4">[[ user.project_name ]]</span>
+          <span v-if="!user.project_name" class="font-smaller-4 mr-4">Not started</span>
+          <span style="border: 2px solid #F9E1D4" class="px-1 font-smaller-4" v-if="user.project_name">Currently building a project</span>
+          <span style="border: 2px solid #F9E1D4" class="px-1 font-smaller-4" v-if="user.looking_team_members">Looking for team members</span>
+          <span style="border: 2px solid #F9E1D4" class="px-1 font-smaller-4" v-if="user.looking_project">Looking for a project</span>
+        </div>
       </div>
-      <div class="text-center">
-        <p class="mb-0">
-          <i class="fas fa-user font-smaller-4 mr-1"></i>
-          <b>[[ user.follower_count ]]</b> followers
-        </p>
-        <p v-if="!isFunder" class="mb-0">
-          <b>[[ user.work_done ]]</b> bounties completed
-        </p>
+      <div class="d-flex mt-1">
+        <b style="min-width: 50px" class="font-smaller-5 mt-2 mr-2">Skills</b>
+        <div v-if="user.keywords">
+          <template v-for="keyword in user.keywords.slice(0,4)">
+            <span class="badge badge--bluelight font-smaller-4">[[ keyword ]]</span>[[ ' ' ]]
+          </template>
+        </div>
       </div>
-    </template>
-  </div>
-  <div class="card-body d-flex flex-column justify-content-between">
-    <!-- TRIBE -->
-    <div class="text-center my-3" v-if="user.looking_team_members">
-        <i class="fas fa-users gc-text-blue font-bigger-3"></i><br>
-        <span class="font-body">Looking for team members</span>
-    </div>
-    <div class="text-center my-3" v-if="user.looking_project">
-        <i class="far fa-lightbulb gc-text-blue font-bigger-3"></i><br>
-        <span class="font-body">Looking for a project</span>
     </div>
   </div>
 </div>

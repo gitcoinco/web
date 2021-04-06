@@ -12,7 +12,7 @@ const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => 
       // 2. check if default account is selected
       if (web3.eth.defaultAccount == null) {
         modal.closeModal();
-        _alert({ message: 'Please unlock XinPay Wallet extension' }, 'error');
+        _alert({ message: 'Please unlock XinPay Wallet extension' }, 'danger');
         return;
       }
 
@@ -22,7 +22,7 @@ const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => 
         const xdcBalance = await xdc3Client.eth.getBalance(web3.eth.defaultAccount);
 
         if (Number(xdcBalance) < Number(amount * 10 ** 18)) {
-          _alert({ message: `Insufficent balance in address ${web3.eth.defaultAccount}` }, 'error');
+          _alert({ message: `Insufficent balance in address ${web3.eth.defaultAccount}` }, 'danger');
           return;
         }
 
@@ -39,20 +39,20 @@ const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => 
 
       } else {
         modal.closeModal();
-        _alert({ message: 'XinPay supports payouts in XDC only.' }, 'error');
+        _alert({ message: 'XinPay supports payouts in XDC only.' }, 'danger');
         return;
       }
     });
 
   } catch (e) {
     modal.closeModal();
-    _alert({ message: 'Please download or enable XinPay Wallet extension' }, 'error');
+    _alert({ message: 'Please download or enable XinPay Wallet extension' }, 'danger');
     return;
   }
 
   function callback(error, from_address, txn) {
     if (error) {
-      _alert({ message: gettext('Unable to payout bounty due to: ' + error) }, 'error');
+      _alert({ message: gettext('Unable to payout bounty due to: ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -76,11 +76,11 @@ const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => 
           _alert('Payment Successful');
 
         } else {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
-        _alert('Unable to make payout bounty. Please try again later', 'error');
+        _alert('Unable to make payout bounty. Please try again later', 'danger');
         console.log(error);
       });
     }

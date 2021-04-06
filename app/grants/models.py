@@ -664,7 +664,7 @@ class Grant(SuperModel):
         # [amount_donated, match amount, bonus_from_match_amount ], etc..
         # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
         _clr_prediction_curve = []
-        for insert_clr_calc in self.clr_calculations.filter(latest=True).order_by('-created_on'):
+        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True).order_by('-created_on'):
             insert_clr_calc = insert_clr_calc.clr_prediction_curve
             if not _clr_prediction_curve:
                 _clr_prediction_curve = insert_clr_calc
@@ -851,7 +851,7 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
-    def cart_payload(self, build_absolute_uri):
+    def cart_payload(self, build_absolute_uri, user=None):
         return {
             'grant_id': str(self.id),
             'grant_slug': self.slug,
@@ -876,7 +876,8 @@ class Grant(SuperModel):
             'binance_payout_address': self.binance_payout_address,
             'kusama_payout_address': self.kusama_payout_address,
             'harmony_payout_address': self.harmony_payout_address,
-            'rsk_payout_address': self.rsk_payout_address
+            'rsk_payout_address': self.rsk_payout_address,
+            'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
     def repr(self, user, build_absolute_uri):

@@ -80,8 +80,8 @@
             <div class="row mx-0 mx-lg-auto col-12 col-lg-10 offset-xl-2 col-xl-8 mt-2 bounty-tips mb-3">
               {% for bounty_tip in bounty_tips %}
                 <div class="col-12 col-lg-6 px-xl-5 mb-4 row mx-0 mx-lg-auto">
-                  <div class="col-12 card row mx-0">
-                    <div class="col-3 col-xl-2 text-right my-auto">
+                  <div class="col-12 card row mx-0" style="min-height: 170px">
+                    <div class="col-3 col-xl-2 text-right my-auto pt-3 px-md-0 px-lg-0 py-md-0 py-lg-0">
                       <img src="{{ bounty_tip.img }}" alt="{{ bounty_tip.title }}" />
                     </div>
                     <div class="col-9 col-xl-10 text-left my-auto">
@@ -101,7 +101,7 @@
 
             {% for issue_type in good_issue_types %}
               <div class="row col-12 col-sm-6 col-lg-4 px-xl-5 mt-4 pt-3 mx-0">
-                <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right">
+                <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right px-0">
                   <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
                 </div>
                 <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
@@ -109,7 +109,7 @@
                   <p class="font-subheader">{{ issue_type.description }}</p>
                   {% if issue_type.good_first_bounty %}
                     <p class="font-weight-bold font-caption">
-                      <span class="first-bounty">Good First Bounty</span>
+                      <span class="first-bounty pr-0">Good First Bounty</span>
                     </p>
                   {% endif %}
                 </div>
@@ -120,7 +120,7 @@
               <div class="container-fluid py-5 px-lg-5 activity">
                 <div class="bounty-activity activity_stream row py-5 col-12">
                   <h3 class="subheading font-weight-semibold mt-2 mb-4">Latest Bounties Created</h3>
-                  <div class="container infinite-container" id="activity_stream">
+                  <div class="container infinite-container px-0" id="activity_stream">
                     <div class="mb-4 col-12 text-center text-md-left">
                       {% for row in activities %}
                         {% include 'shared/activity.html' %}

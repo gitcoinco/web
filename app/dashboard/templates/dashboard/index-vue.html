@@ -440,15 +440,9 @@
                                 <p class="mt-4 font-weight-bold mb-0">No users found</p>
                                 <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchUsers()">Reset Filters</button>
                               </div>
-                              {% if hackathon.start_date|timesince <= "1 min" %}
-                                <div>
-                                  {% include 'dashboard/components/participant-card-pre-hack.html' %}
-                                </div>
-                              {% else %}
-                                <div class="grid-4">
-                                  {% include 'dashboard/components/participant-card.html' %}
-                                </div>
-                              {% endif %}
+                              <div>
+                                {% include 'dashboard/components/participant-card.html' %}
+                              </div>
                               <loading-screen class="py-5 mt-4" v-if="isLoading"></loading-screen>
                             </div>
                           </div>
