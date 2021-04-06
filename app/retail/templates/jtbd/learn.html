@@ -49,7 +49,7 @@ along with this program. If not,see
             No experience, no worries! Work hands-on with top leaders in blockchain to level up your development skills.
           </p>
           <div class="row mt-5 mx-0">
-            <a class="btn btn-primary col-12 col-md-auto p-3 px-5 scroll-to-ready" href="#ready-to-learn">
+            <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5 scroll-to-ready" href="#ready-to-learn">
               I'm ready to learn
             </a>
           </div>
@@ -217,7 +217,7 @@ along with this program. If not,see
                     <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 overflow-hidden" style="height: 297.74px; background: {{hackathon.background_color}} ">
                       <img src="{{ MEDIA_URL}}{{ logo }}" class="img-fluid" alt="">
                     </div>
-                    <h3 class="mt-4 mb-3 line-clamp-2">{{ name }}</h3>
+                    <h3 class="mt-4 mb-3 line-clamp-2 gc-font-base">{{ name }}</h3>
                     <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
                     <p class="text-grey-400 mb-3">
                       {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
@@ -239,7 +239,7 @@ along with this program. If not,see
               {% if hackathons|length == 1 %}
                 <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
                   <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
-                  <h3 class="mt-4 mb-3">More hackathons coming soon!</h3>
+                  <h3 class="mt-4 mb-3 gc-font-base">More hackathons coming soon!</h3>
                   <p class="text-grey-400">Stay tuned for more great hackathons coming your way!</p>
                 </div>
               {% endif %}
@@ -307,10 +307,10 @@ along with this program. If not,see
             <div class="col-auto m-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
             <div class="col text-grey-400 pr-5 pb-4">
               <div class="row">
-                <p>{{ testimonial.comment }}</p>
+                <p class="font-bigger-1 line-height-2">{{ testimonial.comment }}</p>
               </div>
               <div class="row">
-                <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
+                <p class="font-bigger-1">{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
               </div>
               <div class="row">
                 {% if testimonial.twitter_handle %}
@@ -343,7 +343,7 @@ along with this program. If not,see
               <p class="py-2 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
             </div>
             <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
+              <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
             </div>
           </div>
         </div>
@@ -354,7 +354,7 @@ along with this program. If not,see
               <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
             </div>
             <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="https://kernel.community/">Explore Kernel</a>
+              <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="https://kernel.community/">Explore Kernel</a>
             </div>
           </div>
         </div>

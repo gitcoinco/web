@@ -49,7 +49,7 @@ along with this program. If not,see
             Gitcoin Grants uses quadratic funding, ensuring that projects doing the greatest public good get the most support.
           </p>
           <div class="row mt-5 mx-0">
-            <a class="btn btn-primary col-12 col-md-auto p-3 px-5 scroll-to-ready" href="#ready-to-fund">
+            <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5 scroll-to-ready" href="#ready-to-fund">
               I’m ready to fund
             </a>
           </div>
@@ -202,10 +202,10 @@ along with this program. If not,see
             <div class="col-auto m-0 p-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
             <div class="col text-grey-400 pr-5">
               <div class="row">
-                <p>{{ testimonial.comment }}</p>
+                <p class="font-bigger-1 line-height-2">{{ testimonial.comment }}</p>
               </div>
               <div class="row">
-                <p>{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
+                <p class="font-bigger-1">{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
               </div>
               <div class="row">
                 {% if testimonial.twitter_handle %}
@@ -233,7 +233,7 @@ along with this program. If not,see
                 <h2>Have questions before you fund through Gitcoin?</h2>
                 <p class="text-grey-400 font-bigger-2">Connect with the Gitcoin community in Discord</p>
                 <div class="row mt-4 mx-0">
-                  <a class="btn btn-primary col-12 col-md-auto p-3 px-5" href="https://discord.com/invite/83BK5z55yB" target="_blank">Join Discord</a>
+                  <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://discord.com/invite/83BK5z55yB" target="_blank">Join Discord</a>
                 </div>
               </div>
               <div class="d-none d-md-inline col-md-3 p-0 align-self-center">
@@ -255,7 +255,7 @@ along with this program. If not,see
                   <p class="font-bigger-1">With Gitcoin Grants you can support the most impactful projects in web3.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'grants:grants' %}">Explore Grants</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'grants:grants' %}">Explore Grants</a>
                 </div>
               </div>
             </div>
@@ -266,7 +266,7 @@ along with this program. If not,see
                   <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-cta py-3" href="{% url 'grants:new_matching_partner' %}">Pledge Support</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'grants:new_matching_partner' %}">Pledge Support</a>
                 </div>
               </div>
             </div>
