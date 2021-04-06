@@ -226,7 +226,7 @@ $(document).ready(async function() {
     var act_as_funder = is_funder();
 
     if (act_as_funder) {
-      const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      const to_address = '0x88c62f1695DD073B43dB16Df1559Fda841de38c6';
       const fee = (Number($('#summary-bounty-amount').html()) * FEE_PERCENTAGE).toFixed(4);
 
       indicateMetamaskPopup();
