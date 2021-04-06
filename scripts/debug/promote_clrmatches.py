@@ -1,7 +1,6 @@
 from grants.models import *
 from marketing.mails import grant_match_distribution_final_txn
 
-
 round_number = 9
 read_only = True
 send_email = False

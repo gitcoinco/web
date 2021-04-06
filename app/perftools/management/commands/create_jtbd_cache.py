@@ -21,29 +21,13 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db import models, transaction
-from django.db.models import Count, Q
-from django.db.models.query import QuerySet
-from django.forms.models import model_to_dict
 from django.templatetags.static import static
 from django.utils import timezone
-from django.utils.encoding import force_text
-from django.utils.functional import Promise
 
-from app.services import RedisService
-from avatar.models import AvatarTheme, CustomAvatar
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile
-from dashboard.utils import set_hackathon_event
+from dashboard.models import Bounty
 from economy.models import EncodeAnything
-from grants.models import Contribution, Grant, GrantCategory, GrantType
-from grants.utils import generate_leaderboard
-from grants.views import next_round_start, round_types
-from marketing.models import Stat
+from grants.models import Grant
 from perftools.models import JSONStore
-from retail.utils import build_stat_results, programming_languages
-from retail.views import get_contributor_landing_page_context, get_specific_activities
-from townsquare.views import tags
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +88,7 @@ def create_jtbd_earn_cache():
             'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
             'avatar_url': '',
             'github_handle': 'cryptomental',
-            'twitter_handle': 'cryptomental',
+            'twitter_handle': '',
             'role': 'Front End Developer',
         },
     }
