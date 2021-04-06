@@ -1,0 +1,27 @@
+{
+    "symbol": "TARA",
+    "address": "0xF001937650bb4f62b57521824B2c20f5b91bEa05",
+    "overview":{
+          "en": "Taraxa is a purpose-built, fast, scalable, and device-friendly public ledger designed to track informal transactions to minimize confusion & disputes.",
+          "zh": "Taraxa是一个专用、高速、可扩展且对设备友好的公共分类账本，旨在帮助企业更好、更迅速地做出决策。"
+    },
+    "email": "contact@taraxa.io",
+    "website": "https://www.taraxa.io/",
+    "whitepaper": "https://docs.taraxa.io/",
+    "state": "NORMAL",
+    "published_on": "2021-03-23",
+    "links": {
+      "medium": "https://medium.com/taraxa-project",
+      "github": "https://github.com/Taraxa-project",
+      "telegram (en)": "https://t.me/taraxa_project",
+      "telegram (zh)": "https://t.me/taraxa_project_CN",
+      "discord" : "https://discord.com/invite/WaXnwUb",
+      "linkedin" : "https://www.linkedin.com/company/taraxa-io",
+      "twitter": "https://twitter.com/taraxa_project",
+      "facebook": "https://www.facebook.com/taraxa.io",
+      "reddit": "https://www.reddit.com/r/Taraxa_Project/",
+      "weibo": "https://weibo.com/u/7312017511",
+      "bihu": "https://bihu.com/people/1119953",
+      "community": "https://community.taraxa.io/"
+    }
+}
