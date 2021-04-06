@@ -128,7 +128,7 @@ along with this program. If not, see
   {% endif %}
 
   {% if upcoming_events or upcoming_dates %}
-  <h3 class="section-header">{% trans "Save the Date" %}</h3>
+  <h3 class="section-header">{% trans "Hackathons to Join" %}</h3>
   <hr>
   <p class="text-left grey mb-0">Upcoming Hackathons!</p><br>
   {% for event in upcoming_events %}
@@ -141,7 +141,7 @@ along with this program. If not, see
   {% endif %}
 
   {% if not bounties %}
-  <h3 class="section-header">{% trans "Start Earning" %}</h3>
+  <h3 class="section-header">{% trans "Earn in Bounties" %}</h3>
   <hr>
   <img class="avatar-bounty" src="{{trending_avatar.img_url}}">
   <div style="color: #15003E;">
@@ -155,9 +155,9 @@ along with this program. If not, see
   {% endif %}
 
   {% if bounties %}
-  {% for bounty in bounties %}
-  <h3 class="section-header">{% trans "Start Earning" %}</h3>
+  <h3 class="section-header">{% trans "Earn in Bounties" %}</h3>
   <hr>
+  {% for bounty in bounties %}
   {% if bounty.avatar_url %}
   <img class="avatar-bounty" src="{{ bounty.avatar_url }}">
   <div style="color: #15003E;">
@@ -199,7 +199,7 @@ along with this program. If not, see
   {% endif %}
 
   {% if not quest_of_the_day %}
-  <h3 class="section-header">{% trans "Quests Daily" %}</h3>
+  <h3 class="section-header">{% trans "Daily Quests" %}</h3>
   <hr>
   {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
   <img class="avatar" style="height: 120px; width: auto;" src={{base_url}}static/v2/images/emails/kudos_template.png>
@@ -219,7 +219,7 @@ Considering the design elements / approaches to a very new world. How that appro
     </p>
   </div>
   <div style="margin-top: 25px;">
-    <a class="button" style="text-decoration: none;" href="{{quest.absolute_url}}&{{ utm_tracking }}">Play Quest</a>
+    <a class="button" style="text-decoration: none;" href="{{quest.url}}&{{ utm_tracking }}">Play Quest</a>
   </div>
   {% endif %}
 
