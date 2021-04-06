@@ -1,0 +1,23 @@
+{
+  "symbol": "SLICE",
+  "address": "0x0AeE8703D34DD9aE107386d3eFF22AE75Dd616D1",
+  "overview": {
+    "en": "Tranche is a decentralized protocol for managing risk. The protocol integrates with any interest accrual token, such as Compound's cTokens and AAVE's aTokens, to create two new interest-bearing instruments, one with a fixed-rate, Tranche A, and one with a variable rate, Tranche B. The protocol is currently integrated with Compound and charges fees in Dai and ETH. Accrued fees are exchanged for SLICE tokens through Uniswap pools. SLICE holders can vote on protocol parameters and other governance issues, as well as stake their SLICE or SLICE-LP tokens for rewards.",
+    "zh": "Tranche是一种去中心化的风险管理协议。该协议与所有计息代币（如Compound的cTokens和AAVE的aTokens）集成，以创建两个新的计息工具，一个是固定利率的Tranche A，另一个是可变利率的Tranche B。该协议目前与Compound集成，并以Dai和ETH计费。费用通过Uniswap池交换成SLICE代币。SLICE持有者可以对协议参数和其他管理问题进行投票，也可以使用SLICE或SLICE-LP代币进行质押，获得奖励。"
+  },
+  "email": "a@tranche.finance",
+  "website": "https://tranche.finance/",
+  "whitepaper": "https://docs.tranche.finance/",
+  "state": "NORMAL",
+  "published_on": "2021-03-29",
+  "initial_price":{
+        "ETH":"0.0005 ETH",
+        "USD":"1.000 USD",
+        "BTC":"0.00002 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/TrancheFinance",
+    "github": "https://github.com/tranche-jibrel",
+    "medium": "https://tranchefinance.medium.com/"
+  }
+}
