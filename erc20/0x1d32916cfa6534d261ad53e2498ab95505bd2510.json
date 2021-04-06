@@ -1,0 +1,26 @@
+{
+  "symbol": "YOU",
+  "address": "0x1d32916CFA6534D261AD53E2498AB95505bd2510",
+  "overview":{
+        "en": "YouSwap is an All-Eco DEX project created by the blockchain geek team in Silicon Valley, USA. It realizes multi-chain sharing of digital assets by constructing a multi-chain ecological deployment system. It provides the project owner with one-click ICO technical support as well as fund-raising and coin listing service. It improves AMM (Automated Market Maker) model and provides liquidity with high security. In terms of finding the best trading routes for users, YouSwap provides multi-chain and cross-chain aggregation trade function. In terms of ecology improvement, YouSwap has developed loan service function, which can satisfy investors' loan demand and realize double benefits of investment and wealth management. YouSwap also provides derivative service, which is mainly suitable for digital asset managers to hedge risks. YouSwap provides stablecoin exchange and transfer service, which lowers the threshold for general public to enter blockchain. All these technical services can be applied on Ethernet Layer2.",
+        "zh": "YouSwap是由美国硅谷的区块链极客团队创建的一个全生态去中心化交易所项目，它通过构造多链生态的部署体系实现数字资产的多链共享，它为项目方提供了一键发币技术支持和募资上币服务，它改良了AMM模型（自动做市商算法）提供了具有高安全保障的流动性效果，在为用户寻找最佳交易路径方面YouSwap提供了多链跨链聚合交易功能，在生态完善方面，YouSwap开发了借贷服务功能可以满足投资者的借贷需求实现投资及理财双收益，YouSwap也提供了衍生品服务主要适合数字资产管理者进行风险对冲，YouSwap提供了稳定币的兑换转账服务降低了大众人群进入区块链的门槛等等，并且这些技术服务在以太坊网络Layer2上都能实现应用。"
+  },
+  "email": "support@youswap.info",
+  "website": "https://www.youswap.info/",
+  "whitepaper": "https://www.youswap.info/white-papper-cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-03-15",
+  "initial_price":{
+        "ETH":"0.000054088 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.0000016629 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/@YouSwap_Global",
+    "twitter": "https://twitter.com/YouSwap1",
+    "telegram": "https://t.me/YouSwap_Dex",
+    "facebook": "https://www.facebook.com/YouSwap.Global",
+    "reddit": "https://www.reddit.com/user/YouSwap_Global",
+    "medium": "https://medium.com/@YouSwap_Global"
+  }
+}
