@@ -3254,9 +3254,17 @@ def verify_user_google(request):
             'message': 'Invalid code',
         })
 
+    identity_data_google = r.json()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        return JsonResponse({
+            'ok': False,
+            'message': 'A user with this google account already exists!',
+        })
+
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
-    profile.identity_data_google = r.json()
+    profile.identity_data_google = identity_data_google
+    profile.google_user_id = identity_data_google['id']
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
@@ -4243,8 +4251,9 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     what = f'hackathon:{hackathon_event.id}{filter}'
 
-    num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
-    num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
+    all_participants =  BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, bounty__in=query_prizes)
+    num_participants = all_participants.count()
+    num_submissions = all_participants.filter(event_type='submit_work').count()
 
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
@@ -5837,7 +5846,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -5954,8 +5963,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6021,7 +6030,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6463,27 +6472,38 @@ def verify_user_poap(request, handle):
             'msg': 'Invalid signature',
         })
 
-    # commented out because network = get_default_network() results in dashboard.utils.UnsupportedNetworkException: rinkeby
-    # network = get_default_network()
-    network = "mainnet"
+    # POAP verification is only valid if the ethereum address has held the badge > 15 days
     fifteen_days_ago = datetime.now()-timedelta(days=15)
+    fitteen_days_ago_ts = fifteen_days_ago.timestamp()
 
-    timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
-    if timestamp is None or timestamp > fifteen_days_ago.timestamp():
-        # We couldn't find any POAP badge for this ethereum address
+    timestamp = None
+
+    for network in ['mainnet', 'xdai']:
+        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        # only break if we find a token that has been held for longer than 15 days
+        if timestamp and timestamp <= fitteen_days_ago_ts:
+            break
+
+    # fail cases (no qualifying tokens / network failure)
+    if timestamp is None or timestamp > fitteen_days_ago_ts:
         return JsonResponse({
             'ok': False,
             'msg': 'No qualifying POAP badges (ERC721 NFTs held for at least 15 days) found for this account.',
+        })
+    elif timestamp == 0:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'An error occured, please try again later.',
         })
 
     profile = profile_helper(handle, True)
     profile.is_poap_verified = True
     profile.save()
+    # Success response
     return JsonResponse({
-                'ok': True,
-                'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
-            }
-    )
+        'ok': True,
+        'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+    })
 
 
 @csrf_protect

@@ -6,7 +6,7 @@ $('.js-select2').each(function() {
 
 const save_job_status = function() {
   if (!document.contxt.github_handle) {
-    _alert('No profile', 'error');
+    _alert('No profile', 'danger');
   }
   const formData = new FormData();
   const job_search_status = $('#jobStatus').find(':selected').val();
@@ -65,10 +65,10 @@ const save_job_status = function() {
       _alert(response.message, 'info');
       setTimeout(goBackWithRefresh(), 2000);
     } else {
-      _alert(response.message, 'error');
+      _alert(response.message, 'danger');
     }
   }).fail(function(error) {
-    _alert(error, 'error');
+    _alert(error, 'danger');
   });
 };
 
@@ -117,6 +117,6 @@ $('#jobSalary').on('change', function() {
 
 $('#jobCV').on('change', () =>{
   if (checkFileSize(document.getElementById('jobCV'), 3144000) === false) {
-    _alert(`The file must be less than ${(3144000 / 1024 / 1024).toFixed(2)}MB`, 'error');
+    _alert(`The file must be less than ${(3144000 / 1024 / 1024).toFixed(2)}MB`, 'danger');
   }
 });

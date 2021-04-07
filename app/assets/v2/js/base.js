@@ -103,7 +103,11 @@ $(document).ready(function() {
       });
   };
 
+  if (document.visitorId) {
+    Cookies.set('visitorId', document.visitorId);
+  }
   record_campaign_to_cookie();
+
 
   if (!$('.header > .minihero').length && $('.header > .navbar').length) {
     $('.header').css('overflow', 'visible');
@@ -150,7 +154,7 @@ $(document).ready(function() {
     $top_nav_notif.parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
-  
+
   // display (if it holds a message and hasn't been closed) or remove #top_nav_notification
   if (top_nav_salt == 0 || localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
@@ -221,32 +225,17 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-
-  $('body').on('click', '.accordion', event => {
-    const element = $(event.target);
-    const panel = element[0].nextElementSibling;
-
-    if (panel) {
-      if (element.hasClass('active')) {
-        panel.style.maxHeight = 0;
-        panel.style.marginBottom = 0 + 'px';
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + 'px';
-        panel.style.marginBottom = 10 + 'px';
-      }
-    }
-    element.toggleClass('active');
-  });
   attach_close_button();
 });
+
 
 const attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
-    $('.alert').each(function(index) {
+    $('.alert').not('.alert-static').each(function(index) {
       if (index == 0) $(this).css('top', 0);
       else {
-        let new_top = (index * 66) + 'px';
+        let new_top = (index * 70) + 'px';
 
         $(this).css('top', new_top);
       }
@@ -273,12 +262,12 @@ const _alert = function(msg, _class, remove_after_ms) {
     };
   }
   var numAlertsAlready = $('body > .alert:visible').length;
-  var top = numAlertsAlready * 44;
+  var top = numAlertsAlready * 70;
   var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
-      `<div id="${id}" class="alert ${_class} g-font-muli" style="top: ${top}px">
+      `<div id="${id}" class="alert alert-fixed bs-alert alert-${_class} d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -352,7 +341,7 @@ const sendPersonal = (persona) => {
 
   $.when(postPersona).then((response, status, statusCode) => {
     if (statusCode.status != 200) {
-      return _alert(response.msg, 'error');
+      return _alert(response.msg, 'danger');
     }
     $('#persona_modal').bootstrapModal('hide');
 

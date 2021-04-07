@@ -851,7 +851,7 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
-    def cart_payload(self, build_absolute_uri):
+    def cart_payload(self, build_absolute_uri, user=None):
         return {
             'grant_id': str(self.id),
             'grant_slug': self.slug,
@@ -876,7 +876,8 @@ class Grant(SuperModel):
             'binance_payout_address': self.binance_payout_address,
             'kusama_payout_address': self.kusama_payout_address,
             'harmony_payout_address': self.harmony_payout_address,
-            'rsk_payout_address': self.rsk_payout_address
+            'rsk_payout_address': self.rsk_payout_address,
+            'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
     def repr(self, user, build_absolute_uri):
@@ -1133,6 +1134,12 @@ class Subscription(SuperModel):
         help_text=_('The amount per contribution period in USDT'),
     )
     tenant = models.CharField(max_length=10, null=True, blank=True, default="ETH", choices=TENANT, help_text="specific tenant in which contribution is made")
+    visitorId = models.CharField(
+        default='',
+        max_length=255,
+        help_text=_('The visitorID of the contributor'),
+        blank=True,
+    )
 
     @property
     def negative(self):

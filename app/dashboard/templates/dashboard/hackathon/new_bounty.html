@@ -57,20 +57,6 @@
         box-shadow: 0 0 4px 0 #d2d2d2;
       }
 
-      .vs__dropdown-toggle {
-        padding: 5px 5px 5px 5px;
-        border-radius: 2px;
-      }
-
-      .chain-btn {
-        min-height: 64px;
-      }
-
-      .chain-btn:hover {
-        background-color: #f9f9f9;
-        border-color: #3E00FF;
-      }
-
       .issue_description {
         color: #000000;
         font-size: 14px;
@@ -134,7 +120,7 @@
         {% endif %}
       </div>
       <div class="container-fluid bg-lightblue pb-5" id="gc-hackathon-new-bounty" v-cloak>
-        <form action="" @submit="checkForm">
+        <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
           <div class="container mt-md-n5 mb-3 bg-white position-relative rounded">
             <div class="row p-4 p-md-5">
               <div class="col-12">
@@ -149,12 +135,12 @@
                 <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers!</p>
                 <div class="mb-3">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_chain">Bounty chain</label>
-                    <p class="font-body">Pick the chain you are funding the bounty with</p>
+                  <p class="font-body">Pick the chain you are funding the bounty with</p>
 
-                  <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
+                  <div :class="`btn-group-toggle d-flex flex-column flex-lg-row flex-wrap ${errors.chainId && !form.chainId ? 'invalid' : ''}`">
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
-                      <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="16"> ETH
+                      <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '0'}">
@@ -178,7 +164,7 @@
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
-                      <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="16"> ETC
+                      <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="12"> ETC
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
@@ -195,6 +181,10 @@
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '30'}">
                       <input type="radio" name="bounty_chain" id="30_chain" value="30" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="16"> RSK
+                    </label>
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '50'}">
+                      <input type="radio" name="bounty_chain" id="50_chain" value="50" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/xinfin.svg' %}" alt="" width="16"> Xinfin
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
@@ -265,21 +255,21 @@
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Bounty category <span class="badge badge-greylight text-capitalize">Required</span></label>
                   <p class="font-body">Pick the most accurate categories for this bounty to get the right contributors</p>
 
-                  <div class="btn-group-toggle">
+                  <div :class="`btn-group-toggle ${errors.bounty_categories && !form.bounty_categories.length ? 'invalid' : ''}`">
                     <label class="btn btn-radio frontend mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('frontend')}">
-                      <input type="checkbox" id="frontend_cat" value="frontend" v-model="form.bounty_categories"><i class="fas fa-laptop-code mr-2 mb-2"></i> Front End
+                      <input type="checkbox" id="frontend_cat" value="frontend" v-model="form.bounty_categories"><i class="fas fa-laptop-code mr-2"></i> Front End
                     </label>
                     <label class="btn btn-radio backend mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('backend')}">
-                      <input type="checkbox" id="backend_cat" value="backend" v-model="form.bounty_categories"><i class="fas fa-code mr-2 mb-2"></i> Back End
+                      <input type="checkbox" id="backend_cat" value="backend" v-model="form.bounty_categories"><i class="fas fa-code mr-2"></i> Back End
                     </label>
                     <label class="btn btn-radio design mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('design')}">
-                      <input type="checkbox" id="design_cat" value="design" v-model="form.bounty_categories"><i class="fas fa-pencil-ruler mr-2 mb-2"></i> Design
+                      <input type="checkbox" id="design_cat" value="design" v-model="form.bounty_categories"><i class="fas fa-pencil-ruler mr-2"></i> Design
                     </label>
                     <label class="btn btn-radio doc mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('documentation')}">
-                      <input type="checkbox" id="doc_cat" value="documentation" v-model="form.bounty_categories"><i class="fas fa-file-alt mr-2 mb-2"></i> Documentation
+                      <input type="checkbox" id="doc_cat" value="documentation" v-model="form.bounty_categories"><i class="fas fa-file-alt mr-2"></i> Documentation
                     </label>
                     <label class="btn btn-radio other mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('other')}">
-                      <input type="checkbox" id="other_cat" value="other" v-model="form.bounty_categories"><i class="fas fa-briefcase mr-2 mb-2"></i> Other
+                      <input type="checkbox" id="other_cat" value="other" v-model="form.bounty_categories"><i class="fas fa-briefcase mr-2"></i> Other
                     </label>
                   </div>
                   <div class="text-danger" v-if="errors.bounty_categories && !form.bounty_categories.length">
@@ -291,7 +281,7 @@
                   <div id="" class="">
                     <label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">Project Type</label>
                     <div class="d-flex row">
-                      <div class="col-12 col-md-6 btn-group-toggle">
+                      <div :class="`col-12 col-md-6 btn-group-toggle ${errors.project_type && !form.project_type ? 'invalid' : ''}`">
                         <label class="btn btn-block btn-radio contest my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('contest')}">
                           <input type="radio" name="project_type" id="contest" value="contest" v-model="form.project_type" required>
                           Contest
@@ -341,7 +331,7 @@
                   <div id="" class="">
                     <label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">Permissions</label>
                     <div class="d-flex row">
-                      <div class="col-12 col-md-6 btn-group-toggle">
+                      <div :class="`col-12 col-md-6 btn-group-toggle ${errors.permission_type && !form.permission_type ? 'invalid' : ''}`">
                         <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 text-left" :class="{'active': form.permission_type.includes('approval')}">
                           <input type="radio" name="permission_type" id="approval" value="approval" v-model="form.permission_type" required>
                           Approval Required
@@ -351,7 +341,7 @@
                           </span>
                         </label>
                       </div>
-                      <div class="col-12 col-md-6 btn-group-toggle">
+                      <div :class="`col-12 col-md-6 btn-group-toggle ${errors.permission_type && !form.permission_type ? 'invalid' : ''}`">
                         <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left" :class="{'active': form.permission_type.includes('permissionless')}">
                           <input type="radio" name="permission_type" id="permissionless" value="permissionless" v-model="form.permission_type" required>
                           Permissionless

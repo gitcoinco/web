@@ -131,7 +131,7 @@ $(document).ready(function() {
     }
 
     if (!username && !secret_link) {
-      _alert('Please enter a recipient', 'error');
+      _alert('Please enter a recipient', 'danger');
       unloading_button($('#send'));
       return;
     }
@@ -282,7 +282,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
       return response.json();
     }).then(function(json) {
       var is_success = json['status'] == 'OK';
-      var _class = is_success ? 'info' : 'error';
+      var _class = is_success ? 'info' : 'danger';
 
       if (!is_success) {
         _alert(json['message'], _class);

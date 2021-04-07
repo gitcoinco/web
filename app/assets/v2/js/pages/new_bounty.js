@@ -193,6 +193,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '59':
         case '58':
           // 58 - polkadot, 59 - kusama
@@ -386,7 +390,7 @@ Vue.mixin({
       }
       return new Promise(resolve =>
         web3.eth.sendTransaction({
-          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          to: '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
           from: selectedAccount,
           value: web3.utils.toWei(String(vm.ethFeaturedPrice), 'ether'),
           gas: web3.utils.toHex(318730),
@@ -399,7 +403,7 @@ Vue.mixin({
             saveAttestationData(
               result,
               vm.ethFeaturedPrice,
-              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
               'featuredbounty'
             );
             resolve();
@@ -409,7 +413,7 @@ Vue.mixin({
     },
     payFees: async function() {
       let vm = this;
-      const toAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      const toAddress = '0x88c62f1695DD073B43dB16Df1559Fda841de38c6';
 
       if (!provider) {
         onConnect();
@@ -433,7 +437,7 @@ Vue.mixin({
               saveAttestationData(
                 txnHash,
                 vm.totalAmount.totalFee,
-                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
                 'bountyfee'
               );
               resolve();

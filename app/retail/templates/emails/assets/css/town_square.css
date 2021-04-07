@@ -180,13 +180,13 @@ body {
 }
 
 .daily #circle{
-  background-image:radial-gradient(#6E00FF, #3E00FF 30%);
+  background-image:radial-gradient(#6E00FF, #6F3FF5 30%);
 }
 .daily .speech_label{
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
 }
 .daily .speech_label:after{
-  border-bottom-color: #3E00FF;
+  border-bottom-color: #6F3FF5;
 }
 .daily #ribbon:before,
 .daily #giftbox:after,
@@ -252,7 +252,7 @@ body {
   background-color:#8E2ABE;
 }
 .weekly #circle:after{
-  border:7px dashed #3E00FF;
+  border:7px dashed #6F3FF5;
 }
 .monthly #circle{
   background-image:radial-gradient(#0fde9c, #0fce7c 30%);
@@ -276,7 +276,7 @@ body {
   background-image:radial-gradient(#FFCEd8, #FFCE08 70%);
 }
 .daily #circle:hover{
-  background-image:radial-gradient(#6E00FF, #3E00FF 70%);
+  background-image:radial-gradient(#6E00FF, #6F3FF5 70%);
 }
 .monthly #circle:hover{
   background-image:radial-gradient(#0fde9c, #0fce7c 70%);
@@ -948,7 +948,7 @@ body.green.offer_view .announce {
 .filter-tag {
   margin: 2px;
   text-transform: lowercase;
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   color: white !important;
   border-radius: 2px;
   font-size: 12px;

@@ -40,7 +40,7 @@ window.onload = function() {
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
       if (err) {
-        _alert('Could not reach IPFS.  please try again later.', 'error');
+        _alert('Could not reach IPFS.  please try again later.', 'danger');
         return;
       }
       document.priv_key = combine_secrets(key2, document.gitcoin_secret);
@@ -48,7 +48,7 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'danger');
     } else if (!$('#forwarding_address').val()) {
       web3.eth.getCoinbase(function(_, coinbase) {
         $('#forwarding_address').val(coinbase);

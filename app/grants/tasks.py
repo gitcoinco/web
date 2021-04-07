@@ -195,6 +195,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.split_tx_id = package.get('split_tx_id', '0x0')
         subscription.num_tx_approved = package.get('num_tx_approved', 1)
         subscription.network = package.get('network', '')
+        subscription.visitorId = package.get('visitorId', '')
         if subscription.network == 'undefined':
             # we unfortunately cannot trust the frontend to give us a valid network name
             # so this handles that case.  more details are available at

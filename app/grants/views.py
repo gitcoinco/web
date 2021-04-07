@@ -22,6 +22,7 @@ import hashlib
 import html
 import json
 import logging
+import math
 import re
 import time
 import uuid
@@ -589,6 +590,9 @@ def get_grants(request):
     grants_array = []
     for grant in grants:
         grant_json = grant.repr(request.user, request.build_absolute_uri)
+        if not request.user.is_staff:
+            del grant_json['sybil_score']
+            del grant_json['weighted_risk_score']
         grants_array.append(grant_json)
 
     has_next = False
@@ -1750,33 +1754,6 @@ def flag(request, grant_id):
     })
 
 
-def grant_new_whitelabel(request):
-    """Create a new grant, with a branded creation form for specific tribe"""
-
-    profile = get_profile(request)
-
-    params = {
-        'active': 'new_grant',
-        'title': _('Matic Build-n-Earn x Gitcoin'),
-        'card_desc': _('Earn Rewards by Making Your DApps Superior'),
-        'card_player_thumb_override': request.build_absolute_uri(static('v2/images/grants/maticxgitcoin.png')),
-        'profile': profile,
-        'is_logged_in': 1 if profile else 0,
-        'grant': {},
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
-    }
-    return TemplateResponse(request, 'grants/new-whitelabel.html', params)
-
-
-
 @login_required
 @transaction.atomic
 def grant_new(request):
@@ -2204,6 +2181,7 @@ def bulk_fund(request):
                 'real_period_seconds': request.POST.get('real_period_seconds'),
                 'recurring_or_not': request.POST.get('recurring_or_not'),
                 'signature': request.POST.get('signature'),
+                'visitorId': request.POST.get('visitorId'),
                 'splitter_contract_address': request.POST.get('splitter_contract_address'),
                 'subscription_hash': request.POST.get('subscription_hash'),
                 'anonymize_gitcoin_grants_contributions': json.loads(request.POST.get('anonymize_gitcoin_grants_contributions', 'false')),
@@ -2248,7 +2226,6 @@ def bulk_fund(request):
 
     from grants.tasks import batch_process_grant_contributions
     batch_process_grant_contributions.delay(grants_with_payload, profile.pk)
-
     return JsonResponse({
         'success': True,
         'grant_ids': grant_ids_list,
@@ -2341,69 +2318,6 @@ def get_replaced_tx(request):
             'success': True,
             'tx_hash': tx_hash
         })
-
-
-@login_required
-def subscription_cancel(request, grant_id, grant_slug, subscription_id):
-    """Handle the cancellation of a grant subscription."""
-    subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
-    grant = getattr(subscription, 'grant', None)
-    now = datetime.datetime.now()
-    profile = get_profile(request)
-
-    if not subscription.active:
-        params = {
-            'active': 'grant_error',
-            'title': _('Grant Subscription Cancelled'),
-            'grant': grant
-        }
-
-        if grant.active:
-            params['text'] = _('This Grant subscription has already been cancelled.')
-        else:
-            params['text'] = _('This Subscription is already cancelled as the grant is not longer active.')
-
-        return TemplateResponse(request, 'grants/shared/error.html', params)
-
-    if request.method == 'POST' and (
-        profile == subscription.contributor_profile or request.user.has_perm('grants.change_subscription')
-    ):
-        subscription.end_approve_tx_id = request.POST.get('sub_end_approve_tx_id', '')
-        subscription.cancel_tx_id = request.POST.get('sub_cancel_tx_id', '')
-        subscription.active = False
-        subscription.save()
-        record_subscription_activity_helper('killed_grant_contribution', subscription, profile)
-
-        value_usdt = subscription.get_converted_amount()
-        if value_usdt:
-            grant.monthly_amount_subscribed -= subscription.get_converted_monthly_amount()
-
-        grant.save()
-        support_cancellation(grant, subscription)
-        messages.info(
-            request,
-            _('Your subscription has been canceled. We hope you continue to support other open source projects!')
-        )
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    params = {
-        'active': 'cancel_grant',
-        'title': _('Cancel Grant Subscription'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'subscription': subscription,
-        'grant': grant,
-        'now': now,
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-    }
-
-    return TemplateResponse(request, 'grants/cancel.html', params)
 
 
 def grants_cart_view(request):
@@ -2809,6 +2723,7 @@ def grants_info(request):
     }
 
     pks = request.GET.get('pks', None)
+    slim = request.GET.get('slim', False)
 
     if not pks:
         response['message'] = 'error: missing parameter pks'
@@ -2818,7 +2733,10 @@ def grants_info(request):
 
     try:
         for grant in Grant.objects.filter(pk__in=pks.split(',')):
-            grants.append(grant.repr(request.user, request.build_absolute_uri))
+            if slim:
+                grants.append(grant.cart_payload(request.build_absolute_uri, request.user))
+            else:
+                grants.append(grant.repr(request.user, request.build_absolute_uri))
     except Exception as e:
         print(e)
         response = {
@@ -3063,6 +2981,51 @@ def add_grant_from_collection(request, collection_id):
     return JsonResponse({
         'grants': grants,
     })
+
+des_urls = '''
+https://c.gitcoin.co/grants/585d392a242103745b40d0e763ef5c17/Screen_Shot_2020-01-08_at_16.58.17.png
+https://c.gitcoin.co/grants/b6511284c11682532274e0a34342249f/bitcoinmalaysia.png
+https://c.gitcoin.co/grants/e1cf1b8778f29c49dff65ed3be4928d0/CheeseLogo_250px.png
+https://c.gitcoin.co/grants/3ecf3eb0214a58fc3b068fae9f45ffbe/BANKLESS_logo_text_noLV.jpg
+https://c.gitcoin.co/grants/f1c27815bc10332bff4a6264ae971fca/2.jpg
+https://c.gitcoin.co/grants/46305a72ce062b63a53b0ebe12becda7/Picture1.png
+https://c.gitcoin.co/grants/5d05dcc46be53030475cdbdf646b8afd/Mol_LeArt_-_White.png
+https://c.gitcoin.co/grants/6ae1a8d3a8752d352247615b877cd02d/contraktor.png
+https://c.gitcoin.co/grants/ce84fcbf185bd593e54f5c810d060aac/triad_gw_2.jpg
+https://c.gitcoin.co/grants/b8fcf1833fee32fc4be6fba254c1d912/cashu.png
+'''
+
+def get_urls(scale):
+    import random
+    global des_urls
+    urls = des_urls.split("\n")
+
+    return_me = []
+    scale_by = scale
+    # set default, for when no CLR match enabled
+    for grant in Grant.objects.filter(is_clr_active=True).order_by('-clr_prediction_curve__0__1'):
+        url = None
+        if grant.logo:
+            url = grant.logo.url
+            if settings.DEBUG:
+                url = urls[random.randint(0, len(urls) - 2)]
+        else:
+            url = f'https://gitcoin.co/static/v2/images/grants/logos/{grant.id % 3}.png'
+        size = scale_by * math.sqrt(math.sqrt(grant.clr_match_estimate_this_round))
+        return_me.append((url, size))
+    return return_me
+
+
+@staff_member_required
+def collage(request):
+    scale = float(request.GET.get('scale', 0.03))
+    context = {
+        'urls': get_urls(scale)
+    }
+
+    response = TemplateResponse(request, 'grants/collage.html', context=context)
+    return response
+
 
 @cache_page(60 * 60)
 def cart_thumbnail(request, profile, grants):
