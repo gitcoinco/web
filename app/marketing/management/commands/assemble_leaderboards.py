@@ -24,10 +24,9 @@ from django.db.models import Q
 from django.utils import timezone
 
 from cacheops import CacheMiss, cache
-from dashboard.models import Bounty, Profile, Tip
-from grants.models import Contribution
-from kudos.models import KudosTransfer
+from dashboard.models import Earning, Profile
 from marketing.models import LeaderboardRank
+from django.contrib.contenttypes.models import ContentType
 
 # Constants
 IGNORE_PAYERS = []
@@ -107,118 +106,43 @@ def profile_to_location_helper(handle):
     return []
 
 
-def bounty_to_location(bounty):
-    locations = profile_to_location(bounty.bounty_owner_github_username)
-    fulfiller_usernames = list(
-        bounty.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True)
+def earning_to_location(earning):
+    locations = []
+    usernames = list(
+        earning.to_profile,
+        earning.from_profile
     )
-    for username in fulfiller_usernames:
+    for username in usernames:
         locations = locations + profile_to_location(username)
     return locations
 
 
-def grant_to_location(grant):
-    return profile_to_location(grant.subscription.contributor_profile.handle) + profile_to_location(grant.subscription.grant.admin_profile.handle)
+def earning_to_country(earning):
+    return list(set(ele['country_name'] for ele in earning_to_location(earning) if ele and ele.get('country_name')))
 
 
-def grant_to_country(grant):
-    return list(set(ele['country_name'] for ele in grant_to_location(grant) if ele and ele.get('country_name')))
+def earning_to_continent(earning):
+    return list(set(ele['continent_name'] for ele in earning_to_location(earning) if ele and ele.get('continent_name')))
 
 
-def grant_to_continent(grant):
-    return list(set(ele['continent_name'] for ele in grant_to_location(grant) if ele and ele.get('continent_name')))
+def earning_to_city(earning):
+    return list(set(ele['city'] for ele in earning_to_location(earning) if ele and ele.get('city')))
 
 
-def grant_to_city(grant):
-    return list(set(ele['city'] for ele in grant_to_location(grant) if ele and ele.get('city')))
-
-
-def tip_to_location(tip):
-    return profile_to_location(tip.username) + profile_to_location(tip.from_username)
-
-
-def tip_to_country(tip):
-    return list(set(ele['country_name'] for ele in tip_to_location(tip) if ele and ele.get('country_name')))
-
-
-def tip_to_continent(tip):
-    return list(set(ele['continent_name'] for ele in tip_to_location(tip) if ele and ele.get('continent_name')))
-
-
-def tip_to_city(tip):
-    return list(set(ele['city'] for ele in tip_to_location(tip) if ele and ele.get('city')))
-
-
-def bounty_to_country(bounty):
-    return list(set(ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele.get('country_name')))
-
-
-def bounty_to_continent(bounty):
-    return list(set(ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele.get('continent_name')))
-
-
-def bounty_to_city(bounty):
-    return list(set(ele['city'] for ele in bounty_to_location(bounty) if ele and ele.get('city')))
-
-
-def bounty_index_terms(bounty):
+def earning_index_terms(earning):
     index_terms = []
-    if not should_suppress_leaderboard(bounty.bounty_owner_github_username):
-        index_terms.append(bounty.bounty_owner_github_username.lower())
-    if bounty.org_name:
-        index_terms.append(bounty.org_name.lower())
-    for fulfiller in bounty.fulfillments.filter(accepted=True):
-        if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
-            index_terms.append(fulfiller.fulfiller_github_username.lower())
-    index_terms.append(bounty.token_name)
-    for keyword in bounty_to_city(bounty):
+    if not should_suppress_leaderboard(earning.from_profile.handle.lower()):
+        index_terms.append(earning.from_profile.handle.lower())
+    if earning.org_profile:
+        index_terms.append(earning.org_profile.handle.lower())
+    if not should_suppress_leaderboard(earning.to_profile.lower()):
+        index_terms.append(earning.to_profile.lower())
+    index_terms.append(earning.token_name)
+    for keyword in earning_to_city(earning):
         index_terms.append(keyword)
-    for keyword in bounty_to_continent(bounty):
+    for keyword in earning_to_continent(earning):
         index_terms.append(keyword)
-    for keyword in bounty_to_country(bounty):
-        index_terms.append(keyword)
-    for keyword in bounty.keywords_list:
-        index_terms.append(keyword.lower())
-    return index_terms
-
-
-def tip_index_terms(tip):
-    index_terms = []
-    if not should_suppress_leaderboard(tip.username):
-        index_terms.append(tip.username.lower())
-    if not should_suppress_leaderboard(tip.from_username):
-        index_terms.append(tip.from_username.lower())
-    if not should_suppress_leaderboard(tip.org_name):
-        index_terms.append(tip.org_name.lower())
-    if not should_suppress_leaderboard(tip.tokenName):
-        index_terms.append(tip.tokenName)
-    for keyword in tip_to_country(tip):
-        index_terms.append(keyword)
-    for keyword in tip_to_city(tip):
-        index_terms.append(keyword)
-    for keyword in tip_to_continent(tip):
-        index_terms.append(keyword)
-    return index_terms
-
-
-
-def grant_index_terms(gc):
-    index_terms = []
-    if not gc.subscription:
-        return index_terms
-    if not should_suppress_leaderboard(gc.subscription.contributor_profile.handle):
-        index_terms.append(gc.subscription.contributor_profile.handle.lower())
-    if not should_suppress_leaderboard(gc.subscription.grant.admin_profile.handle):
-        index_terms.append(gc.subscription.grant.admin_profile.handle.lower())
-    if not should_suppress_leaderboard(gc.subscription.grant.org_name):
-        index_terms.append(gc.subscription.grant.org_name.lower())
-    if not should_suppress_leaderboard(gc.subscription.token_symbol):
-        index_terms.append(gc.subscription.token_symbol)
-    for keyword in grant_to_country(gc):
-        index_terms.append(keyword)
-    for keyword in grant_to_city(gc):
-        index_terms.append(keyword)
-    for keyword in grant_to_continent(gc):
+    for keyword in earning_to_country(earning):
         index_terms.append(keyword)
     return index_terms
 
@@ -238,146 +162,39 @@ def add_element(key, index_term, amount):
         pass
 
 
-def sum_bounty_helper(b, time, index_term, val_usd):
-    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True))
+def sum_earning_helper(e, time, index_term, val_usd):
+    handle_index_terms = [e.to_profile.handle]
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
+    if index_term == e.from_profile.handle and index_term not in IGNORE_PAYERS:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
-    if index_term == b.org_name and index_term not in IGNORE_PAYERS:
+    if index_term == e.org_profile.handle and index_term not in IGNORE_PAYERS:
         add_element(f'{time}_{ORGS}', index_term, val_usd)
-    if index_term in fulfiller_index_terms and index_term not in IGNORE_EARNERS:
+    if index_term in handle_index_terms and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
-    if index_term == b.token_name:
+    if index_term == e.token_name:
         add_element(f'{time}_{TOKENS}', index_term, val_usd)
-    if index_term in bounty_to_country(b):
+    if index_term in earning_to_country(e):
         add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
-    if index_term in bounty_to_city(b):
+    if index_term in earning_to_city(e):
         add_element(f'{time}_{CITIES}', index_term, val_usd)
-    if index_term in bounty_to_continent(b):
+    if index_term in earning_to_continent(e):
         add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
-    if index_term.lower() in (k.lower() for k in b.keywords_list):
-        is_github_org_name = Bounty.objects.filter(github_url__icontains=f'https://github.com/{index_term}').exists()
-        is_github_repo_name = Bounty.objects.filter(github_url__icontains=f'/{index_term}/').exists()
-        if not is_github_repo_name and not is_github_org_name:
-            add_element(f'{time}_{KEYWORDS}', index_term.lower(), val_usd)
+    # TODO: keywords
 
 
-def sum_bounties(b, index_terms):
-    val_usd = b._val_usd_db
+def sum_earnings(e, index_terms):
+    val_usd = e.value_usd
     for index_term in index_terms:
-        if b.idx_status == 'done':
-            sum_bounty_helper(b, ALL, index_term, val_usd)
-            if b.created_on > WEEKLY_CUTOFF:
-                sum_bounty_helper(b, WEEKLY, index_term, val_usd)
-            if b.created_on > MONTHLY_CUTOFF:
-                sum_bounty_helper(b, MONTHLY, index_term, val_usd)
-            if b.created_on > QUARTERLY_CUTOFF:
-                sum_bounty_helper(b, QUARTERLY, index_term, val_usd)
-            if b.created_on > YEARLY_CUTOFF:
-                sum_bounty_helper(b, YEARLY, index_term, val_usd)
-
-
-def sum_tip_helper(t, time, index_term, val_usd):
-    add_element(f'{time}_{ALL}', index_term, val_usd)
-    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if t.username == index_term and index_term not in IGNORE_EARNERS:
-        add_element(f'{time}_{EARNERS}', index_term, val_usd)
-    if t.from_username == index_term:
-        add_element(f'{time}_{PAYERS}', index_term, val_usd)
-    if t.org_name == index_term:
-        add_element(f'{time}_{ORGS}', index_term, val_usd)
-    if t.tokenName == index_term:
-        add_element(f'{time}_{TOKENS}', index_term, val_usd)
-    if index_term in tip_to_country(t):
-        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
-    if index_term in tip_to_city(t):
-        add_element(f'{time}_{CITIES}', index_term, val_usd)
-    if index_term in tip_to_continent(t):
-        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
-
-
-def sum_kudos(kt):
-    val_usd = kt.value_in_usdt_now
-    if not kt.kudos_token_cloned_from:
-        return
-    index_terms = [kt.kudos_token_cloned_from.url]
-    for index_term in index_terms:
-        sum_kudos_helper(kt, ALL, index_term, val_usd)
-        if kt.created_on > WEEKLY_CUTOFF:
-            sum_kudos_helper(kt, WEEKLY, index_term, val_usd)
-        if kt.created_on > MONTHLY_CUTOFF:
-            sum_kudos_helper(kt, MONTHLY, index_term, val_usd)
-        if kt.created_on > QUARTERLY_CUTOFF:
-            sum_kudos_helper(kt, QUARTERLY, index_term, val_usd)
-        if kt.created_on > YEARLY_CUTOFF:
-            sum_kudos_helper(kt, YEARLY, index_term, val_usd)
-
-
-def sum_kudos_helper(t, time, index_term, val_usd):
-    add_element(f'{time}_{KUDOS}', index_term, val_usd)
-    add_element(f'{time}_{ALL}', index_term, val_usd)
-    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if t.username == index_term:
-        add_element(f'{time}_{EARNERS}', index_term, val_usd)
-    if t.from_username == index_term:
-        add_element(f'{time}_{PAYERS}', index_term, val_usd)
-    if t.org_name == index_term:
-        add_element(f'{time}_{ORGS}', index_term, val_usd)
-    if index_term in tip_to_country(t):
-        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
-    if index_term in tip_to_city(t):
-        add_element(f'{time}_{CITIES}', index_term, val_usd)
-    if index_term in tip_to_continent(t):
-        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
-
-
-def sum_tips(t, index_terms):
-    val_usd = t.value_in_usdt_now
-    for index_term in index_terms:
-        sum_tip_helper(t, ALL, index_term, val_usd)
-        if t.created_on > WEEKLY_CUTOFF:
-            sum_tip_helper(t, WEEKLY, index_term, val_usd)
-        if t.created_on > MONTHLY_CUTOFF:
-            sum_tip_helper(t, MONTHLY, index_term, val_usd)
-        if t.created_on > QUARTERLY_CUTOFF:
-            sum_tip_helper(t, QUARTERLY, index_term, val_usd)
-        if t.created_on > YEARLY_CUTOFF:
-            sum_tip_helper(t, YEARLY, index_term, val_usd)
-
-
-def sum_grants(t, index_terms):
-    val_usd = t.subscription.amount_per_period_usdt
-    for index_term in index_terms:
-        sum_grant_helper(t, ALL, index_term, val_usd)
-        if t.created_on > WEEKLY_CUTOFF:
-            sum_grant_helper(t, WEEKLY, index_term, val_usd)
-        if t.created_on > MONTHLY_CUTOFF:
-            sum_grant_helper(t, MONTHLY, index_term, val_usd)
-        if t.created_on > QUARTERLY_CUTOFF:
-            sum_grant_helper(t, QUARTERLY, index_term, val_usd)
-        if t.created_on > YEARLY_CUTOFF:
-            sum_grant_helper(t, YEARLY, index_term, val_usd)
-
-
-
-def sum_grant_helper(gc, time, index_term, val_usd):
-    add_element(f'{time}_{ALL}', index_term, val_usd)
-    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if gc.subscription.grant.admin_profile.handle.lower() == index_term and index_term not in IGNORE_EARNERS:
-        add_element(f'{time}_{EARNERS}', index_term, val_usd)
-    if gc.subscription.contributor_profile.handle.lower() == index_term:
-        add_element(f'{time}_{PAYERS}', index_term, val_usd)
-    if gc.subscription.grant.org_name.lower() == index_term:
-        add_element(f'{time}_{ORGS}', index_term, val_usd)
-    if gc.subscription.token_symbol == index_term:
-        add_element(f'{time}_{TOKENS}', index_term, val_usd)
-    if index_term in grant_to_country(gc):
-        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
-    if index_term in grant_to_city(gc):
-        add_element(f'{time}_{CITIES}', index_term, val_usd)
-    if index_term in grant_to_continent(gc):
-        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
+        sum_earning_helper(e, ALL, index_term, val_usd)
+        if e.created_on > WEEKLY_CUTOFF:
+            sum_earning_helper(e, WEEKLY, index_term, val_usd)
+        if e.created_on > MONTHLY_CUTOFF:
+            sum_earning_helper(e, MONTHLY, index_term, val_usd)
+        if e.created_on > QUARTERLY_CUTOFF:
+            sum_earning_helper(e, QUARTERLY, index_term, val_usd)
+        if e.created_on > YEARLY_CUTOFF:
+            sum_earning_helper(e, YEARLY, index_term, val_usd)
 
 
 def should_suppress_leaderboard(handle):
@@ -424,11 +241,18 @@ def do_leaderboard_feed():
         Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
 
 
-
 def do_leaderboard():
     global ranks
     global counts
     CUTOFF = MONTHLY_CUTOFF
+
+    products_to_content_type = {
+        'kudos': ContentType.objects.get(app_label='kudos', model='kudostransfer'),
+        'grants': ContentType.objects.get(app_label='grants', model='contribution'),
+        'bounties': ContentType.objects.get(app_label='dashboard', model='bounties'),
+        'tips': ContentType.objects.get(app_label='dashboard', model='tip'),
+        'all': None
+        }
 
     products = ['kudos', 'grants', 'bounties', 'tips', 'all']
     for product in products:
@@ -438,50 +262,21 @@ def do_leaderboard():
         index_terms = []
 
         print('---')
-        if product in ['all', 'grants']:
-            # get grants
-            grants = Contribution.objects.filter(subscription__network='mainnet').filter(created_on__gt=CUTOFF)
-            # iterate
-            print(product, grants.count())
-            for gc in grants:
-                try:
-                    index_terms = grant_index_terms(gc)
-                    sum_grants(gc, index_terms)
-                except Exception as e:
-                    print(gc.id)
-                    print(e)
+        # get earnings
+        earnings = Earning.objects.filter(network='mainnet').filter(created_on__gt=CUTOFF)
+        ct = products_to_content_type.get(product)
+        if ct:
+            earnings = earnings.filter(source_type=ct)
 
-        if product in ['all', 'bounties']:
-            # get bounties
-            bounties = Bounty.objects.current().filter(network='mainnet').filter(created_on__gt=CUTOFF)
-            print(product, bounties.count())
-
-            # iterate
-            for b in bounties:
-                if not b._val_usd_db:
-                    continue
-
-                index_terms = bounty_index_terms(b)
-                sum_bounties(b, index_terms)
-
-        if product in ['all', 'tips']:
-            # get tips
-            tips = Tip.objects.send_success().filter(network='mainnet').filter(created_on__gt=CUTOFF)
-            print(product, tips.count())
-
-            # iterate
-            for t in tips:
-                if not t.value_in_usdt_now:
-                    continue
-                index_terms = tip_index_terms(t)
-                sum_tips(t, index_terms)
-
-        if product in ['all', 'kudos']:
-            # kudos'
-            kts = KudosTransfer.objects.send_success().filter(network='mainnet').filter(created_on__gt=CUTOFF)
-            print(product, kts.count())
-            for kt in kts:
-                sum_kudos(kt)
+        # iterate
+        print(product, earnings.count())
+        for earning in earnings:
+            try:
+                index_terms = earning_index_terms(earning)
+                sum_earnings(earning, index_terms)
+            except Exception as e:
+                print(earning.id)
+                print(e)
 
         # set old LR as inactive
         created_on = timezone.now()
