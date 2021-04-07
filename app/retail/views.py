@@ -1581,39 +1581,56 @@ def styleguide_components(request):
         return TemplateResponse(request, 'styleguide_components.html', context)
 
 
-def jtbd_card_data(data, title, card_title, card_desc):
+def jtbd_template(request, template, title, card_title, card_desc):
+    data = JSONStore.objects.filter(view='jtbd', key=template).first().data
     context = {
         'title': _(title),
         'card_title': _(card_title),
         'card_desc': _(card_desc)
     }
     context.update(data)
-    return context
+    return TemplateResponse(request, 'jtbd/' + template + '.html', context)
 
 
 @require_http_methods(["GET",])
 def jtbd_earn(request):
-    data = JSONStore.objects.filter(view='jtbd', key='earn').first().data
-    context = jtbd_card_data(data, 'Earn', 'Gitcoin - Support public goods, support open source','Break free from your 9–5 to work on open source projects that matter')
-    return TemplateResponse(request, 'jtbd/earn.html', context)
+    return jtbd_template(
+        request,
+        'earn',
+        'Earn',
+        'Gitcoin - Support public goods, support open source',
+        'Break free from your 9–5 to work on open source projects that matter'
+    )
 
 
 @require_http_methods(["GET",])
 def jtbd_learn(request):
-    data = JSONStore.objects.filter(view='jtbd', key='learn').first().data
-    context = jtbd_card_data(data, 'Learn', 'Gitcoin - Support public goods, support open source', 'Learn how to build the decentralized web')
-    return TemplateResponse(request, 'jtbd/learn.html', context)
+    return jtbd_template(
+        request,
+        'learn',
+        'Learn',
+        'Gitcoin - Support public goods, support open source',
+        'Learn how to build the decentralized web'
+    )
 
 
 @require_http_methods(["GET",])
 def jtbd_connect(request):
-    data = JSONStore.objects.filter(view='jtbd', key='connect').first().data
-    context = jtbd_card_data(data, 'Connect', 'Gitcoin - Support public goods, support open source', 'Connect And Build With Top Open Source Developers')
-    return TemplateResponse(request, 'jtbd/connect.html', context)
+    return jtbd_template(
+        request,
+        'connect',
+        'Connect',
+        'Gitcoin - Support public goods, support open source',
+        'Connect And Build With Top Open Source Developers'
+    )
 
 
 @require_http_methods(["GET",])
 def jtbd_fund(request):
-    data = JSONStore.objects.filter(view='jtbd', key='fund').first().data
-    context = jtbd_card_data(data, 'Fund', 'Gitcoin - Support public goods, support open source', 'There’s No Better Way To Fund Open Source Projects')
-    return TemplateResponse(request, 'jtbd/fund.html', context)
+    return jtbd_template(
+        request,
+        'fund',
+        'Fund',
+        'Gitcoin - Support public goods, support open source',
+        'There’s No Better Way To Fund Open Source Projects'
+    )
