@@ -53,7 +53,7 @@ CITIES = 'cities'
 CONTINENTS = 'continents'
 
 BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, KUDOS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
-BREAKDOWNS = [ORGS, PAYERS, EARNERS]
+BREAKDOWNS = [ORGS, PAYERS, EARNERS, TOKENS]
 
 DAILY_CUTOFF = timezone.now() - timezone.timedelta(days=1)
 WEEKLY_CUTOFF = timezone.now() - timezone.timedelta(days=(30 if settings.DEBUG else 7))
@@ -176,9 +176,12 @@ def do_leaderboard():
                 join_on = 'to_profile_id'
                 index_on = 'dashboard_profile.handle'
                 if breakdown == ORGS:
-                    join_on = 'from_profile_id'
-                if breakdown == PAYERS:
                     join_on = 'org_profile_id'
+                if breakdown == PAYERS:
+                    join_on = 'from_profile_id'
+                if breakdown == TOKENS:
+                    index_on = 'token_name'
+
                 to_date = timezone.now()
                 print(' - querying db -')
                 query = build_query(from_date, to_date, content_type=ct, index_on=index_on, join_on=join_on)
