@@ -1,0 +1,23 @@
+{% load i18n static %}
+
+<div class="steward-card {% if selected %} selected {% endif %} ">
+
+	<div class="steward">
+		<figure>
+			<img src="/static/quadraticlands/images/{{image}}" alt="">
+		</figure>
+		<div class="text">
+			<div class="name">{{name}}</div>
+			<div class="description">{{description}}</div>
+			<div class="selected">will be your delegate</div>
+		</div>
+	</div>
+
+	<div class="steward-details">
+		<div class="wrapper">
+			<a class="btn" target="_blank" href="https://gov.gitcoin.co/t/thread/{{discourse_id}}">Info's</a>
+			<a class="btn purple button-steward-select" data-address="{{address}}">Delegate</a>
+		</div>
+	</div>
+
+</div>
