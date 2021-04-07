@@ -411,6 +411,7 @@ def get_poap_contract(network, sockets):
     poap_contract = web3.eth.contract(poap_addr, abi=poap_abi)
     return poap_contract
 
+
 def get_poap_earliest_owned_token_timestamp(network, sockets, address):
     web3 = get_web3(network, sockets)
     poap_contract = get_poap_contract(network, sockets)
@@ -1211,6 +1212,7 @@ def set_hackathon_event(type, event):
             {
                 'absolute_url': sponsor.absolute_url,
                 'avatar_url': sponsor.avatar_url,
+                'handle': sponsor.handle,
             }
             for sponsor in event.sponsor_profiles.all()
         ],
