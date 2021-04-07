@@ -1,0 +1,261 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Quadratic Lands – Stewards" />
+<meta name="twitter:description" content="Stewards" />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+{% block 'content' %}
+
+
+<div id="interface_stewards" class="hide">
+
+	<section class="introduction">
+		<h1>Empower a Gitcoin Steward</h1>
+		<p>Select a Gitcoin Steward to empower with your voting rights.</p>	
+	</section>
+
+
+	<section class="stewards">
+		<div class="wrapper">
+		
+		{% include 'quadraticlands/components/steward-card.html' with name="Denver" description="Lorem ipsum dolores eroeier oereir eoriererer oerierer rem ipsum dolor" image="senator-dummy.jpg" discourse_id="1" address="0x136Fac2F8B0E903E63A18979FC64bC750da8243C" %}
+
+		{% include 'quadraticlands/components/steward-card.html' with name="Gitcoin" description="Lor rem ipsum dolor rem ipsum dolorem ipsum" image="senator-dummy.jpg" discourse_id="2" address="0xB8B281E556c478583087Ae5af5356B485B83E819" %}
+
+		{% include 'quadraticlands/components/steward-card.html' with name="Melanie Power" description="Lorem ipsum" image="senator-dummy.jpg" discourse_id="3" address="0xe5aB8B281E556c43087A7858f53583E8196B485B" %}
+
+		{% include 'quadraticlands/components/steward-card.html' with name="Cody Fisher" description="Lorem ipsum" image="senator-dummy.jpg" discourse_id="4" address="0xB8B281E556c478583087Ae5af5356B485B83E819" %}
+
+
+		</div>
+	</section>
+
+</div>
+
+
+
+<!-- ineligible ( no gtc tokens ) -->
+<div id="interface_ineligible" class="hide">
+	<section class="status">
+		<div class="wrapper glass">
+			<h3>Wallet</h3>
+			<p>Please select a Wallet with GTC Tokens.</p>
+		</div>
+	</section>		
+</div>
+
+
+<!-- pending transaction -->
+<div id="interface_tx_pending" class="hide">
+	<section class="status">
+		<div class="wrapper glass">
+			<h3>Transaction <span>(pending)</span></h3>
+			<div class="spinner">{% include "quadraticlands/_inlinesvg/spinner.svg" %}</div>
+			<p>Delegation transaction pending, please wait. <span id="transaction_link_pending"></span></p>
+		</div>
+	</section>		
+</div>
+
+
+<!-- error transaction -->
+<div id="interface_tx_error" class="hide">
+	<section class="status">
+		<div class="wrapper glass">
+			<h3>Transaction <span>(error)</span></h3>
+			<p>We're sorry, we were unable to complete your delegation. Please check Etherscan for more infos. <span id="transaction_link_error"></span></p>
+		</div>
+	</section>
+</div>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+<!-- custom particles-->
+<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>
+
+
+
+
+<script>
+	
+document.addEventListener("DOMContentLoaded",function(){
+
+
+	// every time web3 is ready / address changes this calls the async function delegationInterface()
+	document.addEventListener("dataWalletReady", stewardsInterface);
+
+
+	// all stewards cards
+	const stewards = document.querySelectorAll(".steward-card")
+
+	// get all delegate buttons 
+	const btnStewardSelect = document.querySelectorAll(".button-steward-select")
+	
+	// map each button
+	btnStewardSelect.forEach(steward => {
+		steward.addEventListener("click", () => {
+			
+			console.log(steward.dataset.address)
+
+			setDelegateAddress(steward.dataset.address, gtc_address());
+
+			// reset current selection (by remove classes from all cards) in interface
+			stewards.forEach(steward => { steward.classList.remove("selected") });
+
+			// select a steward in interface
+			delegate = steward.closest(".steward-card")
+			delegate.classList.add("selected")
+
+		});
+	});
+
+
+
+});
+
+
+
+
+
+
+async function stewardsInterface() {
+
+    console.debug('WEB3 version from script', web3.version);
+
+    try {
+
+        let balance = await getTokenBalances(gtc_address())
+        let delegateAddress = await getDelegateAddress(gtc_address(), selectedAccount)
+
+        console.log("Balance", balance.balance)
+        console.log("DelegateAddress", delegateAddress)
+
+		if(selectedAccount && balance.balance > 0) {
+			updateInterface("stewards")
+		}
+
+		else{
+			updateInterface("ineligible")
+		}
+
+      
+    } catch(e) {
+        console.log(e);
+    }
+
+
+}
+
+
+
+
+
+
+
+// interface   
+// (  will be also externaly called with "pending", "success", "error" by setDelegateAddress in ql-web3.js )
+
+function updateInterface(status="pending", transactionHash="") {
+
+	console.log("UPDATEINTERFACE")
+
+	blockExplorerLink = "https://rinkeby.etherscan.io/tx/";
+	blockExplorerName ="Etherscan";
+
+	interface_stewards = document.getElementById("interface_stewards")
+	interface_ineligible = document.getElementById("interface_ineligible")
+	interface_tx_pending = document.getElementById("interface_tx_pending")
+	interface_tx_error = document.getElementById("interface_tx_error")
+
+	transaction_link_pending = document.getElementById("transaction_link_pending")
+	transaction_link_error = document.getElementById("transaction_link_error")
+
+	if (status=="stewards")
+	{
+		interface_stewards.classList.remove("hide")
+		interface_ineligible.classList.add("hide")
+		interface_tx_pending.classList.add("hide")
+		interface_tx_error.classList.add("hide")
+		console.log("UPDATEINTERFACE:STEWARDS")
+	}
+
+	if (status=="ineligible")
+	{
+		interface_stewards.classList.add("hide")
+		interface_ineligible.classList.remove("hide")
+		interface_tx_pending.classList.add("hide")
+		interface_tx_error.classList.add("hide")
+		console.log("UPDATEINTERFACE:INELIGIBLE")
+	}
+
+	if (status=="pending")
+	{
+		link = "<a target='_blank' href='"+blockExplorerLink+transactionHash+"'>"+blockExplorerName+"</a>"
+		transaction_link_pending.innerHTML = link
+		transaction_link_error.innerHTML = link
+		flashMessage("Transaction pending",5000);
+
+		interface_stewards.classList.add("hide")
+		interface_ineligible.classList.add("hide")
+		interface_tx_pending.classList.remove("hide")
+		interface_tx_error.classList.add("hide")
+		console.log("UPDATEINTERFACE:PENDING")
+	}
+	
+	if (status=="success")
+	{
+		flashMessage("Transaction successfull",5000);
+		console.log("UPDATEINTERFACE:SUCCESS")
+		window.location = "/quadraticlands/dashboard";
+	}
+	
+	if (status=="error")
+	{
+		flashMessage("Transaction Error",3000);
+
+		interface_stewards.classList.add("hide")
+		interface_ineligible.classList.add("hide")
+		interface_tx_pending.classList.add("hide")
+		interface_tx_error.classList.remove("hide")
+		console.log("UPDATEINTERFACE:ERROR")
+	}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+{% endblock %}
+
+
