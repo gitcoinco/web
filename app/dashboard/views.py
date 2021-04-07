@@ -4474,7 +4474,7 @@ def save_hackathon(request, hackathon):
             'a': ['href', 'title'],
             'abbr': ['title'],
             'acronym': ['title'],
-            'img': ['src'],
+            'img': ['src', 'width', 'height'],
             'iframe': ['src', 'frameborder', 'allowfullscreen'],
             '*': ['class', 'style']},
         styles=['background-color', 'color'],
