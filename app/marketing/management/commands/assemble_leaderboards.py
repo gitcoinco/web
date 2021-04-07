@@ -53,7 +53,7 @@ CITIES = 'cities'
 CONTINENTS = 'continents'
 
 BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, KUDOS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
-BREAKDOWNS = [ALL, PAYERS, EARNERS]
+BREAKDOWNS = [ORGS, PAYERS, EARNERS]
 
 DAILY_CUTOFF = timezone.now() - timezone.timedelta(days=1)
 WEEKLY_CUTOFF = timezone.now() - timezone.timedelta(days=(30 if settings.DEBUG else 7))
@@ -166,57 +166,64 @@ def do_leaderboard():
     }
 
     products = ['kudos', 'grants', 'bounties', 'tips', 'all']
-    for tag, from_date in tag_to_datetime.items():
-        for product in products:
+    for breakdown in BREAKDOWNS:
+        for tag, from_date in tag_to_datetime.items():
+            for product in products:
+                
+                print(breakdown, tag, product)
 
-            ct = products_to_content_type.get(product)
-            join_on = 'to_profile_id'
-            index_on = 'dashboard_profile.handle'
-            to_date = timezone.now()
-            print(' - querying db -')
-            query = build_query(from_date, to_date, content_type=ct, index_on=index_on, join_on=join_on)
-            results = query_to_results(query)
-            index_terms = []
+                ct = products_to_content_type.get(product)
+                join_on = 'to_profile_id'
+                index_on = 'dashboard_profile.handle'
+                if breakdown == ORGS:
+                    join_on = 'from_profile_id'
+                if breakdown == PAYERS:
+                    join_on = 'org_profile_id'
+                to_date = timezone.now()
+                print(' - querying db -')
+                query = build_query(from_date, to_date, content_type=ct, index_on=index_on, join_on=join_on)
+                results = query_to_results(query)
+                index_terms = []
 
-            print('---')
+                print('---')
 
-            # set old LR as inactive
-            created_on = timezone.now()
-            with transaction.atomic():
-                print(" - saving -")
-                lrs = LeaderboardRank.objects.active().filter(product=product)
-                lrs = lrs.filter(Q(leaderboard__startswith=WEEKLY) | Q(leaderboard__startswith=MONTHLY))
-                lrs.update(active=False)
+                # set old LR as inactive
+                created_on = timezone.now()
+                with transaction.atomic():
+                    print(" - saving -")
+                    lrs = LeaderboardRank.objects.active().filter(product=product)
+                    lrs = lrs.filter(Q(leaderboard__startswith=WEEKLY) | Q(leaderboard__startswith=MONTHLY))
+                    lrs.update(active=False)
 
-                # save new LR in DB
-                #for each time frame
-                if True:
-                    rank = 1
-                    for item in results:
-                        print(tag, item)
-                        idx = item['idx']
-                        count = item['num']
-                        amount = item['amount']
-                        print(idx, num, amount)
-                        key = f"{tag}_{product}"
-                        lbr_kwargs = {
-                            'count': count,
-                            'active': True,
-                            'amount': amount,
-                            'rank': rank,
-                            'leaderboard': key,
-                            'github_username': idx,
-                            'product': product,
-                            'created_on': created_on,
-                        }
+                    # save new LR in DB
+                    #for each time frame
+                    if True:
+                        rank = 1
+                        for item in results:
+                            print(tag, item)
+                            idx = item['idx']
+                            count = item['num']
+                            amount = item['amount']
+                            print(idx, num, amount)
+                            key = f"{tag}_{product}"
+                            lbr_kwargs = {
+                                'count': count,
+                                'active': True,
+                                'amount': amount,
+                                'rank': rank,
+                                'leaderboard': key,
+                                'github_username': idx,
+                                'product': product,
+                                'created_on': created_on,
+                            }
 
-                        profile = Profile.objects.get(handle=idx.lower())
-                        if profile.suppress_leaderboard:
-                            continue
+                            profile = Profile.objects.get(handle=idx.lower())
+                            if profile.suppress_leaderboard:
+                                continue
 
-                        LeaderboardRank.objects.create(**lbr_kwargs)
-                        rank += 1
-                        print(key, index_term, amount, count, rank, product)
+                            LeaderboardRank.objects.create(**lbr_kwargs)
+                            rank += 1
+                            print(key, index_term, amount, count, rank, product)
 
 
 class Command(BaseCommand):
