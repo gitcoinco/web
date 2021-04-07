@@ -147,16 +147,6 @@
 
 {% block 'scripts' %}
 
-<!-- @zach do we realy need ALL these here ? -->
-<!-- <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/ipfs.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/tokens.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/abi.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/amounts.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/lib/secrets.min.js" %}"></script> -->
-<!-- <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script> -->
-<!-- <script src="/dynamic/js/tokens_dynamic.js"></script> -->
-
 
 <!-- custom particles-->
 <!--<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>-->
@@ -238,7 +228,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 		$.when(getClaimData).then((response, status, statusCode) => {
 			//for debugging, remove for prod 
-			console.log('CLAIM RETURNED!', statusCode, response, status);
+			console.debug('CLAIM RETURNED!', statusCode, response, status);
 
 			// if we don't get a 200 from the Ethereum Message Signing Service then return error
 			// need to confirm this works as expected, empty return probably not what we want...  
@@ -258,10 +248,6 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 
 
-
-
-
-
 // setupGTCTokenClaim
 async function setupGTCTokenClaim(emss_response) {
 
@@ -271,6 +257,10 @@ async function setupGTCTokenClaim(emss_response) {
 	const delegate_address_cleaned = web3.utils.toChecksumAddress(emss_response["delegate_address"].replace(/\"/g, ''));
     const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, '');
     const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, '');
+	const leaf = emss_response.claim.replace(/\"/g, '');
+	const proof = emss_response.proof;
+	// console.debug("claim/leaf: ", leaf);
+	// console.debug("proof: ", proof);
 
 	try {
         // zak TODO - make sure we only get first address, not array 
@@ -283,18 +273,10 @@ async function setupGTCTokenClaim(emss_response) {
 
 		const claimGTCtokens = () => {
 			
-			/** 
-			 * @Richard, I think we might want to implement something here to let a user know the TX send is in process
-			 * for example, once a user clicks send, it can take 5-10 seconds before a on.receipt or on.confirm fires
-			 * users can/will be confused maybe and hit send again. Even just a message that lets them know the TX has been broadcast might be good 
-			 * for example, "your claim has been broadcast! please stand by for confirmation."  
-			 * This is what waitingState was used for in other parts of the app I think
-            **/
-
 			// waitingState(true);
 
 			tokenDistributor.methods
-			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), delegate_address_cleaned, eth_signed_message_hash_hex, eth_signed_signature_hex)
+			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), delegate_address_cleaned, eth_signed_message_hash_hex, eth_signed_signature_hex, proof, leaf)
        
 			.send({ from: user, gasLimit: '300000' })
 
@@ -317,7 +299,7 @@ async function setupGTCTokenClaim(emss_response) {
 
 			.on('confirmation', (confirmationNumber, receipt) => {
 				console.log("ON CONFIRMATION");
-			    if (confirmationNumber >= 1) {
+			    if (confirmationNumber >= 1 && confirmationNumber < 10) {
 			    	// update interface to the success view ( claimed )
 			    	updateInterface('success');
 			    	console.log("ON CONFIRMATION >=1");

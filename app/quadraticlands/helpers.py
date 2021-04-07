@@ -225,34 +225,36 @@ def claim(request):
             "X-GITCOIN-SIG" : sig,
             "content-type": "application/json",
         }
-        
-        # POST relevant user data to micro service that returns signed transation data for the user broadcast  
+    
+        # POST relevant user data to micro service that returns signed transation data for the user broadcast
+        # TODO - need to improve error = TRUE stuff here. what should we send back to UI if esms is down?   
         try: 
             emss_response = requests.post(settings.GTC_DIST_API_URL, data=json.dumps(post_data_to_emss), headers=header)
+            # emss_response = requests.post('http://10.1.10.10:5000/v1/sign_claim', data=json.dumps(post_data_to_emss), headers=header)
             emss_response_content = emss_response.content
             # logger.info(f'GTC Distributor: emss_response_content: {emss_response_content}')
+            emss_response.raise_for_status() # raise exception on error 
         except requests.exceptions.ConnectionError:
-            logger.info('GTC Distributor: ConnectionError while connecting to EMSS!')
+            logger.error('GTC Distributor: ConnectionError while connecting to EMSS!')
+            resp = {'ERROR': 'There was an issue getting token claim.'}
+            return JsonResponse(resp)
         except requests.exceptions.Timeout:
             # Maybe set up for a retry
-            logger.info('GTC Distributor: Timeout while connecting to EMSS!')
+            logger.error('GTC Distributor: Timeout while connecting to EMSS!')
+            resp = {'ERROR': 'There was an issue getting token claim.'}
+            return JsonResponse(resp)
         except requests.exceptions.TooManyRedirects:
-            logger.info('GTC Distributor: Too many redirects while connecting to EMSS!')
+            logger.error('GTC Distributor: Too many redirects while connecting to EMSS!')
+            resp = {'ERROR': 'There was an issue getting token claim.'}
+            return JsonResponse(resp)
         except requests.exceptions.RequestException as e:
             # catastrophic error. bail.
             logger.error(f'GTC Distributor:  Error posting to EMSS - {e}')
-            there_is_a_problem = True # TODO - fix this
-
-        # check response status, maybe better to use .raise_for_status()? 
-        # need to streamline error response for this whole function 
-        # TODO - sounds like we'll use custom quadlands 500 https://github.com/nopslip/gitcoin-web-ql/issues/23
-        if emss_response.status_code != 200:
-            logger.info(f'GTC Distributor: non-200 received from ESMS! - This probably means there was a problem with token claim!')
-            resp = {'error': 'TRUE'}
+            resp = {'ERROR': 'There was an issue getting token claim.'}
             return JsonResponse(resp)
-        
+
         # pass returned values from eth signer microservice
-        # ESM returns bytes object of json. so, we decode it
+        # ESMS returns bytes object of json. so, we decode it
         esms_response = json.loads( emss_response_content.decode('utf-8'))
         # construct nested dict for easy access in templates
 
@@ -272,40 +274,3 @@ def create_sha256_signature(key, message):
         logger.error(f'GTC Distributor - Error Hashing Message: {e}')
         return False 
 
-def get_initial_dist_from_CF(request):
-    '''hit the CF KV pairs list and return user claim data. currently unused
-       TODO needs to be updated with new total_claimable_gtc formats before use  
-       TODO compare with InitialClaim results as a 2fa check, if error, block claim 
-    '''
-    if not request.user.is_authenticated:
-        return {"total_claimable_gtc": 0, "total_claimable_wei": 0}
-
-    # hit the graph and confirm/deny user has made a claim
-
-    # maybe this URL should be an envar? 
-    url=f'https://js-initial-dist.orbit-360.workers.dev/?user_id={request.user.id}'
-    try:
-        r = requests.get(url,timeout=3)
-        r.raise_for_status()
-    except requests.exceptions.HTTPError as errh:
-        logger.error("Quadratic Lands - Error on request:",errh)
-    except requests.exceptions.ConnectionError as errc:
-        logger.error("Quadratic Lands - Error on request:",errc)
-    except requests.exceptions.Timeout as errt:
-        logger.error("Quadratic Lands - Error on request:",errt)
-    except requests.exceptions.RequestException as err:
-        logger.error("Quadratic Lands - Error on request:",err)
-
-    res = json.loads(r.text)
-    
-    context = {
-        'total_claimable_wei': res[0],
-        'bucket_0': res[2][0],
-        'bucket_1': res[2][1],
-        'bucket_2': res[2][2],
-        'bucket_3': res[2][3],
-        'bucket_4': res[2][4],
-        'bucket_5': res[2][5]
-    }
-
-    return context
