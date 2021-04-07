@@ -92,6 +92,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Comment, Favorite, PinnedPost
 from townsquare.utils import can_pin
+from urllib.parse import urlencode
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -1074,6 +1075,14 @@ def grants_by_grant_type(request, grant_type):
     response = TemplateResponse(request, 'grants/index.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
+
+
+def grants_type_redirect(request, grant_type):
+    """Redirect old grant url with search params to /explorer keeping query params."""
+    base_url = reverse('grants:grants_by_category', kwargs={"grant_type":grant_type})
+    query_string =  urlencode(request.GET)
+    url = '{}?{}'.format(base_url, query_string)
+    return redirect(url)
 
 
 def grants_by_grant_clr(request, clr_round):
