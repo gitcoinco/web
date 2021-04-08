@@ -688,6 +688,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
 		'email_type': 'new_bounty_notifications',
         'utm_tracking': build_utm_tracking('new_bounty_daily'),
         'base_url': settings.BASE_URL,
+        'media_url': settings.MEDIA_URL,
         'quest_of_the_day': quest_of_the_day,
         'current_hackathons': current_hackathons,
         'upcoming_hackathons': upcoming_hackathons,

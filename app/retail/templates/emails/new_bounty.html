@@ -120,7 +120,7 @@ along with this program. If not, see
     {% for event in current_hackathons %}
       <div style="display: inline-block; margin-top: 1em;">
         <div style="float:left; width: 95px; min-height: 80px;">
-          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ MEDIA_URL }}{{event.logo}}">
+          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ media_url }}{{event.logo}}">
         </div>
         <div style="margin: 0 0 0 95px;">
           <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{event.name}}</p>
@@ -137,7 +137,7 @@ along with this program. If not, see
     {% for event in upcoming_hackathons %}
       <div style="display: inline-block; margin-top: 1em;">
         <div style="float:left; width: 95px; min-height: 80px;">
-          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ MEDIA_URL }}{{event.logo}}">
+          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ media_url }}{{event.logo}}">
         </div>
         <div style="margin: 0 0 0 95px;">
           <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{event.name}}</p>
