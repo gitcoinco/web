@@ -105,10 +105,12 @@ along with this program. If not, see
   <img class="center-img digest-img" src="{% static 'v2/images/emails/daily-digest.png' %}">
   <p id="issue-date" class="text-center">{% now "F j, Y" %}</p>
 
-  {% if email_announcements %}
   <h3 class="section-header">{% trans "Announcements" %}</h3>
   <hr>
+  {% if email_announcements %}
   <p class="text-left" style="line-height: 24px; word-wrap: break-word;">{{email_announcements.desc|safe}}</p>
+  {% else %}
+  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">No new announcements today!</p>
   {% endif %}
 
   {% if current_hackathons or upcoming_hackathons %}
