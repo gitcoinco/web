@@ -109,43 +109,15 @@ along with this program. If not, see
   <h3 class="section-header">{% trans "Announcements" %}</h3>
   <hr>
   <p class="text-left" style="line-height: 24px; word-wrap: break-word;">{{email_announcements.desc|safe}}</p>
-  {% else %}
-  <h3 class="section-header">{% trans "Announcements" %}</h3>
-  <hr>
-  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">
-    No new announcements today!
-  </p>
-  {% endif %}
-
-  {% if not email_announcements %}
-  <h3 class="section-header">{% trans "Announcements" %}</h3>
-  <hr>
-  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">
-    Hey all!
-
-    Grants Round 8 was a smashing success! 🥳 Total contributions came in around $504k, which is ~$279k more than Round 7! Plus, there was also nearly $700k in matching funds! 🎉 More stats are below. 👇
-    
-    This issue of the Weekly Mint will be the last of 2020. It will also be my final as an editor since today is my last day at Gitcoin. Fear not, Connor O’Day and Disruption Joe will be taking over in 2021, and the free Kudos will continue to drop. 🙌 It has been an honor to put this newsletter together each week. I appreciate all of the News Submissions as well as the good and critical feedback. 🙏 It's been GR8. 😎
-    
-    Enjoy the rest of the email, and we'll catch you next week year.™
-    
-    — Justin & The Gitcoin Team
-  </p>
-  {% else %}
-  <h3 class="section-header">{% trans "Announcements" %}</h3>
-  <hr>
-  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">
-    No new announcements today!
-  </p>
   {% endif %}
 
   {% if current_hackathons or upcoming_hackathons %}
   <h3 class="section-header">{% trans "Hackathons to Join" %}</h3>
   <hr style="margin-bottom: 2em;">
 
-  {% if upcoming_hackathons %}
+  {% if current_hackathons %}
     <p class="text-left grey mb-0">Current Hackathons</p><br>
-    {% for event in upcoming_hackathons %}
+    {% for event in current_hackathons %}
       <div style="display: inline-block; margin-top: 1em;">
         <div style="float:left; width: 95px; min-height: 80px;">
           <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ MEDIA_URL }}{{event.logo}}">
@@ -159,7 +131,6 @@ along with this program. If not, see
       <br>
     {% endfor %}
   {% endif %}
-
 
   {% if upcoming_hackathons %}
     <p class="text-left grey mb-0">Upcoming Hackathons</p><br>
@@ -178,20 +149,6 @@ along with this program. If not, see
     {% endfor %}
   {% endif %}
 
-  {% endif %}
-
-  {% if not bounties %}
-  <h3 class="section-header">{% trans "Earn in Bounties" %}</h3>
-  <hr>
-  <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{trending_avatar.img_url}}">
-  <div style="color: #15003E;">
-    <p class="font-weight-bold mb-0">DimensionDev</p>
-    <p style="margin-top:0; margin-bottom: 0;">[Bounty] Solana and Serum in Maskbook</p>
-  </div>
-  <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">5000 USDT</p>
-  <div style="margin-top: 25px; ">
-    <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
-  </div>
   {% endif %}
 
   {% if bounties %}
@@ -242,7 +199,7 @@ along with this program. If not, see
   </div>
   {% endif %}
 
-  {% if not quest_of_the_day %}
+  {% if quest_of_the_day %}
   <h3 class="section-header">{% trans "Daily Quests" %}</h3>
   <hr>
   {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
@@ -250,16 +207,10 @@ along with this program. If not, see
   {% else %}
   <img class="avatar" src="{{quest.enemy_img_url}}">
   {% endif %}
-  <!-- <div class="text-left" style="color: #15003E;">
-    <p class="font-weight-bold mb-0">{{quest.title}}</p>
-    <p style="margin-top:0; width: 385px; margin-bottom: 0;">
-      {{quest.description}}
-    </p>
-  </div> -->
   <div class="text-left" style="color: #15003E;">
-    <p class="font-weight-bold mb-0">Decisions Discussions Decentralized Design Dungeons</p>
+    <p class="font-weight-bold mb-0">{{quest.title}}</p>
     <p style="margin-top:0; max-width: 385px; margin-bottom: 0; word-wrap: break-word;">
-Considering the design elements / approaches to a very new world. How that approach can heavily impact usability, accessibility, and repeatability.
+      {{quest.description}}
     </p>
   </div>
   <div style="margin-top: 25px;">
