@@ -17,28 +17,125 @@
 {% endcomment %}
 {% load i18n static matches %}
 
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+<button class="navbar-toggler sticky-top mx-3 my-3" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
   <span class="navbar-toggler-icon"></span>
 </button>
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
 
   <nav class="navbar-nav gc-megamenu m-auto">
-    <a class="nav-link px-md-3 {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
+    <div class="nav-item dropdown px-md-2 px-lg-3 interior my-auto">
+      <a class="nav-link dropdown-toggle px-3 px-md-0" href="#" id="dropdownCommunity" role="button"
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="gc-megamenu-caret">{% trans "What's Possible" %}</span>
+        {% trans "What's Possible" %}
+      </a>
+      <div class="dropdown-menu " id="" aria-labelledby="dropdownCommunity">
+        <div class="gc-megamenu-content">
+          <div class="row">
+            <div class="col-12 col-md-6">
 
-    <div class="nav-item dropdown px-md-3 interior gc-megamenu-fw my-auto">
-      <a class="nav-link dropdown-toggle" href="#" id="dropdownProducts" role="button"
+              <a class="dropdown-item px-3 py-0" href="{% url "jtbd_learn" %}">
+                <div class="row">
+                  <div class="col align-self-center" style="max-width: 3.25rem;">
+                    <svg width="32" height="39" viewBox="0 0 34 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path class="main-path" d="M18.2281 50.7394L0 26.2539L15.5982 0L33.8263 24.4855L18.2281 50.7394ZM2.72061 26.1179L18.0014 46.6585L31.0603 24.6669L15.7795 4.12626L2.72061 26.1179Z" fill="#5932C4"/>
+                      <path class="main-path" d="M17.0039 48.7443L16.2331 33.917L0.906982 27.2515L1.81385 25.1657L16.0971 31.3777L14.5554 2.13115L16.8226 1.99512L18.3642 31.2417L31.922 23.5786L33.0556 25.5738L18.5456 33.8263L19.3165 48.6536L17.0039 48.7443Z" fill="#5932C4"/>
+                    </svg>
+                  </div>
+                  <div class="col py-3 text-grey-400 text-wrap">
+                    <b class="gc-megamenu-title d-block">{% trans "Learn" %}</b>
+                    <span>{% trans "Build blockchain knowledge as you go" %}</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <a class="dropdown-item px-3 py-0" href="{% url "jtbd_earn" %}">
+                <div class="row">
+                  <div class="col align-self-center" style="max-width: 3.25rem;">
+                    <svg width="32" height="39" viewBox="0 0 52 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path class="main-path" d="M0.75875 30.4242L0.75816 30.4228C0.211478 29.0608 0.550189 27.614 1.59559 26.1247C2.63446 24.6447 4.41293 23.0547 6.90169 21.3268L7.31301 21.0412L7.59798 21.453L7.87809 21.8577L8.16276 22.269L7.75134 22.5535C5.40315 24.1773 3.80547 25.6044 2.89695 26.8503C1.99096 28.0926 1.82591 29.0695 2.14766 29.8725L2.14785 29.8729C2.39894 30.5014 3.16446 31.0578 4.63077 31.3856C6.0716 31.7077 8.05702 31.776 10.5024 31.5517L0.75875 30.4242ZM0.75875 30.4242C1.15195 31.395 2.03228 32.0782 3.22054 32.5149C4.40882 32.9516 5.96071 33.1648 7.81297 33.1648C8.67192 33.1648 9.61065 33.1152 10.6283 33.0169M0.75875 30.4242L10.6283 33.0169M10.6283 33.0169C15.8281 32.5256 22.3004 30.8432 28.8378 28.2903C35.3919 25.7374 41.2699 22.5923 45.3879 19.431C47.4859 17.8278 49.0346 16.2862 49.9598 14.8675C50.8794 13.4572 51.2387 12.0756 50.7549 10.8673C50.2973 9.72382 49.2308 8.96593 47.7642 8.53559C46.2979 8.10533 44.3613 7.9783 42.0173 8.14222L41.5195 8.17703L41.5533 8.67485L41.5863 9.16051L41.6202 9.66051L42.1201 9.62543C44.2852 9.47349 45.9893 9.58143 47.2164 9.91473C48.4488 10.2495 49.111 10.7838 49.3652 11.4174L49.3665 11.4205C49.623 12.0475 49.4576 12.9666 48.6249 14.1919C47.8059 15.3969 46.4142 16.7839 44.4831 18.265L44.4823 18.2655C40.4941 21.3362 34.7564 24.4074 28.3099 26.9215C21.8625 29.436 15.5496 31.0878 10.5025 31.5517L10.6283 33.0169Z" fill="#02E2AC" stroke="#02E2AC"/>
+                      <path class="main-path" d="M45.2816 24.6352L42.6948 23.9715C42.3982 23.8905 42.1016 24.0362 41.9863 24.3115L41.5249 25.3314C41.4425 25.5094 41.459 25.7037 41.5579 25.8656C41.6567 26.0275 41.8215 26.1408 42.0192 26.157C42.6124 26.2217 43.0408 26.7398 42.9914 27.3226L42.7277 30.4956L45.2816 24.6352Z" fill="#E5FFF9"/>
+                      <path class="main-path" d="M6.50562 20.1185C6.50562 30.9416 15.4706 39.7371 26.4649 39.7371C37.4592 39.7371 46.4243 30.9416 46.4243 20.1185C46.4243 9.29543 37.4592 0.5 26.4649 0.5C15.4706 0.5 6.50562 9.29543 6.50562 20.1185ZM7.99992 20.1185C7.99992 10.1233 16.2698 1.98565 26.4649 1.98565C36.6598 1.98565 44.9299 10.1392 44.9299 20.1185C44.9299 30.0978 36.6598 38.2514 26.4649 38.2514C16.2698 38.2514 7.99992 30.1137 7.99992 20.1185Z" fill="#02E2AC" stroke="#02E2AC"/>
+                    </svg>
+                  </div>
+                  <div class="col py-3 text-grey-400 text-wrap">
+                    <b class="gc-megamenu-title d-block">{% trans "Earn" %}</b>
+                    <span>{% trans "Earn crypto doing development" %}</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <a class="dropdown-item px-3 py-0" href="{% url "jtbd_connect" %}">
+                <div class="row">
+                  <div class="col align-self-center" style="max-width: 3.25rem;">
+                    <svg width="32" height="39" viewBox="0 0 43 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path class="main-path" d="M2.86568 9.93454L1.22583 12.7021L2.66262 13.5758L4.30247 10.8082L2.86568 9.93454Z" fill="#F3587D"/>
+                      <path class="main-path" d="M9.19821 10.6951H3.62507L3.42107 10.5658C1.75791 9.51066 0.765137 7.69909 0.765137 5.71955C0.765137 2.56581 3.29806 0 6.41164 0C9.52523 0 12.0582 2.56581 12.0582 5.71955C12.0582 7.69909 11.0654 9.51066 9.40222 10.5658L9.19821 10.6951ZM4.11846 8.99761H8.70483C9.75951 8.2417 10.3824 7.03298 10.3824 5.71955C10.3824 3.50185 8.60119 1.69746 6.41164 1.69746C4.2221 1.69746 2.44084 3.50185 2.44084 5.71955C2.44084 7.03298 3.06378 8.2417 4.11846 8.99761Z" fill="#F3587D"/>
+                      <path class="main-path" d="M5.50987 23.598H2.61393C1.1725 23.598 0 22.4103 0 20.9501V14.7506C0 13.2908 1.1725 12.103 2.61393 12.103H5.50987C6.95102 12.103 8.12352 13.2908 8.12352 14.7506V20.9501C8.12352 22.4103 6.95102 23.598 5.50987 23.598ZM2.61393 13.8005C2.09654 13.8005 1.67571 14.2268 1.67571 14.7506V20.9501C1.67571 21.4742 2.09654 21.9005 2.61393 21.9005H5.50987C6.02698 21.9005 6.44781 21.4742 6.44781 20.9501V14.7506C6.44781 14.2268 6.02698 13.8005 5.50987 13.8005H2.61393Z" fill="#F3587D"/>
+                      <path class="main-path" d="M14.9851 25.0529C14.5176 25.0529 14.0509 24.889 13.6727 24.5616C11.8047 22.9459 8.67827 19.8312 8.72463 17.1256L10.4003 17.1554C10.3752 18.6012 12.0054 20.8874 14.7609 23.2709C14.8885 23.3816 15.0775 23.3822 15.2101 23.272L16.7808 21.9558C16.8828 21.8704 16.9049 21.7651 16.9057 21.6922C16.9062 21.6278 16.8902 21.5051 16.774 21.404C14.4322 19.359 11.9132 15.7273 11.8579 13.025C11.8197 11.1761 8.94419 10.9222 8.91528 10.92L9.0421 9.22754C10.5708 9.34302 13.4771 10.2782 13.533 12.9896C13.5717 14.8667 15.5164 18.0646 17.8682 20.1182C18.3275 20.5191 18.5874 21.099 18.5814 21.709C18.5754 22.3119 18.3084 22.8785 17.8488 23.2637L16.2781 24.5799C15.9018 24.8954 15.443 25.0529 14.9851 25.0529Z" fill="#F3587D"/>
+                      <path class="main-path" d="M10.5504 38.502H9.66973C8.31122 38.502 7.20608 37.3825 7.20608 36.0063V28.3802H6.64615V35.7662C6.64615 37.1424 5.54101 38.2619 4.1825 38.2619H4.06386C2.70535 38.2619 1.60021 37.1424 1.60021 35.7662V27.1452L0.961182 26.4982L1.07573 23.2469L2.75035 23.3072L2.66198 25.8202L3.27592 26.4424V35.7662C3.27592 36.2064 3.62939 36.5644 4.06386 36.5644H4.1825C4.61697 36.5644 4.97044 36.2064 4.97044 35.7662V26.6827H8.88179V36.0063C8.88179 36.4464 9.23526 36.8045 9.66973 36.8045H10.5504C10.9849 36.8045 11.3383 36.4464 11.3383 36.0063V21.9678H13.0141V36.0063C13.0141 37.3825 11.9089 38.502 10.5504 38.502Z" fill="#F3587D"/>
+                      <path class="main-path" d="M9.35575 2.38916C9.37539 2.44868 8.57217 5.92129 10.394 8.48108C10.394 8.48108 11.2559 5.32598 11.2559 5.22676C11.2559 5.12755 9.35575 2.38916 9.35575 2.38916Z" fill="#F3587D"/>
+                      <path class="main-path" d="M36.7991 11.0491H32.4094L32.2398 10.9681C30.3019 10.0423 29.0498 8.04591 29.0498 5.88181C29.0498 2.77946 31.5415 0.255371 34.6044 0.255371C37.667 0.255371 40.1587 2.77946 40.1587 5.88181C40.1587 8.04591 38.9066 10.0423 36.9688 10.9681L36.7991 11.0491ZM32.7945 9.35161H36.414C37.6765 8.67417 38.483 7.33173 38.483 5.88181C38.483 3.7155 36.7429 1.95283 34.6044 1.95283C32.4656 1.95283 30.7255 3.7155 30.7255 5.88181C30.7255 7.33173 31.532 8.67417 32.7945 9.35161Z" fill="#F3587D"/>
+                      <path class="main-path" d="M23.8805 23.4324C23.5235 23.4324 23.1678 23.3556 22.8326 23.2025C22.2034 22.9152 21.7269 22.3949 21.491 21.7377C21.1015 20.653 21.4725 19.4329 22.393 18.7704C24.6163 17.1699 27.0584 14.3775 27.0071 12.9296C26.9182 10.4008 29.5038 9.25779 31.0456 8.98096L31.338 10.6525L31.1918 9.81671L31.3399 10.6522C31.3129 10.6572 28.622 11.1741 28.6818 12.8691C28.7685 15.3252 25.4656 18.6411 23.3634 20.154C23.0557 20.3756 22.9332 20.7884 23.0658 21.1575C23.146 21.381 23.3077 21.5575 23.521 21.6551C23.7392 21.7542 23.9838 21.7598 24.2088 21.67C25.4152 21.1887 27.3121 19.8388 28.3984 18.4132L29.725 19.4503C28.5746 20.9599 26.4671 22.5933 24.8231 23.2492C24.517 23.3713 24.1982 23.4324 23.8805 23.4324Z" fill="#F3587D"/>
+                      <path class="main-path" d="M37.2993 36.0292H36.2561C34.9194 36.0292 33.8317 34.9274 33.8317 33.573V26.826H33.3337V33.3089C33.3337 34.6632 32.246 35.7651 30.9093 35.7651H30.8223C29.4856 35.7651 28.3979 34.6632 28.3979 33.3089V16.9062H30.0737V33.3089C30.0737 33.7272 30.4094 34.0676 30.8223 34.0676H30.9093C31.3223 34.0676 31.658 33.7272 31.658 33.3089V25.1285H35.5074V33.573C35.5074 33.9913 35.8432 34.3317 36.2561 34.3317H37.2993C37.7122 34.3317 38.0483 33.9913 38.0483 33.573V15.8491H39.724V33.573C39.724 34.9274 38.6363 36.0292 37.2993 36.0292Z" fill="#F3587D"/>
+                      <path class="main-path" d="M40.3404 25.4166H39.0599V23.7192H40.3404C40.6551 23.7192 40.9079 23.4708 40.9158 23.1533C40.9753 20.742 41.0588 14.895 40.5485 12.6967C40.0054 10.3599 38.2646 10.2687 38.2468 10.2681L38.3079 8.57178C39.3558 8.61046 41.5137 9.44096 42.1794 12.3079C42.7146 14.6124 42.6671 20.1189 42.591 23.1962C42.5599 24.4414 41.5712 25.4166 40.3404 25.4166Z" fill="#F3587D"/>
+                      <path class="main-path" d="M30.2962 7.80078C30.2962 7.80078 38.24 8.76495 36.4733 1.77219L33.8559 1.37451L31.5985 2.60073C31.5985 2.60073 30.3225 4.85431 30.2571 5.05316C30.1917 5.25201 30.2962 7.80078 30.2962 7.80078Z" fill="#F3587D"/>
+                      <path class="main-path" d="M33.6174 18.6322C34.5211 18.6322 35.2537 17.8902 35.2537 16.9748C35.2537 16.0594 34.5211 15.3174 33.6174 15.3174C32.7138 15.3174 31.9812 16.0594 31.9812 16.9748C31.9812 17.8902 32.7138 18.6322 33.6174 18.6322Z" fill="#F3587D"/>
+                    </svg>
+                  </div>
+                  <div class="col py-3 text-grey-400 text-wrap">
+                    <b class="gc-megamenu-title d-block">{% trans "Connect" %}</b>
+                    <span>{% trans "Meet Top developers in Web3" %}</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="col-12 col-md-6">
+              <a class="dropdown-item px-3 py-0" href="{% url "jtbd_fund" %}">
+                <div class="row">
+                  <div class="col align-self-center" style="max-width: 3.25rem;">
+                    <svg width="32" height="39" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path class="main-path" d="M20.4452 50.0453C19.0281 43.2267 14.7769 40.276 7.92773 40.0767C9.06926 45.6591 13.7928 51.4808 20.4452 50.0453Z" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M36.4272 37.4448C34.2228 44.0639 29.6567 46.4962 22.8469 45.8582C24.6183 40.4752 29.9716 35.2119 36.4272 37.4448Z" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M14.9741 25.961L22.0595 18.1855L26.3894 27.7553L18.9104 36.1289L14.9741 25.961Z" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M7.88853 25.7617L1 27.1572" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M11.7857 13.3208L7.49512 7.41943" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M33.0806 18.1058L39.418 15.7534" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M31.8994 29.3506L37.8826 32.4607" stroke="#8C65F7" stroke-width="2"/>
+                      <path class="main-path" d="M24.4207 7.61902L26.1526 1" stroke="#8C65F7" stroke-width="2"/>
+                    </svg>
+                  </div>
+                  <div class="col py-3 text-grey-400 text-wrap">
+                    <b class="gc-megamenu-title d-block">{% trans "Fund" %}</b>
+                    <span>{% trans "Support meaningful open source projects" %}</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-item dropdown px-md-2 px-lg-3 interior gc-megamenu-fw my-auto">
+      <a class="nav-link dropdown-toggle px-3 px-md-0" href="#" id="dropdownProducts" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="gc-megamenu-caret">{% trans "Products" %}</span>
         {% trans "Products" %}
       </a>
-      <div class="dropdown-menu " aria-labelledby="dropdownProducts">
+      <div class="dropdown-menu text-grey-400" aria-labelledby="dropdownProducts">
         <div class="gc-megamenu-content">
           <div class="row justify-content-center px-0 px-md-2">
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'funder_bounties' %}">
-                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="48">
-                  <b class="gc-megamenu-title">{% trans "Bounties" %}</b>
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="48"><b class="gc-megamenu-title">{% trans "Bounties" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Development resources at your finger tips" %}</p>
               </li>
@@ -59,8 +156,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/hackathon' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'get_hackathons' %}">
-                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="48">
-                  <b class="gc-megamenu-title">{% trans "Hackathons" %}</b>
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="48"><b class="gc-megamenu-title">{% trans "Hackathons" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Build with the coolest Web3 projects" %}</p>
               </li>
@@ -75,8 +171,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/grants' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'grants:grants' %}">
-                  <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Grants" height="48">
-                  <b class="gc-megamenu-title">{% trans "Grants" %}</b>
+                  <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Grants" height="48"><b class="gc-megamenu-title">{% trans "Grants" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Crowdfunding for Open Source" %}</p>
               </li>
@@ -94,8 +189,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/quests' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'quests_index' %}">
-                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="48">
-                  <b class="gc-megamenu-title">{% trans "Quests" %}</b>
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="48"><b class="gc-megamenu-title">{% trans "Quests" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Learn about Web3 & earn rewards" %}</p>
               </li>
@@ -110,8 +204,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'kudos_main' %}">
-                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="48">
-                  <b class="gc-megamenu-title">{% trans "Kudos" %}</b>
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="48"><b class="gc-megamenu-title">{% trans "Kudos" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Show appreciation for each other" %}</p>
               </li>
@@ -129,8 +222,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kernel' in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="https://kernel.community">
-                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kudos" height="48">
-                  <b class="gc-megamenu-title">{% trans "Kernel" %}</b>
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kudos" height="48"><b class="gc-megamenu-title">{% trans "Kernel" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "An web3-native, community-centric, accelerator." %}</p>
               </li>
@@ -143,90 +235,71 @@
         </div>
       </div>
     </div>
-    <div class="nav-item dropdown px-md-3 interior gc-megamenu-fw my-auto">
-      <a class="nav-link dropdown-toggle" href="#" id="dropdownCommunity" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="nav-item dropdown px-md-2 px-lg-3 interior my-auto">
+      <a class="nav-link dropdown-toggle px-3 px-md-0" href="#" id="dropdownCommunity" role="button"
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="gc-megamenu-caret">{% trans "Community" %}</span>
         {% trans "Community" %}
       </a>
       <div class="dropdown-menu " id="" aria-labelledby="dropdownCommunity">
         <div class="gc-megamenu-content">
-          <div class="row">
-            <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
-              <li>
-                <a class="dropdown-item" href="{% url "tribes_directory" %}">
-                  {% trans "Browse Tribes" %}
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url "leaderboard" "" %}">
-                  {% trans "Leaderboard" %}
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url "users_directory" %}">
-                  {% trans "Users Directory" %}
-                </a>
-              </li>
-              <li><a href="{% url 'tribes' %}" class="d-block font-smaller-4 pl-4 pt-3 text-nowrap">Interested in Your Own Tribe?</a></li>
-            </ul>
-            <ul class="col-md-3 col-lg-2 list-unstyled">
-              <li>
-                <a class="dropdown-item" href="{% url "activity" %}">
-                  {% trans "Activity Feed" %}
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url "verified" %}">
-                  {% trans "Verify Profile" %}
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
-                  {% trans "Code of Conduct" %}
-                </a>
-              </li>
-            </ul>
-            <div class="col-lg-5 col-md-6 list-unstyled">
-              <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner px-2 py-2">
-                  <div class="carousel-item active">
-                    <h5>Chat with the community</h5>
-                    <p>Meet fellow developers, designers, futurists and more. Collaborate and BUIDL awesome projects together.</p>
-                    <a class="btn btn-primary" href="https://discord.gg/jWUzf7b8Yr">
-                      {% trans "Go to Discord" %}
-                    </a>
-                  </div>
-                  <div class="carousel-item">
-                    <h5>Find a Tribe</h5>
-                    <p>Discover great web3 organizations, work on meaningful projects and build relationships with like minded people. <a href="{% url 'users_directory' %}?persona=tribe">Browse Tribes</a></p>
-                    <a class="btn btn-primary" href="{% url 'users_directory' %}?persona=tribe">
-                      {% trans "Find a Tribe" %}
-                    </a>
-                  </div>
-                  <div class="carousel-item">
-                    <h5>Weekly leaderboard</h5>
-                    <p>Meet the top hunters and contributors from our community.</p>
-                    <a class="btn btn-primary" href="{% url 'leaderboard' '' %}">
-                      {% trans "Go to Leaderboard" %}
-                    </a>
-                  </div>
-                </div>
+          <a class="dropdown-item px-3 py-0" href="{% url "leaderboard" "" %}">
+            <div class="row py-3">
+              <div class="col align-self-center" style="max-width: 3.25rem;">
+                <svg width="32" height="39" viewBox="0 0 32 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path class="main-path" d="M25.7781 0.499634H6.22189C5.99966 0.499634 5.78854 0.616816 5.66631 0.816025L0.110565 9.4406C-0.0505513 9.6984 -0.0338841 10.0382 0.149456 10.2726L15.4833 30.2404C15.75 30.5861 16.25 30.5861 16.5167 30.2404L31.8505 10.2726C32.0339 10.0324 32.0506 9.6984 31.8894 9.4406L26.3392 0.816025C26.2115 0.616816 26.0059 0.499634 25.7781 0.499634ZM24.7059 3.312L28.2226 8.93672H24.4225L21.5502 3.312H24.7059ZM13.4777 3.312H18.5168L21.3891 8.93672H10.6109L13.4777 3.312ZM7.29415 3.312H10.4498L7.57749 8.93672H3.77736L7.29415 3.312ZM4.90517 11.7491H7.76083L11.5554 21.1236L4.90517 11.7491ZM10.622 11.7491H21.378L16 26.0042L10.622 11.7491ZM20.4446 21.1236L24.2336 11.7491H27.0893L20.4446 21.1236Z" fill="black"/>
+                  <path d="M16 23.4996L11.6699 12.9996L20.3301 12.9996L16 23.4996Z" fill="#02E2AC"/>
+                </svg>
+              </div>
+              <div class="col text-grey-400">
+                <b class="gc-megamenu-title d-block">{% trans "Leaderboard" %}</b>
+                <span>{% trans "See top developers on Gitcoin" %}</span>
               </div>
             </div>
-          </div>
+          </a>
+
+          <a class="dropdown-item px-3 py-0" href="{% url "townsquare" %}">
+            <div class="row py-3">
+              <div class="col align-self-center" style="max-width: 3.25rem;">
+                <svg width="32" height="39" viewBox="0 0 32 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path class="main-path" d="M9.14286 11.484V8.51526C9.14286 8.02541 9.52857 7.62463 10 7.62463H12.8571C13.3286 7.62463 13.7143 8.02541 13.7143 8.51526V11.484C13.7143 11.9739 13.3286 12.3746 12.8571 12.3746H10C9.52857 12.3746 9.14286 11.9739 9.14286 11.484ZM19.1429 12.3746H22C22.4714 12.3746 22.8571 11.9739 22.8571 11.484V8.51526C22.8571 8.02541 22.4714 7.62463 22 7.62463H19.1429C18.6714 7.62463 18.2857 8.02541 18.2857 8.51526V11.484C18.2857 11.9739 18.6714 12.3746 19.1429 12.3746ZM10 19.4996H12.8571C13.3286 19.4996 13.7143 19.0989 13.7143 18.609V15.6403C13.7143 15.1504 13.3286 14.7496 12.8571 14.7496H10C9.52857 14.7496 9.14286 15.1504 9.14286 15.6403V18.609C9.14286 19.0989 9.52857 19.4996 10 19.4996ZM19.1429 19.4996H22C22.4714 19.4996 22.8571 19.0989 22.8571 18.609V15.6403C22.8571 15.1504 22.4714 14.7496 22 14.7496H19.1429C18.6714 14.7496 18.2857 15.1504 18.2857 15.6403V18.609C18.2857 19.0989 18.6714 19.4996 19.1429 19.4996ZM13.7143 25.734V22.7653C13.7143 22.2754 13.3286 21.8746 12.8571 21.8746H10C9.52857 21.8746 9.14286 22.2754 9.14286 22.7653V25.734C9.14286 26.2239 9.52857 26.6246 10 26.6246H12.8571C13.3286 26.6246 13.7143 26.2239 13.7143 25.734ZM19.1429 26.6246H22C22.4714 26.6246 22.8571 26.2239 22.8571 25.734V22.7653C22.8571 22.2754 22.4714 21.8746 22 21.8746H19.1429C18.6714 21.8746 18.2857 22.2754 18.2857 22.7653V25.734C18.2857 26.2239 18.6714 26.6246 19.1429 26.6246ZM32 35.8278V38.4996H0V35.8278C0 35.3379 0.385714 34.9371 0.857143 34.9371H2.25V2.28088C2.25 1.29377 3.01429 0.499634 3.96429 0.499634H28.0357C28.9857 0.499634 29.75 1.29377 29.75 2.28088V34.9371H31.1429C31.6143 34.9371 32 35.3379 32 35.8278ZM5.67857 34.8629H13.7143V29.8903C13.7143 29.4004 14.1 28.9996 14.5714 28.9996H17.4286C17.9 28.9996 18.2857 29.4004 18.2857 29.8903V34.8629H26.3214V4.13635L5.71429 4.06213L5.67857 34.8629Z" fill="black"/>
+                  <rect x="13" y="28.4996" width="6" height="6" fill="#02E2AC"/>
+                </svg>
+              </div>
+              <div class="col text-grey-400">
+                <b class="gc-megamenu-title d-block">{% trans "Townsquare" %}</b>
+                <span>{% trans "See what’s happening on Gitcoin" %}</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="dropdown-item px-3 py-0" href="https://discord.com/invite/83BK5z55yB">
+            <div class="row py-3">
+              <div class="col align-self-center" style="max-width: 3.25rem;">
+                <svg width="32" height="37" viewBox="0 0 32 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path class="main-path" d="M21.2297 17.5996C21.2297 18.6976 20.4069 19.5976 19.3646 19.5976C18.3406 19.5976 17.4994 18.6976 17.4994 17.5996C17.4994 16.5016 18.3223 15.6016 19.3646 15.6016C20.4069 15.6016 21.2297 16.5016 21.2297 17.5996ZM12.6903 15.6016C11.648 15.6016 10.8251 16.5016 10.8251 17.5996C10.8251 18.6976 11.6663 19.5976 12.6903 19.5976C13.7326 19.5976 14.5554 18.6976 14.5554 17.5996C14.5737 16.5016 13.7326 15.6016 12.6903 15.6016ZM32 4.20763V36.4996C27.3933 32.4922 28.8666 33.8188 23.5154 28.9216L24.4846 32.2516H3.74857C1.68229 32.2516 0 30.5956 0 28.5436V4.20763C0 2.15563 1.68229 0.499634 3.74857 0.499634H28.2514C30.3177 0.499634 32 2.15563 32 4.20763ZM26.7886 21.2716C26.7886 15.4756 24.1554 10.7776 24.1554 10.7776C21.5223 8.83363 19.0171 8.88763 19.0171 8.88763L18.7611 9.17563C21.8697 10.1116 23.3143 11.4616 23.3143 11.4616C18.9706 9.11819 13.8683 9.11777 9.65486 10.9396C8.97829 11.2456 8.576 11.4616 8.576 11.4616C8.576 11.4616 10.0937 10.0396 13.3851 9.10363L13.2023 8.88763C13.2023 8.88763 10.6971 8.83363 8.064 10.7776C8.064 10.7776 5.43086 15.4756 5.43086 21.2716C5.43086 21.2716 6.96686 23.8816 11.008 24.0076C11.008 24.0076 11.6846 23.1976 12.2331 22.5136C9.91086 21.8296 9.03314 20.3896 9.03314 20.3896C9.30214 20.575 9.74572 20.8152 9.78286 20.8396C12.8693 22.5411 17.2534 23.0985 21.1931 21.4696C21.8331 21.2356 22.5463 20.8936 23.296 20.4076C23.296 20.4076 22.3817 21.8836 19.9863 22.5496C20.5349 23.2336 21.1931 24.0076 21.1931 24.0076C25.2343 23.8816 26.7886 21.2716 26.7886 21.2716Z" fill="#02E2AC"/>
+                </svg>
+              </div>
+              <div class="col text-grey-400">
+                <b class="gc-megamenu-title d-block">{% trans "Join Discord" %}</b>
+                <span>{% trans "Ask questions, join live conversations" %}</span>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
-    <div class="nav-item dropdown px-md-3 interior gc-megamenu-fw my-auto">
-      <a class="nav-link dropdown-toggle" href="#" id="dropdownCompany" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="nav-item dropdown gc-megamenu-fw px-md-2 px-lg-3 interior my-auto">
+      <a class="nav-link dropdown-toggle px-3 px-md-0" href="#" id="dropdownCompany" role="button"
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="gc-megamenu-caret">{% trans "Company" %}</span>
         {% trans "Company" %}
       </a>
-      <div class="dropdown-menu " id="" aria-labelledby="dropdownCompany">
+      <div class="dropdown-menu text-grey-400" id="" aria-labelledby="dropdownCompany">
         <div class="gc-megamenu-content">
           <div class="row">
 
-            <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
+            <ul class="col-md-3 col-xl-2 list-unstyled offset-xl-2">
               <li>
                 <a class="dropdown-item" href="{% url "mission" %}">
                   {% trans "Mission" %}
@@ -254,7 +327,7 @@
               </li>
             </ul>
 
-            <ul class="col-md-3 col-lg-2 list-unstyled">
+            <ul class="col-md-3 col-xl-2 list-unstyled">
               <li>
                 <a class="dropdown-item" href="{% url "results" %}">
                   {% trans "Results" %}
@@ -271,10 +344,10 @@
                 </a>
               </li>
             </ul>
-            <ul class="col-lg-5 col-md-6 list-unstyled">
+            <ul class="col-xl-5 col-md-6 list-unstyled">
               {% for post in last_posts %}
-              <li class="media p-2 flex-column flex-md-row align-items-center font-smaller-2">
-                <div class="w-25 align-self-center text-center mb-2 mb-md-0">
+              <li class="media p-2 flex-column flex-lg-row align-items-center font-smaller-2">
+                <div class="w-25 align-self-center text-center mb-2 mb-lg-0">
                   <img src="{{post.jetpack_featured_media_url}}" width="100" alt="" class="mw-100">
                 </div>
                 <a class="media-body text-reset" href="{{post.link}}">

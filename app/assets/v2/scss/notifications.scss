@@ -18,16 +18,6 @@ html.dark-mode {
   --badge-blue-text: white;
 }
 
-// .navbar-nav .nav-link.notification__icon {
-//   position: relative;
-//   font-size: 18px;
-//   color: white;
-// }
-
-.notification__icon.dropdown-toggle::after {
-  content: none;
-}
-
 .notification__dot {
   background: rgba(255,255,255,0.8);
   color: $navbar-light-hover-color;
@@ -76,9 +66,9 @@ html.dark-mode {
 }
 
 .notifications__box {
-  width: 430px;
+  min-width: 430px!important;
   border-radius: 3px;
-  padding: 1em;
+  padding: 1em 0;
   max-width: calc(100vw - 2em);
 }
 
@@ -91,7 +81,7 @@ html.dark-mode {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #D8D8D8;
-  padding-bottom: 0.8em;
+  padding: 0em 1em 0.8em;
 }
 
 .notifications__title {
@@ -138,7 +128,7 @@ html.dark-mode {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #D8D8D8;
-  padding: 1em 0;
+  padding: 1em;
   animation: animateElement linear .3s;
   animation-iteration-count: 1;
 }

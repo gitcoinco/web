@@ -422,8 +422,51 @@ const gitcoinUpdates = () => {
   });
 
 };
-// carousel/collabs/... inside menu
 
+let resizeTimeout = null;
+
+// megamenu carets are positioned inside each nav-link
+const $body = $('body');
+const $carets = $('.gc-megamenu-caret');
+const $navbarSupportedContent = $('#navbarSupportedContent');
+
+// show/hide megamenu caret
+$(document, '.dropdown').on('show.bs.dropdown', function(e) {
+  $carets.hide();
+  $(e.target).find('.gc-megamenu-caret').show();
+}).on('hide.bs.dropdown', function() {
+  $carets.hide();
+});
+
+// add .modal-open to prevent page-scroll when mobile menu is opened
+$navbarSupportedContent.on('show.bs.collapse', function() {
+  $body.addClass('modal-open');
+}).on('hide.bs.collapse', function() {
+  if (!$('.modal.show').length) {
+    $body.removeClass('modal-open');
+  }
+});
+
+// close the mobile menu if window is > than mobile dimensions
+const closeMobileMenu = function() {
+  const window_width = $body.width();
+
+  if (window_width > 767) {
+    $body.removeClass('modal-open');
+  } else if ($navbarSupportedContent.hasClass('show') && !$navbarSupportedContent.hasClass('modal-open')) {
+    $body.addClass('modal-open');
+  }
+};
+
+// debounce the resize event
+window.addEventListener('resize', function() {
+  // clear the timeout
+  clearTimeout(resizeTimeout);
+  // start timing for event "completion"
+  resizeTimeout = setTimeout(closeMobileMenu, 30);
+});
+
+// carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });

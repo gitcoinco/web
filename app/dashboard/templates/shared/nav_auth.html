@@ -24,7 +24,7 @@
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
 
-    <a class="nav-link dropdown-toggle pr-4" href="#" id="navbarDropdownWallet" role="button"
+    <a class="nav-link dropdown-toggle dropdown-toggle-md-no-caret px-3 pl-md-2 pr-0 pr-md-4" href="#" id="navbarDropdownWallet" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <b class="wallet-network">•</b>
       <svg class="provider-icon float-left" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +33,7 @@
       <span class="pl-3 d-md-none position-absolute ml-2">Wallet</span>
       <!-- <i class="fas fa-wallet provider-icon fa-fw fa-lg"></i> -->
     </a>
-    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+    <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 shadow-lg" aria-labelledby="navbarDropdownWallet">
       <a class="dropdown-item" href="#" id="wallet-btn">
         Connect Wallet
       </a>
@@ -60,17 +60,18 @@
     </template>
   </div>
 
-  <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
-    data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
-  </a>
-  <div class="nav-item dropdown interior">
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+  <div id="nav_auth_profile_wrap">
+    <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-block"
+      data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
+    </a>
+  </div>
+  <div id="nav_auth_user" class="nav-item dropdown interior">
+    <a class="nav-link dropdown-toggle ml-5 ml-md-0" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       {{ user }}
     </a>
-    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdown">
+    <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 p-3 p-md-0 shadow-lg" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
-        <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url "new_funding" %}">
           <i class="fab fa-ethereum"></i>
           {% trans "Fund Issue" %}
@@ -143,7 +144,7 @@
     </div>
   </div>
 {% else %}
-  <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
-    <i class="fab fa-github"></i><span class="nav-link__text px-2">{% trans "Log in" %}</span>
+  <a class="btn btn-outline-primary login interior px-5 py-3 py-md-2 mx-2 my-4 my-md-0" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
+    {% trans "Sign in" %}
   </a>
 {% endif %}
