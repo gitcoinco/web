@@ -1426,8 +1426,12 @@ Vue.component('grants-cart', {
       updatedGrant[grantIndex]['grant_donation_amount'] = grant.grant_donation_amount ? grant.grant_donation_amount : '0.001';
     });
 
-    CartData.setCart(updatedGrant);
-    this.grantData = updatedGrant;
+    if (updatedGrant) {
+      CartData.setCart(updatedGrant);
+      this.grantData = updatedGrant;
+    } else {
+      this.grantData = [];
+    }
 
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
