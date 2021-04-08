@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load i18n humanize static %}
+{% load i18n humanize static date_fromisoformat %}
 
 {% block content %}
 
@@ -109,6 +109,12 @@ along with this program. If not, see
   <h3 class="section-header">{% trans "Announcements" %}</h3>
   <hr>
   <p class="text-left" style="line-height: 24px; word-wrap: break-word;">{{email_announcements.desc|safe}}</p>
+  {% else %}
+  <h3 class="section-header">{% trans "Announcements" %}</h3>
+  <hr>
+  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">
+    No new announcements today!
+  </p>
   {% endif %}
 
   {% if not email_announcements %}
@@ -125,25 +131,59 @@ along with this program. If not, see
     
     — Justin & The Gitcoin Team
   </p>
+  {% else %}
+  <h3 class="section-header">{% trans "Announcements" %}</h3>
+  <hr>
+  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">
+    No new announcements today!
+  </p>
   {% endif %}
 
-  {% if upcoming_events or upcoming_dates %}
+  {% if current_hackathons or upcoming_hackathons %}
   <h3 class="section-header">{% trans "Hackathons to Join" %}</h3>
-  <hr>
-  <p class="text-left grey mb-0">Upcoming Hackathons!</p><br>
-  {% for event in upcoming_events %}
-  <div class="text-left" style="color: #15003E;">
-    <p class="font-weight-bold mb-0">{{event.title}}</p>
-    <p style="margin-top: 0; margin-bottom: 0;">{{event.date}}</p>
-    <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
-  </div>
-  {% endfor %}
+  <hr style="margin-bottom: 2em;">
+
+  {% if upcoming_hackathons %}
+    <p class="text-left grey mb-0">Current Hackathons</p><br>
+    {% for event in upcoming_hackathons %}
+      <div style="display: inline-block; margin-top: 1em;">
+        <div style="float:left; width: 95px; min-height: 80px;">
+          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ MEDIA_URL }}{{event.logo}}">
+        </div>
+        <div style="margin: 0 0 0 95px;">
+          <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{event.name}}</p>
+          <p style="margin-top: 0; margin-bottom: 0;">From {{event.start_date | date_fromisoformat:"m/j/Y"}} to {{event.end_date | date_fromisoformat:"m/j/Y"}}</p>
+          <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
+        </div>
+      </div>
+      <br>
+    {% endfor %}
+  {% endif %}
+
+
+  {% if upcoming_hackathons %}
+    <p class="text-left grey mb-0">Upcoming Hackathons</p><br>
+    {% for event in upcoming_hackathons %}
+      <div style="display: inline-block; margin-top: 1em;">
+        <div style="float:left; width: 95px; min-height: 80px;">
+          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ MEDIA_URL }}{{event.logo}}">
+        </div>
+        <div style="margin: 0 0 0 95px;">
+          <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{event.name}}</p>
+          <p style="margin-top: 0; margin-bottom: 0;">From {{event.start_date | date_fromisoformat:"m/j/Y"}} to {{event.end_date | date_fromisoformat:"m/j/Y"}}</p>
+          <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
+        </div>
+      </div>
+      <br>
+    {% endfor %}
+  {% endif %}
+
   {% endif %}
 
   {% if not bounties %}
   <h3 class="section-header">{% trans "Earn in Bounties" %}</h3>
   <hr>
-  <img class="avatar-bounty" src="{{trending_avatar.img_url}}">
+  <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{trending_avatar.img_url}}">
   <div style="color: #15003E;">
     <p class="font-weight-bold mb-0">DimensionDev</p>
     <p style="margin-top:0; margin-bottom: 0;">[Bounty] Solana and Serum in Maskbook</p>
@@ -158,31 +198,35 @@ along with this program. If not, see
   <h3 class="section-header">{% trans "Earn in Bounties" %}</h3>
   <hr>
   {% for bounty in bounties %}
-  {% if bounty.avatar_url %}
-  <img class="avatar-bounty" src="{{ bounty.avatar_url }}">
-  <div style="color: #15003E;">
-    {% if not prize %}
-    <a class="font-weight-bold mb-0" style="text-decoration: none;" href="{% url 'profile' highlight.who %}?{{ utm_tracking }}">{{ bounty.org_name }}</a>
-    {% endif %}
-    {% else %}
-    <p class="font-weight-bold mb-0">{{ bounty.org_name }}</p>
-    {% endif %}
-    <p style="margin-top: 0; margin-bottom: 0;">
-      {% if prize %}<b>{% endif %}
-        {% if primer %}
-        {{ primer }}
-        {% elif bounty.title %}
-        {{ bounty.title }}
+  <div style="display: inline-block; margin-top: 1em; margin-bottom: 0;">
+    <div style="float:left; width: 95px; min-height: 80px;">
+      <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ bounty.avatar_url }}">
+    </div>
+    <div style="margin: 0 0 0 95px;">
+      <div style="color: #15003E;">
+        {% if not prize %}
+        <a class="font-weight-bold mb-0" style="text-decoration: none;" href="{% url 'profile' highlight.who %}?{{ utm_tracking }}">{{ bounty.org_name }}</a>
+        {% else %}
+        <p class="font-weight-bold mb-0">{{ bounty.org_name }}</p>
         {% endif %}
-        {% if prize %}</b>{% endif %}
-    </p>
+        <p style="margin-top: 0; margin-bottom: 0;">
+          {% if prize %}<b>{% endif %}
+          {% if primer %}
+          {{ primer }}
+          {% elif bounty.title %}
+          {{ bounty.title }}
+          {% endif %}
+          {% if prize %}</b>{% endif %}
+        </p>
+      </div>
+      <p style="color:#15ebb7; font-weight: 600; margin-top: 3px; margin-bottom: 0;">
+        {% if bounty.value_true and bounty.token_name %}
+        {{ bounty.value_true|floatformat }} {{ bounty.token_name }}
+        {% endif %}
+      </p>
+    </div>
   </div>
-  <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">
-    {% if bounty.value_true and bounty.token_name %}
-    {{ bounty.value_true|floatformat }} {{ bounty.token_name }}
-    {% endif %}
-  </p>
-  <div style="margin-top: 25px; ">
+  <div style="margin-top: 25px; margin-bottom: 3em;">
     <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
   </div>
   {% endfor %}

@@ -1004,6 +1004,20 @@ def upcoming_hackathon():
         except HackathonEvent.DoesNotExist:
             return None
 
+def get_hackathons():
+    from perftools.models import JSONStore
+    from dateutil.parser import parse
+
+    hackathons = JSONStore.objects.get(key='hackathons', view='hackathons').data
+
+    if hackathons and hackathons[0] not in ['current', 'upcoming']:
+        return None
+    else:
+        current_hackathons = [hack for hack in hackathons[1] if parse(hack['start_date']) < timezone.now() and parse(hack['end_date']) > timezone.now()]
+        upcoming_hackathons = [hack for hack in hackathons[1] if parse(hack['start_date']) > timezone.now()]
+
+        return current_hackathons, upcoming_hackathons
+
 def latest_activities(user):
     from retail.views import get_specific_activities
     from townsquare.tasks import increment_view_counts
