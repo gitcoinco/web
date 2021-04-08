@@ -89,6 +89,8 @@
       <input type="submit" value="Change Owner to Gitcoin" name="_change_owner" value="1">
     {% elif 'quests/quest' in request.build_absolute_uri %}
       <input type="submit" value="Approve Request" name="_approve_quest" value="1">
+    {% elif 'dashboard/hackathonevent/' in request.build_absolute_uri %}
+      <input type="submit" value="Update Related Bounties Expiry Date" name="_bulk_update_expiry" value="1">
     {% endif %}
   </div>
 {% endblock %}

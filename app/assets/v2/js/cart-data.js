@@ -21,7 +21,7 @@ class CartData {
   static share_url(title) {
     const checkedOut = this.loadCheckedOut();
     const donations = (checkedOut.length > 0 ? checkedOut : this.loadCart());
-    let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
+    let bulk_add_cart = `${window.location.host}/grants/cart/bulk-add/`;
 
     let network = document.web3network;
 

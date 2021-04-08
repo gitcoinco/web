@@ -487,8 +487,6 @@
 }
 
 .gc-accordion {
-  margin-left: -38px;
-
 
   &:after {
     content: "";
@@ -496,7 +494,7 @@
     border-bottom: 1px solid #eee;
     position: relative;
     left: 26px;
-    width: calc(100% - 16px);
+    width: calc(100% - 26px);
   }
 
   .accordion {
@@ -504,6 +502,12 @@
     margin-bottom: 0px;
     transition: none;
     border-left: 4px solid transparent;
+  }
+
+  &.gc-accordion-border {
+    .accordion, .accordion-panel {
+      border-left: 4px solid #DDDDDD
+    }
   }
 
   .accordion-title {
@@ -519,8 +523,13 @@
     }
   }
 
-  .accordion-panel  {
+  .accordion-panel {
     padding-left: 28px;
+
+    p {
+      margin-bottom: 0;
+      padding-bottom: 1rem;
+    }
   }
 
   .accordion:after {
@@ -535,7 +544,7 @@
     content: "";
     display: block;
     min-height: 4px;
-    width: calc(100% + 10px);
+    width: 100%;
     position: relative;
     top: -22px;
     border-top: 1px solid #eee;

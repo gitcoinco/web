@@ -200,7 +200,7 @@ function purchaseOption(option, value, target) {
     var cost_eth = parseFloat(cost.replace('ETH', ''));
     var cost_wei = web3.utils.toWei(String(cost_eth));
 
-    to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
+    to_address = '0xAD278911Ad07534F921eD7D757b6c0e6730FCB16'; // TODO: make dynamic
     indicateMetamaskPopup();
     web3.eth.getCoinbase(function(_, coinbase) {
       web3.eth.sendTransaction({
