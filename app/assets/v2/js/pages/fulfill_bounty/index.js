@@ -49,7 +49,7 @@ window.onload = function() {
 
       if (eventTag && !data.projectId) {
         unloading_button($('.js-submit'));
-        return _alert('Please add a project first', 'error');
+        return _alert('Please add a project first', 'danger');
       }
 
       if (is_bounties_network) {
@@ -60,4 +60,3 @@ window.onload = function() {
     }
   });
 };
-

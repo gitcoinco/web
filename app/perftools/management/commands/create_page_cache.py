@@ -26,15 +26,16 @@ from django.db import models, transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
 from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
-from dashboard.models import Activity, HackathonEvent, Profile
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
-from economy.models import EncodeAnything, SuperModel
+from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
@@ -48,6 +49,7 @@ from retail.views import get_contributor_landing_page_context, get_specific_acti
 from townsquare.views import tags
 
 logger = logging.getLogger(__name__)
+
 
 def create_email_inventory_cache():
     print('create_email_inventory_cache')
@@ -71,6 +73,7 @@ def create_grant_clr_cache():
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
         update_grant_metadata.delay(pk)
+
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
@@ -103,14 +106,14 @@ def create_grant_active_clr_mapping():
         grant.calc_clr_round()
         grant.save()
 
-
     return
+
 
 def create_hack_event_cache():
     from dashboard.models import HackathonEvent
     for he in HackathonEvent.objects.all():
         he.save()
-        
+
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
@@ -121,6 +124,7 @@ def create_grant_category_size_cache():
             key = f"grant_category_{g_type.name}_{category.category}"
             val = Grant.objects.filter(active=True, hidden=False, grant_type=g_type, categories__category__contains=category.category).count()
             redis.set(key, val)
+
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -156,13 +160,13 @@ def create_top_grant_spenders_cache():
                     )
 
 
-
 def fetchPost(qt='2'):
     import requests
     """Fetch last post from wordpress blog."""
     url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
     last_posts = requests.get(url=url).json()
     return last_posts
+
 
 def create_hidden_profiles_cache():
 
@@ -377,7 +381,6 @@ def create_contributor_landing_page_context():
         JSONStore.objects.bulk_create(items)
 
 
-
 class Command(BaseCommand):
 
     help = 'generates some /results data'
@@ -388,6 +391,7 @@ class Command(BaseCommand):
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
         operations.append(create_grant_category_size_cache)
+
         if not settings.DEBUG:
             operations.append(create_results_cache)
             operations.append(create_hack_event_cache)
@@ -402,9 +406,10 @@ class Command(BaseCommand):
             operations.append(create_contributor_landing_page_context)
             operations.append(create_hackathon_cache)
             operations.append(create_hackathon_list_page_cache)
+
             hour = int(timezone.now().strftime('%H'))
             if hour < 4:
-                # do dailyi updates
+                # do daily updates
                 operations.append(create_email_inventory_cache)
         for func in operations:
             try:

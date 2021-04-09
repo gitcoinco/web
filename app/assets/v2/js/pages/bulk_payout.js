@@ -179,11 +179,11 @@ $(document).ready(function($) {
     }
 
     if (!$('#terms').is(':checked')) {
-      _alert('Please accept the TOS.', 'error');
+      _alert('Please accept the TOS.', 'danger');
       return;
     }
     if (typeof document.transactions == 'undefined' || !document.transactions.length) {
-      _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
+      _alert('You do not have any transactions to payout.  Please add payees to the form.', 'danger');
       return;
     }
     var usernames = $('.username-search');
@@ -192,7 +192,7 @@ $(document).ready(function($) {
       var username = usernames[i].textContent.trim();
 
       if (username === null || username === '' || username === '@') {
-        _alert('Please provide a valid recipient Github username', 'error');
+        _alert('Please provide a valid recipient Github username', 'danger');
         return;
       }
     }

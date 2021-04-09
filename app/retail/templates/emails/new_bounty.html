@@ -119,7 +119,7 @@ along with this program. If not, see
   {% if email_announcements %}
   <h3 class="section-header">{% trans "Announcements" %}</h3>
   <hr>
-  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">{email_announcements.desc|safe}}</p>
+  <p class="text-left" style="line-height: 24px; word-wrap: break-word;">{{email_announcements.desc|safe}}</p>
   {% endif %}
 
   {% if upcoming_events or upcoming_dates %}
@@ -170,20 +170,6 @@ along with this program. If not, see
   {% endif %}
 
   {% if bounties %}
-  <h3 class="section-header">{% trans "Start Earning" %}</h3>
-  <hr>
-  <img class="avatar-bounty" src="{{trending_avatar.img_url}}">
-  <div style="color: #15003E;">
-    <p class="font-weight-bold mb-0">DimensionDev</p>
-    <p style="margin-top:0; margin-bottom: 0;">[Bounty] Solana and Serum in Maskbook</p>
-  </div>
-  <p style="color:#15ebb7; font-weight: 600; margin-top: 3px;">5000 USDT</p>
-  <div style="margin-top: 25px; ">
-    <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
-  </div>
-  {% endif %}
-
-  {% if bounties %}
   {% for bounty in bounties %}
   {% if bounty.avatar_url %}
   <img class="avatar-bounty" src="{{ bounty.avatar_url }}">
@@ -212,6 +198,7 @@ along with this program. If not, see
   <div style="margin-top: 25px; ">
     <a class="button" style="text-decoration: none;" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">View Bounty</a>
   </div>
+  <br>
   {% endfor %}
   {% endif %}
 

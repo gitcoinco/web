@@ -295,6 +295,7 @@ class Bounty(SuperModel):
         ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
+        ('xinfin_ext', 'Xinfin Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1412,6 +1413,7 @@ class BountyFulfillment(SuperModel):
         ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
+        ('xinfin_ext', 'xinfin_ext'),
         ('manual', 'manual')
     ]
 
@@ -1427,6 +1429,7 @@ class BountyFulfillment(SuperModel):
         ('HARMONY', 'HARMONY'),
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
+        ('XINFIN', 'XINFIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1507,6 +1510,8 @@ class BountyFulfillment(SuperModel):
                 return float(self.payout_amount / 10 ** 6)
             if self.token_name in settings.STABLE_COINS:
                 return float(self.payout_amount / 10 ** 18)
+            if self.token_name in ['ETH']:
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
             try:
                 return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
             except ConversionRateNotFoundError:
@@ -4497,8 +4502,8 @@ class Profile(SuperModel):
 
         context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
         context['portfolio_keywords'] = sorted_portfolio_keywords
-        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
-        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
+        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
         from django.contrib.contenttypes.models import ContentType
         earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
@@ -4547,6 +4552,14 @@ class Profile(SuperModel):
             if login.ip_address:
                 ips.append(login.ip_address)
         return ips
+
+    @property
+    def last_known_ip(self):
+        ips = self.ips
+        if len(ips) > 0:
+            return ips[0]
+        return ''
+
 
     @property
     def locations(self):

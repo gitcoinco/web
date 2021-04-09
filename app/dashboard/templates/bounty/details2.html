@@ -41,7 +41,6 @@
             </span>
             <a v-for="link in quickLinks" class="btn btn-outline-primary px-2 mx-2 btn-sm" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
             <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="contactFunder()">Contact Funder</button>
-            <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="overrideStatus()">Override Status</button>
           </div>
           <div class="col-12" v-if="loadingState === 'resolved'">
             {% if event_tag %}
@@ -101,7 +100,10 @@
             <div id="bounty-info-row" class="row font-body bounty-info">
               <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
                 <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-                <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
+
+                <span v-if="isExpired" class="bounty-info-text pr-sm-3 pr-md-5">Expired</span>
+                <span v-else-if="expiresAfterAYear" class="bounty-info-text pr-sm-3 pr-md-5">More than a year</span>
+                <time v-else class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
                   [[ bounty.expires_date | moment ]]
                 </time>
               </div>
@@ -154,7 +156,7 @@
 
             <div class="row">
               <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
-                <template v-if="isOwner">
+                <template v-if="isOwner || contxt.is_staff">
                   <div v-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
                     <a class="btn btn-primary btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
                       <i class="fas fa-check mr-2"></i>
@@ -362,11 +364,13 @@
                     </div>
                     <div class="col-12">
                       <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
-                        <i class="far fa-link mr-1"></i>
-                        <span class="font-weight-bold mb-2">PR:</span>
-                        <a :href="fulfillment.fulfiller_github_url" target="_blank">
-                          [[ fulfillment.fulfiller_github_url ]]
-                        </a>
+                        <template v-if="showWorkSubmitted(fulfillment.fulfiller_github_username)">
+                          <i class="far fa-link mr-1"></i>
+                          <span class="font-weight-bold mb-2">PR:</span>
+                          <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                            [[ fulfillment.fulfiller_github_url ]]
+                          </a>
+                        </template>
                         <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
                           <i class="far fa-clock font-caption mr-1"></i>
                           <span class="font-weight-bold">Hours worked:</span>
@@ -400,7 +404,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="nextStepAndLoadPYPLButton(fulfillment.pk, fulfillment.fulfiller_identifier)"
                                 >
@@ -436,7 +440,7 @@
                             </div>
 
                             <!-- WEB3 MODAL FLOW -->
-                            <div v-else-if="fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
+                            <div v-else-if="fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
 
                               <div class="text-center pb-3">
                                 <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -460,7 +464,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('payout', 'payout_amount')"
                                 >
@@ -490,7 +494,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="payWithExtension(fulfillment.pk, fulfillment.fulfiller_address, fulfillment.payout_type, $event)"
                                 >
                                   Payout
@@ -537,7 +541,7 @@
                                   </a>
 
                                 </p>
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-4"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
                                 >
                                   Yes, I understand
@@ -553,7 +557,7 @@
                                   <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
 
-                                <button  class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button  class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('submit_transaction', 'payout_amount')"
                                 >
@@ -608,7 +612,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
                                   I have Paid
@@ -656,7 +660,7 @@
                                   </a>
 
                                 </p>
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-4"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
                                 >
                                   Yes, I understand
@@ -679,13 +683,13 @@
                                 </p>
 
                                 <button v-if="fulfillment_context.flow == 'access_to_wallet'"
-                                  class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                  class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('scan_qr_code', 'payout_amount')"
                                 >
                                   Next
                                 </button>
-                                <button v-else class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button v-else class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
                                   v-on:click="goToStep('submit_transaction', 'payout_amount')"
                                 >
@@ -736,7 +740,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >I have paid
                                 </button>
@@ -796,7 +800,7 @@
                                   </p>
                                 </div>
 
-                                <button class="btn btn-primary button--full py-3 btn-lg mt-3"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
                                   I have Paid
@@ -1122,10 +1126,15 @@
       <script src="{% static "v2/js/pages/bounty_detail/harmony_extension.js" %}"></script>
 
     {% elif web3_type == 'rsk_ext' %}
-
       <script src="{% static "v2/js/pages/bounty_detail/rsk_extension.js" %}"></script>
 
+    {% elif web3_type == 'xinfin_ext' %}
+
+      <script src="{% static "v2/js/lib/xinfin/xdc3.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/xinfin_extension.js" %}"></script>
+
     {% elif web3_type == 'fiat' %}
+
       {% if PYPL_CLIENT_ID %}
         <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
       {% endif %}

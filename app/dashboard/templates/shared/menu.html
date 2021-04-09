@@ -34,7 +34,7 @@
       <div class="dropdown-menu " aria-labelledby="dropdownProducts">
         <div class="gc-megamenu-content">
           <div class="row justify-content-center px-0 px-md-2">
-            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active py-2{% endif %}">
+            <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}gc-megamenu-active py-2{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'funder_bounties' %}">
                   <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="48">

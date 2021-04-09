@@ -43,7 +43,7 @@ Vue.mixin({
         vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
-        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
+        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'danger');
       });
     },
     eventParams: function() {
@@ -139,7 +139,13 @@ Vue.mixin({
         case 'RBTC':
         case 'RDOC':
         case 'DOC':
+        case 'RIF':
+        case 'SOV':
           url = `https://explorer.rsk.co/tx/${txn}`;
+          break;
+
+        case 'XDC':
+          url = `https://explorer.xinfin.network/tx/${txn}`;
           break;
 
         default:
@@ -193,7 +199,13 @@ Vue.mixin({
         case 'RBTC':
         case 'RDOC':
         case 'DOC':
+        case 'RIF':
+        case 'SOV':
           url = `https://explorer.rsk.co/address/${address}`;
+          break;
+
+        case 'XDC':
+          url = `https://explorer.xinfin.network/addr/${address}`;
           break;
 
         default:
@@ -352,17 +364,17 @@ Vue.mixin({
         vm.bounty.title = response.title;
         _alert({ message: response.msg }, 'success');
       }).catch(function(response) {
-        _alert({ message: response.responseJSON.error }, 'error');
+        _alert({ message: response.responseJSON.error }, 'danger');
       });
     },
     copyTextToClipboard: function(text) {
       if (!navigator.clipboard) {
-        _alert('Could not copy text to clipboard', 'error', 5000);
+        _alert('Could not copy text to clipboard', 'danger', 5000);
       } else {
         navigator.clipboard.writeText(text).then(function() {
           _alert('Text copied to clipboard', 'success', 5000);
         }, function(err) {
-          _alert('Could not copy text to clipboard', 'error', 5000);
+          _alert('Could not copy text to clipboard', 'danger', 5000);
         });
       }
     },
@@ -414,7 +426,13 @@ Vue.mixin({
         case 'RBTC':
         case 'DOC':
         case 'RDOC':
+        case 'RIF':
+        case 'SOV':
           tenant = 'RSK';
+          break;
+
+        case 'XDC':
+          tenant = 'XINFIN';
           break;
 
         default:
@@ -459,12 +477,12 @@ Vue.mixin({
           };
 
         } else {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         event.target.disabled = false;
-        _alert('Unable to make payout bounty. Please try again later', 'error');
+        _alert('Unable to make payout bounty. Please try again later', 'danger');
       });
     },
     nextStepAndLoadPYPLButton: function(fulfillment_id, fulfiller_identifier) {
@@ -503,6 +521,10 @@ Vue.mixin({
         case 'rsk_ext':
           payWithRSKExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
+
+        case 'xinfin_ext':
+          payWithXinfinExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
       }
     },
     closeBounty: function() {
@@ -516,7 +538,7 @@ Vue.mixin({
         if (200 <= response.status && response.status <= 204) {
           vm.bounty.status = 'done';
         } else {
-          _alert('Unable to close. bounty. Please try again later', 'error');
+          _alert('Unable to close. bounty. Please try again later', 'danger');
           console.error(`error: bounty closure failed with status: ${response.status} and message: ${response.message}`);
         }
       });
@@ -675,7 +697,7 @@ Vue.mixin({
 
           _alert(text, 'success');
         } else {
-          _alert('Unable to stop work on bounty. Please try again later', 'error');
+          _alert('Unable to stop work on bounty. Please try again later', 'danger');
           console.error(`error: stopping work on bounty failed due to : ${response}`);
         }
       });
@@ -708,18 +730,16 @@ Vue.mixin({
       let vm = this;
 
       switch (fulfillment.payout_type) {
-        case 'fiat':
-          vm.fulfillment_context.active_step = 'payout_amount';
-          break;
-
         case 'qr':
         case 'manual':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
           break;
 
+        case 'fiat':
         case 'web3_modal':
         case 'polkadot_ext':
         case 'rsk_ext':
+        case 'xinfin_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
@@ -744,7 +764,7 @@ Vue.mixin({
             polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
               vm.fulfillment_context.active_step = 'payout_amount';
             }).catch(err => {
-              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'danger');
               console.log(err);
             });
           });
@@ -760,6 +780,18 @@ Vue.mixin({
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
+    },
+    showWorkSubmitted: function(handle) {
+      let vm = this;
+
+      if (
+        vm.contxt.is_staff ||
+        vm.isOwner ||
+        (handle && handle == vm.contxt.github_handle)
+      ) {
+        return true;
+      }
+      return false;
     }
   },
   computed: {
@@ -785,6 +817,12 @@ Vue.mixin({
         });
       }
       return activities;
+    },
+    isExpired: function() {
+      return moment(document.result['expires_date']).isBefore();
+    },
+    expiresAfterAYear: function() {
+      return moment().diff(document.result['expires_date'], 'years') < -1;
     }
   }
 });
@@ -899,7 +937,7 @@ var extend_expiration = function(bounty_pk, data) {
     }
     return false;
   }).fail(function(result) {
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
@@ -996,7 +1034,7 @@ var show_interest_modal = function() {
         let msg = issueMessage.val().trim();
 
         if (!msg || msg.length < 30) {
-          _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'error');
+          _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'danger');
           return false;
         }
 

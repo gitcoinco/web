@@ -630,8 +630,8 @@ Vue.component('brightid-verify-modal', {
                           Register for one of the events.
                         </small>
                         <template v-for="call in calls">
-                          <div class="row mb-3">
-                            <div class="col-md-8">
+                          <div class="row mb-3 mt-3">
+                            <div class="col-md-6">
                               <strong class="d-block">[[call.when]]</strong>
                               <div class="font-caption">
                                 <template v-for="date in call.dates">
@@ -639,8 +639,8 @@ Vue.component('brightid-verify-modal', {
                                 </template>
                               </div>
                             </div>
-                            <div class="col-md-4 my-auto">
-                              <a :href="call.link" target="_blank" class="btn btn-sm btn-block btn-primary px-4">Register <br> on [[call.platform]]</a>
+                            <div class="col-md-6 my-auto">
+                              <a :href="call.link" target="_blank" class="btn btn-sm btn-block btn-primary px-4">Register on <br> [[call.platform]]</a>
                             </div>
                           </div>
                         </template>

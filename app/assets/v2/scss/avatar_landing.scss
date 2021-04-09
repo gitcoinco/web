@@ -1,5 +1,5 @@
 .products{
-  background-color: #fafafa; 
+  background-color: #fafafa;
   padding: 30px;
   height: 330px;
   border-top: 1px solid #ddd;
@@ -8,7 +8,7 @@
   height: 430px;
 }
 .products:nth-child(even){
-  background-color: #eee; 
+  background-color: #eee;
 }
 
 .products img{
@@ -31,7 +31,7 @@
   border: 5px #8E2ABE solid;
 }
 .products:nth-child(5n+5) img{
-  border: 5px #3E00FF solid;
+  border: 5px #6F3FF5 solid;
 }
 .intro-sub-header{
   max-width: 900px;

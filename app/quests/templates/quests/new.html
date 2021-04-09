@@ -33,7 +33,6 @@
   </style>
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
 {% endcompress %}
-
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
@@ -80,7 +79,7 @@
           {% csrf_token %}
           <div class="form-group">
             <label class="form__label" for="style">{% trans "Type" %}</label>
-            <select name="style" class="select2">
+            <select name="style" class="select2" style="max-width: 100%;">
               <option value="quiz" {% if response.style == 'Quiz' %}selected=selected{% endif %}>Quiz</option>
               <option disabled="disabled">More options coming soon</option>
             </select>
@@ -182,11 +181,11 @@
                 <hr>
                 <label class="form__label" for="points">{% trans "Correct?" %}</label>
                 <a href="#" class="float-right close_answer">X</a>
-                <select type="checkbox" name="answer_correct[]">
+                <select type="checkbox" name="answer_correct[]" class="custom-select m-2" style="max-width: 100px;">
                   <option {% if response.correct %}selected=selected{% endif %} >YES</option>
                   <option {% if not response.correct %}selected=selected{% endif %} >NO</option>
                 </select>
-                <input type="text" name="answer[]" class="form__input" placeholder='Yes' value="{{response.answer}}" required>
+                <input type="text" name="answer[]" class="form__input" placeholder='Potential Answer' value="{{response.answer}}" required>
                 <hr>
               </span>
               {% endfor %}
@@ -244,7 +243,7 @@
 <script src="{% static "v2/js/pages/quests.new.js" %}"></script>
 <script src="{% static "v2/js/kudos-search.js" %}"></script>
 <script>
-  $('[data-toggle="popover"]').popover()
+  $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').bootstrapTooltip();
 </script>
 
