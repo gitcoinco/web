@@ -36,7 +36,7 @@ $(document).ready(function() {
       return;
     }
     if (!web3 || typeof web3 == 'undefined') {
-      _alert('You are not connected to a web3 wallet.  Please unlock metamask (or web3 wallet equivilent), set to mainnet, and connect to gitcoin on the mainnet (settings > connections).', 'error');
+      _alert('You are not connected to a web3 wallet.  Please unlock metamask (or web3 wallet equivilent), set to mainnet, and connect to gitcoin on the mainnet (settings > connections).', 'danger');
       $(this).prop('disabled', false);
       return;
     }
