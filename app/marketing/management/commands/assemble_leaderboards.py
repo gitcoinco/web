@@ -226,7 +226,6 @@ def do_leaderboard():
 
                             LeaderboardRank.objects.create(**lbr_kwargs)
                             rank += 1
-                            print(key, index_term, amount, count, rank, product)
 
 
 class Command(BaseCommand):
