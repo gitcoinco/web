@@ -752,7 +752,7 @@ Vue.component('duniter-verify-modal', {
       const payload = JSON.stringify({
         'gitcoin_handle': this.githubHandle
       });
-      const verificationRequest = fetchData(`/api/v0.1/profile/${trustHandle}/verify_user_duniter`, 'POST', payload, headers);
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_user_duniter', 'POST', payload, headers);
 
       $.when(verificationRequest).then(response => {
         if (response.ok) {

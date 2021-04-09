@@ -191,7 +191,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_duniter',
+        r'^api/v0.1/profile/verify_user_duniter',
         dashboard.views.verify_user_duniter,
         name='verify_user_duniter'
     ),

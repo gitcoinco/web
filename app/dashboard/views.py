@@ -3223,7 +3223,7 @@ def verify_user_twitter(request, handle):
 
 
 @login_required
-async def verify_user_duniter(request, handle):
+async def verify_user_duniter(request):
     """This function searches the database for the gitcoin link, from a verified duniter account.
 
     Args:
@@ -3241,7 +3241,7 @@ async def verify_user_duniter(request, handle):
             'msg': f'Request must be for the logged in user',
         })
 
-    profile = profile_helper(handle, True)
+    profile = profile_helper(request.user.username, True)
     if profile.is_duniter_verified:
         return JsonResponse({
             'ok': True,
