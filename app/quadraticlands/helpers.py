@@ -227,41 +227,38 @@ def claim(request):
         }
     
         # POST relevant user data to micro service that returns signed transation data for the user broadcast
-        # TODO - need to improve error = TRUE stuff here. what should we send back to UI if esms is down?   
         try: 
             emss_response = requests.post(settings.GTC_DIST_API_URL, data=json.dumps(post_data_to_emss), headers=header)
-            # emss_response = requests.post('http://10.1.10.10:5000/v1/sign_claim', data=json.dumps(post_data_to_emss), headers=header)
             emss_response_content = emss_response.content
-            # logger.info(f'GTC Distributor: emss_response_content: {emss_response_content}')
             emss_response.raise_for_status() # raise exception on error 
         except requests.exceptions.ConnectionError:
             logger.error('GTC Distributor: ConnectionError while connecting to EMSS!')
             resp = {'ERROR': 'There was an issue getting token claim.'}
-            return JsonResponse(resp)
+            return JsonResponse(resp, status=503)
         except requests.exceptions.Timeout:
             # Maybe set up for a retry
             logger.error('GTC Distributor: Timeout while connecting to EMSS!')
             resp = {'ERROR': 'There was an issue getting token claim.'}
-            return JsonResponse(resp)
+            return JsonResponse(resp, status=408)
         except requests.exceptions.TooManyRedirects:
             logger.error('GTC Distributor: Too many redirects while connecting to EMSS!')
             resp = {'ERROR': 'There was an issue getting token claim.'}
-            return JsonResponse(resp)
+            return JsonResponse(resp, status=400)
         except requests.exceptions.RequestException as e:
             # catastrophic error. bail.
             logger.error(f'GTC Distributor:  Error posting to EMSS - {e}')
             resp = {'ERROR': 'There was an issue getting token claim.'}
-            return JsonResponse(resp)
+            return JsonResponse(resp, status=400)
 
         # pass returned values from eth signer microservice
         # ESMS returns bytes object of json. so, we decode it
         esms_response = json.loads( emss_response_content.decode('utf-8'))
         # construct nested dict for easy access in templates
 
-        logger.info(f'GTC Token Distributor - ESMS response: {esms_response}') 
+        logger.debug(f'GTC Token Distributor - ESMS response: {esms_response}') 
         return JsonResponse(esms_response)
     else:
-        logger.info('Non authenticated request sent to claim - highly sus - request ignored.')
+        logger.info('Non authenticated request POSTED to /claim - highly sus - request ignored.')
         raise Http404
 
 def create_sha256_signature(key, message):

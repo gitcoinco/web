@@ -110,7 +110,7 @@ var gtc_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0xC10211b4218E0B4c5fFF97F54FFa6d37c3468c9F';
+      return '0x5a243386D8eC6cd6804aD87E46e51CB7c86570af'; // new signed leaf fam 
   }
 };
 
@@ -127,7 +127,7 @@ var token_distributor_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0xa6e5368A4f036c121BE858Cb032511485b3bAF64';
+      return '0xBD2525B5F0B2a663439a78A99A06605549D25cE5'; // new signed leaf 
   }
 };
 
