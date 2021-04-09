@@ -138,11 +138,7 @@
 	
 </section>
 
-
-
 {% endblock %}
-
-
 
 
 {% block 'scripts' %}
@@ -153,7 +149,6 @@
 
 <!-- force web3modal to popup automaticaly when no provider selected-->
 <script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>
-
 
 
 
@@ -179,24 +174,24 @@ document.addEventListener("DOMContentLoaded",function(){
 		// show selectedAccount in textarea claim_address
 		const claim_address = document.getElementById("claim_address")
 		claim_address.value = selectedAccount
-	    console.log ("claim_address:" + selectedAccount)
+	    console.debug("claim_address:" + selectedAccount)
 
 	    // show selectedAccount in textarea delegate_address
 	    // when there was no delegate address rendered to this page
 	    const delegate_address_textarea = document.getElementById('delegate_address')
 		if (delegate_address_textarea.value == '') {
 			delegate_address_textarea.value = selectedAccount
-			console.log("no delegate_address found in textarea - replacing it with selectedAccount:" + selectedAccount)
+			console.debug("no delegate_address found in textarea - replacing it with selectedAccount:" + selectedAccount)
 		}
 
 	 }, false);
 
-    console.log( "CLAIM DOCUMENT READY" );
+    console.debug( "CLAIM DOCUMENT READY" );
 
 
 	$(document).on('click', '#beginClaim', (event) => {
 
-		console.log('BEGIN CLAIM');
+		console.debug('BEGIN CLAIM');
 
 	    // confirm we have a working web3 connection if not, return error 
 	    // this might never be the case, as we force anyway a wallet connection
@@ -212,9 +207,6 @@ document.addEventListener("DOMContentLoaded",function(){
 		 * provided active account/address (claim address) & delegate address
 		 * returns signed claim message data 
 		**/
-
-		// working before delegate set add 
-		// var getClaimData = fetchData('/quadraticlands/claim', 'POST', {'address':selectedAccount}, {'X-CSRFToken': csrftoken});
 
 		// read delegate_address from textarea
 		var delegate_address = document.getElementById("delegate_address").value
@@ -257,14 +249,10 @@ async function setupGTCTokenClaim(emss_response) {
 	const delegate_address_cleaned = web3.utils.toChecksumAddress(emss_response["delegate_address"].replace(/\"/g, ''));
     const eth_signed_message_hash_hex = emss_response.eth_signed_message_hash_hex.replace(/\"/g, '');
     const eth_signed_signature_hex = emss_response.eth_signed_signature_hex.replace(/\"/g, '');
-	const leaf = emss_response.claim.replace(/\"/g, '');
+	const leaf = emss_response.leaf.replace(/\"/g, '');
 	const proof = emss_response.proof;
-	// console.debug("claim/leaf: ", leaf);
-	// console.debug("proof: ", proof);
 
 	try {
-        // zak TODO - make sure we only get first address, not array 
-		[user] = await web3.eth.getAccounts();
 
 		const tokenDistributor = await new web3.eth.Contract(
 			token_distributor_abi,
@@ -278,7 +266,7 @@ async function setupGTCTokenClaim(emss_response) {
 			tokenDistributor.methods
 			.claimTokens(user_id, user_address_cleaned, web3.utils.toWei(user_amount, 'ether'), delegate_address_cleaned, eth_signed_message_hash_hex, eth_signed_signature_hex, proof, leaf)
        
-			.send({ from: user, gasLimit: '300000' })
+			.send({ from: selectedAccount, gasLimit: '300000' })
 
 			.on('transactionHash', async function(transactionHash) {
 
@@ -288,7 +276,7 @@ async function setupGTCTokenClaim(emss_response) {
 				console.log(transactionHash);
 
 			})
-
+            /**
 			.on('receipt', receipt => {
 				// https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#eth-gettransactionreceipt-return
 				// you can read about receipt vs confirm on the link above ^^ 
@@ -296,7 +284,7 @@ async function setupGTCTokenClaim(emss_response) {
 				console.log("ON RECEIPT - WHAT EVER THIS IS");
 			    console.log('receipt:', receipt);
 			})
-
+            **/
 			.on('confirmation', (confirmationNumber, receipt) => {
 				console.log("ON CONFIRMATION");
 			    if (confirmationNumber >= 1 && confirmationNumber < 10) {
@@ -331,7 +319,6 @@ async function setupGTCTokenClaim(emss_response) {
 
 
 // checkNetwork
-//
 function checkNetwork() {
     const supportedNetworks = [ 'rinkeby', 'mainnet' ];
     
@@ -344,7 +331,6 @@ function checkNetwork() {
 
 
 // checkWeb3
-//
 function checkWeb3() {
 	if (!web3) {
 		flashMessage("Please connect a wallet",5000);
@@ -354,38 +340,8 @@ function checkWeb3() {
 }
 
 
-// handleError
-// @Richard do we intend to use this? if not, lets remove. 
-function handleError(err) {
-    console.error(err);
-    let message = 'There was an error';
-    
-    if (err.message)
-      message = err.message;
-    else if (err.msg)
-      message = err.msg;
-    else if (err.responseJSON)
-      message = err.responseJSON.message;
-    else if (typeof err === 'string')
-      message = err;
-    
-    flashMessage("Error:" + message ,5000);
-    indicateMetamaskPopup(true);
-}
-
-
-
-// isNumeric
-//
-function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-
-
 // DYNAMIC USER INTERFACE 
 // status = init, pending, success, error
-
 function updateInterface(status="init", transactionHash="") {
 
 	// main views
@@ -476,8 +432,6 @@ function updateInterface(status="init", transactionHash="") {
 		// notification
     	flashMessage("Transaction Confirmed",5000);
 	}
-
-
 	if (status=="error")
 	{
 		// switch view to
@@ -497,18 +451,7 @@ function updateInterface(status="init", transactionHash="") {
 		// notification
 		flashMessage("Error",5000);
 	}
-
-	
-
-
 }
-
-
-
-
-
-
-
 
 
 </script>
