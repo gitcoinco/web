@@ -207,7 +207,7 @@ def do_leaderboard():
                             idx = item[0]
                             count = item[1]
                             amount = item[2]
-                            print(idx, num, amount)
+                            print(idx, count, amount)
                             key = f"{tag}_{product}"
                             lbr_kwargs = {
                                 'count': count,
