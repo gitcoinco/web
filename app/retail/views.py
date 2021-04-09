@@ -78,8 +78,13 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
     context = {
+        'title': 'Gitcoin - Build and Fund the Open Web Together',
+        'card_title': 'Gitcoin - Build and Fund the Open Web Together',
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
     }
-    return TemplateResponse(request, 'home/index2020.html', context)
+    # context.update(data)
+
+    return TemplateResponse(request, 'home/index2021.html', context)
 
 def index_old(request):
     products = [
