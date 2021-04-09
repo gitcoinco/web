@@ -78,12 +78,12 @@ def do_leaderboard_feed():
     from dashboard.models import Activity
     max_rank = 25
     for _type in [PAYERS, EARNERS, ORGS]:
-        key = f'{WEEKLY}_{_type}'
+        key = f'{DAILY}_{_type}'
         lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all')
         print(key, lrs.count())
         for lr in lrs:
             metadata = {
-                'title': f"was ranked #{lr.rank} on the Gitcoin Weekly {_type.title()} Leaderboard",
+                'title': f"was ranked #{lr.rank} on the Gitcoin DAILY {_type.title()} Leaderboard",
                 'link': f'/leaderboard/{_type}'
                 }
             if lr.profile:
@@ -144,8 +144,6 @@ ORDER BY amount DESC"""
 
 
 def do_leaderboard():
-    global ranks
-    global counts
     CUTOFF = MONTHLY_CUTOFF
 
     products_to_content_type = {
@@ -194,8 +192,9 @@ def do_leaderboard():
                 created_on = timezone.now()
                 with transaction.atomic():
                     print(" - saving -")
-                    lrs = LeaderboardRank.objects.active().filter(product=product)
-                    lrs = lrs.filter(Q(leaderboard__startswith=WEEKLY) | Q(leaderboard__startswith=MONTHLY))
+                    key = f"{tag}_{breakdown}"
+                    lrs = LeaderboardRank.objects.active()
+                    lrs = lrs.filter(leaderboard=key)
                     lrs.update(active=False)
 
                     # save new LR in DB
@@ -203,12 +202,13 @@ def do_leaderboard():
                     if True:
                         rank = 1
                         for item in results:
-                            print(tag, item)
                             idx = item[0]
                             count = item[1]
                             amount = item[2]
-                            print(idx, count, amount)
-                            key = f"{tag}_{product}"
+                            if not amount:
+                                continue
+                            print(idx, count, amount, rank, product)
+
                             lbr_kwargs = {
                                 'count': count,
                                 'active': True,
@@ -220,12 +220,17 @@ def do_leaderboard():
                                 'created_on': created_on,
                             }
 
-                            profile = Profile.objects.get(handle=idx.lower())
-                            if profile.suppress_leaderboard:
-                                continue
+                            profile = None
+                            try:
+                                profile = Profile.objects.get(handle=idx.lower())
+                                if profile.suppress_leaderboard:
+                                    continue
+                            except Exception as e:
+                                print(e)
 
                             LeaderboardRank.objects.create(**lbr_kwargs)
                             rank += 1
+
 
 
 class Command(BaseCommand):
