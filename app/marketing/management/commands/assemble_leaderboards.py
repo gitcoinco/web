@@ -204,9 +204,9 @@ def do_leaderboard():
                         rank = 1
                         for item in results:
                             print(tag, item)
-                            idx = item['idx']
-                            count = item['num']
-                            amount = item['amount']
+                            idx = item[0]
+                            count = item[1]
+                            amount = item[2]
                             print(idx, num, amount)
                             key = f"{tag}_{product}"
                             lbr_kwargs = {

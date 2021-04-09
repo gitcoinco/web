@@ -809,7 +809,7 @@ def leaderboard(request, key=''):
         TemplateResponse: The leaderboard template response.
 
     """
-    cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
+    cadences = ['all', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
     product = request.GET.get('product', 'all')
