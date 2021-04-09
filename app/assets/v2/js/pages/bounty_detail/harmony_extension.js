@@ -11,7 +11,7 @@ const payWithHarmonyExtension = async(fulfillment_id, to_address, vm, modal) => 
   const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
 
   if (account_balance < amount) {
-    _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'error');
+    _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'danger');
     return;
   }
 
@@ -20,7 +20,7 @@ const payWithHarmonyExtension = async(fulfillment_id, to_address, vm, modal) => 
   let address = await harmony_utils.loginHarmonyExtension(harmonyExt);
 
   if (address != from_address) {
-    _alert({ message: `Connect address ${from_address} to payout`}, 'error');
+    _alert({ message: `Connect address ${from_address} to payout`}, 'danger');
     harmony_utils.logoutHarmonyExtension(harmonyExt);
     return;
   }
@@ -43,7 +43,7 @@ const payWithHarmonyExtension = async(fulfillment_id, to_address, vm, modal) => 
 
   function callback(error, from_address, txn) {
     if (error) {
-      _alert({ message: gettext('Unable to payout bounty due to ' + error) }, 'error');
+      _alert({ message: gettext('Unable to payout bounty due to ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -67,11 +67,11 @@ const payWithHarmonyExtension = async(fulfillment_id, to_address, vm, modal) => 
           _alert('Payment Successful');
 
         } else {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
-        _alert('Unable to make payout bounty. Please try again later', 'error');
+        _alert('Unable to make payout bounty. Please try again later', 'danger');
         console.log(error);
       });
     }

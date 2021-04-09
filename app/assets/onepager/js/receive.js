@@ -69,27 +69,27 @@ $(document).ready(function() {
     var forwarding_address = $('#forwarding_address').val();
 
     if (!$('#tos').is(':checked')) {
-      _alert('Please accept TOS.', 'error');
+      _alert('Please accept TOS.', 'danger');
       unloading_button($(this));
       return;
     }
     if (forwarding_address == '0x0' || forwarding_address == '') {
-      _alert('Invalid forwarding address.', 'error');
+      _alert('Invalid forwarding address.', 'danger');
       unloading_button($(this));
       return;
     }
     if (typeof web3 == 'undefined') {
-      _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'error');
+      _alert({ message: gettext('You are not on a web3 browser.  Please switch to a web3 browser.') }, 'danger');
       unloading_button($(this));
       return;
     }
     if (typeof document.tip == 'undefined') {
-      _alert({ message: gettext('You do not have permission to do that.') }, 'error');
+      _alert({ message: gettext('You do not have permission to do that.') }, 'danger');
       return;
     }
 
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'danger');
       unloading_button($(this));
       return;
     }
@@ -104,7 +104,7 @@ $(document).ready(function() {
     var success_callback = function(err, txid) {
       unloading_button($(this));
       if (err) {
-        _alert(err.message.split('\n')[0], 'error');
+        _alert(err.message.split('\n')[0], 'danger');
       } else {
         const url = window.location.href.split('?')[0];
         const csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val();

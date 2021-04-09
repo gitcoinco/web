@@ -80,11 +80,11 @@ $(document).ready(async function() {
     var isError = false;
 
     if ($('#terms:checked').length == 0) {
-      _alert({ message: gettext('Please accept the terms of service.') }, 'error');
+      _alert({ message: gettext('Please accept the terms of service.') }, 'danger');
       isError = true;
     }
     if (amount <= 0) {
-      _alert({ message: gettext('Invalid Amount.') }, 'error');
+      _alert({ message: gettext('Invalid Amount.') }, 'danger');
       isError = true;
     }
     var is_issueURL_invalid = issueURL == '' ||
@@ -94,11 +94,11 @@ $(document).ready(async function() {
 
     ;
     if (is_issueURL_invalid) {
-      _alert({ message: gettext('Please enter a valid github issue URL.') }, 'error');
+      _alert({ message: gettext('Please enter a valid github issue URL.') }, 'danger');
       isError = true;
     }
     if (amount == '') {
-      _alert({ message: gettext('Please enter an amount.') }, 'error');
+      _alert({ message: gettext('Please enter an amount.') }, 'danger');
       isError = true;
     }
     if (isError) {
@@ -134,7 +134,7 @@ $(document).ready(async function() {
     function web3Callback(result, error) {
       indicateMetamaskPopup(true);
       if (error) {
-        _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'error');
+        _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'danger');
         unloading_button($('#increaseFunding'));
         return;
       }
@@ -241,7 +241,7 @@ $(document).ready(async function() {
           }, function(error, txnId) {
             indicateMetamaskPopup(true);
             if (error) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
             } else {
               // TODO: Save txnId + feeamount to bounty;
               do_as_funder();
@@ -255,7 +255,7 @@ $(document).ready(async function() {
             {from: selectedAccount}, function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
-                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
               } else {
                 // TODO: Save txnId + feeamount to bounty;
                 do_as_funder();

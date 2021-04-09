@@ -115,13 +115,13 @@ Vue.mixin({
             }
           } else {
             // vm.submitted = false;
-            _alert('Unable to edit grant. Please try again', 'error');
+            _alert('Unable to edit grant. Please try again', 'danger');
             console.error(`error: grant edit failed with status: ${response.status} and message: ${response.message}`);
           }
         },
         error: err => {
           // vm.submitted = false;
-          _alert('Unable to edit grant. Please try again', 'error');
+          _alert('Unable to edit grant. Please try again', 'danger');
           console.error(`error: grant edit failed with msg ${err}`);
         }
       });
@@ -178,7 +178,7 @@ Vue.mixin({
       }
 
       if (!document.contxt.github_handle) {
-        _alert({ message: gettext('Please login.') }, 'error', 1000);
+        _alert({ message: gettext('Please login.') }, 'danger', 1000);
         return;
       }
 
@@ -195,7 +195,7 @@ Vue.mixin({
           _alert({ message: gettext('Your flag has been sent to Gitcoin.') }, 'success', 1000);
         },
         error: function() {
-          _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
+          _alert({ message: gettext('Your report failed to save Please try again.') }, 'danger', 1000);
         }
       });
     },
@@ -271,14 +271,14 @@ Vue.mixin({
       const vm = this;
 
       if (!vm.grant.twitter_handle_1 || vm.grant.twitter_handle_1 == '') {
-        _alert('Please add a twitter account to your grant!', 'error', 5000);
+        _alert('Please add a twitter account to your grant!', 'danger', 5000);
         return;
       }
 
       const response = await fetchData(`/grants/v1/api/${vm.grant.id}/verify`);
 
       if (!response.ok) {
-        _alert(response.msg, 'error');
+        _alert(response.msg, 'danger');
         return;
       }
       if (response.verified) {
@@ -288,12 +288,12 @@ Vue.mixin({
       }
 
       if (!response.has_text) {
-        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'error', 5000);
+        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'danger', 5000);
         return;
       }
 
       if (!response.has_code) {
-        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'error', 5000);
+        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'danger', 5000);
         return;
       }
 
@@ -395,7 +395,7 @@ Vue.mixin({
         })
         .on('error', function(error) {
           waitingState(false);
-          _alert(error, 'error');
+          _alert(error, 'danger');
         });
     }
   },

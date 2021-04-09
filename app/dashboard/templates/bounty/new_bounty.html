@@ -701,7 +701,7 @@
         document.coupon_code = '{{ coupon_code|safe }}';
         document.blocked_urls = {{blocked_urls|safe}};
         {% if expired_coupon %}
-          _alert({ message: 'This coupon has expired.' }, 'error');
+          _alert({ message: 'This coupon has expired.' }, 'danger');
         {% endif %}
 
         document.subscriptions= [

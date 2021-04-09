@@ -397,7 +397,7 @@ Vue.mixin({
           gasLimit: web3.utils.toHex(318730)
         }, function(error, result) {
           if (error) {
-            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'danger');
             console.log(error);
           } else {
             saveAttestationData(
@@ -431,7 +431,7 @@ Vue.mixin({
             console.log(txnHash, errors);
 
             if (errors) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
             } else {
               vm.form.feeTxId = txnHash;
               saveAttestationData(
@@ -451,7 +451,7 @@ Vue.mixin({
           token_contract.methods.transfer(toAddress, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
             function(error, txnId) {
               if (error) {
-                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
               } else {
                 resolve();
               }
@@ -568,16 +568,16 @@ Vue.mixin({
           console.log('success', response);
           window.location.href = response.bounty_url;
         } else if (response.status == 304) {
-          _alert('Bounty already exists for this github issue.', 'error');
+          _alert('Bounty already exists for this github issue.', 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         } else {
-          _alert(`Unable to create a bounty. ${response.message}`, 'error');
+          _alert(`Unable to create a bounty. ${response.message}`, 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       }).catch((err) => {
         console.log(err);
-        _alert('Unable to create a bounty. Please try again later', 'error');
+        _alert('Unable to create a bounty. Please try again later', 'danger');
       });
 
     }
