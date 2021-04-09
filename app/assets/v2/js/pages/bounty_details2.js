@@ -470,7 +470,7 @@ Vue.mixin({
           console.log('success', response);
 
           vm.fetchBounty();
-          this.$refs['payout-modal'][0].closeModal();
+          this.$refs['payout-modal' + fulfillment_id][0].closeModal();
 
           vm.fulfillment_context = {
             active_step: 'payout_amount'
@@ -492,14 +492,14 @@ Vue.mixin({
         const ele = '#payout-with-pypl';
 
         $(ele).html('');
-        const modal = this.$refs['payout-modal'][0];
+        const modal = this.$refs['payout-modal' + fulfillment_id][0];
 
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
     payWithExtension: function(fulfillment_id, fulfiller_address, payout_type) {
       let vm = this;
-      const modal = this.$refs['payout-modal'][0];
+      const modal = this.$refs['payout-modal' + fulfillment_id][0];
 
       switch (payout_type) {
         case 'web3_modal':
