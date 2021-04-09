@@ -274,18 +274,12 @@ async function setupGTCTokenClaim(emss_response) {
 				updateInterface('pending', transactionHash);
 				console.log("ON TRANSACTION HASH - PENDING");
 				console.log(transactionHash);
-
 			})
-            /**
 			.on('receipt', receipt => {
-				// https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#eth-gettransactionreceipt-return
-				// you can read about receipt vs confirm on the link above ^^ 
-				// @Richard is there a reason we want/need to call this? if not, lets remove  
-				console.log("ON RECEIPT - WHAT EVER THIS IS");
-			    console.log('receipt:', receipt);
+				console.debug("ON RECEIPT - WHAT EVER THIS IS");
+			    console.debug('receipt:', receipt);
 			})
-            **/
-			.on('confirmation', (confirmationNumber, receipt) => {
+        	.on('confirmation', (confirmationNumber, receipt) => {
 				console.log("ON CONFIRMATION");
 			    if (confirmationNumber >= 1 && confirmationNumber < 10) {
 			    	// update interface to the success view ( claimed )
