@@ -827,11 +827,12 @@ def leaderboard(request, key=''):
         f'earners': _('Top Earners'),
         f'orgs': _('Top Orgs'),
         f'tokens': _('Top Tokens'),
-        f'keywords': _('Top Keywords'),
-        f'kudos': _('Top Kudos'),
-        f'cities': _('Top Cities'),
-        f'countries': _('Top Countries'),
-        f'continents': _('Top Continents'),
+# TODO re-enable these sometime soon
+#        f'keywords': _('Top Keywords'),
+#        f'kudos': _('Top Kudos'),
+#        f'cities': _('Top Cities'),
+#        f'countries': _('Top Countries'),
+#        f'continents': _('Top Continents'),
     }
 
     if not key:
