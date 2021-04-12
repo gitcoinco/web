@@ -56,8 +56,8 @@
 }
 
 .navbar-nav .dropdown-menu .dropdown-item {
-  color: inherit;
   padding: 12px 25px;
+  border-radius: 0.5em;
 }
 
 .navbar-nav .dropdown-toggle::after {
@@ -78,16 +78,6 @@
   margin-left: 0px;
   margin-right: 20px;
   width: 15px;
-}
-
-.dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item:hover div,
-.dropdown-menu .dropdown-item:focus, .dropdown-menu .dropdown-item:focus div {
-  color: white;
-}
-
-.dropdown-menu .dropdown-item:hover svg .main-path, .dropdown-menu .dropdown-item:focus svg .main-path  {
-  fill: white;
-  stroke: white;
 }
 
 .dropdown-menu li > a > .gc-megamenu-title:hover {
@@ -122,7 +112,7 @@
 }
 
 .gc-megamenu-active {
-  background: rgba(12, 3, 59, 0.1);
+  background: rgba(140,101,247,0.1);
   border-radius: 4px;
 }
 
