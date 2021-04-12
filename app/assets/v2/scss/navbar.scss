@@ -155,25 +155,35 @@
 }
 
 @media (max-width: 767.98px) {
+
+  .navbar-menu-open {
+    overflow: hidden;
+  }
+
   .gc-megamenu-caret {
     display: none!important;
+  }
+
+  body:not(.navbar-menu-open) .navbar {
+    overflow: hidden;
   }
 
   .navbar {
     max-height: calc(100vh - 75px);
     // max-height: 100vh;
-    overflow: scroll;
     align-content: flex-start;
+    overflow: auto;
     padding: 1rem 1rem;
 
     .navbar-collapse {
       min-height: calc(100vh - 147px);
+      border-top: 1px solid #e2e0e7;
       // min-height: calc(100vh - 106px);
     }
 
     .navbar-brand:before {
       content: "";
-      width: calc(100vw);
+      width: calc(100vw - 15px);
       background-color: inherit;
       height: 74px;
       position: absolute;

@@ -423,8 +423,6 @@ const gitcoinUpdates = () => {
 
 };
 
-let resizeTimeout = null;
-
 // megamenu carets are positioned inside each nav-link
 const $body = $('body');
 const $carets = $('.gc-megamenu-caret');
@@ -438,32 +436,13 @@ $(document, '.dropdown').on('show.bs.dropdown', function(e) {
   $carets.hide();
 });
 
-// add .modal-open to prevent page-scroll when mobile menu is opened
+// add .navbar-menu-open to prevent page-scroll when mobile menu is opened
 $navbarSupportedContent.on('show.bs.collapse', function() {
-  $body.addClass('modal-open');
+  $body.addClass('navbar-menu-open');
 }).on('hide.bs.collapse', function() {
   if (!$('.modal.show').length) {
-    $body.removeClass('modal-open');
+    $body.removeClass('navbar-menu-open');
   }
-});
-
-// close the mobile menu if window is > than mobile dimensions
-const closeMobileMenu = function() {
-  const window_width = $body.width();
-
-  if (window_width > 767) {
-    $body.removeClass('modal-open');
-  } else if ($navbarSupportedContent.hasClass('show') && !$navbarSupportedContent.hasClass('modal-open')) {
-    $body.addClass('modal-open');
-  }
-};
-
-// debounce the resize event
-window.addEventListener('resize', function() {
-  // clear the timeout
-  clearTimeout(resizeTimeout);
-  // start timing for event "completion"
-  resizeTimeout = setTimeout(closeMobileMenu, 30);
 });
 
 // carousel/collabs/... inside menu
