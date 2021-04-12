@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat grants_extra %}
+{% load i18n static compress date_fromisoformat grants_extra split %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -214,7 +214,11 @@ along with this program. If not,see
                   </div>
                   <div class="col-9 col-lg-10 pl-0 pl-lg-2">
                     <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
-                    <p class="text-grey-400 font-subheader">{{ bounty.metadata.issueKeywords.lower }}</p>
+                    <p class="text-grey-400 font-subheader">
+                      {% for keyword in bounty.metadata.issueKeywords|split:',' %}
+                        <small class="badge badge--bluelight">{{keyword.lower}}</small>
+                      {% endfor %}
+                    </p>
                     <div class="d-flex">
                       <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
                       <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
@@ -304,7 +308,7 @@ along with this program. If not,see
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
                 <div class="mb-4">
                   <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
-                  <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects.</p>
+                  <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto.</p>
                 </div>
                 <div>
                   <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
