@@ -336,25 +336,38 @@ along with this program. If not,see
             Ready to learn?
           </h2>
         </header>
-        <div class="col-12 col-md-6 mt-4 pr-md-1">
-          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 mr-0 mr-md-2 h-100">
-            <div class="mb-4">
-              <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
-              <p class="py-2 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
-            </div>
-            <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
+                <p class="font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
+              </div>
+              <div>
+                <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-12 col-md-6 mt-4 pl-md-1">
-          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 ml-0 ml-md-2 h-100">
-            <div class="mb-4">
-              <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
-              <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
+                <p class="font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+              </div>
+              <div>
+                <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="https://kernel.community/">{% trans "Explore Kernel" %}</a>
+              </div>
             </div>
-            <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="https://kernel.community/">Explore Kernel</a>
+          </div>
+          <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3 mt-lg-0">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn with Quests</h4>
+                <p class="font-bigger-1">Learn web3 by doing quests and be rewarded.</p>
+              </div>
+              <div>
+                <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'quests_index' %}">{% trans "Discover Quests" %}</a>
+              </div>
             </div>
           </div>
         </div>
