@@ -170,14 +170,14 @@
   }
 
   .navbar {
-    max-height: calc(100vh - 82px);
+    max-height: calc(100vh - 75px);
     // max-height: 100vh;
     overflow: scroll;
     align-content: flex-start;
     padding: 1rem 1rem;
 
     .navbar-collapse {
-      min-height: calc(100vh - 154px);
+      min-height: calc(100vh - 147px);
       // min-height: calc(100vh - 106px);
     }
 

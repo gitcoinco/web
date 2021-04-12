@@ -173,3 +173,28 @@
   }
 }
 
+// media-queries to handle w-*-* (widths at breakpoints)
+@media (min-width: 768px) {
+  .w-md-100 {
+    width:100%;
+  }
+  .w-md-50 {
+    width: 50%;
+  }
+  .w-md-25 {
+    width: 25%;
+  }
+}
+
+@media (min-width: 992px) {
+  .w-lg-100 {
+    width:100%;
+  }
+  .w-lg-50 {
+    width: 50%;
+  }
+  .w-lg-25 {
+    width: 25%;
+  }
+}
+
