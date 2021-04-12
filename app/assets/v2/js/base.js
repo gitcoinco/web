@@ -428,6 +428,9 @@ const $body = $('body');
 const $carets = $('.gc-megamenu-caret');
 const $navbarSupportedContent = $('#navbarSupportedContent');
 
+// anchor to 75px when the menu is open to hide top menu
+let anchored = false;
+
 // show/hide megamenu caret
 $(document, '.dropdown').on('show.bs.dropdown', function(e) {
   $carets.hide();
@@ -439,9 +442,15 @@ $(document, '.dropdown').on('show.bs.dropdown', function(e) {
 // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
 $navbarSupportedContent.on('show.bs.collapse', function() {
   $body.addClass('navbar-menu-open');
+  if (window.scrollY < 75) {
+    anchored = true;
+    window.scrollTo(0, 75);
+  }
 }).on('hide.bs.collapse', function() {
-  if (!$('.modal.show').length) {
-    $body.removeClass('navbar-menu-open');
+  $body.removeClass('navbar-menu-open');
+  if (anchored) {
+    anchored = false;
+    window.scrollTo(0, 0);
   }
 });
 

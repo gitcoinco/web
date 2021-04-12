@@ -164,21 +164,27 @@
     display: none!important;
   }
 
-  body:not(.navbar-menu-open) .navbar {
-    overflow: hidden;
+  body.navbar-menu-open .navbar {
+    height: 100vh;
+    overflow: auto;
+
+    .collapsing {
+      position: relative;
+      height: 0;
+      overflow: hidden;
+      -webkit-transition: height .05s ease;
+          -o-transition: height .05s ease;
+              transition: height .05s ease;
+    }
   }
 
   .navbar {
-    max-height: calc(100vh - 75px);
-    // max-height: 100vh;
+    overflow: hidden;
     align-content: flex-start;
-    overflow: auto;
     padding: 1rem 1rem;
 
     .navbar-collapse {
-      min-height: calc(100vh - 147px);
       border-top: 1px solid #e2e0e7;
-      // min-height: calc(100vh - 106px);
     }
 
     .navbar-brand:before {
