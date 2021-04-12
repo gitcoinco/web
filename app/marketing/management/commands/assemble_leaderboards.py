@@ -62,6 +62,8 @@ QUARTERLY_CUTOFF = timezone.now() - timezone.timedelta(days=90)
 YEARLY_CUTOFF = timezone.now() - timezone.timedelta(days=365)
 ALL_CUTOFF = timezone.now() - timezone.timedelta(days=365*10)
 
+only_save_below_rank = 9999
+
 
 def should_suppress_leaderboard(handle):
     if not handle:
@@ -215,6 +217,10 @@ def do_leaderboard():
                     if True:
                         rank = 1
                         for item in results:
+
+                            if rank > only_save_below_rank:
+                                continue
+
                             idx = item[0]
                             count = item[1]
                             amount = item[2]
