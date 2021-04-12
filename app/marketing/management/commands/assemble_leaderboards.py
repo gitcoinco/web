@@ -74,28 +74,28 @@ def should_suppress_leaderboard(handle):
     return False
 
 
-def do_leaderboard_feed():
+def do_leaderboard_feed(cadence, cadence_ui):
     from dashboard.models import Activity
     max_rank = 25
     for _type in [PAYERS, EARNERS, ORGS]:
-        key = f'{WEEKLY}_{_type}'
+        key = f'{cadence}_{_type}'
         lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all')
         print(key, lrs.count())
         for lr in lrs:
             metadata = {
-                'title': f"was ranked #{lr.rank} on the Gitcoin Weekly {_type.title()} Leaderboard",
+                'title': f"was ranked #{lr.rank} on the Gitcoin {cadence_ui} {_type.title()} Leaderboard",
                 'link': f'/leaderboard/{_type}'
                 }
             if lr.profile:
                 Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
 
     profile = Profile.objects.filter(handle='gitcoinbot').first()
-    for _type in [PAYERS, EARNERS, ORGS, CITIES, TOKENS]:
+    for _type in [PAYERS, EARNERS, ORGS, TOKENS]:
         url = f'/leaderboard/{_type}'
         what = _type.title() if _type != PAYERS else "Funders"
-        key = f'{WEEKLY}_{_type}'
+        key = f'{cadence}_{_type}'
         lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all').order_by('rank')[0:10]
-        copy = f"<a href={url}>Weekly {what} Leaderboard</a>:<BR>"
+        copy = f"<a href={url}>{cadence_ui} {what} Leaderboard</a>:<BR>"
         counter = 0
         for lr in lrs:
             profile_link = f"<a href=/{lr.profile}>@{lr.profile}</a>" if _type not in [CITIES, TOKENS] else f"<strong>{lr.github_username}</strong>"
@@ -103,7 +103,7 @@ def do_leaderboard_feed():
         metadata = {
             'copy': copy,
         }
-        key = f'{WEEKLY}_{_type}'
+        key = f'{cadence}_{_type}'
         Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
 
 
@@ -144,8 +144,6 @@ ORDER BY amount DESC"""
 
 
 def do_leaderboard():
-    global ranks
-    global counts
     CUTOFF = MONTHLY_CUTOFF
 
     products_to_content_type = {
@@ -194,8 +192,9 @@ def do_leaderboard():
                 created_on = timezone.now()
                 with transaction.atomic():
                     print(" - saving -")
-                    lrs = LeaderboardRank.objects.active().filter(product=product)
-                    lrs = lrs.filter(Q(leaderboard__startswith=WEEKLY) | Q(leaderboard__startswith=MONTHLY))
+                    key = f"{tag}_{breakdown}"
+                    lrs = LeaderboardRank.objects.active()
+                    lrs = lrs.filter(leaderboard=key)
                     lrs.update(active=False)
 
                     # save new LR in DB
@@ -203,12 +202,13 @@ def do_leaderboard():
                     if True:
                         rank = 1
                         for item in results:
-                            print(tag, item)
-                            idx = item['idx']
-                            count = item['num']
-                            amount = item['amount']
-                            print(idx, num, amount)
-                            key = f"{tag}_{product}"
+                            idx = item[0]
+                            count = item[1]
+                            amount = item[2]
+                            if not amount:
+                                continue
+                            print(idx, count, amount, rank, product)
+
                             lbr_kwargs = {
                                 'count': count,
                                 'active': True,
@@ -220,13 +220,18 @@ def do_leaderboard():
                                 'created_on': created_on,
                             }
 
-                            profile = Profile.objects.get(handle=idx.lower())
-                            if profile.suppress_leaderboard:
-                                continue
+                            profile = None
+                            try:
+                                profile = Profile.objects.get(handle=idx.lower())
+                                if profile.suppress_leaderboard:
+                                    continue
+                            except Exception as e:
+                                print(e)
+                            lbr_kwargs['profile'] = profile
 
                             LeaderboardRank.objects.create(**lbr_kwargs)
                             rank += 1
-                            print(key, index_term, amount, count, rank, product)
+
 
 
 class Command(BaseCommand):
@@ -235,4 +240,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         do_leaderboard()
-        do_leaderboard_feed()
+
+        cadences = [
+            (DAILY, 'Daily'),
+        ]
+        if (timezone.now().strftime('%A')) == "Friday":
+            cadences.append((WEEKLY, 'Weekly'))
+        if int(timezone.now().strftime('%d')) == 1:
+            cadences.append((MONTHLY, 'Monthly'))
+        if int(timezone.now().strftime('%j')) == 1:
+            cadences.append((YEARLY, 'Yearly'))
+        for ele in cadences:
+            do_leaderboard_feed(ele[0], ele[1])

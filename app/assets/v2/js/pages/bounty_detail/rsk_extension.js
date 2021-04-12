@@ -17,7 +17,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
       console.log(ethereum.selectedAddress);
     } catch (e) {
       modal.closeModal();
-      _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'error');
+      _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'danger');
       return;
     }
 
@@ -39,7 +39,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     rbtcBalance = rskClient.utils.fromWei(balanceInWei, 'ether');
 
     if (Number(rbtcBalance) < amount) {
-      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
+      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
       return;
     }
 
@@ -62,7 +62,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
     amountInWei = amount * 1.0 * Math.pow(10, vm.decimals);
 
     if (Number(balance) < amountInWei) {
-      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
+      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
       return;
     }
 
@@ -90,7 +90,7 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
 
   function callback(error, from_address, txn) {
     if (error) {
-      _alert({ message: gettext('Unable to payout bounty due to: ' + error) }, 'error');
+      _alert({ message: gettext('Unable to payout bounty due to: ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -114,11 +114,11 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
           _alert('Payment Successful');
 
         } else {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function (error) {
-        _alert('Unable to make payout bounty. Please try again later', 'error');
+        _alert('Unable to make payout bounty. Please try again later', 'danger');
         console.log(error);
       });
     }

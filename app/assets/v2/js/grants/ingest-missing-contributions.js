@@ -41,7 +41,7 @@ Vue.component('grants-ingest-contributions', {
         // Form was filled out, so validate the inputs
         isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
         isValidAddress = ethers.utils.isAddress(userAddress);
-        
+
         if (txHash && !isValidTxHash) {
           this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
         } else if (userAddress && !isValidAddress) {
@@ -185,7 +185,7 @@ Vue.component('grants-ingest-contributions', {
           console.error(err);
           throw new Error('Something went wrong. Please verify the form parameters and try again later');
         }
-        
+
         // Notify user of success status, and clear form if successful
         console.log('ingestion response: ', json);
         if (!json.success) {
@@ -220,7 +220,7 @@ Vue.component('grants-ingest-contributions', {
       else if (typeof err === 'string')
         message = err;
 
-      _alert(message, 'error');
+      _alert(message, 'danger');
       this.submitted = false;
     }
   },

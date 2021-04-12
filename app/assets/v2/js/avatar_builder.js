@@ -210,7 +210,7 @@ function purchaseOption(option, value, target) {
       }, function(error, result) {
         indicateMetamaskPopup(true);
         if (error) {
-          _alert('There was an error.', 'error');
+          _alert('There was an error.', 'danger');
           return;
         }
         showBusyOverlay();
@@ -442,7 +442,7 @@ function saveAvatar(onSuccess) {
         text = response.responseJSON.message;
       }
       $('#later-button').show();
-      _alert({ message: text}, 'error');
+      _alert({ message: text}, 'danger');
     }
   });
 }
