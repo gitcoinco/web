@@ -541,9 +541,10 @@ def sync_payout(fulfillment):
         token_name = fulfillment.bounty.token_name
 
     if fulfillment.payout_type == 'web3_modal':
-        if token_name = 'ETH':
-            sync_eth_payout(fulfillment)
-        elif token_name == 'CKB':
+        sync_eth_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'manual':
+        if token_name == 'CKB':
             sync_nervos_payout(fulfillment)
 
     elif fulfillment.payout_type == 'qr':
