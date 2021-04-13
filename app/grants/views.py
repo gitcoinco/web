@@ -27,6 +27,7 @@ import re
 import time
 import uuid
 from decimal import Decimal
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib import messages
@@ -92,7 +93,6 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Comment, Favorite, PinnedPost
 from townsquare.utils import can_pin
-from urllib.parse import urlencode
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
