@@ -17,7 +17,9 @@
 '''
 import time
 import warnings
+import csv
 
+show_debug = False
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
@@ -36,21 +38,29 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         outputs = {}
         for file in csv_files:
-            with open(file) as csvfile:
-                reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-                row in reader:
-                    print(row)
-                    handle = row[0]
-                    pct = row[1]
-                    tokens = row[2]
-                    profile_id = Profile.objects.get(handle=handle.lower()).pk
+            with open('../input/' + file) as csvfile:
+                reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                for row in reader:
+                    try:
+                        handle = row[0]
+                        if handle == 'handle':
+                            continue
+                        pct = row[1]
+                        tokens = float(row[2].replace(",",''))
+                        profile_id = Profile.objects.get(handle=handle.lower()).pk
 
-                    if handle not in outputs.keys():
-                        outputs[handle] = {
-                            'id': profile_id,
-                        }
-                    if file not in outputs[handle].keys():
-                        outputs[handle][file] = tokens * 10 ** decimals
+                        if handle not in outputs.keys():
+                            outputs[handle] = {
+                                'id': profile_id,
+                            }
+                        if file not in outputs[handle].keys():
+                            outputs[handle][file] = int(tokens * 10 ** decimals)
+                    except Exception as e:
+                        if show_debug:
+                            print('------------------')
+                            print(file)
+                            print(handle, pct, tokens)
+                            print(e)
         # output
         # handle,user_id,total,active_user,kernel,GMV
         print('handle,user_id,total,active_user,kernel,GMV')
