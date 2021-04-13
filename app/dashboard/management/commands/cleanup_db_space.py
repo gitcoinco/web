@@ -77,4 +77,3 @@ class Command(BaseCommand):
                 rank__gt=100,
             ).delete()
         print(f'LeaderboardRank: {result}')
-

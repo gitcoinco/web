@@ -2867,6 +2867,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             # delete portfolio item
             if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
                 messages.error(request, 'Not Authorized')
+                return
             pi = PortfolioItem.objects.filter(pk=pk).first()
             if pi:
                 pi.delete()
