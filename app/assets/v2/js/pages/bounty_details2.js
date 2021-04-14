@@ -836,7 +836,9 @@ Vue.mixin({
       }
 
       if (Object.keys(vm.errors).length === 0) {
-        // TODO: update bounty with new owner address
+        fetchData(`/bounty/change/${vm.bounty.pk}`, 'POST', JSON.stringify({
+          bounty_owner_address: vm.bounty.bounty_owner_address
+        }), { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
       }
     }
   },
