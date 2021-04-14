@@ -40,7 +40,7 @@
   <template v-if='row.activity_type == "new_bounty"'>
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
-      <i class="fad fa-sparkles" style="right: 0.2em; color: #3e00ff;"></i>
+      <i class="fad fa-sparkles" style="right: 0.2em; color: #6F3FF5;"></i>
     </div>
   </template>
   <div class="activity_main row">
@@ -101,7 +101,7 @@
         </template>
         <template v-else-if="row.activity_type == 'created_kudos'">
           a new kudos has been minted:
-          <a href="row.kudos.external_url">
+          <a href="{{ row.kudos.external_url }}">
             {{ row.kudos.ui_name }}
           </a>
         </template>
@@ -400,7 +400,7 @@
   </div>
   {% elif row.metadata.resource.type == 'content' %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content">
+    <div class="row align-items-center bg-light content cursor-none" >
       <div class="col-12 col-md-3 text-center">
         {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
           <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">

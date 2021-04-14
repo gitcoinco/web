@@ -9,7 +9,7 @@ const { Zero: ZERO } = ethers.constants;
 const { BigNumber } = ethers;
 let appCart;
 
-window.addEventListener('dataWalletReady', function(e) {
+document.addEventListener('dataWalletReady', function(e) {
   appCart.$refs['cart'].network = networkName;
 }, false);
 
@@ -17,7 +17,7 @@ window.addEventListener('dataWalletReady', function(e) {
 
 // Constants
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
+const gitcoinAddress = '0xd08Fe0c97c80491C6ee696Ee8151bc6E57d1Bf1d'; // Gitcoin donation address for mainnet and rinkeby
 
 // Contract parameters and constants
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -66,12 +66,31 @@ Vue.component('grants-cart', {
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
-      // Collection
-      showCreateCollection: false,
-      collectionTitle: '',
-      collectionDescription: '',
-      collections: [],
-      selectedCollection: null
+      isPolkadotExtInstalled: false,
+      chainScripts: {
+        'POLKADOT': [
+          `${static_url}v2/js/lib/polkadot/core.min.js`,
+          `${static_url}v2/js/lib/polkadot/extension.min.js`,
+          `${static_url}v2/js/lib/polkadot/utils.js`,
+          `${static_url}v2/js/grants/cart/polkadot_extension.js`
+        ],
+        'BINANCE': [
+          `${static_url}v2/js/lib/binance/utils.js`,
+          `${static_url}v2/js/grants/cart/binance_extension.js`
+        ],
+        'HARMONY': [
+          `${static_url}v2/js/lib/harmony/HarmonyUtils.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyJs.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyAccount.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyCrypto.browser.js`,
+          `${static_url}v2/js/lib/harmony/HarmonyNetwork.browser.js`,
+          `${static_url}v2/js/lib/harmony/utils.js`,
+          `${static_url}v2/js/grants/cart/harmony_extension.js`
+        ],
+        'RSK': [
+          `${static_url}v2/js/grants/cart/rsk_extension.js`
+        ]
+      }
     };
   },
 
@@ -86,6 +105,15 @@ Vue.component('grants-cart', {
 
       return result;
 
+    },
+    grantsTenants() {
+      let vm = this;
+      var grantsTenants = vm.grantData.reduce(function(result, grant) {
+
+        return result.concat(grant.tenants);
+      }, []);
+
+      return grantsTenants;
     },
     grantsCountByTenant() {
       let vm = this;
@@ -132,17 +160,6 @@ Vue.component('grants-cart', {
       return document.contxt.github_handle;
     },
 
-    // Determine when activate the save collection button
-    isValidCollection() {
-      if (this.selectedCollection !== null) {
-        return true;
-      } else if (this.collectionTitle.length > 3 && this.collectionDescription.length < 140) {
-        return true;
-      }
-
-      return false;
-    },
-
     // Percentage of donation that goes to Gitcoin
     gitcoinFactor() {
       return Number(this.gitcoinFactorRaw) / 100;
@@ -180,7 +197,7 @@ Vue.component('grants-cart', {
 
     // Array of objects containing all donations and associated data
     donationInputs() {
-      if (!this.grantsByTenant) {
+      if (!this.grantsByTenant || this.tabSelected !== 'ETH') {
         return undefined;
       }
 
@@ -188,7 +205,7 @@ Vue.component('grants-cart', {
       let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
-        const amount = parseUnits(String(grant.grant_donation_amount), tokenDetails.decimals)
+        const amount = parseUnits(String(grant.grant_donation_amount || 0), tokenDetails.decimals)
           .mul(gitcoinFactor)
           .div(100);
 
@@ -263,6 +280,9 @@ Vue.component('grants-cart', {
       // The below heuristics are used instead of `estimateGas()` so we can send the donation
       // transaction before the approval txs are confirmed, because if the approval txs
       // are not confirmed then estimateGas will fail.
+      if (this.chainId !== '1') {
+        return;
+      }
 
       // If we have a cart where all donations are in Dai, we use a linear regression to
       // estimate gas costs based on real checkout transaction data, and add a 50% margin
@@ -304,6 +324,7 @@ Vue.component('grants-cart', {
           return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
 
         }
+
         return accumulator + 100000; // generic token donation gas estimate
       }, 0);
 
@@ -336,11 +357,6 @@ Vue.component('grants-cart', {
     isBinanceExtInstalled() {
       return window.BinanceChain || false;
     },
-
-    isPolkadotExtInstalled() {
-      return polkadot_extension_dapp.isWeb3Injected;
-    },
-
     isRskExtInstalled() {
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
@@ -360,6 +376,33 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    setChainScripts: function() {
+      let vm = this;
+
+      vm.grantsTenants.forEach(function(tenant) {
+        tenant = tenant === 'KUSAMA' ? 'POLKADOT' : tenant;
+        let cb = tenant === 'POLKADOT' ? vm.isPolkadotLoaded : null;
+
+        if (vm.chainScripts[tenant]) {
+          vm.loadDynamicScripts(cb, vm.chainScripts[tenant], `${tenant}-script`);
+        }
+      });
+    },
+    async isPolkadotLoaded() {
+      let vm = this;
+
+      const asyncFunction = (t) => new Promise(resolve => setTimeout(resolve, t));
+
+      return (async() => {
+
+        while (!Object.prototype.hasOwnProperty.call(window, 'polkadot_extension_dapp'))
+          await asyncFunction(3000);
+        return await polkadot_extension_dapp.isWeb3Injected;
+      })().then(result => {
+        vm.isPolkadotExtInstalled = result;
+        return vm.isPolkadotExtInstalled;
+      });
+    },
     // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
     // payload. This component listens for that event and uses the data to show the user details
     // and suggestions about their checkout (gas cost estimates and why zkSync may not be
@@ -383,7 +426,9 @@ Vue.component('grants-cart', {
         case 'ETH':
           vm.chainId = '1';
 
-          if (!provider) {
+          if (!web3Modal) {
+            needWalletConnection();
+          } else if (!provider) {
             await onConnect();
           }
           break;
@@ -570,7 +615,7 @@ Vue.component('grants-cart', {
 
       this.grantsByTenant.forEach(grant => {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
-        const totalDonationAmount = parseEther(String(grant.grant_donation_amount))
+        const totalDonationAmount = parseEther(String(grant.grant_donation_amount || 0))
           .mul(String(scaleFactor * 100))
           .div('100');
 
@@ -634,7 +679,7 @@ Vue.component('grants-cart', {
       else if (typeof err === 'string')
         message = err;
 
-      _alert(message, 'error');
+      _alert(message, 'danger');
       this.isCheckoutOngoing = false;
       indicateMetamaskPopup(true);
     },
@@ -658,7 +703,7 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-      return this.currentTokens.filter(token => token.name === name)[0];
+      return this.filterByChainId.filter(token => token.name === name)[0];
     },
 
     async applyAmountToAllGrants(grant) {
@@ -991,6 +1036,7 @@ Vue.component('grants-cart', {
         signature: 'onetime',
         splitter_contract_address: contractAddress,
         subscription_hash: 'onetime',
+        visitorId: document.visitorId,
         // Values that vary by donation
         'gitcoin-grant-input-amount': [],
         admin_address: [],
@@ -1079,15 +1125,20 @@ Vue.component('grants-cart', {
      * success alert
      */
     async finalizeCheckout() {
+      // Number of items descides the timeout time
+      const timeout_amount = 1500 + (this.grantsByTenant.length * 500);
       // Clear cart, redirect back to grants page, and show success alert
-      localStorage.setItem('contributions_were_successful', 'true');
-      localStorage.setItem('contributions_count', String(this.grantsByTenant.length));
-      let timeout_amount = 1500 + (CartData.loadCart().length * 500);
+
+      CartData.setCheckedOut(this.grantsByTenant);
+      // Remove each grant from the cart which has just been checkout
+      this.grantsByTenant.forEach((grant) => {
+        CartData.removeIdFromCart(grant.grant_id);
+      });
 
       setTimeout(function() {
         _alert('Contributions saved', 'success', 1000);
         setTimeout(function() {
-          window.location.href = `${window.location.origin}/grants`;
+          window.location.href = `${window.location.origin}/grants/explorer`;
         }, 500);
       }, timeout_amount);
     },
@@ -1247,44 +1298,26 @@ Vue.component('grants-cart', {
       }
       return false;
     },
+    loadDynamicScripts: function(callback, urlObj, id) {
+      urlObj.forEach(function(source, index) {
+        let existingScript = document.getElementById(id + index);
 
-    // ================== Start collection logic ==================
-    createCollection: async function() {
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const cart = CartData.loadCart();
-      const grantIds = cart.map(grant => grant.grant_id);
-      let response;
+        if (!existingScript) {
+          const script = document.createElement('script');
 
-      const body = {
-        collectionTitle: this.collectionTitle,
-        collectionDescription: this.collectionDescription,
-        grants: grantIds
-      };
+          script.src = urlObj[index];
+          script.id = id + index;
+          document.body.appendChild(script);
 
-      if (this.selectedCollection) {
-        body['collection'] = this.selectedCollection;
-      }
-
-      try {
-
-        response = await fetchData('/grants/v1/api/collections/new', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
-        const redirect = `/grants/collections?collection_id=${response.collection.id}`;
-
-        _alert('Congratulations, your new collection was created successfully!', 'success');
-        this.cleanCollectionModal();
-        this.showCreateCollection = false;
-
-        window.location = redirect;
-
-      } catch (e) {
-        _alert(e.msg, 'error');
-      }
-    },
-    cleanCollectionModal: function() {
-      this.collectionTitle = '';
-      this.collectionDescription = '';
+          script.onload = () => {
+            if (callback)
+              callback();
+          };
+        }
+        if (existingScript && callback)
+          callback();
+      });
     }
-    // ================== End collection logic ==================
   },
 
   watch: {
@@ -1373,68 +1406,44 @@ Vue.component('grants-cart', {
     });
 
     // Read array of grants in cart from localStorage
-    const grantData = CartData.loadCart();
+    let grantData = CartData.loadCart();
+    const grantIds = grantData.map(grant => grant.grant_id);
 
-    // Make sure none have empty currencies, and if they do default to 0.001 ETH. This is done
-    // to prevent the cart from getting stuck loading if a currency is empty
-    grantData.forEach((grant, index) => {
-      if (!grant.grant_donation_currency) {
-        grantData[index].grant_donation_currency = 'ETH';
-        grantData[index].grant_donation_amount = '0.001';
-      }
+    // Fetch updated Grants data for all cart grants
+    const url = `${window.location.origin}/grants/v1/api/grants?pks=${grantIds.join(',')}&slim=true`;
+    const response = await fetch(url);
+    const updatedGrant = (await response.json()).grants;
+
+    grantData.forEach(async(grant, index) => {
+
+      const grantIndex = updatedGrant.findIndex(item => {
+        return Number(item.grant_id) === Number(grant.grant_id);
+      });
+
+      // Make sure none have empty currencies, and if they do default to 0.001 ETH. This is done
+      // to prevent the cart from getting stuck loading if a currency is empty
+      updatedGrant[grantIndex]['grant_donation_currency'] = grant.grant_donation_currency ? grant.grant_donation_currency : 'ETH';
+      updatedGrant[grantIndex]['grant_donation_amount'] = grant.grant_donation_amount ? grant.grant_donation_amount : '0.001';
     });
-    CartData.setCart(grantData);
-    this.grantData = grantData;
+
+    if (updatedGrant) {
+      CartData.setCart(updatedGrant);
+      this.grantData = updatedGrant;
+    } else {
+      this.grantData = [];
+    }
 
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
 
-    // Get list of all grant IDs and unique tokens in the cart
-    const grantIds = this.grantData.map(grant => grant.grant_id);
+    // Load needed scripts based on tenants
+    this.setChainScripts();
 
-    // Fetch updated CLR curves for all grants
-    const url = `${window.location.origin}/grants/v1/api/grants?pks=${grantIds.join(',')}`;
-    const response = await fetch(url);
-    const clrCurves = (await response.json()).grants;
-
-    // Update CLR curves
-    this.grantData.forEach((grant, index) => {
-      // Find the clrCurves entry with the same grant ID as this grant
-      const clrIndex = clrCurves.findIndex(item => {
-        return Number(item.id) === Number(grant.grant_id);
-      });
-
-      // Update grantData from server
-      this.$set(this.grantData[index], 'grant_clr_prediction_curve', clrCurves[clrIndex].clr_prediction_curve);
-      this.$set(this.grantData[index], 'is_on_team', clrCurves[clrIndex].is_on_team);
-
-    });
-
-    // Wait until we can load token list
-    let elapsedTime = 0;
-    let delay = 50; // 50 ms debounce
-
-    while (!this.tokenList) {
-      try {
-        // Default to mainnet if nothing found after 5s
-        var network = elapsedTime >= 5000 ? 'mainnet' : document.web3network;
-
-        if (typeof network != 'undefined') {
-          this.tokenList = tokens(network);
-        }
-      } catch (err) {}
-      elapsedTime += delay;
-      await this.sleep(delay);
-    }
     // Support responsive design
     window.addEventListener('resize', this.onResize);
 
     // Show user cart now
     this.isLoading = false;
-
-    const collections_response = await fetchData('/grants/v1/api/collections/');
-
-    this.collections = collections_response.collections;
   },
 
   beforeDestroy() {

@@ -123,7 +123,7 @@
   <body class="interior {{active}} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
-      <div class="container-fluid header sticky-top dash">
+      <div class="header sticky-top dash">
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'shared/nav_hackathons.html' %}
       </div>
@@ -145,7 +145,7 @@
                     {{ prize_count }} Prizes
                   </p>
                   <p class="mb-0 font-body">
-                    <span class="mr-md-3">{{ num_participants }} participants</span>
+                    <span class="mr-md-3">{{ num_participants }} registrants</span>
                     <span>{{ num_submissions }} submissions</span>
                   </p>
                 </div>
@@ -161,7 +161,7 @@
               </div>
             </div>
 
-            <div class="col-12 body hackathon-explorer px-0">
+            <div class="col-12 body hackathon-explorer">
               <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 light-blue" class="row">
                 <template v-slot:tabs-start>
                   <div class="hack-logo-wrapper d-none d-md-block">
@@ -334,7 +334,7 @@
                         </div>
                       </div>
                       <div class="form-group mb-3 mt-4">
-                        <b-button class="btn btn-primary"@click="updateBountyMentors();">Update Mentors</b-button>
+                        <b-button variant="primary" class="btn btn-primary" @click="updateBountyMentors();">Update Mentors</b-button>
                       </div>
                     </div>
                   </manage-mentors>
@@ -343,7 +343,7 @@
             </div>
           </div>
         </div>
-  
+
       <div id="onboard-footer" class="row hidden font-body">
         <div class="col-12">
           <p>{% trans "Want to Fund an issue ?" %}

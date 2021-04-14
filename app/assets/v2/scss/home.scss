@@ -1,7 +1,3 @@
-.navbar {
-  // background-color: #0d023b;
-}
-
 .banner {
   background-image: url(/static/v2/images/tribes-bg.png);
   background-size: contain;
@@ -30,16 +26,8 @@
 }
 
 .testimonial-card {
-  border: 4px solid #3E00FF;
+  border: 4px solid #6F3FF5;
   width: 32rem;
-}
-
-.testimonial-card:first-child {
-  /* margin-left: -25%; */
-}
-
-.testimonial-card:last-child {
-  /* margin-right: -25%; */
 }
 
 .card-description {
@@ -79,7 +67,7 @@
   width: 6rem;
   height: 6rem;
   border-radius: 50%;
-  border: 3px solid #3E00FF;
+  border: 3px solid #6F3FF5;
   object-fit: contain;
 }
 
@@ -113,7 +101,7 @@
 }
 
 .issue span {
-  color: #3E00FF;
+  color: #6F3FF5;
 }
 
 .navbar .interior .dropdown-item span {
@@ -121,24 +109,9 @@
   font-size: 12px;
 }
 
-// .navbar .interior .dropdown-item:hover span {
-//   color: #fff;
-// }
-
-// .navbar .nav-link:hover,
-// .navbar .nav-link:active {
-//   border-bottom: 3px solid #fff;
-//   border-radius: 0;
-//   background-color: transparent;
-// }
-
 .banner__h2 {
   font-size: 2.4rem;
   line-height: 3rem;
-}
-
-.homepage .banner #fund-issue {
-  // border: 2px solid #3E00FF;
 }
 
 .optimize_oss p,
@@ -214,8 +187,8 @@ img.play {
 }
 
 .button__home {
-  border: 3px solid #3E00FF;
-  color: #3E00FF;
+  border: 3px solid #6F3FF5;
+  color: #6F3FF5;
   font-weight: 600;
   text-align: left;
   padding: 1rem 1.8rem;
@@ -230,13 +203,13 @@ img.play {
 }
 
 .button__home:hover {
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   color: #fff !important;
   border-radius: 3px;
 }
 
 .products {
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   margin-top: 10rem;
   text-align: center;
   color: #fff;
@@ -354,14 +327,14 @@ p.video-preview__index {
 
 
 .button__blue {
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   color: #fff !important;
   font-weight: 600;
 }
 
 .button__blue:hover {
   background-color: #fff;
-  color: #3E00FF !important;
+  color: #6F3FF5 !important;
 }
 
 .button__green {
@@ -478,13 +451,6 @@ figure:hover::before {
   }
 }
 
-// @media (min-width: 992px) {
-//   .mx-auto .nav-item {
-//     margin-left: 0.75rem;
-//     margin-right: 0.75rem;
-//   }
-// }
-
 
 @media (max-width: 1024px) {
   .realign-img,
@@ -514,7 +480,7 @@ figure:hover::before {
   .box-cta {
     margin: 0 !important;
   }
-  
+
   .work-internet {
     width: 17rem;
   }
@@ -558,12 +524,12 @@ figure:hover::before {
 }
 
 .box-cta__left {
-  box-shadow: 33px 33px 0 -20px #3E00FF;
+  box-shadow: 33px 33px 0 -20px #6F3FF5;
 
 }
 
 .box-cta__right {
-  box-shadow: -33px 33px 0 -20px #3E00FF;
+  box-shadow: -33px 33px 0 -20px #6F3FF5;
 }
 
 .box-cta__title {

@@ -17,19 +17,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
-  <div class="row">
-    <div class="container py-5 ">
-      <div class="quests-hero white my-3">
+  <div class="row back_gradient mb-4">
+    <div class="container py-5">
+      <div class="quests-hero white mt-0 mt-sm-3">
         <div class="row">
           <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-            <img class="mr-1 demo" src="{% static "v2/images/quests/hero.png" %}">
+            <img class="mr-0 mr-sm-1 demo col-12 col-sm-auto border-0" src="{% static "v2/images/quests/hero.png" %}">
           </div>
           <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
             <h1 class="font-title-xl font-weight-semibold hero-p-mobile">Explore. Learn. Battle Baddies. Win Rewards.</h1>
             <p class="hero-p-mobile my-4 pt-1 font-header">
               Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
             </p>
-            <a id=explore_quests class="btn btn-primary px-4" href="#available_quests">
+            <a id=explore_quests class="btn btn-primary btn-lg px-4" href="#available_quests">
               <img class="mr-1 white-icon" height="22" src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}">
               Explore Quests
             </a>
@@ -38,8 +38,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
   </div>
-
-  <div class="row indent_on_mobile available_quests" id="available_quests">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto available_quests" id="available_quests">
     <div class="w-100">
       <form method="GET" id=search_form>
         <input class="float-right mt-3 mr-4 w-25" type="text" name="q" value="{{query}}" placeholder="Search">
@@ -159,7 +158,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% endfor %}
   </div>
 
-  <div class="row indent_on_mobile" id=leaderboard_top>
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto" id=leaderboard_top>
     <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
     <div id="announce">
       <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
@@ -172,7 +171,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 
 
-  <div class="row indent_on_mobile" id="leaderboard_nav">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto" id="leaderboard_nav">
     <div id="leaderboard_tabs">
       <div class="container">
         <ul class="nav nav-tabs mt-3 font-body" id="myTab" role="tablist">
@@ -199,9 +198,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
   </div>
-  <div class="row indent_on_mobile leaderboard_tab my_points hidden">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto leaderboard_tab my_points hidden">
 
-    <div class="row indent_on_mobile point_history w-100" style="background-color: #fafafa; min-height: 400px;">
+    <div class="row indent_on_mobile col-12 col-sm-10 mx-auto point_history w-100" style="background-color: #fafafa; min-height: 400px;">
       <h3 class="mt-2">
         <i class="ml-1 far fa-chart-bar"></i>
         @{{github_handle}} has {{point_value}} Points
@@ -264,8 +263,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% endif %}
     </div>
   </div>
-  <div class="row indent_on_mobile leaderboard_tab how_to_earn hidden">
-  <div class="row indent_on_mobile" style="background-color: #fafafa;">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto leaderboard_tab how_to_earn hidden">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto" style="background-color: #fafafa;">
     <h3 class="mt-3">
       <i class="ml-1 fab fa-ethereum"></i>
       By completing quests.
@@ -371,7 +370,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   </div>
   {% for round_number, this_leaderboard in leaderboard.items %}
-    <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
+    <div class="row indent_on_mobile col-12 col-sm-10 mx-auto leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
       <div class="leaderboard_hero hide_on_mobile">
         {% for item in this_leaderboard.1 %}
         <div class="inner_row {{ item.4|apnumber }}">
@@ -421,13 +420,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   {% endfor %}
 
-  <div class="container-fluid py-1 announce-bot indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/lovebot.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">We &lt;3 Feedback.</h4>
@@ -442,13 +441,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   </div>
 
-  <div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/droid.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Quest Content Squad Here; Looking for new Quest Topic Ideas..</h4>
@@ -477,13 +476,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 
 
-  <div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/super_bot.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Our Roadmap is Decentralized. Vote on what we should BUIDL next.</h4>
@@ -496,13 +495,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 
 
-  <div id=create_quest class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile">
+  <div id=create_quest class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Want to Write a Gitcoin Quest?</h4>
@@ -520,13 +519,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   </div>
 
-  <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/composability.svg' %}" />
     </div>
   </div>
 
-  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile">
+  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Want to BUIDL a Gitcoin Quest Game Dynamic?</h4>
@@ -560,13 +559,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   </div>
 
-  <div class="container-fluid py-1 announce-bot announce-bot5 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot5 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/green_monster.svg' %}" />
     </div>
   </div>
 
-  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile">
+  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <h4 class="pt-0">Play Gitcoin Quests Now.</h4>
       <p>We'll automagically choose your next quest for you.</p>

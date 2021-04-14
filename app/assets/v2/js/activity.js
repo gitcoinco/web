@@ -32,7 +32,7 @@ $(document).ready(function() {
   $(document).on('click', '.click_here_to_join_video', function(e) {
     e.preventDefault();
     if (typeof document.jitsi_api != 'undefined') {
-      _alert('You can only be in one video call at a time.', 'error', 1000);
+      _alert('You can only be in one video call at a time.', 'danger', 1000);
       return;
     }
     const animals = [ 'Hamster', 'Marmot', 'Robot', 'Ferret', 'Squirrel' ];
@@ -196,7 +196,7 @@ $(document).ready(function() {
 
   // refresh activity page
   document.buffered_rows = [];
-  var refresh_interval = 7000;
+  var refresh_interval = 55000;
   var max_pk = null;
   var run_longpoller = function(recursively) {
     if (document.hidden || !document.long_poller_live) {
@@ -260,8 +260,10 @@ $(document).ready(function() {
   }, 1000);
 
   $(document).on('click', '.activity_stream .content', function(e) {
-    window.open($(this).find('a.d-block').first().attr('href'));
-    e.preventDefault();
+    if ($(this).data('href')) {
+      window.open($(this).data('href'));
+      e.preventDefault();
+    }
   });
 
   // expand attachments
@@ -366,7 +368,7 @@ $(document).ready(function() {
   $(document).on('click', '.delete_activity', function(e) {
     e.preventDefault();
     if (!document.contxt.github_handle) {
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
 
@@ -393,7 +395,7 @@ $(document).ready(function() {
   var send_tip_to_object = function($parent, e, tag) {
     e.preventDefault();
     if (!document.contxt.github_handle) {
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
 
@@ -416,7 +418,7 @@ $(document).ready(function() {
     const amountInEth = parseFloat(amount_input.replace('ETH', ''));
 
     if (amountInEth < 0.001) {
-      _alert('Amount must be 0.001 or more.', 'error');
+      _alert('Amount must be 0.001 or more.', 'danger');
       return;
     }
     const comments_priv = tag + ':' + $parent.data('pk');
@@ -479,7 +481,7 @@ $(document).ready(function() {
   $(document).on('click', '.award', function(e) {
     e.preventDefault();
     if (!document.contxt.github_handle) {
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
 
@@ -513,7 +515,7 @@ $(document).ready(function() {
     const current_tab = getURLParams('tab');
 
     if (!document.contxt.github_handle) {
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
 
@@ -608,7 +610,7 @@ $(document).ready(function() {
 
   var post_comment = function($parent, allow_close_comment_container) {
     if (!document.contxt.github_handle) {
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
 
@@ -1061,11 +1063,11 @@ $(document).ready(function() {
           $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
 
         } else {
-          _alert(`Unable to delete commment: ${response.message}`, 'error');
+          _alert(`Unable to delete commment: ${response.message}`, 'danger');
           console.log(`error deleting commment: ${response.message}`);
         }
       }).fail(function(error) {
-        _alert('Unable to delete comment', 'error');
+        _alert('Unable to delete comment', 'danger');
         console.log(`error deleting commment: ${error.message}`);
       });
     }

@@ -2,35 +2,8 @@ let grantsNumPages = '';
 let grantsHasNext = false;
 let numGrants = '';
 
-const toggleStyle = function(style) {
-
-  if (!style) {
-    return;
-  }
-
-  let banner;
-
-  if (style.bg) {
-    banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
-  } else {
-    banner = `url("${ style.banner_image }") center  no-repeat`;
-  }
-  $('#grant-hero-img').css('background', banner);
-  if (style.background_image) {
-    $('#grant-background-image-mount-point').css('background-image', style.background_image);
-  }
-
-  if (style.inline_css) {
-    $('style').last().text(style.inline_css);
-  } else {
-    $('style').last().text('');
-  }
-};
 
 $(document).ready(() => {
-  $('#sort_option').select2({
-    minimumResultsForSearch: Infinity
-  });
 
   if ($('.grants_type_nav').length) {
     localStorage.setItem('last_grants_index', document.location.href);
@@ -41,31 +14,6 @@ $(document).ready(() => {
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
   }
 
-  $('#wall_of_love .show_more_wall_of_love').click(function(e) {
-    $('#wall_of_love .hidden').removeClass('hidden');
-    $(this).remove();
-    e.preventDefault();
-  });
-
-
-  $(document).on('click', '.grant-item', function() {
-    $(this).find('img').each(function() {
-      var src_url = $(this).data('src');
-
-      $(this).attr('src', src_url);
-    });
-  });
-
-
-  $('.select2-selection__rendered').removeAttr('title');
-
-  waitforWeb3(() => {
-    let _network = $('#grant-network').html();
-    let links = $('.etherscan_link');
-
-    etherscanUrlConvert(links, _network);
-  });
-
   window.addEventListener('scroll', function() {
     if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
       $('#skip').addClass('hidden');
@@ -75,7 +23,7 @@ $(document).ready(() => {
 
   });
 
-  toggleStyle(document.current_style);
+  // toggleStyle(document.current_style);
 });
 
 Vue.component('grant-sidebar', {
@@ -108,12 +56,20 @@ Vue.component('grant-sidebar', {
       let me = state ? 'me' : 'all';
 
       event.preventDefault;
-      this.filter_grants({type: me, category: ''});
+      this.filter_grants({type: me, category: '', keyword: ''});
     },
     isMobileDevice: function() {
       return window.innerWidth < 576;
     },
+    toggleMyCollections: function(state, event) {
+      let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
+
+      this.filter_grants(me);
+
+      this.search = me.keyword;
+    },
     filterLink: function(params) {
+
       return this.filter_grants(params);
     },
     searchKeyword: function() {
@@ -148,6 +104,7 @@ if (document.getElementById('grants-showcase')) {
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
     data: {
+      activePage: document.activePage,
       grants: [],
       grant: {},
       page: 1,
@@ -181,9 +138,34 @@ if (document.getElementById('grants-showcase')) {
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
-      numGrants
+      numGrants,
+      regex_style: {}
     },
     methods: {
+      toggleStyle: function(style) {
+
+        if (!style) {
+          return;
+        }
+
+        // let banner;
+
+        // if (style.bg) {
+        //   banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+        // } else {
+        //   banner = `url("${ style.banner_image }") center  no-repeat`;
+        // }
+        // $('#grant-hero-img').css('background', banner);
+        // if (style.background_image) {
+        //   $('#grant-background-image-mount-point').css('background-image', style.background_image);
+        // }
+
+        if (style.inline_css) {
+          $('.page-styles').last().text(style.inline_css);
+        } else {
+          $('.page-styles').last().text('');
+        }
+      },
       toggleActiveCLRs() {
         this.show_active_clrs = !this.show_active_clrs;
         window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
@@ -227,7 +209,7 @@ if (document.getElementById('grants-showcase')) {
             window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
           }
         } else {
-          let uri = '/grants/';
+          let uri = '/grants/explorer/';
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
@@ -290,6 +272,10 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
+        if (filters.type == 'all' && location.href.indexOf('grants/explorer') == -1) {
+          location.href = '/grants/explorer';
+          return false;
+        }
         let current_style;
 
         if (filters.type !== null && filters.type !== undefined) {
@@ -328,18 +314,20 @@ if (document.getElementById('grants-showcase')) {
 
         if (filters.type === 'collections') {
           this.collectionsPage = 1;
+        } else {
+          this.clearSingleCollection();
         }
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
 
-        const regex_style = document.all_routing_policies &&
+      },
+      changeBanner: function() {
+        this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
             return new RegExp(policy.url_pattern).test(window.location.href);
           });
-
-        toggleStyle(regex_style || current_style);
-
+        this.toggleStyle(this.regex_style || document.current_style);
       },
       clearSingleCollection: function() {
         this.grants = [];
@@ -426,23 +414,22 @@ if (document.getElementById('grants-showcase')) {
           if (getGrants.collections.length > 0) {
             this.activeCollection = getGrants.collections[0];
           }
+        } else if (this.current_type === 'collections') {
+          getGrants.collections.forEach(function(item) {
+            vm.collections.push(item);
+          });
         } else {
-          if (this.current_type === 'collections') {
-            getGrants.collections.forEach(function(item) {
-              vm.collections.push(item);
-            });
-          } else {
-            vm.collections = getGrants.collections;
-          }
-
-          vm.credentials = getGrants.credentials;
-          vm.grant_types = getGrants.grant_types;
-          vm.contributions = getGrants.contributions;
+          vm.collections = getGrants.collections;
         }
+
+        vm.credentials = getGrants.credentials;
+        vm.grant_types = getGrants.grant_types;
+        vm.contributions = getGrants.contributions;
 
         vm.grantsNumPages = getGrants.num_pages;
         vm.grantsHasNext = getGrants.has_next;
         vm.numGrants = getGrants.count;
+        vm.changeBanner();
 
         if (vm.grantsHasNext) {
           vm.page = ++vm.page;
@@ -514,7 +501,7 @@ if (document.getElementById('grants-showcase')) {
         this.cart_lock = false;
       },
       removeCollection: async function({collection, grant, event}) {
-        const getGrants = await fetchData(`v1/api/collections/${collection.id}/grants/remove`, 'POST', {
+        const getGrants = await fetchData(`/grants/v1/api/collections/${collection.id}/grants/remove`, 'POST', {
           'grant': grant.id
         });
 
@@ -522,9 +509,20 @@ if (document.getElementById('grants-showcase')) {
       }
     },
     computed: {
-      isLandingPage() {
-        return (window.location.pathname == '/grants/');
+      isGrantExplorer() {
+        return (this.activePage == 'grants_explorer');
+      },
+      isGrantCollectionExplorer() {
+        return this.current_type === 'collections';
+      },
+      isUserLogged() {
+        let vm = this;
+
+        if (document.contxt.github_handle) {
+          return true;
+        }
       }
+
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
@@ -541,15 +539,6 @@ if (document.getElementById('grants-showcase')) {
 
       this.fetchGrants(this.page);
 
-      $('#sort_option2').select2({
-        minimumResultsForSearch: Infinity,
-        templateSelection: function(data, container) {
-          // Add custom attributes to the <option> tag for the selected option
-          vm.filter_grants({sort: data.id});
-
-          return data.text;
-        }
-      });
     }
   });
 }

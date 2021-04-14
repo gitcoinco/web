@@ -1,8 +1,8 @@
 
-let isStaff = document.contxt.is_staff || false;
+const isStaff = document.contxt.is_staff || false;
 
-let userCode = typeof user_code !== 'undefined' ? user_code : undefined;
-let verificationTweet = typeof verification_tweet !== 'undefined' ? verification_tweet : undefined;
+const userCode = typeof user_code !== 'undefined' ? user_code : undefined;
+const verificationTweet = typeof verification_tweet !== 'undefined' ? verification_tweet : undefined;
 
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
@@ -12,14 +12,14 @@ Quill.register('modules/ImageExtend', ImageExtend);
 Vue.mixin({
   methods: {
     grantInCart: function() {
-      let vm = this;
-      let inCart = CartData.cartContainsGrantWithId(vm.grant.id);
+      const vm = this;
+      const inCart = CartData.cartContainsGrantWithId(vm.grant.id);
 
       vm.$set(vm.grant, 'isInCart', inCart);
       return vm.grant.isInCart;
     },
     addToCart: async function() {
-      let vm = this;
+      const vm = this;
       const grantCartPayloadURL = `/grants/v1/api/${vm.grant.id}/cart_payload`;
       const response = await fetchData(grantCartPayloadURL, 'GET');
 
@@ -31,7 +31,7 @@ Vue.mixin({
 
     },
     removeFromCart: function() {
-      let vm = this;
+      const vm = this;
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
@@ -41,7 +41,7 @@ Vue.mixin({
 
     },
     editGrantModal: function() {
-      let vm = this;
+      const vm = this;
 
       vm.logoPreview = vm.grant.logo_url;
 
@@ -49,7 +49,7 @@ Vue.mixin({
     },
     saveGrant: function(event) {
       event.preventDefault();
-      let vm = this;
+      const vm = this;
 
       if (!vm.checkForm(event))
         return;
@@ -59,7 +59,7 @@ Vue.mixin({
       };
 
       const apiUrlGrant = `/grants/v1/api/grant/edit/${vm.grant.id}/`;
-      let data = {
+      const data = {
         'title': vm.grant.title,
         'reference_url': vm.grant.reference_url,
         'description': vm.$refs.myQuillEditor.quill.getText(),
@@ -68,6 +68,7 @@ Vue.mixin({
         'team_members[]': JSON.stringify(vm.teamFormatted),
         'handle1': vm.grant.twitter_handle_1,
         'handle2': vm.grant.twitter_handle_2,
+        'is_clr_eligible': vm.grant.is_clr_eligible,
         'eth_payout_address': vm.grant.admin_address,
         'zcash_payout_address': vm.grant.zcash_payout_address,
         'celo_payout_address': vm.grant.celo_payout_address,
@@ -114,13 +115,13 @@ Vue.mixin({
             }
           } else {
             // vm.submitted = false;
-            _alert('Unable to edit grant. Please try again', 'error');
+            _alert('Unable to edit grant. Please try again', 'danger');
             console.error(`error: grant edit failed with status: ${response.status} and message: ${response.message}`);
           }
         },
         error: err => {
           // vm.submitted = false;
-          _alert('Unable to edit grant. Please try again', 'error');
+          _alert('Unable to edit grant. Please try again', 'danger');
           console.error(`error: grant edit failed with msg ${err}`);
         }
       });
@@ -129,9 +130,9 @@ Vue.mixin({
     cancelGrant: function(event) {
       event.preventDefault();
 
-      let vm = this;
+      const vm = this;
 
-      let cancel = window.prompt('Please write "CONFIRM" to cancel the grant.');
+      const cancel = window.prompt('Please write "CONFIRM" to cancel the grant.');
 
       if (cancel !== 'CONFIRM') {
         return;
@@ -153,10 +154,10 @@ Vue.mixin({
 
     },
     toggleFollowingGrant: async function(grantId) {
-      let vm = this;
+      const vm = this;
 
       const favoriteUrl = `/grants/${grantId}/favorite`;
-      let response = await fetchData(favoriteUrl, 'POST');
+      const response = await fetchData(favoriteUrl, 'POST');
 
       if (response.action === 'follow') {
         vm.grant.favorite = true;
@@ -167,7 +168,7 @@ Vue.mixin({
       return true;
     },
     flag: function() {
-      let vm = this;
+      const vm = this;
 
 
       const comment = prompt('What is your reason for flagging this Grant?');
@@ -177,7 +178,7 @@ Vue.mixin({
       }
 
       if (!document.contxt.github_handle) {
-        _alert({ message: gettext('Please login.') }, 'error', 1000);
+        _alert({ message: gettext('Please login.') }, 'danger', 1000);
         return;
       }
 
@@ -194,12 +195,12 @@ Vue.mixin({
           _alert({ message: gettext('Your flag has been sent to Gitcoin.') }, 'success', 1000);
         },
         error: function() {
-          _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
+          _alert({ message: gettext('Your report failed to save Please try again.') }, 'danger', 1000);
         }
       });
     },
     userSearch(search, loading) {
-      let vm = this;
+      const vm = this;
 
       if (search.length < 3) {
         return;
@@ -209,9 +210,9 @@ Vue.mixin({
 
     },
     getUser: async function(loading, search, selected) {
-      let vm = this;
-      let myHeaders = new Headers();
-      let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}&suppress_non_gitcoiners=true`;
+      const vm = this;
+      const myHeaders = new Headers();
+      const url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}&suppress_non_gitcoiners=true`;
 
       myHeaders.append('X-Requested-With', 'XMLHttpRequest');
       return new Promise(resolve => {
@@ -235,12 +236,12 @@ Vue.mixin({
       });
     },
     changeColor() {
-      let vm = this;
+      const vm = this;
 
       vm.grant.image_css = `background-color: ${vm.logoBackground};`;
     },
     onFileChange(e) {
-      let vm = this;
+      const vm = this;
 
       if (!e.target) {
         return;
@@ -252,7 +253,7 @@ Vue.mixin({
         return;
       }
       vm.imgTransition = true;
-      let imgCompress = new Compressor(file, {
+      const imgCompress = new Compressor(file, {
         quality: 0.6,
         maxWidth: 2000,
         success(result) {
@@ -267,17 +268,17 @@ Vue.mixin({
       });
     },
     async twitterVerification() {
-      let vm = this;
+      const vm = this;
 
       if (!vm.grant.twitter_handle_1 || vm.grant.twitter_handle_1 == '') {
-        _alert('Please add a twitter account to your grant!', 'error', 5000);
+        _alert('Please add a twitter account to your grant!', 'danger', 5000);
         return;
       }
 
       const response = await fetchData(`/grants/v1/api/${vm.grant.id}/verify`);
 
       if (!response.ok) {
-        _alert(response.msg, 'error');
+        _alert(response.msg, 'danger');
         return;
       }
       if (response.verified) {
@@ -287,12 +288,12 @@ Vue.mixin({
       }
 
       if (!response.has_text) {
-        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'error', 5000);
+        _alert(`Unable to verify tweet from ${vm.grant.twitter_handle_1}.  Is the twitter post live?  Was it sent from ${vm.grant.twitter_handle_1}?`, 'danger', 5000);
         return;
       }
 
       if (!response.has_code) {
-        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'error', 5000);
+        _alert(`Missing emoji code "${user_code}", please don't remove this unique code before validate your grant.`, 'danger', 5000);
         return;
       }
 
@@ -320,13 +321,13 @@ Vue.mixin({
       }
     },
     tweetVerification() {
-      let vm = this;
+      const vm = this;
       const tweetContent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(vm.verification_tweet)}%20${encodeURIComponent(vm.user_code)}`;
 
       window.open(tweetContent, '_blank');
     },
     checkForm: function(e) {
-      let vm = this;
+      const vm = this;
 
       vm.submitted = true;
       vm.errors = {};
@@ -394,7 +395,7 @@ Vue.mixin({
         })
         .on('error', function(error) {
           waitingState(false);
-          _alert(error, 'error');
+          _alert(error, 'danger');
         });
     }
   },
@@ -405,7 +406,7 @@ Vue.mixin({
           if (!user?.fields) {
             return user;
           }
-          let newTeam = {};
+          const newTeam = {};
 
           newTeam['id'] = user.pk;
           newTeam['avatar_url'] = `/dynamic/avatar/${user.fields.handle}`;
@@ -425,7 +426,7 @@ Vue.mixin({
       return this.$refs.myQuillEditor.quill;
     },
     filteredMsg: function() {
-      let msgs = [
+      const msgs = [
         '💪 keep up the great work',
         '👍 i appreciate you',
         '🙌 Great Job',
@@ -453,7 +454,7 @@ Vue.mixin({
       );
     },
     isUserLogged() {
-      let vm = this;
+      const vm = this;
 
       if (document.contxt.github_handle) {
         return true;
@@ -487,7 +488,6 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
-      relatedGrants: [],
       rows: 0,
       perPage: 4,
       currentPage: 1,
@@ -540,7 +540,7 @@ Vue.component('grant-details', {
     };
   },
   mounted: function() {
-    let vm = this;
+    const vm = this;
 
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
@@ -553,7 +553,7 @@ Vue.component('grant-details', {
     grant: {
       deep: true,
       handler: function(newVal, oldVal) {
-        let vm = this;
+        const vm = this;
 
         if (this.dirty && this.submitted) {
           this.checkForm();

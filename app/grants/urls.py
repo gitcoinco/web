@@ -20,21 +20,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, clr_grants, collection_thumbnail,
-    contribute_to_grants_v1, contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
-    contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json,
-    contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1, flag, get_collection,
-    get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants, get_interrupted_contributions,
-    get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api, grant_details_contributions,
-    grant_details_contributors, grant_edit, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
-    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_stats_view, ingest_contributions,
-    ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data, new_matching_partner, profile,
-    quickstart, remove_grant_from_collection, save_collection, subscription_cancel, toggle_grant_favorite, verify_grant,
+    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail, clr_grants, collage,
+    collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
+    contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
+    contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
+    flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
+    get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
+    grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grants,
+    grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
+    grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
+    manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
+    toggle_grant_favorite, verify_grant,
 )
 
-app_name = 'grants'
+app_name = 'grants/'
 urlpatterns = [
-    path('', grants, name='grants'),
+    path('', grants_landing, name='grants'),
+    path('explorer', grants, name='grants_explorer'),
+    path('explorer/', grants, name='grants_explorer'),
 
     # CLR
     path('clr/<int:round_num>', clr_grants, name='clr_grants'),
@@ -49,18 +52,19 @@ urlpatterns = [
     path('clr/<str:customer_name>/<int:round_num>/<str:sub_round_slug>', clr_grants, name='clr_grants'),
     path('clr/<str:customer_name>/<int:round_num>/<str:sub_round_slug>/', clr_grants, name='clr_grants'),
 
-    path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('cards_info', get_grants, name='grant_cards_info'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
     path('bulk_cart', bulk_grants_for_cart, name='bulk_grants_for_cart'),
     path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
+    path('collage', collage, name='collage'),
     path('activity', grant_activity, name='log_activity'),
+
+    path('cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
-    re_path(r'^matic/new', grant_new_whitelabel, name='new_whitelabel'),
     re_path(r'^new/?$', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
@@ -69,11 +73,6 @@ urlpatterns = [
     path('manage-ethereum-cart-data', manage_ethereum_cart_data, name='manage_ethereum_cart_data'),
     path('get-ethereum-cart-data', get_ethereum_cart_data, name='get_ethereum_cart_data'),
     path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
-    path(
-        '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',
-        subscription_cancel,
-        name='subscription_cancel'
-    ),
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
@@ -88,8 +87,10 @@ urlpatterns = [
     path('cart', grants_cart_view, name='cart'),
     path('add-missing-contributions', ingest_contributions_view, name='ingest_contributions_view'),
     path('get-interrupted-contributions', get_interrupted_contributions, name='get_interrupted_contributions'),
-    path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
-    path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
+    path('<slug:grant_type>/', grants_type_redirect, name='grants_type_redirect'),
+    path('<slug:grant_type>', grants_type_redirect, name='grants_type_redirect2'),
+    path('explorer/<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
+    path('explorer/<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/grants', grants_info, name='grants_info'),
     path('v1/api/grant/<int:grant_id>/', grant_details_api, name='grant_details_api'),
     path('v1/api/grant/<int:grant_id>/contributions', grant_details_contributions, name='grant_details_contributions'),

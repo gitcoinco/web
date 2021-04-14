@@ -1,0 +1,94 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+Copyright (C) 2019 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+
+{% endcomment %}
+{% load i18n humanize static %}
+
+{% block content %}
+
+<style>
+  .tag.token {
+    background-color: #e7f0fa;
+    color: #6F3FF5;
+  }
+
+  .tag.usd {
+    background-color: #d6fbeb;
+    color: #00A55E;
+  }
+
+  .tag {
+    margin: 4px;
+    border-radius: 2px;
+    padding: 3px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .tag p {
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .btn-container {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+  }
+</style>
+
+<div id="content-body">
+    <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
+    <h1>Get more applicants on your bounty!</h1>
+
+    <p class="mb-0 mt-4">We noticed you dont have any contributors on your bounty.</p>
+    <p class="mt-1">
+      Go to the User Directory to discover and invite the best contributors
+      for your bounty!
+    </p>
+
+    {% if bounty %}
+    <img class="rounded mt-3" src="{{ bounty.avatar_url }}" width="100" height="100">
+
+    <h2>
+      <a href="{{ bounty.absolute_url }}?{{ utm_tracking }}" style="color: #15003E;">
+        {{ bounty.title }}
+      </a>
+    </h2>
+
+    <div class="tag token">
+      <p>
+        <span>{{ bounty.token_name }}</span>
+        <span>{{ bounty.value_true }}</span>
+      </p>
+    </div>
+
+    <div class="tag usd">
+      <p>
+        <span>{{ bounty.value_in_usdt_now }}</span>
+        <span>USD</span>
+      </p>
+    </div>
+
+    {% endif %}
+
+    <p class="btn-container">
+      <a class="button" href="{{ directory_link }}&{{ utm_tracking }}">GO TO USER DIRECTORY</a>
+    </p>
+</div>
+{% endblock %}

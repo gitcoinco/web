@@ -268,11 +268,6 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     activity = Activity.objects.get(pk=pk)
     grant_update_email(activity)
 
-    from django.utils import timezone
-    grant = activity.grant
-    grant.last_update = timezone.now()
-    grant.save()
-
 
 @app.shared_task(bind=True)
 def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
@@ -326,3 +321,11 @@ def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> Non
     from django.contrib.auth.models import User
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     actually_sync_profile(handle, user=user, hide_profile=hide_profile)
+
+
+@app.shared_task(bind=True, max_retries=1)
+def recalculate_earning(self, pk, retry: bool = True) -> None:
+    from dashboard.models import Earning
+    earning = Earning.objects.get(pk=pk)
+    src = earning.source
+    src.save()

@@ -48,16 +48,16 @@ const payWithPYPL = (fulfillment_id, fulfiller_identifier, ele, vm, modal) => {
               _alert('Payment Successful');
 
             } else {
-              _alert('Unable to make payout bounty. Please try again later', 'error');
+              _alert('Unable to make payout bounty. Please try again later', 'danger');
               console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
             }
           }).catch(function(error) {
-            _alert('Unable to make payout bounty. Please try again later', 'error');
+            _alert('Unable to make payout bounty. Please try again later', 'danger');
             console.log(error);
           });
 
         }).catch(function(error) {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.log(error);
         });
       }

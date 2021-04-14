@@ -364,13 +364,13 @@
                   </div>
                 </div>
               </div>
-              <button class="btn blue" @click="clearParams();">Reset Filters</button>
+              <button class="btn text-primary text-primary-hover hover-underline" @click="clearParams();">Reset Filters</button>
             </nav>
           </transition>
           <div class="container pt-4" @scroll.passive="onScroll($event)">
             <div class="pb-5">
               <h1 class="font-bigger-1">
-                <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
+                <button class="btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
                 Issue Explorer - Freelance Code Bounties
               </h1>
               <div class="d-flex justify-content-between align-items-center border-bottom mx-2 pb-1">
@@ -416,7 +416,7 @@
               <div v-if="noResults" class="text-center">
                 <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
                 <p class="mt-4 font-weight-bold mb-0">No users found</p>
-                <button class="btn blue" @click="clearParams(); searchBounties()">Reset Filters</button>
+                <button class="btn text-primary text-primary-hover hover-underline" @click="clearParams(); searchBounties()">Reset Filters</button>
               </div>
 
               <div class="">
@@ -427,8 +427,7 @@
                   <div class="col-12 col-md-8 d-flex flex-column">
                     <div class="bounty-detail">
 
-                      <div class="title font-subheader">
-                        [[ bounty.title ]]
+                      <div class="title font-subheader" v-html="bounty.title">
                       </div>
                       <div class="bounty-summary">
                         <div class="info font-caption">

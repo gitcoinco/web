@@ -23,8 +23,13 @@
 .activity_stream{
   margin-bottom: 50px;
 }
-.activity_stream .content{
+.activity_stream .content {
   cursor: pointer;
+}
+.activity_stream .content:not(.cursor-none):hover {
+  p:first-of-type, .title {
+    text-decoration: underline;
+  }
 }
 #new_activity_notifier {
   text-align: center;
@@ -100,7 +105,7 @@
 
 
 .selector-bar {
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   height: 0.15em;
   width: 100%;
   margin-top: 0.2em;

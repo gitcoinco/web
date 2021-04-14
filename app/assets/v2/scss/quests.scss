@@ -1,6 +1,6 @@
 /* table properties */
 
-.table td, 
+.table td,
 .table th {
   padding: 4px;
   border: none;
@@ -201,7 +201,7 @@
 }
 
 .referrals a {
-  color: #3E00FF;
+  color: #6F3FF5;
   font-size: 14px;
 }
 
@@ -517,7 +517,6 @@ body.quest_battle p {
 .back_gradient {
   background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764) no-repeat;
   animation: gradient 40s ease infinite;
-  background-size: 100% 400px !important;
 }
 
 #cta_button {
@@ -603,7 +602,7 @@ body.quest_battle .bottom_notification {
 .button {
   font-weight: bold;
   color: white;
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
   border: 2px solid white;
   padding: 20px;
 }
@@ -1087,7 +1086,7 @@ body.green.quest_battle {
 }
 
 #desc li.selected {
-  background-color: #3E00FF;
+  background-color: #6F3FF5;
 }
 
 body.back1 #desc li:hover,
@@ -1395,10 +1394,6 @@ body.green .tl {
     font-size: 18px;
     color: #888;
   }
-
-  .back_gradient {
-    background-size: 100% 400px !important;
-  }
 }
 
 @media (max-width: 991.98px) {
@@ -1418,11 +1413,11 @@ body.green .tl {
 
   }
 
-  .table td, 
+  .table td,
   .table th {
     padding: 0.55rem;
     border: none;
-    position: relative; 
+    position: relative;
   }
 
   body.quest_battle {
@@ -1486,9 +1481,6 @@ body.green .tl {
     max-width: 300px;
   }
 
-  .back_gradient {
-    background-size: 100% 400px !important;
-  }
 }
 
 @media (max-width: 767.98px) {
@@ -1505,7 +1497,7 @@ body.green .tl {
     border: none;
   }
 
-  .table td, 
+  .table td,
   .table th {
     padding: 0.25rem;
   }
@@ -1516,7 +1508,7 @@ body.green .tl {
   }
 
   #explore_quests {
-    top: -1px;
+    width: 100%;
   }
 
   body.quest_battle {
@@ -1601,10 +1593,6 @@ body.green .tl {
 
   .character .info h3 {
     max-width: 100px;
-  }
-
-  .back_gradient {
-    background-size: 100% 650px !important;
   }
 
   .flair div {
@@ -1761,7 +1749,4 @@ body.green .tl {
     color: #888;
   }
 
-  .back_gradient {
-    background-size: 100% 400px !important;
-  }
 }

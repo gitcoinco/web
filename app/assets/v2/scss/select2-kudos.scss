@@ -5,7 +5,7 @@
 }
 
 .select2 {
-  width: 100%;
+  width: 100%!important;
 }
 
 .select2-container--kudos {
@@ -64,7 +64,7 @@
 
 .select2-container--open .select2-dropdown.select2-dropdown--below {
   top: -3px;
-  left: -1px;
+  // left: -1px;
 }
 
 .select2-container--open .select2-dropdown.select2-dropdown--above {

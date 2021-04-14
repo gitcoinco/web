@@ -809,14 +809,14 @@ def leaderboard(request, key=''):
         TemplateResponse: The leaderboard template response.
 
     """
-    cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
+    cadences = ['all', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
     product = request.GET.get('product', 'all')
     keyword_search = request.GET.get('keyword', '')
     keyword_search = '' if keyword_search == 'all' else keyword_search
     limit = int(request.GET.get('limit', 50))
-    cadence = request.GET.get('cadence', 'monthly')
+    cadence = request.GET.get('cadence', 'weekly')
 
     # backwards compatibility fix for old inbound links
     for ele in cadences:
@@ -827,11 +827,12 @@ def leaderboard(request, key=''):
         f'earners': _('Top Earners'),
         f'orgs': _('Top Orgs'),
         f'tokens': _('Top Tokens'),
-        f'keywords': _('Top Keywords'),
-        f'kudos': _('Top Kudos'),
-        f'cities': _('Top Cities'),
-        f'countries': _('Top Countries'),
-        f'continents': _('Top Continents'),
+# TODO re-enable these sometime soon
+#        f'keywords': _('Top Keywords'),
+#        f'kudos': _('Top Kudos'),
+#        f'cities': _('Top Cities'),
+#        f'countries': _('Top Countries'),
+#        f'continents': _('Top Continents'),
     }
 
     if not key:

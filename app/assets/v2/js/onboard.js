@@ -111,7 +111,7 @@ if (document.getElementById('gc-onboard')) {
           }
         }).catch((err) => {
           console.log(err);
-          _alert('Unable to save your profile. Please login again', 'error');
+          _alert('Unable to save your profile. Please login again', 'danger');
         });
       },
       fetchOnboardData(profileHandle) {
@@ -134,7 +134,7 @@ if (document.getElementById('gc-onboard')) {
 
         }).catch((err) => {
           console.log(err);
-          // _alert('Unable to create a bounty. Please try again later', 'error');
+          // _alert('Unable to create a bounty. Please try again later', 'danger');
         });
       },
       fetchOrgOnboardData(handle) {

@@ -56,7 +56,7 @@ class TestKudosRevenue(TestCase):
 
     def setUp(self):
         default_account = settings.KUDOS_REVENUE_ACCOUNT_ADDRESS
-        self.account = default_account if len(default_account) > 0 else '0xdb282cee382244e05dd226c8809d2405b76fbdc9'
+        self.account = default_account if len(default_account) > 0 else '0xAD278911Ad07534F921eD7D757b6c0e6730FCB16'
 
 
     @patch('revenue.management.commands.kudos_revenue.requests.get')
@@ -75,7 +75,7 @@ class TestKudosRevenue(TestCase):
                     "blockHash": "0x9b9d524c5fb92ed79fac4174c8136b9a11527cf7ba30985a27502c104bb6c574",
                     "transactionIndex": "95",
                     "from": "0xf8ae578d5d4e570de6c31f26d42ef369c320ae0b",
-                    "to": "0xdb282cee382244e05dd226c8809d2405b76fbdc9",
+                    "to": "0xAD278911Ad07534F921eD7D757b6c0e6730FCB16",
                     "value": "50000000000000000",
                     "gas": "21000",
                     "gasPrice": "4000000000",
@@ -121,7 +121,7 @@ class TestKudosRevenue(TestCase):
             "blockHash": "0x1c0ce49c6d06420bbbf877db1a42681d722c3e2dc885335ff8215bbdd0f3f4de",
             "from": "0x1615aecb476aec5f6066dcf2e80716ccf0e7345c",
             "contractAddress": "0x85332b222787eacab0fff68cf3b884798823528c",
-            "to": "0xdb282cee382244e05dd226c8809d2405b76fbdc9",
+            "to": "0xAD278911Ad07534F921eD7D757b6c0e6730FCB16",
             "value": "666",
             "tokenName": "WinETHFree",
             "tokenSymbol": "winethfree.com (Win ETH Free)",

@@ -14,7 +14,7 @@ def find_txn_on_rsk_explorer(fulfillment):
     # amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
 
-    if token_name not in ['R-BTC', 'RDOC', 'DOC']:
+    if token_name not in ['RBTC', 'RDOC', 'DOC', 'RIF', 'SOV']:
         return None
 
     url = f'https://blockscout.com/rsk/mainnet/api?module=account&action=txlist&address={funderAddress}'
@@ -23,7 +23,7 @@ def find_txn_on_rsk_explorer(fulfillment):
 
     if response['message'] and response['result']:
         for txn in response['result']:
-            to_address_match = txn['to'] == payeeAddress.lower() if token_name == 'R-BTC' else True
+            to_address_match = txn['to'] == payeeAddress.lower() if token_name == 'RBTC' else True
 
             if (
                 txn['from'] == funderAddress.lower() and
@@ -44,7 +44,7 @@ def get_rsk_txn_status(fulfillment):
 
     # amount = fulfillment.payout_amount
 
-    if token_name not in ['R-BTC', 'RDOC', 'DOC']:
+    if token_name not in ['RBTC', 'RDOC', 'DOC', 'RIF', 'SOV']:
         return None
 
     if not txnid or txnid == "0x0":
@@ -57,7 +57,7 @@ def get_rsk_txn_status(fulfillment):
     if response['status'] and response['result']:
         txn = response['result']
 
-        to_address_match = txn['to'] == payeeAddress.lower() if token_name == 'R-BTC' else True
+        to_address_match = txn['to'] == payeeAddress.lower() if token_name == 'RBTC' else True
 
         if (
             txn['from'] == funderAddress.lower() and
