@@ -1,0 +1,26 @@
+{
+    "symbol": "YYE",
+    "address": "0x72C3e1CFD42d40E0635ef486527788eF499ac859",
+    "overview": {
+        "en": "YYE is the 'electricity production incentive' token (power mining production tool). Investors can leverage YYE to provide working capital (liquidity) of a certain period for infrastructure projects. They can hence obtain a certain percentage (80%by default) of electricity profit in that fixed period of time and receive all YYE staked after the investment project expires.",
+        "zh": "YYE 是一元電力電力激勵生產代幣，投資者可透過抵押 YYE，提供基礎設施規模化計畫案一定期間的週轉資金（流動性），獲取一定時間內一定比例（預設 80%）的電力營收分潤，待到期滿領回所抵押之 YYE。"
+    },
+    "email": "contact@yye-energy.com",
+    "website": "https://yiyuandianli.io/",
+    "whitepaper": "https://yiyuandianli.io/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-22",
+    "initial_price": {
+        "USD": "0.02 USD"
+    },
+    "links": {
+        "blog": "https://medium.com/@yiyuancharge0401/about",
+        "twitter": "https://twitter.com/YiYuanDianLi2",
+        "telegram": "https://t.me/YiyuanDianli",
+        "reddit": "",
+        "github": "https://github.com/yiyuancharge?tab=repositories",
+        "facebook": "",
+        "slack": "",
+        "medium": "https://medium.com/@yiyuancharge0401/about"
+    }
+}
