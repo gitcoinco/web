@@ -427,6 +427,7 @@ const gitcoinUpdates = () => {
 const $body = $('body');
 const $carets = $('.gc-megamenu-caret');
 const $navbarSupportedContent = $('#navbarSupportedContent');
+const $topNav = $('.top-nav');
 
 // anchor to 75px when the menu is open to hide top menu
 let anchored = false;
@@ -442,9 +443,10 @@ $(document, '.dropdown').on('show.bs.dropdown', function(e) {
 // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
 $navbarSupportedContent.on('show.bs.collapse', function() {
   $body.addClass('navbar-menu-open');
-  if (window.scrollY < 75) {
+
+  if (window.scrollY < $topNav[0].clientHeight) {
     anchored = true;
-    window.scrollTo(0, 75);
+    window.scrollTo(0, $topNav[0].clientHeight + 1);
   }
 }).on('hide.bs.collapse', function() {
   $body.removeClass('navbar-menu-open');
