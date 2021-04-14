@@ -37,7 +37,7 @@ a human doing something
 # Tools
 - Use `ngxtop` on a server, in order to see which requests it is serving (esp useful if the app server is overloaded)
 - Use `select * from pg_stat_activity` on the postgres server to see queries that are running on it (useful if DB is overloaded or locked)
-- Python tool you can use to see the exact microseconds:  `import time; print(round(time.time(), 2))` that a call is at 
+- Python tool you can use to see the exact microseconds:  `import time; print(round(time.time(), 2))` that a call is at.   Profiling code is a great starting place!  DO NOT STAB IN THE DARK LOOKING FOR A PERF ISSUE, PROFILE FIRST!
 
 # How to spin up a new server
 
