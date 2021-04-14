@@ -33,3 +33,9 @@ a human doing something
 - Datadog Traces - https://app.datadoghq.com/apm/traces?end=1616640504005&paused=true&query=env%3Aprod%20service%3Acelery-worker&start=1616640502671&streamTraces=true&topLevelSpansOnly=true
 - DataDog App servers - https://app.datadoghq.com/dashboard/hqu-92q-auf/app-servers?from_ts=1611496890412&is_auto=false&live=true&page=0&to_ts=1611583290412
 - DataDog App server logs https://app.datadoghq.com/logs?index=%2A&query=
+
+# Tools
+- Use `ngxtop` on a server, in order to see which requests it is serving (esp useful if the app server is overloaded)
+- Use `select * from pg_stat_activity` on the postgres server to see queries that are running on it (useful if DB is overloaded or locked)
+
+
