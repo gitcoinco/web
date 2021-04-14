@@ -49,12 +49,13 @@ class Command(BaseCommand):
                         tokens = float(row[2].replace(",",''))
                         profile_id = Profile.objects.get(handle=handle.lower()).pk
 
-                        if handle not in outputs.keys():
-                            outputs[handle] = {
+                        lower_handle = handle.lower()
+                        if lower_handle not in outputs.keys():
+                            outputs[lower_handle] = {
                                 'id': profile_id,
                             }
-                        if file not in outputs[handle].keys():
-                            outputs[handle][file] = int(tokens * 10 ** decimals)
+                        if file not in outputs[lower_handle].keys():
+                            outputs[lower_handle][file] = int(tokens * 10 ** decimals)
                     except Exception as e:
                         if show_debug:
                             print('------------------')
