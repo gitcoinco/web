@@ -138,7 +138,7 @@ Vue.mixin({
       $.when(postInvite).then((response) => {
         console.log(response);
         if (response.status === 500) {
-          _alert(response.msg, 'error');
+          _alert(response.msg, 'danger');
 
         } else {
           vm.$refs['user-modal'].closeModal();
@@ -159,7 +159,7 @@ Vue.mixin({
       $.when(postInvite).then((response) => {
         console.log(response);
         if (response.status !== 200) {
-          _alert(response.msg, 'error');
+          _alert(response.msg, 'danger');
 
         } else {
           vm.$refs['user-modal'].closeModal();
@@ -211,7 +211,7 @@ Vue.mixin({
             vm.openBounties(response.data[0]);
             $('#userModal').bootstrapModal('show');
           } else {
-            _alert('The user was not found. Please try using the search box.', 'error');
+            _alert('The user was not found. Please try using the search box.', 'danger');
           }
         });
       }

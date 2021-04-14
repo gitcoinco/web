@@ -295,6 +295,7 @@ class Bounty(SuperModel):
         ('binance_ext', 'Binance Ext'),
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
+        ('xinfin_ext', 'Xinfin Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1412,6 +1413,7 @@ class BountyFulfillment(SuperModel):
         ('binance_ext', 'binance_ext'),
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
+        ('xinfin_ext', 'xinfin_ext'),
         ('manual', 'manual')
     ]
 
@@ -1428,6 +1430,7 @@ class BountyFulfillment(SuperModel):
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
         ('NERVOS', 'NERVOS'),
+        ('XINFIN', 'XINFIN'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -1477,6 +1480,58 @@ class BountyFulfillment(SuperModel):
         """
         return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
 
+    @property
+    def get_value_in_usdt_now(self):
+        return self.value_in_usdt_at_time(None)
+
+    @property
+    def get_value_in_usdt(self):
+        if self.status in self.OPEN_STATUSES:
+            return self.value_in_usdt_now
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        return self.value_in_usdt_at_time(self.created_on)
+
+    # TODO: DRY
+    def get_natural_value(self):
+        token = token_by_name(self.token_name, self.bounty.network)
+        decimals = token['decimals']
+        amount = self.payout_amount if self.payout_amount else 0
+        return float(amount) / 10**decimals
+
+    @property
+    def value_true(self):
+        return self.get_natural_value()
+
+    def value_in_usdt_at_time(self, at_time):
+        try:
+            if self.token_name in ['USDT', 'USDC']:
+                return float(self.payout_amount / 10 ** 6)
+            if self.token_name in settings.STABLE_COINS:
+                return float(self.payout_amount / 10 ** 18)
+            if self.token_name in ['ETH']:
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
+            try:
+                return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
+            except ConversionRateNotFoundError:
+                try:
+                    in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
+                    return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
+                except ConversionRateNotFoundError:
+                    return None
+        except:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        if self.token_name in settings.STABLE_COINS:
+            return 1
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def fulfiller_email(self):
@@ -1969,6 +2024,7 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "txid":instance.txid,
                 "token_name":instance.tokenName,
                 "token_value":value_true,
+                "success":instance.tx_status == 'success',
             }
             )
 
@@ -2057,12 +2113,13 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "org_profile":instance.bounty.org_profile,
                 "from_profile":instance.bounty.bounty_owner_profile,
                 "to_profile":instance.profile,
-                "value_usd":instance.bounty.value_in_usdt_then,
+                "value_usd":instance.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
                 "txid": instance.payout_tx_id,
                 "token_name":instance.bounty.token_name,
                 "token_value":instance.bounty.value_in_token,
+                "success":instance.payout_status == 'done',
             }
             )
 
@@ -2940,7 +2997,7 @@ class Profile(SuperModel):
     is_twitter_verified=models.BooleanField(default=False)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
-    is_google_verified=models.BooleanField(default=False)
+    is_google_verified = models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -2964,6 +3021,10 @@ class Profile(SuperModel):
             self.is_idena_verified = False
 
     @property
+    def shadowbanned(self):
+        return self.squelches.filter(active=True).exists()
+
+    @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
         # trust bonus compounds for every new verification added
@@ -2973,11 +3034,13 @@ class Profile(SuperModel):
         if self.is_twitter_verified:
             tb *= 1.05
         if self.sms_verification:
-            tb *= 1.05
+            tb *= 1.02
         if self.is_google_verified:
-            tb *= 1.05
+            tb *= 1.02
         if self.is_poap_verified:
-            tb *= 1.05
+            tb *= 1.10
+        if self.is_idena_verified:
+            tb *= 1.25
         return tb
 
 
@@ -4429,8 +4492,8 @@ class Profile(SuperModel):
 
         context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
         context['portfolio_keywords'] = sorted_portfolio_keywords
-        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
-        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
+        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
         from django.contrib.contenttypes.models import ContentType
         earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
@@ -4479,6 +4542,14 @@ class Profile(SuperModel):
             if login.ip_address:
                 ips.append(login.ip_address)
         return ips
+
+    @property
+    def last_known_ip(self):
+        ips = self.ips
+        if len(ips) > 0:
+            return ips[0]
+        return ''
+
 
     @property
     def locations(self):
@@ -5405,6 +5476,8 @@ class Earning(SuperModel):
     token_name = models.CharField(max_length=255, default='')
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
+    success = models.BooleanField(default=False, help_text=_('Was txn successful?'))
+
 
     def has_read_perms(self, profile):
         if self.source_type_human == 'grant':

@@ -54,8 +54,10 @@ class Command(BaseCommand):
         for es in eses:
             try:
                 counter_eval_total += 1
-                if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
-                    continue
+                # KO 21/16/03 - evalute suppression list in queue
+                # if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+                #    continue
+                
                 # prep
 
                 to_email = es.email

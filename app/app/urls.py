@@ -55,6 +55,7 @@ import townsquare.views
 from avatar.router import router as avatar_router
 from dashboard.router import router as dbrouter
 from grants.router import router as grant_router
+from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
@@ -119,6 +120,7 @@ urlpatterns = [
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
     re_path(r'^kudos/new/?', kudos.views.newkudos, name='newkudos'),
+    path('dynamic/grants_cart_thumb/<str:profile>/<str:grants>', cart_thumbnail, name='cart_thumbnail'),
 
     # mailing list
     url('mailing_list/funders/', dashboard.views.funders_mailing_list),
@@ -160,11 +162,7 @@ urlpatterns = [
         dashboard.views.authenticate_idena,
         name='authenticate_idena'
     ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/logout_idena',
-        dashboard.views.logout_idena,
-        name='logout_idena'
-    ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/logout_idena', dashboard.views.logout_idena, name='logout_idena'),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
         dashboard.views.recheck_idena_status,
@@ -471,10 +469,13 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
-    re_path(r'^sass_experiment/?', retail.views.sass_experiment, name='sass_experiment'),
     re_path(r'^homeold/?$', retail.views.index_old, name='homeold'),
     re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),
+    re_path(r'^earn/?$', retail.views.jtbd_earn, name='jtbd_earn'),
+    re_path(r'^learn/?$', retail.views.jtbd_learn, name='jtbd_learn'),
+    re_path(r'^connect/?$', retail.views.jtbd_connect, name='jtbd_connect'),
+    re_path(r'^fund/?$', retail.views.jtbd_fund, name='jtbd_fund'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
@@ -487,6 +488,7 @@ urlpatterns = [
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
     re_path(r'^$', townsquare.views.landing_toggle, name='index'),
+    re_path(r'^styleguide/components/?', retail.views.styleguide_components, name='styleguide_components'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
     path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
     path(

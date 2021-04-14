@@ -1,0 +1,12 @@
+{% load humanize %}
+
+Get more applicants on your bounty!
+
+We noticed you dont have any contributors on your bounty.
+Bounty Title        : {{ bount.title }}
+Bounty Link         : {{ bounty.absolute_url }}?{{ utm_tracking }}
+Bounty Amount       : {{ bounty.value_true }} {{ bounty.token_name }}
+Bounty Amount (USD) : {{ bounty.value_in_usdt_now }} USD
+
+Go to the User Directory {{ directory_link }}&{{ utm_tracking }} to discover and invite the best contributors
+for your bounty!

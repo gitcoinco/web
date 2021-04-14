@@ -25,6 +25,15 @@ if [ "$3" != "" ]; then
     #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
     IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3" | grep -c python)
 fi
+if [ "$4" != "" ]; then
+    #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3 $4" | grep -c python)
+fi
+
+if [ "$5" != "" ]; then
+    #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3 $4 $5" | grep -c python)
+fi
 
 if [ "$IS_ALREADY_RUNNING" -eq "0" ]; then
     bash scripts/run_management_command.bash $1 $2 $3 $4 $5 $6 $7 $8 $9

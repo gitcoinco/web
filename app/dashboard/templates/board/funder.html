@@ -78,7 +78,7 @@
                     </div>
                   </div>
                 </div>
-                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn text-primary text-primary-hover hover-underline">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
                 <div class="d-flex flex-column justify-content-center" v-else>
                   <a :href="`/bounty/change/${bounty.id}`" target="_blank" title="Feature bounty" class="btn btn-primary btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
                   <a :href="`/users?skills=${bounty.keywords}`" target="_blank" title="Invite contributors" class="btn btn-primary btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
@@ -174,7 +174,7 @@
                     </div>
                   </div>
                 </div>
-                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'started'), fetchApplicants(bounty.id, key, 'started')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'started')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'started'), fetchApplicants(bounty.id, key, 'started')" class="btn text-primary text-primary-hover hover-underline">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'started')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
                 <div class="d-flex flex-column justify-content-center" v-else>
                   <a :href="`/bounty/change/${bounty.id}`" target="_blank" title="Feature bounty" class="btn btn-primary btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
                   <a :href="`/users?skills=${bounty.keywords}`" target="_blank" title="Invite contributors" class="btn btn-primary btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
@@ -264,7 +264,7 @@
                     </div>
                   </div>
                 </div>
-                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'submitted'), fetchApplicants(bounty.id, key, 'submitted')" class="btn blue">View Submissions <i class="fa fa-fw" :class="isExpanded(key, 'submitted')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'submitted'), fetchApplicants(bounty.id, key, 'submitted')" class="btn text-primary text-primary-hover hover-underline">View Submissions <i class="fa fa-fw" :class="isExpanded(key, 'submitted')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
               </div>
               <div v-show="isExpanded(key, 'submitted')">
                 <ul class="list-unstyled m-5">

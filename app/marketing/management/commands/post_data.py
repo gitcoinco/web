@@ -227,7 +227,7 @@ def pluralize(num):
     return "s"
 
 
-def earners():
+def earners(days, cadence):
     hours = 24 if not settings.DEBUG else 1000
     limit = 10
 
@@ -257,7 +257,7 @@ def earners():
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
-    pprint("== Congrats to the Daily Top Earners 👇")
+    pprint(f"== Congrats to the {cadence} Top Earners 👇")
     pprint("================================")
     pprint("")
     counter = 0
@@ -311,7 +311,7 @@ def grants():
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
     total = contributions.count() + pfs.count()
 
-    current_carts = CartActivity.objects.filter(latest=True)#, grant__in=grants_pks)
+    current_carts = CartActivity.objects.filter(created_on__gt=start, latest=True)#, grant__in=grants_pks)
     num_carts = 0
     amount_in_carts = {}
     discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
@@ -532,7 +532,7 @@ class Command(BaseCommand):
         elif options['what'] == 'kudos':
             kudos()
         elif options['what'] == 'earners':
-            earners()
+            earners(1, 'Daily')
         elif options['what'] == 'grants':
             grants()
         elif options['what'] == 'welcome':
