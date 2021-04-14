@@ -219,6 +219,10 @@ Vue.mixin({
         case '717171': // other
           type = 'qr';
           break;
+        case '1995':
+          // nervos
+          type = 'manual';
+          break;
         default:
           type = 'web3_modal';
       }

@@ -179,6 +179,7 @@ Vue.mixin({
           type = 'qr';
           break;
         case '717171': // other
+        case '1995': // nervos
           type = 'manual';
           break;
         default:
