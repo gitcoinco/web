@@ -388,9 +388,15 @@ Vue.mixin({
     },
     getTenant: function(token_name, web3_type) {
       let tenant;
+      let vm = this;
 
       if (web3_type == 'manual') {
-        tenant = 'OTHERS';
+        if (token_name === 'CKB') {
+          tenant = 'NERVOS';
+          vm.canChangeFunderAddress = true;
+        } else {
+          tenant = 'OTHERS';
+        }
         return tenant;
       }
 
@@ -441,6 +447,7 @@ Vue.mixin({
 
         case 'CKB':
           tenant = 'NERVOS';
+          vm.canChangeFunderAddress = true;
           break;
 
         case 'XDC':
@@ -741,6 +748,8 @@ Vue.mixin({
     initFulfillmentContext: function(fulfillment) {
       let vm = this;
 
+      vm.getTenant(fulfillment.token_name, fulfillment.payout_type);
+
       switch (fulfillment.payout_type) {
         case 'qr':
         case 'manual':
@@ -804,6 +813,31 @@ Vue.mixin({
         return true;
       }
       return false;
+    },
+    validateNervos: function() {
+      let vm = this;
+
+      const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+      const isValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
+
+      if (isValid) {
+        return true;
+      }
+
+      return false;
+    },
+    validateFunderAddress: function() {
+      let vm = this;
+
+      vm.errors = {};
+
+      if (!vm.validateNervos()) {
+        vm.$set(vm.errors, 'funderAddress', 'Please enter a valid Nervos address');
+      }
+
+      if (Object.keys(vm.errors).length === 0) {
+        // TODO: update bounty with new owner address
+      }
     }
   },
   computed: {
@@ -845,6 +879,7 @@ if (document.getElementById('gc-bounty-detail')) {
     el: '#gc-bounty-detail',
     data() {
       return {
+        errors: {},
         loadingState: loadingState['loading'],
         bounty: bounty,
         url: url,
@@ -860,7 +895,8 @@ if (document.getElementById('gc-bounty-detail')) {
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: [],
-        pollInterval: null
+        pollInterval: null,
+        canChangeFunderAddress: false
       };
     },
     mounted() {
