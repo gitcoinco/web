@@ -30,6 +30,7 @@ csv_files = [
     'Intermediary Worksheet - KERNEL.csv',
 ]
 decimals = 18
+round_to = 4
 
 class Command(BaseCommand):
 
@@ -55,7 +56,7 @@ class Command(BaseCommand):
                                 'id': profile_id,
                             }
                         if file not in outputs[lower_handle].keys():
-                            outputs[lower_handle][file] = int(tokens * 10 ** decimals)
+                            outputs[lower_handle][file] = int(round(tokens, round_to) * 10 ** decimals)
                     except Exception as e:
                         if show_debug:
                             print('------------------')
