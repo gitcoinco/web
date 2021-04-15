@@ -1,0 +1,21 @@
+{
+  "symbol": "ADFS",
+  "address": "0xB406d2104417BaEC6DB073983A10154014a9F6CD",
+  "overview": {
+    "en": "ADFS is the abbreviation of a decentralized financial system. It will create a global, open, free and fair blockchain financial system, allowing users to easily use financial derivatives services such as storage, lending, payment, financial management and insurance without any restrictions on race, religion, age, nationality, geography.",
+    "zh": "ADFS是A Decentralized Financial System的缩写，ADFS是一个去中心化的金融系统，旨在创建一个全球、开放、自由、公平的区块链金融系统，允许用户能够不受种族、宗教、年龄、国籍、地理等任何限制，无需依靠任何中心化的情况下，轻松使用诸如，存储、借贷、支付、理财、保险等金融衍生品服务的去中心化金融服务系统。"
+  },
+  "email": "contact@adfs.finance",
+  "website": "adfs.top",
+  "whitepaper": "https://github.com/ADFS-Finance/ADFS_whitepaper",
+  "state": "NORMAL",
+  "published_on": "2021-04-03",
+  "initial_price":{
+        "USD":"2.00 USD"
+      },
+  "links": {
+    "twitter": "https://twitter.com/ADFS_Finance",
+    "github": "https://github.com/ADFS-Finance",
+    "medium": "adfs-finance.medium.com",
+  }
+}
