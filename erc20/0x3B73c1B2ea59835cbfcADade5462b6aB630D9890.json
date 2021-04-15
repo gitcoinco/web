@@ -1,0 +1,19 @@
+{
+  "symbol": "TOKEN",
+  "address": "0x3B73c1B2ea59835cbfcADade5462b6aB630D9890",
+  "overview": {
+    "en": "ChainSwap is a cross-chain asset bridge & application hub for smart chains.",
+    "zh": "ChainSwap是智能链的跨链资产桥和应用程序中心。"
+  },
+  "email": "contact@chainswap.com",
+  "website": "https://www.chainswap.com/",
+  "whitepaper": "https://www.chainswap.com/",
+  "state": "NORMAL",
+  "published_on": "2021-04-15",
+  "links": {
+    "blog": "https://chain-swap.medium.com/",
+    "twitter": "https://twitter.com/chain_swap",
+    "telegram": "https://t.me/chainswap",
+    "medium": "https://chain-swap.medium.com/"
+  }
+}
