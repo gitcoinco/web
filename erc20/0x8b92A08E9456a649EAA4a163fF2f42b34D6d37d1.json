@@ -1,0 +1,22 @@
+{
+  "symbol": "SADAI",
+  "address": "0x8b92A08E9456a649EAA4a163fF2f42b34D6d37d1",
+  "overview":{
+        "en": "According to Presidential decree No. 18 of the 2020-2024 National medium-term Development Plan in 2020, SADAI Industrial Area has officially entered the national priority development project. On February 13, 2020, the Ministry of Agricultural Affairs and Spatial Planning / State Land Administration issued a letter numbered: 59/UM-200.12.PK.02.01/II/2020 that SADAI Industrial Area was officially designated as the national smelting industry center. After the Indonesian Congress examined and approved the proposal for the development of the national smelting industry, the area was officially designated as the Indonesian national blockchain demonstration area. The SADAI Industrial Area covers 8000 hectares of area in total which 670 hectares will be used on building the SADAI blockchain industrial Area.",
+        "zh": "根据2020年有关2020至2024国家中期发展计划的18号总统令，沙代工业园区正式进入国家优先发展的专案。于2020年2月13日农业事务和空间规划部/国家土地局发出，编号：59/UM-200.12.PK.02.01/II/2020的信函，沙代工业园区被正式定为国家冶炼工业中心。后续印尼国会审核通过国家冶炼工业发展提案，将沙代工业园区视为邦加勿里洞省最适合开发之工业要地，将园区正式定为印尼国家产业区块链示范区。沙代工业园区总占地高达8000公顷，根据邦加勿里洞省省政府计划，其中670公顷将作为改革试点，建设沙代区块链工业产业园区。"},
+  "email": "sadai2019info@gmail.com",
+  "website": "http://www.sadai.org",
+  "whitepaper": "http://www.sadai.org/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-11-04",
+  "initial_price":{
+        "ETH":"0.00009 ETH",
+        "USD":"0.15 USD",
+        "BTC":"0.0000029 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/KawasanSadai",
+    "telegram": "https://t.me/sadai_official",
+    "github": "https://github.com/SADAI-official"
+  }
+} 
