@@ -22,7 +22,7 @@
     <i class="fas fa-search fa-fw fa-md pl-2 pl-md-0"></i>
     <span class="pl-4 d-md-none">Search</span>
   </a>
-  <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn gc-search-box" aria-labelledby="searchDropdown">
+  <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn gc-search-box shadow-lg p-0" aria-labelledby="searchDropdown">
     <div class="has-search p-3">
       <form v-on:submit.prevent="search">
         <input type="text" class="form-control font-caption" v-model="term" @input="dirty" placeholder="Search Gitcoin">

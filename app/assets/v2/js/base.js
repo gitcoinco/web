@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
     var elementBottom = elementTop + $(this).outerHeight();
@@ -136,7 +137,6 @@ $(document).ready(function() {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
-      console.log(toggle);
       $('.navbar-collapse').toggleClass('show');
       if (toggle === 'false') {
         $(this).attr('aria-expanded', 'true');
@@ -431,6 +431,15 @@ const $topNav = $('.top-nav');
 
 // anchor to 75px when the menu is open to hide top menu
 let anchored = false;
+let resizeTimeout = null;
+
+// scroll to the start of the menu
+const scrollToMenu = function() {
+  if ($body.hasClass('navbar-menu-open') && window.scrollY < $topNav[0].clientHeight) {
+    anchored = true;
+    window.scrollTo(0, $topNav[0].clientHeight + 1);
+  }
+};
 
 // show/hide megamenu caret
 $(document, '.dropdown').on('show.bs.dropdown', function(e) {
@@ -443,17 +452,21 @@ $(document, '.dropdown').on('show.bs.dropdown', function(e) {
 // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
 $navbarSupportedContent.on('show.bs.collapse', function() {
   $body.addClass('navbar-menu-open');
-
-  if (window.scrollY < $topNav[0].clientHeight) {
-    anchored = true;
-    window.scrollTo(0, $topNav[0].clientHeight + 1);
-  }
+  scrollToMenu();
 }).on('hide.bs.collapse', function() {
   $body.removeClass('navbar-menu-open');
   if (anchored) {
     anchored = false;
     window.scrollTo(0, 0);
   }
+});
+
+// debounce the resize event
+window.addEventListener('resize', function() {
+  // clear the timeout
+  clearTimeout(resizeTimeout);
+  // start timing for event "completion"
+  resizeTimeout = setTimeout(scrollToMenu, 30);
 });
 
 // carousel/collabs/... inside menu

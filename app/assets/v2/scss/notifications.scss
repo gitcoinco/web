@@ -123,6 +123,10 @@ html.dark-mode {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
 }
 
+.notifications__list:empty {
+  display: none;
+}
+
 .notifications__item {
   font-size: 12px;
   display: flex;

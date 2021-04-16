@@ -23,7 +23,7 @@
       <span class="pl-3 d-md-none">Notifications</span>
       <span id="notification-dot" class="notification__dot ml-2 ml-md-0" :class="{'notification__dot_active': unreadNotifications.length > 0}">[[unreadNotifications.length ? unreadNotifications.length : '']]</span>
     </a>
-    <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn notifications__box" aria-labelledby="notificationsDropdown">
+    <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn notifications__box shadow-lg" aria-labelledby="notificationsDropdown">
       <div class="notifications__header">
         <div class="notifications__title">
           {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">[[ numNotifications ]]</span>
