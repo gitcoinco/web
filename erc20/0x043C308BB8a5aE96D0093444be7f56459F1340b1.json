@@ -1,0 +1,17 @@
+{
+	"symbol": "SUM",
+	"address": "0x043C308BB8a5aE96D0093444be7f56459F1340b1",
+	"overview": {
+		"en": "sumswap is a blockchain company founded in the UK. The company is composed of technology geeks who have the ultimate pursuit of mathematics and blockchain. Members of the team have provided solutions for many high-tech companies in Europe and the United States with their attainments in mathematics and blockchain technology.",
+		"zh": "SumSwap是一个成立于英国的区块链公司，该公司由对数学和区块链有着极致追求的技术极客组成，该团队成员曾凭借着在数学和区块链技术上的造诣为欧美多个高科技公司提供过解决方案。"
+	},
+	"email": "service@sumswap.org",
+	"website": "http://sumswap.org/",
+	"state": "NORMAL",
+	"links": {
+		"blog": "",
+		"twitter": "https://twitter.com/sum_swap",
+		"telegram": "https://t.me/joinchat/ynq8kWk3WmpiMtg0",
+		"github": "https://github.com/sumswap"
+	}
+	}
