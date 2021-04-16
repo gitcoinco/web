@@ -834,12 +834,6 @@ Vue.mixin({
       if (!vm.validateNervos()) {
         vm.$set(vm.errors, 'funderAddress', 'Please enter a valid Nervos address');
       }
-
-      if (Object.keys(vm.errors).length === 0) {
-        fetchData(`/bounty/change/${vm.bounty.pk}`, 'POST', JSON.stringify({
-          bounty_owner_address: vm.bounty.bounty_owner_address
-        }), { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
-      }
     }
   },
   computed: {
