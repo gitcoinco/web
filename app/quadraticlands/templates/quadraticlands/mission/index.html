@@ -103,6 +103,11 @@
 <!-- upcoming missions-->
 <section class="mission">
 
+	<!-- Postcard Generator Game -->
+	{% with name="Postcard Generator" %}
+		{% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="Send a message to your friends from the digital democratic future!" playable="true" url="mission/postcard" %}
+	{% endwith %}
+
 	<!-- Empower a Steward -->
 	{% with name="Empower a Steward" %}
 		{% include 'quadraticlands/mission/card.html' with svg="stewards.svg" message="available" playable="true" url="stewards"  %}
@@ -133,21 +138,16 @@
 	{% endwith %}
 
 
+
 	<!-- SybilHunt -->
 	{% with name="SybilHunt" %}
-		{% include 'quadraticlands/mission/card.html' with svg="sybilhunt.svg" message="soon" locked="true" %}
+		{% include 'quadraticlands/mission/card.html' with svg="sybilhunt.svg" message="Coming soon" locked="true" %}
 	{% endwith %}
 
 
 	<!-- Anti-Sybil Staking -->
 	{% with name="Anti-Sybil Staking" %}
-		{% include 'quadraticlands/mission/card.html' with svg="antisybil.svg" message="soon" locked="true" %}
-	{% endwith %}
-
-
-	<!-- Grants Governance Game -->
-	{% with name="Grants Governance Game" %}
-		{% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="soon" locked="true" %}
+		{% include 'quadraticlands/mission/card.html' with svg="antisybil.svg" message="coming soon" locked="true" %}
 	{% endwith %}
 
 
