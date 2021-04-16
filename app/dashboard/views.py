@@ -3935,8 +3935,7 @@ def change_bounty(request, bounty_id):
         'reserved_for_user_handle',
         'is_featured',
         'admin_override_suspend_auto_approval',
-        'keywords',
-        'bounty_owner_address'
+        'keywords'
     ]
 
     if request.body:
