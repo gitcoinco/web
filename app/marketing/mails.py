@@ -1364,7 +1364,7 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(es):
-
+    from dashboard.models import Bounty
     to_email = es.email
     keywords = es.keywords
     bounties, old_bounties = get_bounties_for_keywords(keywords, 24)
