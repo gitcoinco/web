@@ -416,7 +416,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             grant = clr_round.grants.using('default').get(pk=pk)
             latest_calc = grant.clr_calculations.using('default').filter(latest=True, grantclr=clr_round).order_by('-pk').first()
             if not latest_calc:
-                print("- - could not find latest clr calc for {grant.pk} ")
+                print(f"- - could not find latest clr calc for {grant.pk} ")
                 continue
             clr_prediction_curve = copy.deepcopy(latest_calc.clr_prediction_curve)
             clr_prediction_curve[0][1] = grant_calc['clr_amount'] # update only the existing match estimate
