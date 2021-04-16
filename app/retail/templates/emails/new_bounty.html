@@ -204,19 +204,19 @@ along with this program. If not, see
   {% if quest_of_the_day %}
   <h3 class="section-header">{% trans "Daily Quests" %}</h3>
   <hr>
-  {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
+  {% if not quest_of_the_day.enemy_img_url or quest_of_the_day.enemy_img_url == "/static/" %}
   <img class="avatar" style="height: 120px; width: auto;" src={{base_url}}static/v2/images/emails/kudos_template.png>
   {% else %}
-  <img class="avatar" src="{{quest.enemy_img_url}}">
+  <img class="avatar" src="{{quest_of_the_day.enemy_img_url}}">
   {% endif %}
   <div class="text-left" style="color: #15003E;">
-    <p class="font-weight-bold mb-0">{{quest.title}}</p>
+    <p class="font-weight-bold mb-0">{{quest_of_the_day.title}}</p>
     <p style="margin-top:0; max-width: 385px; margin-bottom: 0; word-wrap: break-word;">
-      {{quest.description}}
+      {{quest_of_the_day.description}}
     </p>
   </div>
   <div style="margin-top: 25px;">
-    <a class="button" style="text-decoration: none;" href="{{quest.url}}&{{ utm_tracking }}">Play Quest</a>
+    <a class="button" style="text-decoration: none;" href="{{quest_of_the_day.url}}&{{ utm_tracking }}">Play Quest</a>
   </div>
   {% endif %}
 
