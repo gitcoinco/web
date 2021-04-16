@@ -1,0 +1,422 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+
+<section class="background">
+	<img src='{% static "v2/quadraticlands/images/background/anim-9.svg" %}' />
+</section>
+
+
+
+<section class="quest">
+
+
+	<!-- quest-vote -->
+	<main id="postcard">
+
+		<section class="introduction">
+			<h1>Create a Quadratic Lands postcard</h1>
+			<p>Tell your friends & family about your visit to the Quadratic Lands.</p>	
+		</section>
+
+		<div class="wrapper scrollable">
+
+			<div class="postcard-vote">
+
+				<img style="height: 400px; width: 400px;" src="/quadraticlands/mission/postcard/svg">
+
+			</div>
+
+		</div>
+	</main>
+
+
+
+
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+		</div>
+
+		<!-- button status -->
+		<div class="right">
+
+			<!-- intro - start voting process -->
+			<div id="btnStart" class="hide" >
+				<a class="btn">Start</a>
+			</div>
+
+			<!-- voting submit -->
+			<div id="btnVoting" class="hide" >
+				<a class="btn" id="signTypedDataV4Button" >Submit</a>
+			</div>
+
+
+			<!-- finish - goto outro -->
+			<div id="btnOutro" class="hide" >
+				<a class="btn" href="/quadraticlands/mission/use/outro">Continue</a>
+			</div>
+
+
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+{% block 'scripts' %}
+
+
+<!-- custom particles-->
+<!--<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>-->
+
+<!-- force web3modal to popup automaticaly when no provider selected-->
+<script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>
+
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	const inputs = document.querySelectorAll("input")
+
+
+	/*********** VIEW ON LOAD */
+	updateInterface("voting")
+
+
+
+	/*********** VIEW:VOTING > INPUT FIELD CHANGE EVENT */
+
+	inputs.forEach(i => {
+
+		i.addEventListener('focus', (event) => {
+			// reset all options to not have class .active
+			document.querySelectorAll(".option").forEach(r => { r.classList.remove("active") })
+			// set parent div.option to class .active
+			event.target.parentNode.parentNode.classList.add("active")
+		});
+
+
+		// input validate
+		i.addEventListener("input", input => {
+
+			if(isNaN(i.value)) { i.value = 0 }
+			if (i.value <= 0) { i.value = 0 }
+			if (i.value >= 100 ) { i.value = 100 }
+			
+			let usedPercent = 0
+
+			// select all not current inputs to see usedPercent so far
+			let inputs = document.querySelectorAll(".option:not(.active) input")
+			inputs.forEach(i => {
+				usedPercent = parseInt(usedPercent) + parseInt(i.value)
+			})
+
+			let availablePercent = 100 - usedPercent
+
+			// users input will be more than availablePercent
+			if (i.value >= availablePercent ) { i.value = availablePercent }
+
+			// update background percent bar on this user input
+			let bar = document.querySelector(".option.active div.bar")
+			bar.style.width = i.value + "%";
+
+			// update % left status in nav ( bottom right)
+			let used = (100 - usedPercent) - i.value
+			let interfaceAvailablePercentSpan = document.querySelector("#availablePercent span")
+			interfaceAvailablePercentSpan.innerHTML = used
+
+			// user spend 100% > show button to vote
+			let btnVoting = document.getElementById("btnVoting")
+			let interfaceAvailablePercent = document.getElementById("availablePercent")
+
+			if ( used == 0 ){ 
+				btnVoting.classList.remove("hide")
+				interfaceAvailablePercent.classList.add("hide") 
+			}
+			else{
+				btnVoting.classList.add("hide")
+				interfaceAvailablePercent.classList.remove("hide") 
+			}
+
+			// update global progressbar (seperator)
+			let free = Math.abs(used-100)
+			const progressbar = document.getElementById("progressbar");
+			progressbar.style.width = free + "%";
+			console.debug("FREE : " + free)
+
+		});
+
+	});
+
+
+	/*********** VIEW:VOTING > OPTION CLICK EVENT */
+	// additional helper to enable a click on any .option 
+	// to focus its related child input field
+
+	const options = document.querySelectorAll(".option")
+	options.forEach(o => {
+		o.addEventListener("click", () => {
+			let input = o.querySelector("input")
+			input.focus()
+			input.select()
+		});
+	});
+
+
+
+
+
+	/*********** VIEW:VOTING > BUTTON TO SUBMIT */
+
+	const btnVoting = document.getElementById("btnVoting")
+	btnVoting.addEventListener("click", () => {
+		console.debug ("BTN:VOTING")
+		const inputs = document.querySelectorAll("input")
+		const selection = {}
+		inputs.forEach(i => { 
+			selection[i.name] = i.value;
+		});
+
+		// submit function with users selection
+		submit()
+		
+	});
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+/*********** VIEWS */
+
+function updateInterface(status){
+
+	// views
+	const interfaceVoting = document.getElementById("voting")
+
+	// hide all views
+	interfaceVoting.classList.add("hide")
+
+	// hide all things in nav bar that might change based on view
+	let btnStart = document.getElementById("btnStart")
+	btnStart.classList.add("hide")
+
+	let availablePercent = document.getElementById("availablePercent")
+	availablePercent.classList.add("hide")
+
+
+	// update interface based on interface status
+
+	if (status=="voting")
+	{		
+		interfaceVoting.classList.remove("hide")
+		availablePercent.classList.remove("hide")
+		// flashMessage("UP/DOWN key's to quickly distribute your voting power",8000);			
+		console.debug("INTERFACE:VOTING")
+	}
+
+
+	if (status=="success")
+	{
+		console.debug("INTERFACE:SUCCESS")
+		
+		// forward  
+		window.location = "/quadraticlands/mission/use/outro";
+	}
+
+
+	
+}
+
+
+
+
+
+
+
+/*********** SUBMIT */
+//
+
+function submit(){
+
+	console.debug("SUBMIT")
+
+	msgParams = JSON.stringify( {
+		"types" :  { "EIP712Domain" : EIP712Domain(), "CastVote" : CastVote()  },
+		"primaryType" : "CastVote", "domain" : domain(), "message" : message()
+	} )
+
+	console.log('parms before sign:', msgParams);
+	
+	web3.currentProvider.sendAsync(
+		{
+		method: 'eth_signTypedData_v4',
+		params: [ selectedAccount, msgParams ],
+		from: selectedAccount
+		},
+
+		async (err, result) => {
+
+			if (err) {
+
+				console.debug("ERROR")
+				
+				if (err.code == "4001") {
+					console.debug("User canceled Sig")
+				}
+
+				console.error('ERROR', err)
+				return
+			}
+
+
+			else if (result.error){
+				console.error('ERROR', result.error.message);
+				return;
+			}
+
+			console.debug('past send!')
+			const signature = result.result;
+			console.log('signature', signature);
+			console.log('msgParams', JSON.parse( msgParams ));
+
+			updateInterface("success")
+		
+		}
+	);
+
+
+}
+
+
+
+
+
+
+
+
+// helper to build the EIP712Domain Object
+function EIP712Domain(){
+
+	let EIP712Domain = [
+		{ name: 'name', type: 'string' },
+		{ name: 'version', type: 'string' },
+		{ name: 'chainId', type: 'uint256' },
+		{ name: 'verifyingContract', type: 'address' }
+	]
+
+	return EIP712Domain
+}
+
+
+
+// helper to build the CastVote Array
+function CastVote(){
+
+	let vote = []
+
+	let inputs = document.querySelectorAll("input")
+	inputs.forEach(i => {     
+		vote.push( { "name" : i.name, "type":"uint256" } )     
+	});
+	vote.push( {"name":"nonce", "type":"uint256"} )
+	vote.push( {"name":"expiry", "type":"uint256"} )
+
+	return vote
+}
+
+
+// helper to build the domain Object
+function domain(){
+
+	let name = "GTCToken"
+	let version = 1
+	let chainId = web3.currentProvider.networkVersion
+	let verifyingContract = "0xc00e94Cb662C3520282E6f5717214004A7f26888"
+
+	let domain = { "name":name, "version": version, "chainId": chainId, "verifyingContract": verifyingContract }
+
+	return domain
+}
+
+
+
+// helper to build the message Object
+function message(){
+
+	let message = {}
+	let inputs = document.querySelectorAll("input")
+
+	inputs.forEach(i => { 
+		message[i.name] = i.value    
+	});
+
+	message["nonce"] = 0
+	message["expiry"] = "10e9"
+
+	return message
+
+}
+
+
+
+
+
+</script>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

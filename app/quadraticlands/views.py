@@ -101,6 +101,41 @@ def mission_question(request, mission_name, question_num):
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}.html', context)
 
+def mission_postcard(request):
+    '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
+    if not request.user.is_authenticated:
+        return redirect('/login/github/?next=' + request.get_full_path())
+    context = {}
+    return TemplateResponse(request, f'quadraticlands/mission/postcard/postcard.html', context)
+
+def mission_postcard_svg(request):
+    import xml.etree.ElementTree as ET
+    from django.http import HttpResponse
+
+    width = 100
+    height = 100
+    viewBox = ''
+    tags = ['{http://www.w3.org/2000/svg}style']
+    ET.register_namespace('', "http://www.w3.org/2000/svg")
+    prepend = f'''<?xml version="1.0" encoding="utf-8"?>
+<svg width="{width}%" height="{height}%" viewBox="{viewBox}" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+'''
+    postpend = '''
+</svg>
+'''
+
+
+    file = 'assets/v2/images/avatar3d/avatar_bufficorn.svg'
+    with open(file) as file:
+        elements = []
+        tree = ET.parse(file)
+        for item in tree.getroot():
+            elements.append(ET.tostring(item).decode('utf-8'))
+        output = prepend + "".join(elements) + postpend
+
+        response = HttpResponse(output, content_type='image/svg+xml')
+        return response
+
 def mission_answer(request, mission_name, question_num, answer):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>/<answer>'''
     if not request.user.is_authenticated:
