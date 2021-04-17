@@ -93,6 +93,7 @@ def mission_state(request, mission_name, mission_state):
          return redirect('quadraticlands/mission/index.html')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
 
+
 def mission_question(request, mission_name, question_num):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
     if not request.user.is_authenticated:
@@ -101,11 +102,19 @@ def mission_question(request, mission_name, question_num):
     context.update(game_status)
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}.html', context)
 
+
 def mission_postcard(request):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
     if not request.user.is_authenticated:
         return redirect('/login/github/?next=' + request.get_full_path())
-    context = {}
+    attrs = {
+        'front_frame': ['1', '2'],
+        'front_background': ['a', 'b'],
+        'back_background': ['a', 'b'],
+    }
+    context = {
+        'attrs': attrs,
+    }
     return TemplateResponse(request, f'quadraticlands/mission/postcard/postcard.html', context)
 
 def mission_postcard_svg(request):
@@ -124,13 +133,27 @@ def mission_postcard_svg(request):
 </svg>
 '''
 
-
-    file = 'assets/v2/images/avatar3d/avatar_bufficorn.svg'
+    package = request.GET.dict()
+    file = 'assets/v2/images/quadraticlands/postcard.svg'
     with open(file) as file:
         elements = []
         tree = ET.parse(file)
         for item in tree.getroot():
-            elements.append(ET.tostring(item).decode('utf-8'))
+            output = ET.tostring(item).decode('utf-8')
+
+            _id = item.attrib.get('id')
+            include_item = None
+            if _id == 'text':
+                include_item = True
+                output = output.replace('POSTCARD_TEXT_GOES_HERE', package.get('text'))
+            if _id:
+                val = _id.split(":")[-1]
+                key = _id.split(":")[0]
+                print(key, val, package)
+                if val == package.get(key):
+                    include_item = True
+            if include_item:
+                elements.append(output)
         output = prepend + "".join(elements) + postpend
 
         response = HttpResponse(output, content_type='image/svg+xml')
