@@ -1,22 +1,3 @@
 {% extends "wiki/base_site.html" %}
 
 {% block wiki_site_title %} - Gitcoin{% endblock %}
-
-{% block wiki_header_branding %}
-<a class="navbar-brand" href="/">
-    <img id="logo" src="/static/v2/images/logo_large.png" style="margin-top: -20px;" width="150" height="50" />
-</a>
-<style type="text/css">
-.navbar{
-  background: url(/static/v2/images/header-bg.png);
-}
-</style>
-{% endblock %}
-
-{% block wiki_header_navlinks %}
-<ul class="nav navbar-nav">
-  <li class="active"><a href="/">Home</a></li>
-  <li class="active"><a href="/chat">Chat</a></li>
-  <li class="active"><a href="{% url 'wiki:root' %}">Wiki</a></li>
-</ul>
-{% endblock %}

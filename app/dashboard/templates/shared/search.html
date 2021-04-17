@@ -17,16 +17,16 @@
 {% load i18n static humanize %}
 
 <div id="gc-search" class="nav-item dropdown gc-search order-md-first">
-  <a href="" class="gc-search__icon nav-link dropdown-toggle" id="searchDropdown" role="button" @click="init"
+  <a href="" class="gc-search__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="searchDropdown" role="button" @click="init"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-search fa-fw fa-md pl-2 pl-md-0"></i>
     <span class="pl-4 d-md-none">Search</span>
   </a>
-  <div class="dropdown-menu dropdown-menu-right animation slideDownIn gc-search-box" aria-labelledby="searchDropdown">
+  <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn gc-search-box shadow-lg p-0" aria-labelledby="searchDropdown">
     <div class="has-search p-3">
       <form v-on:submit.prevent="search">
         <input type="text" class="form-control font-caption" v-model="term" @input="dirty" placeholder="Search Gitcoin">
-        <input type="submit" class="form-control font-caption m-2" @click="search" value="Go">
+        <input type="submit" class="form-control font-caption mx-2" @click="search" value="Go">
       </form>
     </div>
     <template v-if="term.length < 4">
@@ -36,13 +36,13 @@
     </template>
 
     <template v-else-if="isDirty">
-      <p class="text-center font-smaller-2 gc-search-result__description mb-0">
+      <p class="text-center font-smaller-2 gc-search-result__description">
         Click 'Go' to Search.
       </p>
     </template>
     <template v-else-if="Object.keys(results).length">
-      <ul class="nav nav-tabs mt-1 gc-search-nav d-flex justify-content-around" role="tablist">
-        <li class="nav-item" v-for='(source_type, index) in source_types' :key="index">
+      <ul class="nav nav-tabs mt-1 gc-search-nav d-flex" role="tablist">
+        <li class="nav-item flex-grow-1 text-center" v-for='(source_type, index) in source_types' :key="index">
           <a class="nav-link nav-line gc-search-tab__title px-1" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
             <span v-if="typeof results[source_type] !== 'undefined'">([[ results[source_type].length ]])</span>
             <span v-else>(0)</span>
@@ -51,7 +51,7 @@
       </ul>
       <div class="tab-content clearfix">
         <div class="tab-pane" :class="{active: currentTab === index}" v-bind:id="source_type" v-for='(source_type, index) in source_types' :key="index">
-          <ul class="gc-search-result">
+          <ul class="gc-search-result mb-0">
             <template v-if="results && results[source_type]">
               <li v-for="result in results[source_type]" class="gc-search-result__content p-3" :key="result.id">
                <a :href="[[ result.url ]]" class="d-flex">
@@ -69,7 +69,7 @@
               </li>
             </template>
             <template v-else>
-              <li class="gc-search-result__content pt-3 gc-search-result__description font-smaller-2 text-center">
+              <li class="gc-search-result__content pt-3 gc-search-result__description font-smaller-2 text-center mb-3">
                 No matches found
               </li>
             </template>
@@ -79,7 +79,7 @@
     </template>
 
     <template v-else-if="isLoading">
-      <p class="text-center font-smaller-2 gc-search-result__description mb-0">
+      <p class="text-center font-smaller-2 gc-search-result__description">
         <i class="font-smaller-1 fas fa-spinner fa-pulse mr-1"></i>
         Fetching result
       </p>

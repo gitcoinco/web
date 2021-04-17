@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
     var elementBottom = elementTop + $(this).outerHeight();
@@ -136,7 +137,6 @@ $(document).ready(function() {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
-      console.log(toggle);
       $('.navbar-collapse').toggleClass('show');
       if (toggle === 'false') {
         $(this).attr('aria-expanded', 'true');
@@ -422,8 +422,61 @@ const gitcoinUpdates = () => {
   });
 
 };
-// carousel/collabs/... inside menu
 
+// megamenu carets are positioned inside each nav-link
+const $body = $('body');
+const $carets = $('.gc-megamenu-caret');
+const $navbarSupportedContent = $('#navbarSupportedContent');
+const $topNav = $('.top-nav');
+
+// anchor to 75px when the menu is open to hide top menu
+let anchored = false;
+let resizeTimeout = null;
+
+// scroll to the start of the menu/close if we move out of mobile
+const posMobileMenu = function() {
+  if ($body.hasClass('navbar-menu-open')) {
+    // scroll beyond the topNav and lock
+    if (window.scrollY < $topNav[0].clientHeight) {
+      anchored = true;
+      window.scrollTo(0, $topNav[0].clientHeight + 1);
+    } else if (window.innerWidth > 767) {
+      // close menu if we move into md
+      $navbarSupportedContent.collapse('hide');
+      $body.removeClass('navbar-menu-open');
+    }
+  }
+};
+
+// show/hide megamenu caret
+$(document, '.dropdown').on('show.bs.dropdown', function(e) {
+  $carets.hide();
+  $(e.target).find('.gc-megamenu-caret').show();
+}).on('hide.bs.dropdown', function() {
+  $carets.hide();
+});
+
+// add .navbar-menu-open to prevent page-scroll when mobile menu is opened
+$navbarSupportedContent.on('show.bs.collapse', function() {
+  $body.addClass('navbar-menu-open');
+  posMobileMenu();
+}).on('hide.bs.collapse', function() {
+  $body.removeClass('navbar-menu-open');
+  if (anchored) {
+    anchored = false;
+    window.scrollTo(0, 0);
+  }
+});
+
+// debounce the resize event
+window.addEventListener('resize', function() {
+  // clear the timeout
+  clearTimeout(resizeTimeout);
+  // start timing for event "completion"
+  resizeTimeout = setTimeout(posMobileMenu, 30);
+});
+
+// carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
