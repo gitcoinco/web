@@ -433,11 +433,18 @@ const $topNav = $('.top-nav');
 let anchored = false;
 let resizeTimeout = null;
 
-// scroll to the start of the menu
-const scrollToMenu = function() {
-  if ($body.hasClass('navbar-menu-open') && window.scrollY < $topNav[0].clientHeight) {
-    anchored = true;
-    window.scrollTo(0, $topNav[0].clientHeight + 1);
+// scroll to the start of the menu/close if we move out of mobile
+const posMobileMenu = function() {
+  if ($body.hasClass('navbar-menu-open')) {
+    // scroll beyond the topNav and lock
+    if (window.scrollY < $topNav[0].clientHeight) {
+      anchored = true;
+      window.scrollTo(0, $topNav[0].clientHeight + 1);
+    } else if (window.innerWidth > 767) {
+      // close menu if we move into md
+      $navbarSupportedContent.collapse('hide');
+      $body.removeClass('navbar-menu-open');
+    }
   }
 };
 
@@ -452,7 +459,7 @@ $(document, '.dropdown').on('show.bs.dropdown', function(e) {
 // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
 $navbarSupportedContent.on('show.bs.collapse', function() {
   $body.addClass('navbar-menu-open');
-  scrollToMenu();
+  posMobileMenu();
 }).on('hide.bs.collapse', function() {
   $body.removeClass('navbar-menu-open');
   if (anchored) {
@@ -466,7 +473,7 @@ window.addEventListener('resize', function() {
   // clear the timeout
   clearTimeout(resizeTimeout);
   // start timing for event "completion"
-  resizeTimeout = setTimeout(scrollToMenu, 30);
+  resizeTimeout = setTimeout(posMobileMenu, 30);
 });
 
 // carousel/collabs/... inside menu
