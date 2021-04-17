@@ -127,7 +127,7 @@
   .navbar-brand {
     color: #fff
   }
-  .navbar .gc-menu-background {
+  .navbar .gc-menu-background-clr {
     background: #ffffff!important;
   }
 }
@@ -199,6 +199,10 @@
     transition:
       transform var(--gc-menu-transition-duration),
       opacity var(--gc-menu-transition-duration);
+  }
+
+  .gc-menu-background-clr {
+    background: #ffffff!important;
   }
 
   .gc-menu-content {
