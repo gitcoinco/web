@@ -24,8 +24,35 @@
 	<main id="postcard">
 
 		<section class="introduction">
-			<h1>Create a Quadratic Lands postcard</h1>
-			<p>Tell your friends & family about your visit to the Quadratic Lands.</p>	
+			<h1>Quadratic Lands - Postcard Generator</h1>
+			<p>
+				<span>GTC</span> is a governance token, and the vehicle we’ll use to fully decentralize Gitcoin — eventually into a community governed <span>GitcoinDAO</span>.
+				</p>
+				<p>
+				While the <span>GitcoinDAO</span> is an end in itself, it is also a means to another end: To chart a course to the <span>Quadratic Lands</span> - a place where communities are empowered to build for the common good. 
+				</p>
+				<p>
+				<hr style="margin: 10px;">
+				We envision the <span>Quadratic Lands</span> as this place: 
+				</p>
+				<ul>
+						<li>
+						There are numerous opportunities to create financial sovereignty while working side-by-side with people who share similar values.
+						</li>
+						<li>
+						Individuals have sovereignty to make their own choices, but incentives are aligned for cooperation that generates both individual and community benefit.
+						</li>
+						<li>
+						The economic infrastructure is a set of economic games with transparent rules that cannot be changed on us.
+						</li>
+						<li>
+						Because of composability of blockchain-based systems, the surface area of opportunity is growing exponentially as the tools compound upon each other.
+						</li>
+				</ul>
+			<p>
+			We have tasted the Quadratic Lands, but much of it remains to be built!. 
+			</p>
+			<p>Tell your friends & family about your visit to the Quadratic Lands with this postcard genereator below.</p>	
 		</section>
 
 		<div class="wrapper scrollable">
@@ -37,7 +64,7 @@
 				<div class="input">
 					{% for key, package in attrs.items %}
 					<div class="backgrounds">
-						{{key}}
+						{{key | title}}
 						<div class="parent">
 								<ul>
 									{% for item in package %}
@@ -106,6 +133,7 @@
 			width: 23%;
 			text-align: left;
 			vertical-align: top;
+			margin-top: 20px;
 		}
 		.backgrounds li{
 			cursor: pointer;
@@ -114,8 +142,21 @@
 			font-weight: bold;
 			color: white;
 		}
-		#text{
-			background-color: blue;
+		section.introduction{
+			background-color: #0d0331dd;
+		}
+		section.introduction p{
+			margin-bottom: 10px;
+		}
+		.backgrounds textarea{
+			border-color: #ffffff;
+			color: #ffffff;
+			background-color: #2d2351;
+			font-size: 24px;
+			width: 100%;
+			height: 300px;
+			padding: 5px;
+			font-family: 'Poppins', sans-serif;
 		}
 </style>
 
