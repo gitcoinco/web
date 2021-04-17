@@ -78,8 +78,8 @@ const getDimension = (navLink, menuEL, isDesktop, menu) => {
 
   // allow the menuX pos to be offset by % or px value
   const offsetX = (isDesktop && dimensions[menu] && dimensions[menu].moveX ? (
-      Math.abs(dimensions[menu].moveX) > 1 ? dimensions[menu].moveX : window.innerWidth * dimensions[menu].moveX
-    ) : 0);
+    Math.abs(dimensions[menu].moveX) > 1 ? dimensions[menu].moveX : window.innerWidth * dimensions[menu].moveX
+  ) : 0);
 
   // use measurements to dictate dimentsions and x/y positions
   dimension.arrowX = navLinkRect.left + (navLinkRect.width / 2) - navbarRect.left;
@@ -118,7 +118,7 @@ const resetVisibility = () => {
   // remove .show after the transitions finish
   setTimeout(() => {
     menuContainerEl.classList.remove('show');
-  }, transitionDuration)
+  }, transitionDuration);
 };
 
 

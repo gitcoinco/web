@@ -113,12 +113,22 @@
     text-align: center;
   }
 
-  .gc-menu-inner .media-body>p:last-of-type {
+  .gc-menu-inner .media-body > p:last-of-type {
     margin: 0;
   }
 
   #navbarDropdownWallet {
     margin-top: 2px;
+  }
+}
+
+// .dark-mode is applied onload - menu should follow dark-mode colors
+.dark-mode {
+  .navbar-brand {
+    color: #fff
+  }
+  .navbar .gc-menu-background {
+    background: #ffffff!important;
   }
 }
 
@@ -248,7 +258,7 @@
     height: var(--gc-menu-products-height);
     width: var(--gc-menu-products-width);
 
-    &>.gc-menu-inner {
+    & > .gc-menu-inner {
       padding: 0 0 0 var(--gc-menu-padding);
     }
   }
@@ -483,6 +493,9 @@
   .navbar-expand-md .navbar-nav .nav-link {
     font-size: 0.7rem;
   }
+  .navbar-brand > span:not(#animated-logo) {
+    width: 120px !important;
+  }
 }
 
 @media (min-width:768px) and (max-width:991.98px) {
@@ -490,15 +503,14 @@
     padding-left: 0.4rem;
     padding-right: 0.4rem;
   }
-
-  .navbar-brand>span {
-    width: 90px !important;
-  }
 }
 
 @media (min-width:768px) and (max-width:820px) {
   .navbar-nav .nav_avatar {
     display: none !important;
+  }
+  .navbar-brand > span:not(#animated-logo) {
+    width: 90px !important;
   }
 }
 

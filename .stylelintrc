@@ -10,7 +10,9 @@
           "mixin",
           "for",
           "each",
-          "include"
+          "include",
+          "if",
+          "else"
         ]
       }
     ],
