@@ -50,6 +50,8 @@ const menuElsByName = indexElsByName(navLinkEls, 'gc-menu-wrap', 'menu');
 const spacerElsByName = indexElsByName(navLinkEls, 'gc-mobile-spacer', 'menu');
 const submenuElsByName = indexElsByName(submenuToggleEls, 'gc-menu-submenu', 'submenu');
 
+// check for touch device
+const isTouchDevice = ('ontouchstart' in window);
 
 // get a single dimension from a navLink el
 const getDimension = (navLink, menuEL, isDesktop, menu) => {
@@ -314,9 +316,11 @@ navbarEl.addEventListener('mouseenter', () => {
 
 // show submenu content on hover of gc-menu-submenu-toggle
 submenuToggleEls.forEach((submenuToggle) => {
-  submenuToggle.addEventListener('mouseenter', () => {
-    // show the selection
-    if (window.innerWidth > 768) {
+  submenuToggle.addEventListener((isTouchDevice ? 'touchstart' : 'mouseenter'), (e) => {
+    // disallow touch actions from following links unless its the second touch
+    if (window.innerWidth > 768 && (!isTouchDevice || (isTouchDevice && !submenuToggle.classList.contains('gc-menu-toggle-focus')))) {
+      // dont follow click if touched
+      e.preventDefault(); e.stopPropagation();
       // fix/remove hover state on toggle
       submenuToggleEls.forEach(el => el.classList.remove('gc-menu-toggle-focus'));
       submenuToggle.classList.add('gc-menu-toggle-focus');
