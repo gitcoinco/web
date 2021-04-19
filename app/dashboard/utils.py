@@ -1223,7 +1223,7 @@ def set_hackathon_event(type, event):
 
 def tx_id_to_block_explorer_url(txid, network):
     if network == 'xdai':
-        return f"https://explorer.anyblock.tools/ethereum/poa/xdai/tx/{txid}"
+        return f"https://blockscout.com/xdai/mainnet/tx/{txid}"
     if network == 'mainnet':
         return f"https://etherscan.io/tx/{txid}"
     return f"https://{network}.etherscan.io/tx/{txid}"
