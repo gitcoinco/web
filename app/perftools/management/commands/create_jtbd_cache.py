@@ -135,7 +135,7 @@ def create_jtbd_learn_cache():
         'testimonial': {
             'handle': 'Arya Soltanieh',
             'role': 'Founder, Myco Ex-Coinbase',
-            'comment': "I’ve done a handful of these type of programs...but KERNEL has definitely felt the best. The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco)",
+            'comment': "I’ve done a handful of these type of programs... but KERNEL has definitely felt the best.\r\n The community started at the top, has been so welcoming/ positive/ insightful/ AWESOME. Thank you to all the community members, and especially thank you to the team at the top, who’s personalities, content, and personal efforts helped create such a positive culture the last several weeks during KERNEL ❤️ I for one know that I will continue spreading the positive culture in everything I work on (myco).",
             'avatar_url': static('v2/images/jtbd/arya.png'),
             'github_handle': 'lostcodingsomewhere',
             'twitter_handle': '',

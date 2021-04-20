@@ -89,7 +89,7 @@ $(document).ready(function($) {
       var callback = function(txid, error) {
         indicateMetamaskPopup(true);
         if (error) {
-          _alert({ message: error }, 'error');
+          _alert({ message: error }, 'danger');
         } else {
           const url = 'https://' + etherscanDomain() + '/tx/' + txid;
           const msg = 'This tx has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';

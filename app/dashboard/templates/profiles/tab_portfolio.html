@@ -98,11 +98,13 @@
         {% if pi.link %}
           <a class="btn btn-primary btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
         {% endif %}
-        <form method="POST">
-          {% csrf_token %}
-          <input type="hidden" value="{{ pi.pk }}" name="project_pk">
-          <button type="submit" class="btn btn-danger btn-sm m-2">Delete</button>
-        </form>
+        {% if is_my_profile %}
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{ pi.pk }}" name="project_pk">
+            <button type="submit" class="btn btn-danger btn-sm m-2">Delete</button>
+          </form>
+        {% endif %}
       </div>
     </div>
   {% endfor %}
