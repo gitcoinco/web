@@ -109,7 +109,7 @@
     {% else %}
       background-color: #FDFAFA;
     {% endif %}
-    font-family: 'Libre Franklin', sans-serif !important;
+    font-family: 'Libre Franklin', 'Verdana', sans-serif !important;
   }
 
   a.button {
@@ -117,7 +117,7 @@
     background-color: #6F3FF5;
     border-radius: 3px;
     cursor: pointer;
-    padding: 10px 15px;
+    padding: 10px 20px;
     font-size: 16px;
     line-height: 19.39px;
     text-align: center;
@@ -759,35 +759,31 @@
       width: 80%;
     }
 
-    #content-body {
-      text-align: left;
-    }
-
     hr {
       width: 100%;
+    }
+
+    #content-body {
+      padding: 1.5em 11% 3em 11%;
+      text-align: left;
+      color: #15003E;
     }
 
     #footer {
       padding-top: 40px;
       color: #757087 !important;
+      text-align: center;
     }
 
     .footer-links {
-      margin: -53px 0px 110px 20px;
-    }
-
-    .footer-links div {
-      width: 25%;
-      float: left;
-    }
-
-    .footer-links div img {
-      float: right;
+      margin: 1.5em 1% 3em 1%;
     }
 
     .footer-socials {
-      width: 3em;
+      width: 2em;
       height: auto;
+      margin-left: 0.2em;
+      margin-right: 0.2em;
     }
   }
 
@@ -808,42 +804,33 @@
       width: 60%;
     }
 
-    #content-body {
-      text-align: left;
-    }
-
     hr {
       width: 90%;
     }
 
+    #content-body {
+      padding: 1.5em 11% 3em 11%;
+      text-align: left;
+      color: #15003E;
+    }
+
     #footer {
       padding-top: 40px;
-      margin: 0px 180px 0px 180px;
+      margin: 0px 50px 0px 50px;
       color: #757087 !important;
+      text-align: center;
     }
 
     .footer-links {
-      margin: -53px 0px 110px 0px;
-    }
-
-    .footer-links div {
-      width: 25%;
-      float: left;
-    }
-
-    .footer-links div img {
-      float: right;
+      margin: 1.5em 5% 3em 5%;
     }
 
     .footer-socials {
       width: 3em;
       height: auto;
+      margin-left: 2%;
+      margin-right: 2%;
     }
-  }
-
-  #content-body {
-    padding: 1.5em 11% 3em 11%;
-    color: #15003E;
   }
 
   .center-img {
@@ -867,17 +854,19 @@
     {% endblock %}
   </div>
   <div id="footer">
-    <a href="https://www.facebook.com/GetGitcoin"><img class="footer-socials" src="{% static "v2/images/emails/facebook.png" %}"></a>
     <div class="footer-links">
       {% block footer_links %}
-
-        <div><a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="footer-socials" src="{% static "v2/images/emails/youtube.png" %}"></a></div>
+        <a href="https://www.facebook.com/GetGitcoin"><img class="footer-socials" src="{% static "v2/images/emails/facebook.png" %}"></a>
+      
+        <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="footer-socials" src="{% static "v2/images/emails/youtube.png" %}"></a>
     
-        <div><a href="https://www.twitter.com/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/twitter.png" %}"></a></div>
+        <a href="https://www.twitter.com/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/twitter.png" %}"></a>
     
-        <div><a href="https://github.com/gitcoinco/"><img class="footer-socials" src="{% static "v2/images/emails/github.png" %}"></a></div>
+        <a href="https://github.com/gitcoinco/"><img class="footer-socials" src="{% static "v2/images/emails/github.png" %}"></a>
         
-        <div><a href="mailto:team@gitcoin.co"><img class="footer-socials" src="{% static "v2/images/emails/email.png" %}"></a></div>
+        <a href="mailto:team@gitcoin.co"><img class="footer-socials" src="{% static "v2/images/emails/email.png" %}"></a>
+
+        <a href="https://discord.com/invite/83BK5z55yB"><img class="footer-socials" src="{% static "v2/images/emails/discord.png" %}"></a>
       {% endblock %}
     </div>
     <center style="margin-bottom: 80px;">
@@ -889,7 +878,7 @@
         <p>
           {% trans "Want to change how you receive these emails?" %}
           <br>
-          {% trans "You can update your " %} <a href="{% url 'email_settings' subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "preferences" %}</a> or <a href="{% url 'email_settings' subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+          {% trans "You can update your " %} <a href="{% url 'email_settings' subscriber.priv %}">{% trans "preferences" %}</a> or <a href="{% url 'email_settings' subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
         </p>
     </center>
   </div>
