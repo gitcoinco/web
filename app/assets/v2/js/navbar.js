@@ -347,7 +347,7 @@ window.addEventListener('resize', () => {
     // cleanUp
     cleanUp();
     // only alter dimensions on resive for desktop version
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= breakpoint_md) {
       // set the new positions
       setDimensions();
     }
@@ -358,14 +358,14 @@ window.addEventListener('resize', () => {
 navLinkEls.forEach((navLink) => {
   navLink.addEventListener('mouseenter', () => {
     // show the selection
-    if (window.innerWidth >= 768)
+    if (window.innerWidth >= breakpoint_md)
       showMenu(navLink);
   });
   navLink.addEventListener('click', (event) => {
     // prevent href from scrolling to top
     event.preventDefault();
     // only do for mobile
-    if (window.innerWidth < 768)
+    if (window.innerWidth < breakpoint_md)
       showMenuMobile(navLink);
   });
 });
@@ -376,13 +376,13 @@ mobileToggleEl.addEventListener('click', () => {
   cleanUp();
   // bind click event to hide items when bootstrap menu is opened (bind on toggle so that we're definately ready)
   $('.nav-link.dropdown-toggle[data-toggle="dropdown"]').each((_, el) => {
-    $(el).off('click.gc-menu').on('click.gc-menu', () => window.innerWidth <= 767 && cleanUp());
+    $(el).off('click.gc-menu').on('click.gc-menu', () => window.innerWidth < breakpoint_md && cleanUp());
   });
 });
 
 // set mouseleave event on whole navbar el (how long to stay open after mouseleave)
 navbarEl.addEventListener('mouseleave', () => {
-  if (window.innerWidth >= 768) {
+  if (window.innerWidth >= breakpoint_md) {
     debounceClose = setTimeout(() => {
       // remove isVisible transitions to reduce jank
       resetVisibility();
@@ -392,7 +392,7 @@ navbarEl.addEventListener('mouseleave', () => {
 
 // if mouse re-enters the navbar clear the timeout
 navbarEl.addEventListener('mouseenter', () => {
-  if (window.innerWidth >= 768) {
+  if (window.innerWidth >= breakpoint_md) {
     // quit the close routine
     clearTimeout(debounceClose);
   }
@@ -415,7 +415,7 @@ navbarEl.addEventListener('mouseenter', () => {
   submenuToggleEls[menu].forEach((submenuToggle) => {
     submenuToggle.addEventListener((isTouchDevice ? 'touchstart' : 'mouseenter'), (e) => {
       // disallow touch actions from following links unless its the second touch (submenu only applied to desktop)
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= breakpoint_md) {
         if (!isTouchDevice) {
           hysteresisCheck(e, menu, submenuToggle);
         } else if (isTouchDevice && !submenuToggle.classList.contains('gc-menu-submenu-toggle-focus')) {
