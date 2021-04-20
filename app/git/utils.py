@@ -37,9 +37,8 @@ logger = logging.getLogger(__name__)
 
 _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 BASE_URI = settings.BASE_URL.rstrip('/')
-HEADERS = {'Accept': 'application/vnd.github.squirrel-girl-preview'}
-V3HEADERS = {'Accept': 'application/vnd.github.v3.text-match+json'}
-JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
+HEADERS = {'Accept': 'application/vnd.github.v3+json'}
+JSON_HEADER = {'Accept': 'application/vnd.github.v3+json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
 TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
 PER_PAGE_LIMIT = 100
@@ -397,7 +396,7 @@ def search(query):
     params = (('q', query), ('sort', 'updated'),)
 
     try:
-        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
+        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=HEADERS, params=params)
         return response.json()
     except Exception as e:
         logger.error("could not search GH - Reason: %s - query: %s", e, query)
