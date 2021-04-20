@@ -80,12 +80,6 @@ def get_next_time_available(key):
     return d
 
 
-def landing_toggle(request):
-    if not request.user.is_authenticated:
-        from retail.views import index as index_page
-        return index_page(request)
-    return town_square(request)
-
 def index(request):
 
     return town_square(request)

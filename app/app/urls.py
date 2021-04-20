@@ -718,7 +718,6 @@ urlpatterns = [
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
-    re_path(r'^static_proxy/(.*)', marketing.views.static_proxy, name='static_proxy'),
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
