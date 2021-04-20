@@ -99,9 +99,6 @@ def get_gh_issue_state(org, repo, issue_num):
 def build_auth_dict():
     """Collect authentication details.
 
-    Args:
-        oauth_token (str): The Github OAuth token.
-
     Returns:
         dict: An authentication dictionary.
 
@@ -207,7 +204,7 @@ def reset_token(oauth_token):
     """Reset the provided token.
 
     Args:
-        access_token (str): The Github OAuth token.
+        oauth_token (str): The Github OAuth token.
 
     Returns:
         str: The new Github OAuth token.
