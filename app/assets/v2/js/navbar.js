@@ -2,12 +2,11 @@
 let debounceClose = false;
 let debounceMeasure = false;
 
-// check for touch device
 const isTouchDevice = ('ontouchstart' in window);
 
 // allow for the dimensions to be set-up before measuring (moveX sets an offset to move gc-menu-[background/content] on the x axis)
 const dimensions = {
-  // set offset as % (0.*) or px value
+  // set offsets as % (0.*) or px values
   products: {
     moveX: -60
   },
@@ -37,12 +36,10 @@ const mobileToggleEl = document.querySelector('.navbar-toggler-icon');
 const submenuToggleEls = {};
 const submenuMenuEls = {};
 const submenuMenuElsByName = {};
+const debounceSubmenuFocus = [];
 
 // record mousePositions when interacting with submenus
 const mousePositions = {};
-
-// set up for multiple submenus
-const debounceSubmenuFocus = [];
 
 // index a collection by data-* attr taken from "from" nodeList elements finding classname ending with attr
 const indexElsByName = (from, className, dataAttr) => {
@@ -69,29 +66,22 @@ const spacerElsByName = indexElsByName(navLinkEls, 'gc-mobile-spacer', 'menu');
   submenuMenuElsByName[el.dataset.submenu] = indexElsByName(submenuToggleEls[el.dataset.submenu], 'gc-menu-submenu', 'submenu');
 });
 
-// show the containerEl before measuring anything
+// remove transform (rotate()) during measure so that the height/width isn't skewed
 const showMenuContainerEl = () => {
-  // display the container before measuring
   menuContainerEl.classList.add('show');
-
-  // remove transform (rotate()) during measure so that the height/width isn't skewed
   menuContainerEl.style.transform = 'unset';
   menuContainerEl.style.transition = 'unset';
 };
 
-// hide the containerEl after measuring anything
+// hide it again (if we're not applying active then this el will get in the way (opacity==0))
 const hideMenuContainerEl = () => {
-  // hide it again (if we're not applying active then this will get in the way (opacity==0))
   menuContainerEl.classList.remove('show');
-
-  // remove unset from transform (re-enabling rotateX)
   menuContainerEl.style.removeProperty('transform');
   menuContainerEl.style.removeProperty('transition');
 };
 
 // get a single dimension set from a navLink el
 const getDimension = (navLink, menuEL, isDesktop, menu) => {
-  // display the container before measuring
   showMenuContainerEl();
 
   // record as dimension obj
@@ -103,7 +93,6 @@ const getDimension = (navLink, menuEL, isDesktop, menu) => {
   const contentRect = menuEL.getBoundingClientRect();
   const containerRect = navbarContainerEl.getBoundingClientRect();
 
-  // hide the container after measuring
   hideMenuContainerEl();
 
   // allow the menuX pos to be offset by % or px value (only using px atm - we could reduce this)
@@ -111,20 +100,17 @@ const getDimension = (navLink, menuEL, isDesktop, menu) => {
     Math.abs(dimensions[menu].moveX) > 1 ? dimensions[menu].moveX : window.innerWidth * dimensions[menu].moveX
   ) : 0);
 
-  // use measurements to dictate dimentsions and x/y positions
   dimension.width = contentRect.width;
   dimension.height = contentRect.height;
   dimension.arrowX = navLinkRect.left + (navLinkRect.width / 2) - navbarRect.left;
   dimension.menuX = dimension.arrowX - 66 + offsetX;
   dimension.menuY = navLinkRect.bottom - containerRect.y;
 
-  // return the dimensions
   return dimension;
 };
 
-// measure the submenu's dimensinos
+// measure the submenu's dimensions
 const getSubmenuDimensions = (menu) => {
-  // display the container before measuring
   showMenuContainerEl();
 
   // position of the upperRight boundary
@@ -139,7 +125,6 @@ const getSubmenuDimensions = (menu) => {
     y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
   };
 
-  // hide the container after measuring
   hideMenuContainerEl();
 };
 
@@ -149,13 +134,11 @@ const setDimensions = () => {
   navLinkEls.forEach((navLink) => {
     // get the menu name from the navLink
     const menu = navLink.dataset.menu;
-    // get the named menuEl
-    const menuEL = menuElsByName[menu];
 
     // combine/fill the dimensions with new measurments
     dimensions[menu] = {
       ...(dimensions[menu] ? dimensions[menu] : {}),
-      ...getDimension(navLink, menuEL, true, menu)
+      ...getDimension(navLink, menuElsByName[menu], true, menu)
     };
   });
   // get the dimensions for each submenu
@@ -170,7 +153,7 @@ const resetVisibility = () => {
   caretEl.classList.remove('isVisible');
   // close the dropdown to animate out
   menuContainerEl.classList.remove('open');
-  // remove .show after the transitions finish
+  // remove .show after the transitions finishes
   setTimeout(() => {
     menuContainerEl.classList.remove('show');
   }, transitionDuration);
@@ -178,7 +161,6 @@ const resetVisibility = () => {
 
 // clean up recorded dimensions and display state of the menu
 const cleanUp = () => {
-  // remove transform transitions
   resetVisibility();
 
   // remove prev .active state
@@ -209,14 +191,13 @@ const showMenu = (navLink) => {
   // mark menu open
   menuContainerEl.classList.add('show');
 
-  // mark first .gc-menu-submenu as focused (open/selected) if none are
+  // mark first .gc-menu-submenu as .active (if .active is not set on pageload)
   if (menuElsByName[menu].dataset.submenu && menuElsByName[menu].querySelectorAll('.gc-menu-submenu.active').length == 0) {
     menuElsByName[menu].querySelector('.gc-menu-submenu').classList.add('active');
   }
 
-  // wait for .show paint (toggles display)
+  // wait for .show paint (waiting for display: block)
   window.requestAnimationFrame(() => {
-
     // add open to set opacity and to transition the rotateX
     menuContainerEl.classList.add('open');
     // remove prev active state
@@ -259,7 +240,7 @@ const showMenu = (navLink) => {
   });
 };
 
-// toggle display of the menu for mobile
+// toggle display of menus for mobile
 const showMenuMobile = (navLink) => {
   // get menu name from navLink
   const menu = navLink.dataset.menu;
@@ -303,7 +284,7 @@ const showMenuMobile = (navLink) => {
 // calculate the slope from current pos to top-right/bottom-right
 const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 
-// record mousePositions for each movement
+// record mousePositions for each movement over submenus container
 const pushMousePosition = (e, menu) => {
   // push the positions taken from the event
   mousePositions[menu].push({
@@ -421,8 +402,8 @@ navbarEl.addEventListener('mouseenter', () => {
 [...submenuEls].forEach((el) => {
   // collect the submenu name (as data attr on .gc-menu-wrap el)
   const menu = el.dataset.submenu;
-  // associate mousePos arr (collected for each menu)
 
+  // associate mousePos arr (collected for each menu)
   mousePositions[menu] = [];
 
   // record each mouseMove on the whole dropdown area
