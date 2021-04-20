@@ -20,6 +20,7 @@ RUN apt-get update
 RUN apt-get install -y $BUILD_DEPS
 
 RUN apt-get install -y wget
+RUN apt-get install -y libsodium-dev
 
 RUN apt-get install -y python3-pip
 

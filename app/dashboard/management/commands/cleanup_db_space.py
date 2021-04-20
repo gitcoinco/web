@@ -69,3 +69,11 @@ class Command(BaseCommand):
             result.cached_view_props = {}
             result.save()
         print(f'Activity: {result}')
+
+        result = LeaderboardRank.objects.filter(
+                created_on__lt=self.get_then(1),
+            ).filter(
+                active=False,
+                rank__gt=100,
+            ).delete()
+        print(f'LeaderboardRank: {result}')

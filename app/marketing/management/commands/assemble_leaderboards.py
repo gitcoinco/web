@@ -18,16 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Q
 from django.utils import timezone
-from django.db import connection, transaction
 
 from cacheops import CacheMiss, cache
 from dashboard.models import Earning, Profile
 from marketing.models import LeaderboardRank
-from django.contrib.contenttypes.models import ContentType
 
 # Constants
 IGNORE_PAYERS = []
@@ -61,6 +60,8 @@ MONTHLY_CUTOFF = timezone.now() - timezone.timedelta(days=30)
 QUARTERLY_CUTOFF = timezone.now() - timezone.timedelta(days=90)
 YEARLY_CUTOFF = timezone.now() - timezone.timedelta(days=365)
 ALL_CUTOFF = timezone.now() - timezone.timedelta(days=365*10)
+
+only_save_below_rank = 9999
 
 
 def should_suppress_leaderboard(handle):
@@ -154,7 +155,7 @@ def do_leaderboard():
         'all': None
         }
 
-    tag_to_datetime = {
+    tag_to_datetime_full = {
         DAILY: DAILY_CUTOFF,
         WEEKLY: WEEKLY_CUTOFF,
         MONTHLY: MONTHLY_CUTOFF,
@@ -162,6 +163,19 @@ def do_leaderboard():
         YEARLY: YEARLY_CUTOFF,
         ALL: ALL_CUTOFF,
     }
+    tag_to_datetime = {
+        DAILY: DAILY_CUTOFF,
+    }
+
+    if run_weekly():
+        tag_to_datetime[WEEKLY] = WEEKLY_CUTOFF
+    if run_monthly():
+        tag_to_datetime[MONTHLY] = MONTHLY_CUTOFF
+    if run_quarterly():
+        tag_to_datetime[QUARTERLY] = QUARTERLY_CUTOFF
+        tag_to_datetime[ALL] = ALL_CUTOFF
+    if run_yearly():
+        tag_to_datetime[YEARLY_CUTOFF] = YEARLY_CUTOFF
 
     products = ['kudos', 'grants', 'bounties', 'tips', 'all']
     for breakdown in BREAKDOWNS:
@@ -194,7 +208,7 @@ def do_leaderboard():
                     print(" - saving -")
                     key = f"{tag}_{breakdown}"
                     lrs = LeaderboardRank.objects.active()
-                    lrs = lrs.filter(leaderboard=key)
+                    lrs = lrs.filter(leaderboard=key, product=product)
                     lrs.update(active=False)
 
                     # save new LR in DB
@@ -202,6 +216,10 @@ def do_leaderboard():
                     if True:
                         rank = 1
                         for item in results:
+
+                            if rank > only_save_below_rank:
+                                continue
+
                             idx = item[0]
                             count = item[1]
                             amount = item[2]
@@ -233,6 +251,21 @@ def do_leaderboard():
                             rank += 1
 
 
+def run_weekly():
+    return (timezone.now().strftime('%A')) == "Friday"
+
+
+def run_monthly():
+    return int(timezone.now().strftime('%d')) == 1
+
+
+def run_quarterly():
+    return run_monthly() and (int(timezone.now().strftime('%m'))-1) % 3 == 0
+
+
+def run_yearly():
+    return int(timezone.now().strftime('%j')) == 1
+
 
 class Command(BaseCommand):
 
@@ -242,13 +275,16 @@ class Command(BaseCommand):
         do_leaderboard()
 
         cadences = [
-            (DAILY, 'Daily'),
         ]
-        if (timezone.now().strftime('%A')) == "Friday":
+        if not run_quarterly():
+            cadences.append((DAILY, 'Daily'))
+        if run_weekly():
             cadences.append((WEEKLY, 'Weekly'))
-        if int(timezone.now().strftime('%d')) == 1:
+        if run_monthly():
             cadences.append((MONTHLY, 'Monthly'))
-        if int(timezone.now().strftime('%j')) == 1:
+        if run_quarterly():
+            cadences.append((QUARTERLY, 'Quarterly'))
+        if run_yearly():
             cadences.append((YEARLY, 'Yearly'))
         for ele in cadences:
             do_leaderboard_feed(ele[0], ele[1])
