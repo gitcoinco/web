@@ -21,7 +21,7 @@
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
   <span class="navbar-toggler-icon"></span>
 </button>
-<div class="collapse navbar-collapse gc-navbar-collapse order-1 pb-3 pb-md-0" id="navbarSupportedContent">
+<div class="collapse navbar-collapse gc-navbar-collapse order-1 pb-5 pb-md-0" id="navbarSupportedContent">
 
   <nav class="navbar-nav m-auto gc-navbar-nav">
     <div class="nav-item gc-nav-item dropdown px-md-2 px-lg-3 interior my-auto">
@@ -125,7 +125,7 @@
                     </div>
                   </a>
                 </div>
-                <div class="col-12 col-lg-6 pl-lg-0"">
+                <div class="col-12 col-lg-6 pl-lg-0">
                   <a class="dropdown-item text-grey-500 px-3 py-0" href="{% url "jtbd_fund" %}">
                     <div class="row">
                       <div class="col align-self-center" style="max-width: 3.25rem;">
@@ -153,12 +153,12 @@
         </section>
 
         <!-- Products -->
-        <section class="gc-menu-wrap gc-menu-wrap-products position-md-absolute">
+        <section class="gc-menu-wrap gc-menu-wrap-products gc-menu-submenu-wrap position-md-absolute" data-submenu="products">
           <div class="gc-menu-inner text-grey-500">
             <div class="row">
-              <div class="col-12 col-md-7 col-lg-8 gc-menu-padding-col gc-menu-scroll">
-                <a class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle" href="{% url 'funder_bounties' %}" data-submenu="bounties">
-                  <div class="row py-3 {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}gc-menu-active{% endif %}">
+              <div class="col-12 col-md-7 col-lg-8 gc-menu-submenu-toggles gc-menu-padding-col gc-menu-scroll">
+                <a href="{% url 'funder_bounties' %}" data-submenu="bounties" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                  <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
                       <img class="logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="44">
                     </div>
@@ -169,8 +169,8 @@
                   </div>
                 </a>
 
-                <a class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle" href="{% url 'get_hackathons' %}" data-submenu="hackathons">
-                  <div class="row py-3 {% if '/hackathon' in request.path %}gc-menu-active{% endif %}">
+                <a href="{% url 'get_hackathons' %}" data-submenu="hackathons" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/hackathon' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                  <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
                       <img class="logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="44">
                     </div>
@@ -181,8 +181,8 @@
                   </div>
                 </a>
 
-                <a class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle" href="{% url 'grants:grants' %}" data-submenu="grants">
-                  <div class="row py-3  {% if '/grants' in request.path %}gc-menu-active{% endif %}">
+                <a href="{% url 'grants:grants' %}" data-submenu="grants" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/grants' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                  <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
                       <img class="logo-static p-2" src="{% static 'v2/images/top-bar/grants-symbol-pos.svg' %}" alt="Grants" height="40">
                     </div>
@@ -193,8 +193,8 @@
                   </div>
                 </a>
 
-                <a class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle" href="{% url 'quests_index' %}" data-submenu="quests">
-                  <div class="row py-3 {% if '/quests' in request.path %}gc-menu-active{% endif %}">
+                <a href="{% url 'quests_index' %}" data-submenu="quests" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/quests' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                  <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
                       <img class="logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="44">
                     </div>
@@ -205,8 +205,8 @@
                   </div>
                 </a>
 
-                <a class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle" href="{% url 'kudos_main' %}" data-submenu="kudos">
-                  <div class="row py-3 {% if '/kudos' in request.path %}gc-menu-active{% endif %}">
+                <a href="{% url 'kudos_main' %}" data-submenu="kudos" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/kudos' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                  <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
                       <img class="logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="44">
                     </div>
@@ -217,8 +217,8 @@
                   </div>
                 </a>
 
-                <a class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-menu-mb" href="https://kernel.community" data-submenu="kernel">
-                  <div class="row py-3 {% if '/kernel' in request.path %}gc-menu-active{% endif %}">
+                <a href="https://kernel.community" data-submenu="kernel" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-mb gc-menu-submenu-toggle gc-products-toggle {% if '/kernel' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                  <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
                       <img class="logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kernel" height="44">
                     </div>
@@ -231,7 +231,7 @@
               </div>
 
               <div class="d-none d-md-flex col-5 col-lg-4 bg-lighter gc-menu-inner">
-                <div class="gc-menu-submenu gc-menu-submenu-bounties position-absolute active">
+                <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-bounties position-absolute {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}active{% endif %}">
                   <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
                   <ul class="list-unstyled">
                     <li>
@@ -248,7 +248,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="gc-menu-submenu gc-menu-submenu-hackathons position-absolute">
+                <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-hackathons position-absolute {% if '/hackathon' in request.path %}active{% endif %}">
                   <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
                   <ul class="list-unstyled">
                     <li>
@@ -259,7 +259,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="gc-menu-submenu gc-menu-submenu-grants position-absolute">
+                <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-grants position-absolute {% if '/grants' in request.path %}active{% endif %}">
                   <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
                   <ul class="list-unstyled">
                     <li>
@@ -273,7 +273,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="gc-menu-submenu gc-menu-submenu-quests position-absolute">
+                <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute {% if '/quests' in request.path %}active{% endif %}">
                   <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
                   <ul class="list-unstyled">
                     <li>
@@ -284,7 +284,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="gc-menu-submenu gc-menu-submenu-kudos position-absolute">
+                <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kudos position-absolute {% if '/kudos' in request.path %}active{% endif %}">
                   <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
                   <ul class="list-unstyled">
                     <li>
@@ -298,7 +298,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="gc-menu-submenu gc-menu-submenu-kernel position-absolute">
+                <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kernel position-absolute {% if '/kernel' in request.path %}active{% endif %}">
                   <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
                   <ul class="list-unstyled">
                     <li>
@@ -369,8 +369,18 @@
               <div class="row gc-menu-pb">
                 <ul class="col-6 list-unstyled pr-0 mb-0">
                   <li>
+                    <a class="dropdown-item" href="{% url "about" %}">
+                      <i class="fal fa-address-card gc-menu-icon"></i>{% trans "About" %}
+                    </a>
+                  </li>
+                  <li>
                     <a class="dropdown-item" href="{% url "mission" %}">
-                      <i class="fal fa-building gc-menu-icon"></i>{% trans "Mission" %}
+                      <i class="fal fa-rocket gc-menu-icon"></i>{% trans "Mission" %}
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url "results" %}">
+                      <i class="fal fa-analytics gc-menu-icon"></i>{% trans "Results" %}
                     </a>
                   </li>
                   <li>
@@ -378,29 +388,10 @@
                       <i class="fal fa-inventory gc-menu-icon"></i>{% trans "Products" %}
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url "vision" %}">
-                      <i class="fal fa-glasses-alt gc-menu-icon"></i>{% trans "Vision" %}
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url "about" %}">
-                      <i class="fal fa-address-card gc-menu-icon"></i>{% trans "About" %}
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="/wiki">
-                      <i class="fab fa-wikipedia-w gc-menu-icon"></i>{% trans "Wiki" %}
-                    </a>
-                  </li>
                 </ul>
 
                 <ul class="col-6 list-unstyled pl-0">
-                  <li>
-                    <a class="dropdown-item" href="{% url "results" %}">
-                      <i class="fal fa-analytics gc-menu-icon"></i>{% trans "Results" %}
-                    </a>
-                  </li>
+
                   <li>
                     <a class="dropdown-item" href="{% url "blog" %}">
                       <i class="fal fa-blog gc-menu-icon"></i>{% trans "Blog" %}
@@ -409,6 +400,11 @@
                   <li>
                     <a class="dropdown-item" href="{% url "jobs" %}">
                       <i class="fal fa-briefcase gc-menu-icon"></i>{% trans "Jobs" %}
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/wiki">
+                      <i class="fab fa-wikipedia-w gc-menu-icon"></i>{% trans "Wiki" %}
                     </a>
                   </li>
                 </ul>

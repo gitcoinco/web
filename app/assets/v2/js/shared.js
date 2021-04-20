@@ -1412,3 +1412,11 @@ const getVideoMetadata = (videoURL) => {
     'url': videoURL
   };
 };
+
+/**
+ * bootstrap breakpoints
+ */
+const breakpoint_sm = 576;
+const breakpoint_md = 768;
+const breakpoint_lg = 992;
+const breakpoint_xl = 1200;

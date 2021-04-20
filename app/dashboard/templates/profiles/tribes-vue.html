@@ -415,8 +415,8 @@
     <div class="content__main min-vh-100 d-md-flex flex-column">
 
       {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       <div class="header sticky-top dash">
-        {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'home/nav.html' %}
       </div>
       {% if is_staff %}
