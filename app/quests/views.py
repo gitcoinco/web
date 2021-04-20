@@ -298,7 +298,7 @@ def index(request):
     print(f" phase2 at {round(time.time(),2)} ")
     rewards_schedule = []
     for i in range(0, max_ref_depth):
-        reward_denominator = 2 ** i;
+        reward_denominator = 2 ** i
         layer = i if i else 'You'
         rewards_schedule.append({
                 'layer': layer,

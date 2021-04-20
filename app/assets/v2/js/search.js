@@ -6,6 +6,7 @@ if (document.getElementById('gc-search')) {
       term: '',
       results: [],
       isLoading: false,
+      isDirty: false,
       currentTab: 0,
       source_types: [
         'All',
@@ -35,14 +36,23 @@ if (document.getElementById('gc-search')) {
     methods: {
       init: function() {
         setTimeout(() => {
-          $('.has-search input').focus();
+          $('.has-search input[type=text]').focus();
         }, 100);
       },
-      search: async function() {
+      dirty: async function(e) {
+        this.isDirty = true;
+      },
+      search: async function(e) {
         let vm = this;
         let thisDate = new Date();
 
-        if (vm.term.length >= 2) {
+        vm.isDirty = false;
+        // prevent 2x search at once
+        if (vm.isLoading) {
+          return;
+        }
+
+        if (vm.term.length >= 4) {
           vm.isLoading = true;
           document.current_search = thisDate;
 

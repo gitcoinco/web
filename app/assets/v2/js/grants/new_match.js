@@ -41,7 +41,7 @@ Vue.mixin({
         .send({from: selectedAccount},
           (error, tx_id) => {
             if (error) {
-              _alert('Transaction Failed. To fund the matching pool please visit this Grant.', 'error');
+              _alert('Transaction Failed. To fund the matching pool please visit this Grant.', 'danger');
               document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';
               console.error(`error: unable to pay pledge due to : ${error}`);
               return;
@@ -138,13 +138,13 @@ Vue.mixin({
           document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';
         } else {
           vm.submitted = false;
-          _alert('Unable to create matching pledge. Please try again', 'error');
+          _alert('Unable to create matching pledge. Please try again', 'danger');
           console.error(`error: match pledge creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       } catch (err) {
         vm.submitted = false;
-        _alert('Unable to create matching pledge. Please try again', 'error');
+        _alert('Unable to create matching pledge. Please try again', 'danger');
         console.error(`error: match pledge creation failed with msg ${err}`);
       }
     }

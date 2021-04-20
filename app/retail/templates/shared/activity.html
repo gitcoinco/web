@@ -18,7 +18,7 @@
 
 {% load humanize i18n static grants_extra %}
 <div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
-  <div class="activity_main pl-2 row bg_{{ row.activity_type }}">
+  <div class="activity_main pl-2 row bg_{{ row.activity_type }} m-0">
     <div class="col-2 p-0">
       <div class="activity-avatar">
         <a id="profile-avatar-link" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
@@ -134,7 +134,7 @@
           {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos, created by the illustrious <img style="height: 20px; width: 20px; border-radius: 20px;" src="/dynamic/avatar/{{row.kudos.artist}}"> <a href={{row.kudos.artist}}>@{{row.kudos.artist}}</a>, has been minted:
-          <a href="{{ row.kudos.external_url }}">
+          <a href="{{ row.kudos.url }}">
             {{ row.kudos.ui_name }}
           </a>
         {% elif row.activity_type == 'new_kudos' %}
@@ -454,14 +454,14 @@
           <i class="fas fa-exclamation-triangle error red hidden"></i>
         {% endif %}
         {% if row.metadata.attach.token %}
-          | <button class="btn btn-sm btn-link" style="color: #3E00FF;">
+          | <button class="btn btn-sm btn-link" style="color: #6F3FF5;">
           <i class="fas fa-coins gc-blue-text" ></i>
           <span class="value_in_token">{{row.metadata.attach.amount}}  {{row.metadata.attach.token_name}} attached</span>
           </button>
         {% endif %}
       </div>
     </div>
-    <div class="d-none pt-4 d-sm-inline col-sm-3 pl-0">
+    <div class="d-none pt-4 d-sm-inline col-sm-3 pl-0 pr-0">
       {% if row.activity_type == 'new_bounty' %}
         <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
           <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
@@ -488,7 +488,7 @@
           <span class="text-white font-smaller-2 text-capitalize">New Grant</span>
         </div>
       {% endif %}
-    <div class="d-none d-sm-inline pl-0">
+    <div class="d-none d-sm-inline-block pl-0 w-100">
       <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
         {{ row.created_human_time }}

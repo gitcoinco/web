@@ -3,6 +3,12 @@ $gc-purple: #0D0764;
 $gc-grey: #EEEEEE;
 
 // GC colors and shades
+$gc-gray-500: #0E0333;
+$gc-gray-400: #757087;
+$gc-gray-300: #A7A2B6;
+$gc-gray-200: #C4C1CF;
+$gc-grey-100: #F8F8F8;
+
 $gc-violet-500: #5932C4;
 $gc-violet-400: #6F3FF5;
 $gc-violet-300: #8C65F7;
@@ -27,53 +33,9 @@ $gc-yellow-300: #FFDB4C;
 $gc-yellow-200: #ffeea8;
 $gc-yellow-100: #FFF8DB;
 
-// Bootstrap color overrides
-$blue: $gc-violet-400;
-$green: $gc-teal-400;
-$pink: $gc-pink-400;
-$yellow: $gc-yellow-400;
-$primary: $blue;
-$secondary: $green;
-$dark: $gc-purple;
-$light: $gc-grey;
-
-// Link color overrides
-$link-color: $gc-violet-400;
-$link-hover-color: $gc-violet-500;
-
-// Dropdown overrides
-$dropdown-link-hover-color: $white;
-$dropdown-link-hover-bg: $gc-violet-400;
-$dropdown-link-active-color: $white;
-$dropdown-link-active-bg: $gc-violet-500;
-
-// Nav-pills overrides
-$nav-pills-link-active-color: $white;
-$nav-pills-link-active-bg: $blue;
-
 // Font overrides
 $font-family-base: 'Libre Franklin', sans-serif;
 $headings-font-family: 'Miriam Libre', sans-serif;
-$enable-responsive-font-sizes: true;
-$font-size-base: 0.85rem;
-$dropdown-font-size: 0.8rem;
-$btn-font-size: 0.8rem;
 
-// Button overrides
-$input-btn-focus-width: 0.1rem;
-
-$border-radius: 4px;
-$border-radius-lg: 6px;
-$border-radius-sm: 2px;
-
-$btn-font-size-lg: 1rem;
-$btn-line-height-lg: 2;
-
-$btn-font-size-sm: 0.7rem;
-$btn-line-height-sm: 2;
-
-$modal-backdrop-bg: $black;
-$modal-backdrop-opacity: 0.7;
-
-$navbar-dark-toggler-icon-bg: unset;
-$navbar-light-toggler-icon-bg: unset;
+// Vue-select overrides
+$vs-state-active-bg: $gc-violet-400;

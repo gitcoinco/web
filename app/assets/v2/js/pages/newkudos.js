@@ -9,7 +9,7 @@ $(document).ready(function() {
     var fileName = e.target.files[0].name;
 
     if (fileName.indexOf('.svg') == -1) {
-      _alert('The file format is not an svg... svg is the only supported file format.  Please convert to svg and resubmit', 'error');
+      _alert('The file format is not an svg... svg is the only supported file format.  Please convert to svg and resubmit', 'danger');
     }
   });
 });

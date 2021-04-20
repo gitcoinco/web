@@ -39,7 +39,7 @@ const saveMauticId = (mauticId) => {
     document.contxt.mautic_id = mauticId;
   }).catch((err) => {
     console.log(err);
-    _alert('Unable to save your profile. Please login again', 'error');
+    _alert('Unable to save your profile. Please login again', 'danger');
   });
 
 };
@@ -170,3 +170,24 @@ class MauticEvent {
 // MauticEvent.create('hackathon', 'hackathon', {'hackathon-slug':'hackathon-event'})
 // MauticEvent.create('products', 'product', {'product':'bounties', 'persona': 'bounty-hunter'})
 
+/**  Mautic code to handle form embeds * */
+/** This section is only needed once per page if manually copying * */
+
+let MauticSDKLoaded;
+
+if (typeof MauticSDKLoaded == 'undefined') {
+  MauticSDKLoaded = true;
+  var MauticDomain = 'https://engage.gitcoin.co';
+  var MauticLang = {
+    'submittingMessage': 'Please wait...'
+  };
+  const head = document.getElementsByTagName('head')[0];
+  const script = document.createElement('script');
+
+  script.type = 'text/javascript';
+  script.src = 'https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf';
+  script.onload = function() {
+    MauticSDK.onLoad();
+  };
+  head.appendChild(script);
+}

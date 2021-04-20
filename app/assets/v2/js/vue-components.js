@@ -267,7 +267,7 @@ Vue.component('manage-mentors', {
       $.when(updateBountyMentor).then((response) => {
         _alert({message: gettext(response.message)}, 'success');
       }).catch((error) => {
-        _alert({message: gettext(error.message)}, 'error');
+        _alert({message: gettext(error.message)}, 'danger');
       });
     }
   },
@@ -650,11 +650,11 @@ Vue.component('project-card', {
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2 font-weight-semibold">View Project</a>
-            <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2 font-weight-semibold">View Bounty</a>
-            <b-dropdown variant="outline-primary" toggle-class="btn btn-sm" split-class="btn-sm btn-primary">
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2">View Project</a>
+            <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2">View Bounty</a>
+            <b-dropdown variant="outline-primary" toggle-class="btn" split-class="btn-primary">
             <template v-slot:button-content>
-              <i class='fas fa-comment-dots'></i>
+              <i class="fas fa-comment-dots" style="padding-top: 0.4em;padding-bottom: 0.3em;"></i>
             </template>
             <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
               @ [[ profile.handle ]]
@@ -855,12 +855,12 @@ Vue.component('copy-clipboard', {
   methods: {
     copy() {
       if (!navigator.clipboard) {
-        _alert('Could not copy text to clipboard', 'error', 5000);
+        _alert('Could not copy text to clipboard', 'danger', 5000);
       } else {
         navigator.clipboard.writeText(this.string).then(function() {
           _alert('Text copied to clipboard', 'success', 4000);
         }, function(err) {
-          _alert('Could not copy text to clipboard', 'error', 5000);
+          _alert('Could not copy text to clipboard', 'danger', 5000);
         });
       }
     }

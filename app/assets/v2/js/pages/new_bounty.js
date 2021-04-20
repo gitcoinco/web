@@ -193,6 +193,10 @@ Vue.mixin({
           // rsk
           type = 'rsk_ext';
           break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '59':
         case '58':
           // 58 - polkadot, 59 - kusama
@@ -386,20 +390,20 @@ Vue.mixin({
       }
       return new Promise(resolve =>
         web3.eth.sendTransaction({
-          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          to: '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
           from: selectedAccount,
           value: web3.utils.toWei(String(vm.ethFeaturedPrice), 'ether'),
           gas: web3.utils.toHex(318730),
           gasLimit: web3.utils.toHex(318730)
         }, function(error, result) {
           if (error) {
-            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'danger');
             console.log(error);
           } else {
             saveAttestationData(
               result,
               vm.ethFeaturedPrice,
-              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
               'featuredbounty'
             );
             resolve();
@@ -409,7 +413,7 @@ Vue.mixin({
     },
     payFees: async function() {
       let vm = this;
-      const toAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      const toAddress = '0x88c62f1695DD073B43dB16Df1559Fda841de38c6';
 
       if (!provider) {
         onConnect();
@@ -427,13 +431,13 @@ Vue.mixin({
             console.log(txnHash, errors);
 
             if (errors) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
             } else {
               vm.form.feeTxId = txnHash;
               saveAttestationData(
                 txnHash,
                 vm.totalAmount.totalFee,
-                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
                 'bountyfee'
               );
               resolve();
@@ -447,7 +451,7 @@ Vue.mixin({
           token_contract.methods.transfer(toAddress, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
             function(error, txnId) {
               if (error) {
-                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
               } else {
                 resolve();
               }
@@ -564,16 +568,16 @@ Vue.mixin({
           console.log('success', response);
           window.location.href = response.bounty_url;
         } else if (response.status == 304) {
-          _alert('Bounty already exists for this github issue.', 'error');
+          _alert('Bounty already exists for this github issue.', 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         } else {
-          _alert(`Unable to create a bounty. ${response.message}`, 'error');
+          _alert(`Unable to create a bounty. ${response.message}`, 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       }).catch((err) => {
         console.log(err);
-        _alert('Unable to create a bounty. Please try again later', 'error');
+        _alert('Unable to create a bounty. Please try again later', 'danger');
       });
 
     }
@@ -652,7 +656,6 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {};
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
@@ -660,7 +663,6 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.$set(vm.form, 'token', result[0]);
       return result;
     }
   },

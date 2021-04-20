@@ -63,7 +63,7 @@
           <p class="font-title text"> {{ subtext|safe }}</p>
         </div>
         <div class="col-12 mt-0">
-          <a class="button-lg btn-gc btn-primary py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
+          <a class="btn-lg btn-primary py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
             {% if button_txt %}
               {{ button_txt }}
               <i class="fas fa-chevron-right ml-2"></i>

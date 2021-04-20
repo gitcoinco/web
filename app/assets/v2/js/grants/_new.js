@@ -139,10 +139,6 @@ Vue.mixin({
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
 
-      if (!vm.$refs.formNewGrant.reportValidity()) {
-        return false;
-      }
-
       if (Object.keys(vm.errors).length) {
         return false; // there are errors the user must correct
       }
@@ -216,13 +212,13 @@ Vue.mixin({
             window.location = response.url;
           } else {
             vm.submitted = false;
-            _alert('Unable to create grant. Please try again', 'error');
+            _alert('Unable to create grant. Please try again', 'danger');
             console.error(`error: grant creation failed with status: ${response.status} and message: ${response.message}`);
           }
         },
         error: err => {
           vm.submitted = false;
-          _alert('Unable to create grant. Please try again', 'error');
+          _alert('Unable to create grant. Please try again', 'danger');
           console.error(`error: grant creation failed with msg ${err}`);
         }
       });
@@ -259,7 +255,7 @@ Vue.mixin({
           $('#js-drop').css('padding', 0);
         },
         error(err) {
-          _alert(err.message, 'error');
+          _alert(err.message, 'danger');
         }
       });
     }

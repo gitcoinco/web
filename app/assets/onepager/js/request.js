@@ -69,7 +69,7 @@ $(document).ready(function() {
     }
 
     if (!username) {
-      _alert('Please enter a recipient', 'error');
+      _alert('Please enter a recipient', 'danger');
       return;
     }
 
@@ -121,7 +121,7 @@ function requestFunds(username, amount, comments, tokenAddress, tokenName, netwo
     _alert('The funder has been notified', 'success');
     success_callback();
   }).catch(function(error) {
-    _alert('Something goes wrong, try later.', 'error');
+    _alert('Something goes wrong, try later.', 'danger');
     failure_callback();
   });
 }

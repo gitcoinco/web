@@ -17,8 +17,8 @@
 }
 
 .gc-search-nav.nav-tabs .nav-line.active {
-  color: #3E00FF !important;
-  border-color: #3E00FF;
+  color: #6F3FF5 !important;
+  border-color: #6F3FF5;
 }
 
 .gc-search-box.dropdown-menu {
@@ -26,6 +26,15 @@
   background-color: #ffffff;
   border-radius: 4px;
   top: 2.3rem;
+}
+
+.gc-search-box input[type=text] {
+  width: 78%;
+  display: inline;
+}
+.gc-search-box input[type=submit] {
+  width: 17%;
+  display: inline;
 }
 
 .gc-search__header {

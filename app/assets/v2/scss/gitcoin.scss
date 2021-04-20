@@ -8,7 +8,7 @@
 .sticky-top {
   position: sticky!important;
   top: 0;
-  z-index: 2;
+  z-index: 3;
 }
 
 .no-gutter {
@@ -76,6 +76,10 @@
 
 .gc-text-yellow {
   color: #FFCE08;
+}
+
+.gc-text-pink {
+  color: #f9006c;
 }
 
 .text-black-60 {
@@ -472,18 +476,6 @@
   transition: 0.4s;
 }
 
-.panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-}
-
-.panel-active {
-  max-height: 100%;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-}
-
 .accordion:after {
   /* stylelint-disable-next-line */
   font-family: 'Font Awesome 5 Pro';
@@ -492,13 +484,81 @@
   margin-right: auto;
   margin-top: auto;
   float: right;
-  font-weight: 600;
-  top: 1px;
-  position: relative;
 }
 
-.accordion.active:after {
+.accordion:not(.collapsed):after {
   content: '\f106';
+}
+
+.gc-accordion {
+
+  &:after {
+    content: "";
+    display: block;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    left: 26px;
+    width: calc(100% - 26px);
+  }
+
+  .accordion {
+    padding: 20px 0px 20px 22px;
+    margin-bottom: 0px;
+    transition: none;
+    border-left: 4px solid transparent;
+  }
+
+  &.gc-accordion-border {
+    .accordion, .accordion-panel {
+      border-left: 4px solid #DDDDDD
+    }
+  }
+
+  .accordion-title {
+    display: inline-block;
+    width: calc(100% - 50px);
+  }
+
+  .accordion:not(.collapsed) {
+    border-left: 4px solid #02e2ac;
+
+    .accordion-title {
+      font-weight: bold;
+    }
+  }
+
+  .accordion-panel {
+    padding-left: 28px;
+
+    p {
+      margin-bottom: 0;
+      padding-bottom: 1rem;
+    }
+  }
+
+  .accordion:after {
+    content: "\f067";
+  }
+
+  .accordion:not(.collapsed):after {
+    content: "\f068";
+  }
+
+  .accordion:before {
+    content: "";
+    display: block;
+    min-height: 4px;
+    width: 100%;
+    position: relative;
+    top: -22px;
+    border-top: 1px solid #eee;
+  }
+
+  .accordion:not(.collapsed):before {
+    border-top: 4px solid #000;
+    border-radius: 2px;
+  }
+
 }
 
 .dropdown-menu {
@@ -515,11 +575,6 @@
 .dropdown-menu .dropdown-item {
   padding: 12px 25px;
 }
-
-// .dropdown-menu .dropdown-item:hover {
-//   background-color: #3E00FF;
-//   color: #FFFFFF !important;
-// }
 
 #why-gitcoin .dropdown-item {
   padding-left: 15px;
@@ -628,12 +683,12 @@
 }
 
 .nav-tabs .nav-line {
-  color: rgb(25, 15, 175);
+  color: #6F3FF5;
   border-width: 0px 0px 3px 0;
 }
 .nav-tabs .nav-line.active {
-  color: rgb(25, 15, 175);
-  border-color: rgb(25, 15, 175);
+  color: #6F3FF5;
+  border-color: #6F3FF5;
   background-color: transparent;
 }
 
@@ -939,4 +994,27 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .web3modal-modal-lightbox {
   z-index: 1001;
+}
+
+.btn-radio.chain-btn:hover {
+  background-color: #f9f9f9;
+  border-color: #3E00FF!important;
+}
+
+.vs__dropdown-toggle {
+  padding: 5px 5px 5px 5px;
+  border-radius: 2px;
+}
+
+.vs__dropdown-toggle .vs__no-options {
+  text-align: left;
+  padding-left: 1em;
+}
+
+.vs__dropdown-toggle .vs__selected {
+  margin: 0px 2px 0px 2px;
+}
+
+.vs__selected-options > input::placeholder {
+  color: var(--form-input-color);
 }
