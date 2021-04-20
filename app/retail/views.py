@@ -82,13 +82,19 @@ def index(request):
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
         'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
     }
-
-    data = JSONStore.objects.get(view='results').data
-    data_results = {
-        'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
-        'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
-        'mau': data['mau'] if data['mau'] else 0
-    }
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'human_universe_total_usd': "$18.9m",
+            'mau': 161205.0
+        }
     context.update(data_results)
 
     return TemplateResponse(request, 'home/index2021.html', context)
