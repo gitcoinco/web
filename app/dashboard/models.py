@@ -2998,7 +2998,6 @@ class Profile(SuperModel):
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
     is_google_verified = models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
-    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -4492,8 +4491,8 @@ class Profile(SuperModel):
 
         context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
         context['portfolio_keywords'] = sorted_portfolio_keywords
-        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
-        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
+        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
         from django.contrib.contenttypes.models import ContentType
         earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))

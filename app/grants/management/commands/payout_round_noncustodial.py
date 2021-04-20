@@ -21,6 +21,11 @@
     contract is deployed on both mainnet and Rinkeby at 0xAf32BDf2e2720f6C6a2Fce8B50Ed66fd2b46d478
 '''
 
+# run me like this
+# deploy contract
+# ./manage.py payout_round set_payouts 131,121,120,119,118 9
+# ./manage.py payout_round_noncustodial set_payouts mainnet --clr_pks=131,121,120,119,118 --clr_round=9 --process_all
+
 import json
 import time
 from decimal import Decimal
@@ -43,7 +48,7 @@ from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
+match_payouts_address = Web3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
 SCALE = Decimal(1e18) # scale factor for converting Dai units
 WAIT_TIME_BETWEEN_TXS = 15 # seconds
 
@@ -208,16 +213,20 @@ class Command(BaseCommand):
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
             full_payouts_mapping_dict = {} 
             for match in target_matches.order_by('amount'):
-                # Amounts to set
-                recipient = w3.toChecksumAddress(match.grant.admin_address)
-                amount = Decimal(match.amount) * SCALE # convert to wei
 
-                # This ensures that even when multiple grants have the same receiving address,
-                # all match funds are accounted for
-                if recipient in full_payouts_mapping_dict.keys():
-                    full_payouts_mapping_dict[recipient] += amount
-                else:
-                    full_payouts_mapping_dict[recipient] = amount
+                try:
+                    # Amounts to set
+                    recipient = w3.toChecksumAddress(match.grant.admin_address)
+                    amount = Decimal(match.amount) * SCALE # convert to wei
+
+                    # This ensures that even when multiple grants have the same receiving address,
+                    # all match funds are accounted for
+                    if recipient in full_payouts_mapping_dict.keys():
+                        full_payouts_mapping_dict[recipient] += amount
+                    else:
+                        full_payouts_mapping_dict[recipient] = amount
+                except Exception as e:
+                    print(f"could not payout grant:{match.grant.pk} bc exceptoin{e}")
 
             # Convert dict to array to use it as inputs to the contract
             full_payouts_mapping = []
@@ -248,7 +257,7 @@ class Command(BaseCommand):
 
                 # Pause until the next one
                 print("SLEEPING")
-                time.sleep(WAIT_TIME_BETWEEN_TXS)
+                #time.sleep(WAIT_TIME_BETWEEN_TXS)
                 print("DONE SLEEPING")
 
             user_input = input("continue? (y/n) ")

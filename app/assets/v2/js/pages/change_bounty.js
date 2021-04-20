@@ -314,7 +314,7 @@ $(document).ready(function() {
       const payFeaturedBounty = function() {
         indicateMetamaskPopup();
         web3.eth.sendTransaction({
-          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          to: '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
           from: selectedAccount,
           value: web3.utils.toWei(String(ethFeaturedPrice)),
           gasPrice: web3.utils.toHex(5 * Math.pow(10, 9)),
@@ -330,7 +330,7 @@ $(document).ready(function() {
             saveAttestationData(
               result,
               ethFeaturedPrice,
-              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
               'featuredbounty'
             );
             saveBountyChanges();

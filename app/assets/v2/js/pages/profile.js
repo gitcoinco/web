@@ -14,7 +14,7 @@ $(document).ready(function() {
     e.preventDefault();
     e.stopPropagation();
     if ($(this).data('owned') == 'False') {
-      _alert('To re-issue this kudos, please contact the sender and have them re-send it.', 'error');
+      _alert('To re-issue this kudos, please contact the sender and have them re-send it.', 'danger');
       return;
     }
     let url = '/kudos/sync/?pk=' + $(this).data('id');

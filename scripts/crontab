@@ -17,7 +17,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 ## KUDOS
 20 3,10,17 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --catchup >> /var/log/gitcoin/sync_kudos_catchup.log 2>&1
 */10 4,11,18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_kudos mainnet opensea --start 1 >> /var/log/gitcoin/sync_kudos_all.log 2>&1
-45 */1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash kudos_revenue mainnet --account-address 0xdb282cee382244e05dd226c8809d2405b76fbdc9  >> /var/log/gitcoin/kudos_revenue.log  2>&1
+45 */1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash kudos_revenue mainnet --account-address 0xAD278911Ad07534F921eD7D757b6c0e6730FCB16  >> /var/log/gitcoin/kudos_revenue.log  2>&1
 15,31 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash submit_pending_kudos  >> /var/log/gitcoin/submit_pending_kudos.log  2>&1
 
 ## PTOKEN
@@ -87,7 +87,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data grants  >> /var/log/gitcoin/post_data.log  2>&1
 15 15 * * 7 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data quote  >> /var/log/gitcoin/post_data.log  2>&1
 15 18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data results  >> /var/log/gitcoin/post_data.log  2>&1
-15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data earners  >> /var/log/gitcoin/post_data.log  2>&1
 15 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_data welcome  >> /var/log/gitcoin/post_data.log  2>&1
 15 */4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash hypercharge_mode  >> /var/log/gitcoin/post_data.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash send_unread_notification_emails_roundup >> /var/log/gitcoin/send_unread_notification_emails_roundup.log 2>&1
@@ -108,6 +107,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
 0 19 * * 7 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash vacuum  >> /var/log/gitcoin/vacuum.log  2>&1
 2 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache  >> /var/log/gitcoin/create_page_cache.log  2>&1
+30 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_jtbd_cache  >> /var/log/gitcoin/create_jtbd_cache.log  2>&1
 1 */30 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_activity_cache  >> /var/log/gitcoin/create_activity_cache.log  2>&1
 
 
@@ -117,7 +117,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 * * * * * date >> /var/log/gitcoin/running_procs.log; ps -aux | grep python3 >> /var/log/gitcoin/running_procs.log  2>&1
 1 1 * * * rm -f /var/log/gitcoin/running_procs.log
 11 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
-1 10 * * 4 cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1
+1 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash investigate_sybil  >> /var/log/gitcoin/investigate_sybil.log  2>&1
 10 3 * * 0 cd gitcoin/coin; bash scripts/run_management_command.bash pull_github  >> /var/log/gitcoin/pull_github.log  2>&1

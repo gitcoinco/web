@@ -21,7 +21,7 @@ function drawChart() {
     backgroundColor: 'transparent',
     height: 400,
     width: width,
-    vAxis: { title: 'USD', ticks: [ 0, 500000, 1000000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    vAxis: { title: 'USD', ticks: [ 0, 1000000, 2 * 1000000, 3 * 1000000, 4 * 1000000, 5 * 1000000, 6 * 1000000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));

@@ -27,6 +27,7 @@ import re
 import time
 import uuid
 from decimal import Decimal
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib import messages
@@ -1076,6 +1077,14 @@ def grants_by_grant_type(request, grant_type):
     return response
 
 
+def grants_type_redirect(request, grant_type):
+    """Redirect old grant url with search params to /explorer keeping query params."""
+    base_url = reverse('grants:grants_by_category', kwargs={"grant_type":grant_type})
+    query_string =  urlencode(request.GET)
+    url = '{}?{}'.format(base_url, query_string)
+    return redirect(url)
+
+
 def grants_by_grant_clr(request, clr_round):
     """Handle grants explorer."""
     grant_type = request.GET.get('type', 'all')
@@ -1399,11 +1408,11 @@ def grant_details(request, grant_id, grant_slug):
         # If the user viewing the page is team member or admin, check if grant has match funds available
         # to withdraw
         is_match_available_to_claim = False
-        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 1, 30, 12, 0).replace(tzinfo=pytz.utc)
+        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 4, 30, 12, 0).replace(tzinfo=pytz.utc)
         is_staff = request.user.is_authenticated and request.user.is_staff
 
         # Check if this grant needs to complete KYC before claiming match funds
-        clr_matches = grant.clr_matches.filter(round_number=8)
+        clr_matches = grant.clr_matches.filter(round_number=settings.MATCH_PAYOUTS_ROUND_NUM)
         is_blocked_by_kyc = clr_matches.exists() and not clr_matches.first().ready_for_payout
 
         # calculate whether is available
@@ -1412,7 +1421,7 @@ def grant_details(request, grant_id, grant_slug):
             if is_team_member or is_staff or is_admin:
                 w3 = get_web3(grant.network)
                 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-                match_payouts_address = settings.MATCH_PAYOUTS_ADDRESS
+                match_payouts_address = w3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
                 match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
                 amount_available = match_payouts.functions.payouts(grant.admin_address).call()
                 is_match_available_to_claim = True if amount_available > 0 else False

@@ -585,7 +585,7 @@
       }
     }).fail(function() {
       if (explorer.bounties_request.readyState !== 0)
-        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'danger');
     }).always(function() {
       $('.loading').css('display', 'none');
       addPopover();
@@ -607,7 +607,7 @@
       }
     }).fail(function() {
       if (explorer.bounties_request.readyState !== 0)
-        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'danger');
     }).always(function() {
       $('.loading').css('display', 'none');
       addPopover();

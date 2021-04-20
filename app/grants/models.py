@@ -664,7 +664,7 @@ class Grant(SuperModel):
         # [amount_donated, match amount, bonus_from_match_amount ], etc..
         # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
         _clr_prediction_curve = []
-        for insert_clr_calc in self.clr_calculations.filter(latest=True).order_by('-created_on'):
+        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True).order_by('-created_on'):
             insert_clr_calc = insert_clr_calc.clr_prediction_curve
             if not _clr_prediction_curve:
                 _clr_prediction_curve = insert_clr_calc
@@ -1743,7 +1743,7 @@ class Contribution(SuperModel):
         if self.checkout_type == 'eth_zksync':
             return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
         if self.checkout_type == 'eth_std':
-            network_sub = f"{{self.subscription.network}}." if self.subscription and self.subscription.network != 'mainnet' else ''
+            network_sub = f"{self.subscription.network}." if self.subscription and self.subscription.network != 'mainnet' else ''
             return f'https://{network_sub}etherscan.io/tx/{tx_id}'
         # TODO: support all block explorers for diff chains
         return ''

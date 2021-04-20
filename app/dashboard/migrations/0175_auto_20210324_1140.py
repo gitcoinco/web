@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0174_profile_google_user_id'),
+        ('dashboard', '0173_earning_success'),
     ]
 
     operations = [

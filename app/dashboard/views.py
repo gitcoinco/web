@@ -3255,7 +3255,9 @@ def verify_user_google(request):
         })
 
     identity_data_google = r.json()
-    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+    # if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+    # TODO: re-enable this when the google_user_id migration has run 
+    if False:
         return JsonResponse({
             'ok': False,
             'message': 'A user with this google account already exists!',
@@ -3264,7 +3266,7 @@ def verify_user_google(request):
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
     profile.identity_data_google = identity_data_google
-    profile.google_user_id = identity_data_google['id']
+    #profile.google_user_id = identity_data_google['id']
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
@@ -4474,7 +4476,7 @@ def save_hackathon(request, hackathon):
             'a': ['href', 'title'],
             'abbr': ['title'],
             'acronym': ['title'],
-            'img': ['src'],
+            'img': ['src', 'width', 'height'],
             'iframe': ['src', 'frameborder', 'allowfullscreen'],
             '*': ['class', 'style']},
         styles=['background-color', 'color'],
@@ -6472,27 +6474,38 @@ def verify_user_poap(request, handle):
             'msg': 'Invalid signature',
         })
 
-    # commented out because network = get_default_network() results in dashboard.utils.UnsupportedNetworkException: rinkeby
-    # network = get_default_network()
-    network = "mainnet"
+    # POAP verification is only valid if the ethereum address has held the badge > 15 days
     fifteen_days_ago = datetime.now()-timedelta(days=15)
+    fitteen_days_ago_ts = fifteen_days_ago.timestamp()
 
-    timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
-    if timestamp is None or timestamp > fifteen_days_ago.timestamp():
-        # We couldn't find any POAP badge for this ethereum address
+    timestamp = None
+
+    for network in ['mainnet', 'xdai']:
+        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        # only break if we find a token that has been held for longer than 15 days
+        if timestamp and timestamp <= fitteen_days_ago_ts:
+            break
+
+    # fail cases (no qualifying tokens / network failure)
+    if timestamp is None or timestamp > fitteen_days_ago_ts:
         return JsonResponse({
             'ok': False,
             'msg': 'No qualifying POAP badges (ERC721 NFTs held for at least 15 days) found for this account.',
+        })
+    elif timestamp == 0:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'An error occured, please try again later.',
         })
 
     profile = profile_helper(handle, True)
     profile.is_poap_verified = True
     profile.save()
+    # Success response
     return JsonResponse({
-                'ok': True,
-                'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
-            }
-    )
+        'ok': True,
+        'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+    })
 
 
 @csrf_protect
