@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static compress humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,7 +35,12 @@
       --grad: 280deg;
       width: 100%;
       padding: 4em 0;
-      background: radial-gradient(25.1% 37.63% at 86.04% 104.67%, #FFFFFF 16.15%, rgba(255, 255, 255, 0) 100%), radial-gradient(52.36% 84.12% at 37.64% 117.03%, #FFFFFF 77.61%, rgba(255, 255, 255, 0) 100%), radial-gradient(45.4% 111.35% at 12.78% 68.08%, #FFFFFF 34.69%, rgba(255, 255, 255, 0) 100%), conic-gradient(from var(--grad) at 50% 55.4%, #FFE4EE -75deg, #FFE99A 39.37deg, rgba(153, 129, 249, 0.3) 125.63deg, #D2CBFF 193.12deg, #FFE4EE 285deg, #FFE99A 399.38deg), conic-gradient(from var(--grad) at 58.16% 55.4%, #FFE4EE -39.94deg, #FFEFB7 52.63deg, #FFC1D8 105.13deg, #EBDAF7 144.84deg, #DAD1FF 168.68deg, #DCCBFF 195.62deg, #FFE4EE 320.06deg, #FFEFB7 412.63deg);
+      will-change: background;
+
+      background: radial-gradient(78.19% 34.75% at 90.21% 104.67%, #FFFFFF 54.6%, rgba(255, 255, 255, 0) 100%), radial-gradient(65.42% 69.3% at 47.67% 83.08%, #FFFFFF 0%, #FFFFFF 50.74%, rgba(255, 255, 255, 0) 100%), radial-gradient(31.85% 86.5% at 3.3% 92.42%, #FFFFFF 42.79%, rgba(255, 255, 255, 0) 100%), conic-gradient(from var(--grad) at 50% 50%, #FFE4EE -39.94deg, #FCF1C2 7.54deg, rgba(251, 235, 181, 0.65) 39.37deg, #DEBEE3 129.16deg, #DAD1FF 176.25deg, #DCD2FE 233.58deg, #FFE4EE 320.06deg, #FCF1C2 367.54deg);
+
+
+      /* background: radial-gradient(25.1% 37.63% at 86.04% 104.67%, #FFFFFF 16.15%, rgba(255, 255, 255, 0) 100%), radial-gradient(52.36% 84.12% at 37.64% 117.03%, #FFFFFF 77.61%, rgba(255, 255, 255, 0) 100%), radial-gradient(45.4% 111.35% at 12.78% 68.08%, #FFFFFF 34.69%, rgba(255, 255, 255, 0) 100%), conic-gradient(from var(--grad) at 50% 55.4%, #FFE4EE -75deg, #FFE99A 39.37deg, rgba(153, 129, 249, 0.3) 125.63deg, #D2CBFF 193.12deg, #FFE4EE 285deg, #FFE99A 399.38deg), conic-gradient(from var(--grad) at 58.16% 55.4%, #FFE4EE -39.94deg, #FFEFB7 52.63deg, #FFC1D8 105.13deg, #EBDAF7 144.84deg, #DAD1FF 168.68deg, #DCCBFF 195.62deg, #FFE4EE 320.06deg, #FFEFB7 412.63deg); */
       animation: bg-space-animation 15s ease-in-out infinite;
     }
 
@@ -54,6 +59,67 @@
       display: flex;
       height: 40px;
       line-height: 70px;
+    }
+
+    .animate-icon {
+      transform: perspective(1px) translateZ(0);
+
+    }
+
+    .animate-icon:hover svg, .animate-icon:focus, .animate-icon:active {
+      -webkit-animation-name: buzz-out;
+      animation-name: buzz-out;
+      -webkit-animation-duration: 0.75s;
+      animation-duration: 0.75s;
+      -webkit-animation-timing-function: linear;
+      animation-timing-function: linear;
+      -webkit-animation-iteration-count: 1;
+      animation-iteration-count: 1;
+      will-change: transform;
+    }
+
+    @keyframes buzz-out {
+      10% {
+        -webkit-transform: translateX(3px) rotate(2deg);
+        transform: translateX(3px) rotate(2deg);
+      }
+      20% {
+        -webkit-transform: translateX(-3px) rotate(-2deg);
+        transform: translateX(-3px) rotate(-2deg);
+      }
+      30% {
+        -webkit-transform: translateX(3px) rotate(2deg);
+        transform: translateX(3px) rotate(2deg);
+      }
+      40% {
+        -webkit-transform: translateX(-3px) rotate(-2deg);
+        transform: translateX(-3px) rotate(-2deg);
+      }
+      50% {
+        -webkit-transform: translateX(2px) rotate(1deg);
+        transform: translateX(2px) rotate(1deg);
+      }
+      60% {
+        -webkit-transform: translateX(-2px) rotate(-1deg);
+        transform: translateX(-2px) rotate(-1deg);
+      }
+      70% {
+        -webkit-transform: translateX(2px) rotate(1deg);
+        transform: translateX(2px) rotate(1deg);
+      }
+      80% {
+        -webkit-transform: translateX(-2px) rotate(-1deg);
+        transform: translateX(-2px) rotate(-1deg);
+      }
+      90% {
+        -webkit-transform: translateX(1px) rotate(0);
+        transform: translateX(1px) rotate(0);
+      }
+      100% {
+        -webkit-transform: translateX(-1px) rotate(0);
+        transform: translateX(-1px) rotate(0);
+      }
+
     }
 
   </style>
@@ -86,8 +152,8 @@
 
     <section class="container my-5">
       <div class="row">
-        <div class="col-md-3 col-12 mb-5 mb-md-0">
-          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between">
+        <div class="col-md-6 col-lg-3 col-12 mb-5 mb-lg-0">
+          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between animate-icon">
             <svg width="34" height="51" viewBox="0 0 34 51" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-self-end position-absolute">
               <path d="M18.2281 50.7394L0 26.2539L15.5982 0L33.8263 24.4855L18.2281 50.7394ZM2.72061 26.1179L18.0014 46.6585L31.0603 24.6669L15.7795 4.12626L2.72061 26.1179Z" fill="#5932C4"/>
               <path d="M17.0039 48.7443L16.2331 33.917L0.906982 27.2515L1.81385 25.1657L16.0971 31.3777L14.5554 2.13115L16.8226 1.99512L18.3642 31.2417L31.922 23.5786L33.0556 25.5738L18.5456 33.8263L19.3165 48.6536L17.0039 48.7443Z" fill="#5932C4"/>
@@ -97,8 +163,8 @@
             <a href="#earn" data-scrollsmoth class="btn btn-lg btn-primary">Find ways to earn</a>
           </div>
         </div>
-        <div class="col-md-3 col-12 mb-5 mb-md-0">
-          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between">
+        <div class="col-md-6 col-lg-3 col-12 mb-5 mb-lg-0">
+          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between animate-icon">
             <svg width="52" height="41" viewBox="0 0 52 41" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-self-end position-absolute">
               <path d="M0.75875 30.4242L0.75816 30.4228C0.211478 29.0608 0.550189 27.614 1.59559 26.1247C2.63446 24.6447 4.41293 23.0547 6.90169 21.3268L7.31301 21.0412L7.59798 21.453L7.87809 21.8577L8.16276 22.269L7.75134 22.5535C5.40315 24.1773 3.80547 25.6044 2.89695 26.8503C1.99096 28.0926 1.82591 29.0695 2.14766 29.8725L2.14785 29.8729C2.39894 30.5014 3.16446 31.0578 4.63077 31.3856C6.0716 31.7077 8.05702 31.776 10.5024 31.5517L0.75875 30.4242ZM0.75875 30.4242C1.15195 31.395 2.03228 32.0782 3.22054 32.5149C4.40882 32.9516 5.96071 33.1648 7.81297 33.1648C8.67192 33.1648 9.61065 33.1152 10.6283 33.0169M0.75875 30.4242L10.6283 33.0169M10.6283 33.0169C15.8281 32.5256 22.3004 30.8432 28.8378 28.2903C35.3919 25.7374 41.2699 22.5923 45.3879 19.431C47.4859 17.8278 49.0346 16.2862 49.9598 14.8675C50.8794 13.4572 51.2387 12.0756 50.7549 10.8673C50.2973 9.72382 49.2308 8.96593 47.7642 8.53559C46.2979 8.10533 44.3613 7.9783 42.0173 8.14222L41.5195 8.17703L41.5533 8.67485L41.5863 9.16051L41.6202 9.66051L42.1201 9.62543C44.2852 9.47349 45.9893 9.58143 47.2164 9.91473C48.4488 10.2495 49.111 10.7838 49.3652 11.4174L49.3665 11.4205C49.623 12.0475 49.4576 12.9666 48.6249 14.1919C47.8059 15.3969 46.4142 16.7839 44.4831 18.265L44.4823 18.2655C40.4941 21.3362 34.7564 24.4074 28.3099 26.9215C21.8625 29.436 15.5496 31.0878 10.5025 31.5517L10.6283 33.0169Z" fill="#02E2AC" stroke="#02E2AC"/>
               <path d="M45.2816 24.6352L42.6948 23.9715C42.3982 23.8905 42.1016 24.0362 41.9863 24.3115L41.5249 25.3314C41.4425 25.5094 41.459 25.7037 41.5579 25.8656C41.6567 26.0275 41.8215 26.1408 42.0192 26.157C42.6124 26.2217 43.0408 26.7398 42.9914 27.3226L42.7277 30.4956L45.2816 24.6352Z" fill="#E5FFF9"/>
@@ -110,8 +176,8 @@
             <a href="#learn" data-scrollsmoth class="btn btn-lg btn-primary">Find ways to learn</a>
           </div>
         </div>
-        <div class="col-md-3 col-12 mb-5 mb-md-0">
-          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between">
+        <div class="col-md-6 col-lg-3 col-12 mb-5 mb-lg-0">
+          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between animate-icon">
             <svg width="43" height="39" viewBox="0 0 43 39" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-self-end position-absolute">
               <path d="M2.86568 9.93454L1.22583 12.7021L2.66262 13.5758L4.30247 10.8082L2.86568 9.93454Z" fill="#F3587D"/>
               <path d="M9.19821 10.6951H3.62507L3.42107 10.5658C1.75791 9.51066 0.765137 7.69909 0.765137 5.71955C0.765137 2.56581 3.29806 0 6.41164 0C9.52523 0 12.0582 2.56581 12.0582 5.71955C12.0582 7.69909 11.0654 9.51066 9.40222 10.5658L9.19821 10.6951ZM4.11846 8.99761H8.70483C9.75951 8.2417 10.3824 7.03298 10.3824 5.71955C10.3824 3.50185 8.60119 1.69746 6.41164 1.69746C4.2221 1.69746 2.44084 3.50185 2.44084 5.71955C2.44084 7.03298 3.06378 8.2417 4.11846 8.99761Z" fill="#F3587D"/>
@@ -132,8 +198,8 @@
             <a href="#connect" data-scrollsmoth class="btn btn-lg btn-primary">Get connected</a>
           </div>
         </div>
-        <div class="col-md-3 col-12 mb-5 mb-md-0">
-          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between">
+        <div class="col-md-6 col-lg-3 col-12 mb-5 mb-lg-0">
+          <div class="p-3 rounded bg-lightpurple h-100 d-flex flex-column justify-content-between animate-icon">
             <svg width="40" height="52" viewBox="0 0 40 52" fill="none" xmlns="http://www.w3.org/2000/svg" class="align-self-end position-absolute">
               <path d="M20.4452 50.0453C19.0281 43.2267 14.7769 40.276 7.92773 40.0767C9.06926 45.6591 13.7928 51.4808 20.4452 50.0453Z" stroke="#8C65F7" stroke-width="2"/>
               <path d="M36.4272 37.4448C34.2228 44.0639 29.6567 46.4962 22.8469 45.8582C24.6183 40.4752 29.9716 35.2119 36.4272 37.4448Z" stroke="#8C65F7" stroke-width="2"/>
@@ -160,11 +226,11 @@
           <p class="font-bigger-1 text-grey-400 line-height-3">We've helped thousands of projects and teams grow their open source ecosystems.</p>
           <div class="d-flex justify-content-between">
             <div class="d-flex flex-column">
-              <span class="green font-bigger-4">$18.2M</span>
+              <span class="green font-bigger-4 uppercase">{{ human_universe_total_usd }}</span>
               <span class="font-bigger-1 text-grey-400">funded</span>
             </div>
             <div class="d-flex flex-column">
-              <span class="green font-bigger-4">161,206</span>
+              <span class="green font-bigger-4">{{ mau|floatformat:0|intcomma }}</span>
               <span class="font-bigger-1 text-grey-400">active developers</span>
             </div>
           </div>
