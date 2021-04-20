@@ -6,7 +6,7 @@
   --gc-menu-default-height: 50vh;
   --gc-menu-default-width: 60vw;
   --gc-menu-jtbd-height: auto;
-  --gc-menu-jtbd-width: 756px;
+  --gc-menu-jtbd-width: 700px;
   --gc-menu-md-jtbd-width: 400px;
   --gc-menu-padding: 10px;
   --gc-menu-products-height: auto;
@@ -139,7 +139,11 @@
   // root menu element
   .navbar {
     perspective: 2000px;
-    z-index: 2;
+    z-index: 3;
+  }
+
+  .navbar-brand.sticky-top {
+    position: relative!important;
   }
 
   // gc-menu
@@ -294,11 +298,44 @@
     z-index: 1;
   }
 
-  .gc-menu-active,
-  .gc-menu-toggle-focus {
-    color: #5932C4;
+  .gc-menu-submenu-toggle {
+    border-radius: 0.5em;
     text-decoration: none;
+  }
+
+  .gc-menu-submenu-toggle:hover {
+    color: #0E0333;
+    background-color: unset;
+  }
+
+  .gc-menu-submenu-toggle-active,
+  .gc-menu-submenu-toggle-active:hover {
+    background-color: rgba(140, 101, 247, 0.05);
+  }
+
+  .gc-menu-submenu-toggle-focus,
+  .gc-menu-submenu-toggle-focus:hover {
+    color: #5932C4;
     background-color: rgba(140, 101, 247, 0.1);
+  }
+
+  .gc-menu-submenu-toggle-focus:before, .gc-menu-submenu-toggle-focus:after {
+    content: '';
+    display: block;
+    height: 90px;
+    right: 0px;
+    position: absolute;
+    width: 50px;
+  }
+
+  .gc-menu-submenu-toggle-focus:before {
+    margin-top: -85px;
+    transform: rotate(7deg);
+  }
+
+  .gc-menu-submenu-toggle-focus:after {
+    margin-top: -5px;
+    transform: rotate(-7deg);
   }
 
   // apply the gc-menu-padding so that we can control spacing globally

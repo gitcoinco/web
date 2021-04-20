@@ -425,22 +425,34 @@ const gitcoinUpdates = () => {
 
 // megamenu carets are positioned inside each nav-link
 const $body = $('body');
-const $carets = $('.gc-megamenu-caret');
 const $navbarSupportedContent = $('#navbarSupportedContent');
-const $topNav = $('.top-nav');
+const $navBar = $('.navbar');
 
 // anchor to 75px when the menu is open to hide top menu
-let anchored = false;
-let resizeTimeout = null;
+let navPos = 0;
+let anchored = 0;
+
+// add .navbar-menu-open to prevent page-scroll when mobile menu is opened
+$navbarSupportedContent.on('show.bs.collapse', function() {
+  anchored = window.scrollY;
+  $body.addClass('navbar-menu-open');
+  posMobileMenu();
+}).on('hide.bs.collapse', function() {
+  $body.removeClass('navbar-menu-open');
+  window.scrollTo(0, anchored);
+  anchored = 0;
+});
 
 // scroll to the start of the menu/close if we move out of mobile
 const posMobileMenu = function() {
   if ($body.hasClass('navbar-menu-open')) {
+    // get the top pos of the nav so that we can check if we need to scroll it into view (navBar is 100vh)
+    navPos = Math.ceil(window.scrollY + $navBar[0].getBoundingClientRect().top);
     // scroll beyond the topNav and lock
-    if (window.scrollY < $topNav[0].clientHeight) {
-      anchored = true;
-      window.scrollTo(0, $topNav[0].clientHeight + 1);
-    } else if (window.innerWidth > 767) {
+    if (navPos !== 0) {
+      window.scrollTo(0, navPos);
+    } else if (window.innerWidth >= 768) {
+      navPos = 0;
       // close menu if we move into md
       $navbarSupportedContent.collapse('hide');
       $body.removeClass('navbar-menu-open');
@@ -448,32 +460,16 @@ const posMobileMenu = function() {
   }
 };
 
-// show/hide megamenu caret
-$(document, '.dropdown').on('show.bs.dropdown', function(e) {
-  $carets.hide();
-  $(e.target).find('.gc-megamenu-caret').show();
-}).on('hide.bs.dropdown', function() {
-  $carets.hide();
-});
+// debounce the resize/orientationchange event
+const checkForPosChange = function(eventName) {
+  window.addEventListener(eventName, function() {
+    posMobileMenu();
+  });
+};
 
-// add .navbar-menu-open to prevent page-scroll when mobile menu is opened
-$navbarSupportedContent.on('show.bs.collapse', function() {
-  $body.addClass('navbar-menu-open');
-  posMobileMenu();
-}).on('hide.bs.collapse', function() {
-  $body.removeClass('navbar-menu-open');
-  if (anchored) {
-    anchored = false;
-    window.scrollTo(0, 0);
-  }
-});
-
-// debounce the resize event
-window.addEventListener('resize', function() {
-  // clear the timeout
-  clearTimeout(resizeTimeout);
-  // start timing for event "completion"
-  resizeTimeout = setTimeout(posMobileMenu, 30);
+// bind the same fn to each eventName
+[ 'resize', 'orientationchange' ].forEach(function(eventName) {
+  checkForPosChange(eventName);
 });
 
 // carousel/collabs/... inside menu
