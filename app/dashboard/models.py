@@ -2995,7 +2995,7 @@ class Profile(SuperModel):
     is_brightid_verified=models.BooleanField(default=False)
     is_duniter_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
-    poap_owner_account=models.CharField(max_length=255, default='', blank=True, null=True)
+    poap_owner_account=models.CharField(max_length=255, blank=True, null=True)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
     ens_verification_address = models.CharField(max_length=255, default='', blank=True)
