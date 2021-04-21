@@ -1061,7 +1061,7 @@ def grants_by_grant_type(request, grant_type):
             logger.debug(e)
             pass
 
-    if collection_id:
+    if collection_id and collection_id.isdigit():
         collections = GrantCollection.objects.filter(pk=collection_id)
         if collections.exists():
             collection = collections.first()
