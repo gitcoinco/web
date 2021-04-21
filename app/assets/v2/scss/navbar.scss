@@ -6,8 +6,7 @@
   --gc-menu-default-height: 50vh;
   --gc-menu-default-width: 60vw;
   --gc-menu-jtbd-height: auto;
-  --gc-menu-jtbd-width: 700px;
-  --gc-menu-md-jtbd-width: 400px;
+  --gc-menu-jtbd-width: 400px;
   --gc-menu-padding: 10px;
   --gc-menu-products-height: auto;
   --gc-menu-products-width: 650px;
@@ -364,14 +363,6 @@
     padding: var(--gc-menu-padding) var(--gc-menu-padding) 0 15px;
   }
 }
-
-// gc-menu-md-*
-@media (min-width:768px) and (max-width:991.98px) {
-  .gc-menu-wrap.gc-menu-wrap-jtbd {
-    width: var(--gc-menu-md-jtbd-width);
-  }
-}
-
 
 // gc-menu specifics for mobile view
 @media (max-width:767.98px) {
