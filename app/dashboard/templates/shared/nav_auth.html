@@ -61,7 +61,7 @@
   </div>
 
   <div id="nav_auth_profile_wrap">
-    <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-block"
+    <a href="{{ profile_url }}" id="nav_auth_profile" class="nav_avatar d-block"
       data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
     </a>
   </div>
@@ -72,40 +72,40 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 shadow-lg gc-menu-padding" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
-        <a class="dropdown-item" href="{% url "new_funding" %}">
+        <a class="dropdown-item" href="{% url 'new_funding' %}">
           <i class="fab fa-ethereum"></i>
           {% trans "Fund Issue" %}
         </a>
-        <a class="dropdown-item" href="{% url "tip" %}">
+        <a class="dropdown-item" href="{% url 'tip' %}">
           <i class="far fa-paper-plane"></i>
           {% trans "Send Tip" %}
         </a>
-        <a class="dropdown-item" href="{% url "kudos_marketplace" %}">
-          <i class="fas"><img src="{% static "v2/images/kudos/IconKudos.svg" %}"></i>
+        <a class="dropdown-item" href="{% url 'kudos_marketplace' %}">
+          <i class="fas"><img src="{% static 'v2/images/kudos/IconKudos.svg' %}"></i>
           {% trans "Send Kudos" %}
         </a>
-        <a class="dropdown-item" href="/grants/new">
+        <a class="dropdown-item" href="{% url 'grants:new' %}">
         <i class="fas fa-money-check-alt"></i>
           {% trans "Create Grant" %}
         </a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" data-gtm="profile" href="{{profile_url}}">
+        <a class="dropdown-item" data-gtm="profile" href="{{ profile_url }}">
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
         </a>
-        <a class="dropdown-item" href="{% url "dashboard" %}">
+        <a class="dropdown-item" href="{% url 'dashboard' %}">
           <i class="fas fa-tachometer-alt"></i>
           {% trans "My Dashboard" %}
         </a>
       {% else %}
-        <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
+        <a class="dropdown-item" data-gtm="get started" href="{% url 'get_gitcoin' %}">
           <i class="fas fa-bolt"></i>
           {% trans "Get Started" %}
         </a>
       {% endif %}
 
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "email_settings" email_key %}">
+      <a class="dropdown-item" href="{% url 'email_settings' email_key %}">
         <i class="fas fa-cog"></i>
         {% trans "Manage Settings" %}
       </a>
@@ -128,7 +128,7 @@
         {% endfor %}
       {% endif %}
       {% if user.is_staff %}
-        <a class="dropdown-item" href="{% url "admin:index" %}">
+        <a class="dropdown-item" href="{% url 'admin:index' %}">
           <i class="fas fa-user-secret"></i>
           {% trans "Administration" %}
         </a>
@@ -137,7 +137,7 @@
       {% if is_townsquare %}
         {% include 'shared/theme_switcher.html' with source='authed' %}
       {% endif %}
-      <a class="dropdown-item" data-gtm="logout" href="{% url "logout" %}?next={{ request.get_full_path }}">
+      <a class="dropdown-item" data-gtm="logout" href="{% url 'logout' %}?next={{ request.get_full_path }}">
         <i class="fas fa-lock"></i>
         {% trans "Log Out" %}
       </a>

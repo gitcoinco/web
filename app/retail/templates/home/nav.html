@@ -17,7 +17,7 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-light bg-white p-0 px-md-1">
-  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="/">
+  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="{% url 'index' %}">
     {% include 'shared/helmet-purple-animated-townsquare.html' %}
   </a>
   {% include 'shared/menu.html' %}
