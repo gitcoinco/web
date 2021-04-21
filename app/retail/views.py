@@ -78,7 +78,7 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
     context = {
-        'title': 'Gitcoin - Build and Fund the Open Web Together',
+        'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
         'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
     }
