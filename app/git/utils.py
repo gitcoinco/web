@@ -57,11 +57,7 @@ def github_connect(token=None):
         token = settings.GITHUB_API_TOKEN
 
     try:
-        github_client = Github(
-            login_or_token=token,
-            client_id=settings.GITHUB_CLIENT_ID,
-            client_secret=settings.GITHUB_CLIENT_SECRET,
-        )
+        github_client = Github(login_or_token=token)
     except BadCredentialsException as e:
         logger.exception(e)
     return github_client
