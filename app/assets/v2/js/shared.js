@@ -1416,7 +1416,9 @@ const getVideoMetadata = (videoURL) => {
 /**
  * bootstrap breakpoints
  */
-const breakpoint_sm = 576;
-const breakpoint_md = 768;
-const breakpoint_lg = 992;
-const breakpoint_xl = 1200;
+const computedRootStyles = getComputedStyle(document.documentElement);
+
+const breakpoint_sm = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-sm'));
+const breakpoint_md = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md'));
+const breakpoint_lg = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-lg'));
+const breakpoint_xl = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-xl'));

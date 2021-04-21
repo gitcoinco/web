@@ -91,7 +91,7 @@
             <div class="row">
               <div class="col-12" v-if="bounty.network !== 'mainnet'">
                 <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
-                To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
+                To see mainnet bounties, go to <a href="{% url 'explorer' %}">the bounty explorer</a> and search for mainnet bounties.</span>
               </div>
               <div class="col-12 text-center text-lg-left my-3 my-lg-0">
                 <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>

@@ -58,7 +58,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div>Fetching cart data...</div>
             </div>
 
-            <div v-else-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row">
+            <div v-else-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row mb-5">
               Your cart is empty.
             </div>
 
@@ -113,11 +113,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </grants-cart>
       </div>
+      {% include 'shared/footer.html' %}
     </div>
+
     {% include 'shared/current_profile.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    {% include 'shared/footer.html' %}
     {% include 'shared/fingerprintjs.html' %}
 
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}

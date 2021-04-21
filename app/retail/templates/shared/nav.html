@@ -21,7 +21,7 @@
     {% include 'shared/helmet-purple-animated.html' %}
   </a>
   <i class="black font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="/explorer">
+  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="{% url 'explorer' %}">
     <span id="logo_explorer" style="width: 150px;" class="my-auto overflow-hidden d-block p-1 pl-2">
       <!-- <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/bounties-neg.svg' %}" alt="Bounties" height="35"> -->
       {% include 'shared/svg-embed/h35px_bounties.svg' %}

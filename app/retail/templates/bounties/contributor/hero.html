@@ -33,7 +33,7 @@
     <div class="col d-flex mt-3 mb-5">
       <div class="text-center">
         <div>
-          <a class="btn btn-dark text-purple white get-started-btn font-weight-semibold" role="button" href="/explorer{% if tech_stack %}?keywords={{ tech_stack }}{% endif %}" target="_blank" rel="noopener noreferrer">            
+          <a class="btn btn-dark text-purple white get-started-btn font-weight-semibold" role="button" href="{% url 'explorer' %}{% if tech_stack %}?keywords={{ tech_stack }}{% endif %}" target="_blank" rel="noopener noreferrer">
             <span>Browse {% if tech_stack %} {{ tech_stack|title }} {% endif %} Bounties</span>
           </a>
         </div>
