@@ -1,16 +1,1 @@
-# Changelog
-
-## 20200728master (28/07/2020)
-- [**closed**] Add dashboard for sponsors [#7064](https://github.com/gitcoinco/web/pull/7064)
-- [**closed**] purge: ens  [#7060](https://github.com/gitcoinco/web/pull/7060)
-- [**closed**] unsubscribe daily email people if they haven't read in the last 30 days [#7077](https://github.com/gitcoinco/web/pull/7077)
-- [**closed**] Add flag to display showcase [#7087](https://github.com/gitcoinco/web/pull/7087)
-- [**closed**] Changes on hackathon onboarding [#7149](https://github.com/gitcoinco/web/pull/7149)
-- [**Gitcoin Hackathon**][**filecoin-aug14**] Restore hackathon indicator on presentation cards [#7023](https://github.com/gitcoinco/web/pull/7023)
-- [**closed**] Stable [#7147](https://github.com/gitcoinco/web/pull/7147)
-- [**closed**] New bounty form [#7086](https://github.com/gitcoinco/web/pull/7086)
-- [**closed**] Change url for getting started CTA [#7124](https://github.com/gitcoinco/web/pull/7124)
-- [**closed**] allow matic grant creation w/o web3 [#7118](https://github.com/gitcoinco/web/pull/7118)
-- [**closed**] removes per tip txn limit [#7101](https://github.com/gitcoinco/web/pull/7101)
-- [**closed**] Set the z-index for .activity.hackathon_new_hacker to 0 [#7116](https://github.com/gitcoinco/web/pull/7116)
-- [**closed**] fixed sticky-top because new hacker town square post card [#7089](https://github.com/gitcoinco/web/pull/7089)
+NEW CHANGES
