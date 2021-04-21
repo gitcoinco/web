@@ -58,7 +58,7 @@
               <i class="fab fa-reddit fa-stack-1x"></i>
             </span>
           </a>
-          <a class="p-2 p-md-3 link-current" target="_blank" href="https://discord.gg/jWUzf7b8Yr">
+          <a class="p-2 p-md-3 link-current" target="_blank" href="{% url "discord" %}">
             <span class="fa-stack">
               <i class="far fa-circle fa-stack-2x"></i>
               <i class="fab fa-discord fa-stack-1x"></i>
@@ -93,10 +93,10 @@
           </div>
           <div class="d-flex flex-column mb-2">
             <h5>{% trans "Community" %}</h5>
-            <a class="link-current hover-underline mb-2" target="_blank" href="https://discord.gg/jWUzf7b8Yr">Discord</a>
-            <a class="link-current hover-underline mb-2" href="https://gitcoin.co/wiki/wiki-code-conduct/">{% trans "Code of Conduct" %}</a>
+            <a class="link-current hover-underline mb-2" target="_blank" href="{% url "discord" %}">Discord</a>
+            <a class="link-current hover-underline mb-2" href="{% url "wiki:root" %}wiki-code-conduct/">{% trans "Code of Conduct" %}</a>
             <a class="link-current hover-underline mb-2" href="{% url "request_money" %}">{% trans "Request Money" %}</a>
-            <a class="link-current hover-underline mb-2" href="/wiki/">{% trans "Wiki" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "wiki:root" %}">{% trans "Wiki" %}</a>
             <a class="link-current hover-underline mb-2" href="https://github.com/gitcoinco/web/issues/new/choose">{% trans "Help" %}</a>
             <a class="link-current hover-underline mb-2" href="https://store.gitcoin.co/">{% trans "Store" %}</a>
           </div>
