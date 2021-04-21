@@ -1429,6 +1429,10 @@ def twitter(request):
     return redirect('http://twitter.com/gitcoin')
 
 
+def discord(request):
+    return redirect('https://discord.gg/jWUzf7b8Yr')
+
+
 def telegram(request):
     return redirect('https://t.me/joinchat/DwEd_xps7gJqWt-Quf-tPA')
 

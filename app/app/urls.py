@@ -552,6 +552,7 @@ urlpatterns = [
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^discord/?', retail.views.discord, name='discord'),
     re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
     re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
