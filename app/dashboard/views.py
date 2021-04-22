@@ -6395,7 +6395,7 @@ def close_bounty_v1(request, bounty_id):
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
 
-    if not is_funder:
+    if not is_funder and not user.is_staff:
         response['message'] = 'error: closing a bounty funder operation'
         return JsonResponse(response)
 

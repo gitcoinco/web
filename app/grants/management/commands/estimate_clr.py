@@ -47,10 +47,10 @@ class Command(BaseCommand):
         what = options['what']
         print (network, clr_pk, what)
 
-        if clr_pk == "all":
-            active_clr_rounds = GrantCLR.objects.filter(is_active=True)
-        else:
+        if clr_pk.isdigit():
             active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
+        else:
+            active_clr_rounds = GrantCLR.objects.filter(is_active=True)
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:

@@ -1061,7 +1061,7 @@ def grants_by_grant_type(request, grant_type):
             logger.debug(e)
             pass
 
-    if collection_id:
+    if collection_id and collection_id.isdigit():
         collections = GrantCollection.objects.filter(pk=collection_id)
         if collections.exists():
             collection = collections.first()
@@ -1417,7 +1417,7 @@ def grant_details(request, grant_id, grant_slug):
 
         # calculate whether is available
         # TODO - do this asyncronously so as not to block the pageload
-        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc:
+        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc and grant.admin_address != '0x0':
             if is_team_member or is_staff or is_admin:
                 w3 = get_web3(grant.network)
                 match_payouts_abi = settings.MATCH_PAYOUTS_ABI

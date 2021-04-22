@@ -982,7 +982,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     elif 'activity:' in what:
         view_count_threshold = 0
         pk = what.split(':')[1]
-        activities = Activity.objects.filter(pk=pk)
+        activities = Activity.objects.filter(pk=pk) if pk.isdigit() else Activity.objects.none()
         if request:
             page = int(request.GET.get('page', 1))
             if page > 1:
