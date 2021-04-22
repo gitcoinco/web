@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let debounceClose = false;
   let debounceMeasure = false;
 
+  // control the navPos when we open #navbarSupportedContent (mobile's collapse toggle)
+  let navPos = 0;
+  let anchored = 0;
+
   const isTouchDevice = ('ontouchstart' in window);
 
   // allow for the dimensions to be set-up before measuring (moveX sets an offset to move gc-menu-[background/content] on the x axis)
@@ -19,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // read the transition duration from navbar.scss (computedRootStyles is defined in shared.js)
   const transitionDuration = parseFloat(computedRootStyles.getPropertyValue('--gc-menu-transition-duration'));
+
+  // binding bootstrap events with jquery
+  const $navbarSupportedContent = $('#navbarSupportedContent');
 
   // reference constant els used in the menu
   const navbarEl = document.querySelector('.gc-navbar-nav');
@@ -335,10 +342,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // scroll to the start of the menu/close if we move out of mobile
+  const posMobileMenu = () => {
+    if (document.body.classList.contains('navbar-menu-open')) {
+      // get the top pos of the nav so that we can check if we need to scroll it into view (navBar is 100vh)
+      navPos = Math.ceil(window.scrollY + navbarContainerEl.getBoundingClientRect().top);
+      // scroll beyond the topNav and lock
+      if (window.innerWidth >= breakpoint_md) {
+        navPos = 0;
+        // close menu if we move into md
+        $navbarSupportedContent.collapse('hide');
+        document.body.classList.remove('navbar-menu-open');
+      } else if (navPos !== 0) {
+        window.scrollTo(0, navPos);
+      }
+    }
+  };
+
+  // debounce the resize/orientationchange event
+  const bindPosMobileMenu = (eventName) => {
+    window.addEventListener(eventName, () => {
+      posMobileMenu();
+    });
+  };
+
 
   // set initial positions for each nav item
   setDimensions();
 
+
+  // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
+  $navbarSupportedContent.on('show.bs.collapse', () => {
+    anchored = window.scrollY;
+    document.body.classList.add('navbar-menu-open');
+    posMobileMenu();
+  }).on('hide.bs.collapse', () => {
+    document.body.classList.remove('navbar-menu-open');
+    window.scrollTo(0, anchored);
+    anchored = 0;
+  });
+
+  // bindPosMobileMenu for each eventName
+  [ 'resize', 'orientationchange' ].forEach((eventName) => {
+    bindPosMobileMenu(eventName);
+  });
 
   // cleanUp on resize (remove active state and remeasure the dimensions)
   window.addEventListener('resize', () => {
