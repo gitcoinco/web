@@ -11,6 +11,7 @@ $(document).ready(function(){
     });
     var update_output = function(){
         var text = $("#text").val();
+        text = text.replace( /[\r\n]/gm, " NEWLINE " );
         var selected = $('li[selected=selected]');
         var attrs = `&text=${text}`;
         for(var i=0;i<selected.length;i++){

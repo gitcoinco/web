@@ -108,15 +108,16 @@ def mission_postcard(request):
     if not request.user.is_authenticated:
         return redirect('/login/github/?next=' + request.get_full_path())
     attrs = {
-        'front_frame': ['1', '2'],
-        'front_background': ['a', 'b'],
-        'back_background': ['a', 'b'],
+        'front_frame': ['1', '2', '3', '4'],
+        'front_background': ['a', 'b', 'c', 'd'],
+        'back_background': ['a', 'b', 'c', 'd'],
     }
     context = {
         'attrs': attrs,
     }
     return TemplateResponse(request, f'quadraticlands/mission/postcard/postcard.html', context)
 
+@ratelimit(key='ip', rate='1/s', method=ratelimit.UNSAFE, block=True)
 def mission_postcard_svg(request):
     import xml.etree.ElementTree as ET
     from django.http import HttpResponse
@@ -144,12 +145,47 @@ def mission_postcard_svg(request):
             _id = item.attrib.get('id')
             include_item = None
             if _id == 'text':
+
+                # get text
+                replace_text = package.get('text')
+
+                # chop up the text by word length to create line breaks.
+                line_words_length = 10
                 include_item = True
-                output = output.replace('POSTCARD_TEXT_GOES_HERE', package.get('text'))
+                end_wrap = '</tspan>'
+                words = replace_text.split(' ')
+                new_words = []
+                line_offset = 0
+                line_counter_for_newline_insert = 0
+                for i in range(0, len(words)):
+                    line_counter_for_newline_insert += 1
+                    if words[i] == 'NEWLINE':
+                        line_counter_for_newline_insert = 0
+                    insert_newline = line_counter_for_newline_insert % line_words_length == 0
+                    if words[i] == 'NEWLINE':
+                        insert_newline = True
+                    if insert_newline:
+                        line_offset += 1
+
+                    y = 26 + (line_offset) * 26
+                    start_wrap = f'<tspan x="0" y="{y}">'
+
+                    if i == 0:
+                        new_words.append(start_wrap)
+                    if insert_newline:
+                        new_words.append(end_wrap)
+                        new_words.append(start_wrap)
+                    if words[i] != 'NEWLINE':
+                        new_words.append(words[i])
+                    if i == (len(words) - 1):
+                        new_words.append(end_wrap)
+
+                # actually insert the text
+                replace_text = " ".join(new_words)
+                output = output.replace('POSTCARD_TEXT_GOES_HERE', replace_text)
             if _id:
                 val = _id.split(":")[-1]
                 key = _id.split(":")[0]
-                print(key, val, package)
                 if val == package.get(key):
                     include_item = True
             if include_item:
