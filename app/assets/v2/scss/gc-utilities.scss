@@ -13,9 +13,12 @@
 // .border-right-[1-5]
 @include border('right', 1, 5);
 
-// .border-[grey, primary, secondary, danger, info, dark, light]
+// .border-[dashed]-top-[1]
+@include border('top', 1, 1, 'dashed');
+
+// .border-[grey, primary, secondary, danger, info, dark, light, lighter]
 @include border-colors(
-  'grey' lightgray,
+  'grey' #E2E0E7,
   'primary' $blue,
   'secondary' $green,
   'danger' $red,
@@ -177,3 +180,47 @@
   }
 }
 
+// media-queries to handle w-*-* (widths at breakpoints)
+@media (min-width: 768px) {
+  .w-md-100 {
+    width:100%;
+  }
+  .w-md-50 {
+    width: 50%;
+  }
+  .w-md-25 {
+    width: 25%;
+  }
+}
+
+@media (min-width: 992px) {
+  .w-lg-100 {
+    width:100%;
+  }
+  .w-lg-50 {
+    width: 50%;
+  }
+  .w-lg-25 {
+    width: 25%;
+  }
+}
+
+// absolute positioning for > md
+@media (min-width:768px) {
+  .position-md-absolute {
+    position: absolute;
+  }
+}
+
+// svg icon inside outline primary
+.btn-outline-primary {
+  svg {
+    stroke: #6F3FF5;
+    transition: stroke 0.15s ease-in-out;
+    vertical-align: text-bottom;
+  }
+
+  &:hover svg, &:active svg {
+    stroke: #FFFFFF;
+  }
+}

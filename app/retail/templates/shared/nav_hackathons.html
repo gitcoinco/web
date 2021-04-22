@@ -16,12 +16,13 @@
 
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
-<nav class="navbar navbar-expand-md navbar-light bg-white gitcoin-background">
-  <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
+<nav class="navbar navbar-expand-md navbar-light bg-white p-0 px-md-1">
+  <a class="d-none d-md-block mr-2 mb-1 ml-2" href="{% url 'index' %}">
     {% include 'shared/helmet-purple-animated.html' %}
   </a>
   <i class="black font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand ml-2 py-0" href="/hackathon-list">
+  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="{% url 'get_hackathons' %}">
+    <span id="logo_hackathons" style="width: 180px;" class="my-auto overflow-hidden d-block p-1 pl-2">
     <!-- <img class="mw-100 logo-static" id="logo" src="{% static 'v2/images/top-bar/hackathons-neg.svg' %}" height="35" alt="Logo" /> -->
     {% include 'shared/svg-embed/h35px_hackathons.svg' %}
   </a>

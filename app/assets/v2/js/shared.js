@@ -1412,3 +1412,13 @@ const getVideoMetadata = (videoURL) => {
     'url': videoURL
   };
 };
+
+/**
+ * bootstrap breakpoints
+ */
+const computedRootStyles = getComputedStyle(document.documentElement);
+
+const breakpoint_sm = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-sm'));
+const breakpoint_md = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md'));
+const breakpoint_lg = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-lg'));
+const breakpoint_xl = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-xl'));

@@ -7,6 +7,11 @@
   z-index: 9999999999999;
 }
 
+#WEB3_CONNECT_MODAL_ID {
+  position: relative;
+  z-index: 4;
+}
+
 .sticky-top {
   position: sticky!important;
   top: 0;
@@ -98,6 +103,10 @@
 
 .text-grey-400 {
   color: #757087;
+}
+
+.text-grey-500 {
+  color: #0E0333;
 }
 
 .text-current {
@@ -517,32 +526,6 @@
 
 }
 
-.dropdown-menu {
-  background-color: #FAFAFA;
-  border-radius: 0px;
-  padding: 0;
-  border: none;
-}
-
-.dropdown-menu .dropdown-divider {
-  margin: 0;
-}
-
-.dropdown-menu .dropdown-item {
-  padding: 12px 25px;
-}
-
-#why-gitcoin .dropdown-item {
-  padding-left: 15px;
-}
-
-.dropdown-menu .dropdown-item i {
-  text-align: center;
-  margin-left: 0px;
-  margin-right: 20px;
-  width: 15px;
-}
-
 .g-fadein {
   opacity: 0;
 }
@@ -559,10 +542,6 @@
   left: 5rem;
 }
 
-.navbar {
-  min-height: 66px;
-}
-
 @media (max-width: 389.9px) {
 
   .footer__main {
@@ -572,69 +551,8 @@
 }
 
 @media (max-width: 767.98px) {
-  .navbar {
-    padding: 1rem 1rem;
-  }
-  .navbar-collapse {
-    margin-top: 1.5rem;
-  }
   #indicate-popup {
     display: none;
-  }
-}
-
-@media (max-width: 820px) {
-  .navbar-nav .nav_avatar {
-    display: none !important;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-
-  .navbar-brand #logo {
-    width: 6.5rem;
-    height: auto;
-  }
-
-  .navbar-expand-md .navbar-nav .nav-link {
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1240px) {
-  .navbar-expand-md .navbar-nav .nav-link,
-  .navbar-nav .btn-gc-blue.button--fund {
-    font-size: 0.8rem;
-  }
-
-  .nav-link__text {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1028px) {
-
-  .nav-link {
-    text-align: center;
-  }
-
-  .navbar-expand-md .navbar-nav .nav-link,
-  .navbar-nav .btn-gc-blue.button--fund {
-    font-size: 0.7rem;
-  }
-
-  .nav-link__icon.hidden {
-    display: inline !important;
-  }
-
-  .navbar-brand img {
-    width: 140px;
-    height: 47.6px;
-  }
-
-  .nav-link.login i {
-    font-size: 1.3em !important;
   }
 }
 

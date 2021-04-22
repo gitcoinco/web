@@ -34,47 +34,6 @@ span {
   cursor: default !important;
 }
 
-.nav_avatar {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  border-radius: 50%;
-  background-size: cover;
-}
-
-.navbar-nav .btn-gc-blue {
-  margin-right: 1rem;
-  font-size: 0.9rem;
-  padding-left: 1rem;
-  text-align: left;
-  margin-top: 5px;
-}
-
-.navbar-nav .dropdown-menu {
-  min-width: 9rem;
-  overflow-y: auto;
-  max-height: 88vh;
-}
-
-
-.navbar-network {
-  border: 1px solid #828282;
-  color: #fff;
-  border-radius: 25px;
-  font-size: 0.65rem;
-  text-align: center;
-}
-
-.navbar-network i {
-  font-size: 7px;
-  position: relative;
-  top: -1px;
-}
-
-.navbar-network a {
-  text-decoration: underline;
-}
-
 .green {
   color: #26cd7f;
 }
@@ -1460,41 +1419,6 @@ div.busyOverlay {
 }
 .card-shadow {
   box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .1);
-}
-
-/* Megamenu based on https://geedmo.github.io/yamm/ */
-.gc-megamenu .collapse,
-.gc-megamenu .dropup,
-.gc-megamenu .dropdown {
-  position: static;
-  overflow: auto;
-  max-height: 60vh;
-}
-
-.gc-megamenu .container {
-  position: relative;
-}
-
-.gc-megamenu .dropdown-menu {
-  left: auto;
-}
-
-.gc-megamenu .gc-megamenu-content {
-  padding: 1rem;
-}
-
-.gc-megamenu .dropdown.gc-megamenu-fw .dropdown-menu,
-.gc-megamenu .dropup.gc-megamenu-fw .dropdown-menu {
-  left: 0;
-  right: 0;
-}
-.dropdown-menu .gc-megamenu-content .dropdown-item-small {
-  padding: 0.4em 0.7em!important;
-}
-
-.gc-megamenu-active {
-  background: rgba(12, 3, 59, 0.1);
-  border-radius: 4px;
 }
 
 .emoji-picker__tab {
