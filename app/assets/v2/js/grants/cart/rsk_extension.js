@@ -114,6 +114,19 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
