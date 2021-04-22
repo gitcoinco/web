@@ -173,7 +173,7 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
           console.log('success', response);
 
           vm.fetchBounty();
-          _alert('Payment Successful');
+          _alert('Payment Successful', 'success');
 
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
