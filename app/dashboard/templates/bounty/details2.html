@@ -364,13 +364,11 @@
                     </div>
                     <div class="col-12">
                       <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
-                        <template v-if="showWorkSubmitted(fulfillment.fulfiller_github_username)">
-                          <i class="far fa-link mr-1"></i>
-                          <span class="font-weight-bold mb-2">PR:</span>
-                          <a :href="fulfillment.fulfiller_github_url" target="_blank">
-                            [[ fulfillment.fulfiller_github_url ]]
-                          </a>
-                        </template>
+                        <i class="far fa-link mr-1"></i>
+                        <span class="font-weight-bold mb-2">PR:</span>
+                        <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                          [[ fulfillment.fulfiller_github_url ]]
+                        </a>
                         <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
                           <i class="far fa-clock font-caption mr-1"></i>
                           <span class="font-weight-bold">Hours worked:</span>
