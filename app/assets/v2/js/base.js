@@ -423,60 +423,6 @@ const gitcoinUpdates = () => {
 
 };
 
-// megamenu carets are positioned inside each nav-link
-const $body = $('body');
-const $navbarSupportedContent = $('#navbarSupportedContent');
-const $navBar = $('.navbar');
-
-// anchor to 75px when the menu is open to hide top menu
-let navPos = 0;
-let anchored = 0;
-
-// add .navbar-menu-open to prevent page-scroll when mobile menu is opened
-$navbarSupportedContent.on('show.bs.collapse', function() {
-  anchored = window.scrollY;
-  $body.addClass('navbar-menu-open');
-  posMobileMenu();
-}).on('hide.bs.collapse', function() {
-  $body.removeClass('navbar-menu-open');
-  window.scrollTo(0, anchored);
-  anchored = 0;
-});
-
-// scroll to the start of the menu/close if we move out of mobile
-const posMobileMenu = function() {
-  if ($body.hasClass('navbar-menu-open')) {
-    // get the top pos of the nav so that we can check if we need to scroll it into view (navBar is 100vh)
-    navPos = Math.ceil(window.scrollY + $navBar[0].getBoundingClientRect().top);
-    // scroll beyond the topNav and lock
-    if (navPos !== 0) {
-      window.scrollTo(0, navPos);
-    } else if (window.innerWidth >= 768) {
-      navPos = 0;
-      // close menu if we move into md
-      $navbarSupportedContent.collapse('hide');
-      $body.removeClass('navbar-menu-open');
-    }
-  }
-};
-
-// debounce the resize/orientationchange event
-const checkForPosChange = function(eventName) {
-  window.addEventListener(eventName, function() {
-    posMobileMenu();
-  });
-};
-
-// bind the same fn to each eventName
-[ 'resize', 'orientationchange' ].forEach(function(eventName) {
-  checkForPosChange(eventName);
-});
-
-// carousel/collabs/... inside menu
-$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
-  e.stopPropagation();
-});
-
 function applyCartMenuStyles() {
   let dot = $('#cart-notification-dot');
 
