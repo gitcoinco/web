@@ -507,6 +507,32 @@
       transform: rotate(-90Deg) translateY(-0.4rem);
     }
   }
+
+  .navbar-onepager {
+    overflow: visible;
+
+    .nav_avatar {
+      position: relative;
+    }
+
+    #gc-notifications.show {
+      border: unset;
+    }
+
+    .notifications__box {
+      min-width: unset;
+      width: 20rem;
+    }
+
+    .navbar-brand:before {
+      content: unset;
+    }
+
+    #notificationsDropdown .fa-bell + span {
+      display: none;
+    }
+  }
+
 }
 
 @media (min-width:768px) and (max-width:1240px) {

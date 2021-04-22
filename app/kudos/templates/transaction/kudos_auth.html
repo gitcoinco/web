@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static is_in_list %}
-<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between text-white">
+<div class="navbar navbar-onepager navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between text-white">
   <a class="navbar-brand p-1" href="{% url 'kudos_marketplace' %}">
     <img class="mw-100 mx-4" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/faucets" %}

@@ -17,7 +17,7 @@
 {% load i18n static %}
 {% load is_in_list %}
 
-<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
+<div class="navbar navbar-onepager navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
   <a class="navbar-brand py-0 text-center" href="{% url 'index' %}">
     <img id="logo" src="{% static "v2/images/new-logos/gc-h-neg.svg" %}" width="150" height="50" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
