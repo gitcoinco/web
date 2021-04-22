@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // check if we should delay the change of menu
       if (decreasingSlope < prevDecreasingSlope && increasingSlope > prevIncreasingSlope) {
-        debounceSubmenuFocus[menu] = setTimeout(() => showSubmenu(e, menu, submenuToggle), 200);
+        debounceSubmenuFocus[menu] = setTimeout(() => showSubmenu(e, menu, submenuToggle), 300);
       } else {
         showSubmenu(e, menu, submenuToggle);
       }
@@ -349,8 +349,8 @@ document.addEventListener('DOMContentLoaded', () => {
       navPos = Math.ceil(window.scrollY + navbarContainerEl.getBoundingClientRect().top);
       // scroll beyond the topNav and lock
       if (window.innerWidth >= breakpoint_md) {
-        navPos = 0;
         // close menu if we move into md
+        navPos = 0;
         $navbarSupportedContent.collapse('hide');
         document.body.classList.remove('navbar-menu-open');
       } else if (navPos !== 0) {
