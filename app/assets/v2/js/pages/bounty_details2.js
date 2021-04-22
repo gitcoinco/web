@@ -391,12 +391,7 @@ Vue.mixin({
       let vm = this;
 
       if (web3_type == 'manual') {
-        if (token_name === 'CKB') {
-          tenant = 'NERVOS';
-          vm.canChangeFunderAddress = true;
-        } else {
-          tenant = 'OTHERS';
-        }
+        tenant = 'OTHERS';
         return tenant;
       }
 
@@ -447,7 +442,6 @@ Vue.mixin({
 
         case 'CKB':
           tenant = 'NERVOS';
-          vm.canChangeFunderAddress = true;
           break;
 
         case 'XDC':
@@ -543,6 +537,10 @@ Vue.mixin({
 
         case 'xinfin_ext':
           payWithXinfinExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'nervos_ext':
+          payWithNervosExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -748,8 +746,6 @@ Vue.mixin({
     initFulfillmentContext: function(fulfillment) {
       let vm = this;
 
-      vm.getTenant(fulfillment.token_name, fulfillment.payout_type);
-
       switch (fulfillment.payout_type) {
         case 'qr':
         case 'manual':
@@ -761,6 +757,7 @@ Vue.mixin({
         case 'polkadot_ext':
         case 'rsk_ext':
         case 'xinfin_ext':
+        case 'nervos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

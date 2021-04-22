@@ -210,6 +210,10 @@ Vue.mixin({
           // harmony
           type = 'harmony_ext';
           break;
+        case '1995':
+          // nervos
+          type = 'nervos_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
@@ -222,10 +226,6 @@ Vue.mixin({
         case '44786': // celo alfajores tesnet
         case '717171': // other
           type = 'qr';
-          break;
-        case '1995':
-          // nervos
-          type = 'manual';
           break;
         default:
           type = 'web3_modal';

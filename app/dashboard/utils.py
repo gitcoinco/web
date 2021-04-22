@@ -562,10 +562,6 @@ def sync_payout(fulfillment):
     if fulfillment.payout_type == 'web3_modal':
         sync_eth_payout(fulfillment)
 
-    elif fulfillment.payout_type == 'manual':
-        if token_name == 'CKB':
-            sync_nervos_payout(fulfillment)
-
     elif fulfillment.payout_type == 'qr':
         if token_name == 'ETC':
             sync_etc_payout(fulfillment)
@@ -592,6 +588,10 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'xinfin_ext':
         sync_xinfin_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'nervos_ext':
+        sync_nervos_payout(fulfillment)
+
 
 
 def get_bounty_id(issue_url, network):

@@ -170,6 +170,10 @@ Vue.mixin({
           // harmony
           type = 'harmony_ext';
           break;
+        case '1995':
+          // nervos
+          type = 'nervos_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
@@ -183,7 +187,6 @@ Vue.mixin({
           type = 'qr';
           break;
         case '717171': // other
-        case '1995': // nervos
           type = 'manual';
           break;
         default:
