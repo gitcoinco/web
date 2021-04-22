@@ -1427,7 +1427,7 @@ def grant_details(request, grant_id, grant_slug):
                 is_match_available_to_claim = True if amount_available > 0 else False
 
         # Determine if we should show the claim match button on the grant details page
-        should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
+        should_show_claim_match_button = grant.is_active and (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
 
     except Exception as e:
         logger.exception(e)
