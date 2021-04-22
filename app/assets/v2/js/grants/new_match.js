@@ -133,6 +133,19 @@ Vue.mixin({
         response = await fetchData(url, 'POST', data, headers);
 
         if (response.status == 200) {
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-pledger',
+                  'action': 'submit'
+                }
+              }
+            ]
+          });
           _alert('Match Pledge Request Recorded.  To fund the matching pool please visit this Grant.');
           vm.clearForm();
           document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';

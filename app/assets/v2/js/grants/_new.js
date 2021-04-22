@@ -208,6 +208,19 @@ Vue.mixin({
         data: getFormData(data),
         headers: headers,
         success: response => {
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-creator',
+                  'action': 'create'
+                }
+              }
+            ]
+          });
           if (response.status == 200) {
             window.location = response.url;
           } else {

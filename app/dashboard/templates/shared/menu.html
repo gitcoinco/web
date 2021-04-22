@@ -76,9 +76,7 @@
                       </div>
                     </div>
                   </a>
-                </div>
 
-                <div class="col-12">
                   <a class="dropdown-item text-grey-500 px-3 py-0" href="{% url "jtbd_learn" %}">
                     <div class="row">
                       <div class="col align-self-center" style="max-width: 3.25rem;">
@@ -94,12 +92,7 @@
                       </div>
                     </div>
                   </a>
-                </div>
 
-              </div>
-
-              <div class="row">
-                <div class="col-12">
                   <a class="dropdown-item text-grey-500 px-3 py-0" href="{% url "jtbd_connect" %}">
                     <div class="row">
                       <div class="col align-self-center" style="max-width: 3.25rem;">
@@ -124,8 +117,7 @@
                       </div>
                     </div>
                   </a>
-                </div>
-                <div class="col-12">
+
                   <a class="dropdown-item text-grey-500 px-3 py-0" href="{% url "jtbd_fund" %}">
                     <div class="row">
                       <div class="col align-self-center" style="max-width: 3.25rem;">
@@ -160,7 +152,7 @@
                 <a href="{% url 'funder_bounties' %}" data-submenu="bounties" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}gc-menu-submenu-toggle-active{% endif %}">
                   <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
-                      <img class="logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="44">
+                      <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="39">
                     </div>
                     <div class="col">
                       <b class="gc-megamenu-title d-block">{% trans "Bounties" %}</b>
@@ -172,7 +164,7 @@
                 <a href="{% url 'get_hackathons' %}" data-submenu="hackathons" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/hackathon' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
                   <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
-                      <img class="logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="44">
+                      <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="39">
                     </div>
                     <div class="col">
                       <b class="gc-megamenu-title d-block">{% trans "Hackathons" %}</b>
@@ -184,7 +176,7 @@
                 <a href="{% url 'grants:grants' %}" data-submenu="grants" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/grants' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
                   <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
-                      <img class="logo-static p-2" src="{% static 'v2/images/top-bar/grants-symbol-pos.svg' %}" alt="Grants" height="40">
+                      <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/grants-symbol-pos.svg' %}" alt="Grants" height="36">
                     </div>
                     <div class="col">
                       <b class="gc-megamenu-title d-block">{% trans "Grants" %}</b>
@@ -196,7 +188,7 @@
                 <a href="{% url 'quests_index' %}" data-submenu="quests" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/quests' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
                   <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
-                      <img class="logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="44">
+                      <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="38">
                     </div>
                     <div class="col">
                       <b class="gc-megamenu-title d-block">{% trans "Quests" %}</b>
@@ -208,7 +200,7 @@
                 <a href="{% url 'kudos_main' %}" data-submenu="kudos" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/kudos' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
                   <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
-                      <img class="logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="44">
+                      <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="39">
                     </div>
                     <div class="col">
                       <b class="gc-megamenu-title d-block">{% trans "Kudos" %}</b>
@@ -217,10 +209,10 @@
                   </div>
                 </a>
 
-                <a href="https://kernel.community" data-submenu="kernel" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-mb gc-menu-submenu-toggle gc-products-toggle {% if '/kernel' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
+                <a href="https://kernel.community" data-submenu="kernel" class="dropdown-item text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-products-toggle {% if '/kernel' in request.path %}gc-menu-submenu-toggle-active{% endif %}">
                   <div class="row py-3">
                     <div class="col align-self-center" style="max-width: 3.25rem;">
-                      <img class="logo-static p-2" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kernel" height="44">
+                      <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/kernel.svg' %}" alt="Kernel" height="39">
                     </div>
                     <div class="col">
                       <b class="gc-megamenu-title d-block">{% trans "Kernel" %}</b>

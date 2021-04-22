@@ -39,6 +39,7 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
 )
+from dashboard.sync.algorand import sync_algorand_payout
 from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
@@ -608,6 +609,9 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'xinfin_ext':
         sync_xinfin_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'algorand_ext':
+        sync_algorand_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):

@@ -74,6 +74,19 @@ const contributeWithBinanceExtension = async (grant, vm) => {
       fetchData(apiUrlGrant, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
