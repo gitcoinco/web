@@ -1432,7 +1432,7 @@ class BountyFulfillment(SuperModel):
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
         ('XINFIN', 'XINFIN'),
-        ('ALGORANT', 'ALGORAND'),
+        ('ALGORAND', 'ALGORAND'),
         ('OTHERS', 'OTHERS')
     ]
 
