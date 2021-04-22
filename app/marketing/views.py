@@ -1028,14 +1028,6 @@ def latest_activities(user):
     increment_view_counts.delay(activities_pks)
     return activities
 
-def static_proxy(request, filepath):
-    # TODO: if this is ever extended with a dynamic filepath
-    # make sure it is VERY VERY security conscious
-    filepath = 'assets/landingpage/fusion/fusion-interface.svg'
-    content_type = 'image/svg+xml'
-    with open(filepath) as file:
-        response = HttpResponse(file, content_type=content_type)
-        return response
 
 @staff_member_required
 def new_bounty_daily_preview(request):

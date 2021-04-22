@@ -1,3 +1,5 @@
+@import "gc-variables";
+
 #indicate-popup {
   position: fixed;
   top: 0.25rem;
@@ -314,39 +316,12 @@
   letter-spacing: 0.1em;
 }
 
-.footer__main {
-  background-color: #0d023b;
-  background-size: contain;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  min-height: 20rem;
-}
-
-.footer__text,
-.footer__text a {
-  color: white;
-}
-
-.footer__text a {
-  text-decoration: underline;
-}
-
 .footer__notification:empty {
   display: none;
 }
 
 .left-0 {
   left: 0px;
-}
-
-.footer {
-  background-color: #0d023b;
-  padding-top: 4rem;
-}
-
-.footer .nav-link {
-  font-size: 0.8rem !important;
-  margin-right: 0.5rem;
 }
 
 #tabs .nav-link span {
@@ -370,25 +345,6 @@
   filter: invert(100%);
 }
 
-.footer__consensys {
-  border-top: 1px solid var(--gc-green);
-  background: black;
-}
-
-.sitenav {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  color: white;
-  margin: 0 1rem;
-  width: 7rem;
-  margin-bottom: 1rem;
-}
-
-.sitenav a {
-  color: var(--text-light);
-  margin-bottom: 0.5rem;
-}
 
 .network-banner--warning {
   background: #ff3232;
