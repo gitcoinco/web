@@ -1123,6 +1123,7 @@ Vue.component('grants-cart', {
       // Send saveSubscription request
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
+
       MauticEvent.createEvent({
         'alias': 'products',
         'data': [

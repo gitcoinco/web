@@ -61,6 +61,7 @@ FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-F
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 XINFIN_API_KEY = env('XINFIN_API_KEY', default='')
+ALGORAND_API_KEY = env('ALGORAND_API_KEY', default='')
 
 # Ratelimit
 MARKETING_QUEUE_RATE_LIMIT = env('MARKETING_QUEUE_RATE_LIMIT', default='32/m')
