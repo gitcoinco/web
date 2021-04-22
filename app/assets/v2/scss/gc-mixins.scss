@@ -6,10 +6,16 @@
 @import "./lib/bootstrap-overrides";
 
 // define borders for $position of $width
-@mixin border($position, $minWidth, $maxWidth) {
+@mixin border($position, $minWidth, $maxWidth, $style:"") {
   @for $i from $minWidth through $maxWidth {
-    .border-#{$position}-#{$i} {
-      border-#{$position}: #{$i}px solid;
+    @if $style != "" {
+      .border-#{$style}-#{$position}-#{$i} {
+        border-#{$position}: #{$i}px #{$style};
+      }
+    } @else {
+      .border-#{$position}-#{$i} {
+        border-#{$position}: #{$i}px solid;
+      }
     }
   }
 }
@@ -23,3 +29,33 @@
   }
 }
 
+// define line-height (n: *em)
+@mixin line-height($heights...) {
+  @each $i in $heights {
+    .line-height-#{nth($i, 1)} {
+      line-height: #{nth($i, 2)}em;
+    }
+  }
+}
+
+// define line-clamp (number of lines)
+@mixin line-clamp($minClamp, $maxClamp) {
+  @for $i from $minClamp through $maxClamp {
+    .line-clamp-#{$i} {
+      display: -webkit-box;
+      -webkit-line-clamp: #{$i};
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}
+
+// define gap for use with flex
+@mixin gap($minGap, $maxGap) {
+  @for $i from $minGap through $maxGap {
+    .gap-#{$i} {
+      gap: #{$i}em;
+    }
+  }
+}

@@ -111,7 +111,7 @@ if (document.getElementById('gc-onboard')) {
           }
         }).catch((err) => {
           console.log(err);
-          _alert('Unable to save your profile. Please login again', 'error');
+          _alert('Unable to save your profile. Please login again', 'danger');
         });
       },
       fetchOnboardData(profileHandle) {
@@ -134,7 +134,7 @@ if (document.getElementById('gc-onboard')) {
 
         }).catch((err) => {
           console.log(err);
-          // _alert('Unable to create a bounty. Please try again later', 'error');
+          // _alert('Unable to create a bounty. Please try again later', 'danger');
         });
       },
       fetchOrgOnboardData(handle) {
@@ -232,18 +232,18 @@ if (document.getElementById('gc-onboard')) {
 
     },
     mounted() {
-      if (
-        document.contxt.github_handle &&
-        !document.contxt.persona_is_funder &&
-        !document.contxt.persona_is_hunter &&
-        !optoutOnboard
-      ) {
-        // show_persona_modal();
-        this.$refs['onboard-modal'].openModal();
-        this.$refs['onboard-modal'].jqEl.on('hidden.bs.modal', function(e) {
-          sessionStorage.optoutOnboard = true;
-        });
-      }
+      // if (
+      //   document.contxt.github_handle &&
+      //   !document.contxt.persona_is_funder &&
+      //   !document.contxt.persona_is_hunter &&
+      //   !optoutOnboard
+      // ) {
+      //   // show_persona_modal();
+      //   this.$refs['onboard-modal'].openModal();
+      //   this.$refs['onboard-modal'].jqEl.on('hidden.bs.modal', function(e) {
+      //     sessionStorage.optoutOnboard = true;
+      //   });
+      // }
       this.fetchOnboardData();
     }
   });

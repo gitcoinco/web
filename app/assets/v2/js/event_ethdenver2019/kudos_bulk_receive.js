@@ -14,9 +14,9 @@ $(document).ready(function() {
 
   waitforWeb3(function() {
     if (document.web3network == 'locked') {
-      _alert('Wallet not connected. <button id="metamask_connect" onclick="onConnect()">Click here to connect a Wallet</button>', 'error');
+      _alert('Wallet not connected. <button id="metamask_connect" onclick="onConnect()">Click here to connect a Wallet</button>', 'danger');
     } else if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'danger');
       $('#receive').attr('disabled', 'disabled');
     } else {
       web3.eth.getCoinbase(function(_, coinbase) {

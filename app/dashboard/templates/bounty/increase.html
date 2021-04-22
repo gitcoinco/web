@@ -177,7 +177,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     document.is_funder_github_user_same = {{ is_funder }};
     document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
     {% if expired_coupon %}
-      _alert({ message: 'This coupon has expired.' }, 'error');
+      _alert({ message: 'This coupon has expired.' }, 'danger');
     {% endif %}
   </script>
 

@@ -17,13 +17,13 @@
 {% load i18n static humanize %}
 
   <div id="gc-notifications" class="nav-item dropdown notifications order-last{% if onepager %} m-auto {% endif %}">
-    <a href="" class="notification__icon nav-link dropdown-toggle{% if onepager %} px-2 text-white {% endif %}" id="notificationsDropdown" role="button"
+    <a href="" class="notification__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret{% if onepager %} px-2 text-white {% endif %}" id="notificationsDropdown" role="button"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="fetchNotifications(1)">
       <i class="far fa-bell fa-fw fa-lg"></i>
       <span class="pl-3 d-md-none">Notifications</span>
-      <span id="notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadNotifications.length > 0}">[[unreadNotifications.length ? unreadNotifications.length : '']]</span>
+      <span id="notification-dot" class="notification__dot ml-2 ml-md-0" :class="{'notification__dot_active': unreadNotifications.length > 0}">[[unreadNotifications.length ? unreadNotifications.length : '']]</span>
     </a>
-    <div class="dropdown-menu dropdown-menu-right animation slideDownIn notifications__box" aria-labelledby="notificationsDropdown">
+    <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn notifications__box shadow-lg" aria-labelledby="notificationsDropdown">
       <div class="notifications__header">
         <div class="notifications__title">
           {% trans 'Notifications' %} <span id="total-notifications" class="badge badge--greenlight">[[ numNotifications ]]</span>

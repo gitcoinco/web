@@ -2996,12 +2996,17 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
+    is_duniter_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
+    poap_owner_account=models.CharField(max_length=255, blank=True, null=True)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
-    is_google_verified = models.BooleanField(default=False)
+    ens_verification_address = models.CharField(max_length=255, default='', blank=True)
+    is_ens_verified = models.BooleanField(default=False)
+    is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
-    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
+    is_facebook_verified = models.BooleanField(default=False)
+    identity_data_facebook = JSONField(blank=True, default=dict, null=True)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
@@ -3044,6 +3049,12 @@ class Profile(SuperModel):
             tb *= 1.10
         if self.is_idena_verified:
             tb *= 1.25
+        if self.is_facebook_verified:
+            tb *= 1.001
+        if self.is_ens_verified:
+            tb *= 1.001
+        if self.is_duniter_verified:
+            tb *= 1.001
         return tb
 
 
@@ -4495,8 +4506,8 @@ class Profile(SuperModel):
 
         context['portfolio'] = list(portfolio_bounties.values_list('pk', flat=True))
         context['portfolio_keywords'] = sorted_portfolio_keywords
-        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
-        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
+        earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', success=True, value_usd__isnull=False)
         from django.contrib.contenttypes.models import ContentType
         earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
@@ -5778,6 +5789,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'POAP Verified: {instance.is_poap_verified}')
         if instance.is_poap_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'Facebook Verified: {instance.is_facebook_verified}')
+        if instance.is_facebook_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 

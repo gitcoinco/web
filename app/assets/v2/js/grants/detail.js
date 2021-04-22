@@ -84,7 +84,7 @@ $(document).ready(function() {
     };
 
     if (!document.contxt.github_handle) {
-      _alert({ message: gettext('Please login.') }, 'error', 1000);
+      _alert({ message: gettext('Please login.') }, 'danger', 1000);
       return;
     }
     $.ajax({
@@ -95,7 +95,7 @@ $(document).ready(function() {
         _alert({ message: gettext('Your flag has been sent to Gitcoin.') }, 'success', 1000);
       },
       error: function() {
-        _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
+        _alert({ message: gettext('Your report failed to save Please try again.') }, 'danger', 1000);
       }
     });
 
@@ -174,7 +174,7 @@ $(document).ready(function() {
         window.location.reload(false);
       },
       error: function() {
-        _alert({ message: gettext('Your edits failed to save. Please try again.') }, 'error');
+        _alert({ message: gettext('Your edits failed to save. Please try again.') }, 'danger');
       }
     });
 
@@ -209,7 +209,7 @@ $(document).ready(function() {
           window.location.reload(false);
         },
         error: function() {
-          _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
+          _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'danger');
         }
       });
     });

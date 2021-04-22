@@ -43,12 +43,12 @@
     </a>
   </div>
 
-  
+
   {% if user.is_authenticated %}
   <div class="d-flex order-0 order-last mr-3 text-white">
     {% include 'shared/notifications.html' with onepager=True %}
     <a class="nav-link login text-white" href="{% url 'profile' %}">
-      <img class="nav_avatar" width=25 height=25
+      <img class="nav_avatar rounded-circle" width=40 height=40
         src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>

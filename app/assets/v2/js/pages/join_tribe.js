@@ -7,7 +7,7 @@ const joinTribe = () => {
 
       if (!document.contxt.github_handle) {
         e.preventDefault();
-        _alert('Please login first.', 'error');
+        _alert('Please login first.', 'danger');
         return;
       }
 
@@ -42,7 +42,7 @@ joinTribe();
 const joinTribeDirect = (elem) => {
 
   if (!document.contxt.github_handle) {
-    _alert('Please login first.', 'error');
+    _alert('Please login first.', 'danger');
     return;
   }
 
@@ -68,7 +68,7 @@ const joinTribeDirect = (elem) => {
 
 const followRequest = (handle, elem, cb, cbError) => {
   if (!document.contxt.github_handle) {
-    _alert('Please login first.', 'error');
+    _alert('Please login first.', 'danger');
     return;
   }
 
@@ -133,7 +133,7 @@ $(document).on('click', '.remove-tribe', function(e) {
 
   if (!document.contxt.github_handle) {
     e.preventDefault();
-    _alert('Please login first.', 'error');
+    _alert('Please login first.', 'danger');
     return;
   }
   $(element).attr('disabled', true);
@@ -187,7 +187,7 @@ const newManageTribe = () => {
     $(elem).on('click', function(e) {
       if (!document.contxt.github_handle) {
         e.preventDefault();
-        _alert('Please login first.', 'error');
+        _alert('Please login first.', 'danger');
         return;
       }
 

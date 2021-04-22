@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
     var elementBottom = elementTop + $(this).outerHeight();
@@ -136,7 +137,6 @@ $(document).ready(function() {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
-      console.log(toggle);
       $('.navbar-collapse').toggleClass('show');
       if (toggle === 'false') {
         $(this).attr('aria-expanded', 'true');
@@ -341,7 +341,7 @@ const sendPersonal = (persona) => {
 
   $.when(postPersona).then((response, status, statusCode) => {
     if (statusCode.status != 200) {
-      return _alert(response.msg, 'error');
+      return _alert(response.msg, 'danger');
     }
     $('#persona_modal').bootstrapModal('hide');
 
@@ -422,11 +422,6 @@ const gitcoinUpdates = () => {
   });
 
 };
-// carousel/collabs/... inside menu
-
-$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
-  e.stopPropagation();
-});
 
 function applyCartMenuStyles() {
   let dot = $('#cart-notification-dot');

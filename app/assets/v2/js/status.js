@@ -114,7 +114,7 @@ $(document).ready(function() {
   $('#textarea, #btn_post').click(function(e) {
     if (!document.contxt.github_handle) {
       e.preventDefault();
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
   });

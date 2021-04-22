@@ -120,7 +120,7 @@
                       </div>
                     {% else %}
 
-                      <div class="mt-2">
+                      <div id="payoutAddress-container" class="mt-2">
                         <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
                         {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
                           <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
@@ -130,11 +130,11 @@
                         <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
                           title="Address to which bounty will be sent upon being accepted">
                         </i>
-                        {% if bounty.metadata.chain_id == '58' %}
-                          <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Polkadot Wallet Address" data-rule-pattern="^(([0-9a-zA-Z]{47})|([0-9a-zA-Z]{48}))"/>
-                        {% else %}
-                          <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="0x0000000000000"/>
-                        {% endif %}
+                        <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Enter {{ bounty.token_name }} Wallet Address"/>
+
+                        <div class="text-danger hidden">
+                          Enter a valid {{ bounty.token_name }} address
+                        </div>
                       </div>
                     {% endif %}
 
@@ -196,6 +196,7 @@
 
       <script>
         const web3_type = '{{ bounty.web3_type }}';
+        const token_name = '{{ bounty.token_name }}';
         const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
       </script>
       {% include 'shared/analytics.html' %}

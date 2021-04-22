@@ -32,9 +32,9 @@ def get_polkadot_txn_status(contribution, network='mainnet'):
         response = { 'status': 'pending' }
 
         if token_symbol == 'DOT':
-            polkascan_url = f'https://explorer-31.polkascan.io/polkadot/api/v1/extrinsic/{txnid}'
+            polkascan_url = f'https://explorer-32.polkascan.io/api/v1/polkadot/extrinsic/{txnid}'
         elif token_symbol == 'KSM':
-            polkascan_url = f'https://explorer-31.polkascan.io/kusama/api/v1/extrinsic/{txnid}'
+            polkascan_url = f'https://explorer-32.polkascan.io/api/v1/kusama/extrinsic/{txnid}'
 
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0. 2272.118 Safari/537.36.'}
         polkascan_response = requests.get(polkascan_url, headers=headers).json()

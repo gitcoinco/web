@@ -74,7 +74,7 @@ $('[data-savetribe]').on('click', function() {
     destroyQuill();
     _alert('Description saved');
   }).fail(function(error) {
-    _alert('Error saving description', 'error');
+    _alert('Error saving description', 'danger');
   });
 });
 
@@ -127,7 +127,7 @@ if ($('#edit-tribe_priority').length) {
       $('#placeholder-text').addClass('hidden');
       quill_priority.setText('');
     }).fail(function(error) {
-      _alert('Error saving priorites. Try again later', 'error');
+      _alert('Error saving priorites. Try again later', 'danger');
       console.error('error: unable to save priority', error);
     });
   });
@@ -204,16 +204,16 @@ $('[data-createbountyrequest]').on('click', function() {
         _alert('Bounty Request has been created');
         location.reload();
       } else {
-        _alert(`Error creating bounty request as ${response.message}`, 'error');
+        _alert(`Error creating bounty request as ${response.message}`, 'danger');
         console.error(response.message);
       }
 
     }).fail(function(error) {
-      _alert(`Error creating bounty request as ${error}`, 'error');
+      _alert(`Error creating bounty request as ${error}`, 'danger');
       console.error('error: unable to creating bounty request', error);
     });
   }).catch(error => {
-    _alert(`Error creating bounty request as ${error}`, 'error');
+    _alert(`Error creating bounty request as ${error}`, 'danger');
     console.error('error: unable to creating bounty request', error);
   });
 });
@@ -238,12 +238,12 @@ $('[data-cancelbountyrequest]').on('click', function() {
       _alert('Bounty Request has been rejected');
       $(`#${bounty_request_id}`).hide();
     } else {
-      _alert(`Error rejecting bounty request as ${response.message}`, 'error');
+      _alert(`Error rejecting bounty request as ${response.message}`, 'danger');
       console.error(response.message);
     }
 
   }).fail(function(error) {
-    _alert(`Error rejecting bounty request. ${error}`, 'error');
+    _alert(`Error rejecting bounty request. ${error}`, 'danger');
     console.error('error: unable to reject bounty request', error);
   });
 });

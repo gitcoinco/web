@@ -746,7 +746,11 @@ def get_url_dict(issue_url):
         }
     except IndexError as e:
         logger.warning(e)
-        return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
+        return {
+            'org': org_name(issue_url),
+            'repo': repo_name(issue_url),
+            'issue_num': int(issue_number(issue_url)) if issue_number(issue_url) else ''
+        }
 
 
 def repo_url(issue_url):

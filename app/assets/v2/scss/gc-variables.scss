@@ -3,6 +3,12 @@ $gc-purple: #0D0764;
 $gc-grey: #EEEEEE;
 
 // GC colors and shades
+$gc-grey-500: #0E0333;
+$gc-grey-400: #757087;
+$gc-grey-300: #A7A2B6;
+$gc-grey-200: #C4C1CF;
+$gc-grey-100: #F8F8F8;
+
 $gc-violet-500: #5932C4;
 $gc-violet-400: #6F3FF5;
 $gc-violet-300: #8C65F7;
@@ -33,3 +39,6 @@ $headings-font-family: 'Miriam Libre', sans-serif;
 
 // Vue-select overrides
 $vs-state-active-bg: $gc-violet-400;
+
+// Path to web-fonts
+$fa-font-path: "../../webfonts";

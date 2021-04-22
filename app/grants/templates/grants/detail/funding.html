@@ -103,13 +103,7 @@
           {% endif %}
         </div>
 
-        {% if user_non_errored_subscription %}
-          <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
-            <button class="mt-3 btn btn-danger btn-block py-3">
-              {% trans "Cancel Your Funding" %}
-            </button>
-          </a>
-        {% elif grant.link_to_new_grant %}
+        {% if grant.link_to_new_grant %}
           <a href="{{ grant.link_to_new_grant.url }}">
             <button class="mt-3 btn btn-primary btn-block py-3">
               Visit the active grant to fund

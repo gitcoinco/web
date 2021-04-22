@@ -39,7 +39,7 @@ const saveMauticId = (mauticId) => {
     document.contxt.mautic_id = mauticId;
   }).catch((err) => {
     console.log(err);
-    _alert('Unable to save your profile. Please login again', 'error');
+    _alert('Unable to save your profile. Please login again', 'danger');
   });
 
 };

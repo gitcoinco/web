@@ -102,8 +102,8 @@
   <body class="interior {{active}} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       <div class="header sticky-top dash">
-        {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'shared/nav_hackathons.html' %}
       </div>
       {% if is_staff %}
@@ -440,15 +440,9 @@
                                 <p class="mt-4 font-weight-bold mb-0">No users found</p>
                                 <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchUsers()">Reset Filters</button>
                               </div>
-                              {% if hackathon.start_date|timesince <= "1 min" %}
-                                <div>
-                                  {% include 'dashboard/components/participant-card-pre-hack.html' %}
-                                </div>
-                              {% else %}
-                                <div class="grid-4">
-                                  {% include 'dashboard/components/participant-card.html' %}
-                                </div>
-                              {% endif %}
+                              <div>
+                                {% include 'dashboard/components/participant-card.html' %}
+                              </div>
                               <loading-screen class="py-5 mt-4" v-if="isLoading"></loading-screen>
                             </div>
                           </div>
@@ -785,7 +779,8 @@
       {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' %}
       {% include 'shared/footer.html' %}
-      {% include "dashboard/hackathon/onboarding_v2.html"%}
+      <!-- hackathon modal temparilly disabled  -->
+      <!-- {% include "dashboard/hackathon/onboarding_v2.html"%} -->
       <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
       <script type="text/x-template" id="select2-template">
         <select>

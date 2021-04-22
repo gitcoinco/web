@@ -43,7 +43,7 @@ Vue.mixin({
         vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
-        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
+        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'danger');
       });
     },
     eventParams: function() {
@@ -376,17 +376,17 @@ Vue.mixin({
         vm.bounty.title = response.title;
         _alert({ message: response.msg }, 'success');
       }).catch(function(response) {
-        _alert({ message: response.responseJSON.error }, 'error');
+        _alert({ message: response.responseJSON.error }, 'danger');
       });
     },
     copyTextToClipboard: function(text) {
       if (!navigator.clipboard) {
-        _alert('Could not copy text to clipboard', 'error', 5000);
+        _alert('Could not copy text to clipboard', 'danger', 5000);
       } else {
         navigator.clipboard.writeText(text).then(function() {
           _alert('Text copied to clipboard', 'success', 5000);
         }, function(err) {
-          _alert('Could not copy text to clipboard', 'error', 5000);
+          _alert('Could not copy text to clipboard', 'danger', 5000);
         });
       }
     },
@@ -488,19 +488,19 @@ Vue.mixin({
           console.log('success', response);
 
           vm.fetchBounty();
-          this.$refs['payout-modal'][0].closeModal();
+          this.$refs['payout-modal' + fulfillment_id][0].closeModal();
 
           vm.fulfillment_context = {
             active_step: 'payout_amount'
           };
 
         } else {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         event.target.disabled = false;
-        _alert('Unable to make payout bounty. Please try again later', 'error');
+        _alert('Unable to make payout bounty. Please try again later', 'danger');
       });
     },
     nextStepAndLoadPYPLButton: function(fulfillment_id, fulfiller_identifier) {
@@ -510,14 +510,14 @@ Vue.mixin({
         const ele = '#payout-with-pypl';
 
         $(ele).html('');
-        const modal = this.$refs['payout-modal'][0];
+        const modal = this.$refs['payout-modal' + fulfillment_id][0];
 
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
     payWithExtension: function(fulfillment_id, fulfiller_address, payout_type) {
       let vm = this;
-      const modal = this.$refs['payout-modal'][0];
+      const modal = this.$refs['payout-modal' + fulfillment_id][0];
 
       switch (payout_type) {
         case 'web3_modal':
@@ -560,7 +560,7 @@ Vue.mixin({
         if (200 <= response.status && response.status <= 204) {
           vm.bounty.status = 'done';
         } else {
-          _alert('Unable to close. bounty. Please try again later', 'error');
+          _alert('Unable to close. bounty. Please try again later', 'danger');
           console.error(`error: bounty closure failed with status: ${response.status} and message: ${response.message}`);
         }
       });
@@ -719,7 +719,7 @@ Vue.mixin({
 
           _alert(text, 'success');
         } else {
-          _alert('Unable to stop work on bounty. Please try again later', 'error');
+          _alert('Unable to stop work on bounty. Please try again later', 'danger');
           console.error(`error: stopping work on bounty failed due to : ${response}`);
         }
       });
@@ -787,7 +787,7 @@ Vue.mixin({
             polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
               vm.fulfillment_context.active_step = 'payout_amount';
             }).catch(err => {
-              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+              _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'danger');
               console.log(err);
             });
           });
@@ -803,18 +803,6 @@ Vue.mixin({
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
-    },
-    showWorkSubmitted: function(handle) {
-      let vm = this;
-
-      if (
-        vm.contxt.is_staff ||
-        vm.isOwner ||
-        (handle && handle == vm.contxt.github_handle)
-      ) {
-        return true;
-      }
-      return false;
     }
   },
   computed: {
@@ -960,7 +948,7 @@ var extend_expiration = function(bounty_pk, data) {
     }
     return false;
   }).fail(function(result) {
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
@@ -1057,7 +1045,7 @@ var show_interest_modal = function() {
         let msg = issueMessage.val().trim();
 
         if (!msg || msg.length < 30) {
-          _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'error');
+          _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'danger');
           return false;
         }
 

@@ -39,6 +39,7 @@ from django.utils import timezone
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
@@ -77,8 +78,26 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
     context = {
+        'title': 'Build and Fund the Open Web Together',
+        'card_title': 'Gitcoin - Build and Fund the Open Web Together',
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
     }
-    return TemplateResponse(request, 'home/index2020.html', context)
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'human_universe_total_usd': "$18.9m",
+            'mau': 161205.0
+        }
+    context.update(data_results)
+
+    return TemplateResponse(request, 'home/index2021.html', context)
 
 def index_old(request):
     products = [
@@ -1012,9 +1031,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 7
-    page = int(request.GET.get('page', 1))
+    page = int(request.GET.get('page', 1)) if request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0))
+    trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only').isdigit() else 0
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     # store last seen
@@ -1410,6 +1429,10 @@ def twitter(request):
     return redirect('http://twitter.com/gitcoin')
 
 
+def discord(request):
+    return redirect('https://discord.gg/jWUzf7b8Yr')
+
+
 def telegram(request):
     return redirect('https://t.me/joinchat/DwEd_xps7gJqWt-Quf-tPA')
 
@@ -1478,6 +1501,7 @@ def json_tokens(request):
     # return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
     # return JsonResponse(json.loads(json.dumps(list(context), default=str)), safe=False)
     return JsonResponse(json.loads(json.dumps(token_json)), safe=False)
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -1577,3 +1601,58 @@ def styleguide_components(request):
     else:
         context = {}
         return TemplateResponse(request, 'styleguide_components.html', context)
+
+
+def jtbd_template(request, template, title, card_title, card_desc):
+    data = JSONStore.objects.filter(view='jtbd', key=template).first().data
+    context = {
+        'title': _(title),
+        'card_title': _(card_title),
+        'card_desc': _(card_desc)
+    }
+    context.update(data)
+    return TemplateResponse(request, 'jtbd/' + template + '.html', context)
+
+
+@require_http_methods(["GET",])
+def jtbd_earn(request):
+    return jtbd_template(
+        request,
+        'earn',
+        'Earn',
+        'Gitcoin - Support digital public goods, support open source',
+        'Earn a living working on open source projects that matter'
+    )
+
+
+@require_http_methods(["GET",])
+def jtbd_learn(request):
+    return jtbd_template(
+        request,
+        'learn',
+        'Learn',
+        'Gitcoin - Support digital public goods, support open source',
+        'Learn how to build the decentralized web'
+    )
+
+
+@require_http_methods(["GET",])
+def jtbd_connect(request):
+    return jtbd_template(
+        request,
+        'connect',
+        'Connect',
+        'Gitcoin - Support digital public goods, support open source',
+        'Connect and build with top open source developers'
+    )
+
+
+@require_http_methods(["GET",])
+def jtbd_fund(request):
+    return jtbd_template(
+        request,
+        'fund',
+        'Fund',
+        'Gitcoin - Support digital public goods, support open source',
+        'Fund open source projects that make a difference'
+    )

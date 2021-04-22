@@ -267,7 +267,7 @@ Vue.component('manage-mentors', {
       $.when(updateBountyMentor).then((response) => {
         _alert({message: gettext(response.message)}, 'success');
       }).catch((error) => {
-        _alert({message: gettext(error.message)}, 'error');
+        _alert({message: gettext(error.message)}, 'danger');
       });
     }
   },
@@ -855,12 +855,12 @@ Vue.component('copy-clipboard', {
   methods: {
     copy() {
       if (!navigator.clipboard) {
-        _alert('Could not copy text to clipboard', 'error', 5000);
+        _alert('Could not copy text to clipboard', 'danger', 5000);
       } else {
         navigator.clipboard.writeText(this.string).then(function() {
           _alert('Text copied to clipboard', 'success', 4000);
         }, function(err) {
-          _alert('Could not copy text to clipboard', 'error', 5000);
+          _alert('Could not copy text to clipboard', 'danger', 5000);
         });
       }
     }

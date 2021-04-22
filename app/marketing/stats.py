@@ -366,6 +366,7 @@ def joe_dominance_index(created_before=timezone.now()):
     joe_addresses = joe_addresses + ['0x5DA565AD870ee827608fC764f76ab8055B3E8474'.lower()]  # justin
     joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
     joe_addresses = joe_addresses + ['0x00de4b13153673bcae2616b67bf822500d325fc3'.lower()]  # kevin
+    joe_addresses = joe_addresses + ['0x88c62f1695DD073B43dB16Df1559Fda841de38c6'.lower()]  # kevin
     joe_addresses = joe_addresses + ['0xe317C793ebc9d4A3732cA66e5a8fC4ffc213B989'.lower()]  # dan
 
 

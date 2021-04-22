@@ -3,7 +3,7 @@ const initPolkadotConnection = async(grant, vm) => {
   // step 1: check if web3 is injected
   if (!polkadot_utils.isWeb3Injected()) {
     vm.updatePaymentStatus(grant.grant_id, 'failed');
-    _alert({ message: `Please ensure your Polkadot One wallet is installed and unlocked`}, 'error');
+    _alert({ message: `Please ensure your Polkadot One wallet is installed and unlocked`}, 'danger');
     return;
   }
 
@@ -29,7 +29,7 @@ const initPolkadotConnection = async(grant, vm) => {
     });
   }).catch(err => {
     console.log(err);
-    _alert('Error connecting to polkadot network', 'error');
+    _alert('Error connecting to polkadot network', 'danger');
   });
 
   // step 3: allow user to select address on successful connection
@@ -37,7 +37,7 @@ const initPolkadotConnection = async(grant, vm) => {
 
     if (error) {
       vm.updatePaymentStatus(grant.grant_id, 'failed');
-      _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+      _alert('Please ensure you\'ve connected your polkadot extension to Gitcoin', 'danger');
       console.log(error);
       return;
     }
@@ -81,7 +81,7 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
   // step 2. balance check
   const account_balance = await polkadot_utils.getAddressBalance(from_address);
   if (account_balance < amount * 10 ** decimals) {
-    _alert({ message: `Account needs to have more than ${amount} ${grant.grant_donation_currency}`}, 'error');
+    _alert({ message: `Account needs to have more than ${amount} ${grant.grant_donation_currency}`}, 'danger');
     return;
   }
 
@@ -100,7 +100,7 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
   function callback(error, from_address, txn) {
     if (error) {
       vm.updatePaymentStatus(grant.grant_id, 'failed');
-      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'error');
+      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -129,17 +129,30 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
 
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'error');
+          _alert('Unable to make contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'error');
+        _alert('Unable to make contribute to grant. Please try again later', 'danger');
         console.log(error);
       });
     }

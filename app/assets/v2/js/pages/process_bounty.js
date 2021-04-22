@@ -226,7 +226,7 @@ window.onload = function() {
         }
 
         if (errormsg) {
-          _alert({ message: errormsg }, 'error');
+          _alert({ message: errormsg }, 'danger');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -255,7 +255,7 @@ window.onload = function() {
           };
 
           if (error) {
-            _alert({ message: gettext('There was an error') }, 'error');
+            _alert({ message: gettext('There was an error') }, 'danger');
             console.error(error);
             unloading_button($('.submitBounty'));
           } else {

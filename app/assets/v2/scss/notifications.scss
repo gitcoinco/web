@@ -1,5 +1,5 @@
 // import variables and mixins
-@import './gc-utilities';
+@import './gc-mixins';
 
 html {
   --color-notification: 37, 232, 153;
@@ -16,16 +16,6 @@ html.dark-mode {
   --badge-text: #00A55E;
   --badge-blue-bg: #5f5c74;
   --badge-blue-text: white;
-}
-
-// .navbar-nav .nav-link.notification__icon {
-//   position: relative;
-//   font-size: 18px;
-//   color: white;
-// }
-
-.notification__icon.dropdown-toggle::after {
-  content: none;
 }
 
 .notification__dot {
@@ -76,9 +66,8 @@ html.dark-mode {
 }
 
 .notifications__box {
-  width: 430px;
   border-radius: 3px;
-  padding: 1em;
+  padding: 1em 0;
   max-width: calc(100vw - 2em);
 }
 
@@ -91,7 +80,7 @@ html.dark-mode {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #D8D8D8;
-  padding-bottom: 0.8em;
+  padding: 0em 1em 0.8em;
 }
 
 .notifications__title {
@@ -133,12 +122,16 @@ html.dark-mode {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
 }
 
+.notifications__list:empty {
+  display: none;
+}
+
 .notifications__item {
   font-size: 12px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #D8D8D8;
-  padding: 1em 0;
+  padding: 1em;
   animation: animateElement linear .3s;
   animation-iteration-count: 1;
 }
@@ -289,4 +282,10 @@ html.dark-mode {
 
 .btn-clean--danger {
   color: #F9006C;
+}
+
+@media (min-width:768px) {
+  .notifications__box {
+    min-width: 430px!important;
+  }
 }

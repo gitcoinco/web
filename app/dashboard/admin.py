@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -485,6 +486,19 @@ class HackathonEventAdmin(admin.ModelAdmin):
         url = f'/hackathon/{instance.slug}'
         return mark_safe(f'<a href="{url}">Explorer Link</a>')
 
+
+    def response_change(self, request, obj):
+        if "_bulk_update_expiry" in request.POST:
+            try:
+                bounties_to_extend = Bounty.objects.filter(event=obj)
+                for bounty in bounties_to_extend:
+                    bounty.expires_date=obj.end_date
+                    bounty.save()
+                self.message_user(request, "updated hackthon bounties expiry dates")
+            except Exception as e:
+                print(e)
+                self.message_user(request, "unable to update bounty expiry dates")
+        return redirect(obj.admin_url)
 
 class CouponAdmin(admin.ModelAdmin):
     """The admin object to maintain discount coupons for bounty"""

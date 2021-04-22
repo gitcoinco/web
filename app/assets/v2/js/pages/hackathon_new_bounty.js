@@ -291,16 +291,16 @@ Vue.mixin({
           console.log('success', response);
           window.location.href = response.bounty_url;
         } else if (response.status == 304) {
-          _alert('Bounty already exists for this github issue.', 'error');
+          _alert('Bounty already exists for this github issue.', 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         } else {
-          _alert(`Unable to create a bounty. ${response.message}`, 'error');
+          _alert(`Unable to create a bounty. ${response.message}`, 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       }).catch((err) => {
         console.log(err);
-        _alert('Unable to create a bounty. Please try again later', 'error');
+        _alert('Unable to create a bounty. Please try again later', 'danger');
       });
 
     }

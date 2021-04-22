@@ -190,7 +190,7 @@ Vue.component('grantsCartEthereumZksync', {
     async setupZkSync() {
       const network = this.network || 'mainnet'; // fallback to mainnet if no wallet is connected
 
-      if (!web3) {
+      if (!web3Modal || !provider) {
         return; // exit if web3 isn't defined, and we'll run this function later
       }
 
@@ -244,17 +244,17 @@ Vue.component('grantsCartEthereumZksync', {
       } catch (e) {
         switch (e) {
           case 'User closed zkSync':
-            _alert('Checkout not complete: User closed the zkSync page. Please try again', 'error');
+            _alert('Checkout not complete: User closed the zkSync page. Please try again', 'danger');
             this.resetZkSyncModal();
             throw e;
 
           case 'Failed to open zkSync page':
-            _alert('Checkout not complete: Unable to open the zkSync page. Please try again', 'error');
+            _alert('Checkout not complete: Unable to open the zkSync page. Please try again', 'danger');
             this.resetZkSyncModal();
             throw e;
 
           case 'Took too long for the zkSync page to open':
-            _alert('Checkout not complete: Took too long to open the zkSync page. Please try again', 'error');
+            _alert('Checkout not complete: Took too long to open the zkSync page. Please try again', 'danger');
             this.resetZkSyncModal();
             throw e;
 

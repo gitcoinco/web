@@ -19,7 +19,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
       console.log(ethereum.selectedAddress);
     } catch (e) {
       modal.closeModal();
-      _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'error');
+      _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'danger');
       return;
     }
 
@@ -42,7 +42,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
     rbtcBalance = rskClient.utils.fromWei(balanceInWei, 'ether');
 
     if (Number(rbtcBalance) < amount) {
-      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
+      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
       return;
     }
 
@@ -65,7 +65,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
     amountInWei = amount * 1.0 * Math.pow(10, token.decimals);
 
     if (Number(balance) < amountInWei) {
-      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'error');
+      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
       return;
     }
 
@@ -94,7 +94,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
   function callback(error, from_address, txn) {
     if (error) {
       vm.updatePaymentStatus(grant.grant_id, 'failed');
-      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'error');
+      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -114,15 +114,28 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'error');
+          _alert('Unable to make contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function (error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'error');
+        _alert('Unable to make contribute to grant. Please try again later', 'danger');
         console.log(error);
       });
     }

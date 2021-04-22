@@ -9,7 +9,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
   try {
     from_address = await binance_utils.getSelectedAccount();
   } catch (error) {
-    _alert({ message: `Please ensure your Binance Chain Extension wallet is installed and enabled`}, 'error');
+    _alert({ message: `Please ensure your Binance Chain Extension wallet is installed and enabled`}, 'danger');
     return;
   }
 
@@ -21,7 +21,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
     const account_balance = await binance_utils.getAddressBalance(from_address);
 
     if (Number(account_balance) < amount) {
-      _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BNB for payout` }, 'error');
+      _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BNB for payout` }, 'danger');
       return;
     }
   } else if (token_name === 'BUSD') {
@@ -30,7 +30,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
     const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
 
     if (Number(account_balance) < amount ) {
-      _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BUSD for payout` }, 'error');
+      _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BUSD for payout` }, 'danger');
       return;
     }
   }
@@ -53,7 +53,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
   function callback(error, from_address, txn) {
     if (error) {
       vm.updatePaymentStatus(grant.grant_id, 'failed');
-      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'error');
+      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -74,17 +74,30 @@ const contributeWithBinanceExtension = async (grant, vm) => {
       fetchData(apiUrlGrant, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'error');
+          _alert('Unable to make contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function (error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'error');
+        _alert('Unable to make contribute to grant. Please try again later', 'danger');
         console.log(error);
       });
     }

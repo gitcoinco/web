@@ -22,7 +22,7 @@ const submitProject = (logo, data, callback) => {
       if (callback) {
         callback(response);
       }
-      return _alert(response.msg, 'error');
+      return _alert(response.msg, 'danger');
     }
     delete localStorage['pendingProject'];
     $('#modalProject').bootstrapModal('hide');
@@ -36,7 +36,7 @@ const submitProject = (logo, data, callback) => {
 
 
   }).fail(function(data) {
-    _alert(data.responseJSON['error'], 'error');
+    _alert(data.responseJSON['error'], 'danger');
 
     if (callback) {
       callback(data);

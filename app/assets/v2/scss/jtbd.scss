@@ -1,0 +1,15 @@
+// JTBD specific stylings
+.img-accordion .collapsing {
+  transition: none !important;
+}
+
+.accordion:not(.collapsed) {
+  pointer-events: none;
+}
+
+@media screen and (min-width: 768px) {
+  .btn-cta {
+    width: 13rem;
+    max-width: 100%;
+  }
+}

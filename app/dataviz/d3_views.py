@@ -725,7 +725,7 @@ def is_an_edge(handle, edges):
 
 
 def normalize_handle(handle):
-    return re.sub(r'\W+', '', handle)
+    return re.sub(r'\W+', '', str(handle))
 
 
 @staff_member_required
@@ -766,7 +766,7 @@ def mesh_network_viz(request, ):
             'bounty': ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
         }
         earnings = earnings.filter(source_type=mapping[_type])
-    earnings = earnings.values_list('from_profile__handle', 'to_profile__handle')
+    earnings = earnings.values_list('from_profile', 'to_profile')
     for obj in earnings:
         handle1 = obj[0]
         handle2 = obj[1]

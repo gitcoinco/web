@@ -203,7 +203,7 @@ async function buyPToken(tokenAmount) {
     // Balance is too small, exit checkout flow
     console.log(`== user token balance: ${userTokenBalance}`);
     if (new BN(userTokenBalance, 10).lt(true_value)) {
-      _alert(`Insufficient ${tokenDetails.name} balance to complete checkout`, 'error');
+      _alert(`Insufficient ${tokenDetails.name} balance to complete checkout`, 'danger');
       return;
     }
 
@@ -243,7 +243,7 @@ function checkNetwork() {
   const supportedNetworks = [ 'rinkeby', 'mainnet' ];
 
   if (!supportedNetworks.includes(document.web3network)) {
-    _alert('Unsupported network', 'error');
+    _alert('Unsupported network', 'danger');
     throw new Error('Please connect a wallet');
   }
   return document.web3network;
@@ -251,7 +251,7 @@ function checkNetwork() {
 
 function checkWeb3() {
   if (!web3) {
-    _alert('Please connect a wallet', 'error');
+    _alert('Please connect a wallet', 'danger');
     throw new Error('Please connect a wallet');
   }
   return checkNetwork();
@@ -270,7 +270,7 @@ function handleError(err) {
   else if (typeof err === 'string')
     message = err;
 
-  _alert(message, 'error');
+  _alert(message, 'danger');
   indicateMetamaskPopup(true);
 }
 
@@ -288,7 +288,7 @@ async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMs
       _alert(successMsg, 'success');
       console.log(successMsg);
     } else {
-      _alert(errorMsg, 'error');
+      _alert(errorMsg, 'danger');
       console.error(errorMsg);
     }
 

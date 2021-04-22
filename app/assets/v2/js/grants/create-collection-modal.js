@@ -64,7 +64,7 @@ Vue.component('create-collection-modal', {
         window.location = redirect;
 
       } catch (e) {
-        _alert(e.msg, 'error');
+        _alert(e.msg, 'danger');
       }
     },
     cleanCollectionModal: function() {

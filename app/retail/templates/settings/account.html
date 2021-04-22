@@ -225,7 +225,7 @@
           if(response.responseJSON && response.responseJSON.message) {
             text = response.responseJSON.message;
           }
-          _alert({ message: text}, 'error');
+          _alert({ message: text}, 'danger');
         }
       });
     });

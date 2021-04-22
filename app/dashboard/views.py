@@ -18,7 +18,9 @@
 '''
 from __future__ import print_function, unicode_literals
 
+import asyncio
 import base64
+import getpass
 import hashlib
 import html
 import json
@@ -55,14 +57,17 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
+import dateutil.parser
+import ens
 import magic
 import pytz
 import requests
 import tweepy
 from app.services import RedisService, TwilioService
 from app.settings import (
-    EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
-    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+    BMAS_ENDPOINT, EMAIL_ACCOUNT_VALIDATION, ES_CORE_ENDPOINT, ES_USER_ENDPOINT, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES,
+    SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
+    TWITTER_CONSUMER_SECRET,
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -73,15 +78,19 @@ from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
+from dashboard.duniter import CERTIFICATIONS_SCHEMA
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
-    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
-    get_poap_earliest_owned_token_timestamp, profile_helper,
+    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
+    get_ens_contract_addresss, get_ens_resolver_contract, get_orgs_perms, get_poap_earliest_owned_token_timestamp,
+    profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from ens.auto import ns
+from ens.utils import name_to_hash
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -100,11 +109,13 @@ from marketing.mails import (
 )
 from marketing.models import EmailSubscriber, Keyword, UpcomingDate
 from oauth2_provider.decorators import protected_resource
+from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from perftools.models import JSONStore
 from ptokens.models import PersonalToken, PurchasePToken, RedemptionToken
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
@@ -143,7 +154,6 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-
 
 
 @protected_resource()
@@ -2867,6 +2877,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             # delete portfolio item
             if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
                 messages.error(request, 'Not Authorized')
+                return
             pi = PortfolioItem.objects.filter(pk=pk).first()
             if pi:
                 pi.delete()
@@ -2921,9 +2932,19 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['login_idena_url'] = idena_callback_url(request, profile)
 
         today = datetime.today()
-        context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-        if settings.DEBUG:
-            context['brightid_status'] = 'not_verified'
+
+        # states:
+        #0. not_connected - start state, user has no brightid_uuid
+        #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
+        #2. not_verified - connected, but not verified
+        #3. verified - connected, and verified
+        context['brightid_status'] = 'not_connected'
+        if profile.brightid_uuid:
+            context['brightid_status'] = 'unknown'
+        if profile.is_brightid_verified:
+            context['brightid_status'] = 'verified'
+        if request.GET.get('pull_bright_id_status'):
+            context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
 
         try:
             context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
@@ -2935,6 +2956,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_twitter_verified'] = profile.is_twitter_verified
         context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
         context['is_google_verified'] = profile.is_google_verified
+        context['is_ens_verified'] = profile.is_ens_verified
+        context['is_facebook_verified'] = profile.is_facebook_verified
     else:
         raise Http404
     return context
@@ -3199,6 +3222,137 @@ def verify_user_twitter(request, handle):
         'expected': expected_split
     })
 
+
+@login_required
+async def verify_user_duniter(request):
+    """This function searches the database for the gitcoin link, from a verified duniter account.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    import asyncio
+    from duniterpy.api.client import Client, RESPONSE_AIOHTTP
+    from duniterpy.api import bma
+
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(request.user.username, True)
+    if profile.is_duniter_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously'
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    gitcoin_handle = request_data.get('gitcoin_handle', '')
+    pubkey = request_data.get('publicKey', '')
+
+    if gitcoin_handle == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must include gitcoin_handle'
+        })
+
+    try:
+
+        #duniter client
+        client = Client(ES_USER_ENDPOINT)
+
+        # verify if there is account with same username on duniter
+        search_user_duniter_url = await client.get("user/profile/_search?q={0}".format(gitcoin_handle))
+        if search_user_duniter_url != 200:
+            #try search by publickey
+            search_user_duniter_url = await client.get("user/profile/{0}/_source".format(pubkey.strip(" \n")))
+
+        duniter_user_response = requests.get(search_user_duniter_url)
+
+        await client.close()
+
+        # search the user for their gitcoin link, if the search is successful I save the private key in the variable public_key_duniter
+        if duniter_user_response.status_code == 200:
+            duniter_user_json = duniter_user_response.json()
+            position = duniter_user_json.get('hits', {}).get('hits', {})
+            # I assume here that the most relevant account has the highest score
+            public_key_duniter = next(iter(position)).get('_id', {})
+
+            # checks uid equals gitcoin-username
+            client = Client(BMAS_ENDPOINT)
+            same_uid_url = await client(bma.wot.lookup, public_key_duniter)
+            res_uid = requests.get(same_uid_url)
+            uid_duniter = res_uid.json().get('results', {})[0].get('uids', '')[0].get('uid', '')
+
+            if uid_duniter != gitcoin_handle:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'Your gitcoin username must be the same as the duniter'
+                })
+
+            if not res_uid.status_code == 200:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'Your gitcoin username must be the same as the duniter'
+                })
+
+            # checks if the user has valid certificates and is a member
+            async def certifiers_of(client: client, search: str) -> dict:
+                """
+                GET UID/Public key certifiers
+                :param client: Client to connect to the api
+                :param search: UID or public key
+                :return:
+                """
+                return await client.get(
+                    'wot' + "/certifiers-of/%s" % search, schema=CERTIFICATIONS_SCHEMA
+                )
+
+            wot = certifiers_of(public_key_duniter)
+            res_wot = requests.get(wot)
+            if not res_wot.status_code == 200:
+                return JsonResponse({
+                    'ok': False,
+                    'msg': f'You must be a certified duniter member'
+                })
+
+            elif res_wot.status_code == 200:
+                member_data = res_wot.json()
+                isVerified = member_data.get('isMember', {})
+                if not isVerified:
+                    return JsonResponse({
+                        'ok': False,
+                        'msg': f'You need 6 certificates to have your account valid'
+                    })
+
+
+        elif duniter_user_response.status_code != 200:
+            return JsonResponse({
+                'ok': False,
+                'msg': f'You need to add your gitcoin link to your duniter social links'
+            })
+
+
+
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, not working'
+        })
+
+    profile.is_duniter_verified = True
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': 'Your Duniter Qualified User Check was successful!'
+    })
+
+
+
 def connect_google():
     import urllib.parse
 
@@ -3211,12 +3365,6 @@ def connect_google():
 @login_required
 @require_POST
 def request_verify_google(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
 
     profile = profile_helper(handle, True)
     if profile.is_google_verified:
@@ -3233,8 +3381,6 @@ def request_verify_google(request, handle):
 @login_required
 @require_GET
 def verify_user_google(request):
-    from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-
     try:
         google = connect_google()
         google.fetch_token(
@@ -3255,7 +3401,9 @@ def verify_user_google(request):
         })
 
     identity_data_google = r.json()
-    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+    # if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+    # TODO: re-enable this when the google_user_id migration has run 
+    if False:
         return JsonResponse({
             'ok': False,
             'message': 'A user with this google account already exists!',
@@ -3264,7 +3412,164 @@ def verify_user_google(request):
     profile = profile_helper(request.user.username, True)
     profile.is_google_verified = True
     profile.identity_data_google = identity_data_google
-    profile.google_user_id = identity_data_google['id']
+    #profile.google_user_id = identity_data_google['id']
+    profile.save()
+
+    return redirect('profile_by_tab', 'trust')
+
+
+@login_required
+def verify_profile_with_ens(request):
+    profile = request.user.profile
+    default_address = profile.ens_verification_address or profile.preferred_payout_address
+    if request.method == 'GET':
+        user_address = request.GET.get('verification_address', default_address)
+    else:
+        user_address = request.POST.get('verification_address', default_address)
+
+    # 1. Check user has preferred address
+    if not is_address(user_address):
+        return JsonResponse({
+            'error': 'NO_PAYOUT_ADDRESS_ASSOCIATED',
+            'msg': 'You don\'t have one preferred payout address associated to your profile',
+            'data': {
+                'step': 1,
+                'verified': profile.is_ens_verified
+            }
+        })
+
+    # 2. Check Reverse lookup
+    web3 = get_web3('mainnet')
+    ens_registry_address = get_ens_contract_addresss('mainnet')
+    ens_registry = ens.ENS.fromWeb3(web3, ens_registry_address)
+    node = ens_registry.name(user_address)
+
+    if not node:
+        return JsonResponse({
+            'error': 'NO_ENS_NAME_ASSOCIATED',
+            'msg': f'You haven\'t set reverse record yet. Please read ENS FAQ page at ',
+            'data': {
+                'step': 2,
+                'verified': profile.is_ens_verified,
+                'address': user_address,
+                'ens_domain': node,
+                'url': 'https://app.ens.domains/faq/#what-is-a-reverse-record',
+            }
+        })
+
+    # 3. Check Forward lookup
+    registered_address = ens_registry.address(node)
+    if not is_address(registered_address):
+        return JsonResponse({
+            'error': 'NO_ADDRESS_ASSOCIATED_TO_ENS',
+            'msg': f'You don\'t have associated your address to your domain {node}. Please add your ETH address at ',
+            'data': {
+                'step': 3,
+                'verified': profile.is_ens_verified,
+                'address': user_address,
+                'ens_domain': node,
+                'url': f'https://app.ens.domains/name/{node}'
+            }
+        })
+
+    # 4. Check if address matches.
+    if registered_address.lower() != user_address.lower():
+        return JsonResponse({
+            'error': 'NO_ADDRESS_DOESNT_MATCH',
+            'msg': f'{node} has {registered_address[0:5]}... set as ETH address which is different from the provided address ({user_address[0:5]}...). Please set your correct ETH address at ',
+            'data': {
+                'step': 4,
+                'verified': profile.is_ens_verified,
+                'address': user_address,
+                'ens_domain': node,
+                'url': f'https://app.ens.domains/name/{node}'
+            }
+        })
+
+    if request.method == 'POST':
+        profile.is_ens_verified = True
+        profile.ens_verification_address = user_address
+        profile.save()
+
+        return JsonResponse({
+            'error': False,
+            'msg': f'Account verified successfully',
+            'data': {
+                'step': 5,
+                'verified': profile.is_ens_verified,
+                'address': user_address,
+                'ens_domain': node
+            }
+        })
+
+
+    return JsonResponse({
+        'error': False,
+        'msg': 'Account ready for verification',
+        'data': {
+            'step': 5,
+            'verified': profile.is_ens_verified,
+            'address': user_address,
+            'ens_domain': node
+        }
+    })
+
+
+def connect_facebook():
+    import urllib.parse
+
+    facebook = OAuth2Session (
+        settings.FACEBOOK_CLIENT_ID,
+        redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_facebook)),
+    )
+
+    return facebook_compliance_fix(facebook)
+
+@login_required
+@require_POST
+def request_verify_facebook(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_facebook_verified:
+        return redirect('profile_by_tab', 'trust')
+
+    facebook = connect_facebook()
+    authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
+    return redirect(authorization_url)
+
+@login_required
+@require_GET
+def verify_user_facebook(request):
+    try:
+        facebook = connect_facebook()
+        if not 'code' in request.GET:
+            return redirect('profile_by_tab', 'trust')
+        facebook.fetch_token(
+            settings.FACEBOOK_TOKEN_URL,
+            client_secret=settings.FACEBOOK_CLIENT_SECRET,
+            code=request.GET['code'],
+        )
+        r = facebook.get('https://graph.facebook.com/me?')
+        if r.status_code != 200:
+            return JsonResponse({
+                'ok': False,
+                'message': 'Invalid code',
+            })
+    except (ConnectionError, InvalidGrantError):
+        return JsonResponse({
+            'ok': False,
+            'message': 'Invalid code',
+        })
+
+    profile = profile_helper(request.user.username, True)
+    profile.is_facebook_verified = True
+    profile.identity_data_facebook = r.json()
     profile.save()
 
     return redirect('profile_by_tab', 'trust')
@@ -4474,7 +4779,7 @@ def save_hackathon(request, hackathon):
             'a': ['href', 'title'],
             'abbr': ['title'],
             'acronym': ['title'],
-            'img': ['src'],
+            'img': ['src', 'width', 'height'],
             'iframe': ['src', 'frameborder', 'allowfullscreen'],
             '*': ['class', 'style']},
         styles=['background-color', 'color'],
@@ -6441,12 +6746,6 @@ def events(request, hackathon):
 @login_required
 @require_POST
 def verify_user_poap(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user'
-        })
 
     profile = profile_helper(handle, True)
     if profile.is_poap_verified:
@@ -6466,33 +6765,55 @@ def verify_user_poap(request, handle):
 
     message_hash = defunct_hash_message(text="verify_poap_badges")
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
-    if eth_address != signer:
+    if eth_address.lower() != signer.lower():
         return JsonResponse({
             'ok': False,
             'msg': 'Invalid signature',
         })
 
-    # commented out because network = get_default_network() results in dashboard.utils.UnsupportedNetworkException: rinkeby
-    # network = get_default_network()
-    network = "mainnet"
-    fifteen_days_ago = datetime.now()-timedelta(days=15)
+    # Make sure this poap badge owner account wasn't used previously.
+    try:
+        profile = Profile.objects.get(poap_owner_account=signer.lower())
+        return JsonResponse({
+            'ok': False,
+            'msg': 'the PAOP badge owner account already used by another Gitcoin profile',
+        })
+    except Profile.DoesNotExist:
+        pass
 
-    timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
-    if timestamp is None or timestamp > fifteen_days_ago.timestamp():
-        # We couldn't find any POAP badge for this ethereum address
+    # POAP verification is only valid if the ethereum address has held the badge > 15 days
+    fifteen_days_ago = datetime.now()-timedelta(days=15)
+    fitteen_days_ago_ts = fifteen_days_ago.timestamp()
+
+    timestamp = None
+
+    for network in ['mainnet', 'xdai']:
+        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        # only break if we find a token that has been held for longer than 15 days
+        if timestamp and timestamp <= fitteen_days_ago_ts:
+            break
+
+    # fail cases (no qualifying tokens / network failure)
+    if timestamp is None or timestamp > fitteen_days_ago_ts:
         return JsonResponse({
             'ok': False,
             'msg': 'No qualifying POAP badges (ERC721 NFTs held for at least 15 days) found for this account.',
         })
+    elif timestamp == 0:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'An error occured, please try again later.',
+        })
 
     profile = profile_helper(handle, True)
     profile.is_poap_verified = True
+    profile.poap_owner_account = signer.lower()
     profile.save()
+    # Success response
     return JsonResponse({
-                'ok': True,
-                'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
-            }
-    )
+        'ok': True,
+        'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+    })
 
 
 @csrf_protect

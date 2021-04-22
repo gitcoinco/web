@@ -314,7 +314,7 @@ $(document).ready(function() {
       const payFeaturedBounty = function() {
         indicateMetamaskPopup();
         web3.eth.sendTransaction({
-          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          to: '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
           from: selectedAccount,
           value: web3.utils.toWei(String(ethFeaturedPrice)),
           gasPrice: web3.utils.toHex(5 * Math.pow(10, 9)),
@@ -324,13 +324,13 @@ $(document).ready(function() {
         function(error, result) {
           indicateMetamaskPopup(true);
           if (error) {
-            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'danger');
             console.log(error);
           } else {
             saveAttestationData(
               result,
               ethFeaturedPrice,
-              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
               'featuredbounty'
             );
             saveBountyChanges();
@@ -362,7 +362,7 @@ $(document).ready(function() {
               result.responseJSON.error :
               'Something went wrong. Please reload the page and try again.';
 
-            _alert({ message: alertMsg }, 'error');
+            _alert({ message: alertMsg }, 'danger');
           }
         );
       };

@@ -1,7 +1,7 @@
 const contributeWithHarmonyExtension = async(grant, vm, modal) => {
 
   if (!harmony_utils.isOnewalletInstalled()) {
-    _alert({ message: `Please ensure your Harmony One wallet is installed and unlocked`}, 'error');
+    _alert({ message: `Please ensure your Harmony One wallet is installed and unlocked`}, 'danger');
     return;
   }
 
@@ -19,7 +19,7 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
   const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
 
   if (account_balance < amount) {
-    _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'error');
+    _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'danger');
     harmony_utils.logoutHarmonyExtension(harmonyExt);
     return;
   }
@@ -43,7 +43,7 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
   function callback(error, from_address, txn) {
     if (error) {
       vm.updatePaymentStatus(grant.grant_id, 'failed');
-      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'error');
+      _alert({ message: gettext('Unable to contribute to grant due to ' + error) }, 'danger');
       console.log(error);
     } else {
 
@@ -66,18 +66,31 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
         console.log(payload);
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'error');
+          _alert('Unable to make contribute to grant. Please try again later', 'danger');
           harmony_utils.logoutHarmonyExtension(harmonyExt);
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'error');
+        _alert('Unable to make contribute to grant. Please try again later', 'danger');
         harmony_utils.logoutHarmonyExtension(harmonyExt);
         console.log(error);
       });

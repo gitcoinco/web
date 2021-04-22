@@ -227,7 +227,7 @@ def pluralize(num):
     return "s"
 
 
-def earners():
+def earners(days, cadence):
     hours = 24 if not settings.DEBUG else 1000
     limit = 10
 
@@ -257,7 +257,7 @@ def earners():
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
-    pprint("== Congrats to the Daily Top Earners 👇")
+    pprint(f"== Congrats to the {cadence} Top Earners 👇")
     pprint("================================")
     pprint("")
     counter = 0
@@ -532,7 +532,7 @@ class Command(BaseCommand):
         elif options['what'] == 'kudos':
             kudos()
         elif options['what'] == 'earners':
-            earners()
+            earners(1, 'Daily')
         elif options['what'] == 'grants':
             grants()
         elif options['what'] == 'welcome':

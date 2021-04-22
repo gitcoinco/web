@@ -192,7 +192,7 @@ const notify_funder = (network, std_bounties_id, data) => {
     return true;
   }).fail(() => {
     hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
@@ -255,7 +255,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
       alertMsg = gettext('Network error. Please reload the page and try again.');
     }
 
-    _alert({ message: alertMsg }, 'error');
+    _alert({ message: alertMsg }, 'danger');
   });
 };
 
@@ -284,7 +284,7 @@ var uninterested = function(bounty_pk, profileId, slash) {
     return false;
   }).fail(function(result) {
     hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
@@ -304,7 +304,7 @@ var extend_expiration = function(bounty_pk, data) {
     return false;
   }).fail(function(result) {
     hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
@@ -663,7 +663,7 @@ var actions_page_warn_if_not_on_same_network = function() {
               bounty_network +
               ' network.';
 
-    _alert({ message: gettext(msg) }, 'error');
+    _alert({ message: gettext(msg) }, 'danger');
   }
 };
 
@@ -809,7 +809,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
 
     if (renderForExplorer) {
 
-      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && cb_address == result['bounty_owner_address']) {
+      if (web3 && typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && cb_address == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -1412,3 +1412,13 @@ const getVideoMetadata = (videoURL) => {
     'url': videoURL
   };
 };
+
+/**
+ * bootstrap breakpoints
+ */
+const computedRootStyles = getComputedStyle(document.documentElement);
+
+const breakpoint_sm = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-sm'));
+const breakpoint_md = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md'));
+const breakpoint_lg = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-lg'));
+const breakpoint_xl = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-xl'));

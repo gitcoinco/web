@@ -749,8 +749,8 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
         'value': int(coupon.token.price_finney / 1000.0 * 10**18),
     })
 
-    if not profile.is_brightid_verified and not profile.is_twitter_verified and not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
-        error = f'Your github profile is too new, so you cannot receive kudos.  Please verifiy your profile on BrightID and/or Twitter to proceed.'
+    if profile.trust_bonus <= 1 and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        error = f'Your github profile is too new, so you cannot receive kudos.  Please go to the TrustBonus tab of your profile + verify your profile to proceed.'
         return None, error, None
     else:
 

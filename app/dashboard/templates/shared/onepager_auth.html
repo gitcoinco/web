@@ -18,8 +18,8 @@
 {% load is_in_list %}
 
 <div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
-  <a class="navbar-brand py-0 text-center" href="/">
-    <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
+  <a class="navbar-brand py-0 text-center" href="{% url 'index' %}">
+    <img id="logo" src="{% static "v2/images/new-logos/gc-h-neg.svg" %}" width="150" height="50" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/heatmap,/gas/guzzlers,/gas/faucets" %}
     <img id="addon" src="{% static "v2/images/gas_logo.gif" %}"/>
     <p style="color:white; font-size: 12px;">Gas Station</p>
@@ -32,7 +32,7 @@
   <div class="d-flex order-0 order-last text-white">
     {% include 'shared/notifications.html' with onepager=True %}
     <a class="nav-link login" href="{% url 'profile' %}">
-      <img class="nav_avatar" width=25 height=25
+      <img class="nav_avatar rounded-circle" width=40 height=40
         src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>

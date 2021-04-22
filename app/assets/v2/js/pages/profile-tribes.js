@@ -99,7 +99,7 @@ const loadDynamicScript = (callback, url, id) => {
             }
           }).fail(function(error) {
 
-            _alert('Error updating Tribe', 'error');
+            _alert('Error updating Tribe', 'danger');
             console.error('error: unable to update tribe', error);
           });
         },
@@ -135,16 +135,16 @@ const loadDynamicScript = (callback, url, id) => {
                 _alert('Bounty Request has been created');
                 location.reload();
               } else {
-                _alert(`Error creating bounty request as ${response.message}`, 'error');
+                _alert(`Error creating bounty request as ${response.message}`, 'danger');
                 console.error(response.message);
               }
 
             }).fail(function(error) {
-              _alert(`Error creating bounty request as ${error}`, 'error');
+              _alert(`Error creating bounty request as ${error}`, 'danger');
               console.error('error: unable to creating bounty request', error);
             });
           }).catch(error => {
-            _alert(`Error creating bounty request as ${error}`, 'error');
+            _alert(`Error creating bounty request as ${error}`, 'danger');
             console.error('error: unable to creating bounty request', error);
           });
         },
@@ -169,12 +169,12 @@ const loadDynamicScript = (callback, url, id) => {
               _alert('Bounty Request has been rejected');
               delete vm.tribe.suggested_bounties[idx];
             } else {
-              _alert(`Error rejecting bounty request as ${response.message}`, 'error');
+              _alert(`Error rejecting bounty request as ${response.message}`, 'danger');
               console.error(response.message);
             }
 
           }).fail(function(error) {
-            _alert(`Error rejecting bounty request. ${error}`, 'error');
+            _alert(`Error rejecting bounty request. ${error}`, 'danger');
             console.error('error: unable to reject bounty request', error);
           });
         },
@@ -242,7 +242,7 @@ const loadDynamicScript = (callback, url, id) => {
         });
         this.$watch('headerFile', function(newVal, oldVal) {
           if (checkFileSize(this.headerFile, 4000000) === false) {
-            _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
+            _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'danger');
           } else {
             let reader = new FileReader();
 

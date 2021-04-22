@@ -19,13 +19,31 @@
 {% block 'scripts' %}
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
-
+<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
+<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
+<script>
+  document.network = '{{coupon.token.contract.network}}';
+  document.gas_amount = {{gas_amount}};
+  $(document).ready(function(){
+    {% if error %}
+      _alert('{{error}}', 'danger');
+    {% endif %}
+    start_kudos_levitate();
+    document.suppress_kudos_levitate_hover = true;
+  })
+</script>
+{% endblock %}
 <!-- Main -->
+{% block 'main' %}
+{% compress css file receive_bulk %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+{% endcompress %}
 <section id="main" class="box-transaction">
   <header class="text-center">
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid and kudos_transfer.tx_status != 'not_subed' %} style="display:none;" {% endif %}>
     <h1>{% trans "Congrats!" %} 🎉</h1>
-    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos 
+    <p>You've received a "{{ coupon.token.humanized_name }}" Kudos
       {% if kudos_transfer.tx_status == 'not_subed' %}
       to your Gitcoin profile.  The web3 transaction will be submitted when gas fees are below 10 gWei.
       {% elif kudos_transfer.receive_txid != 'pending_celery' %}
@@ -36,7 +54,7 @@
     .</p>
     <p>
       {% if kudos_transfer.tx_status == 'not_subed' %}
-      Once the web3 transaction has been submitted, 
+      Once the web3 transaction has been submitted,
       {% endif %}
 
       {% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs (please make sure you are on the " %} {{coupon.token.contract.network}} {% trans "network ), or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
@@ -72,11 +90,11 @@
       <span id="kudosComment" class="d-block">
         <h3 class="mb-0 pb-0">
           <a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }}</span></a>
-          {% trans "Kudos" %}{% if coupon.token.artist %},{% endif %} 
+          {% trans "Kudos" %}{% if coupon.token.artist %},{% endif %}
           </h3>
           {% if coupon.token.artist %}
           <h4 class="mt-0 pt-0">
-          created w 💓 by <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{coupon.token.artist}}" > <a href="/profile/{{coupon.token.artist}}/kudos" title="@{{ coupon.token.artist }} has this kudos on {{coupon.token.created_on}}" style="color:black; text-decoration: underline;"> digital artist, {{coupon.token.artist}}</a>. 
+          created w 💓 by <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{coupon.token.artist}}" > <a href="/profile/{{coupon.token.artist}}/kudos" title="@{{ coupon.token.artist }} has this kudos on {{coupon.token.created_on}}" style="color:black; text-decoration: underline;"> digital artist, {{coupon.token.artist}}</a>.
             <hr>
           </h4>
           {% endif %}
@@ -137,7 +155,7 @@
 
       <div class="form-check">
         <input type="checkbox" id="tos" value="1" class="form-check-input" required>
-        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %} </a>. 
+        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %} </a>.
         <BR>
         - (Required)</label>
       </div>
@@ -201,23 +219,6 @@
     }
   }
 </style>
-<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
-{% compress css file receive_bulk %}
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
-{% endcompress %}
-<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
-<script>
-  document.network = '{{coupon.token.contract.network}}';
-  document.gas_amount = {{gas_amount}};
-  $(document).ready(function(){
-    {% if error %}
-      _alert('{{error}}', 'error');
-    {% endif %}
-    start_kudos_levitate();
-    document.suppress_kudos_levitate_hover = true;
-  })
-</script>
 {% endblock %}
 {% block 'world' %}
 <div>

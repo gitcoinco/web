@@ -23,7 +23,7 @@ const ratingModal = (bountyId, receiver, elem) => {
 
       $.when(sendRating).then(response => {
         if (!response.success) {
-          return _alert(response.msg, 'error', 500);
+          return _alert(response.msg, 'danger', 500);
         }
         elem.closest('fieldset').attr('disabled', true);
 

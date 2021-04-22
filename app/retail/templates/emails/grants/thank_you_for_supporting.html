@@ -105,11 +105,6 @@ along with this program. If not, see
 
   <br>
   <a class="btn" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Updates" %}</a>
-  <br>
-  <br>
-  <p>{% trans "If you ever need to, you can cancel your support" %}
-    <a href="{% url 'grants:subscription_cancel' grant.id grant.slug subscription.id %}?{{ utm_tracking }}">{% trans "here." %}</a>
-  </p>
   <hr style="margin-left: 0;">
   {% endwith %}
   {% endfor %}

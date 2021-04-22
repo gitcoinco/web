@@ -58,7 +58,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div>Fetching cart data...</div>
             </div>
 
-            <div v-else-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row">
+            <div v-else-if="grantData.length === 0" class="font-bigger-1 text-left grant-header-row mb-5">
               Your cart is empty.
             </div>
 
@@ -113,57 +113,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </grants-cart>
       </div>
-
-      <script type="text/x-template" id="select2-template">
-        <select>
-          <slot></slot>
-        </select>
-      </script>
-
-      {% include 'shared/current_profile.html' %}
-      {% include 'shared/analytics.html' %}
-      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
       {% include 'shared/footer.html' %}
-      {% include 'grants/shared/shared_scripts.html' %}
-      {% include 'shared/fingerprintjs.html' %}
-
-      {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
-      <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/zksync-checkout@0.0.11/dist/main.js"></script>
-      {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
-
-      <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
-      <script>
-        document.authenticated = {{ authenticated | yesno:"true,false" }};
-        document.isFullyVerified = '{{is_fully_verified}}' === 'True';
-      </script>
-      <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
-      <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
-      <script src="{% static "v2/js/cart.js" %}"></script>
     </div>
+
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/fingerprintjs.html' %}
+
+    {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
+    <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/zksync-checkout@0.0.11/dist/main.js"></script>
+    {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
+
+    <script>
+      document.authenticated = {{ authenticated | yesno:"true,false" }};
+      document.isFullyVerified = '{{is_fully_verified}}' === 'True';
+    </script>
+    <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
+    <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
+    <script src="{% static "v2/js/cart.js" %}"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+    <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+    <script>
+      $('[data-toggle="tooltip"]').bootstrapTooltip();
+    </script>
   </body>
-
-  {% include 'shared/activity_scripts.html' %}
-
-  <script src="{% static "v2/js/grants/index.js" %}"></script>
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-  <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
-  <script>
-    $('[data-toggle="tooltip"]').bootstrapTooltip();
-  </script>
-  <script src="{% static "v2/js/grants/shared.js" %}"></script>
-  <script>
-    $('#wallet-address').attr(
-      'href',
-      get_etherscan_url(
-        $('#wallet-address').text().trim(),
-        '{{ grant.network }}',
-        'address'
-      )
-    );
-
-  </script>
-
-
 </html>

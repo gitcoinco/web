@@ -83,7 +83,7 @@ $(document).ready(function() {
             alertMsg = gettext('Network error. Please reload the page and try again.');
           }
 
-          _alert({ message: alertMsg }, 'error');
+          _alert({ message: alertMsg }, 'danger');
         }
       );
     }

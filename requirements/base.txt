@@ -4,7 +4,7 @@ cryptocompare==0.6
 cryptography==2.3
 celery==4.4.0
 django-celery-beat==1.1.1
-django==2.2.4
+django==2.2.20
 django-csp==3.7
 django-cors-headers==2.4.0
 django-filter==2.0.0
@@ -12,7 +12,7 @@ django-haystack
 django-ratelimit==1.1.0
 git+https://github.com/gdixon/django-compressor.git@develop#egg=django-compressor
 django-libsass==0.8
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 gitterpy
 gunicorn
 matplotlib
@@ -102,6 +102,14 @@ django-queryset-csv
 django-proxy==1.2.1
 ed25519
 tweepy
+attrs==19.1.0
 oogway==0.7.0
 icalendar==4.0.7
+duniterpy==0.61.0
+aiohttp >= 3.6.3
+jsonschema==3.2.0
+pyPEG2==2.15.2
+base58==2.1.0
+libnacl==1.7.2
+pyaes==1.6.1
 numpy==1.19.5
