@@ -318,17 +318,18 @@
     background-color: rgba(140, 101, 247, 0.1);
   }
 
-  .gc-menu-submenu-toggle-focus:before, .gc-menu-submenu-toggle-focus:after {
+  .gc-menu-submenu-toggle-focus:not(:first-of-type):hover:before,
+  .gc-menu-submenu-toggle-focus:not(:last-of-type):hover:after {
     content: '';
     display: block;
-    height: 90px;
-    right: 0px;
+    height: 80px;
+    right: 5px;
     position: absolute;
     width: 50px;
   }
 
   .gc-menu-submenu-toggle-focus:before {
-    margin-top: -85px;
+    margin-top: -75px;
     transform: rotate(7deg);
   }
 
@@ -350,17 +351,10 @@
     padding-bottom: var(--gc-menu-padding);
   }
 
-  .gc-menu-mt {
-    margin-top: var(--gc-menu-padding);
-  }
-
-  .gc-menu-mb {
-    margin-bottom: var(--gc-menu-padding);
-  }
-
-  // sets padding on top bottom and left (left is default 15px from bs)
+  // sets gc-menu-padding on top bottom and right, left is default 15px from bs)
   .gc-menu-padding-col {
-    padding: var(--gc-menu-padding) var(--gc-menu-padding) 0 15px;
+    padding: var(--gc-menu-padding);
+    padding-left: 15px;
   }
 }
 
