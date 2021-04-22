@@ -32,7 +32,7 @@
     </div>
   {% else %}
     <div class="col">
-      <h1 class="minihero__title mb-2">{{h1}}</h1>
+      <h1 class="minihero__title mb{% if not suppress_logo %}-2{% else %}-5 mt-1{% endif %}">{{h1}}</h1>
       <div class="w-100"></div>
       {% if not suppress_logo %}
         <img class="about-gc-logo" src="{% static "v2/images/new-logos/gc-h-pos.svg" %}" width="600px" />
