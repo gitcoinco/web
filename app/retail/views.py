@@ -1620,8 +1620,8 @@ def jtbd_earn(request):
         request,
         'earn',
         'Earn',
-        'Gitcoin - Support digital public goods, support open source',
-        'Earn a living working on open source projects that matter'
+        'Gitcoin - Build the open internet.',
+        'Earn a living building open source projects that matter.'
     )
 
 
@@ -1631,8 +1631,8 @@ def jtbd_learn(request):
         request,
         'learn',
         'Learn',
-        'Gitcoin - Support digital public goods, support open source',
-        'Learn how to build the decentralized web'
+        'Gitcoin - Learn open source development.',
+        'Learn how to build open source projects that matter.'
     )
 
 
@@ -1642,8 +1642,8 @@ def jtbd_connect(request):
         request,
         'connect',
         'Connect',
-        'Gitcoin - Support digital public goods, support open source',
-        'Connect and build with top open source developers'
+        'Gitcoin - A community of open web builders.',
+        'Connect and build with top open source developers.'
     )
 
 
@@ -1653,6 +1653,6 @@ def jtbd_fund(request):
         request,
         'fund',
         'Fund',
-        'Gitcoin - Support digital public goods, support open source',
-        'Fund open source projects that make a difference'
+        'Gitcoin - Support open web development.',
+        'Fund open source projects that make the most difference.'
     )
