@@ -982,7 +982,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     elif 'activity:' in what:
         view_count_threshold = 0
         pk = what.split(':')[1]
-        activities = Activity.objects.filter(pk=pk) if pk.isdigit() else Activity.objects.none()
+        activities = Activity.objects.filter(pk=pk) if pk and pk.isdigit() else Activity.objects.none()
         if request:
             page = int(request.GET.get('page', 1))
             if page > 1:
@@ -1031,9 +1031,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 7
-    page = int(request.GET.get('page', 1)) if request.GET.get('page').isdigit() else 1
+    page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only').isdigit() else 0
+    trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     # store last seen
