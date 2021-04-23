@@ -142,6 +142,7 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
+from .poh_utils import is_registered_on_poh
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -2958,6 +2959,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_google_verified'] = profile.is_google_verified
         context['is_ens_verified'] = profile.is_ens_verified
         context['is_facebook_verified'] = profile.is_facebook_verified
+        context['is_poh_verified'] = profile.is_poh_verified
     else:
         raise Http404
     return context
@@ -6817,6 +6819,61 @@ def verify_user_poap(request, handle):
     return JsonResponse({
         'ok': True,
         'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+    })
+
+@login_required
+@require_POST
+def verify_user_poh(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = profile_helper(handle, True)
+    if profile.is_poh_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously',
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    signature = request_data.get('signature', '')
+    eth_address = request_data.get('eth_address', '')
+    if eth_address == '' or signature == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Empty signature or Ethereum address',
+        })
+
+    message_hash = defunct_hash_message(text="verify_poh_registration")
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    if eth_address != signer:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid signature',
+        })
+
+    if Profile.objects.filter(poh_handle=signer).exists():
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Ethereum address is already registered.',
+        })
+
+    if not is_registered_on_poh(signer):
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Ethereum address is not registered on Proof of Humanity, please try after registration.',
+        })
+
+    profile.is_poh_verified = True
+    profile.poh_handle = signer
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': 'User is registered on POH',
     })
 
 
