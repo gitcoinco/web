@@ -1,13 +1,12 @@
 {
   "symbol": "AINU",
-  "address": "0xa52817aba4fa2533e6be9f4e82c47de738649d09",
+  "address": "0xa52817Aba4FA2533E6bE9f4e82C47de738649D09",
   "overview":{
-        "en": "Ainu is the practice of decentralized spontaneous community construction, the purpose is to assign the skills in the community to the appropriate role in the development of Ainu, as the existence of social media, marketing and website development. Ainu community is the core of this project and will continue to develop and expand.",
-        "zh": "Ainu是去中心化自发社区建设的实,目的是将社区内的技能分配给Ainu发展中的适当角色,充当社会媒体的存在，营销和网站开发。Ainu社区是这个项目的核心，并将继续发展和扩大。"
+        "en": "Ainu is the practice of decentralized spontaneous community construction, the purpose is to assign the skills in the community to the appropriate role in the development of Ainu, as the existence of social media, marketing and website development. Ainu community is the core of this project and will continue to develop and expand."
   },
   "email": "ainu@ainutoken.com",
   "website": "https://www.ainutoken.com",
-  "whitepaper": "https://your-awesome-project.com/file.pdf",
+  "whitepaper": "https://www.ainutoken.com/doc/AINU INU White Paper.pdf",
   "state": "NORMAL",
   "published_on": "2021-04-21",
   "links": {
