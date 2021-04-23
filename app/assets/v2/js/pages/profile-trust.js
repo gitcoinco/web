@@ -519,8 +519,8 @@ Vue.component('poap-verify-modal', {
 });
 
 Vue.component('poh-verify-modal', {
-  delimiters: ['[[', ']]'],
-  data: function () {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
     return {
       hideTemporarily: false,
       validationStep: 'validate-address',
@@ -533,7 +533,7 @@ Vue.component('poh-verify-modal', {
     showValidation: {
       type: Boolean,
       required: false,
-      default: false
+      'default': false
     }
   },
   template: `<b-modal id="poh-modal" @hide="dismissVerification()" :visible="showValidation && !hideTemporarily" center hide-header hide-footer>
