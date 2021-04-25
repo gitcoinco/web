@@ -64,7 +64,7 @@
                   {% endfor %}
                 </div>
               {% endif %}
-  
+
               {% if not hidden %}
                 <div class="col-12 col-lg-3 profile-header__main-infos">
                   {% include 'profiles/header_avatar.html' %}
@@ -123,22 +123,8 @@
         $('[data-toggle="popover"]').popover()
         $('[data-toggle="tooltip"]').bootstrapTooltip();
       </script>
-      <script src="{% static "v2/js/pages/tabs.js" %}"></script>
-      <script src="{% static "v2/js/pages/profile.js" %}"></script>
-      <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
-      <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
-      <script src="{% static "v2/js/pages/profile_tokens.js" %}"></script>
-      <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
-      <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
-      <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
-      <script src="{% static "v2/js/rating.js" %}"></script>
-      <script src="{% static "v2/js/status.js" %}"></script>
-      <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
-      <script src="{% static "v2/js/lib/jitsi.js" %}"></script>
-      <script src="{% static "v2/js/activity.js" %}"></script>
-      <script src="{% static "v2/js/3box.min.js" %}"></script>
-      <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
       <script>
+        window.history.replaceState('', document.title, window.location.pathname);
         {% if profile.preferred_payout_address %}
           document.hasPreferredPayoutAddress = true;
         {% endif %}
@@ -154,6 +140,21 @@
           document.current_hodling = {{ available_to_redeem|default:0 }};
         {% endif %}
       </script>
+      <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+      <script src="{% static "v2/js/pages/profile.js" %}"></script>
+      <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
+      <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
+      <script src="{% static "v2/js/pages/profile_tokens.js" %}"></script>
+      <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
+      <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+      <script src="{% static "v2/js/rating.js" %}"></script>
+      <script src="{% static "v2/js/status.js" %}"></script>
+      <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
+      <script src="{% static "v2/js/lib/jitsi.js" %}"></script>
+      <script src="{% static "v2/js/activity.js" %}"></script>
+      <script src="{% static "v2/js/3box.min.js" %}"></script>
+      <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
     </div>
   </body>
 </html>
