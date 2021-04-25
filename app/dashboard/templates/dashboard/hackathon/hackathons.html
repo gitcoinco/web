@@ -121,9 +121,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id="tabs" class="row my-4">
         <div class="container">
           <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
-            {% for id, title in tabs %}
+            {% for id, title, num in tabs %}
             <li class="nav-item">
-              <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
+              <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{num}})</a>
             </li>
             {% endfor %}
           </ul>
