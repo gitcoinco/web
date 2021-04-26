@@ -1,0 +1,9 @@
+---
+# Test Ansible playbook to ensure connection to vm
+- name: Test Ansible connection
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Check Ansible connection to vm
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is ready to be configured with Ansible!"

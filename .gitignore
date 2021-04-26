@@ -43,6 +43,10 @@ chatconfig/config.json
 # .tfvars files
 *.tfvars
 
+# Local vagrant files
+.vagrant/
+ubuntu-*console.log
+
 *.prof
 
 .pytest_cache/

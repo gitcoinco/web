@@ -1,0 +1,11 @@
+all:
+  children:
+    webservers:
+      hosts:
+        web:
+          ansible_ssh_host: 10.0.0.10
+    dbservers:
+      hosts:
+        db:
+          ansible_ssh_host: 10.0.0.11
+
