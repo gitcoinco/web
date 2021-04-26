@@ -395,6 +395,10 @@ Vue.mixin({
         return tenant;
       }
 
+      if (vm.bounty.web3_type == 'nervos_ext') {
+        vm.canChangeFunderAddress = true;
+      }
+
       switch (token_name) {
 
         case 'ETC':
@@ -749,7 +753,9 @@ Vue.mixin({
       switch (fulfillment.payout_type) {
         case 'qr':
         case 'manual':
+        case 'nervos_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
+          vm.getTenant(fulfillment.payout_type);
           break;
 
         case 'fiat':
@@ -757,7 +763,6 @@ Vue.mixin({
         case 'polkadot_ext':
         case 'rsk_ext':
         case 'xinfin_ext':
-        case 'nervos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
