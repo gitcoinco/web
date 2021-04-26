@@ -5968,9 +5968,9 @@ def payout_bounty_v1(request, fulfillment_id):
     if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'manual']:
         response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / manual'
         return JsonResponse(response)
-    # if payout_type == 'manual' and not bounty.event:
-    #     response['message'] = 'error: payout_type manual is eligible only for hackathons'
-    #     return JsonResponse(response)
+    if payout_type == 'manual' and not bounty.event:
+        response['message'] = 'error: payout_type manual is eligible only for hackathons'
+        return JsonResponse(response)
 
     tenant = request.POST.get('tenant')
     if not tenant:
