@@ -1,0 +1,21 @@
+{
+    "symbol": "DPR",
+    "address": "0xf3AE5d769e153Ef72b4e3591aC004E89F48107a1",
+    "overview": {
+        "en": "The Decentralized Internet Infrastructure for Web3.0: A more secure, private and fairer internet for everyone.",
+        "zh": "为Web3打造去中心化网络基础设施: 更加安全、私密、公平的互联网"
+    },
+    "website": "https://deeper.network",
+    "whitepaper": "https://deeper.network/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-03-04",
+    "initial_price": {
+        "USD": "$0.03 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/deeper_network",
+        "github": "https://github.com/e2chain-dev/deeper-chain",
+        "medium": "https://deeper-network.medium.com",
+        "reddit": "https://www.reddit.com/r/DeeperNetwork"
+    }
+}
