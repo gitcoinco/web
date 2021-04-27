@@ -1,6 +1,6 @@
-from django.core.management.base import BaseCommand
-
 from collections import defaultdict
+
+from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
 
@@ -58,4 +58,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cleanup_x_user_id('google')
         cleanup_x_user_id('facebook')
-
