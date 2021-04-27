@@ -540,7 +540,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
                 limit = max_bounties
             offset = self.request.query_params.get('offset', 0)
             if limit:
-                start = int(offset)
+                start = int(offset) if offset.isdigit() else 0
                 end = start + int(limit)
                 queryset = queryset[start:end]
 
