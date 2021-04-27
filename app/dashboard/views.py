@@ -6823,14 +6823,8 @@ def verify_user_poap(request, handle):
 
 @login_required
 @require_POST
-def verify_user_poh(request, handle):
-    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    if not is_logged_in_user:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Request must be for the logged in user',
-        })
-
+def verify_user_poh(request):
+    handle = request.user.username
     profile = profile_helper(handle, True)
     if profile.is_poh_verified:
         return JsonResponse({

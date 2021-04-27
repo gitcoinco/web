@@ -625,8 +625,8 @@ Vue.component('poh-verify-modal', {
         this.verifyPOH();
       })
       .catch((_error) => {
-        this.validationError = 'Error sign message';
-        this.validationStep = 'validate-address';
+        this.validationError = 'Error sign message declined';
+        this.validationStep = 'validate-poh';
         this.hideTemporarily = false;
       });
     },
@@ -669,12 +669,7 @@ Vue.component('poh-verify-modal', {
       });
       const headers = { 'X-CSRFToken': csrfmiddlewaretoken };
 
-      const verificationRequest = fetchData(
-        `/api/v0.1/profile/${trustHandle}/verify_user_poh`,
-        'POST',
-        payload,
-        headers
-      );
+      const verificationRequest = fetchData(`/api/v0.1/profile/verify_user_poh`, 'POST', payload, headers);
 
       $.when(verificationRequest)
         .then((response) => {
