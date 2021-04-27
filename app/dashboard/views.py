@@ -3206,6 +3206,10 @@ def verify_user_twitter(request, handle):
     })
 
 
+'''
+# TODO: re-enable this when duniterpy integration is fixed
+#       see here: https://github.com/gitcoinco/web/pull/7844
+#       and here: https://github.com/gitcoinco/web/pull/8569
 @login_required
 async def verify_user_duniter(request):
     """This function searches the database for the gitcoin link, from a verified duniter account.
@@ -3333,7 +3337,7 @@ async def verify_user_duniter(request):
         'ok': True,
         'msg': 'Your Duniter Qualified User Check was successful!'
     })
-
+'''
 
 
 def connect_google():
@@ -3380,6 +3384,13 @@ def verify_user_google(request):
         return redirect('profile_by_tab', 'trust')
 
     identity_data_google = r.json()
+    # if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+    # TODO: re-enable this when the google_user_id migration has run
+    if False:
+        return JsonResponse({
+            'ok': False,
+            'message': 'A user with this google account already exists!',
+        })
 
     if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
         messages.error(request, _(f'A user with this Google account already exists!'))

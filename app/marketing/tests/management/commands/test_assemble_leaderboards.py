@@ -18,10 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import date, datetime, timedelta
+from unittest.mock import patch
 
-from dashboard.models import Bounty, BountyFulfillment, Profile, Tip, UserAction
+from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+
+from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
 from marketing.management.commands import assemble_leaderboards
-from marketing.management.commands.assemble_leaderboards import BREAKDOWNS, Command, do_leaderboard, should_suppress_leaderboard
+from marketing.management.commands.assemble_leaderboards import (
+    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
+)
 from marketing.models import LeaderboardRank
 from pytz import UTC
 from test_plus.test import TestCase
@@ -32,7 +38,6 @@ class TestAssembleLeaderboards(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
-        """
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
@@ -74,7 +79,7 @@ class TestAssembleLeaderboards(TestCase):
             bounty_owner_profile=self.bounty_payer_profile,
             is_open=False,
             accepted=True,
-            expires_date=datetime.now(UTC) + timedelta(days=1),
+            expires_date=datetime(2021, 4, 27, 11, 00, tzinfo=UTC) + timedelta(days=1),
             idx_project_length=5,
             project_length='Months',
             bounty_type='Feature',
@@ -85,7 +90,6 @@ class TestAssembleLeaderboards(TestCase):
             network='rinkeby',
             metadata={"issueKeywords": "Python, Shell"},
         )
-
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
             bounty=self.bounty,
@@ -93,6 +97,17 @@ class TestAssembleLeaderboards(TestCase):
             profile=self.bounty_earner_profile,
             token_name='USDT',
             payout_amount=3,
+        )
+        Earning.objects.create(
+            from_profile_id=self.bounty_payer_profile.id,
+            to_profile_id=self.bounty_earner_profile.id,
+            token_name='USDT',
+            value_usd=3,
+            source_id=self.bounty.id,
+            created_on=datetime(2021, 4, 27, 11, 00, tzinfo=UTC),
+            network='mainnet',
+            success=True,
+            source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment')
         )
 
         self.tip_value = 7
@@ -127,19 +142,27 @@ class TestAssembleLeaderboards(TestCase):
             from_username=self.tip_payer_handle,
             github_url='https://github.com/gitcoinco/web',
             network='rinkeby',
-            expires_date=datetime.now(UTC) + timedelta(days=1),
+            expires_date=datetime(2021, 4, 27, 11, 00, tzinfo=UTC) + timedelta(days=1),
             tokenAddress='0x0000000000000000000000000000000000000000',
             txid='123',
         )
-        """
+        Earning.objects.create(
+            from_profile_id=self.tip_from_username_profile.id,
+            to_profile_id=self.tip_username_profile.id,
+            token_name='USDT',
+            value_usd=self.tip_value,
+            created_on=datetime(2021, 4, 27, 11, 00, tzinfo=UTC),
+            network='mainnet',
+            source_id=self.tip.id,
+            success=True,
+            source_type=ContentType.objects.get(app_label='dashboard', model='tip')
+        )
 
     def tearDown(self):
-        """
         self.bounty_payer_profile.delete()
         self.bounty_earner_profile.delete()
         self.tip_username_profile.delete()
         self.tip_from_username_profile.delete()
-        """
 
     def suppress_leaderboard_when_missing_user_handle(self):
         assert should_suppress_leaderboard() == True
@@ -161,6 +184,51 @@ class TestAssembleLeaderboards(TestCase):
         )
         assert should_suppress_leaderboard("suppressed_user") == True
         suppressed_profile.delete()
+
+    def mock_run_cadence_datetimes(self, func, passing, failing):
+        with patch.object(timezone, 'now', return_value=passing) as mock_now:
+            is_valid = func()
+            assert is_valid == True
+        with patch.object(timezone, 'now', return_value=failing) as mock_now:
+            is_valid = func()
+            assert is_valid == False
+
+
+    def test_run_weekly(self):
+        self.mock_run_cadence_datetimes(run_weekly, datetime(2021, 4, 23, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_run_monthly(self):
+        self.mock_run_cadence_datetimes(run_monthly, datetime(2021, 4, 1, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_run_quarterly(self):
+        self.mock_run_cadence_datetimes(run_quarterly, datetime(2021, 4, 1, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_run_yearly(self):
+        self.mock_run_cadence_datetimes(run_yearly, datetime(2021, 1, 1, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_do_leaderboard(self):
+        """Test assemble leaderboards function."""
+
+        with patch.object(timezone, 'now', return_value=datetime(2021, 4, 28, 11, 00, tzinfo=UTC)) as mock_now:
+
+            do_leaderboard()
+
+            assert LeaderboardRank.objects.filter(product='all', active=True).all().count() == 5
+
+            assert LeaderboardRank.objects.filter(product='bounties', active=True, leaderboard="daily_earners").count() == 1
+            assert LeaderboardRank.objects.filter(product='bounties', active=True, leaderboard="daily_payers").count() == 1
+
+            assert LeaderboardRank.objects.filter(product='tips', active=True, leaderboard="daily_earners").count() == 1
+            assert LeaderboardRank.objects.filter(product='tips', active=True, leaderboard="daily_payers").count() == 1
+
+            assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_earners").count() == 2
+            assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_payers").count() == 2
+
+            assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_tokens").count() == 1
 
     def show_leaderboard_when_profile_does_not_exist(self):
         assert should_suppress_leaderboard("random_user_name_9876") == False
