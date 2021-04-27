@@ -5278,10 +5278,14 @@ def get_hackathons(request):
 
         create_page_cache.create_hackathon_list_page_cache()
 
+    events = get_hackathon_events()
+    num_current = len([ele for ele in events if ele['type'] == 'current'])
+    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
+    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
     tabs = [
-        ('current', 'happening now'),
-        ('upcoming', 'upcoming'),
-        ('finished', 'completed'),
+        ('current', 'happening now', num_current),
+        ('upcoming', 'upcoming', num_upcoming),
+        ('finished', 'completed', num_finished),
     ]
 
     params = {
@@ -5290,7 +5294,7 @@ def get_hackathons(request):
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
-        'events': get_hackathon_events(),
+        'events': events,
         'default_tab': get_hackathons_page_default_tabs(),
     }
 
