@@ -623,6 +623,11 @@ Vue.component('poh-verify-modal', {
       web3.eth.personal.sign('verify_poh_registration', this.ethAddress).then((signature) => {
         this.signature = signature;
         this.verifyPOH();
+      })
+      .catch((_error) => {
+        this.validationError = 'Error sign message';
+        this.validationStep = 'validate-address';
+        this.hideTemporarily = false;
       });
     },
     connectWeb3Wallet() {
