@@ -3390,33 +3390,26 @@ def verify_user_google(request):
         )
         r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
         if r.status_code != 200:
-            return JsonResponse({
-                'ok': False,
-                'message': 'Invalid code',
-            })
+            messages.error(request, _(f'Invalid code'))
+            return redirect('profile_by_tab', 'trust')
     except (ConnectionError, InvalidGrantError):
-        return JsonResponse({
-            'ok': False,
-            'message': 'Invalid code',
-        })
+        messages.error(request, _(f'Invalid code'))
+        return redirect('profile_by_tab', 'trust')
 
     identity_data_google = r.json()
-    # if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
-    # TODO: re-enable this when the google_user_id migration has run 
-    if False:
-        return JsonResponse({
-            'ok': False,
-            'message': 'A user with this google account already exists!',
-        })
 
-    profile = profile_helper(request.user.username, True)
-    profile.is_google_verified = True
-    profile.identity_data_google = identity_data_google
-    #profile.google_user_id = identity_data_google['id']
-    profile.save()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        messages.error(request, _(f'A user with this Google account already exists!'))
+
+    else:
+        messages.success(request, _(f'Congratulations! You have successfully verified your Google account!'))
+        profile = profile_helper(request.user.username, True)
+        profile.is_google_verified = True
+        profile.identity_data_google = identity_data_google
+        profile.google_user_id = identity_data_google['id']
+        profile.save()
 
     return redirect('profile_by_tab', 'trust')
-
 
 @login_required
 def verify_profile_with_ens(request):
@@ -3550,27 +3543,35 @@ def verify_user_facebook(request):
         facebook = connect_facebook()
         if not 'code' in request.GET:
             return redirect('profile_by_tab', 'trust')
+
         facebook.fetch_token(
             settings.FACEBOOK_TOKEN_URL,
             client_secret=settings.FACEBOOK_CLIENT_SECRET,
             code=request.GET['code'],
         )
-        r = facebook.get('https://graph.facebook.com/me?')
-        if r.status_code != 200:
-            return JsonResponse({
-                'ok': False,
-                'message': 'Invalid code',
-            })
-    except (ConnectionError, InvalidGrantError):
-        return JsonResponse({
-            'ok': False,
-            'message': 'Invalid code',
-        })
 
-    profile = profile_helper(request.user.username, True)
-    profile.is_facebook_verified = True
-    profile.identity_data_facebook = r.json()
-    profile.save()
+        r = facebook.get('https://graph.facebook.com/me?')
+
+        if r.status_code != 200:
+            messages.error(request, _(f'Invalid code'))
+            return redirect('profile_by_tab', 'trust')
+
+    except (ConnectionError, InvalidGrantError):
+        messages.error(request, _(f'Invalid code'))
+        return redirect('profile_by_tab', 'trust')
+
+    identity_data_facebook = r.json()
+
+    if Profile.objects.filter(facebook_user_id=identity_data_facebook['id']).exists():
+        messages.error(request, _(f'A user with this facebook account already exists!'))
+
+    else:
+        profile = profile_helper(request.user.username, True)
+        messages.success(request, _(f'Congratulations! You have successfully verified your facebook account!'))
+        profile.is_facebook_verified = True
+        profile.identity_data_facebook = identity_data_facebook
+        profile.facebook_user_id = identity_data_facebook['id']
+        profile.save()
 
     return redirect('profile_by_tab', 'trust')
 
