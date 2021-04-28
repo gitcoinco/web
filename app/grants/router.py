@@ -75,11 +75,16 @@ class GrantViewSet(viewsets.ModelViewSet):
         if 'grant_type' in param_keys:
             queryset = queryset.filter(grant_type__name=self.request.query_params.get('grant_type'))
 
-        # adds a limit
-        if 'limit' in param_keys:
-            limit = int(self.request.query_params.get('limit'))
-            queryset = queryset[0:limit]
-
+        max_limit = 100
+        limit = str(self.request.GET.get('limit', max_limit))
+        offset = str(self.request.GET.get('offset', '0'))
+        if not limit.isnumeric() or int(limit) > max_limit:
+            limit = max_limit
+        if not offset.isnumeric() or int(offset) < 0:
+            offset = 0
+        offset = int(offset)
+        limit = int(limit)
+        queryset = queryset[offset:limit]
 
         return queryset
 

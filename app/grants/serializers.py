@@ -19,6 +19,7 @@ class GrantSerializer(serializers.ModelSerializer):
             'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address',
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
             'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
+            'clr_round_num', 'is_clr_active', 'amount_received_in_round', 'positive_round_contributor_count',
         )
 
 
