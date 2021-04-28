@@ -534,13 +534,14 @@ class BountiesViewSet(viewsets.ModelViewSet):
 
         # offset / limit
         if 'is_featured' not in param_keys:
-            limit = int(self.request.query_params.get('limit', 5))
+            limit = self.request.query_params.get('limit', '5')
+            limit = 5 if not limit.isdigit() else int(limit)
             max_bounties = 100
             if limit > max_bounties:
                 limit = max_bounties
             offset = self.request.query_params.get('offset', 0)
             if limit:
-                start = int(offset)
+                start = int(offset) if offset.isdigit() else 0
                 end = start + int(limit)
                 queryset = queryset[start:end]
 
