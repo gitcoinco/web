@@ -245,6 +245,11 @@ REST_FRAMEWORK = {
     ],
 }
 
+if ENV in ['prod', 'stage']:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
+        'rest_framework.renderers.JSONRenderer',
+    )
+
 AUTH_USER_MODEL = 'auth.User'
 
 # adds django debug toolbar
