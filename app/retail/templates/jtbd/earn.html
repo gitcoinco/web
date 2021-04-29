@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat grants_extra %}
+{% load i18n static compress date_fromisoformat grants_extra split %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +43,7 @@ along with this program. If not,see
       {% include 'home/nav.html' %}
     </div>
 
-    <div class="container px-5">
+    <div class="container pt-5">
 
       <!--  Header section -->
       <div class="row justify-content-between my-5">
@@ -214,7 +214,11 @@ along with this program. If not,see
                   </div>
                   <div class="col-9 col-lg-10 pl-0 pl-lg-2">
                     <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
-                    <p class="text-grey-400 font-subheader">{{ bounty.metadata.issueKeywords.lower }}</p>
+                    <p class="text-grey-400 font-subheader">
+                      {% for keyword in bounty.metadata.issueKeywords|split:',' %}
+                        <small class="badge badge--bluelight">{{keyword.lower}}</small>
+                      {% endfor %}
+                    </p>
                     <div class="d-flex">
                       <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
                       <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
@@ -296,7 +300,7 @@ along with this program. If not,see
                   <p class="font-bigger-1">Earn while building meaningful open source projects.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
                 </div>
               </div>
             </div>
@@ -304,10 +308,10 @@ along with this program. If not,see
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
                 <div class="mb-4">
                   <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
-                  <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto. Earn while working on top open source projects.</p>
+                  <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto.</p>
                 </div>
                 <div>
-                  <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
+                  <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
                 </div>
               </div>
             </div>
@@ -318,7 +322,7 @@ along with this program. If not,see
                   <p class="font-bigger-1">Get community support and matched funds for public goods projects.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
                 </div>
               </div>
             </div>
@@ -332,7 +336,7 @@ along with this program. If not,see
   </div>
 
   {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
 
   <script>
     $(".scroll-to-ready").click(function(e) {

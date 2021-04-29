@@ -45,7 +45,8 @@
 <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
 <script src="{% static "v2/js/lib/moment.min.js" %}"></script>
 <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="{% static 'v2/js/lib/emoji-button.js' %}"></script>
+<script src="{% static "v2/js/lib/emoji-button.js" %}"></script>
+<script src="{% static "v2/js/base.js" %}"></script>
 <script>
   const bootstrapTooltip = $.fn.tooltip.noConflict()
   $.fn.bootstrapTooltip = bootstrapTooltip;
@@ -53,6 +54,11 @@
   $.fn.bootstrapModal = bootstrapModal;
 </script>
 {% endcompress %}
+{% if not onepager %}
+  {% compress js file navbar %}
+    <script src="{% static "v2/js/navbar.js" %}"></script>
+  {% endcompress %}
+{% endif %}
 <!-- <script src="{% static "v2/js/lib/web3modal.min.js" %}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.0/dist/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/authereum@latest/authereum.js"></script>
@@ -84,7 +90,6 @@
 {% compress js file main %}
 <script src="{% static "v2/js/mautic.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
-<script src="{% static "v2/js/base.js" %}"></script>
 <script src="{% static "v2/js/cart-data.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>

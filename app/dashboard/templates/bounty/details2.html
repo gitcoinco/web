@@ -91,7 +91,7 @@
             <div class="row">
               <div class="col-12" v-if="bounty.network !== 'mainnet'">
                 <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
-                To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
+                To see mainnet bounties, go to <a href="{% url 'explorer' %}">the bounty explorer</a> and search for mainnet bounties.</span>
               </div>
               <div class="col-12 text-center text-lg-left my-3 my-lg-0">
                 <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
@@ -364,13 +364,11 @@
                     </div>
                     <div class="col-12">
                       <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
-                        <template v-if="showWorkSubmitted(fulfillment.fulfiller_github_username)">
-                          <i class="far fa-link mr-1"></i>
-                          <span class="font-weight-bold mb-2">PR:</span>
-                          <a :href="fulfillment.fulfiller_github_url" target="_blank">
-                            [[ fulfillment.fulfiller_github_url ]]
-                          </a>
-                        </template>
+                        <i class="far fa-link mr-1"></i>
+                        <span class="font-weight-bold mb-2">PR:</span>
+                        <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                          [[ fulfillment.fulfiller_github_url ]]
+                        </a>
                         <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
                           <i class="far fa-clock font-caption mr-1"></i>
                           <span class="font-weight-bold">Hours worked:</span>
@@ -440,7 +438,7 @@
                             </div>
 
                             <!-- WEB3 MODAL FLOW -->
-                            <div v-else-if="fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
+                            <div v-else-if="fulfillment.payout_type == 'algorand_ext' || fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
 
                               <div class="text-center pb-3">
                                 <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -1132,6 +1130,10 @@
 
       <script src="{% static "v2/js/lib/xinfin/xdc3.min.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/xinfin_extension.js" %}"></script>
+
+    {% elif web3_type == 'algorand_ext' %}
+
+      <script src="{% static "v2/js/pages/bounty_detail/algorand_extension.js" %}"></script>
 
     {% elif web3_type == 'fiat' %}
 

@@ -162,6 +162,9 @@
   --fw-bold: 600;
 }
 
+.gc-font-heading {
+  font-family: $headings-font-family;
+}
 
 .gc-font-base {
   font-family: $font-family-base;

@@ -45,7 +45,7 @@ const payWithPYPL = (fulfillment_id, fulfiller_identifier, ele, vm, modal) => {
               vm.fetchBounty();
               modal.closeModal();
               $(ele).html('');
-              _alert('Payment Successful');
+              _alert('Payment Successful', 'success');
 
             } else {
               _alert('Unable to make payout bounty. Please try again later', 'danger');

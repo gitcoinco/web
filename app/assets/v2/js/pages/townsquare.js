@@ -1,5 +1,38 @@
 $(document).ready(function() {
 
+  let resizeTimeout = null;
+
+  const collapseAccordions = function() {
+    const window_width = $('body').width();
+
+    $('.townsquare_block-header').each(function(e) {
+      const target_id = $(this).data('target');
+      const item = localStorage.getItem(target_id.replace(/^#/, ''));
+
+      // if we're heading into md breakpoint then close the accordions
+      // if we're heading out of md breakpoint then open any closed accordions that should be open
+      if (window_width <= breakpoint_lg && item && item !== 'false' && !$(this).hasClass('collapsed')) {
+        // tigger collapse but don't save the state change
+        $(this).trigger('click', true);
+      } else if (window_width > breakpoint_lg && item && item !== 'false' && $(this).hasClass('collapsed')) {
+        // tigger expand but don't save the state change
+        $(this).trigger('click', true);
+      }
+    });
+    if (window_width > breakpoint_md) {
+      $('#mobile_nav_toggle li a').removeClass('active');
+      $('.feed_container,.actions_container').removeClass('hidden');
+    }
+  };
+
+  // debounce the resize event
+  window.addEventListener('resize', function() {
+    // clear the timeout
+    clearTimeout(resizeTimeout);
+    // start timing for event "completion"
+    resizeTimeout = setTimeout(collapseAccordions, 30);
+  });
+
   $('body').on('click', '#mobile_nav_toggle li a', function(e) {
     $('#mobile_nav_toggle li a').removeClass('active');
     $(this).addClass('active');
@@ -52,27 +85,6 @@ $(document).ready(function() {
 
     if (!triggered) {
       localStorage.setItem(target_id.replace(/^#/, ''), $(this).hasClass('collapsed'));
-    }
-  });
-
-  $(window).on('resize', () => {
-    const window_width = $('body').width();
-
-    $('.townsquare_block-header').each(function(e) {
-      const target_id = $(this).data('target');
-      const item = localStorage.getItem(target_id.replace(/^#/, ''));
-
-      if (window_width <= 992) {
-        if (item && item !== 'false' && !$(this).hasClass('collapsed')) {
-          $(this).trigger('click', true);
-        }
-      } else if (item && item !== 'false' && $(this).hasClass('collapsed')) {
-        $(this).trigger('click', true);
-      }
-    });
-    if (window_width > 768) {
-      $('#mobile_nav_toggle li a').removeClass('active');
-      $('.feed_container,.actions_container').removeClass('hidden');
     }
   });
 
@@ -185,7 +197,7 @@ $(document).ready(function() {
         const target_id = $(this).data('target');
         const item = localStorage.getItem(target_id.replace(/^#/, ''));
 
-        if ($('body').width() > 992) {
+        if ($('body').width() > breakpoint_lg) {
           if (item && item == 'true') {
             $(this).removeClass('collapsed');
             $(target_id).addClass('show');

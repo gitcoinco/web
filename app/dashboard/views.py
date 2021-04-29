@@ -3390,33 +3390,26 @@ def verify_user_google(request):
         )
         r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
         if r.status_code != 200:
-            return JsonResponse({
-                'ok': False,
-                'message': 'Invalid code',
-            })
+            messages.error(request, _(f'Invalid code'))
+            return redirect('profile_by_tab', 'trust')
     except (ConnectionError, InvalidGrantError):
-        return JsonResponse({
-            'ok': False,
-            'message': 'Invalid code',
-        })
+        messages.error(request, _(f'Invalid code'))
+        return redirect('profile_by_tab', 'trust')
 
     identity_data_google = r.json()
-    # if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
-    # TODO: re-enable this when the google_user_id migration has run 
-    if False:
-        return JsonResponse({
-            'ok': False,
-            'message': 'A user with this google account already exists!',
-        })
 
-    profile = profile_helper(request.user.username, True)
-    profile.is_google_verified = True
-    profile.identity_data_google = identity_data_google
-    #profile.google_user_id = identity_data_google['id']
-    profile.save()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        messages.error(request, _(f'A user with this Google account already exists!'))
+
+    else:
+        messages.success(request, _(f'Congratulations! You have successfully verified your Google account!'))
+        profile = profile_helper(request.user.username, True)
+        profile.is_google_verified = True
+        profile.identity_data_google = identity_data_google
+        profile.google_user_id = identity_data_google['id']
+        profile.save()
 
     return redirect('profile_by_tab', 'trust')
-
 
 @login_required
 def verify_profile_with_ens(request):
@@ -3550,27 +3543,35 @@ def verify_user_facebook(request):
         facebook = connect_facebook()
         if not 'code' in request.GET:
             return redirect('profile_by_tab', 'trust')
+
         facebook.fetch_token(
             settings.FACEBOOK_TOKEN_URL,
             client_secret=settings.FACEBOOK_CLIENT_SECRET,
             code=request.GET['code'],
         )
-        r = facebook.get('https://graph.facebook.com/me?')
-        if r.status_code != 200:
-            return JsonResponse({
-                'ok': False,
-                'message': 'Invalid code',
-            })
-    except (ConnectionError, InvalidGrantError):
-        return JsonResponse({
-            'ok': False,
-            'message': 'Invalid code',
-        })
 
-    profile = profile_helper(request.user.username, True)
-    profile.is_facebook_verified = True
-    profile.identity_data_facebook = r.json()
-    profile.save()
+        r = facebook.get('https://graph.facebook.com/me?')
+
+        if r.status_code != 200:
+            messages.error(request, _(f'Invalid code'))
+            return redirect('profile_by_tab', 'trust')
+
+    except (ConnectionError, InvalidGrantError):
+        messages.error(request, _(f'Invalid code'))
+        return redirect('profile_by_tab', 'trust')
+
+    identity_data_facebook = r.json()
+
+    if Profile.objects.filter(facebook_user_id=identity_data_facebook['id']).exists():
+        messages.error(request, _(f'A user with this facebook account already exists!'))
+
+    else:
+        profile = profile_helper(request.user.username, True)
+        messages.success(request, _(f'Congratulations! You have successfully verified your facebook account!'))
+        profile.is_facebook_verified = True
+        profile.identity_data_facebook = identity_data_facebook
+        profile.facebook_user_id = identity_data_facebook['id']
+        profile.save()
 
     return redirect('profile_by_tab', 'trust')
 
@@ -6151,7 +6152,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6268,8 +6269,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / algorand_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6335,7 +6336,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6395,7 +6396,7 @@ def close_bounty_v1(request, bounty_id):
 
     is_funder = bounty.is_funder(user.username.lower()) if user else False
 
-    if not is_funder:
+    if not is_funder and not user.is_staff:
         response['message'] = 'error: closing a bounty funder operation'
         return JsonResponse(response)
 

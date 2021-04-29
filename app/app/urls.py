@@ -504,7 +504,7 @@ urlpatterns = [
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
-    re_path(r'^$', townsquare.views.landing_toggle, name='index'),
+    re_path(r'^$', retail.views.index, name='index'),
     re_path(r'^styleguide/components/?', retail.views.styleguide_components, name='styleguide_components'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
     path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
@@ -552,6 +552,7 @@ urlpatterns = [
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^discord/?', retail.views.discord, name='discord'),
     re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
     re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
@@ -735,7 +736,6 @@ urlpatterns = [
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
-    re_path(r'^static_proxy/(.*)', marketing.views.static_proxy, name='static_proxy'),
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),

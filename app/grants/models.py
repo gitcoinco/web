@@ -646,6 +646,7 @@ class Grant(SuperModel):
         """Generates CLR rounds sub_round_slug seperated by comma"""
         if self.pk:
             round_nums = [ele for ele in self.in_active_clrs.values_list('sub_round_slug', flat=True)]
+            round_nums = list(filter(None, round_nums))
             return ", ".join(round_nums)
         return ''
 
@@ -655,6 +656,7 @@ class Grant(SuperModel):
         """Generates CLR rounds display text seperated by comma"""
         if self.pk:
             round_nums = [ele for ele in self.in_active_clrs.values_list('display_text', flat=True)]
+            round_nums = list(filter(None, round_nums))
             return ", ".join(round_nums)
         return ''
 

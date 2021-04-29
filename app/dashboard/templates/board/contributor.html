@@ -28,7 +28,7 @@
             <span class="head-number_value">[[ contributorBounties.work_in_progress ? contributorBounties.work_in_progress.length : '0' ]]</span>
           </div>
           <div class="my-3 mx-4 head-number">
-            <span class="head-number_title">BOUNTIES APPLIED </span>
+            <span class="head-number_title">BOUNTIES APPLIED</span>
             <span class="head-number_value">[[ contributorBounties.interested ? contributorBounties.interested.length : '0' ]]</span>
           </div>
           <div class="my-3 mx-4 head-number">
@@ -120,7 +120,7 @@
                 <i class="fas fa-circle fa-stack-2x text-danger"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span class="font-weight-bold">You are currently working on this bounty </span>
+              <span class="font-weight-bold">You are currently working on this bounty</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -167,7 +167,7 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
-          <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied </div>
+          <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied</div>
 
           <ul class="list-unstyled list-bounty">
             <li v-for="(bounty, key) in contributorBounties.interested" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
@@ -175,7 +175,7 @@
                 <i class="fas fa-circle fa-stack-2x green"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span class="font-weight-bold">You are awaiting approval </span>
+              <span class="font-weight-bold">You are awaiting approval</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -223,7 +223,7 @@
                 <i class="fas fa-circle fa-stack-2x light-blue"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span class="font-weight-bold">You are awaiting payment </span>
+              <span class="font-weight-bold">You are awaiting payment</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -261,7 +261,7 @@
         <p>
           If you also want to check your finished bounties, you can find them here:
         </p>
-        <a class="btn btn-primary" href="/explorer?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
+        <a class="btn btn-primary" href="{% url 'explorer' %}?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
       </div>
     </div>
   </section>

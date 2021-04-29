@@ -17,7 +17,7 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-light bg-white gitcoin-background">
-  <a class="navbar-brand py-0 brand-hover" href="{% url 'labs' %}">
+  <a class="navbar-brand sticky-top py-0 brand-hover" href="{% url 'labs' %}">
     <img class="mw-100 logo-static" src="{% static "v2/images/labs/gitcoin_labs_white.svg" %}" alt="Gitcoin Labs" height="50" />
     <img class="mw-100 logo-animated" src="{% static "v2/images/labs/gitcoin_labs.gif" %}" alt="Gitcoin Labs" height="50">
   </a>
@@ -28,7 +28,7 @@
     </div>
   {% endif %}
   <div class="d-flex order-0 order-last">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    <button class="navbar-toggler sticky-top" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

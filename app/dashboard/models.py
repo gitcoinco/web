@@ -296,6 +296,7 @@ class Bounty(SuperModel):
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
         ('xinfin_ext', 'Xinfin Ext'),
+        ('algorand_ext', 'Algorand Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1414,6 +1415,7 @@ class BountyFulfillment(SuperModel):
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
         ('xinfin_ext', 'xinfin_ext'),
+        ('algorand_ext', 'algorand_ext'),
         ('manual', 'manual')
     ]
 
@@ -1430,6 +1432,7 @@ class BountyFulfillment(SuperModel):
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
         ('XINFIN', 'XINFIN'),
+        ('ALGORAND', 'ALGORAND'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -3002,8 +3005,10 @@ class Profile(SuperModel):
     is_ens_verified = models.BooleanField(default=False)
     is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     is_facebook_verified = models.BooleanField(default=False)
     identity_data_facebook = JSONField(blank=True, default=dict, null=True)
+    facebook_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
