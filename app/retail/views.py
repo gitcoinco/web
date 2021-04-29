@@ -471,236 +471,25 @@ def robotstxt(request):
 
 
 def about(request):
-    core_team = [
-        (
-            "Kevin Owocki",
-            "All the things",
-            "owocki",
-            "owocki",
-            "The Community",
-            "Avocado Toast",
-            "kevin",
-            "Summoner of Bots",
-            "owocki",
-            True
-        ),
-        (
-            "Joe Lubin",
-            "Consensys",
-            "",
-            "",
-            "Meshiness",
-            "",
-            "joe",
-            "Harbringer of Decentralization",
-            "ethereumJoseph",
-            True
-        ),
-        (
-            "Alisa March",
-            "User Experience Design",
-            "PixelantDesign",
-            "pixelant",
-            "Tips",
-            "Apple Cider Doughnuts",
-            "alisa",
-            "Pixel Mage",
-            "pixelant",
-            True
-        ),
-        (
-            "Vivek Singh",
-            "Community Buidl-er",
-            "vs77bb",
-            "vivek-singh-b5a4b675",
-            "Gitcoin Requests",
-            "Tangerine Gelato",
-            "vivek",
-            "Campfire StoryTeller",
-            "vsinghdothings",
-            True
-        ),
-        (
-            "Aditya Anand M C",
-            "Engineering",
-            "thelostone-mc",
-            "aditya-anand-m-c-95855b65",
-            "The Community",
-            "Cocktail Samosa",
-            "aditya",
-            "Block Welder",
-            "thelostone_mc",
-            True
-        ),
-        (
-            "Scott Moore",
-            "Biz Dev",
-            "ceresstation",
-            "scott-moore-a2970075",
-            "Issue Explorer",
-            "Teriyaki Chicken",
-            "scott",
-            "Phase Shifter",
-            "notscottmoore",
-            True
-        ),
-        (
-            "Octavio Amuchástegui",
-            "Front End Dev",
-            "octavioamu",
-            "octavioamu",
-            "The Community",
-            "Homemade italian pasta",
-            "octavio",
-            "Bugs Breeder",
-            "octavioamu",
-            True
-        ),
-        (
-            "Frank Chen",
-            "Data & Product",
-            "frankchen07",
-            "frankchen07",
-            "Kudos!",
-            "Crispy pork belly",
-            "frank",
-            "Hashed Scout",
-            "",
-            True
-        ),
-        (
-            "Connor O'Day",
-            "DevRel",
-            "connoroday",
-            "connoroday",
-            "the lols",
-            "Robertas Pizza",
-            "connor",
-            "Druid of The Chain",
-            "connoroday0",
-            True
-        ),
-        (
-            "solexplorer",
-            "Wannabe community Star",
-            "solexplorer",
-            '',
-            "Community",
-            "Pizza",
-            "",
-            "Community leader",
-            "rachid_eth",
-            True
-        ),
-        (
-            "nglglhtr",
-            "DevRel Mage",
-            "nglglhtr",
-            '',
-            "Quests",
-            "Quinoa",
-            "",
-            "",
-            "angelagilhotra",
-            True
-        ),
-        (
-            "chibie",
-            "Engineer",
-            "chibie",
-            '',
-            "Grants",
-            "semovita with afang soup",
-            "",
-            "OSS Freedom Fighter",
-            "stchibie",
-            True
-        ),
-        (
-            "scco",
-            "Design",
-            "scco",
-            '',
-            "grants",
-            "boeuf bourguignon",
-            "",
-            "Mage",
-            "schumanncombo",
-            True
-        ),
-        (
-            "thesachinmittal",
-            "DevRel SuperSstar",
-            "thesachinmittal",
-            '',
-            "KERNEL",
-            "",
-            "",
-            "Druid",
-            "sm_judge",
-            True
-        ),
-        (
-            "octaviaan",
-            "Design",
-            "octaviaan",
-            '',
-            "Kudos",
-            "",
-            "",
-            "Rainbow Unicorn",
-            "",
-            True
-        ),
-        (
-            "Kyle Weiss",
-            "People, Product and Value Capture",
-            "kweiss",
-            "kweiss",
-            "The Community",
-            "Porkbelly Ramen",
-            "",
-            "",
-            "kweiss",
-            True
-        ),
-        (
-            "gitcoinbot",
-            "beep boop bop",
-            "gitcoinbot",
-            None,
-            "everything that's automated",
-            "bits",
-            "gitcoinbot",
-            "Loveable Companion",
-            "",
-            False
-        )
-
-    ]
-    exclude_community = ['kziemiane', 'owocki', 'mbeacom']
-    community_members = [
-    ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, product='all', leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
-    for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
-        community_members.append(package)
-
-    alumnis = [
-    ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
-        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
-        alumnis.append(package)
-
     context = {
-        'core_team': core_team,
-        'community_members': community_members,
-        'alumni': alumnis,
-        'total_alumnis': str(Alumni.objects.count()),
-        'active': 'about',
-        'title': 'About',
-        'is_outside': True,
+        'title': 'Gitcoin - Support open web development.',
+        'card_title': 'Gitcoin - Support open web development.',
+        'card_desc': " We are the community of builders, creators, and protocols at the center of the open web."
     }
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0,
+            'num_grants': data['num_grants'] if data['num_grants'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'mau': 161205.0,
+            'num_grants': 1606,
+        }
+    context.update(data_results)
     return TemplateResponse(request, 'about.html', context)
 
 
