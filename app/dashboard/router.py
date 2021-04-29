@@ -514,7 +514,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
 
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
-                is_featured=self.request.query_params.get('is_featured'),
+                is_featured=bool(self.request.query_params.get('is_featured')),
                 is_open=True,
             )
 
