@@ -115,24 +115,6 @@ def build_auth_dict(oauth_token):
     }
 
 
-def check_github(profile):
-    """Check whether or not the provided username is present in the payload as active user.
-
-    Args:
-        profile (str): The profile username to be validated.
-
-    Returns:
-        dict: A dictionary containing status and user data.
-
-    """
-    user = search_users(profile + ' in:login type:user').__dict__['_rawData']
-    response = {'status': 200, 'user': False}
-
-    if user and user['login'].lower() == profile.lower():
-        response['user'] = user
-    return response
-
-
 def is_github_token_valid(oauth_token=None, last_validated=None):
     """Check whether or not a Github OAuth token is valid.
 
@@ -377,26 +359,6 @@ def get_emails_master(username):
     return list(set(emails))
 
 
-def search(query):
-    """Search for a user on github.
-
-    Args:
-        query (str): The query text to match.
-
-    Returns:
-        request.Response: The github search response.
-
-    """
-    params = (('q', query), ('sort', 'updated'),)
-
-    try:
-        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
-        return response.json()
-    except Exception as e:
-        logger.error("could not search GH - Reason: %s - query: %s", e, query)
-    return {}
-
-
 def search_user(query, token=None):
     """Search for a user on github.
 
@@ -410,13 +372,7 @@ def search_user(query, token=None):
     """
     paginated_list = search_users(query, token)
     try:
-        user_obj = paginated_list[0]
-        return {
-            'avatar_url': user_obj.avatar_url,
-            'login': user_obj.login,
-            'text': user_obj.login,
-            'email': user_obj.email,
-        }
+        return paginated_list[0]
     except IndexError:
         pass
     except Exception as e:
@@ -425,7 +381,7 @@ def search_user(query, token=None):
 
 
 def search_users(query, token=None):
-    """Search for a user on github.
+    """Search for users on github.
 
     Args:
         query (str): The query text to match.
