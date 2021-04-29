@@ -1,10 +1,8 @@
-.quest-delegateaddress{
-	
+.quest-delegateaddress {
   margin: 0em 3em;
   margin-top: 3em;
 
-  input{
-
+  input {
     display: block;
     padding: 0.5em 1em;
     margin: 0px auto;
@@ -15,8 +13,8 @@
     width: 90%;
     max-width: 800px;
 
-    color : var(--pink_light);
-    font-family: 'Space Mono', monospace;
+    color: var(--pink_light);
+    font-family: "Space Mono", monospace;
     background-color: var(--space_pink);
     font-size: 100%;
 
@@ -30,8 +28,5 @@
     &:focus {
       background-color: none;
     }
-		
   }
-
-
 }

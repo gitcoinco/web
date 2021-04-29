@@ -58,9 +58,6 @@
 @import "quest/quest-delegateaddress";
 @import "quest/progressbar";
 
-
-
-
 /* section dashboard */
 @import "dashboard/section_dashboard";
 @import "dashboard/header";
@@ -72,54 +69,31 @@
 @import "dashboard/content-tx-pending";
 @import "dashboard/content-tx-error";
 
-
 /* element overrides */
 @import "figure_introoutro";
 
-
-
 /* some little modules / playground not worth a file right now ^^ */
 
-.hide{
+.hide {
   display: none !important;
 }
 
-.d-none{
+.d-none {
   display: none !important;
 }
 
-
-.mission-proof-of-receive-address{
-
+.mission-proof-of-receive-address {
   margin: 2em 0em !important;
   padding: 0.5em 1em !important;
   margin-bottom: 4em !important;
   text-align: left !important;
 
-  color : var(--aqua_light);
+  color: var(--aqua_light);
   background-color: var(--smoke);
 
-  span{
-    font-family: 'Space Mono', monospace;
+  span {
+    font-family: "Space Mono", monospace;
     font-size: 100%;
     word-break: break-all;
-
   }
-
-
 }
-
-
-
-
-
-/* cool query to check touch devices */
-
-@media (hover: none) {
-
-}
-
-
-
-
-

@@ -1,17 +1,15 @@
-section#footersocial{
-
+section#footersocial {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
 
   margin: 0em 3em;
   margin-top: 8em;
 
-  a{
-
-    div{
+  a {
+    div {
       display: block;
 
-      svg{
+      svg {
         display: block;
         background-color: none;
         stroke: var(--purple_light);
@@ -23,44 +21,29 @@ section#footersocial{
         pointer-events: none;
       }
 
-      &:hover{
-        svg{
+      &:hover {
+        svg {
           stroke: var(--white);
         }
-
       }
-
-
     }
-
-
-
   }
-
 }
 
-
-
-
-
-@media #{$phone} { 
-  section#footersocial{
+@media #{$phone} {
+  section#footersocial {
     margin-left: 1.5em;
     margin-right: 1.5em;
     margin-top: 6em;
     margin-bottom: 3em;
-		
-    a{
-      div{
-        svg{
-          width: 36px;
-          height: 36px;			
-        }					
-      }
-		
-    }
 
+    a {
+      div {
+        svg {
+          width: 36px;
+          height: 36px;
+        }
+      }
+    }
   }
 }
-
-

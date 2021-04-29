@@ -1,16 +1,15 @@
-#burger{
+#burger {
   display: none;
   z-index: 9999;
 }
 
-
 @media #{$phone} {
-
-  #burger{
+  #burger {
     display: block;
     margin-right: 0px;
     align-self: center;
-    img, svg{
+    img,
+    svg {
       width: 32px;
       height: 32px;
       display: block;
@@ -18,14 +17,11 @@
       cursor: pointer;
     }
 
-    .burgerIcon{
+    .burgerIcon {
       display: inline-block;
     }
-    .closeIcon{
+    .closeIcon {
       display: inline-block;
     }
-
   }
-
 }
-

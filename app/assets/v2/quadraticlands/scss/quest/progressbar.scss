@@ -1,15 +1,15 @@
-#progressbar{
+#progressbar {
   width: 100%;
   background-color: var(--purple_light);
   height: 2px;
 
   transition: all 1000ms linear;
 
-  &.halftime{
+  &.halftime {
     background-color: var(--aqua_light);
   }
 
-  &.hurryup{
+  &.hurryup {
     animation: colorcycle 1s ease-in-out infinite;
   }
 }

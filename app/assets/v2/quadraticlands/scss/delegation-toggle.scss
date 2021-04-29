@@ -1,31 +1,24 @@
-
-.delegation-toggle{
-
+.delegation-toggle {
   display: flex;
   flex-flow: row wrap;
-	
+
   align-items: center;
   justify-content: center;
 
   cursor: pointer;
 
-  &.disablehover{
+  &.disablehover {
     cursor: initial;
   }
 
-
-  .label{
+  .label {
     margin: 0em 1em;
     font-weight: 600;
     color: var(--white);
   }
-
 }
 
-
-
-.toggle{
-
+.toggle {
   display: flex;
   align-items: center;
   user-select: none;
@@ -40,74 +33,58 @@
 
   transition: all 300ms linear;
 
-  &:hover{
+  &:hover {
     animation: colorcycle-shadow 3s ease-in-out infinite;
   }
 
-  &.disablehover{
-    &:hover{
+  &.disablehover {
+    &:hover {
       cursor: default;
       animation: initial;
     }
   }
 
-
-  .circle{
+  .circle {
     width: 50px;
     height: 50px;
     border-radius: 50px;
     background-color: var(--white);
   }
 
-  .enabled, .disabled{
+  .enabled,
+  .disabled {
     margin: 0em 1em;
   }
 
-
-
-  &.enabled{
-
+  &.enabled {
     background-color: var(--purple_light);
 
-    .enabled{
+    .enabled {
       display: block;
     }
 
-    .disabled{
+    .disabled {
       display: none;
     }
 
-    .circle{
+    .circle {
       margin-left: 1em;
     }
-
   }
 
-  &.disabled{
-
+  &.disabled {
     background-color: var(--aqua_light);
 
-    .enabled{
+    .enabled {
       display: none;
     }
 
-    .disabled{
+    .disabled {
       display: block;
     }
 
-    .circle{
+    .circle {
       margin-right: 1em;
     }
-
   }
-
-	
-
-
 }
-
-
-
-
-
-

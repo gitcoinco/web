@@ -1,98 +1,169 @@
 /*keyframes*/
 
-@keyframes colorcycle { 
-  0% { background-color: var(--pink); } 
-  33%  { background-color: var(--aqua); } 
-  66%   { background-color: var(--purple); }
-  100%   { background-color: var(--pink); }      
-} 
-
-@keyframes colorcycle-text { 
-  0% { color: var(--pink); } 
-  33%  { color: var(--aqua); } 
-  66%   { color: var(--purple); }
-  100%   { color: var(--pink); }      
-} 
-
-@keyframes colorcycle-border { 
-  0% { border: 2px solid var(--pink); } 
-  33%  { border: 2px solid var(--aqua); } 
-  66%   { border: 2px solid var(--purple); }
-  100%   { border: 2px solid var(--pink); }      
-} 
-
-@keyframes colorcycle-stroke { 
-  0% { stroke: var(--pink); } 
-  33%  { stroke: var(--aqua); } 
-  66%   { stroke: var(--purple); }
-  100%   { stroke: var(--pink); }      
-} 
-
-
-@keyframes menu-background { 
-  0% { box-shadow: 0px 0px 100px 0px var(--pink); } 
-  33%  { box-shadow: 0px 0px 100px 0px var(--aqua); } 
-  66%   { box-shadow: 0px 0px 100px 0px var(--purple); }
-  100%   { box-shadow: 0px 0px 100px 0px var(--pink); }      
+@keyframes colorcycle {
+  0% {
+    background-color: var(--pink);
+  }
+  33% {
+    background-color: var(--aqua);
+  }
+  66% {
+    background-color: var(--purple);
+  }
+  100% {
+    background-color: var(--pink);
+  }
 }
 
-
-@keyframes floating { 
-  0% { transform: translate(0,  0px); } 
-  50%  { transform: translate(0, 15px); } 
-  100%   { transform: translate(0, 0px); }     
-} 
-
-@keyframes floating-reverse { 
-  0% { transform: translate(0,  15px); } 
-  50%  { transform: translate(0, 0px); } 
-  100%   { transform: translate(0, 15px); }     
-} 
-
-
-
-
-
-
-
-
-
-@keyframes colorcycle-fill { 
-  0% { fill: var(--pink); } 
-  33%  { fill: var(--aqua); } 
-  66%   { fill: var(--purple); }
-  100%   { fill: var(--pink); }      
-} 
-
-@keyframes colorcycle-shadow { 
-  0% { filter: drop-shadow(0px 0px 11px var(--pink))  ; } 
-  33%  { filter: drop-shadow(0px 0px 11px var(--aqua)) ; } 
-  66%   { filter: drop-shadow(0px 0px 11px var(--purple)) ; }
-  100%   { filter: drop-shadow(0px 0px 11px var(--pink)) ; }      
-} 
-
-@keyframes colorcycle-shadow-big { 
-  0% { filter: drop-shadow(0px 0px 22px var(--pink))  ; } 
-  33%  { filter: drop-shadow(0px 0px 22px var(--aqua)) ; } 
-  66%   { filter: drop-shadow(0px 0px 22px var(--purple)) ; }
-  100%   { filter: drop-shadow(0px 0px 22px var(--pink)) ; }      
-} 
-
-
-
-@keyframes rotate-coin { 
-  0% { transform: perspective(1000px) rotateY(0deg); }
-  100% { transform: perspective(1000px) rotateY(360deg); }    
-} 
-
-
-
-@keyframes claim { 
-  0% { box-shadow: 0px 0px 100px 0px var(--pink); } 
-  33%  { box-shadow: 0px 0px 100px 0px var(--aqua); } 
-  66%   { box-shadow: 0px 0px 100px 0px var(--purple); }
-  100%   { box-shadow: 0px 0px 100px 0px var(--pink); }      
+@keyframes colorcycle-text {
+  0% {
+    color: var(--pink);
+  }
+  33% {
+    color: var(--aqua);
+  }
+  66% {
+    color: var(--purple);
+  }
+  100% {
+    color: var(--pink);
+  }
 }
 
+@keyframes colorcycle-border {
+  0% {
+    border: 2px solid var(--pink);
+  }
+  33% {
+    border: 2px solid var(--aqua);
+  }
+  66% {
+    border: 2px solid var(--purple);
+  }
+  100% {
+    border: 2px solid var(--pink);
+  }
+}
 
+@keyframes colorcycle-stroke {
+  0% {
+    stroke: var(--pink);
+  }
+  33% {
+    stroke: var(--aqua);
+  }
+  66% {
+    stroke: var(--purple);
+  }
+  100% {
+    stroke: var(--pink);
+  }
+}
 
+@keyframes menu-background {
+  0% {
+    box-shadow: 0px 0px 100px 0px var(--pink);
+  }
+  33% {
+    box-shadow: 0px 0px 100px 0px var(--aqua);
+  }
+  66% {
+    box-shadow: 0px 0px 100px 0px var(--purple);
+  }
+  100% {
+    box-shadow: 0px 0px 100px 0px var(--pink);
+  }
+}
+
+@keyframes floating {
+  0% {
+    transform: translate(0, 0px);
+  }
+  50% {
+    transform: translate(0, 15px);
+  }
+  100% {
+    transform: translate(0, 0px);
+  }
+}
+
+@keyframes floating-reverse {
+  0% {
+    transform: translate(0, 15px);
+  }
+  50% {
+    transform: translate(0, 0px);
+  }
+  100% {
+    transform: translate(0, 15px);
+  }
+}
+
+@keyframes colorcycle-fill {
+  0% {
+    fill: var(--pink);
+  }
+  33% {
+    fill: var(--aqua);
+  }
+  66% {
+    fill: var(--purple);
+  }
+  100% {
+    fill: var(--pink);
+  }
+}
+
+@keyframes colorcycle-shadow {
+  0% {
+    filter: drop-shadow(0px 0px 11px var(--pink));
+  }
+  33% {
+    filter: drop-shadow(0px 0px 11px var(--aqua));
+  }
+  66% {
+    filter: drop-shadow(0px 0px 11px var(--purple));
+  }
+  100% {
+    filter: drop-shadow(0px 0px 11px var(--pink));
+  }
+}
+
+@keyframes colorcycle-shadow-big {
+  0% {
+    filter: drop-shadow(0px 0px 22px var(--pink));
+  }
+  33% {
+    filter: drop-shadow(0px 0px 22px var(--aqua));
+  }
+  66% {
+    filter: drop-shadow(0px 0px 22px var(--purple));
+  }
+  100% {
+    filter: drop-shadow(0px 0px 22px var(--pink));
+  }
+}
+
+@keyframes rotate-coin {
+  0% {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateY(360deg);
+  }
+}
+
+@keyframes claim {
+  0% {
+    box-shadow: 0px 0px 100px 0px var(--pink);
+  }
+  33% {
+    box-shadow: 0px 0px 100px 0px var(--aqua);
+  }
+  66% {
+    box-shadow: 0px 0px 100px 0px var(--purple);
+  }
+  100% {
+    box-shadow: 0px 0px 100px 0px var(--pink);
+  }
+}

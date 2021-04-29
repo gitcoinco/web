@@ -1,58 +1,51 @@
-.quest-vote{
-
+.quest-vote {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1em;
   margin: 0em 3em;
 
-	
   user-select: none;
 
-  .option{
+  .option {
     height: 100px;
     cursor: pointer;
     display: flex;
     padding: 0.5em;
     text-decoration: none;
-    cursor: pointer;
     position: relative;
 
-    label, div{
+    label,
+    div {
       display: inline;
       justify-self: center;
       align-self: center;
       cursor: pointer;
     }
 
-    label{
+    label {
       font-weight: 600;
       color: var(--white);
       margin: 0em 1em;
-      //background-color: green;
-      //word-break: break-all;
-
     }
 
-    div{
+    div {
       display: flex;
-      //margin: 0em 1em;
       margin-right: 0.5em;
       margin-left: auto;
-      //background-color: red;
       width: auto;
 
-
-      input, span{
+      input,
+      span {
         display: inline;
         justify-self: center;
         align-self: center;
       }
 
-      input{
-        border:0;
-        outline:0;
-        padding:0;
-        margin:0;
+      input {
+        border: 0;
+        outline: 0;
+        padding: 0;
+        margin: 0;
         background-color: transparent;
         color: var(--aqua);
         font-size: 100%;
@@ -61,98 +54,53 @@
         height: 80px;
         text-align: right;
         margin-right: 0.1em;
-        margin-left: 1em;	
+        margin-left: 1em;
         cursor: pointer;
-
-        //background-color: green;
-
         -moz-appearance: textfield;
 
-        &::selection{
+        &::selection {
           background-color: var(--aqua);
           color: var(--space);
         }
-
       }
 
-      span{
+      span {
         color: var(--aqua);
-      }			
+      }
     }
 
-
-    .bar{
+    .bar {
       position: absolute;
       top: 0;
       left: 0;
-      background-color:var(--purple_light);
+      background-color: var(--purple_light);
       width: 0%;
       height: 100%;
       z-index: -1;
       transition: all 1000ms linear;
     }
 
-    &.active{
+    &.active {
       background-color: var(--space);
       animation: colorcycle-shadow-big 3s ease-in-out infinite;
     }
 
-    &:hover{
+    &:hover {
       animation: colorcycle-shadow-big 3s ease-in-out infinite;
       backdrop-filter: none;
       background-color: var(--space);
     }
-
   }
 
-
-  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-
-
-
-
 }
 
-
-
-
-
-
-
-
-
-
-
-@media #{$phone} { 
-  .quest-vote{
-
+@media #{$phone} {
+  .quest-vote {
     grid-template-columns: 1fr;
-
-    .option{
-
-      label{
-				
-      }
-
-      /* sadly removed as it do not work proper right now*/
-      .bar{
-        // display:none;
-      }
-
-		
-			
-    }
-
-	
   }
 }
-
-
-
-
-
-
-

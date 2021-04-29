@@ -1,35 +1,19 @@
-section.dashboard .content-tx-pending{
-
-  .wrapper{
+section.dashboard .content-tx-pending {
+  .wrapper {
     margin: auto;
     max-width: 900px;
   }
 
-  p{
+  p {
     text-align: center;
   }
 
-  .spinner{
+  .spinner {
     text-align: center;
-    margin-top:2em;
-    svg{
+    margin-top: 2em;
+    svg {
       width: 128px;
       height: 128px;
     }
   }
-
 }
-
-
-
-
-@media #{$tablet} { 
-
-}
-
-@media #{$phone} { 
-
-}
-
-
-

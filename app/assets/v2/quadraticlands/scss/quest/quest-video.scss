@@ -1,28 +1,21 @@
-.quest-video{
-
+.quest-video {
   width: 70vw;
 
-  // width * 0.6525
   height: 45.675vw;
-  max-height: calc(90vh - 130px);  
+  max-height: calc(90vh - 130px);
 
-
-  iframe, object, embed {
+  iframe,
+  object,
+  embed {
     width: 100%;
     height: 100%;
     border: 0;
   }
-
 }
 
-
-
-
-@media #{$phone} { 
-  .quest-video{
+@media #{$phone} {
+  .quest-video {
     width: 100vw;
-    height: 56.25vw; 
+    height: 56.25vw;
   }
 }
-
-

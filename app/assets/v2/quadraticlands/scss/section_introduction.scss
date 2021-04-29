@@ -1,5 +1,4 @@
-section.introduction{
-	
+section.introduction {
   margin: auto;
 
   margin-top: 3em;
@@ -8,55 +7,31 @@ section.introduction{
   padding: 0em 6em;
   text-align: center;
 
-	
+  h1 {
+    margin: 0;
+    padding: 0;
 
-
-  h1{
-    margin:0;
-    padding:0;
-		
-    span{
-      &.aqua{
+    span {
+      &.aqua {
         color: var(--aqua);
       }
     }
   }
 
-  p{
+  p {
     margin-top: 1em;
     margin-bottom: 0em;
   }
-
-
-
 }
 
-
-
-
-@media #{$desktop} { 
-  section.introduction{
+@media #{$desktop} {
+  section.introduction {
     padding: 0em 3em;
   }
 }
 
-
-@media #{$laptop} { 
-  section.introduction{
-  }
-}
-
-@media #{$tablet} { 
-  section.introduction{
-  }
-}
-
-@media #{$phone} { 
-  section.introduction{
+@media #{$phone} {
+  section.introduction {
     padding: 0em 1.5em;
   }
 }
-
-
-
-

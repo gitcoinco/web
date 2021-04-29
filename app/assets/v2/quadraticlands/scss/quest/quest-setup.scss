@@ -1,14 +1,12 @@
-#quest-setup{
-
+#quest-setup {
   position: fixed;
   top: 1em;
   right: 1em;
 
-  div{
-
+  div {
     cursor: pointer;
 
-    svg{
+    svg {
       display: block;
       background-color: none;
       stroke: var(--purple_light);
@@ -20,14 +18,10 @@
       pointer-events: none;
     }
 
-    &:hover{
-      svg{
+    &:hover {
+      svg {
         stroke: var(--white);
       }
-		
-    }	
-
+    }
   }
-
-
 }

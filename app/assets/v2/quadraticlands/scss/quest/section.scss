@@ -1,50 +1,38 @@
 /* template for fullscreen experience with bottom nav and seperator*/
 
-section.quest{
-
-
-  main{
-
+section.quest {
+  main {
     height: calc(100vh - 130px);
     display: grid;
-    //background-color: red;
 
-
-    .wrapper{
+    .wrapper {
       justify-self: center;
       align-self: center;
-      //background-color: green;
       padding: 0px;
       margin: 0px auto;
 
-      h1{
+      h1 {
         text-align: center;
         margin: auto;
         margin-bottom: 1.5em;
       }
 
-      &.scrollable{
+      &.scrollable {
         display: block;
         justify-self: initial;
         align-self: initial;
-        //background-color: yellow;
         margin-top: 4em;
         padding-bottom: 15em;
 
-        h1{
+        h1 {
           margin-left: 2em;
-          margin-right:2em;
-					
+          margin-right: 2em;
         }
-
       }
-
     }
-
-
   }
 
-  div.seperator{
+  div.seperator {
     height: 2px;
     position: fixed;
     bottom: 132px;
@@ -52,11 +40,11 @@ section.quest{
     right: 0px;
   }
 
-  nav{
+  nav {
     position: fixed;
     bottom: 0px;
     left: 0px;
-    right:0px;
+    right: 0px;
     height: 130px;
 
     display: grid;
@@ -67,30 +55,30 @@ section.quest{
 
     user-select: none;
 
-    div{
+    div {
       align-self: center;
     }
 
-    .left{
+    .left {
       justify-self: left;
       margin-left: 2em;
-    }	
+    }
 
-    .center{
+    .center {
       text-align: center;
       word-break: break-all;
     }
 
-    .right{
+    .right {
       justify-self: right;
       margin-right: 2em;
     }
 
-    .btn{
+    .btn {
       margin-bottom: initial;
     }
 
-    svg{
+    svg {
       display: block;
       margin: 0;
       padding: 0;
@@ -98,34 +86,23 @@ section.quest{
       height: 64px;
     }
 
-    a{
+    a {
       text-decoration: none;
     }
-
   }
-
-
 }
 
-
-
-@media #{$phone} { 
-  section.quest{
-
-    div.seperator{
+@media #{$phone} {
+  section.quest {
+    div.seperator {
       background-color: var(--space_light);
       bottom: 80px;
     }
 
-    nav{
+    nav {
       height: 80px;
       font-size: 70%;
       background-color: var(--space_light);
     }
-
   }
 }
-
-
-
-

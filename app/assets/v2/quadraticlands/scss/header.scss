@@ -1,107 +1,85 @@
-header{
-
+header {
   display: grid;
   grid-template-columns: 48px auto;
   grid-column-gap: 1em;
 
   height: 130px;
-	
+
   font-weight: 600;
   font-size: 80%;
 
   margin: 0em 30px;
   user-select: none;
 
-
-
-  .logos{
-
+  .logos {
     margin: auto;
     display: flex;
 
-    .gitcoin{
+    .gitcoin {
       margin-right: 15px;
-      img, svg{
+      img,
+      svg {
         width: 31.64px;
-        height:40px;
+        height: 40px;
         display: block;
       }
     }
 
-    .arrow{
+    .arrow {
       margin: auto;
       margin-right: 15px;
-      img, svg{
+      img,
+      svg {
         width: 10px;
-        height:15px;
+        height: 15px;
         display: block;
       }
     }
 
-    .quadraticlands{
-      img, svg{ 
-        height:40px;
+    .quadraticlands {
+      img,
+      svg {
+        height: 40px;
         width: 40px;
         display: block;
       }
     }
 
     z-index: 9999;
-
   }
 
-
-
-
-
-  nav{
+  nav {
     align-self: center;
     justify-self: end;
   }
-
-
 }
 
-
-
-
-@media #{$tablet} { 
-  header{
+@media #{$tablet} {
+  header {
     margin: 0em 20px;
   }
 }
 
-
-@media #{$phone} { 
-  header{
+@media #{$phone} {
+  header {
     margin: 0em 10px;
 
-    .logos{
-
-      .gitcoin{
+    .logos {
+      .gitcoin {
         display: none;
       }
 
-      .arrow{
+      .arrow {
         display: none;
       }
 
-      .quadraticlands{
-        svg, img{
+      .quadraticlands {
+        svg,
+        img {
           width: 32px;
           height: 32px;
         }
       }
-
-
     }
-
   }
 }
-
-
-
-
-
-
-

@@ -1,59 +1,38 @@
-.tabs{
-
+.tabs {
   user-select: none;
-  margin-top:3em;
-  margin-bottom:4em;
+  margin-top: 3em;
+  margin-bottom: 4em;
 
-
-  a{
+  a {
     display: inline-block;
     margin-bottom: 1em;
-    margin-right: .5em;
+    margin-right: 0.5em;
     text-decoration: none;
     font-weight: 600;
     font-size: 80%;
 
-    
     padding: 0.5em 1em;
     border: 1px solid var(--purple_light);
     color: var(--purple_light);
     border-radius: 3px;
 
-
-    &[aria-current=page]{
+    &[aria-current="page"] {
       background-color: var(--purple_light);
-      color : var(--space);
-      &:hover{
+      color: var(--space);
+      &:hover {
         background-color: var(--purple_light);
-        color : var(--space);    
-        cursor: default;    
-      };
+        color: var(--space);
+        cursor: default;
+      }
     }
-
 
     &:last-child {
       margin-right: initial;
     }
 
-    &:hover{
+    &:hover {
       animation: inherit;
       color: var(--white);
     }
-
-  }
-
-}
-
-
-@media #{$phone} { 
-  .tabs{
-    
   }
 }
-
-
-
-
-
-
-

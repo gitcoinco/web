@@ -1,20 +1,17 @@
-section.status{
-	
+section.status {
   padding: 0em 3em;
   max-width: 1400px;
   margin: auto;
 
-
-  .wrapper{
+  .wrapper {
     text-align: center;
     padding: 3em;
   }
 
-  .spinner{
-    svg{
+  .spinner {
+    svg {
       width: 64px;
       height: 64px;
     }
   }
-
 }

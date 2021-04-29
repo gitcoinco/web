@@ -1,129 +1,94 @@
-#nav-links{
-
+#nav-links {
   z-index: 22222;
 
   align-self: center;
   white-space: nowrap;
   margin-right: 30px;
 
-  a{
-
+  a {
     color: var(--purple_light);
     margin-right: 30px;
 
-
-    &[aria-current=page]{
-      li{
-        color : var(--white);
-      }
-    }
-
-    &:hover{
-      li{
+    &[aria-current="page"] {
+      li {
         color: var(--white);
       }
     }
 
-    &:last-child{
+    &:hover {
+      li {
+        color: var(--white);
+      }
+    }
+
+    &:last-child {
       margin-right: initial;
     }
 
-    li{
+    li {
       color: var(--purple_light);
       display: inline-block;
       margin-bottom: initial;
     }
-
   }
 
-
-  ul{
+  ul {
     margin-bottom: initial;
   }
+}
 
-
-}	
-
-
-
-
-@media #{$tablet} { 
-
-  #nav-links{
+@media #{$tablet} {
+  #nav-links {
     margin-right: 15px;
-    a{
+    a {
       margin-right: 15px;
     }
   }
-
 }
 
+@media #{$phone} {
+  #nav-links {
+    display: flex;
 
-
-
-
-
-
-
-@media #{$phone} { 
-
-	
-  #nav-links{
-
-    display : flex;
-
-    ul{
+    ul {
       background-color: var(--space);
       box-shadow: 0px 0px 100px 0px var(--pink);
-      animation: menu-background 4s ease-in-out infinite; 
+      animation: menu-background 4s ease-in-out infinite;
       position: absolute;
       display: none;
-      top:130px;
+      top: 130px;
       right: 1em;
       left: 1em;
       z-index: 1000;
-	
-      &.active{
+
+      &.active {
         display: block;
       }
 
-
-      a{
+      a {
         text-decoration: none;
         margin: initial;
         padding: initial;
 
-        li{
-          color : var(--purple);
+        li {
+          color: var(--purple);
           display: block;
           padding: 1.3em 1.3em;
         }
 
-        &:hover{
+        &:hover {
           animation: inherit;
 
-          li{
+          li {
             background-color: var(--purple);
-            color : var(--space);
+            color: var(--space);
           }
         }
 
-        &[aria-current=page]{
-          color : var(--white);
+        &[aria-current="page"] {
+          color: var(--white);
         }
-
       }
-
-
-
-
-
     }
-
   }
-
-
-
 }
-
-

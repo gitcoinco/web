@@ -1,49 +1,43 @@
-section.dashboard .header{
-
-  svg, img{
+section.dashboard .header {
+  svg,
+  img {
     width: 50px;
     height: 50px;
     display: block;
   }
 
-  .icon{
+  .icon {
     margin-left: 1em;
   }
 
-  .title{
+  .title {
     margin-left: 1em;
     font-weight: 500;
     color: var(--purple_light);
-    span{
+    span {
       color: var(--aqua_light);
     }
   }
 
-  .arrow{
+  .arrow {
     margin-left: auto;
 
-    a{
+    a {
       display: inline;
       border: 10px solid red;
     }
 
-    svg{
+    svg {
       margin-right: 0.5em;
       stroke: var(--purple_light);
     }
   }
 
-  &:hover{
-
-    .arrow{
-      svg{
+  &:hover {
+    .arrow {
+      svg {
         stroke: var(--white);
       }
     }
   }
-
 }
-
-
-
-

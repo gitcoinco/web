@@ -1,85 +1,63 @@
-section.grid{
-
+section.grid {
   display: grid;
   grid-template-columns: 50% 50%;
-	
+
   max-width: 1600px;
   margin: auto;
 
-  div{
+  div {
     align-self: center;
     text-align: right;
     margin: 0em 3em;
   }
 
-  figure{
+  figure {
     padding: 3em;
-    img, svg{
+    img,
+    svg {
       height: 100%;
     }
   }
 
-  &.reverse{
+  &.reverse {
     grid-template-columns: 50% 50%;
 
-    div{
+    div {
       grid-column: 1;
       grid-row: 1;
       text-align: left;
     }
-    figure{
+    figure {
       grid-column: 2;
       grid-row: 1;
     }
-
-  }
-
-
-}
-
-
-
-@media #{$laptop} { 
-  section.grid{
-
   }
 }
 
-
-
-@media #{$tablet} { 
-  section.grid{
+@media #{$tablet} {
+  section.grid {
     display: block;
 
-    figure{
+    figure {
       padding: 0px;
 
-      img, svg{
+      img,
+      svg {
         padding: initial;
-      }	
+      }
     }
 
-    div{
+    div {
       padding: 3em 0em;
       text-align: left;
     }
-
-  }	
+  }
 }
 
-
-
-
-
-@media #{$phone} { 
-  section.grid{
-    div{
+@media #{$phone} {
+  section.grid {
+    div {
       margin: 0em 1.5em;
     }
   }
 }
-
-
-
-
-

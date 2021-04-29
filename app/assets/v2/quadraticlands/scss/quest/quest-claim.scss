@@ -1,73 +1,68 @@
-.quest-claim{
-	
+.quest-claim {
   justify-self: center;
   align-self: center;
 
-
-
-  .error{
+  .error {
     max-width: 600px;
+    animation: claim 4s ease-in-out infinite;
+    padding: 3em;
+    margin: 2em;
+    text-align: center;
   }
 
-
-  .claim{
-		
+  .claim {
     text-align: center;
     animation: claim 4s ease-in-out infinite;
 
     padding: 3em;
     margin: 2em;
-		
 
-
-    p{
+    p {
       margin-bottom: initial;
     }
- 
-    .addresses{
 
+    .addresses {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 1em;
 
       margin-bottom: 1em;
 
-      .claim_address{
-        p{
+      .claim_address {
+        p {
           text-align: left;
           margin-bottom: 0.5em;
         }
 
-        div{
+        div {
           padding: 1em;
-					
+
           background-color: var(--smoke);
         }
-
       }
 
-      .delegate_address{
-        p{
+      .delegate_address {
+        p {
           text-align: right;
           margin-bottom: 0.5em;
         }
-        div{
+        div {
           padding: 1em;
-					
+
           background-color: var(--space_pink);
         }
       }
 
-      textarea{
+      textarea {
         display: block;
         padding: 0em;
         margin: 0em;
 
         width: 320px;
-	
+
         height: auto;
-				
-        font-family: 'Space Mono', monospace;
+
+        font-family: "Space Mono", monospace;
 
         font-size: 100%;
         resize: none;
@@ -76,199 +71,126 @@
         border: none;
         outline: none;
 
-        color : var(--aqua_light);
+        color: var(--aqua_light);
         background-color: transparent;
-				
 
         &:focus {
           outline: none;
         }
 
-
-        &.warning{
+        &.warning {
           animation: colorcycle-text 1s ease-in-out infinite;
         }
-
       }
-
-
     }
 
-
-
-
-
-
-
-
-    div.grid{
+    div.grid {
       display: grid;
       grid-template-columns: 1fr auto;
       grid-row-gap: 0.2em;
-			
-      font-family: 'Space Mono', monospace;
+
+      font-family: "Space Mono", monospace;
       line-height: 1.5em;
-	
-      span.description{
+
+      span.description {
         justify-self: start;
         text-align: left;
       }
 
-      span.token{
+      span.token {
         justify-self: end;
         text-align: right;
       }
 
-      &.total{
+      &.total {
         margin-top: 0.5em;
         padding-top: 0.5em;
         border-top: 1px solid var(--smoke);
         color: var(--white);
         font-weight: 600;
       }
-
     }
-
-
   }
 
-
-
-  .claiming{
-
-    animation: claim 2s ease-in-out infinite; 
+  .claiming {
+    animation: claim 2s ease-in-out infinite;
 
     padding: 3em;
     margin: 2em;
     text-align: center;
 
-
-    figure{
-      img{
+    figure {
+      img {
         width: 280px;
         margin: auto;
         margin-bottom: 1em;
       }
     }
-
-
   }
 
-
-
-
-  .claimed{
-
+  .claimed {
     padding: 3em;
     margin: 2em;
     text-align: center;
-
-
-    animation: claim 4s ease-in-out infinite; 
-
-    figure{
-      img{
-        width: 280px;
-        margin: auto;
-        margin-bottom: 1em;
-      }
-    }
-
-
-
-  }
-
-
-  .error{
 
     animation: claim 4s ease-in-out infinite;
-		
-    padding: 3em;
-    margin: 2em;
-    text-align: center;		
+
+    figure {
+      img {
+        width: 280px;
+        margin: auto;
+        margin-bottom: 1em;
+      }
+    }
   }
-
-
-
 }
 
-
-
-@media #{$tablet} { 
-  .quest-claim{
-    .claim{
-      .addresses{
+@media #{$tablet} {
+  .quest-claim {
+    .claim {
+      .addresses {
         grid-template-columns: 1fr;
 
-        .delegate_address{
-          p{
+        .delegate_address {
+          p {
             text-align: left;
           }
         }
-
       }
-
-
     }
   }
 }
 
-
-
-
-
-
-
-@media #{$phone} { 
-  .quest-claim{
-
-    .claim{
+@media #{$phone} {
+  .quest-claim {
+    .claim {
       padding: 1em;
       margin: 0em;
       animation: inherit;
 
-      .addresses{
-        textarea{
+      .addresses {
+        textarea {
           width: 280px;
         }
       }
-
     }
 
-    .claiming{
-      figure{
-        img{
+    .claiming {
+      figure {
+        img {
           width: 100%;
           height: auto;
         }
       }
     }
 
-
-    .claimed{
-      figure{
-        img{
+    .claimed {
+      figure {
+        img {
           width: 100%;
           height: auto;
         }
       }
     }
-
-
-    .error{
-
-    }
-
-
-
-
-
   }
 }
-
-
-
-
-
-
-

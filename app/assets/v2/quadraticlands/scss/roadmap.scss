@@ -1,50 +1,45 @@
-.roadmap{
-
+.roadmap {
   display: grid;
   grid-template-columns: 1fr 1px 2fr;
   grid-column-gap: 3em;
 
-  .title{
+  .title {
     color: var(--purple_light);
-    &.active{ color: var(--aqua_light); }
-  }
-
-  .vl{
-    background-color: var(--smoke);
-    &.active{ background-color: var(--aqua_light); }
-  }
-
-  .content{
-    h3{
-      color: var(--purple_light);
-      margin-bottom:1em;
-
+    &.active {
+      color: var(--aqua_light);
     }
-    &.active{ h3 {color: var(--aqua_light); } }
-
-    margin-bottom:3em;
   }
 
+  .vl {
+    background-color: var(--smoke);
+    &.active {
+      background-color: var(--aqua_light);
+    }
+  }
 
+  .content {
+    h3 {
+      color: var(--purple_light);
+      margin-bottom: 1em;
+    }
+    &.active {
+      h3 {
+        color: var(--aqua_light);
+      }
+    }
+
+    margin-bottom: 3em;
+  }
 }
 
-
-
-
-
-
-
-@media #{$tablet} { 
-  .roadmap{
+@media #{$tablet} {
+  .roadmap {
     grid-column-gap: 2em;
   }
-	
 }
 
-
-@media #{$phone} { 
-  .roadmap{
+@media #{$phone} {
+  .roadmap {
     grid-column-gap: 1em;
   }
-	
 }
