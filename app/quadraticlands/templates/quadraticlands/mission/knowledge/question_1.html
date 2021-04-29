@@ -1,0 +1,132 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+<section class="background">
+	<img src='{% static "v2/quadraticlands/images/background/anim-9.svg" %}' />
+</section>
+
+<section class="quest">
+
+	<!-- quest content -->
+	<main>
+
+		<div class="quest-quiz">
+
+			<div class="question">
+				<h1>What is the mission of Gitcoin?</h1>
+			</div>
+
+			<div class="reply">
+
+				<a href="/quadraticlands/mission/knowledge/question/1/wrong" 
+				data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1"
+				data-kinetics-attraction-grow="0.5">
+				<div>Create jobs for digital creatives</div>
+				</a>
+
+				<a href="/quadraticlands/mission/knowledge/question/1/right"				
+				data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1"
+				data-kinetics-attraction-grow="0.5">
+				<div>Economically empower digital creatives</div>
+				</a>
+
+				<a href="/quadraticlands/mission/knowledge/question/1/wrong" 				
+				data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1"
+				data-kinetics-attraction-grow="0.5">
+				<div>Build the Ethereum Ecosystem</div>
+				</a>
+
+				<a href="/quadraticlands/mission/knowledge/question/1/wrong" 				
+				data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1"
+				data-kinetics-attraction-grow="0.5">
+				<div>Reinvent Silicon Valley</div>
+				</a>
+
+			</div>
+
+		</div>
+
+	</main>
+
+
+	<!-- timer / seperator -->
+	<div class="seperator">
+		<div id="progressbar"></div>
+	</div>
+
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/" data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1"
+				data-kinetics-attraction-size="200">Exit</a>
+		</div>
+
+		<div class="center">
+			Question 1 of 2
+		</div>
+
+		<div class="right">
+			<div id="timeleft">15s</div>
+		</div>
+
+	</nav>
+
+
+
+</section>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // new Kinetics().interactionHook();
+	const kinetics = new Kinetics({
+          particles: { count: 8, sizes: {min: 100, max:200}, rotate: {speed:0.2}, 
+          mode: {type: "linear", boundery: "endless", speed:"1" }}
+    })
+	kinetics.interactionHook();
+  });
+</script>
+
+
+
+<script>
+	const maxTime = 15;
+	const expiryLink = "/quadraticlands/mission/knowledge/question/1/timeout";
+</script>
+
+<script src="{% static "v2/quadraticlands/js/questCountdown.js" %}"></script>
+
+{% endblock %}
+
+

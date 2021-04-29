@@ -1,0 +1,39 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<section class="grid">
+	
+	<figure class="intro">
+		<img src='{% static "v2/quadraticlands/images/mission/proof-of-use-start.svg" %}' />
+	</figure>
+
+	<div>
+		<h3><span>#</span>Chapter 2 of 3</h3>
+		<h1>Proof of use</h1>
+		<p>Delegate your voting power to a Gitcoin Steward, or become active in Gitcoin’s governance by voting on Gitcoin’s core principles.</p>
+		<a href="/quadraticlands/mission/use/delegationmode" class="btn"
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">I am ready</a>
+	</div>
+
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Kinetics().interactionHook();
+  });
+</script>
+
+{% endblock %}
+
+

@@ -1,0 +1,113 @@
+#wallet-provider{
+	
+  background-color: var(--space);
+  animation: menu-background 4s ease-in-out infinite;   
+
+  position: absolute;
+  top:1em;
+  right: 1em;
+  z-index: 22222;
+	
+  min-width: 280px;
+
+  display: none;
+
+  &.active{
+    display: block;
+  }
+
+
+
+
+  .token{
+
+    color: var(--aqua);
+    font-size: 120%;
+
+
+    #token_balance{
+
+    }
+
+    #token_symbol{
+      margin-left: 0.3em;
+    }
+
+  }
+
+
+
+  div.header{
+    display: grid;
+    grid-template-columns: auto 32px;
+    grid-column-gap: 1em;
+    padding: 0.7em 1em;
+    cursor: pointer;
+    background-color: var(--space);
+    border-bottom: 1px solid var(--smoke);
+
+    color: var(--stone);
+    font-size: 80%;
+    font-weight: 600;
+    align-self: center;
+
+    img, svg{
+      width: 32px;
+      height: 32px;
+      display: block;
+      align-self: center;
+      cursor: pointer;
+    }
+
+  }
+
+
+  div.status{
+    padding: 1em 2em;
+    border-bottom: 1px solid var(--smoke);
+    background-color: var(--aqua);
+    background-color: var(--purple);
+    font-size: 80%;
+    font-weight: 600;
+    color: var(--space);
+    cursor: default;
+
+    small{
+      font-size: 100%;
+    }
+		
+  }
+
+
+  div.provider{
+
+    display: grid;
+    grid-template-columns: auto 32px;
+    grid-column-gap: 1em;
+    padding: 0.7em 1em;
+    cursor: pointer;
+
+    color: var(--stone);
+    font-size: 80%;
+    font-weight: 600;
+    align-self: center;
+    cursor: pointer;
+
+    img, svg{
+      width: 32px;
+      height: 32px;
+      display: block;
+      align-self: center;
+      cursor: pointer;
+    }
+	
+    &:hover{
+      color: var(--space);
+      background-color: var(--aqua);
+    }
+
+
+  }
+
+
+}

@@ -1,0 +1,21 @@
+figure{
+
+  user-select: none;
+	
+  img,svg{
+    display: block;
+    margin:0;
+    padding:0;
+  }
+
+  &.floating{
+    animation: floating 3s ease-in-out infinite;
+  }	
+
+
+}
+
+
+
+
+

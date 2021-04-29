@@ -158,6 +158,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'debug_toolbar',
     'passport',
+    'quadraticlands'
 ]
 
 MIDDLEWARE = [
@@ -191,7 +192,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates', 'quadraticlands/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -974,3 +975,6 @@ BULK_CHECKOUT_ABI = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType
 JOBS_NODE = env.bool('JOBS_NODE', default=False)
 CELERY_NODE = env.bool('CELERY_NODE', default=False)
 
+# GTC Token Distribution 
+GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
+GTC_DIST_KEY = env('GTC_DIST_SIG_KEY', default='')

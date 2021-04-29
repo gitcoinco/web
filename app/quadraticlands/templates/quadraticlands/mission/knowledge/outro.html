@@ -1,0 +1,56 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<section class="grid">
+	
+	<figure class="outro">
+		<img src='{% static "v2/quadraticlands/images/mission/proof-of-know-end.svg" %}' />
+	</figure>
+
+	<div>
+		{% csrf_token %}
+		<h3><span>#</span>Chapter 1 of 3</h3>
+		<h1>Congratulations</h1>
+		<p>You proved your knowledge + survived the first mission.</p>
+		<a href="/quadraticlands/mission/use" class="btn" 
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">Next chapter</a>
+	</div>
+
+</section>
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Kinetics().interactionHook();
+  });
+</script>
+	
+<script>
+	const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+	document.addEventListener("DOMContentLoaded",function(){
+		// update user state
+    	setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_knowledge'}, {'X-CSRFToken': csrftoken});
+		$.when(setMissionStatus).then((result) => {
+			console.debug('Missions status set successfully', result);
+		}).catch((error) => {
+			console.error('Error setting mission status: ', error.message);
+	    });
+	});
+
+</script>
+
+{% endblock %}
+
+

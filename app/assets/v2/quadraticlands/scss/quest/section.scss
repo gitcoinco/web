@@ -1,0 +1,131 @@
+/* template for fullscreen experience with bottom nav and seperator*/
+
+section.quest{
+
+
+  main{
+
+    height: calc(100vh - 130px);
+    display: grid;
+    //background-color: red;
+
+
+    .wrapper{
+      justify-self: center;
+      align-self: center;
+      //background-color: green;
+      padding: 0px;
+      margin: 0px auto;
+
+      h1{
+        text-align: center;
+        margin: auto;
+        margin-bottom: 1.5em;
+      }
+
+      &.scrollable{
+        display: block;
+        justify-self: initial;
+        align-self: initial;
+        //background-color: yellow;
+        margin-top: 4em;
+        padding-bottom: 15em;
+
+        h1{
+          margin-left: 2em;
+          margin-right:2em;
+					
+        }
+
+      }
+
+    }
+
+
+  }
+
+  div.seperator{
+    height: 2px;
+    position: fixed;
+    bottom: 132px;
+    left: 0px;
+    right: 0px;
+  }
+
+  nav{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right:0px;
+    height: 130px;
+
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-gap: 1em;
+    font-weight: 600;
+    color: var(--white);
+
+    user-select: none;
+
+    div{
+      align-self: center;
+    }
+
+    .left{
+      justify-self: left;
+      margin-left: 2em;
+    }	
+
+    .center{
+      text-align: center;
+      word-break: break-all;
+    }
+
+    .right{
+      justify-self: right;
+      margin-right: 2em;
+    }
+
+    .btn{
+      margin-bottom: initial;
+    }
+
+    svg{
+      display: block;
+      margin: 0;
+      padding: 0;
+      width: 64px;
+      height: 64px;
+    }
+
+    a{
+      text-decoration: none;
+    }
+
+  }
+
+
+}
+
+
+
+@media #{$phone} { 
+  section.quest{
+
+    div.seperator{
+      background-color: var(--space_light);
+      bottom: 80px;
+    }
+
+    nav{
+      height: 80px;
+      font-size: 70%;
+      background-color: var(--space_light);
+    }
+
+  }
+}
+
+
+
+

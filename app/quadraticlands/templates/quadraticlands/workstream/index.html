@@ -1,0 +1,199 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="The Gitcoin Quadratic Lands - Workstream" />
+<meta name="twitter:description" content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web. In the quadratic lands, you can own where you earn and govern the future of Gitcoin." />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+
+{% block 'content' %}
+
+
+
+<!-- Hero -->
+<section class="hero knightrider" data-kinetics-mode
+data-kinetics-mode-type="rain" data-kinetics-mode-speed="5" data-kinetics-mode-boundery="pong">
+
+	<div class="background" >
+		<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+		{% include "quadraticlands/_inlinesvg/hero-workstream.svg" %}
+	</div>
+
+	<div class="content centered" 
+	data-kinetics-attraction
+	data-kinetics-attraction-chance=".6"
+	data-kinetics-attraction-force="3"
+	data-kinetics-attraction-grow="5">
+		<h1><span>Workstream</span></h1>
+	</div>
+	
+</section>
+
+
+
+<!-- Gitcoin builds Gitcoin -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
+
+	<section class="column">
+		<h2>Gitcoin builds Gitcoin</h2>
+		<div class="intro purple">We are working with the community to create groups of stewards who have the mastery, autonomy, and purpose to create GitcoinDAO - the decentralized organization that is building what we call the Quadratic Lands - a better world for public goods and digital democracy .</div>
+
+		<p>The time commitment for each workstream is 3-5 hours / quarter to stay in the know (join discord, attend monthly call), and variable based upon what side-quests you go on that are funded by the Treasury.</p>
+	</section>
+
+	<section class="column">
+		<h3 class="aqua">How to Participate?</h3>
+		<p>1. Choose a workstream</p>
+		<p>2. Git your bearings - Start showing up to monthly meetings & meeting people.</p>
+		<p>3. Find someone who has a problem to solve & budget to do it.</p>
+		<p>4. Do work for the DAO + Git Coins. </p>
+	</section>
+
+</article>
+
+
+<!-- Available Workstreams -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
+
+	<section class="column">
+		<h2>Available Workstreams</h2>
+	</section>
+
+	<section class="column workstream">
+
+		<div>
+			<h3><span>#Workstream</span>Public Goods Funding</h3>
+			<p>This workgroup will be focused on finding ways to fund public goods. Gitcoin’s mission is to empower builders to work on digital public goods. Join this work stream to help create momentum for public goods funding!</p>
+			<a href="/quadraticlands/workstream/public-goods-funding" class="btn purple" 
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">Learn More</a>
+		</div>
+
+		<div>
+			<h3><span>#Workstream</span>Anti-Collusion</h3>
+			<p>Gitcoin grants are built on QF, which is built on sybil/collusion resistance. We have some of the top data scientists in the ecosystem working together to build out fraud-detection & mitigation tools.  Join them!</p>
+			<a href="/quadraticlands/workstream/anti-collusion" class="btn purple"
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">Learn More</a>
+		</div>
+
+		<div>
+			<h3><span>#Workstream</span>Decentralize Gitcoin</h3>
+			<p>Gitcoin should not be a centralized pillar of a decentralized ecosystem. Help build momentum for public goods funding by building GitcoinDAO with other community members.</p>
+			<a href="/quadraticlands/workstream/decentralize-gitcoin" class="btn purple"
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">Learn More</a>
+		</div>
+
+		<div>
+			<h3><span>#Workstream</span>Stewards</h3>
+			<p>Stewards will be ultimately in charge of governing Gitcoin as a whole. Gitcoin is being built in service to the crypto community, and we would like to be governed by our community.  Have thoughts on how Gitcoin should work? Join this work stream.</p>
+			<a href="/quadraticlands/workstream/stewards" class="btn purple"
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">Learn More</a>
+		</div>
+
+		
+	</section>
+
+
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+<!-- sfx library-->
+<script src="{% static "v2/quadraticlands/js/tone.js" %}"></script>
+
+
+
+<!-- animate workstream page header image ( hero-workstream.svg ) -->
+<script>
+
+	document.addEventListener("DOMContentLoaded",function(){
+
+		
+		
+		// random floor polygones coloring / lights of town
+		polygones = document.querySelectorAll("svg #hero polygon")
+
+		polygones.forEach(p => {
+			p.setAttribute('data-kinetics-attraction', '');
+			p.setAttribute('data-kinetics-attraction-chance', getRandomFloat(0.3,1));
+			p.setAttribute('data-kinetics-attraction-force', getRandomFloat(.7,1.3));
+			p.setAttribute('data-kinetics-attraction-grow', getRandomInt(1,4));
+			p.setAttribute('data-tone-click-random', '');
+			p.style.cursor ="pointer";
+		})
+
+		initToneJs()
+
+		new Kinetics().interactionHook();
+	
+		last = 0;
+		console.debug("ANIMATE TOWN")
+		animate_about()
+	});	
+
+
+
+	function animate_about(now){
+
+	    if(!last || now - last >= 100) {
+	        
+			// pick a random poly from hero-about.svg
+			// to randomly color up with a little animation
+			polygone = polygones[Math.floor(Math.random() * polygones.length)]
+			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: 500, delay: 0, iterations: 1
+			});
+
+			last = now;
+		}
+
+		requestAnimationFrame(animate_about)
+	}
+
+
+
+
+
+
+</script>
+
+
+
+{% endblock %}
+
+

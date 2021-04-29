@@ -771,6 +771,11 @@ urlpatterns = [
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
+    # quadratic lands 
+    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
+    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
+    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
+
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),

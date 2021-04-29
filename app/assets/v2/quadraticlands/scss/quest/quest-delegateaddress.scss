@@ -1,0 +1,37 @@
+.quest-delegateaddress{
+	
+  margin: 0em 3em;
+  margin-top: 3em;
+
+  input{
+
+    display: block;
+    padding: 0.5em 1em;
+    margin: 0px auto;
+
+    border: 0px;
+    outline: 0px;
+
+    width: 90%;
+    max-width: 800px;
+
+    color : var(--pink_light);
+    font-family: 'Space Mono', monospace;
+    background-color: var(--space_pink);
+    font-size: 100%;
+
+    text-align: center;
+    word-break: break-all;
+
+    &::placeholder {
+      color: var(--pink);
+    }
+
+    &:focus {
+      background-color: none;
+    }
+		
+  }
+
+
+}

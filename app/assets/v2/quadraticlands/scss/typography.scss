@@ -1,0 +1,153 @@
+html{
+  font-family: 'Poppins', sans-serif;
+  font-kerning: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  line-height: 1.66em;
+}
+
+
+h1{
+  font-family: 'Space Mono', monospace;
+  color: var(--white);
+  font-size: 170%;
+  font-weight: 400;
+  line-height: 1.5em;
+  margin-bottom: 2rem;
+  animation: colorcycle-shadow 3s ease-in-out infinite;
+}
+
+h2{
+  font-family: 'Space Mono', monospace;
+  color: var(--white);
+  font-size: 150%;
+  font-weight: 400;
+  line-height: 1.6em;
+  margin-bottom: 2rem;
+  span{
+    animation: colorcycle-text 1s ease-in-out infinite;
+  }
+}
+
+h3{
+  font-family: 'Poppins', sans-serif;
+  font-size: 100%;
+  font-weight: 500;
+  color: var(--purple_light);
+  margin-bottom: 2rem;
+  span{
+    animation: colorcycle-text 1s ease-in-out infinite;
+  }
+  &.aqua{
+    color: var(--aqua_light);
+  };
+}
+
+
+.intro{
+  margin: 2em 0em;
+  font-size: 110%;
+  line-height: 1.8em;
+  color: var(--aqua);
+
+  &.purple{
+    color: var(--purple);
+  }
+
+  span{
+    color: var(--pink);
+  }
+}
+
+
+
+p{
+  font-size: 100%;
+  font-weight: 400;
+  margin-bottom: 2rem; 
+
+  &.no-margin{
+    margin-bottom: 0px;
+  }
+
+
+  span{
+    color: var(--pink);
+  }
+
+}
+
+
+ul{
+  margin-bottom: 2rem; 
+  list-style: inside;
+}
+
+
+ol{
+  margin-bottom: 2rem; 
+  list-style: inside;
+
+  &.decimal{
+    list-style-type: decimal;
+  }
+}
+
+
+
+
+li{
+  margin-bottom: 0.5em;
+}
+
+
+
+a{
+  color: var(--white);
+
+  &:hover{
+    color: var(--space);
+    animation: colorcycle-text 1s ease-in-out infinite;
+  }
+
+  &:focus{
+    outline: none;
+    color: var(--pink);
+  }
+}
+
+
+
+
+
+
+
+@media #{$desktop} {
+  html{ 
+    font-size:140%;
+  }
+}
+
+@media #{$laptop} {
+  html{ 
+    font-size: 120%; 
+  }
+}
+
+@media #{$tablet} { 
+  html{  
+    font-size: 110%;
+  }
+}
+
+@media #{$phone} { 
+  html{
+    font-size: 100%;
+  }
+  h1{
+    font-size: 140%;
+  }
+}
+
+

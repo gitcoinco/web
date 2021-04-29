@@ -1,0 +1,54 @@
+section#footer{
+
+  text-align: center;
+  margin: 3em 3em;
+  padding: 3em;
+  margin-bottom: 12em;
+  border-top: 1px solid var(--smoke);
+  user-select: none;
+
+  a{
+    margin-right: 1.5em;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 80%;
+    color: var(--purple_light);
+
+
+    &[aria-current=page]{
+      color : var(--white);
+    }
+
+
+    &:last-child {
+      margin-right: initial;
+    }
+
+    &:hover{
+      animation: inherit;
+      color: var(--white);
+    }
+
+  }
+
+}
+
+
+@media #{$phone} { 
+  section#footer{
+    margin: 0em 1.5em;
+    padding: 3em;
+    a{
+      display: block;
+      margin-right: initial;
+      padding-bottom: 2em;
+    }
+  }
+}
+
+
+
+
+
+
+

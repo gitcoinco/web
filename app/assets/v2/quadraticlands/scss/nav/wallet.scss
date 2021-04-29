@@ -1,0 +1,85 @@
+#nav-wallet{
+	
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--space_light);
+  padding: 0.5em;
+  border-radius: 4px;
+
+  img, svg{
+    width: 32px;
+    height: 32px;
+    display: block;
+    align-self: center;
+    cursor: pointer;
+  }
+
+  #noproviderIcon{
+    &.hide{
+      display: none;
+    }
+  }
+
+  #providerIcon{
+    img, svg{
+      &.hide{
+        display: none;
+      }
+    }
+  }
+
+  span{
+    font-size: 80%;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+    padding:0em 1em;
+    margin-right: 0.5em;	
+  }
+
+  /* claimable token ammount*/
+  span.claimable{
+    background-color: var(--aqua_light);
+    color: var(--space);
+    animation: colorcycle-shadow 3s ease-in-out infinite;
+    a{
+      color: var(--space);
+      text-decoration: none;
+    }
+  }
+
+  span.web3network{
+    background-color: var(--space_pink);
+    color: var(--pink_light);
+  }
+
+
+  &:hover{
+    //background-color: var(--smoke);
+  }
+
+
+  &.hide{
+    display: none;
+  }
+
+}	
+
+
+
+@media #{$phone} { 
+
+  #nav-wallet{
+    span{
+      display: none;
+    }
+
+
+  }
+
+}
+
+
+

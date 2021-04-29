@@ -1,0 +1,81 @@
+.web3modal-modal-lightbox{
+  background-color: var(--space_glass_firefox) !important;
+  background-color: none !important;
+  z-index: 99999999 !important;
+  background-color: green;
+}
+
+@supports ((-webkit-backdrop-filter: blur(2em)) or (backdrop-filter: blur(2em))) {
+  .web3modal-modal-lightbox{
+    background-color: var(--space_glass);
+    backdrop-filter: blur(18px);
+  }
+}
+
+
+.web3modal-modal-card {
+  background-color: transparent !important;
+  padding: 0em !important;
+  border-radius: initial !important;
+}
+
+.web3modal-provider-wrapper{
+  border: none !important;
+  border-radius: inherit !important;
+
+}
+
+.web3modal-modal-container{
+  padding: 0px !important;
+}
+
+
+.web3modal-provider-wrapper{
+  padding: 0.2em !important;
+}
+
+
+.web3modal-provider-container{
+
+  background-color: var(--space_light) !important;
+  border-radius: initial !important;
+  cursor: pointer;
+  border: none !important;
+
+  .web3modal-provider-icon{
+    margin-top: 0.5em !important;
+  }
+
+  .web3modal-provider-name{
+    color: var(--purple_light) !important;
+    font-family: 'Space Mono', monospace !important;
+    font-weight: 400 !important;
+    font-size: 150% !important;
+  }
+
+  .web3modal-provider-description{
+    color: var(--stone) !important;
+  }
+
+
+  &:hover{
+
+    .web3modal-provider-name{
+      color: var(--white) !important;
+      animation: colorcycle-shadow 3s ease-in-out infinite;
+    }
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+

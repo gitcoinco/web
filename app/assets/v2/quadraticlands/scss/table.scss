@@ -1,0 +1,23 @@
+table{
+
+  display: table;
+  box-sizing: border-box;
+  border-collapse: collapse;
+  margin-bottom: 2rem; 
+
+  td{
+    vertical-align: top;
+    order-collapse: collapse;
+    border: 1px solid var(--smoke);
+    padding: 0.5rem;
+  }
+
+  thead{
+    td{
+      color: var(--white);
+    }
+  }
+
+
+
+}

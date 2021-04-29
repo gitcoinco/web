@@ -1,0 +1,168 @@
+section.stewards{
+
+  padding: 6em 3em;
+  max-width: 1400px;
+  margin: auto;
+
+  div.wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em;
+  }
+
+  .steward-card{
+    user-select: none;
+    background-color: var(--space_light);
+    cursor: initial;
+    position: relative;
+  }
+
+  .steward-card:hover{
+    animation: colorcycle-shadow-big 3s ease-in-out infinite;
+    .steward-details{ opacity: 1; }	
+  }
+
+  .steward-card.selected{
+    background-color: var(--purple_light);
+    .steward .text .description{ display: none; }
+    .steward .text .selected{ display: block; }
+    &:hover{ .steward-details{ opacity: 0; } }
+  }
+
+	
+
+
+  .steward{
+	
+    display: flex;
+    align-items: center;
+				
+    figure{
+      img{
+        width: 140px;
+        height: 140px;
+        display: block;
+      }
+    }
+
+    .text{
+
+      margin: 0em 1.5em;
+
+      .name{
+        color: var(--white);
+        font-weight: 500;
+      }
+
+      .description{
+        font-size: 80%;
+        line-height: 160%;
+        margin-top: 0.3em;
+        margin-bottom: 0.2em;
+      }
+
+      .selected{
+        color: var(--aqua);
+        font-weight: 500;
+        display: none;
+      }
+
+    }
+
+
+  }
+
+
+
+  .steward-details{
+    display: grid;
+    margin: auto;
+    background-color: #0E0333EE;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+
+    div.wrapper{
+      display: block;
+      margin: auto;
+    }
+
+    .btn{
+      margin-bottom: 0px;
+    }		
+  }
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+@media #{$tablet} { 
+  section.stewards{
+
+    padding: 4em 2em;
+
+    div.wrapper{
+      grid-template-columns: 1fr;
+
+      .steward-card{
+        .steward{
+          figure{
+            img{
+              width: 120px;
+              height: 120px;
+            }
+          }
+        }
+      }
+
+    }
+
+
+  }
+}
+
+
+
+
+@media #{$phone} { 
+  section.stewards{
+
+    padding: 2em 1em;
+
+    div.wrapper{
+
+      .steward-card{
+        .steward{
+          figure{
+            img{
+              width: 100px;
+              height: 100px;
+            }
+          }
+        }
+      }
+
+    }
+
+	
+  }
+}
+
+
+
+

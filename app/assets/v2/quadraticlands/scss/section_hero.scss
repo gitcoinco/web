@@ -1,0 +1,114 @@
+section.hero{
+  width: 100%;
+  height: 100vh;
+  margin-top: -130px;
+  display: grid;
+  margin-bottom: 3em;
+
+  z-index: -5;
+
+  div.content{
+		
+    align-self: center;
+    grid-column: 1;
+    grid-row: 1;
+    max-width: 800px;
+    margin-left: 3em;
+    user-select: none;
+
+    &.pushdown{
+      padding-top: 130px; /*navigation*/
+    }
+
+    &.centered{
+
+      margin: auto;
+
+      h1{
+        margin:0;
+      }
+    }
+
+    .btn{
+      margin:0px;
+    }
+
+
+
+  }
+
+  div.background{
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  svg{
+    display: block;
+    height: 100vh;
+    width: 100%;
+  }
+
+  img{
+    display: block;
+    height: 100vh;
+    object-fit: cover;
+  }
+
+  h1{
+    color: var(--white);
+    animation: inherit;
+    line-height: 1.6em;
+
+    span {
+      background-color: var(--space_pink);
+    }
+		
+  }
+
+
+  /* hover knight rider effect  */
+
+  &.knightrider{
+
+    svg{
+      #hero{
+
+        polygon, path {
+          stroke-width: 1;
+          stroke: var(--smoke);
+          fill: transparent;
+          pointer-events: visible;
+          transition: all 700ms ease;
+
+          &:hover{
+
+            fill: var(--aqua_light);
+            transition: padding 0s;
+
+          }
+        }
+
+      }
+    }
+
+  }
+
+
+
+}
+
+
+
+@media #{$tablet} { 
+  section.hero{
+    div.content{
+      max-width: 600px;
+      margin-left: 1.5em;
+      max-width: 80%;
+    }
+  }
+}
+
+
+
+

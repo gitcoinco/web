@@ -1,0 +1,44 @@
+section.dashboard .content-mission{
+
+  .wrapper{
+
+  }
+
+  .col{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+  }
+
+  .mission-name{
+  }
+
+  .mission-status{
+    margin-left: auto;
+    color: var(--stone);
+
+    &.playable { color: var(--pink_light); }
+    &.locked { color: var(--smoke); }
+    &.done { color: var(--aqua_light);  }
+
+  }
+
+  .mission-status-icon{
+    margin-left: 1em;
+
+    svg{
+      fill: var(--stone);
+      height: 17px;
+      width: 17px;
+      display: block;
+    }
+
+    &.playable { svg{ fill: var(--pink_light); } }
+    &.locked { svg{ fill: var(--smoke); } }
+    &.done { svg{ fill: var(--aqua_light); }   }
+
+  }
+
+
+
+}

@@ -1,0 +1,45 @@
+section.faq{
+
+  article{
+
+    margin:0;
+    padding:0;
+
+
+    .q{
+      padding: 1em 0em;
+      border-bottom: 1px solid var(--smoke);
+      color: var(--white);
+
+      span{
+        animation: colorcycle-text 1s ease-in-out infinite;
+        margin-right: 1em;
+      }
+
+      a{
+        text-decoration: none;
+      }
+
+    }
+
+    .a{
+      display: none;
+    }
+
+
+    &:target {
+      .q{
+        border: none;
+      }
+      .a{
+        display: block;
+        padding: 1em 0em;
+      }
+	
+    }	
+
+  }
+
+
+
+}

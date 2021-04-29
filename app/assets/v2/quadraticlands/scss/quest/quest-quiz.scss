@@ -1,0 +1,76 @@
+.quest-quiz{
+	
+  justify-self: center;
+  align-self: center;
+
+  .question{
+    text-align: center;
+    margin: 0em 3em;
+  }
+
+  .reply{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em;
+    margin: 0em 3em;
+    user-select: none;
+
+    a{
+      background-color: var(--purple_light);
+      height: 100px;
+      cursor: pointer;
+      display: grid;
+      padding: 0.5em;
+      text-decoration: none;
+
+
+      div{
+        display: inline-block;
+        font-weight: 600;
+        color: var(--space);
+        justify-self: center;
+        align-self: center;
+        text-align: center;
+      }
+
+
+      &:hover{
+        animation: colorcycle 1s ease-in-out infinite;
+      }
+
+    }
+
+  }
+
+
+}
+
+
+
+
+
+@media #{$phone} { 
+  .quest-quiz{
+
+    .question{
+      text-align: center;
+      margin: 1em;
+      h1{
+        font-size: 120%;
+      }
+    }
+
+    .reply{
+      margin: 0em 1em;
+      grid-gap: 0.5em;
+    }
+
+  }
+}
+
+
+
+
+
+
+

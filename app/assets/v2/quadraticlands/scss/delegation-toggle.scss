@@ -1,0 +1,113 @@
+
+.delegation-toggle{
+
+  display: flex;
+  flex-flow: row wrap;
+	
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  &.disablehover{
+    cursor: initial;
+  }
+
+
+  .label{
+    margin: 0em 1em;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+}
+
+
+
+.toggle{
+
+  display: flex;
+  align-items: center;
+  user-select: none;
+  padding: 0.5em;
+  border-radius: 50px;
+  color: var(--space);
+  font-weight: 600;
+  width: 250px;
+  justify-content: space-between;
+
+  margin: 1em 0em;
+
+  transition: all 300ms linear;
+
+  &:hover{
+    animation: colorcycle-shadow 3s ease-in-out infinite;
+  }
+
+  &.disablehover{
+    &:hover{
+      cursor: default;
+      animation: initial;
+    }
+  }
+
+
+  .circle{
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: var(--white);
+  }
+
+  .enabled, .disabled{
+    margin: 0em 1em;
+  }
+
+
+
+  &.enabled{
+
+    background-color: var(--purple_light);
+
+    .enabled{
+      display: block;
+    }
+
+    .disabled{
+      display: none;
+    }
+
+    .circle{
+      margin-left: 1em;
+    }
+
+  }
+
+  &.disabled{
+
+    background-color: var(--aqua_light);
+
+    .enabled{
+      display: none;
+    }
+
+    .disabled{
+      display: block;
+    }
+
+    .circle{
+      margin-right: 1em;
+    }
+
+  }
+
+	
+
+
+}
+
+
+
+
+
+

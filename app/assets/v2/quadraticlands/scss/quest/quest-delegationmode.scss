@@ -1,0 +1,26 @@
+.quest-delegationmode{
+  max-width: 650px;
+
+  text-align: center;
+
+  padding: 2em 1em;
+  margin: 1em;
+
+  p{
+    margin-bottom: 0em;
+  }
+
+
+ 		
+}
+
+
+@media #{$phone} { 
+  .quest-delegationmode{
+    padding: 2em 1em;
+    margin: 1em;
+  }
+}
+
+
+

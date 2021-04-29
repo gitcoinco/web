@@ -1,0 +1,79 @@
+{% load static compress%}
+
+<script>
+  var static_url = "{{ STATIC_URL }}";
+  var media_url = "{{ MEDIA_URL }}";
+  document.contxt = {{ json_context|safe }};
+</script>
+
+<script src="{% url 'javascript-catalog' %}"></script>
+
+{% include 'shared/sentry.html' %}
+
+
+<!-- JS web3 -->
+<script src="{% static "v2/js/lib/web3.min.js" %}"></script>
+
+
+<!-- JS external cdn scripts -->
+<script src="https://cdn.jsdelivr.net/npm/web3modal@latest/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/authereum@latest/authereum.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@portis/web3@latest/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fortmatic@latest/dist/fortmatic.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@latest/dist/umd/index.min.js"></script>
+
+
+<!-- JS Gitcoin Network -->
+{% compress js file gitcoin %}
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+<script src="{% static "v2/js/lib/fortmatic.js" %}"></script>
+<script src="{% static "v2/js/data-chains.js" %}"></script>
+<script src="{% static "v2/js/wallet.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/ajax-helper.js" %}"></script>
+<script src="{% static "v2/js/cart-data.js" %}"></script>
+<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/truncate-hash.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+{% endcompress %}
+
+
+<!-- JS Quadratic Lands -->
+{% compress js file quadraticlands %}
+<!-- kinetics ( open source particles kinetics.li )-->
+<script src="{% static "v2/quadraticlands/js/kinetics.umd.js" %}"></script>
+<!-- QL custom cookielaw script ( not the same as in gitcoin! )-->
+<script src="{% static "v2/quadraticlands/js/cookielaw.js" %}"></script>
+<!-- QL Web3 Functions for QL -->
+<script src="{% static "v2/quadraticlands/js/ql-web3.js" %}"></script>
+<!-- QL APP - burger menu, wallet menu, provider select-->
+<script src="{% static "v2/quadraticlands/js/app.js" %}"></script>
+
+{% endcompress %}
+
+
+<!-- Artefact - not sure if we need this -->
+<script>
+  var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
+  var ipfsConfig = {
+    host: host,
+    port: {{ ipfs_config.port }},
+    protocol: "{{ ipfs_config.protocol }}",
+    root: "{{ ipfs_config.root }}"
+  };
+</script>
+
+{% if recommend_gas_price %}
+<script>
+  setInterval(function(){
+    defaultGasPrice = parseInt(10**9 * {{ recommend_gas_price }});
+  }, 1000);
+</script>
+{% endif %}
+
+
+
+{% include 'shared/messages.html' %}

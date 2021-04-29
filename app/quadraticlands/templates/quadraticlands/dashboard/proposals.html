@@ -1,0 +1,82 @@
+{% load static %}
+
+<div class="section">
+
+	<a id="shapshot_link" target="_blank" class="noparticles">
+		<div class="header">
+			<div class="icon">
+				<img loading="lazy" src="{% static "v2/quadraticlands/images/icons/proposals.svg" %}" />
+			</div>
+			<div class="title">
+				Active Proposals
+			</div>
+			<div class="arrow">
+				{% include "quadraticlands/_inlinesvg/arrow.svg" %}
+			</div>
+		</div>
+	</a>
+
+	<div class="content">
+		<div class="content-proposals">
+			<div class="wrapper" id="proposals">
+
+				<template id="proposal_template">
+					<div class="col">
+						<div class="proposal">
+							<a target="_blank" class="name" href="url"></a>
+						</div>						
+					</div>
+				</template>
+
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	// docs : https://docs.snapshot.org/hub-api
+
+	const snapshot_api = "https://hub.snapshot.page/api/wolfdefi/proposals"
+	const proposals = document.getElementById("proposals")
+	 
+	fetch(snapshot_api)
+		.then( res => res.json() )
+		.then( data => updateProposals(data) )
+
+});
+
+
+function updateProposals(data){
+
+	const now = Math.floor(Date.now() / 1000)
+
+	// loop through all proposals
+	for (const [key, value] of Object.entries(data)) {
+
+		// just show actives
+		if ( value.msg.payload.end >= now ){
+		
+			// awesome new template way of doing things :)
+			proposal_template = document.getElementById("proposal_template").content
+			copy = document.importNode(proposal_template,true)
+			copy.querySelector(".name").textContent = value.msg.payload.name
+			copy.querySelector(".name").href = "https://snapshot.org/#/wolfdefi/proposal/" + value.authorIpfsHash
+			document.getElementById("proposals").appendChild(copy)
+
+			//console.log(value)
+
+		}
+
+	}
+
+}
+
+
+</script>
+
+
+

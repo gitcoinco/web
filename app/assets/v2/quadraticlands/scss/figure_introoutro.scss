@@ -1,0 +1,46 @@
+figure{
+
+  &.intro{
+    img,svg{
+      background-color: var(--space_light);
+    }
+		
+  }
+
+  &.outro{
+    img,svg{
+      background-color: var(--space_light);
+    }
+  }
+
+
+}
+
+
+@media #{$laptop} { 
+  figure.intro, figure.outro{
+    img,svg{
+    }	
+  }
+}
+
+
+@media #{$tablet} { 
+  figure.intro, figure.outro{
+    img,svg{
+      max-height: 700px;
+      object-fit: cover;
+    }	
+  }
+}
+
+
+
+@media #{$phone} { 
+  figure.intro, figure.outro{
+    img,svg{
+      max-height: 600px;
+      object-fit: cover;
+    }	
+  }
+}

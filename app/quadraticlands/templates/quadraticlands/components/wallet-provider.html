@@ -1,0 +1,104 @@
+{% load i18n static %}
+
+{% block 'content' %}
+<div id="wallet-provider" data-kinetics-attraction data-kinetics-attraction-chance=".8" 
+    data-kinetics-attraction-force="1.3" data-kinetics-attraction-grow="2" data-kinetics-attraction-mode="drone">
+
+	<div class="header" id="close-wallet-provider">
+		Wallet
+		{% include "quadraticlands/_inlinesvg/close.svg" %}
+	</div>
+
+
+
+	<!-- status infos about the connected wallet -->
+	<div class="status wallet-hidden d-none">
+
+		<!-- network name e.g. rinkeby, mainnet -->
+		<div class="network-name"></div>
+
+		<!-- the account address -->
+		<div class="selected-account"></div>
+
+		<!-- wallet accounts -->
+		<span id="wallet-accounts"></span>
+    
+    <!-- GTC token balance-->
+    <div class="token"><span id="token_balance"></span><span id="token_symbol"></span></div>
+		   
+	</div>
+
+	<!-- connect -->
+	<div class="provider" id="wallet-btn">Connect to a wallet</div>
+
+	<!-- disconnect -->
+	<div class="provider wallet-hidden d-none" id="btn-disconnect">
+		Disconnect
+		{% include "quadraticlands/_inlinesvg/disconnect.svg" %}
+	</div>
+
+</div>
+
+
+  <div style="display: none;">
+
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+    </a>
+
+    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet"></div>
+
+  </div>
+
+  <div id="templates" style="display: none;">
+    <template id="template-balance">
+      <div class="wallet-option" data-toggle="tooltip" title="Click to select this wallet">
+        <div class="wallet-address"></div>
+        <small class="wallet-balance"></small>
+      </div>
+    </template>
+  </div>
+
+
+{% endblock %}
+{% block 'scripts' %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+  const token_balance = document.querySelector("#token_balance")
+  const token_symbol = document.querySelector("#token_symbol")
+  document.addEventListener("dataWalletReady", walletMenu);
+
+});
+
+
+async function walletMenu() {
+
+  try {
+
+      let balance = await getTokenBalances(gtc_address())
+      token_balance.innerHTML = balance.balance.toFixed(2)
+      token_symbol.innerHTML = balance.symbol
+
+    } catch(e) {
+        console.log(e);
+    }
+
+}
+
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

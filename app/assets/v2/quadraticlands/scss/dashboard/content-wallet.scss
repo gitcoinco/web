@@ -1,0 +1,56 @@
+section.dashboard .content-wallet{
+
+  .wrapper{
+		
+  }
+
+  .balance{
+    font-family: 'Space Mono', monospace;
+    color: var(--aqua_light);
+    font-size: 200%;
+    font-weight: 400;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+    line-height: 1.3em;
+    text-align: center;
+  }
+
+  .statistics{
+    text-align: center;
+  }
+
+  .logo{
+
+    margin: auto;
+    width: 64px;
+    height: 64px;
+
+    img{
+      width: 64px;
+      height: 64px;
+      animation: 6s cubic-bezier(0.80, 0, 0.20, 1) 0s infinite normal none running rotate-coin;
+      display: block;
+      margin:0;
+      padding:0;	
+
+    }
+
+  }
+
+  #dashboard_wallet_token_balance{
+
+  }
+
+  #dashboard_wallet_token_symbol{
+    margin-left: 0.3em;
+  }
+
+  #dashboard_wallet_delegator_statistics{
+
+  }
+
+
+}
+
+
+

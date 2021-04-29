@@ -1,0 +1,38 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<section class="introduction" style="margin-bottom: 3em;">
+	<h1>Frequently Asked Questions</h1>	
+</section>
+
+<!--FAQ-->
+<section class="faq column">
+	{% for key, faq in FAQ.items %}
+		<article id="{{ forloop.counter }}" data-kinetics-attraction data-kinetics-attraction-chance=".3" 
+    data-kinetics-attraction-force="1.5" data-kinetics-attraction-grow="1">
+			<div class="q">
+				<a href="#{{ forloop.counter }}">
+					<span>#{{ forloop.counter }}</span>{{ faq.question }}
+				</a>
+			</div>
+			<div class="a">{{ faq.answer | safe }}</div>
+		</article>
+	{% endfor %}
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Kinetics().interactionHook();
+  });
+</script>
+
+{% endblock %}
+
+

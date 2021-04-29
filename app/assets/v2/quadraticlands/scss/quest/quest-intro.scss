@@ -1,0 +1,17 @@
+.quest-intro{
+  max-width: 600px;
+  padding: 2em;
+  text-align: center;
+  animation: menu-background 4s ease-in-out infinite; 		
+}
+
+
+@media #{$phone} { 
+  .quest-intro{
+    padding: 2em 1em;
+    margin: 1em;
+  }
+}
+
+
+

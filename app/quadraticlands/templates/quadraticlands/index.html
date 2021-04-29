@@ -1,0 +1,192 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n compress %}
+
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="The Gitcoin Quadratic Lands" />
+<meta name="twitter:description" content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web. In the quadratic lands, you can own where you earn and govern the future of Gitcoin." />
+<meta name="twitter:image" content="{% static "v2/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- HERO IMAGE -->
+
+<section class="hero" data-kinetics-mode data-kinetics-mode-type="party" data-kinetics-mode-speed="2">
+	<div class="background" style="z-index: -5555">
+		<!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+		{% include "quadraticlands/_inlinesvg/town.svg" %}
+	</div>
+
+	<div class="content pushdown">
+		<h1><span>With the launch of GTC, Gitcoin begins our second chapter focused on decentralizing from a product into a protocol for Quadratic Funding.</span></h1>
+		<a href="/quadraticlands/mission" class="btn"
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-grow="7">Get started</a>
+	</div>
+</section>
+
+
+
+<!-- TOKEN -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="2">
+	<section class="grid reverse">
+		<figure>
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/token.svg" %}" />
+		</figure>
+
+		<div>
+			<h3><span>#</span>GTC</h3>
+			<h1>Gitcoin’s token is here</h1>
+			<p class="no-margin">To start, GTC governs the Gitcoin Network to decentralize Grants, manage disputes and govern the treasury. It will soon prevent sybil attacks by launching a decentralized sybil prevention & reputation system. With your help, we are accelerating the flywheel of Gitcoin from web2 to web3. Let’s see what this thing can do.</p>
+		</div>
+	</section>
+</article>
+
+
+
+
+<!-- GOVERNANCE -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="2">
+	<section class="grid">
+		
+		<figure class="laptop-cover tablet-cover phone-cover ">
+			
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/governance.svg" %}" />
+		</figure>
+
+		<div>
+			<h3><span>#</span>Governance</h3>
+			<h1>Governance means we all are part of something</h1>
+			<p class="no-margin">We believe the future of Gitcoin is a community-centric self-governing protocol for funding public goods. GTC is the first step in our path towards the progressive decentralization of the Gitcoin platform, where each voice of our community can be heard and used to shape our future.</p>	
+		</div>
+
+	</section>
+</article>
+
+
+
+<!-- PORTAL -->
+<article>
+	<section class="grid reverse">
+		
+		<figure>
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/quadratic.svg" %}" />
+		</figure>
+
+		<div>
+			<h3><span>#</span>Quadratic Voting</h3>
+			<h1>Nobody can exclude you, you have a voice</h1>
+			<p class="no-margin">With Quadratic Funding (QF), whales & central power brokers no longer control an ecosystem. We have found QF to be the mathematically optimal way to fund public goods. The Gitcoin team will introduce a proposal to do Quadratic Voting for Gitcoin’s governance as soon as we sufficiently solved for the biggest open research problem in Quadratic Voting – Sybil attacks.</p>	
+		</div>
+
+	</section>
+</article>
+
+
+
+
+<!-- INFORMATION AGE -->
+<article data-kinetics-mode data-kinetics-mode-type="wind-from-right" data-kinetics-mode-speed="7">	
+	<section id="unicorn" class="grid">
+		
+		<figure class="floating" data-kinetics-attraction
+		data-kinetics-attraction-chance=".5"
+		data-kinetics-attraction-force="1.6"
+		data-kinetics-attraction-grow="7">
+			<img loading="lazy" src="{% static "v2/quadraticlands/images/landing/uni.svg" %}" />
+		</figure>
+
+		<div>
+			<h3><span>#</span>Information Age</h3>
+			<h1>Powering Public Goods in the Information Age</h1>
+			<p class="no-margin">Our deep reason for being is our mission – to economically empower builders of the open web. Open Source Software is a public good and its funding is an important unsolved coordination problem in the information age. Gitcoin is solving this problem, and we aspire to demonstrate a sustainable & decentralized model for building public goods.</p>
+		</div>
+
+	</section>
+</article>
+
+
+
+<!-- MISSION -->
+<article class="gap">
+	<section class="column centered">
+		<div>
+			<h3><span>#</span>Earn your first Tokens</h3>
+			<h1>Welcome to the Quadratic Lands</h1>
+			<p>Complete your first mission, “Proof of Knowledge,” to git your distribution of GTC. In less than 5 minutes, you will be a proud owner of part of the Gitcoin network.</p>
+			<div style="margin-top:1.5em;">
+				<a href="/quadraticlands/mission" class="btn" 
+					data-kinetics-attraction
+					data-kinetics-attraction-chance=".3"
+					data-kinetics-attraction-force="1.1"
+					data-kinetics-attraction-grow="7">Get Started</a>
+			</div>
+			
+		</div>
+	</section>
+</article>
+
+
+<!-- end wind -->
+<div data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="2"></div>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block 'scripts' %}
+
+<script>
+
+	document.addEventListener("DOMContentLoaded",function(){
+
+		//particles
+		new Kinetics().interactionHook();
+
+		// floor polygones in town.svg
+		polygones = document.querySelectorAll("#town #floor polygon")
+
+		// .light classes in town.svg
+		lights = document.querySelectorAll("#town .light")
+
+		last = 0
+		animate_town()
+	});
+	
+
+	function animate_town(now){
+
+	    if(!last || now - last >= 100) {
+
+			polygone = polygones[Math.floor(Math.random() * polygones.length)]
+			polygone.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },{ duration: 400, delay: 0, iterations: 1 });
+
+			light = lights[Math.floor(Math.random() * lights.length)] 
+			light.animate({ fill: [ "#9760FF", "#FA72AF", "#7AFFF7", "#9760FF" ] },
+				{ duration: Math.random() * (5000 - 500) + 500, delay: 0, iterations: 1
+			});		
+
+			last = now;	
+		}
+
+		requestAnimationFrame(animate_town)
+	}
+
+</script>
+
+
+{% endblock %}
+
+

@@ -1,0 +1,232 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<section class="introduction">
+	<h1>Empower a<br>Gitcoin Steward</h1>
+	<p>Select a Gitcoin Steward to empower with your voting rights.</p>	
+</section>
+
+<section class="stewards">
+
+	<div class="wrapper">
+	
+		{% for key, steward in stewards.items %}
+
+			<div class="steward-card {% if selected %} selected {% endif %}" 
+				data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1.1"
+				data-kinetics-attraction-grow="7">
+
+				<div class="steward">
+					<figure>
+						{% if steward.custom_steward_img %}
+							<img src="{{ steward.custom_steward_img.url }}" >
+						{% else %}
+							<img src="/dynamic/avatar/{{ steward.profile }}" >
+						{% endif %}
+					</figure>
+					<div class="text">
+						<div class="name">{{ steward.real_name | safe }}</div>
+						<div class="description">{{ steward.bio | safe }}</div>
+						<div class="selected">will be your delegate</div>
+					</div>
+				</div>
+
+				<div class="steward-details">
+					<div class="wrapper">
+						<a class="btn" target="_blank" href="{{ steward.profile_link | safe }}">Info's</a>
+						<a class="btn purple button-steward-select" data-address="{{ steward.gtc_address | safe }}">Delegate</a>
+					</div>
+				</div>
+
+			</div>
+
+		{% endfor %}
+
+	</div>
+
+</section>
+
+
+<!-- hidden address of a senator -->
+<input id="delegate_address" type="text" value="" class="hide">
+
+<section class="quest">
+	<main>
+		<div class="wrapper scrollable">
+
+			<section class="introduction">
+				<h1><span class="aqua">- or -</span><br>delegate to any address</h1>
+				<p>Explore other community members in <a target="_blank" href="https://gov.gitcoin.co">the discourse forum</a> and delegate your voting power to their Ethereum address. If you want to claim your tokens to a cold wallet / hardware wallet, you can also delegate the voting power of this cold wallet to another hot wallet, by pasting this hot wallet’s ethereum address here.</p>
+			</section>
+
+			<div class="quest-delegateaddress">
+				<input id="custom_delegate_address" type="text" value="" placeholder="Paste an Ethereum Address">
+			</div>
+
+		</div>
+	</main>
+
+	<!-- timer / seperator -->
+	<div class="seperator">
+	</div>
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/" 
+			data-kinetics-attraction
+			data-kinetics-attraction-chance=".3"
+			data-kinetics-attraction-force="1.1"
+			data-kinetics-attraction-size="200">Exit</a>
+		</div>
+
+		<div class="center">
+			Proof of Use
+		</div>
+
+		<!-- button status -->
+		<div class="right">
+
+			<!-- continue -->
+			<div>
+				<a id="btn_continue" class="btn hide"
+				data-kinetics-attraction
+				data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1.1"
+				data-kinetics-attraction-size="200">Continue</a>
+			</div>
+
+		</div>
+
+	</nav>
+
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Kinetics().interactionHook();
+  });
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+	const stewards = document.querySelectorAll(".steward-card")
+	
+	// senators address
+	const delegate_address = document.getElementById("delegate_address")
+
+	// custom input field 
+	const custom_delegate_address = document.getElementById("custom_delegate_address")
+
+	// buttons to pick a steward ( one button per steward )
+	const btnStewardSelect = document.querySelectorAll(".button-steward-select")
+	
+	btnStewardSelect.forEach(steward => {
+		steward.addEventListener("click", () => {
+			
+			// reset a maybe set custom_delegate_address - as the user want to pick a steward address
+			custom_delegate_address.value =""
+
+			// read adress from data atribute rendered on "delegate" button
+			delegate_address.value = steward.dataset.address
+			console.debug("delegate address: ", delegate_address.value)
+
+			// reset current selection (by remove classes from all cards) in interface
+			stewards.forEach(steward => { steward.classList.remove("selected") });
+
+			// select a steward in interface
+			delegate = steward.closest(".steward-card")
+			delegate.classList.add("selected")
+
+			// enable continue button as user selected a steward
+			btn_continue.classList.remove("hide")
+
+		});
+	});
+
+	// connect submit button with submit function
+	const btn_continue = document.getElementById("btn_continue")
+	btn_continue.addEventListener("click", () => {
+		submit()
+	});
+
+
+	// check for inputs on the custom_delegate_address input field
+	// + remove a picked steward from delegate_address
+	// + unselect a picked steward from interface
+	// + enable the "continue" button on a valid address
+
+	custom_delegate_address.addEventListener("input", () => {
+
+		// reset current selection of stewards (by remove classes from all cards) in interface
+		stewards.forEach(steward => { steward.classList.remove("selected") });
+
+		// reset the delegate_address as user have a custom address
+		delegate_address.value = ""
+
+		// disable the continue button
+		btn_continue.classList.add("hide")
+
+		// check if this adress is a valid address
+	
+		if (web3.utils.toChecksumAddress(custom_delegate_address.value))
+		{
+			btn_continue.classList.remove("hide")
+		}
+		else{
+			console.log("no valid address")
+		}
+
+	});
+
+});
+
+
+// save delegate addy to local storage and forward to outro page
+function submit(){
+
+	// picked address of a steward
+	delegate_address = document.getElementById("delegate_address").value
+
+	// custom address 
+	custom_delegate_address = document.getElementById("custom_delegate_address").value
+
+	if (delegate_address){
+		address = delegate_address
+		console.debut("STEWARD DELEGATE ADDRESS :" + delegate_address)	
+	}
+
+	if (custom_delegate_address){
+		address = custom_delegate_address
+		console.debug("CUSTOM DELEGATE ADDRESS :" + delegate_address)	
+	}
+
+	console.debug("delegate address", address)
+
+	// set stewards address to localStorage ( will be used in /receive/claim once )
+	localStorage.setItem('stewardsaddress', address);
+
+	// then forward to this url 
+	window.location = "/quadraticlands/mission/use/outro";
+
+}
+
+</script>
+
+{% endblock %}
+
+
+
+
