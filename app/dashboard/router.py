@@ -528,6 +528,9 @@ class BountiesViewSet(viewsets.ModelViewSet):
             if order_by == 'recently_marketed':
                 queryset = queryset.order_by(F('last_remarketed').desc(nulls_last = True), '-web3_created')
             else:
+                order_by_options = ['-web3_created', 'web3_created', '-_val_usd_db', '_val_usd_db']
+                if order_by not in order_by_options:
+                    order_by = '-web3_created'
                 queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
