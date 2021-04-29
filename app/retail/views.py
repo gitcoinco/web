@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import datetime
 import json
 import logging
 import re
@@ -49,6 +50,7 @@ from dashboard.models import (
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
+from grants.models import Grant
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
@@ -471,10 +473,66 @@ def robotstxt(request):
 
 
 def about(request):
+    three_months_ago = timezone.now() - datetime.timedelta(days=360)
+    grants_bubbles = Grant.objects.filter(
+        network='mainnet', hidden=False, visible=True, active=True
+    ).values('logo', 'id').order_by('weighted_shuffle', 'pk')[:33]
+
+    kernel = [{
+            "img": "harshricha.jpg",
+            "name": "Harsh & Richa",
+            "position": "Founders",
+            "company": "EPNS"
+        },
+        {
+            "img": "tomgreenaway.jpg",
+            "name": "Tom Greenaway",
+            "position": "Senior Dev Advocate",
+            "company": "Google"
+        },
+        {
+            "img": "sparrowread.jpg",
+            "name": "Sparrow Read",
+            "position": "Cofounder",
+            "company": "DADA, WOCA"
+        },
+        {
+            "img": "colinfortuner.jpg",
+            "name": "Colin Fortuner",
+            "position": "Indie Game Developer",
+            "company": "ex-Twitch"
+        },
+        {
+            "img": "shreyashariharan.jpg",
+            "name": "Shreyas Hariharan",
+            "position": "Founder",
+            "company": "Llama Community"
+        },
+        {
+            "img": "ramanshalupau.jpg",
+            "name": "Raman Shalupau",
+            "position": "Founder",
+            "company": "CryptoJobList"
+        },
+        {
+            "img": "omergoldberg.jpg",
+            "name": "Omer Goldberg",
+            "position": "Founder",
+            "company": "devclass.io, ex-Instagram"
+        },
+        {
+            "img": "kristiehuang.jpg",
+            "name": "Kristie Huang ",
+            "position": "Member",
+            "company": "Pantera Capital, she256"
+        }]
+
     context = {
         'title': 'Gitcoin - Support open web development.',
         'card_title': 'Gitcoin - Support open web development.',
-        'card_desc': " We are the community of builders, creators, and protocols at the center of the open web."
+        'card_desc': " We are the community of builders, creators, and protocols at the center of the open web.",
+        'grants_bubbles': grants_bubbles,
+        'kernel': kernel
     }
     try:
         data = JSONStore.objects.get(view='results').data
