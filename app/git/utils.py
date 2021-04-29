@@ -125,19 +125,12 @@ def check_github(profile):
         dict: A dictionary containing status and user data.
 
     """
-    user = search_github(profile + ' in:login type:user')
+    user = search_users(profile + ' in:login type:user').__dict__['_rawData']
     response = {'status': 200, 'user': False}
-    user_items = user.get('items', [])
 
-    if user_items and user_items[0].get('login', '').lower() == profile.lower():
-        response['user'] = user_items[0]
+    if user and user['login'].lower() == profile.lower():
+        response['user'] = user
     return response
-
-
-def search_github(q):
-    params = (('q', q), ('sort', 'updated'),)
-    response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
-    return response.json()
 
 
 def is_github_token_valid(oauth_token=None, last_validated=None):
