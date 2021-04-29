@@ -284,15 +284,15 @@ def get_github_primary_email(oauth_token):
         str: The user's primary github email address.
 
     """
-    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get('https://api.github.com/user/emails', headers=headers)
-
-    if response.status_code == 200:
-        emails = response.json()
+    gh_client = github_connect(oauth_token)
+    try:
+        emails = gh_client.get_user().get_emails()
         for email in emails:
             if email.get('primary'):
                 return email.get('email', '')
-
+    except Exception as e:
+        logger.error(e)
+    
     return ''
 
 
