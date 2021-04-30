@@ -67,6 +67,32 @@
         }
       }
 
+      @keyframes scroll {
+        /* 0% { transform: translateX(0); } */
+        100% { transform: translateX(calc(var(--cardSize ) * 8 * var(--direction)))}
+      }
+
+      .auto-user-slide {
+        animation: scroll 40s linear infinite;
+        display: flex;
+        width: calc(var(--cardSize) * 8);
+        will-change: transform;
+      }
+
+      .kernel-slide {
+        --direction: -1;
+        --cardSize: 318px;
+      }
+
+      .users-slide {
+        --direction: -1;
+        --cardSize: 318px;
+
+        /* transform: translateX(calc(var(--cardSize ) * -16)); */
+      }
+
+
+
     </style>
   </head>
 
@@ -171,15 +197,46 @@
             </div>
           </div>
 
-          <div class="d-flex">
-            {% for user in kernel %}
-            <div class="d-flex flex-column shadow-sm rounded">
-              <img class="rounded-circle" src="{% static 'v2/images/about/kernel-photos/' %}{{user.img}}" width="120" height="120" alt="{{user.name}}">
-              <div class="">{{user.name}}</div>
-              <div class="">{{user.position}}</div>
-              <div class="">{{user.company}}</div>
+          <div class="d-flex overflow-hidden">
+            <div class="auto-user-slide kernel-slide">
+              {% for user in kernel %}
+              <div class="d-flex flex-column flex-shrink-0 shadow-sm rounded p-4 m-3" style="width: 286px;">
+                <img class="rounded-circle" src="{% static 'v2/images/about/kernel-photos/' %}{{user.img}}" width="120" height="120" alt="{{user.name}}">
+                <div class="">{{user.name}}</div>
+                <div class="">{{user.position}}</div>
+                <div class="">{{user.company}}</div>
+              </div>
+              {% endfor %}
+              {% for user in kernel %}
+              <div class="d-flex flex-column flex-shrink-0 shadow-sm rounded p-4 m-3" style="width: 286px;">
+                <img class="rounded-circle" src="{% static 'v2/images/about/kernel-photos/' %}{{user.img}}" width="120" height="120" alt="{{user.name}}">
+                <div class="">{{user.name}}</div>
+                <div class="">{{user.position}}</div>
+                <div class="">{{user.company}}</div>
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
+          </div>
+          <div class="d-flex overflow-hidden">
+
+            <div class="auto-user-slide users-slide">
+              {% for user in top_earners %}
+              {{user}}
+
+              <div>{{user.profile.handle}}</div>
+              <div class="d-flex flex-column flex-shrink-0 shadow-sm rounded p-4 m-3" style="width: 286px;">
+                <img class="rounded-circle" src="{% url 'org_avatar' user.profile.handle %}" width="120" height="120" alt="{{user.profile.handle}}">
+
+                <div class="">{% if user.profile.data.name %}{{user.profile.data.name}}{% else %}{{user.profile.handle}}{% endif %}</div>
+                <div class="">{{user.profile.position}}</div>
+                {% if user.profile.organizations %}
+                  {{user.profile.organizations|join:", "}}
+
+                {% endif %}
+              </div>
+              {% endfor %}
+
+            </div>
 
           </div>
 

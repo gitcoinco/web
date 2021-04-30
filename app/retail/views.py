@@ -478,6 +478,16 @@ def about(request):
         network='mainnet', hidden=False, visible=True, active=True
     ).values('logo', 'id').order_by('weighted_shuffle', 'pk')[:33]
 
+    top_earners = list(LeaderboardRank.objects.active().filter(
+        product='bounties', leaderboard='monthly_earners'
+    ).order_by('-amount')[0:4])
+
+
+    # handles = top_earners.values_list("github_username", flat=True)
+    # profiles = Profile.objects.filter(handle__in=handles)
+
+
+
     kernel = [{
             "img": "harshricha.jpg",
             "name": "Harsh & Richa",
@@ -532,7 +542,8 @@ def about(request):
         'card_title': 'Gitcoin - Support open web development.',
         'card_desc': " We are the community of builders, creators, and protocols at the center of the open web.",
         'grants_bubbles': grants_bubbles,
-        'kernel': kernel
+        'kernel': kernel,
+        'top_earners': top_earners
     }
     try:
         data = JSONStore.objects.get(view='results').data
