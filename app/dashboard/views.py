@@ -6855,11 +6855,12 @@ def mautic_proxy(request, endpoint=''):
         response = mautic_proxy_backend(request.method, endpoint, None, params)
     elif request.method in ['POST','PUT','PATCH','DELETE']:
         response = mautic_proxy_backend(request.method, endpoint, request.body, params)
+
     return JsonResponse(response)
 
 
 def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
-    print(method, endpoint, payload, params)
+    # print(method, endpoint, payload, params)
     credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
     token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
     headers = {"Authorization": f"Basic {token}"}
@@ -6871,7 +6872,7 @@ def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
         response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
     else:
         response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
-    print(response)
+
     return response
 
 
