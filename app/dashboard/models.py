@@ -1042,11 +1042,11 @@ class Bounty(SuperModel):
             return []
         comment_count = 0
         for comment in comments:
-            if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
+            if comment.user and comment.user.login not in settings.IGNORE_COMMENTS_FROM:
                 comment_count += 1
         self.github_comments = comment_count
         if comment_count:
-            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
+            comment_times = [comment.created_at.strftime('%Y-%m-%dT%H:%M:%SZ') for comment in comments]
             max_comment_time = max(comment_times)
             max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
             self.last_comment_date = max_comment_time

@@ -401,57 +401,63 @@ def search_users(query, token=None):
         return []
 
 
-def get_issue_comments(owner, repo, issue=None, comment_id=None):
+def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
     """Get the comments from issues on a respository.
-    PLEASE NOTE CURRENT LIMITATION OF 100 COMMENTS.
 
     Args:
         owner (str): Owner of the repo
         repo (str): Name of the repo
         issue (int): Issue number (optional)
+        comment_id (int): Comment ID (optional)
+        page (int): Page number (optional)
 
     Returns:
-        requests.Response: The GitHub comments response.
+        github.PaginatedList.PaginatedList / github.IssueComment.IssueComment: The GitHub comments response.
+
     """
-    params = {
-        'sort': 'created',
-        'direction': 'desc',
-        'per_page': 100,
-    # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
-    }
-    if issue:
-        if comment_id:
-            url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
-        else:
-            url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
-    else:
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
+    page -= 1
+    if page < 0: page = 0
+
+    gh_client = github_connect()
+    paginated_list = []
 
     try:
-        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-        return response.json()
+        repo = gh_client.get_repo(f'{owner}/{repo}')
+        if issue:
+            if comment_id:
+                issue_comment = repo.get_issue(number=issue).get_comment(comment_id)
+                return issue_comment
+            else:
+                paginated_list = repo.get_issue(number=issue).get_comments().get_page(page)
+        else:
+            paginated_list = repo.get_issues_comments(sort='created', direction='desc').get_page(page)
+        
+        return paginated_list
     except Exception as e:
         logger.error(
-            "could not get issue comments - Reason: %s - owner: %s repo: %s issue: %s comment_id: %s status code: %s",
-            e, owner, repo, issue, comment_id, response.status_code
+            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status_code: %s",
+            e.data['message'], owner, repo, page, state, e.status
         )
-    return {}
+        return {'status': e.status, 'message': e.data['message']}
 
 
 def get_issues(owner, repo, page=1, state='open'):
     """Get the issues on a respository."""
+
+    page -= 1
+    if page < 0: page = 0
 
     try:
         gh_client = github_connect()
         paginated_list = gh_client.get_repo(f'{owner}/{repo}').get_issues(
             state=state, sort='created', direction='desc').get_page(page)
         return paginated_list
-    except GithubException as e:
+    except Exception as e:
         logger.error(
-            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s",
-            e, owner, repo, page, state
+            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status_code: %s",
+            e.data['message'], owner, repo, page, state, e.status
         )
-        return []
+    return []
 
 
 def get_issue_timeline_events(owner, repo, issue, page=1):
