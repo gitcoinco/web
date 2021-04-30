@@ -62,6 +62,7 @@ def github_connect(token=None):
             login_or_token=token,
             client_id=settings.GITHUB_CLIENT_ID,
             client_secret=settings.GITHUB_CLIENT_SECRET,
+            per_page=100,
         )
     except BadCredentialsException as e:
         logger.exception(e)
@@ -395,7 +396,7 @@ def search_users(query, token=None):
     try:
         paginated_list = gh_client.search_users(query)
         return paginated_list
-    except Exception as e:
+    except GithubException as e:
         logger.error(e)
         return []
 
@@ -438,19 +439,19 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
 
 
 def get_issues(owner, repo, page=1, state='open'):
-    """Get the open issues on a respository."""
-    params = {'state': state, 'sort': 'created', 'direction': 'desc', 'page': page, 'per_page': 100, }
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues'
+    """Get the issues on a respository."""
 
     try:
-        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-        return response.json()
-    except Exception as e:
+        gh_client = github_connect()
+        paginated_list = gh_client.get_repo(f'{owner}/{repo}').get_issues(
+            state=state, sort='created', direction='desc').get_page(page)
+        return paginated_list
+    except GithubException as e:
         logger.error(
-            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status code: %s",
-            e, owner, repo, page, state, response.status_code
+            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s",
+            e, owner, repo, page, state
         )
-    return {}
+        return []
 
 
 def get_issue_timeline_events(owner, repo, issue, page=1):
