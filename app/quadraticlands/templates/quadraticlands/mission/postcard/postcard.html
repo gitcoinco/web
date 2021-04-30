@@ -1,0 +1,194 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+
+<section class="background">
+	<img src='{% static "v2/quadraticlands/images/background/anim-9.svg" %}' />
+</section>
+
+
+
+<section class="quest">
+
+
+	<!-- quest-vote -->
+	<main id="postcard">
+
+		<section class="introduction">
+			<h1>Quadratic Lands - Postcard Generator</h1>
+			<p>
+				<span>GTC</span> is a governance token, and the vehicle we’ll use to fully decentralize Gitcoin — eventually into a community governed <span>GitcoinDAO</span>.
+				</p>
+				<p>
+				While the <span>GitcoinDAO</span> is an end in itself, it is also a means to another end: To chart a course to the <span>Quadratic Lands</span> - a place where communities are empowered to build for the common good. 
+				</p>
+				<p>
+				<hr style="margin: 10px;">
+				We envision the <span>Quadratic Lands</span> as this place: 
+				</p>
+				<ul>
+						<li>
+						There are numerous opportunities to create financial sovereignty while working side-by-side with people who share similar values.
+						</li>
+						<li>
+						Individuals have sovereignty to make their own choices, but incentives are aligned for cooperation that generates both individual and community benefit.
+						</li>
+						<li>
+						The economic infrastructure is a set of economic games with transparent rules that cannot be changed on us.
+						</li>
+						<li>
+						Because of composability of blockchain-based systems, the surface area of opportunity is growing exponentially as the tools compound upon each other.
+						</li>
+				</ul>
+			<p>
+			We have tasted the Quadratic Lands, but much of it remains to be built!. 
+			</p>
+			<p>Tell your friends & family about your visit to the Quadratic Lands with this postcard genereator below.</p>	
+		</section>
+
+		<div class="wrapper scrollable">
+
+			<div class="postcard-vote">
+
+				<img id='target' style="height: 500px; width: 1400px;" src="/quadraticlands/mission/postcard/svg">
+
+				<div class="input">
+					{% for key, package in attrs.items %}
+					<div class="backgrounds">
+						{{key | title}}
+						<div class="parent">
+								<ul>
+									{% for item in package %}
+										<li name='{{key}}' value='{{item}}' {% if forloop.counter0 == 0 %}selected="selected"{%endif%}>
+											{{item}}
+										</li>
+									{% endfor %}
+								</ul>
+						</div>
+					</div>
+					{% endfor %}
+					<div class="backgrounds">
+						<textarea id="text">Owocki Forever</textarea>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</main>
+
+
+
+
+
+	<!-- bottom navigation -->
+	<nav class="glass">
+
+		<div class="left">
+			<a href="/quadraticlands/">Exit</a>
+		</div>
+
+		<div class="center">
+		</div>
+
+		<!-- button status -->
+		<div class="right">
+
+			<!-- intro - start voting process -->
+			<div id="btnStart" class="hide" >
+				<a class="btn">Start</a>
+			</div>
+
+			<!-- voting submit -->
+			<div id="btnVoting" class="hide" >
+				<a class="btn" id="signTypedDataV4Button" >Submit</a>
+			</div>
+
+
+			<!-- finish - goto outro -->
+			<div id="btnOutro" class="hide" >
+				<a class="btn" href="/quadraticlands/mission/use/outro">Continue</a>
+			</div>
+
+
+		</div>
+
+	</nav>
+	
+
+</section>
+
+
+<style type="text/css">
+		.backgrounds{
+			display: inline-block;
+			width: 23%;
+			text-align: left;
+			vertical-align: top;
+			margin-top: 20px;
+		}
+		.backgrounds li{
+			cursor: pointer;
+		}
+		li[selected=selected]{
+			font-weight: bold;
+			color: white;
+		}
+		section.introduction{
+			background-color: #0d0331dd;
+		}
+		section.introduction p{
+			margin-bottom: 10px;
+		}
+		.backgrounds textarea{
+			border-color: #ffffff;
+			color: #ffffff;
+			background-color: #2d2351;
+			font-size: 24px;
+			width: 100%;
+			height: 300px;
+			padding: 5px;
+			font-family: 'Poppins', sans-serif;
+		}
+</style>
+
+
+
+{% endblock %}
+
+
+
+
+
+{% block 'scripts' %}
+
+
+<!-- custom particles-->
+<!--<script src="{% static "v2/quadraticlands/js/particles.js" %}"></script>-->
+
+<!-- force web3modal to popup automaticaly when no provider selected-->
+<script src="{% static "v2/quadraticlands/js/forceWallet.js" %}"></script>
+<script src="{% static "v2/quadraticlands/js/postcard.js" %}"></script>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
