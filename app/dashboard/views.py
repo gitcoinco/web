@@ -6851,28 +6851,28 @@ def mautic_api(request, endpoint=''):
 
 def mautic_proxy(request, endpoint=''):
     params = request.GET
+    if request.method == 'GET':
+        response = mautic_proxy_backend(request.method, endpoint, None, params)
+    elif request.method in ['POST','PUT','PATCH','DELETE']:
+        response = mautic_proxy_backend(request.method, endpoint, request.body, params)
+    return JsonResponse(response)
+
+
+def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
+    print(method, endpoint, payload, params)
     credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
     token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
     headers = {"Authorization": f"Basic {token}"}
-
-    if request.body:
-        body_unicode = request.body.decode('utf-8')
-        payload = json.loads(body_unicode)
-
     url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
-    if request.method == 'GET':
-        response = requests.get(url=url, headers=headers, params=params).json()
-    elif request.method == 'POST':
-        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PATCH':
-        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
 
-    return JsonResponse(response)
-
+    if payload:
+        body_unicode = payload.decode('utf-8')
+        payload = json.loads(body_unicode)
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    else:
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
+    print(response)
+    return response
 
 
 @csrf_exempt
