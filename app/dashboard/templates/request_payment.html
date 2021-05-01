@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
@@ -34,9 +34,9 @@
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
-{% compress css file tooltip_hover %}
+{% compress2 css file tooltip_hover %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tooltip_hover.scss" %} />
-{% endcompress %}
+{% endcompress2 %}
 <style>
   #ethinfo-tooltip {
     top: 19.5rem;

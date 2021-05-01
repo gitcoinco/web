@@ -3,9 +3,10 @@ import os
 import re
 
 from django import template
-from bs4 import BeautifulSoup
 from django.conf import settings
 from django.templatetags.static import static
+
+from bs4 import BeautifulSoup
 
 register = template.Library()
 

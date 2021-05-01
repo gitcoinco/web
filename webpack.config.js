@@ -95,7 +95,7 @@ module.exports = (_, argv) => {
     devtool: false, // (argv.mode === 'development' ? 'eval-cheap-source-map' : false)
     output: {
       filename: '[name].noop.js',
-      path: path.resolve(__dirname, 'app/assets/v2/bundled/scss/'),
+      path: path.resolve(__dirname, 'app/assets/v2/bundled/css/'),
     },
     module: {
       rules: [
@@ -139,7 +139,7 @@ module.exports = (_, argv) => {
       new FileManagerPlugin({
         events: {
           onEnd: {
-            delete: [path.resolve(__dirname, 'app/assets/v2/bundled/scss/*.noop.*')],
+            delete: [path.resolve(__dirname, 'app/assets/v2/bundled/css/*.noop.*')],
           },
         },
       })

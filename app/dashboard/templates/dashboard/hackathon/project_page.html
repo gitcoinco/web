@@ -15,13 +15,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static avatar_tags add_url_schema email_obfuscator humanize compress %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize compress2 %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file dashboard_hackathon_project %}
+    {% compress2 css file dashboard_hackathon_project %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/plyr.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
@@ -30,7 +30,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
 
     <style>
       .plyr--video .plyr__controls {

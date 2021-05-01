@@ -68,7 +68,6 @@ if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
     python3 manage.py bundle;
     yarn run build;
     python3 manage.py collectstatic --noinput -i other;
-    python3 manage.py compress;
 fi
 
 rm -Rf ~/gitcoin/coin/app/static/other

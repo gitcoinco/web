@@ -1,4 +1,4 @@
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,13 +10,13 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
-    {% compress css file bounty_details %}
+    {% compress2 css file bounty_details %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/highlight_github.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
     {% include 'shared/fbpixel.html' %}
   </head>
 

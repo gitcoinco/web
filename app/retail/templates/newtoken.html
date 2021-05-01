@@ -15,11 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 {% block body %}
-{% compress css file onepagesubmit %}
+{% compress2 css file onepagesubmit %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
-{% endcompress %}
+{% endcompress2 %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-5 pb-4">

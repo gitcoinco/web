@@ -14,14 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags compress %}
+{% load i18n static cookielaw_tags compress2 %}
 <meta name="title" content="Issue & Open Bug Bounty Explorer | Gitcoin">
 <meta name="description" content="Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.">
-{% compress css file bounties %}
+{% compress2 css file bounties %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/profile.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-{% endcompress %}
+{% endcompress2 %}
 <style>
   .profile-bounties--loading {
     background-position: center;

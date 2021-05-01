@@ -50,6 +50,10 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
         python3 manage.py collectstatic --noinput -i other &
     fi
 
+    if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
+        yarn install
+    fi
+
     if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
         python3 manage.py migrate
     fi
@@ -68,7 +72,12 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
 
     fi
     date >> /provisioned
-    echo "Provisioning completed!"
+    echo "Provisioning complete!"
+fi
+
+if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
+    python3 manage.py compress2
+    yarn run webpack &
 fi
 
 if [ "$FORCE_GET_PRICES" = "on" ]; then

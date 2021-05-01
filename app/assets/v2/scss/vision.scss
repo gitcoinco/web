@@ -21,7 +21,7 @@
 .tl-component {
   display: grid;
   background-color: var(--tl-bg);
-  background-image:url(/static/v2/images/vision/illu.png);
+  background-image:url(static('v2/images/vision/illu.png'));
   background-repeat: no-repeat;
   background-position: center bottom;
   font-size: 20px;
@@ -95,16 +95,16 @@
 }
 
 li.consensys {
-  list-style-image: url(/static/v2/images/vision/consensys.svg);
+  list-style-image: url(static('v2/images/vision/consensys.svg'));
 }
 li.gitcoin {
-  list-style-image: url(/static/v2/images/vision/gitcoin.svg);
+  list-style-image: url(static('v2/images/vision/gitcoin.svg'));
 }
 li.macro {
-  list-style-image: url(/static/v2/images/vision/macro.svg);
+  list-style-image: url(static('v2/images/vision/macro.svg'));
 }
 li.market {
-  list-style-image: url(/static/v2/images/vision/market.svg);
+  list-style-image: url(static('v2/images/vision/market.svg'));
 }
 
 .twit {

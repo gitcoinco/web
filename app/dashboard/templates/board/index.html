@@ -15,17 +15,17 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static add_url_schema avatar_tags compress %}
+{% load i18n static add_url_schema avatar_tags compress2 %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    {% compress css file board %}
+    {% compress2 css file board %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-loader.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/board.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
   </head>
   <body class="{{ active }} bg-lightblue g-font-muli" >
     <div class="content__main min-vh-100 d-md-flex flex-column">

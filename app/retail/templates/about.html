@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
@@ -22,10 +22,10 @@
     <meta name="title" content="About Gitcoin: Find Open Bug Bounties & Freelance Coders">
     <meta name="description" content="Gitcoin is a community for freelance developers to collaborate and monetize their skills
     while working on Open Source projects through bounties paid in crypto (ETH or any ERC-20 token).">
-    {% compress css file about %}
+    {% compress2 css file about %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/landing_page.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/about.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
   </head>
   <body class="{{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">

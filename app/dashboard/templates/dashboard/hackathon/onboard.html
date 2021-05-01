@@ -15,15 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static matches compress %}
+{% load i18n static matches compress2 %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file quill_snow %}
+    {% compress2 css file quill_snow %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
     <style>
       .container {
         counter-reset: section;

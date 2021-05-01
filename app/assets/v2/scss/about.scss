@@ -170,7 +170,7 @@ h4 {
 
 .gitcoin-svg {
   background-size: cover !important;
-  background-image: url("/static/v2/images/helmet.svg");
+  background-image: url(static('v2/images/helmet.svg'));
   width: 1.5em;
   height: 2.3em;
   position: relative;

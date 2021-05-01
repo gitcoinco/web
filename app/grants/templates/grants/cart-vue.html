@@ -14,14 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static i18n compress %}
+{% load static i18n compress2 %}
 <!DOCTYPE html>
   <html lang="en">
 
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file cart_vue %}
+    {% compress2 css file cart_vue %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/detail.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/fund.scss" %} />
@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/cart.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
     <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
   </head>
 

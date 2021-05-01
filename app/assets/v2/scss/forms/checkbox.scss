@@ -43,5 +43,5 @@
 .form__checkbox input:checked ~ .form__label::before {
   background-color: #6F3FF5;
   border-color: #6F3FF5;
-  content: url('/static/v2/images/check.svg');
+  content: url(static('v2/images/check.svg'));
 }
