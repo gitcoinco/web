@@ -10,8 +10,6 @@ django-cors-headers==2.4.0
 django-filter==2.0.0
 django-haystack
 django-ratelimit==1.1.0
-git+https://github.com/gdixon/django-compressor.git@develop#egg=django-compressor
-django-libsass==0.8
 djangorestframework==3.11.2
 gitterpy
 gunicorn

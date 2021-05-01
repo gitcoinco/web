@@ -1,5 +1,5 @@
 {% load humanize %}
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -22,9 +22,9 @@
   <meta charset="utf-8">
   <script src="{% static "v2/js/lib/jquery.js" %}"></script>
   <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
-  {% compress css file admin_dashboard %}
+  {% compress2 css file admin_dashboard %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-  {% endcompress %}
+  {% endcompress2 %}
   <style>
     .colMS{
       margin-right: 0px;

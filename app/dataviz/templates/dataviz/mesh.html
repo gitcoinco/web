@@ -15,11 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 {% block extrastyle %}{{ block.super }}
-  {% compress css file admin_dashboard %}
+  {% compress2 css file admin_dashboard %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-  {% endcompress %}
+  {% endcompress2 %}
 {% endblock %}
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}

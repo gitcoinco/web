@@ -1,4 +1,4 @@
-function RAFThrottle(f) {
+this.RAFThrottle = function(f) {
   let throttledHandler;
 
   return function() {

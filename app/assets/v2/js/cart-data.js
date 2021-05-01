@@ -1,4 +1,4 @@
-class CartData {
+this.CartData = class CartData {
 
   static hasItems() {
     return this.loadCart().length > 0;

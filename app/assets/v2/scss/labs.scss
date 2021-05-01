@@ -35,7 +35,7 @@ body {
 }
 
 .header-labs {
-  background-image: url('/static/v2/images/labs/lab_background.png');
+  background-image: url(static('v2/images/labs/lab_background.png'));
   background-color: rgb(165, 53, 138);
   will-change: transform;
   overflow-y: hidden;

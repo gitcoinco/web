@@ -15,15 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file howitworks %}
+    {% compress2 css file howitworks %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/howitworks.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
     <style>
       .onboard-banner {
         background: {% firstof hackathon.background_color or 'white' %};

@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static avatar_tags add_url_schema email_obfuscator humanize compress %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize compress2 %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,7 +27,7 @@
       {% include 'shared/cards.html' %}
     {% endif %}
     <!-- Include stylesheet -->
-    {% compress css file tribes_vue %}
+    {% compress2 css file tribes_vue %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.core.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
@@ -42,7 +42,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/explorer.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
 
     <style type="text/css">
       @media (min-width: 992px) {

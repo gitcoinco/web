@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file dashboard_hackathon_static %}
+    {% compress2 css file dashboard_hackathon_static %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/static.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
   </head>
   <body class="g-font-muli hackathon {{ hackathon_id }}">
     <div class="container-fluid px-lg-0">

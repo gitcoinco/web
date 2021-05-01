@@ -14,14 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static compress2 %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-    {% compress css file unsubscribe_email %}
+    {% compress2 css file unsubscribe_email %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/unsubscribe_email.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

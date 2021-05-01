@@ -1,7 +1,8 @@
 const $slides = $('#slides');
 
 let currentSlide = 0;
-const load_kudos_card_images = function() {
+
+this.load_kudos_card_images = function() {
   let images = [...document.querySelectorAll('.kd-card img')];
 
   const interactSettings = {
@@ -25,13 +26,13 @@ const load_kudos_card_images = function() {
   images.forEach(image => observer.observe(image));
 };
 
-function nextSlide() {
+this.nextSlide = function() {
   currentSlide = (currentSlide + 1) % $slides.children().length;
   $slides.css('transform', `translateX(${-currentSlide * 100}vw)`);
   resetTimer();
 }
 
-function prevSlide() {
+this.prevSlide = function() {
   if (currentSlide == 0) {
     currentSlide = slides.length - 1;
   } else {
@@ -41,7 +42,7 @@ function prevSlide() {
   resetTimer();
 }
 
-function resetTimer() {
+const resetTimer = function() {
   clearInterval(interval);
   startTimer();
 }

@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize compress %}
+{% load i18n static humanize compress2 %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,10 +23,10 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Avatar Builder | Gitcoin">
     <meta name="description" content="Gitcoin's Avatar Builder has dozens of options to show off your bad-self.">
-    {% compress css file avatar_landing %}
+    {% compress2 css file avatar_landing %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/products.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/avatar_landing.scss" %} />
-    {% endcompress %}
+    {% endcompress2 %}
   </head>
 
   <body class="{{ active }} g-font-muli">

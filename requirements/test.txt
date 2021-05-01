@@ -15,3 +15,4 @@ django-debug-toolbar
 ipfshttpclient==0.6.0
 dj_static==0.0.6
 livereload==2.6.3
+beautifulsoup4==4.9.3

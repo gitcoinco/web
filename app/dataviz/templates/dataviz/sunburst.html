@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load humanize i18n static compress %}
+{% load humanize i18n static compress2 %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -17,9 +17,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block extrastyle %}{{ block.super }}
-  {% compress css file admin_dashboard %}
+  {% compress2 css file admin_dashboard %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-  {% endcompress %}
+  {% endcompress2 %}
 {% endblock %}
 
 {% block coltype %}colMS{% endblock %}
@@ -36,10 +36,10 @@
   <meta charset="utf-8">
   <script src="//d3js.org/d3.v3.min.js"></script>
   <script src="{% static "v2/js/lib/jquery.js" %}"></script>
-  {% compress css file dataviz_sunburst %}
+  {% compress2 css file dataviz_sunburst %}
 
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dataviz/sequences.scss" %} />
-  {% endcompress %}
+  {% endcompress2 %}
 </head>
 
 

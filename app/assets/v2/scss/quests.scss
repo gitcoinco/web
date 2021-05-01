@@ -564,15 +564,15 @@ body.stage_3 #header {
 }
 
 body.back0.stage_4 {
-  background: url('/static/v2/images/quests/backs/1.gif') repeat !important;
+  background: url(static('v2/images/quests/backs/1.gif')) repeat !important;
 }
 
 body.back0.stage_4.question_number_1 {
-  background: url('/static/v2/images/quests/backs/2.gif') repeat !important;
+  background: url(static('v2/images/quests/backs/2.gif')) repeat !important;
 }
 
 body.back0.stage_4.question_number_2 {
-  background: url('/static/v2/images/quests/backs/3.gif') repeat !important;
+  background: url(static('v2/images/quests/backs/3.gif')) repeat !important;
 }
 
 body.stage_4 #header {
@@ -708,139 +708,139 @@ body.quest_battle {
 
 div.back0,
 body.back0.quest_battle {
-  background: url('/static/v2/images/quests/backs/0.gif') repeat;
+  background: url(static('v2/images/quests/backs/0.gif')) repeat;
   background-size: 150%;
 }
 
 div.back1,
 body.back1.quest_battle {
-  background: url('/static/v2/images/quests/backs/back1.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back1.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back2,
 body.back2.quest_battle {
-  background: url('/static/v2/images/quests/backs/back2.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back2.jpeg')) repeat;
   background-size: 170%;
 }
 
 div.back3,
 body.back3.quest_battle {
-  background: url('/static/v2/images/quests/backs/back3.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back3.jpeg')) repeat;
   background-size: 160%;
 }
 
 div.back4,
 body.back4.quest_battle {
-  background: url('/static/v2/images/quests/backs/back4.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back4.jpeg')) repeat;
   background-size: 160%;
 }
 
 div.back5,
 body.back5.quest_battle {
-  background: url('/static/v2/images/quests/backs/back5.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back5.jpeg')) repeat;
   background-size: 160%;
 }
 
 div.back6,
 body.back6.quest_battle {
-  background: url('/static/v2/images/quests/backs/back6.jpg') repeat;
+  background: url(static('v2/images/quests/backs/back6.jpg')) repeat;
   background-size: 110%;
 }
 
 div.back7,
 body.back7.quest_battle {
-  background: url('/static/v2/images/quests/backs/back7.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back7.jpeg')) repeat;
   background-size: 110%;
 }
 
 div.back8,
 body.back8.quest_battle {
-  background: url('/static/v2/images/quests/backs/back8.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back8.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back9,
 body.back9.quest_battle {
-  background: url('/static/v2/images/quests/backs/back9.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back9.jpeg')) repeat;
   background-size: 110%;
 }
 
 div.back10,
 body.back10.quest_battle {
-  background: url('/static/v2/images/quests/backs/back10.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back10.jpeg')) repeat;
   background-size: 120%;
 }
 
 div.back11,
 body.back11.quest_battle {
-  background: url('/static/v2/images/quests/backs/back11.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back11.jpeg')) repeat;
   background-size: 105%;
 }
 
 div.back12,
 body.back12.quest_battle {
-  background: url('/static/v2/images/quests/backs/back12.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back12.jpeg')) repeat;
   background-size: 120%;
 }
 
 div.back13,
 body.back13.quest_battle {
-  background: url('/static/v2/images/quests/backs/back13.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back13.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back14,
 body.back14.quest_battle {
-  background: url('/static/v2/images/quests/backs/back14.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back14.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back15,
 body.back15.quest_battle {
-  background: url('/static/v2/images/quests/backs/back15.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back15.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back16,
 body.back16.quest_battle {
-  background: url('/static/v2/images/quests/backs/back16.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back16.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back19,
 body.back19.quest_battle {
-  background: url('/static/v2/images/quests/backs/back19.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back19.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back17,
 body.back17.quest_battle {
-  background: url('/static/v2/images/quests/backs/back17.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back17.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back18,
 body.back18.quest_battle {
-  background: url('/static/v2/images/quests/backs/back18.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back18.jpeg')) repeat;
   background-size: 100%;
 }
 
 div.back20,
 body.back20.quest_battle {
-  background: url('/static/v2/images/quests/backs/back20.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back20.jpeg')) repeat;
   background-size: 120%;
 }
 
 div.back21,
 body.back21.quest_battle {
-  background: url('/static/v2/images/quests/backs/back21.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back21.jpeg')) repeat;
   background-size: 120%;
 }
 
 div.back22,
 body.back22.quest_battle {
-  background: url('/static/v2/images/quests/backs/back22.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back22.jpeg')) repeat;
   background-size: 120%;
 }
 
@@ -855,62 +855,62 @@ body.back22.quest_battle {
 
 div.back23,
 body.back23.quest_battle {
-  background: url('/static/v2/images/quests/backs/back23.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back23.jpeg')) repeat;
   background-size: 120%;
 }
 div.back24,
 body.back24.quest_battle {
-  background: url('/static/v2/images/quests/backs/back24.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back24.jpeg')) repeat;
   background-size: 120%;
 }
 div.back25,
 body.back25.quest_battle {
-  background: url('/static/v2/images/quests/backs/back25.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back25.jpeg')) repeat;
   background-size: 120%;
 }
 div.back26,
 body.back26.quest_battle {
-  background: url('/static/v2/images/quests/backs/back26.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back26.jpeg')) repeat;
   background-size: 120%;
 }
 div.back27,
 body.back27.quest_battle {
-  background: url('/static/v2/images/quests/backs/back27.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back27.jpeg')) repeat;
   background-size: 120%;
 }
 div.back28,
 body.back28.quest_battle {
-  background: url('/static/v2/images/quests/backs/back28.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back28.jpeg')) repeat;
   background-size: 120%;
 }
 div.back29,
 body.back29.quest_battle {
-  background: url('/static/v2/images/quests/backs/back29.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back29.jpeg')) repeat;
   background-size: 120%;
 }
 div.back30,
 body.back30.quest_battle {
-  background: url('/static/v2/images/quests/backs/back30.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back30.jpeg')) repeat;
   background-size: 120%;
 }
 div.back31,
 body.back31.quest_battle {
-  background: url('/static/v2/images/quests/backs/back31.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back31.jpeg')) repeat;
   background-size: 120%;
 }
 div.back32,
 body.back32.quest_battle {
-  background: url('/static/v2/images/quests/backs/back32.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back32.jpeg')) repeat;
   background-size: 120%;
 }
 div.back33,
 body.back33.quest_battle {
-  background: url('/static/v2/images/quests/backs/back33.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back33.jpeg')) repeat;
   background-size: 120%;
 }
 div.back34,
 body.back34.quest_battle {
-  background: url('/static/v2/images/quests/backs/back34.jpeg') repeat;
+  background: url(static('v2/images/quests/backs/back34.jpeg')) repeat;
   background-size: 100%;
 }
 
