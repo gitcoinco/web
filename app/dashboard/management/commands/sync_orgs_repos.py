@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 from app.utils import sync_profile
 from dashboard.models import Organization, Profile, Repo
-from git.utils import get_organization, get_repo, get_user
+from git.utils import get_organization, get_user, github_connect
 
 
 class Command(BaseCommand):
@@ -30,16 +30,18 @@ class Command(BaseCommand):
                         profile.user.groups.filter(name__contains=y.name).delete()
                         print(f'Removing: {profile.handle} from Organization: {y.name} ')
 
-                    user_access_repos = get_repo(handle, '/repos', (handle, access_token), is_user=True)
-                    # Question around user repo acccess if we can't get user repos, should we assume all repos are no longer available in the platform?
-
-                    if 'message' in user_access_repos:
-                        print(user_access_repos['message'])
+                    try:
+                        gh_client = github_connect(token=access_token)
+                        user_access_repos = gh_client.get_user().get_repos()
+                        if user_access_repos.totalCount: pass # trigger error throw if any
+                        # Question around user repo acccess if we can't get user repos, should we assume all repos are no longer available in the platform?
+                    except Exception as e:
+                        print(e.data['message'])
                         return lsynced
 
                     current_user_repos = []
                     for y in user_access_repos:
-                        current_user_repos.append(y['name'])
+                        current_user_repos.append(y.name)
 
                     remove_user_repos_names = [x for x in profile.repos.all() if x.name not in current_user_repos]
 
@@ -102,18 +104,21 @@ class Command(BaseCommand):
                             db_repo = Repo.objects.get_or_create(name=repo['name'])[0]
                             db_org.repos.add(db_repo)
                             print(f'Syncing Repo: {db_repo.name}')
-                            repo_collabs = get_repo(repo['full_name'], '/collaborators', (handle, access_token))
-                            if 'message' in repo_collabs:
-                                print(repo_collabs['message'])
+                            try:
+                                gh_client = github_connect(token=access_token)
+                                repo_collabs = gh_client.get_repo(repo['full_name']).get_collaborators()
+                                if repo_collabs.totalCount: pass # trigger error throw if any
+                            except Exception as e:
+                                print(e.data['message'])
                                 continue
 
                             for collaborator in repo_collabs:
-
-                                if collaborator['permissions']['admin']:
+                                
+                                if collaborator.permissions.admin:
                                     permission = "admin"
-                                elif collaborator['permissions']['push']:
+                                elif collaborator.permissions.push:
                                     permission = "write"
-                                elif collaborator['permissions']['pull']:
+                                elif collaborator.permissions.pull:
                                     permission = "pull"
                                 else:
                                     permission = "none"
@@ -125,13 +130,13 @@ class Command(BaseCommand):
 
                                 try:
                                     member_user_profile = Profile.objects.get(
-                                        handle=collaborator['login'], user__is_active=True
+                                        handle=collaborator.login, user__is_active=True
                                     )
                                     member_user_profile.user.groups.add(db_group)
                                     member_user_profile.repos.add(db_repo)
-                                    if collaborator['login'] not in members_to_sync or \
-                                        collaborator['login'] not in lsynced:
-                                        members_to_sync.append(collaborator['login'])
+                                    if collaborator.login not in members_to_sync or \
+                                        collaborator.login not in lsynced:
+                                        members_to_sync.append(collaborator.login)
                                 except Exception as e:
                                     continue
 

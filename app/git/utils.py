@@ -62,7 +62,7 @@ def github_connect(token=None):
             login_or_token=token,
             client_id=settings.GITHUB_CLIENT_ID,
             client_secret=settings.GITHUB_CLIENT_SECRET,
-            per_page=100,
+            per_page=PER_PAGE_LIMIT,
         )
     except BadCredentialsException as e:
         logger.exception(e)
@@ -573,25 +573,6 @@ def get_organization(org, sub_path='', auth=None):
     org = org.replace('@', '')
     url = f'https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}'
     response = requests.get(url, auth=auth, headers=HEADERS)
-    try:
-        response_dict = response.json()
-    except JSONDecodeError:
-        response_dict = {}
-    return response_dict
-
-
-def get_repo(repo_full_name, sub_path='', auth=None, is_user=False):
-    """Get the github repo details."""
-    if not auth:
-        auth = _AUTH
-    repo_full_name = repo_full_name.replace('@', '')
-    if is_user:
-        url = f'https://api.github.com/user/repos?per_page={PER_PAGE_LIMIT}'
-    else:
-        url = f'https://api.github.com/repos/{repo_full_name}{sub_path}?per_page={PER_PAGE_LIMIT}'
-
-    response = requests.get(url, auth=auth, headers=HEADERS)
-
     try:
         response_dict = response.json()
     except JSONDecodeError:
