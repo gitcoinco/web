@@ -624,11 +624,11 @@ Vue.component('poh-verify-modal', {
         this.signature = signature;
         this.verifyPOH();
       })
-      .catch((_error) => {
-        this.validationError = 'Error sign message declined';
-        this.validationStep = 'validate-poh';
-        this.hideTemporarily = false;
-      });
+        .catch((_error) => {
+          this.validationError = 'Error sign message declined';
+          this.validationStep = 'validate-poh';
+          this.hideTemporarily = false;
+        });
     },
     connectWeb3Wallet() {
       this.hideTemporarily = true;
@@ -669,7 +669,7 @@ Vue.component('poh-verify-modal', {
       });
       const headers = { 'X-CSRFToken': csrfmiddlewaretoken };
 
-      const verificationRequest = fetchData(`/api/v0.1/profile/verify_user_poh`, 'POST', payload, headers);
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_user_poh', 'POST', payload, headers);
 
       $.when(verificationRequest)
         .then((response) => {
@@ -1071,7 +1071,7 @@ Vue.component('ens-verify-modal', {
     }.bind(this));
     window.addEventListener('dataWalletReady', () => {
       this.checkENSValidation();
-    })
+    });
   },
   template: `<b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
     <template v-slot:default="{ hide }">
