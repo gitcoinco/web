@@ -58,7 +58,7 @@ def get_algorand_txn_status_paid_explorer(fulfillment):
     response = requests.get(url=url, headers=headers).json()
     
     if response:
-        if response.get("confirmed-round") and response.get("txn"):
+        if response.get("current-round") and response.get("transaction"):
             txn = response["transaction"]
 
             # asset / algo token
