@@ -2,7 +2,6 @@ from django.conf import settings
 
 from web3 import HTTPProvider, Web3
 
-
 POH_CONTRACT_ADDRESS = '0xC5E9dDebb09Cd64DfaCab4011A0D5cEDaf7c9BDb'
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
