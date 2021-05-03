@@ -1073,8 +1073,8 @@ $(document).ready(function() {
 
   $(document).on('click', '#gen_passport', function(e) {
     e.preventDefault();
-    if (document.web3network != 'rinkeby') {
-      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'danger', 1000);
+    if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
+      _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
       return;
     }
     const accounts = web3.eth.getAccounts();
@@ -1106,7 +1106,7 @@ $(document).ready(function() {
             _alert(err, 'danger', 5000);
             return;
           }
-          let url = 'https://rinkeby.etherscan.io/tx/' + txid;
+          let url = 'https://etherscan.io/tx/' + txid;
           var html = `
 <strong>Woo hoo!</strong> - Your passport is being generated.  View the transaction <a href='` + url + `' target=_blank>here</a>.
 <br><br>
