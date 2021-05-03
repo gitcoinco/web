@@ -89,13 +89,15 @@ def index(request):
         data_results = {
             'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
             'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
-            'mau': data['mau'] if data['mau'] else 0
+            'mau': data['mau'] if data['mau'] else 0,
+            'bounties_gmv': data['bounties_gmv'] if data['bounties_gmv'] else 0
         }
     except:
         data_results = {
             'universe_total_usd': 18874053.680999957,
             'human_universe_total_usd': "$18.9m",
-            'mau': 161205.0
+            'mau': 161205.0,
+            'bounties_gmv': '3.43m'
         }
     context.update(data_results)
 

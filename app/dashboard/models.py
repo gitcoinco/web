@@ -3005,14 +3005,19 @@ class Profile(SuperModel):
     is_ens_verified = models.BooleanField(default=False)
     is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     is_facebook_verified = models.BooleanField(default=False)
     identity_data_facebook = JSONField(blank=True, default=dict, null=True)
+    facebook_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
     is_pro = models.BooleanField(default=False, help_text=_('Is this user upgraded to pro?'))
     mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, help_text=_('Mautic id to be able to do api requests without user being logged'))
+
+    is_poh_verified=models.BooleanField(default=False)
+    poh_handle = models.CharField(blank=True, null=True, max_length=64, unique=True)
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
@@ -3055,6 +3060,8 @@ class Profile(SuperModel):
             tb *= 1.001
         if self.is_duniter_verified:
             tb *= 1.001
+        if self.is_poh_verified:
+            tb *= 1.25
         return tb
 
 
@@ -5794,6 +5801,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'Facebook Verified: {instance.is_facebook_verified}')
         if instance.is_facebook_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'POH Verified: {instance.is_poh_verified}')
+        if instance.is_poh_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 
