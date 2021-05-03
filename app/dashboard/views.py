@@ -1393,25 +1393,6 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
-def ethhack(request):
-    """Handle displaying ethhack landing page."""
-    from dashboard.context.hackathon import eth_hack
-
-    params = eth_hack
-
-    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
-
-
-def beyond_blocks_2019(request):
-    """Handle displaying ethhack landing page."""
-    from dashboard.context.hackathon import beyond_blocks_2019
-
-    params = beyond_blocks_2019
-    params['card_desc'] = params['meta_description']
-
-    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
-
-
 def accept_bounty(request):
     """Process the bounty.
 
@@ -3392,33 +3373,26 @@ def verify_user_google(request):
         )
         r = google.get('https://www.googleapis.com/oauth2/v1/userinfo')
         if r.status_code != 200:
-            return JsonResponse({
-                'ok': False,
-                'message': 'Invalid code',
-            })
+            messages.error(request, _(f'Invalid code'))
+            return redirect('profile_by_tab', 'trust')
     except (ConnectionError, InvalidGrantError):
-        return JsonResponse({
-            'ok': False,
-            'message': 'Invalid code',
-        })
+        messages.error(request, _(f'Invalid code'))
+        return redirect('profile_by_tab', 'trust')
 
     identity_data_google = r.json()
-    # if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
-    # TODO: re-enable this when the google_user_id migration has run 
-    if False:
-        return JsonResponse({
-            'ok': False,
-            'message': 'A user with this google account already exists!',
-        })
 
-    profile = profile_helper(request.user.username, True)
-    profile.is_google_verified = True
-    profile.identity_data_google = identity_data_google
-    #profile.google_user_id = identity_data_google['id']
-    profile.save()
+    if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
+        messages.error(request, _(f'A user with this Google account already exists!'))
+
+    else:
+        messages.success(request, _(f'Congratulations! You have successfully verified your Google account!'))
+        profile = profile_helper(request.user.username, True)
+        profile.is_google_verified = True
+        profile.identity_data_google = identity_data_google
+        profile.google_user_id = identity_data_google['id']
+        profile.save()
 
     return redirect('profile_by_tab', 'trust')
-
 
 @login_required
 def verify_profile_with_ens(request):
@@ -3552,27 +3526,35 @@ def verify_user_facebook(request):
         facebook = connect_facebook()
         if not 'code' in request.GET:
             return redirect('profile_by_tab', 'trust')
+
         facebook.fetch_token(
             settings.FACEBOOK_TOKEN_URL,
             client_secret=settings.FACEBOOK_CLIENT_SECRET,
             code=request.GET['code'],
         )
-        r = facebook.get('https://graph.facebook.com/me?')
-        if r.status_code != 200:
-            return JsonResponse({
-                'ok': False,
-                'message': 'Invalid code',
-            })
-    except (ConnectionError, InvalidGrantError):
-        return JsonResponse({
-            'ok': False,
-            'message': 'Invalid code',
-        })
 
-    profile = profile_helper(request.user.username, True)
-    profile.is_facebook_verified = True
-    profile.identity_data_facebook = r.json()
-    profile.save()
+        r = facebook.get('https://graph.facebook.com/me?')
+
+        if r.status_code != 200:
+            messages.error(request, _(f'Invalid code'))
+            return redirect('profile_by_tab', 'trust')
+
+    except (ConnectionError, InvalidGrantError):
+        messages.error(request, _(f'Invalid code'))
+        return redirect('profile_by_tab', 'trust')
+
+    identity_data_facebook = r.json()
+
+    if Profile.objects.filter(facebook_user_id=identity_data_facebook['id']).exists():
+        messages.error(request, _(f'A user with this facebook account already exists!'))
+
+    else:
+        profile = profile_helper(request.user.username, True)
+        messages.success(request, _(f'Congratulations! You have successfully verified your facebook account!'))
+        profile.is_facebook_verified = True
+        profile.identity_data_facebook = identity_data_facebook
+        profile.facebook_user_id = identity_data_facebook['id']
+        profile.save()
 
     return redirect('profile_by_tab', 'trust')
 
@@ -6905,28 +6887,29 @@ def mautic_api(request, endpoint=''):
 
 def mautic_proxy(request, endpoint=''):
     params = request.GET
-    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
-    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
-    headers = {"Authorization": f"Basic {token}"}
-
-    if request.body:
-        body_unicode = request.body.decode('utf-8')
-        payload = json.loads(body_unicode)
-
-    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
     if request.method == 'GET':
-        response = requests.get(url=url, headers=headers, params=params).json()
-    elif request.method == 'POST':
-        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PATCH':
-        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+        response = mautic_proxy_backend(request.method, endpoint, None, params)
+    elif request.method in ['POST','PUT','PATCH','DELETE']:
+        response = mautic_proxy_backend(request.method, endpoint, request.body, params)
 
     return JsonResponse(response)
 
+
+def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
+    # print(method, endpoint, payload, params)
+    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+    headers = {"Authorization": f"Basic {token}"}
+    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+
+    if payload:
+        body_unicode = payload.decode('utf-8')
+        payload = json.loads(body_unicode)
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    else:
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
+
+    return response
 
 
 @csrf_exempt
