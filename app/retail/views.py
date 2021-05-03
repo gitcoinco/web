@@ -473,77 +473,71 @@ def robotstxt(request):
 
 
 def about(request):
-    three_months_ago = timezone.now() - datetime.timedelta(days=360)
-    grants_bubbles = Grant.objects.filter(
-        network='mainnet', hidden=False, visible=True, active=True
-    ).values('logo', 'id').order_by('weighted_shuffle', 'pk')[:33]
 
-    top_earners = list(LeaderboardRank.objects.active().filter(
-        product='bounties', leaderboard='monthly_earners'
-    ).order_by('-amount')[0:4])
+    data_about = JSONStore.objects.get(view='about', key='general').data
 
+    try:
+        kernel = JSONStore.objects.get(view='about', key='kernel').data
 
-    # handles = top_earners.values_list("github_username", flat=True)
-    # profiles = Profile.objects.filter(handle__in=handles)
+    except JSONStore.DoesNotExist:
+        kernel = None
 
 
-
-    kernel = [{
-            "img": "harshricha.jpg",
-            "name": "Harsh & Richa",
-            "position": "Founders",
-            "company": "EPNS"
-        },
-        {
-            "img": "tomgreenaway.jpg",
-            "name": "Tom Greenaway",
-            "position": "Senior Dev Advocate",
-            "company": "Google"
-        },
-        {
-            "img": "sparrowread.jpg",
-            "name": "Sparrow Read",
-            "position": "Cofounder",
-            "company": "DADA, WOCA"
-        },
-        {
-            "img": "colinfortuner.jpg",
-            "name": "Colin Fortuner",
-            "position": "Indie Game Developer",
-            "company": "ex-Twitch"
-        },
-        {
-            "img": "shreyashariharan.jpg",
-            "name": "Shreyas Hariharan",
-            "position": "Founder",
-            "company": "Llama Community"
-        },
-        {
-            "img": "ramanshalupau.jpg",
-            "name": "Raman Shalupau",
-            "position": "Founder",
-            "company": "CryptoJobList"
-        },
-        {
-            "img": "omergoldberg.jpg",
-            "name": "Omer Goldberg",
-            "position": "Founder",
-            "company": "devclass.io, ex-Instagram"
-        },
-        {
-            "img": "kristiehuang.jpg",
-            "name": "Kristie Huang ",
-            "position": "Member",
-            "company": "Pantera Capital, she256"
-        }]
+    # kernel = [{
+    #         "img": "harshricha.jpg",
+    #         "name": "Harsh & Richa",
+    #         "position": "Founders",
+    #         "company": "EPNS"
+    #     },
+    #     {
+    #         "img": "tomgreenaway.jpg",
+    #         "name": "Tom Greenaway",
+    #         "position": "Senior Dev Advocate",
+    #         "company": "Google"
+    #     },
+    #     {
+    #         "img": "sparrowread.jpg",
+    #         "name": "Sparrow Read",
+    #         "position": "Cofounder",
+    #         "company": "DADA, WOCA"
+    #     },
+    #     {
+    #         "img": "colinfortuner.jpg",
+    #         "name": "Colin Fortuner",
+    #         "position": "Indie Game Developer",
+    #         "company": "ex-Twitch"
+    #     },
+    #     {
+    #         "img": "shreyashariharan.jpg",
+    #         "name": "Shreyas Hariharan",
+    #         "position": "Founder",
+    #         "company": "Llama Community"
+    #     },
+    #     {
+    #         "img": "ramanshalupau.jpg",
+    #         "name": "Raman Shalupau",
+    #         "position": "Founder",
+    #         "company": "CryptoJobList"
+    #     },
+    #     {
+    #         "img": "omergoldberg.jpg",
+    #         "name": "Omer Goldberg",
+    #         "position": "Founder",
+    #         "company": "devclass.io, ex-Instagram"
+    #     },
+    #     {
+    #         "img": "kristiehuang.jpg",
+    #         "name": "Kristie Huang ",
+    #         "position": "Member",
+    #         "company": "Pantera Capital, she256"
+    #     }]
 
     context = {
         'title': 'Gitcoin - Support open web development.',
         'card_title': 'Gitcoin - Support open web development.',
         'card_desc': " We are the community of builders, creators, and protocols at the center of the open web.",
-        'grants_bubbles': grants_bubbles,
-        'kernel': kernel,
-        'top_earners': top_earners
+        'data': data_about if data_about else None,
+        'kernel': kernel if kernel else None,
     }
     try:
         data = JSONStore.objects.get(view='results').data
