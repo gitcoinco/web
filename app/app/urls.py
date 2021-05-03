@@ -178,6 +178,9 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
+        r'^api/v0.1/profile/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
