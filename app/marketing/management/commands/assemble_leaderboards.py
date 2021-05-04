@@ -202,7 +202,7 @@ def do_leaderboard():
 
                 print('---')
 
-                # set old LR as inactive
+                # set old LeaderboardRank as inactive
                 created_on = timezone.now()
                 with transaction.atomic():
                     print(" - saving -")
