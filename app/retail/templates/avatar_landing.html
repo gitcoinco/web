@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize compress2 %}
+{% load i18n static humanize bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,10 +23,10 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Avatar Builder | Gitcoin">
     <meta name="description" content="Gitcoin's Avatar Builder has dozens of options to show off your bad-self.">
-    {% compress2 css file avatar_landing %}
+    {% bundle css file avatar_landing %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/products.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/avatar_landing.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
 
   <body class="{{ active }} g-font-muli">
@@ -74,7 +74,7 @@
         </div>
       {% endfor %}
         <div class="Features products container px-0 p-5">
-          <a class="btn-lg btn-primary p-1 float-right shadow-none font-weight-bold text-center mt-1 mb-0 p-2"  href="/onboard/profile?steps=avatar#">Try Now</a> 
+          <a class="btn-lg btn-primary p-1 float-right shadow-none font-weight-bold text-center mt-1 mb-0 p-2"  href="/onboard/profile?steps=avatar#">Try Now</a>
           <h3 class="mt-0 pt-0">Ready to give it a try?</h3>
           <p class="mt-0">
             The avatar's created by this online avatar builder are:
@@ -94,6 +94,6 @@
       {% include 'shared/footer.html' %}
       {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' %}
-    </div>  
+    </div>
   </body>
 </html>

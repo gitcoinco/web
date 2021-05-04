@@ -1,14 +1,14 @@
-{% load i18n static kudos_extras avatar_tags compress2 %}
+{% load i18n static kudos_extras avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress2 css file kudos_details %}
+    {% bundle css file kudos_details %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -49,7 +49,7 @@
             {% endif %}
             <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
             <div>
-              Network: {{kudos.contract.network}} 
+              Network: {{kudos.contract.network}}
 
               {% if kudos.on_other_networks|length %}
                 (Also available on
@@ -134,7 +134,7 @@
                   <BR>
                   <BR>
                   {% if reward_for|length %}
-                  or: 
+                  or:
                   {% endif %}
                   {% for quest in reward_for %}
                     <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
@@ -201,9 +201,9 @@
       <script src="{% static "v2/js/amounts.js" %}"></script>
       <script src="{% static "v2/js/eth-price.js" %}"></script>
       {% include 'shared/activity_scripts.html' %}
-      {% compress2 css file activity_stream %}
+      {% bundle css file activity_stream %}
         <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-      {% endcompress2 %}
+      {% endbundle %}
       <script src="{% static "v2/js/status.js" %}"></script>
       <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     </div>

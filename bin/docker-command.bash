@@ -47,10 +47,10 @@ then
         python3 manage.py createcachetable
     fi
 
-    # Build assets using compress2 and webpack
+    # Build assets using bundle and webpack
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
         yarn install
-        python3 manage.py compress2
+        python3 manage.py bundle
         if [ "$ENV" == 'prod' ];
         then
             yarn run build
@@ -83,9 +83,9 @@ then
     date >> /provisioned
     echo "Provisioning complete!"
 else
-    # Build assets using compress2 and webpack
+    # Build assets using bundle and webpack
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" && "$ENV" != 'prod' ]; then
-        python3 manage.py compress2 && yarn run webpack &
+        python3 manage.py bundle && yarn run webpack &
     fi
 fi
 

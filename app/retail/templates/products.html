@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress2 %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,9 +23,9 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Products | Gitcoin">
     <meta name="description" content="Gitcoin is a mission and value-oriented distributed movement aimed to drive change and grow open source.">
-    {% compress2 css file products %}
+    {% bundle css file products %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/products.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
 
   <body class="{{ active }} g-font-muli">

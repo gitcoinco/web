@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n compress2 %}
+{% load humanize static i18n bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   {% include 'shared/head.html' with slim=1 %}
   {% include 'shared/cards_pic.html' %}
-  {% compress2 css file grants %}
+  {% bundle css file grants %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
@@ -27,7 +27,7 @@ along with this program. If not, see
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
-  {% endcompress2 %}
+  {% endbundle %}
   <style>
     .select2-selection .select2-selection--single {
       background: none;

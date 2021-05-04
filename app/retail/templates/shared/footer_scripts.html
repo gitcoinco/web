@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static compress2 %}
+{% load static bundle %}
 <script>
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
@@ -40,7 +40,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
 
-{% compress2 merge_js file libs %}
+{% bundle merge_js file libs %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
@@ -55,7 +55,7 @@
   const bootstrapModal = $.fn.modal.noConflict();
   $.fn.bootstrapModal = bootstrapModal;
 </script>
-{% endcompress2 %}
+{% endbundle %}
 
 <!-- <script src="{% static "v2/js/lib/web3modal.min.js" %}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.0/dist/index.min.js"></script>
@@ -69,23 +69,23 @@
 <script src="{% static "v2/js/data-chains.js" %}"></script>
 <script src="{% static "v2/js/wallet.js" %}"></script>
 
-{% compress2 merge_js file jquery-extras %}
+{% bundle merge_js file jquery-extras %}
 <script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
 <script src="{% static "v2/js/lib/additional-methods.min.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
-{% endcompress2 %}
+{% endbundle %}
 
 {% if not slim %}
-  {% compress2 merge_js file jquery-old %}
+  {% bundle merge_js file jquery-old %}
   <script src="{% static "v2/js/lib/jsrender.js" %}"></script>
   <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
   <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
   <script src="{% static "v2/js/lib/jquery.modal.min.js" %}"></script>
-  {% endcompress2 %}
+  {% endbundle %}
 {% endif %}
 
-{% compress2 merge_js file main %}
+{% bundle merge_js file main %}
 <script src="{% static "v2/js/mautic.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/cart-data.js" %}"></script>
@@ -99,12 +99,12 @@
 <script src="{% static "v2/js/vue-components.js" %}"></script>
 <script src="{% static "v2/js/user_card.js" %}"></script>
 <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
-{% endcompress2 %}
+{% endbundle %}
 
 {% if not onepager %}
-  {% compress2 merge_js file test %}
+  {% bundle merge_js file test %}
     <script src="{% static "v2/js/navbar.js" %}"></script>
-  {% endcompress2 %}
+  {% endbundle %}
 {% endif %}
 
 {% if user.is_authenticated %}

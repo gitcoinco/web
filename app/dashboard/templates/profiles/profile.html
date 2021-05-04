@@ -1,4 +1,4 @@
-{% load i18n humanize static avatar_tags kudos_extras compress2 %}
+{% load i18n humanize static avatar_tags kudos_extras bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,7 +10,7 @@
     {% if not hidden %}
       <link rel="canonical" href="{{profile.url}}/{{tab}}" />
     {% endif %}
-    {% compress2 css file profile %}
+    {% bundle css file profile %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/profile.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
@@ -20,7 +20,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">

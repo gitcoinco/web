@@ -14,7 +14,7 @@ register = template.Library()
 
     Syntax:
 
-        {% compress2 [js|css|merge_js|merge_css] file [block_name] %}
+        {% bundle [js|css|merge_js|merge_css] file [block_name] %}
         <script src="..."></script>
         <script>
             ...
@@ -24,7 +24,7 @@ register = template.Library()
         <style>
             ...
         </style>
-        {% endcompress2 %}
+        {% endbundle %}
 
     (dev) to compress:
 
@@ -32,7 +32,7 @@ register = template.Library()
 
     (prod) to compress:
 
-        ./manage.py compress2 && yarn run build
+        ./manage.py bundle && yarn run build
 """
 
 def css_elems(soup):
@@ -133,7 +133,7 @@ def render(block, kind, mode, name='asset', forced=False):
     # get a hash of the block we're working on (after parsing -- ensures we're always working against the same input)
     blockHash = hashlib.sha256(str(soup).encode('utf')).hexdigest()
 
-    # In production we don't need to generate new content unless we're running this via the compress2 command
+    # In production we don't need to generate new content unless we're running this via the bundle command
     if settings.ENV not in ['prod'] or forced == True:
         # concat all input in the block
         content = ''
@@ -160,7 +160,7 @@ def render(block, kind, mode, name='asset', forced=False):
                 f.truncate(0)
                 f.write(content)
                 f.close()
-                # print so that we have concise output in the compress2 command
+                # print so that we have concise output in the bundle command
                 print('- Generated: %s' % outputFile)
 
     # in production and not forced we will just return the static bundle
@@ -182,9 +182,9 @@ class CompressorNode(template.Node):
 
 
 @register.tag
-def compress2(parser, token):
-    # pull content and split args from compress2 block
-    nodelist = parser.parse(('endcompress2',))
+def bundle(parser, token):
+    # pull content and split args from bundle block
+    nodelist = parser.parse(('endbundle',))
     parser.delete_first_token()
 
     args = token.split_contents()

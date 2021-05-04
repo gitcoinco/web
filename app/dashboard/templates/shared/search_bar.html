@@ -14,10 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress2 %}
-{% compress2 css file search_bar %}
+{% load i18n static bundle %}
+{% bundle css file search_bar %}
   <link rel="stylesheet" href="{% static "v2/scss/search_bar.scss" %}">
-{% endcompress2 %}
+{% endbundle %}
 <div class="d-flex search_bar my-lg-3 mx-lg-4">
   <div class="col-4 font-body">
     <div id="results-count" class="ml-3 ml-lg-0"><span class='num'></span><span class='plus'></span> bounties</div>

@@ -15,20 +15,20 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress2 %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress2 css file dashboard_index %}
+    {% bundle css file dashboard_index %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
   <body class="interior {{active}} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -42,9 +42,9 @@
         {% endif %}
       </div>
       {% if hackathon %}
-        {% compress2 css file dashboard_explorer %}
+        {% bundle css file dashboard_explorer %}
           <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
-        {% endcompress2 %}
+        {% endbundle %}
         <style>
 
           .hackathon-banner {

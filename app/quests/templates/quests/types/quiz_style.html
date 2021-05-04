@@ -1,5 +1,5 @@
 {% extends 'quests/base.html' %}
-{% load humanize static i18n compress2 %}
+{% load humanize static i18n bundle %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -18,9 +18,9 @@
 {% endcomment %}
 {% block 'content' %}
 <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
-{% compress2 css file cancel_grant %}
+{% bundle css file cancel_grant %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
-{% endcompress2 %}
+{% endbundle %}
 <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 {% if not hidden and is_owner_or_staff %}
 <div class="alpha-warning font-caption mb-0" style=" text-align: right;">
@@ -29,7 +29,7 @@
   <a style="color:white; margin-right: 20px;" href="{{quest.admin_url}}">{% trans "Quest Admin" %}</a>
   {% endif %}
   {% if is_staff or is_owner %}
-  <span class="font-weight-bold"></span> {% if not is_staff %} Owner Only {% endif %} | 
+  <span class="font-weight-bold"></span> {% if not is_staff %} Owner Only {% endif %} |
   <a style="color:white; margin-right: 20px;" href="{{quest.edit_url}}">{% trans "Edit Quest" %}</a>
   {% endif %}
 </div>
@@ -114,7 +114,7 @@
       'name': '{{quest.kudos_reward.ui_name}}',
       'img': '{{quest.kudos_reward.preview_img_url}}'
     };
-    
+
     document.num_questions = parseInt('{{quest.questions|length}}');
     document.music = '{{quest.music}}';
     document.seconds_per_question = parseInt('{{seconds_per_question}}');

@@ -14,10 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress2 %}
-{% compress2 css file newsletter %}
+{% load i18n static bundle %}
+{% bundle css file newsletter %}
   <link rel="stylesheet" href="{% static "v2/scss/newsletter.scss" %}">
-{% endcompress2 %}
+{% endbundle %}
 <div class="row newsletter text-center" id="newsletterGroup">
   <div class="col-12">
     <h4 class="col-12 font-title font-weight-bold py-1" id="newsletter-title">

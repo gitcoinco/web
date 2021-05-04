@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from django.template.loaders.app_directories import get_app_template_dirs
 from django.conf import settings
 
-from dashboard.templatetags.compress2 import render
+from dashboard.templatetags.bundle import render
 
 
 def rmdir(loc):
@@ -26,7 +26,7 @@ def rmdirs(loc, kind):
 
 class Command(BaseCommand):
 
-    help = 'generates .js/.scss files from compress2 template tags'
+    help = 'generates .js/.scss files from bundle template tags'
 
     def handle(self, *args, **options):
         template_dir_list = []
@@ -41,10 +41,10 @@ class Command(BaseCommand):
                     if ".html" in filename:
                         template_list.append(os.path.join(base_dir, filename))
 
-        # using regex to grab the compress2 tags content from html
-        block_pattern = re.compile(r'({%\scompress2(.|\n)*?(?<={%\sendcompress2\s%}))')
-        open_pattern = re.compile(r'({%\s+compress2\s+(js|css|merge_js|merge_css)\s+?(file)?\s+?([^\s]*)?\s+?%})')
-        close_pattern = re.compile(r'({%\sendcompress2\s%})')
+        # using regex to grab the bundle tags content from html
+        block_pattern = re.compile(r'({%\sbundle(.|\n)*?(?<={%\sendbundle\s%}))')
+        open_pattern = re.compile(r'({%\s+bundle\s+(js|css|merge_js|merge_css)\s+?(file)?\s+?([^\s]*)?\s+?%})')
+        close_pattern = re.compile(r'({%\sendbundle\s%})')
         static_open_pattern = re.compile(r'({%\sstatic\s["|\'])')
         static_close_pattern = re.compile(r'(\s?%}(\"|\')?\s?\/?>)')
 
