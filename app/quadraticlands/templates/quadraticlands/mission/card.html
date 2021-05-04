@@ -2,37 +2,36 @@
 
 
 {% if playable %}
-	<a href="{{url}}"  {% if external %} target="_blank" {% endif %} data-kinetics-attraction data-kinetics-attraction-chance="0.5" 
-    data-kinetics-attraction-force="1.5" data-kinetics-attraction-grow="2">
+  <a href="{{url}}" {% if external %} target="_blank" {% endif %} data-kinetics-attraction
+    data-kinetics-attraction-chance="0.5" data-kinetics-attraction-force="1.5" data-kinetics-attraction-grow="2">
 {% endif %}
 
-	<div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %} {% if done %}done{% endif %}">
-		<div class="card-image">
-			<img loading="lazy" src='{% static "v2/images/quadraticlands/mission" %}/{{svg}}' />
-		</div>
-		<div class="card-body">
-			<div class="card-text">
-				<div class="card-title">{{name}}</div>
-					<div class="card-subtitle {% if playable %} active {% endif %}">{{message}}</div>
-			</div>
-			<div class="card-badges">
+    <div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %} {% if done %}done{% endif %}">
+      <div class="card-image">
+        <img loading="lazy" src='{% static "v2/images/quadraticlands/mission" %}/{{svg}}' />
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          <div class="card-title">{{name}}</div>
+          <div class="card-subtitle {% if playable %} active {% endif %}">{{message}}</div>
+        </div>
+        <div class="card-badges">
 
-				{% if done %} 
-				<div class="card-badge done">{% include "quadraticlands/_inlinesvg/done.svg" %}</div>
-				{% endif %}
+          {% if done %}
+            <div class="card-badge done">{% include "quadraticlands/_inlinesvg/done.svg" %}</div>
+          {% endif %}
 
-				{% if tokens %} 
-				<div class="card-badge gtc-token">
-					{% include "quadraticlands/_inlinesvg/gtctoken.svg" %}
-					<span>+ {{tokens}}</span>
-				</div>
-				{% endif %}
+          {% if tokens %}
+            <div class="card-badge gtc-token">
+              {% include "quadraticlands/_inlinesvg/gtctoken.svg" %}
+              <span>+ {{tokens}}</span>
+            </div>
+          {% endif %}
 
-			</div>				
-		</div>
-	</div>
-
+        </div>
+      </div>
+    </div>
 
 {% if playable %}
-</a>
+  </a>
 {% endif %}

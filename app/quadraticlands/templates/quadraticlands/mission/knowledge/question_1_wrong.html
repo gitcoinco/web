@@ -11,42 +11,37 @@
 <!--PROOF OF KNOWLEDGE -->
 
 <section class="background">
-	<img src='{% static "v2/images/quadraticlands/background/wrong.svg" %}' />
+  <img src='{% static "v2/images/quadraticlands/background/wrong.svg" %}' />
 </section>
 
 
 <section class="quest">
 
-	<!-- quest content -->
-	<main></main>
-	
-	<!-- timer / seperator -->
-	<div class="seperator"></div>
+  <!-- quest content -->
+  <main></main>
 
-	<!-- bottom navigation -->
-	<nav class="glass">
+  <!-- timer / seperator -->
+  <div class="seperator"></div>
 
-		<div class="left">
-			<a href="/quadraticlands/"
-				data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-size="200">Exit</a>
-		</div>
+  <!-- bottom navigation -->
+  <nav class="glass">
 
-		<div class="center">
-			Question 1 of 2
-		</div>
+    <div class="left">
+      <a href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Exit</a>
+    </div>
 
-		<div class="right">
-			<a class="btn" href="/quadraticlands/mission/knowledge/question/1"
-				data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-size="200">Try Again</a>
-		</div>
+    <div class="center">
+      Question 1 of 2
+    </div>
 
-	</nav>
+    <div class="right">
+      <a class="btn" href="/quadraticlands/mission/knowledge/question/1" data-kinetics-attraction
+        data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Try
+        Again</a>
+    </div>
+
+  </nav>
 
 
 </section>
@@ -64,15 +59,15 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // new Kinetics().interactionHook();
-	const kinetics = new Kinetics({
-          particles: { count: 16, sizes: {min: 5, max:10}, rotate: {speed:5}, 
-          mode: {type: "rain", boundery: "endless", speed:"10" }}
+    const kinetics = new Kinetics({
+      particles: {
+        count: 16, sizes: { min: 5, max: 10 }, rotate: { speed: 5 },
+        mode: { type: "rain", boundery: "endless", speed: "10" }
+      }
     })
-     kinetics.interactionHook();
+    kinetics.interactionHook();
   });
 </script>
 
 
 {% endblock %}
-
-

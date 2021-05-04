@@ -6,41 +6,46 @@
 
 <!--PROOF OF RECEIVE -->
 <section class="grid">
-	
-	<figure class="intro">
-		<img src='{% static "v2/images/quadraticlands/mission/proof-of-receive-start.svg" %}' />
-	</figure>
 
-	<!--interface : nowallet-->
-	<div id="interface_nowallet" class="hide">
-		<h3><span>#</span>Chapter 3 of 3</h3>
-		<h1>Proof of receive</h1>
-		<p>Please connect to your Wallet!</p>
-		<a id="buttonConnect" class="btn" 
-			data-kinetics-attraction
-			data-kinetics-attraction-chance=".3"
-			data-kinetics-attraction-force="1.1"
-			data-kinetics-attraction-grow="7">Connect</a>
-	</div>
+  <figure class="intro">
+    <img src='{% static "v2/images/quadraticlands/mission/proof-of-receive-start.svg" %}' />
+  </figure>
 
-	<!--interface : ready-->
-	<div id="interface_ready" class="hide">
-		<h3><span>#</span>Chapter 3 of 3</h3>
-		<h1>Proof of receive</h1>
-		<p>We will deposit your GTC governance tokens to</p>
+  <!--interface : nowallet-->
+  <div id="interface_nowallet" class="hide">
+    <h3><span>#</span>Chapter 3 of 3</h3>
+    <h1>Proof of receive</h1>
+    <p>Please connect to your Wallet!</p>
+    <a id="buttonConnect" class="btn"
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".3"
+      data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7"
+    >Connect
+  </a>
+  </div>
 
-		<div class="mission-proof-of-receive-address">
-			<span id="receiveAddress"></span>
-		</div>
+  <!--interface : ready-->
+  <div id="interface_ready" class="hide">
+    <h3><span>#</span>Chapter 3 of 3</h3>
+    <h1>Proof of receive</h1>
+    <p>We will deposit your GTC governance tokens to</p>
 
-		<a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn"
-			data-kinetics-attraction
-			data-kinetics-attraction-chance=".3"
-			data-kinetics-attraction-force="1.1"
-			data-kinetics-attraction-grow="7">Continue</a>
-		
-	
-	</div>
+    <div class="mission-proof-of-receive-address">
+      <span id="receiveAddress"></span>
+    </div>
+
+    <a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn" 
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".3"
+      data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7"
+    >
+      Continue
+    </a>
+
+
+  </div>
 
 </section>
 
@@ -58,57 +63,52 @@
 
 <script>
 
-document.addEventListener("DOMContentLoaded",function(){
+  document.addEventListener("DOMContentLoaded", function () {
 
-	updateInterface("nowallet")
+    updateInterface("nowallet")
 
-	const receiveAddress = document.getElementById("receiveAddress")
+    const receiveAddress = document.getElementById("receiveAddress")
 
-	window.addEventListener("dataWalletReady", () => {
-		receiveAddress.innerHTML = selectedAccount
-		updateInterface("ready")			
-	});
+    window.addEventListener("dataWalletReady", () => {
+      receiveAddress.innerHTML = selectedAccount
+      updateInterface("ready")
+    });
 
-	//check each 2 seconds if user is still connected fetch
-	// the edgecase of user logout / gets disconnected
-	setInterval(() => {
-		if(!selectedAccount) { 
-			updateInterface("nowallet");
-		}
-	}, 2000);
+    //check each 2 seconds if user is still connected fetch
+    // the edgecase of user logout / gets disconnected
+    setInterval(() => {
+      if (!selectedAccount) {
+        updateInterface("nowallet");
+      }
+    }, 2000);
 
-	// map buttonConnect button to popup web3modal
-	const buttonConnect = document.getElementById("buttonConnect")
-	buttonConnect.addEventListener("click", () => {
-		onConnect()
-	});
+    // map buttonConnect button to popup web3modal
+    const buttonConnect = document.getElementById("buttonConnect")
+    buttonConnect.addEventListener("click", () => {
+      onConnect()
+    });
 
-});
+  });
 
-function updateInterface(status){
+  function updateInterface(status) {
 
-	interface_nowallet = document.getElementById("interface_nowallet");
-	interface_ready = document.getElementById("interface_ready");
+    interface_nowallet = document.getElementById("interface_nowallet");
+    interface_ready = document.getElementById("interface_ready");
 
-	if (status=="nowallet")
-	{
-		interface_nowallet.classList.remove("hide")
-		interface_ready.classList.add("hide")
-		console.debug("INTERFACE:NOWALLET");
-	}
+    if (status == "nowallet") {
+      interface_nowallet.classList.remove("hide")
+      interface_ready.classList.add("hide")
+      console.debug("INTERFACE:NOWALLET");
+    }
 
-	if (status=="ready")
-	{
-		interface_nowallet.classList.add("hide")
-		interface_ready.classList.remove("hide")
-		console.debug("INTERFACE:READY");
-	}
+    if (status == "ready") {
+      interface_nowallet.classList.add("hide")
+      interface_ready.classList.remove("hide")
+      console.debug("INTERFACE:READY");
+    }
 
-}
+  }
 
 </script>
 
 {% endblock %}
-
-
-
