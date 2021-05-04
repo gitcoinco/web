@@ -436,7 +436,7 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
     except Exception as e:
         logger.error(
             "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status_code: %s",
-            e.data['message'], owner, repo, page, state, e.status
+            e.data['message'], owner, repo.name, page, state, e.status
         )
         return {'status': e.status, 'message': e.data['message']}
 
@@ -604,29 +604,30 @@ def get_gh_notifications(login=None):
 
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
     try:
-        response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
-        return response.json()
+        # TODO: figure out a way to send client_id and client_secret
+        gh_client = github_connect()
+        comment = gh_client.get_repo(f'{owner}/{repo}').get_issue(number=issue_num).create_comment(comment)
+        return comment
     except Exception as e:
         logger.error(
-            "could not post issue comment - Reason: %s - %s %s %s %s", e, comment, owner, repo, response.status_code
+            "could not post issue comment - Reason: %s - %s %s %s %s", e, comment, owner, repo, e.status
         )
-    return {}
+        return {'status': e.status, 'message': e.data['message']}
 
 
 def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
     try:
-        response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
-        if response.status_code == 200:
-            return response.json()
+        # TODO: figure out a way to send client_id and client_secret
+        gh_client = github_connect()
+        _ = gh_client.get_repo(f'{owner}/{repo}').get_issue(number=issue).get_comment(comment_id).edit(comment)
+        return None
     except Exception as e:
         logger.error(
-            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, response.status_code
+            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, e.status
         )
-    return {}
+        return {'status': e.status, 'message': e.data['message']}
 
 
 def delete_issue_comment(comment_id, owner, repo):
@@ -646,6 +647,16 @@ def delete_issue_comment(comment_id, owner, repo):
             e, comment_id, owner, repo, response.status_code, response.text
         )
     return {}
+
+    try:
+        gh_client = github_connect()
+        _ = gh_client.get_repo(f'{owner}/{repo}').get_issue(number=issue).get_comment(comment_id).edit(comment)
+        return None
+    except Exception as e:
+        logger.error(
+            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, e.status
+        )
+        return {'status': e.status, 'message': e.data['message']}
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):
