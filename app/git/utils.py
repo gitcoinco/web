@@ -37,11 +37,10 @@ logger = logging.getLogger(__name__)
 
 _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 BASE_URI = settings.BASE_URL.rstrip('/')
-HEADERS = {'Accept': 'application/vnd.github.squirrel-girl-preview'}
-V3HEADERS = {'Accept': 'application/vnd.github.v3.text-match+json'}
+HEADERS = {'Accept': 'application/vnd.github.v3+json'}
 JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
 TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
-TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
+TOKEN_URL = '{api_url}/applications/{client_id}/token'
 PER_PAGE_LIMIT = 100
 
 
@@ -58,11 +57,7 @@ def github_connect(token=None):
         token = settings.GITHUB_API_TOKEN
 
     try:
-        github_client = Github(
-            login_or_token=token,
-            client_id=settings.GITHUB_CLIENT_ID,
-            client_secret=settings.GITHUB_CLIENT_SECRET,
-        )
+        github_client = Github(login_or_token=token)
     except BadCredentialsException as e:
         logger.exception(e)
     return github_client
@@ -97,11 +92,8 @@ def get_gh_issue_state(org, repo, issue_num):
     return issue_details.state
 
 
-def build_auth_dict(oauth_token):
+def build_auth_dict():
     """Collect authentication details.
-
-    Args:
-        oauth_token (str): The Github OAuth token.
 
     Returns:
         dict: An authentication dictionary.
@@ -110,8 +102,7 @@ def build_auth_dict(oauth_token):
     return {
         'api_url': settings.GITHUB_API_BASE_URL,
         'client_id': settings.GITHUB_CLIENT_ID,
-        'client_secret': settings.GITHUB_CLIENT_SECRET,
-        'oauth_token': oauth_token
+        'client_secret': settings.GITHUB_CLIENT_SECRET
     }
 
 
@@ -167,11 +158,16 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
         if (timezone.now() - last_validated) < timedelta(hours=1):
             return True
 
-    _params = build_auth_dict(oauth_token)
+    _params = build_auth_dict()
     _auth = (_params['client_id'], _params['client_secret'])
     url = TOKEN_URL.format(**_params)
     try:
-        response = requests.get(url, auth=_auth, headers=HEADERS)
+        response = requests.post(
+            url,
+            data=json.dumps({'access_token': oauth_token}),
+            auth=_auth,
+            headers=HEADERS
+        )
     except ConnectionError as e:
         if not settings.ENV == 'local':
             logger.error(e)
@@ -186,10 +182,15 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
 
 def revoke_token(oauth_token):
     """Revoke the specified token."""
-    _params = build_auth_dict(oauth_token)
+    _params = build_auth_dict()
     _auth = (_params['client_id'], _params['client_secret'])
     url = TOKEN_URL.format(**_params)
-    response = requests.delete(url, auth=_auth, headers=HEADERS)
+    response = requests.delete(
+        url,
+        data=json.dumps({'access_token': oauth_token}),
+        auth=_auth,
+        headers=HEADERS
+    )
     if response.status_code == 204:
         return True
     return False
@@ -199,16 +200,21 @@ def reset_token(oauth_token):
     """Reset the provided token.
 
     Args:
-        access_token (str): The Github OAuth token.
+        oauth_token (str): The Github OAuth token.
 
     Returns:
         str: The new Github OAuth token.
 
     """
-    _params = build_auth_dict(oauth_token)
+    _params = build_auth_dict()
     _auth = (_params['client_id'], _params['client_secret'])
     url = TOKEN_URL.format(**_params)
-    response = requests.post(url, auth=_auth, headers=HEADERS)
+    response = requests.patch(
+        url,
+        data=json.dumps({'access_token': oauth_token}),
+        auth=_auth,
+        headers=HEADERS
+    )
     if response.status_code == 200:
         return response.json().get('token')
     return ''
@@ -397,7 +403,7 @@ def search(query):
     params = (('q', query), ('sort', 'updated'),)
 
     try:
-        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
+        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=HEADERS, params=params)
         return response.json()
     except Exception as e:
         logger.error("could not search GH - Reason: %s - query: %s", e, query)
