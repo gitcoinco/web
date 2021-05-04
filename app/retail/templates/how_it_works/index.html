@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags compress2 %}
+{% load i18n static cookielaw_tags bundle %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,10 +23,10 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="{{ title }}">
     <meta name="description" content="{{ desc }}">
-    {% compress2 css file howitworks %}
+    {% bundle css file howitworks %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/landing_page.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/howitworks.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
     <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </head>
   <body class="index d-flex flex-column g-font-muli">

@@ -14,17 +14,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags compress2 %}
+{% load i18n static cookielaw_tags bundle %}
 <!DOCTYPE HTML>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress2 css file onepager_base %}
+    {% bundle css file onepager_base %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepager/main.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/box_redeem.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
     <style>
       .d-flex {
         display: flex;
@@ -67,9 +67,9 @@
       var media_url = "{{ MEDIA_URL }}";
     </script>
     <noscript>
-      {% compress2 css file onepager_noscript %}
+      {% bundle css file onepager_noscript %}
         <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepager/noscript.scss" %} />
-      {% endcompress2 %}
+      {% endbundle %}
     </noscript>
   </head>
   <body id="yge" class="{{ class }} tips transaction g-font-muli">

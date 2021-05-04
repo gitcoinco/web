@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static compress2 %}
+{% load static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,9 +24,9 @@
   {% else %}
     {% include 'shared/cards.html' %}
   {% endif %}
-  {% compress2 css file tag %}
+  {% bundle css file tag %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-  {% endcompress2 %}
+  {% endbundle %}
 </head>
 <body class="{{active}} g-font-muli">
   <div class="content__main min-vh-100 d-md-flex flex-column">

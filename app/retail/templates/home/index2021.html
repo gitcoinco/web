@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress2 humanize %}
+{% load i18n static bundle humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,9 +22,9 @@
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress2 css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress2 %}
+  {% endbundle %}
   <style>
     @property --grad {
       syntax: '<angle>';

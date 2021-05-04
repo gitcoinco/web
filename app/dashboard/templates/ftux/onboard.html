@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static compress2 %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,12 +23,12 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Developers! Get Started with Gitcoin | Gitcoin">
     <meta name="description" content="Use Gitcoin to find paid work and solve real world problems in the blockchain/web3 ecosystem. Receive payment in (ETH or any ERC-20 token).">
-    {% compress2 css file ftux_onboard %}
+    {% bundle css file ftux_onboard %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboard.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/avatar_builder.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/avatar.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
   <body class="g-font-muli">
     {% include 'shared/tag_manager_2.html' %}

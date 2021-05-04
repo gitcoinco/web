@@ -16,8 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static compress2 %}
-{% compress2 css file onboard %}
+{% load static bundle %}
+{% bundle css file onboard %}
 <style>
   #onboard-modal {
     background-image: url(static('v2/images/tribes/promo-decoration.svg'));
@@ -32,7 +32,7 @@
     fill: white;
   }
 </style>
-{% endcompress2 %}
+{% endbundle %}
 <div id="gc-onboard">
   <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" backdrop="static" keyboard="false">
     <template v-if="step === 1">

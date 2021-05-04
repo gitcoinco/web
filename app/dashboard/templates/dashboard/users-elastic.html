@@ -15,19 +15,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags compress2 %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    {% compress2 css file dashboard_users_elastic %}
+    {% bundle css file dashboard_users_elastic %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-innersearch.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
-    {% endcompress2 %}
+    {% endbundle %}
   </head>
 
   <body id="{{ explore }}" class="interior {{active}} g-font-muli">

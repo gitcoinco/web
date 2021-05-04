@@ -59,22 +59,19 @@ def check_merge_changes(elems, attr, outputFile):
         pass
     # if any file has changed then we need to regenerate
     for el in elems:
-        if el.get(attr):
-            # removes static url and erroneous quotes from path
-            asset = '%s/assets/%s' % (settings.BASE_DIR, el[attr])
-            # bundle straight to the bundled directory skipping 'bundles'
-            ts = -1
-            try:
-                ts = os.path.getmtime(asset.replace('/', os.sep))
-            except:
-                pass
-            # if any ts is changed then we regenerate
-            if ts < blockTs:
-                changed = True
-                break
-        else:
+        # removes static url and erroneous quotes from path
+        asset = '%s/assets/%s' % (settings.BASE_DIR, el[attr])
+        # bundle straight to the bundled directory skipping 'bundles'
+        ts = -1
+        try:
+            ts = os.path.getmtime(asset.replace('/', os.sep))
+        except:
+            pass
+        # if any ts is changed then we regenerate
+        if ts < blockTs:
             changed = True
             break
+
     return changed
 
 
@@ -126,14 +123,8 @@ def render(block, kind, mode, name='asset', forced=False):
 
     # clean up the block -- essentially we want to drop anything that gets added by staticfinder (could we improve this by not using static in the templates?)
     cleanBlock = block.replace(settings.STATIC_URL, '')
-
-    # drop any quotes that appear inside the tags - keep the input consistent bs4 will overlook missing quotes
-    findTags = re.compile(r'(<(script|link|style)(.*?)>)')
-    if re.search(findTags, cleanBlock) is not None:
-        for t in re.finditer(findTags, cleanBlock):
-            tag = t.group(0)
-            cleanBlock = cleanBlock.replace(tag, tag.replace('"', '').replace('\'', ''))
-
+    # drop any quotes that are NOT immediately inside brackets
+    cleanBlock = re.sub(re.compile(r'(?<!\()(\'|\")(?!\))'), '', cleanBlock)
     # in production staticfinder will attach an additional hash to the resource which doesnt exist on the local disk
     if settings.ENV in ['prod'] and forced != True:
         cleanBlock = re.sub(re.compile(r'(\..{12}\.(css|scss|js))'), r'.\2', cleanBlock)

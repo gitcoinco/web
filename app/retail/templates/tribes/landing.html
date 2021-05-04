@@ -14,18 +14,18 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress2 %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
   <head>
     <meta name="title" content="Gitcoin Tribes">
     <meta name="description" content="Build relationships and meaningful projects while forming an open source tribe.">
-    {% compress2 css file tribes_landing %}
+    {% bundle css file tribes_landing %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/retail/plans.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/retail/tribes_landing.scss" %}>
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/home.scss" %}>
-    {% endcompress2 %}
+    {% endbundle %}
     {% include 'shared/cards_pic.html' %}
   </head>
   <body class="tribes-landing g-font-muli">
