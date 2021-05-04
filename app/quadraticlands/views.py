@@ -128,10 +128,9 @@ def workstream_base(request, stream_name):
     return TemplateResponse(request, f'quadraticlands/workstream/{stream_name}.html')
 
 
+@login_required
 def mission_postcard(request):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
-    if not request.user.is_authenticated:
-        return redirect('/login/github/?next=' + request.get_full_path())
     attrs = {
         'front_frame': ['1', '2', '3', '4'],
         'front_background': ['a', 'b', 'c', 'd'],
