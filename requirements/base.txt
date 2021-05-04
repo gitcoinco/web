@@ -67,7 +67,7 @@ PyYAML==4.2b4
 ecdsa
 pysha3
 oyaml
-pygithub==1.43.2
+pygithub==1.54.0
 git+https://github.com/gitcoinco/django-cacheops.git#egg=django-cacheops
 django-redis==4.10.0
 collectfast==0.6.2

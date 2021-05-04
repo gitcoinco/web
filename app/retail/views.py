@@ -733,25 +733,6 @@ def jobs(request):
     return TemplateResponse(request, 'jobs.html', context)
 
 
-def vision(request):
-    """Render the Vision response."""
-    videoLinks = [
-        'https://www.youtube.com/embed/wo0KkSH-6eg',
-        'https://www.youtube.com/embed/nZTVMEh9k5U',
-        'https://www.youtube.com/embed/F2yeOFlRE0E'
-    ]
-    context = {
-        'is_outside': True,
-        'active': 'vision',
-        'avatar_url': static('v2/images/vision/triangle.jpg'),
-        'title': 'Vision',
-        'videoLinks': videoLinks,
-        'card_title': _("Gitcoin's Vision for a Web3 World"),
-        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
-    }
-    return TemplateResponse(request, 'vision.html', context)
-
-
 def avatar(request):
     """Render the avatar response."""
     from avatar.models import AvatarTheme
