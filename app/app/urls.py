@@ -178,6 +178,9 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
+        r'^api/v0.1/profile/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
@@ -276,9 +279,6 @@ urlpatterns = [
         'contributor_dashboard/<str:bounty_type>/', dashboard.views.contributor_dashboard, name='contributor_dashboard'
     ),
 
-    # Hackathon static page
-    url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
-    url(r'^hackathon/beyondblocks', dashboard.views.beyond_blocks_2019, name='beyond_blocks_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
