@@ -44,7 +44,7 @@ const payWithBinanceExtension = (fulfillment_id, to_address, vm, modal) => {
           _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         _alert('Unable to make payout bounty. Please try again later', 'danger');
         console.log(error);
       });

@@ -18,7 +18,7 @@
 
 <script src="/dynamic/js/tokens_dynamic.js"></script>
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-{% compress2 js file tip_dependancies %}
+{% compress2 merge_js file tip_dependancies %}
 <script src="{% static "v2/js/tokens.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>

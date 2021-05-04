@@ -15,12 +15,12 @@ module.exports = (_, argv) => {
   // extract js bundles, minify and watch dir for changes
   const jsConfig = {
     entry: WebpackWatchedGlobEntries.getEntries(
-      [ path.resolve(__dirname, 'app/assets/v2/js/bundles/*.js') ]
+      [ path.resolve(__dirname, 'app/assets/v2/bundles/js/*.js') ]
     ),
     devtool: false, // (argv.mode === 'development' ? 'eval-cheap-source-map' : false)
     output: {
       filename: '[name].js',
-      path: path.resolve(__dirname, 'app/assets/v2/js/bundled'),
+      path: path.resolve(__dirname, 'app/assets/v2/bundled/js'),
       library: {
         type: 'global'
       },
@@ -90,17 +90,17 @@ module.exports = (_, argv) => {
   // extract scss bundles, compile, minify, watch and clean-up webpack artifacts
   const sassConfig = {
     entry: WebpackWatchedGlobEntries.getEntries(
-      [ path.resolve(__dirname, 'app/assets/v2/scss/bundles/*.scss') ]
+      [ path.resolve(__dirname, 'app/assets/v2/bundles/scss/*.scss') ]
     ),
     devtool: false, // (argv.mode === 'development' ? 'eval-cheap-source-map' : false)
     output: {
       filename: '[name].noop.js',
-      path: path.resolve(__dirname, 'app/assets/v2/scss/bundled'),
+      path: path.resolve(__dirname, 'app/assets/v2/bundled/scss/'),
     },
     module: {
       rules: [
         {
-          test: /bundles\/.*\.scss$/,
+          test: /bundles\/scss\/.*\.scss$/,
           use: [
             {
               loader: 'file-loader',
@@ -125,6 +125,7 @@ module.exports = (_, argv) => {
                     }
                     @return '${static}' + $url;
                   };
+                  @import '${path.resolve(__dirname, 'app/assets/v2/scss/gc-mixins')}';
                 `
               }
             }
@@ -138,7 +139,7 @@ module.exports = (_, argv) => {
       new FileManagerPlugin({
         events: {
           onEnd: {
-            delete: [path.resolve(__dirname, 'app/assets/v2/scss/bundled/*.noop.*')],
+            delete: [path.resolve(__dirname, 'app/assets/v2/bundled/scss/*.noop.*')],
           },
         },
       })

@@ -11,4 +11,4 @@ this.RAFThrottle = function(f) {
       throttledHandler = undefined;
     });
   };
-}
+};

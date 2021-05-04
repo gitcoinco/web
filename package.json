@@ -4,10 +4,10 @@
   "description": "Gitcoin is the easiest way to monetize or incentivize work in Open Source Software",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/onepager/js/*.js ./cypress/**/*.js",
-    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/onepager/js/*.js",
-    "stylelint": "stylelint './app/assets/**/**/*.scss'",
-    "stylelint:fix": "stylelint --fix './app/assets/**/**/*.scss'",
+    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc './app/assets/v2/js/**/**/*.js' './app/assets/onepager/js/*.js' './cypress/**/**/*.js'",
+    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc './app/assets/v2/js/**/**/*.js' ./app/assets/onepager/js/*.js",
+    "stylelint": "stylelint './app/assets/v2/scss/**/**/*.scss'",
+    "stylelint:fix": "stylelint --fix './app/assets/v2/scss/**/**/*.scss'",
     "build": "webpack --mode production --progress",
     "webpack": "webpack --watch --mode development"
   },

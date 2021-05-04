@@ -901,7 +901,7 @@ Vue.component('ens-verify-modal', {
     }.bind(this));
     window.addEventListener('dataWalletReady', () => {
       this.checkENSValidation();
-    })
+    });
   },
   template: `<b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
     <template v-slot:default="{ hide }">

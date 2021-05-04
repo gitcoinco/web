@@ -30,7 +30,7 @@ this.nextSlide = function() {
   currentSlide = (currentSlide + 1) % $slides.children().length;
   $slides.css('transform', `translateX(${-currentSlide * 100}vw)`);
   resetTimer();
-}
+};
 
 this.prevSlide = function() {
   if (currentSlide == 0) {
@@ -40,10 +40,10 @@ this.prevSlide = function() {
   }
   $slides.css('transform', `translateX(${-currentSlide * 100}vw)`);
   resetTimer();
-}
+};
 
 const resetTimer = function() {
   clearInterval(interval);
   startTimer();
-}
+};
 

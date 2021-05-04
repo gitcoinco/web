@@ -40,18 +40,27 @@ if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
 fi
 
 # Provision the Django test environment.
-if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
+if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ];
+then
     echo "First run - Provisioning the local development environment..."
     if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
         python3 manage.py createcachetable
     fi
 
-    if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
-        python3 manage.py collectstatic --noinput -i other &
-    fi
-
+    # Build assets using compress2 and webpack
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
         yarn install
+        python3 manage.py compress2
+        if [ "$ENV" == 'prod' ];
+        then
+            yarn run build
+        else
+            yarn run webpack &
+        fi
+    fi
+
+    if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
+        python3 manage.py collectstatic --noinput -i other &
     fi
 
     if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
@@ -73,11 +82,11 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     fi
     date >> /provisioned
     echo "Provisioning complete!"
-fi
-
-if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
-    python3 manage.py compress2
-    yarn run webpack &
+else
+    # Build assets using compress2 and webpack
+    if [ "$DISABLE_WEBPACK_ASSETS" != "on" && "$ENV" != 'prod' ]; then
+        python3 manage.py compress2 && yarn run webpack &
+    fi
 fi
 
 if [ "$FORCE_GET_PRICES" = "on" ]; then

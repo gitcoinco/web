@@ -23,7 +23,8 @@
     let content = !elem ? '' : elem.textContent.trim();
 
     content = content.substr(0, number + 2) + '\u2026' + content.substr(-number);
-    if (elem) elem.textContent = content;
+    if (elem)
+      elem.textContent = content;
   };
 
 

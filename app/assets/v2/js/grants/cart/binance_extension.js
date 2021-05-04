@@ -1,7 +1,8 @@
-const contributeWithBinanceExtension = async (grant, vm) => {
+const contributeWithBinanceExtension = async(grant, vm) => {
   let token_name = grant.grant_donation_currency;
   let decimals = vm.filterByChainId.filter(token => {
-    return token.name == token_name })[0].decimals
+    return token.name == token_name;
+  })[0].decimals;
   let amount = grant.grant_donation_amount * 10 ** decimals;
   let to_address = grant.binance_payout_address;
   let from_address;
@@ -9,7 +10,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
   try {
     from_address = await binance_utils.getSelectedAccount();
   } catch (error) {
-    _alert({ message: `Please ensure your Binance Chain Extension wallet is installed and enabled`}, 'danger');
+    _alert({ message: 'Please ensure your Binance Chain Extension wallet is installed and enabled'}, 'danger');
     return;
   }
 
@@ -25,11 +26,11 @@ const contributeWithBinanceExtension = async (grant, vm) => {
       return;
     }
   } else if (token_name === 'BUSD') {
-    const busd_contract_address = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
+    const busd_contract_address = '0xe9e7cea3dedca5984780bafc599bd69add087d56';
 
     const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
 
-    if (Number(account_balance) < amount ) {
+    if (Number(account_balance) < amount) {
       _alert({ message: `Account needs to have more than ${amount / 10 ** decimals} BUSD for payout` }, 'danger');
       return;
     }
@@ -69,7 +70,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
         }]
       };
 
-      const apiUrlGrant = `v1/api/contribute`;
+      const apiUrlGrant = 'v1/api/contribute';
 
       fetchData(apiUrlGrant, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
@@ -95,7 +96,7 @@ const contributeWithBinanceExtension = async (grant, vm) => {
           _alert('Unable to make contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
         _alert('Unable to make contribute to grant. Please try again later', 'danger');
         console.log(error);

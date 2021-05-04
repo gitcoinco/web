@@ -269,4 +269,4 @@ this.CartData = class CartData {
   static clearCheckedOut() {
     localStorage.removeItem('contributions_were_successful');
   }
-}
+};

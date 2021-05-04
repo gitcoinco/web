@@ -114,7 +114,7 @@ this.ucwords = function(str) {
   return (str + '').replace(/^([a-z])|\s+([a-z])/g, function($1) {
     return $1.toUpperCase();
   });
-}
+};
 
 this.sanitize = function(str) {
   if (typeof str != 'string') {
@@ -375,15 +375,15 @@ this.validateEmail = function(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   return re.test(email);
-}
+};
 
 this.timedifferenceCvrt = function(date) {
   return timeDifference(new Date(), new Date(date), false, 60 * 60);
-}
+};
 
 this.activitytextCvrt = function(activity_type) {
   return activity_names[activity_type];
-}
+};
 
 this.getParam = function(parameterName) {
   var result = null;
@@ -398,7 +398,7 @@ this.getParam = function(parameterName) {
         result = decodeURIComponent(tmp[1]);
     });
   return result;
-}
+};
 
 if ($.views) {
   $.views.converters({
@@ -473,7 +473,7 @@ this.timeDifference = function(current, previous, remaining, now_threshold_secon
 
   if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
-}
+};
 
 this.attach_change_element_type = function() {
   (function($) {
@@ -638,7 +638,7 @@ this.getNetwork = function(id) {
   };
 
   return networks[id] || 'custom network';
-}
+};
 
 this.actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
@@ -822,7 +822,7 @@ this.renderBountyRowsFromResults = function(results, renderForExplorer) {
     html += tmpl.render(result);
   }
   return html;
-}
+};
 
 this.saveAttestationData = (result, cost_eth, to_address, type) => {
   let request_url = '/revenue/attestations/new';
@@ -914,7 +914,7 @@ this.fetchBountiesAndAddToList = function(params, target, limit, additional_call
       additional_callback(results);
     }
   });
-}
+};
 
 this.showBusyOverlay = function() {
   let overlay = document.querySelector('.busyOverlay');
@@ -938,7 +938,7 @@ this.showBusyOverlay = function() {
     false
   );
   document.body.appendChild(overlay);
-}
+};
 
 this.hideBusyOverlay = function() {
   let overlay = document.querySelector('.busyOverlay');
@@ -949,7 +949,7 @@ this.hideBusyOverlay = function() {
       overlay.style['animation-name'] = 'fadeOut';
     }, 300);
   }
-}
+};
 
 this.toggleExpandableBounty = function(evt, selector) {
   evt.preventDefault();
@@ -971,15 +971,15 @@ this.toggleExpandableBounty = function(evt, selector) {
     container.id = 'expanded';
     evt.target.id = 'expanded';
   }
-}
+};
 
 this.normalizeAmount = function(amount, decimals) {
   return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
-}
+};
 
 this.round = function(amount, decimals) {
   return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
-}
+};
 
 this.newTokenTag = function(amount, tokenName, tooltipInfo, isCrowdfunded) {
   const ele = document.createElement('div');
@@ -998,7 +998,7 @@ this.newTokenTag = function(amount, tokenName, tooltipInfo, isCrowdfunded) {
   }
 
   return ele;
-}
+};
 
 this.shuffleArray = function(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -1007,7 +1007,7 @@ this.shuffleArray = function(array) {
     [ array[i], array[j] ] = [ array[j], array[i] ];
   }
   return array;
-}
+};
 
 
 this.getAllUrlParams = () => {
@@ -1299,7 +1299,7 @@ this.check_balance_and_alert_user_if_not_enough = function(
     }
   });
 
-}
+};
 
 /**
  * fetches github issue details of the issue_url
@@ -1366,7 +1366,7 @@ this.isValidUrl = function(string) {
   }
 
   return true;
-}
+};
 
 this.getVideoMetadata = (videoURL) => {
   const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;

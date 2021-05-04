@@ -15,17 +15,18 @@ def rmdir(loc):
         print('- Deleting assets from: %s' % loc)
         shutil.rmtree(loc)
 
+
 def rmdirs(loc, kind):
     # base path of the assets
-    base = ('%s/%s/v2/%s/' % (settings.BASE_DIR, loc, kind)).replace('/', os.sep)
+    base = ('%s/%s/v2/' % (settings.BASE_DIR, loc)).replace('/', os.sep)
     # delete both sets of assets
-    rmdir('%sbundles' % base)
-    rmdir('%sbundled' % base)
+    rmdir('%sbundles/%s' % (base, kind))
+    rmdir('%sbundled/%s' % (base, kind))
 
 
 class Command(BaseCommand):
 
-    help = 'creates .js/.scss files from compress2 template tags'
+    help = 'generates .js/.scss files from compress2 template tags'
 
     def handle(self, *args, **options):
         template_dir_list = []
@@ -42,7 +43,7 @@ class Command(BaseCommand):
 
         # using regex to grab the compress2 tags content from html
         block_pattern = re.compile(r'({%\scompress2(.|\n)*?(?<={%\sendcompress2\s%}))')
-        open_pattern = re.compile(r'({%\s+compress2\s+(js|css)\s+?(file)?\s+?([^\s]*)?\s+?%})')
+        open_pattern = re.compile(r'({%\s+compress2\s+(js|css|merge_js|merge_css)\s+?(file)?\s+?([^\s]*)?\s+?%})')
         close_pattern = re.compile(r'({%\sendcompress2\s%})')
         static_open_pattern = re.compile(r'({%\sstatic\s["|\'])')
         static_close_pattern = re.compile(r'(\s?%}(\"|\')?\s?\/?>)')
@@ -55,7 +56,9 @@ class Command(BaseCommand):
 
         print('\nStart generating bundle files\n')
 
-        count = 0
+        # store unique entries for count
+        rendered = dict()
+
         for template in template_list:
             try:
                 f = open(('%s' % template).replace('/', os.sep), 'r', encoding='utf8')
@@ -79,13 +82,10 @@ class Command(BaseCommand):
                         block = re.sub(static_close_pattern, '>', block)
 
                         # render the template (producing a bundle file)
-                        render(block, kind, 'file', name, True)
-
-                        # counting the number of generated files
-                        count+=1
+                        rendered[render(block, kind, 'file', name, True)] = True
 
             except Exception as e:
                 # print('-- X - failed to parse %s: %s' % (template, e))
                 pass
 
-        print('\nGenerated %s bundle files%s' % (count, ' - remember to run `yarn run build` then `./manage.py collectstatic --i other --no-input`\n' if settings.ENV in ['prod'] else ''))
+        print('\nGenerated %s bundle files%s' % (len(rendered), ' - remember to run `yarn run build` then `./manage.py collectstatic --i other --no-input`\n' if settings.ENV in ['prod'] else ''))

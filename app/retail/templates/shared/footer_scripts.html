@@ -40,7 +40,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
 
-{% compress2 js file libs %}
+{% compress2 merge_js file libs %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
@@ -69,7 +69,7 @@
 <script src="{% static "v2/js/data-chains.js" %}"></script>
 <script src="{% static "v2/js/wallet.js" %}"></script>
 
-{% compress2 js file jquery-extras %}
+{% compress2 merge_js file jquery-extras %}
 <script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
 <script src="{% static "v2/js/lib/additional-methods.min.js" %}"></script>
@@ -77,7 +77,7 @@
 {% endcompress2 %}
 
 {% if not slim %}
-  {% compress2 js file jquery-old %}
+  {% compress2 merge_js file jquery-old %}
   <script src="{% static "v2/js/lib/jsrender.js" %}"></script>
   <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
   <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
@@ -85,7 +85,7 @@
   {% endcompress2 %}
 {% endif %}
 
-{% compress2 js file main %}
+{% compress2 merge_js file main %}
 <script src="{% static "v2/js/mautic.js" %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/cart-data.js" %}"></script>
@@ -102,7 +102,7 @@
 {% endcompress2 %}
 
 {% if not onepager %}
-  {% compress2 js file test %}
+  {% compress2 merge_js file test %}
     <script src="{% static "v2/js/navbar.js" %}"></script>
   {% endcompress2 %}
 {% endif %}

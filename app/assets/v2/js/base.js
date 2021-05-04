@@ -328,7 +328,7 @@ this.popOnboard = function(step) {
     appOnboard.step = step;
   }
   appOnboard.$refs['onboard-modal'].openModal();
-}
+};
 
 $('body').on('click', '[data-persona]', function(e) {
   sendPersonal($(this).data('persona'));
@@ -435,7 +435,7 @@ this.applyCartMenuStyles = function() {
       $('#cart-nav').addClass('hidden');
     }
   }
-}
+};
 
 // Turn form data pulled form page into a JS object
 this.objectifySerialized = function(data) {
@@ -448,4 +448,4 @@ this.objectifySerialized = function(data) {
   }
 
   return objectData;
-}
+};
