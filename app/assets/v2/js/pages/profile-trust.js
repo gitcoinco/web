@@ -518,6 +518,176 @@ Vue.component('poap-verify-modal', {
   }
 });
 
+Vue.component('poh-verify-modal', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      hideTemporarily: false,
+      validationStep: 'validate-address',
+      ethAddress: '',
+      signature: '',
+      validationError: ''
+    };
+  },
+  props: {
+    showValidation: {
+      type: Boolean,
+      required: false,
+      'default': false
+    }
+  },
+  template: `<b-modal id="poh-modal" @hide="dismissVerification()" :visible="showValidation && !hideTemporarily" center hide-header hide-footer>
+                <template v-slot:default="{ hide }">
+                  <div class="mx-5 mt-5 mb-4 text-center">
+                    <div class="mb-3">
+                      <img src="/static/v2/images/project_logos/poh.ico" alt="POH Logo" width="100">
+                      <h1 class="font-bigger-4 font-weight-bold mt-2">Verify your Proof of Humanity Registration</h1>
+                    </div>
+                    <div v-if="validationStep === 'validate-address'">
+                      <p class="mb-4 font-subheader text-left">
+                        Proof of Humanity, a system combining webs of trust, with reverse Turing tests, and dispute resolution to create a sybil-proof list of humans. 
+                        <a href="https://www.proofofhumanity.id/" target="_blank">Learn more.</a>
+                      </p>
+                      <p class="mb-4 font-subheader text-left">
+                        We want to verify your POH registration. To do so, you must first connect with your preferred web3 account.
+                        Then, we'll validate your account is registrated in POH.
+                      </p>
+                      <div class="mt-2 mb-2">
+                        <a href="" @click="clickedPullEthAddress" role="button" style="font-size: 1.3em" class="btn btn-primary mb-2" target="_blank">
+                          Pull Address from Wallet
+                        </a>
+                      </div>
+                    </div>
+                    <div v-if="validationStep === 'validate-poh' || validationStep == 'perform-validation'">
+                      <p class="mb-4">
+                        We'll check for POH registration.
+                      </p>
+                      <div class="input-group">
+                        <input type="text" readonly class="form-control" placeholder="eth-address" aria-label="handle" aria-describedby="basic-addon1" required maxlength="255" v-model="ethAddress">
+                      </div>
+                      <div v-if="validationError !== ''" style="color: red">
+                        <small>[[validationError]]</small>
+                      </div>
+                      <b-button @click="clickedValidate" :disabled="validationStep === 'perform-validation'" variant="primary" class="btn-primary mt-3 mb-2" size="lg">
+                        <b-spinner v-if="validationStep === 'perform-validation'" type="grow"></b-spinner>
+                        Validate
+                      </b-button>
+                      <br />
+                        <a href="" @click="clickedChangeWallet" :disabled="validationStep === 'perform-validation'">
+                          Change Wallet
+                        </a>
+                      <br />
+                      <a href="" v-if="validationError !== ''" @click="clickedGoBack">
+                        Go Back
+                      </a>
+                    </div>
+                    <div v-if="validationStep === 'validation-complete'">
+                      Your POH verification was successful. Thank you for helping make Gitcoin more sybil resistant!
+                      <a href="" class="btn btn-primary px-5 mt-3 mb-2 mx-2" role="button" style="font-size: 1.3em">Done</a>
+                    </div>
+                  </div>
+                </template>
+            </b-modal>`,
+  methods: {
+    dismissVerification() {
+      // If we're only hiding the modal to allow wallet selection, don't emit this event, which
+      // would prevent it from popping up again after the user completes their selection.
+      if (!this.hideTemporarily) {
+        this.$emit('modal-dismissed');
+      }
+    },
+    clickedGoBack(event) {
+      event.preventDefault();
+      this.validationStep = 'validate-address';
+      this.ethAddress = '';
+      this.validationError = '';
+    },
+    getEthAddress() {
+      const accounts = web3.eth.getAccounts();
+
+      $.when(accounts)
+        .then((result) => {
+          const ethAddress = result[0];
+
+          this.ethAddress = ethAddress;
+          this.validationStep = 'validate-poh';
+          this.hideTemporarily = false;
+        })
+        .catch((_error) => {
+          this.validationError = 'Error getting ethereum accounts';
+          this.validationStep = 'validate-address';
+          this.hideTemporarily = false;
+        });
+    },
+    generateSignature() {
+      web3.eth.personal.sign('verify_poh_registration', this.ethAddress).then((signature) => {
+        this.signature = signature;
+        this.verifyPOH();
+      })
+        .catch((_error) => {
+          this.validationError = 'Error sign message declined';
+          this.validationStep = 'validate-poh';
+          this.hideTemporarily = false;
+        });
+    },
+    connectWeb3Wallet() {
+      this.hideTemporarily = true;
+      onConnect()
+        .then((result) => {
+          this.getEthAddress();
+        })
+        .catch((_error) => {
+          this.validationError = 'Error connecting ethereum accounts';
+          this.validationStep = 'validate-address';
+          this.hideTemporarily = false;
+        });
+    },
+    clickedPullEthAddress(event) {
+      event.preventDefault();
+      if (!provider) {
+        this.connectWeb3Wallet();
+      } else {
+        this.getEthAddress();
+      }
+    },
+    clickedChangeWallet(event) {
+      event.preventDefault();
+      this.validationError = '';
+      this.connectWeb3Wallet();
+    },
+    clickedValidate(event) {
+      event.preventDefault();
+      this.validationError = '';
+      this.validationStep = 'perform-validation';
+      this.generateSignature();
+    },
+    verifyPOH() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const payload = JSON.stringify({
+        eth_address: this.ethAddress,
+        signature: this.signature
+      });
+      const headers = { 'X-CSRFToken': csrfmiddlewaretoken };
+
+      const verificationRequest = fetchData('/api/v0.1/profile/verify_user_poh', 'POST', payload, headers);
+
+      $.when(verificationRequest)
+        .then((response) => {
+          if (response.ok) {
+            this.validationStep = 'validation-complete';
+          } else {
+            this.validationError = response.msg;
+            this.validationStep = 'validate-poh';
+          }
+        })
+        .catch((_error) => {
+          this.validationError = 'There was an error; please try again later';
+          this.validationStep = 'validate-poh ';
+        });
+    }
+  }
+});
+
 Vue.component('brightid-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
@@ -901,7 +1071,7 @@ Vue.component('ens-verify-modal', {
     }.bind(this));
     window.addEventListener('dataWalletReady', () => {
       this.checkENSValidation();
-    })
+    });
   },
   template: `<b-modal id="ens-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
     <template v-slot:default="{ hide }">
@@ -1073,8 +1243,8 @@ $(document).ready(function() {
 
   $(document).on('click', '#gen_passport', function(e) {
     e.preventDefault();
-    if (document.web3network != 'rinkeby') {
-      _alert('Please connect your web3 wallet to rinkeby + unlock it', 'danger', 1000);
+    if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
+      _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
       return;
     }
     const accounts = web3.eth.getAccounts();
@@ -1106,7 +1276,7 @@ $(document).ready(function() {
             _alert(err, 'danger', 5000);
             return;
           }
-          let url = 'https://rinkeby.etherscan.io/tx/' + txid;
+          let url = 'https://etherscan.io/tx/' + txid;
           var html = `
 <strong>Woo hoo!</strong> - Your passport is being generated.  View the transaction <a href='` + url + `' target=_blank>here</a>.
 <br><br>

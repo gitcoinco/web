@@ -450,6 +450,7 @@ def grants():
     twitter_contributor_count = contributions.filter(subscription__contributor_profile__is_twitter_verified=True).distinct('subscription__contributor_profile').count()
     google_contributor_count = contributions.filter(subscription__contributor_profile__is_google_verified=True).distinct('subscription__contributor_profile').count()
     poap_contributor_count = contributions.filter(subscription__contributor_profile__is_poap_verified=True).distinct('subscription__contributor_profile').count()
+    poh_contributor_count = contributions.filter(subscription__contributor_profile__is_poh_verified=True).distinct('subscription__contributor_profile').count()
     contributor_count = contributions.distinct('subscription__contributor_profile').count()
     poap_contributor_pct = round(100 * poap_contributor_count / contributor_count)
     google_contributor_pct = round(100 * google_contributor_count / contributor_count)
@@ -457,6 +458,7 @@ def grants():
     idena_contributor_pct = round(100 * idena_contributor_count / contributor_count)
     sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
     brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
+    poh_contributor_pct = round(100 * poh_contributor_count / contributor_count)
 
     zksync_contribution_count = contributions.filter(validator_comment__icontains='zkSync').count()
     contribution_count = contributions.count()
@@ -470,6 +472,7 @@ def grants():
     pprint(f"- {twitter_contributor_count} Twitter Verified Contributors/{contributor_count} Total Contributors ({twitter_contributor_pct}%) ")
     pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
     pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
+    pprint(f"- {poh_contributor_count} POH Verified Contributors/{contributor_count} Total Contributors ({poh_contributor_pct}%) ")
 
     ############################################################################3
     # new feature stats for round {clr_round}

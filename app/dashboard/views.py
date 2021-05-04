@@ -141,6 +141,7 @@ from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
+from .poh_utils import is_registered_on_poh
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
@@ -1390,25 +1391,6 @@ def dashboard(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
-
-
-def ethhack(request):
-    """Handle displaying ethhack landing page."""
-    from dashboard.context.hackathon import eth_hack
-
-    params = eth_hack
-
-    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
-
-
-def beyond_blocks_2019(request):
-    """Handle displaying ethhack landing page."""
-    from dashboard.context.hackathon import beyond_blocks_2019
-
-    params = beyond_blocks_2019
-    params['card_desc'] = params['meta_description']
-
-    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
 
 
 def accept_bounty(request):
@@ -2958,6 +2940,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['is_google_verified'] = profile.is_google_verified
         context['is_ens_verified'] = profile.is_ens_verified
         context['is_facebook_verified'] = profile.is_facebook_verified
+        context['is_poh_verified'] = profile.is_poh_verified
     else:
         raise Http404
     return context
@@ -5279,10 +5262,14 @@ def get_hackathons(request):
 
         create_page_cache.create_hackathon_list_page_cache()
 
+    events = get_hackathon_events()
+    num_current = len([ele for ele in events if ele['type'] == 'current'])
+    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
+    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
     tabs = [
-        ('current', 'happening now'),
-        ('upcoming', 'upcoming'),
-        ('finished', 'completed'),
+        ('current', 'happening now', num_current),
+        ('upcoming', 'upcoming', num_upcoming),
+        ('finished', 'completed', num_finished),
     ]
 
     params = {
@@ -5291,7 +5278,7 @@ def get_hackathons(request):
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
-        'events': get_hackathon_events(),
+        'events': events,
         'default_tab': get_hackathons_page_default_tabs(),
     }
 
@@ -6816,6 +6803,55 @@ def verify_user_poap(request, handle):
         'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
     })
 
+@login_required
+@require_POST
+def verify_user_poh(request):
+    handle = request.user.username
+    profile = profile_helper(handle, True)
+    if profile.is_poh_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously',
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    signature = request_data.get('signature', '')
+    eth_address = request_data.get('eth_address', '')
+    if eth_address == '' or signature == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Empty signature or Ethereum address',
+        })
+
+    message_hash = defunct_hash_message(text="verify_poh_registration")
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    if eth_address != signer:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid signature',
+        })
+
+    if Profile.objects.filter(poh_handle=signer).exists():
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Ethereum address is already registered.',
+        })
+
+    if not is_registered_on_poh(signer):
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Ethereum address is not registered on Proof of Humanity, please try after registration.',
+        })
+
+    profile.is_poh_verified = True
+    profile.poh_handle = signer
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': 'User is registered on POH',
+    })
+
 
 @csrf_protect
 def file_upload(request):
@@ -6851,28 +6887,29 @@ def mautic_api(request, endpoint=''):
 
 def mautic_proxy(request, endpoint=''):
     params = request.GET
-    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
-    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
-    headers = {"Authorization": f"Basic {token}"}
-
-    if request.body:
-        body_unicode = request.body.decode('utf-8')
-        payload = json.loads(body_unicode)
-
-    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
     if request.method == 'GET':
-        response = requests.get(url=url, headers=headers, params=params).json()
-    elif request.method == 'POST':
-        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PATCH':
-        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+        response = mautic_proxy_backend(request.method, endpoint, None, params)
+    elif request.method in ['POST','PUT','PATCH','DELETE']:
+        response = mautic_proxy_backend(request.method, endpoint, request.body, params)
 
     return JsonResponse(response)
 
+
+def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
+    # print(method, endpoint, payload, params)
+    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+    headers = {"Authorization": f"Basic {token}"}
+    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+
+    if payload:
+        body_unicode = payload.decode('utf-8')
+        payload = json.loads(body_unicode)
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    else:
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
+
+    return response
 
 
 @csrf_exempt

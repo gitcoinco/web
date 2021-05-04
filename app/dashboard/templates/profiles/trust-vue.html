@@ -68,6 +68,11 @@
         </ens-verify-modal>
         <duniter-verify-modal :show-validation="visibleModal === 'duniter-modal'" @modal-dismissed="hideModal()">
         </duniter-verify-modal>
+        <poh-verify-modal
+          :show-validation="visibleModal === 'poh-modal'"
+          @modal-dismissed="hideModal()">
+        </poh-verify-modal>
+
         {% if is_staff %}
         <div class="float-right text-right" style="padding: 5px;">
           <img class="float-right p-2" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
@@ -269,6 +274,19 @@
             {% endif %}
           </active-trust-row-template>
 
+          <active-trust-row-template
+            icon-type="image"
+            icon-path="/static/v2/images/project_logos/poh.ico"
+            title="Verify with Proof of Humanity"
+            :match-percent=25
+            :is-verified="'{{is_poh_verified}}' === 'True'"
+            button-text="Verify"
+            @verify-button-pressed="showModal('poh-modal')"
+          >
+            <template v-slot:description>
+              <a href="https://www.proofofhumanity.id/" target="new">POH</a> is the internet of humans.
+            </template>
+          </active-trust-row-template>
         </div>
 
         <div class="container mt-4">
@@ -294,7 +312,6 @@
         <h5>Roadmap</h5>
         <a class="py-2 d-block" href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
-          {% include "profiles/trust_soon_row.html" with service="Proof of Humanity" when="On the Roadmap" %}
         {% include "profiles/trust_soon_row.html" with service="Upala" when="On the Roadmap" %}
         {% include "profiles/trust_soon_row.html" with service="PASS" when="On the Roadmap" %}
         {% include "profiles/trust_soon_row.html" with service="Equality Protocol" when="On the Roadmap" %}
