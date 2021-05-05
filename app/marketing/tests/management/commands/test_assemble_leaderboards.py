@@ -18,11 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import date, datetime, timedelta
+from unittest.mock import patch
 
-from dashboard.models import Bounty, BountyFulfillment, Profile, Tip, UserAction
+from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+
+from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
 from marketing.management.commands import assemble_leaderboards
 from marketing.management.commands.assemble_leaderboards import (
-    BREAKDOWNS, TIMES, Command, bounty_index_terms, default_ranks, sum_bounties, sum_tips, tip_index_terms,
+    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly,
 )
 from marketing.models import LeaderboardRank
 from pytz import UTC
@@ -34,7 +38,6 @@ class TestAssembleLeaderboards(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
-        assemble_leaderboards.ranks = default_ranks()
 
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
@@ -77,7 +80,7 @@ class TestAssembleLeaderboards(TestCase):
             bounty_owner_profile=self.bounty_payer_profile,
             is_open=False,
             accepted=True,
-            expires_date=datetime.now(UTC) + timedelta(days=1),
+            expires_date=datetime(2021, 4, 27, 11, 00, tzinfo=UTC) + timedelta(days=1),
             idx_project_length=5,
             project_length='Months',
             bounty_type='Feature',
@@ -88,7 +91,6 @@ class TestAssembleLeaderboards(TestCase):
             network='rinkeby',
             metadata={"issueKeywords": "Python, Shell"},
         )
-
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
             bounty=self.bounty,
@@ -96,6 +98,17 @@ class TestAssembleLeaderboards(TestCase):
             profile=self.bounty_earner_profile,
             token_name='USDT',
             payout_amount=3,
+        )
+        Earning.objects.create(
+            from_profile_id=self.bounty_payer_profile.id,
+            to_profile_id=self.bounty_earner_profile.id,
+            token_name='USDT',
+            value_usd=3,
+            source_id=self.bounty.id,
+            created_on=datetime(2021, 4, 27, 11, 00, tzinfo=UTC),
+            network='mainnet',
+            success=True,
+            source_type=ContentType.objects.get(app_label='dashboard', model='bountyfulfillment')
         )
 
         self.tip_value = 7
@@ -130,9 +143,20 @@ class TestAssembleLeaderboards(TestCase):
             from_username=self.tip_payer_handle,
             github_url='https://github.com/gitcoinco/web',
             network='rinkeby',
-            expires_date=datetime.now(UTC) + timedelta(days=1),
+            expires_date=datetime(2021, 4, 27, 11, 00, tzinfo=UTC) + timedelta(days=1),
             tokenAddress='0x0000000000000000000000000000000000000000',
             txid='123',
+        )
+        Earning.objects.create(
+            from_profile_id=self.tip_from_username_profile.id,
+            to_profile_id=self.tip_username_profile.id,
+            token_name='USDT',
+            value_usd=self.tip_value,
+            created_on=datetime(2021, 4, 27, 11, 00, tzinfo=UTC),
+            network='mainnet',
+            source_id=self.tip.id,
+            success=True,
+            source_type=ContentType.objects.get(app_label='dashboard', model='tip')
         )
 
     def tearDown(self):
@@ -141,27 +165,79 @@ class TestAssembleLeaderboards(TestCase):
         self.tip_username_profile.delete()
         self.tip_from_username_profile.delete()
 
+
+    def mock_run_cadence_datetimes(self, func, passing, failing):
+        with patch.object(timezone, 'now', return_value=passing) as mock_now:
+            is_valid = func()
+            assert is_valid == True
+        with patch.object(timezone, 'now', return_value=failing) as mock_now:
+            is_valid = func()
+            assert is_valid == False
+
+
+    def test_run_weekly(self):
+        self.mock_run_cadence_datetimes(run_weekly, datetime(2021, 4, 23, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_run_monthly(self):
+        self.mock_run_cadence_datetimes(run_monthly, datetime(2021, 4, 1, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_run_quarterly(self):
+        self.mock_run_cadence_datetimes(run_quarterly, datetime(2021, 4, 1, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_run_yearly(self):
+        self.mock_run_cadence_datetimes(run_yearly, datetime(2021, 1, 1, 11, 00), datetime(2021, 4, 27, 11, 00))
+
+
+    def test_do_leaderboard(self):
+        """Test assemble leaderboards function."""
+
+        with patch.object(timezone, 'now', return_value=datetime(2021, 4, 28, 11, 00, tzinfo=UTC)) as mock_now:
+
+            do_leaderboard()
+
+            assert LeaderboardRank.objects.filter(product='all', active=True).all().count() == 5
+
+            assert LeaderboardRank.objects.filter(product='bounties', active=True, leaderboard="daily_earners").count() == 1
+            assert LeaderboardRank.objects.filter(product='bounties', active=True, leaderboard="daily_payers").count() == 1
+
+            assert LeaderboardRank.objects.filter(product='tips', active=True, leaderboard="daily_earners").count() == 1
+            assert LeaderboardRank.objects.filter(product='tips', active=True, leaderboard="daily_payers").count() == 1
+
+            assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_earners").count() == 2
+            assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_payers").count() == 2
+
+            assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_tokens").count() == 1
+
+
+    '''
     def test_default_ranks(self):
         """Test default ranks dictionary."""
         ranks = default_ranks()
 
         assert len(ranks) == len(TIMES) * len(BREAKDOWNS)
+    '''
 
+    '''
     def test_bounty_index_terms(self):
         """Test bounty index terms list."""
         index_terms = bounty_index_terms(self.bounty)
         assert len(index_terms) == 12
         assert 'USDT' in index_terms
         assert {self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco'}.issubset(set(index_terms))
-        '''
-        these asserts are not worth testing as they break every time the
-        underlying geoip data gets updated
-        assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
-        assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
-        assert {'Australia', 'Oceania'}.issubset(set(index_terms))
-        '''
-        assert {'python', 'shell'}.issubset(set(index_terms))
 
+        # these asserts are not worth testing as they break every time the
+        # underlying geoip data gets updated
+        # assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
+        # assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
+        # assert {'Australia', 'Oceania'}.issubset(set(index_terms))
+
+        assert {'python', 'shell'}.issubset(set(index_terms))
+    '''
+
+    '''
     def test_tip_index_terms(self):
         """Test tip index terms list."""
         index_terms = tip_index_terms(self.tip)
@@ -169,12 +245,12 @@ class TestAssembleLeaderboards(TestCase):
         assert len(index_terms) == 10
         assert 'USDT' in index_terms
         assert {self.tip_payer_handle, self.tip_earner_handle, 'gitcoinco'}.issubset(set(index_terms))
-        '''
-        these asserts are not worth testing as they break every time the
-        underlying geoip data gets updated
-        assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
-        assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
-        '''
+
+        # these asserts are not worth testing as they break every time the
+        # underlying geoip data gets updated
+        # assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
+        # assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
+    '''
 
     '''
     def test_sum_bounties_payer(self):
@@ -231,6 +307,7 @@ class TestAssembleLeaderboards(TestCase):
             assert not dict(assemble_leaderboards.ranks[rank_type])
     '''
 
+    '''
     def test_sum_tips_payer(self):
         """Test sum tips leaderboards."""
         sum_tips(self.tip, [self.tip_payer_handle])
@@ -250,7 +327,9 @@ class TestAssembleLeaderboards(TestCase):
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
+    '''
 
+    '''
     def test_sum_tips_earner(self):
         """Test sum tips leaderboards."""
         sum_tips(self.tip, [self.tip_earner_handle])
@@ -270,6 +349,7 @@ class TestAssembleLeaderboards(TestCase):
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
+    '''
 
     '''
     def test_command_handle(self):
