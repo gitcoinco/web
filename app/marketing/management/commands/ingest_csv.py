@@ -55,7 +55,9 @@ class Command(BaseCommand):
                                 'id': profile_id,
                             }
                         if file not in outputs[lower_handle].keys():
-                            outputs[lower_handle][file] = int(tokens * 10 ** decimals)
+                            amount = int(round(tokens, 4) * 10 ** decimals)
+                            amount = amount - (amount % 10 ** 9) # handle floating arithmetic
+                            outputs[lower_handle][file] = amount
                     except Exception as e:
                         if show_debug:
                             print('------------------')
