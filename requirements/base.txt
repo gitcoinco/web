@@ -111,5 +111,5 @@ base58==2.1.0
 libnacl==1.7.2
 pyaes==1.6.1
 numpy==1.19.5
-jsmin==2.2.2
-cssmin==0.2.0
+rjsmin==1.1.0
+rcssmin==1.0.6
