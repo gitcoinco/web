@@ -92,6 +92,10 @@ class Command(BaseCommand):
                 au = bundle.get('Intermediary Worksheet - Active Users.csv', 0)
                 kernel = bundle.get('Intermediary Worksheet - KERNEL.csv', 0)
                 total = kernel + au + gmv
+                total = format(total, '.0f')
+                kernel = format(kernel, '.0f')
+                gmv = format(gmv, '.0f')
+                au = format(au, '.0f')
                 print(f"{key},{_id},{total},{au},{kernel},{gmv}")
         else:
             print(f"outer_amount: {round(outer_amount/10**18)}")
