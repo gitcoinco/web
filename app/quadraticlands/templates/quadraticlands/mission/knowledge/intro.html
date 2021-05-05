@@ -14,7 +14,7 @@
   <main>
     <div class="wrapper">
       <div class="quest-video">
-        <iframe src="https://www.youtube.com/watch?v=AliIrB85rTg?rel=0" frameborder="0" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/AliIrB85rTg?rel=0" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
   </main>
@@ -52,17 +52,6 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // new Kinetics().interactionHook();
-    const kinetics = new Kinetics({
-      particles: {
-        count: 8, sizes: { min: 100, max: 200 }, rotate: { speed: 0.2 },
-        mode: { type: "linear", boundery: "endless", speed: "1" }
-      }
-    })
-    kinetics.interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question.js" %}"></script>
 
 {% endblock %}

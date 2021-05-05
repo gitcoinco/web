@@ -28,10 +28,10 @@
   <nav class="glass">
 
     <div class="left">
-      <a href="/quadraticlands/" 
-        data-kinetics-attraction 
+      <a href="/quadraticlands/"
+        data-kinetics-attraction
         data-kinetics-attraction-chance=".3"
-        data-kinetics-attraction-force="1" 
+        data-kinetics-attraction-force="1"
         data-kinetics-attraction-size="200"
       >
         Exit
@@ -66,17 +66,6 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // new Kinetics().interactionHook();
-    const kinetics = new Kinetics({
-      particles: {
-        count: 8, sizes: { min: 10, max: 20 }, rotate: { speed: 0.4 },
-        mode: { type: "rain", boundery: "endless", speed: "10" }
-      }
-    })
-    kinetics.interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question_timeout.js" %}"></script>
 
 {% endblock %}

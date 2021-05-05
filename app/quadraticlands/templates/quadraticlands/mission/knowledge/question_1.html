@@ -92,27 +92,16 @@
 
 {% block 'scripts' %}
 
-<!-- kinetics particles -->
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		// new Kinetics().interactionHook();
-		const kinetics = new Kinetics({
-			particles: {
-				count: 8, sizes: { min: 100, max: 200 }, rotate: { speed: 0.2 },
-				mode: { type: "linear", boundery: "endless", speed: "1" }
-			}
-		})
-		kinetics.interactionHook();
-	});
-</script>
-
-
-
+<!-- set countdown params -->
 <script>
 	const maxTime = 15;
 	const expiryLink = "/quadraticlands/mission/knowledge/question/1/timeout";
 </script>
 
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question.js" %}"></script>
+
+<!-- start countdown -->
 <script src="{% static "v2/quadraticlands/js/questCountdown.js" %}"></script>
 
 {% endblock %}

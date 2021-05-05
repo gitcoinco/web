@@ -56,18 +56,6 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // new Kinetics().interactionHook();
-    const kinetics = new Kinetics({
-      particles: {
-        count: 16, sizes: { min: 5, max: 10 }, rotate: { speed: 5 },
-        mode: { type: "rain", boundery: "endless", speed: "10" }
-      }
-    })
-    kinetics.interactionHook();
-  });
-</script>
-
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question_wrong.js" %}"></script>
 
 {% endblock %}

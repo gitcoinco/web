@@ -35,7 +35,7 @@
       <span id="receiveAddress"></span>
     </div>
 
-    <a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn" 
+    <a id="buttonContinue" href="/quadraticlands/mission/receive/claim" class="btn"
       data-kinetics-attraction
       data-kinetics-attraction-chance=".3"
       data-kinetics-attraction-force="1.1"
@@ -53,62 +53,10 @@
 
 {% block 'scripts' %}
 
-
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    new Kinetics().interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
 
-<script>
-
-  document.addEventListener("DOMContentLoaded", function () {
-
-    updateInterface("nowallet")
-
-    const receiveAddress = document.getElementById("receiveAddress")
-
-    window.addEventListener("dataWalletReady", () => {
-      receiveAddress.innerHTML = selectedAccount
-      updateInterface("ready")
-    });
-
-    //check each 2 seconds if user is still connected fetch
-    // the edgecase of user logout / gets disconnected
-    setInterval(() => {
-      if (!selectedAccount) {
-        updateInterface("nowallet");
-      }
-    }, 2000);
-
-    // map buttonConnect button to popup web3modal
-    const buttonConnect = document.getElementById("buttonConnect")
-    buttonConnect.addEventListener("click", () => {
-      onConnect()
-    });
-
-  });
-
-  function updateInterface(status) {
-
-    interface_nowallet = document.getElementById("interface_nowallet");
-    interface_ready = document.getElementById("interface_ready");
-
-    if (status == "nowallet") {
-      interface_nowallet.classList.remove("hide")
-      interface_ready.classList.add("hide")
-      console.debug("INTERFACE:NOWALLET");
-    }
-
-    if (status == "ready") {
-      interface_nowallet.classList.add("hide")
-      interface_ready.classList.remove("hide")
-      console.debug("INTERFACE:READY");
-    }
-
-  }
-
-</script>
+<!-- updateInterface -->
+<script src="{% static "v2/js/quadraticlands/mission/receive/index.js" %}"></script>
 
 {% endblock %}

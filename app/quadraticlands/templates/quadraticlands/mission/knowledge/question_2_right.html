@@ -64,17 +64,6 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // new Kinetics().interactionHook();
-    const kinetics = new Kinetics({
-      particles: {
-        count: 16, sizes: { min: 5, max: 40 }, rotate: { speed: 2 },
-        mode: { type: "party", boundery: "pong", speed: "8" }
-      }
-    })
-    kinetics.interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question_right.js" %}"></script>
 
 {% endblock %}
