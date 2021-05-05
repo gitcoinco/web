@@ -5,22 +5,19 @@
 {% block 'content' %}
 
 <section class="grid">
-	
-	<figure class="outro">
-		<img src='{% static "v2/quadraticlands/images/mission/proof-of-use-end.svg" %}' />
-	</figure>
 
-	<div>
-		{% csrf_token %}
-		<h3><span>#</span>Chapter 2 of 3</h3>
-		<h1>Congratulations</h1>
-		<p>You have completed this mission and, you have begun to govern the future Gitcoin.</p>
-		<a href="/quadraticlands/mission/receive" class="btn"
-			data-kinetics-attraction
-			data-kinetics-attraction-chance=".3"
-			data-kinetics-attraction-force="1.1"
-			data-kinetics-attraction-grow="7">Continue</a>	
-	</div>
+  <figure class="outro">
+    <img src='{% static "v2/images/quadraticlands/mission/proof-of-use-end.svg" %}' />
+  </figure>
+
+  <div>
+    {% csrf_token %}
+    <h3><span>#</span>Chapter 2 of 3</h3>
+    <h1>Congratulations</h1>
+    <p>You have completed this mission and, you have begun to govern the future Gitcoin.</p>
+    <a href="/quadraticlands/mission/receive" class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+      data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">Continue</a>
+  </div>
 
 </section>
 
@@ -36,16 +33,16 @@
 </script>
 
 <script>
-const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-document.addEventListener("DOMContentLoaded",function(){
-	// update user state
-	var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_use'}, {'X-CSRFToken': csrftoken});
-	$.when(setMissionStatus).then((response, status, statusCode) => {
-			console.debug('Missions status set successfully', status);
-	    }).catch(error => {
-           console.error('There was an issue setting missions status', error.message);
-	    });
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  document.addEventListener("DOMContentLoaded", function () {
+    // update user state
+    var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', { 'mission': 'proof_of_use' }, { 'X-CSRFToken': csrftoken });
+    $.when(setMissionStatus).then((response, status, statusCode) => {
+      console.debug('Missions status set successfully', status);
+    }).catch(error => {
+      console.error('There was an issue setting missions status', error.message);
     });
+  });
 </script>
 
 

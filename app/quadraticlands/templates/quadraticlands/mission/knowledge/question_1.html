@@ -10,7 +10,7 @@
 
 
 <section class="background">
-	<img src='{% static "v2/quadraticlands/images/background/anim-9.svg" %}' />
+	<img src='{% static "v2/images/quadraticlands/background/anim-9.svg" %}' />
 </section>
 
 <section class="quest">
@@ -26,36 +26,24 @@
 
 			<div class="reply">
 
-				<a href="/quadraticlands/mission/knowledge/question/1/wrong" 
-				data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-grow="0.5">
-				<div>Create jobs for digital creatives</div>
+				<a href="/quadraticlands/mission/knowledge/question/1/wrong" data-kinetics-attraction
+					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+					<div>Create jobs for digital creatives</div>
 				</a>
 
-				<a href="/quadraticlands/mission/knowledge/question/1/right"				
-				data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-grow="0.5">
-				<div>Economically empower digital creatives</div>
+				<a href="/quadraticlands/mission/knowledge/question/1/right" data-kinetics-attraction
+					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+					<div>Economically empower digital creatives</div>
 				</a>
 
-				<a href="/quadraticlands/mission/knowledge/question/1/wrong" 				
-				data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-grow="0.5">
-				<div>Build the Ethereum Ecosystem</div>
+				<a href="/quadraticlands/mission/knowledge/question/1/wrong" data-kinetics-attraction
+					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+					<div>Build the Ethereum Ecosystem</div>
 				</a>
 
-				<a href="/quadraticlands/mission/knowledge/question/1/wrong" 				
-				data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-grow="0.5">
-				<div>Reinvent Silicon Valley</div>
+				<a href="/quadraticlands/mission/knowledge/question/1/wrong" data-kinetics-attraction
+					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+					<div>Reinvent Silicon Valley</div>
 				</a>
 
 			</div>
@@ -75,10 +63,8 @@
 	<nav class="glass">
 
 		<div class="left">
-			<a href="/quadraticlands/" data-kinetics-attraction
-				data-kinetics-attraction-chance=".3"
-				data-kinetics-attraction-force="1"
-				data-kinetics-attraction-size="200">Exit</a>
+			<a href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+				data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Exit</a>
 		</div>
 
 		<div class="center">
@@ -108,14 +94,16 @@
 
 <!-- kinetics particles -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // new Kinetics().interactionHook();
-	const kinetics = new Kinetics({
-          particles: { count: 8, sizes: {min: 100, max:200}, rotate: {speed:0.2}, 
-          mode: {type: "linear", boundery: "endless", speed:"1" }}
-    })
-	kinetics.interactionHook();
-  });
+	document.addEventListener('DOMContentLoaded', function () {
+		// new Kinetics().interactionHook();
+		const kinetics = new Kinetics({
+			particles: {
+				count: 8, sizes: { min: 100, max: 200 }, rotate: { speed: 0.2 },
+				mode: { type: "linear", boundery: "endless", speed: "1" }
+			}
+		})
+		kinetics.interactionHook();
+	});
 </script>
 
 
@@ -125,8 +113,6 @@
 	const expiryLink = "/quadraticlands/mission/knowledge/question/1/timeout";
 </script>
 
-<script src="{% static "v2/quadraticlands/js/questCountdown.js" %}"></script>
+<script src="{% static " v2/quadraticlands/js/questCountdown.js" %}"></script>
 
 {% endblock %}
-
-

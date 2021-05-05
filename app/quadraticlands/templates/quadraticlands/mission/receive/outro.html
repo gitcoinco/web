@@ -5,38 +5,40 @@
 {% block 'content' %}
 
 <section class="grid">
-	
-	<figure class="outro">
-		<img src='{% static "v2/quadraticlands/images/mission/proof-of-receive-end.svg" %}' />
-	</figure>
-     
-	<div>
-		{% csrf_token %}
-		<h3><span>#</span>Chapter 3 of 3</h3>
-		<h1>Congratulations</h1>
-		<p>You now have your GTC tokens and survived the third mission.</p>
 
-		<a id="tweet_button" class="btn twitter" 
-		data-tweet_url="https://quadraticlands.com" 
-		data-tweet_text="The Quadratic Lands is where we fund public goods + build stronger digital infrastructure. I went to the Quadratic Lands + claimed my GTC tokens at"
-		data-tweet_hashtags="quadraticlands"
-		data-kinetics-attraction
-		data-kinetics-attraction-chance=".3"
-		data-kinetics-attraction-force="1.1"
-		data-kinetics-attraction-grow="7"
-		>Tweet</a>
+  <figure class="outro">
+    <img src='{% static "v2/images/quadraticlands/mission/proof-of-receive-end.svg" %}' />
+  </figure>
 
-		<a href="/quadraticlands/dashboard" class="btn" 
-			data-kinetics-attraction
-			data-kinetics-attraction-chance=".3"
-			data-kinetics-attraction-force="1.1"
-			data-kinetics-attraction-grow="7">Dashboard</a>		
-	</div>
+  <div>
+    {% csrf_token %}
+    <h3><span>#</span>Chapter 3 of 3</h3>
+    <h1>Congratulations</h1>
+    <p>You now have your GTC tokens and survived the third mission.</p>
+
+    <a id="tweet_button" class="btn twitter" data-tweet_url="https://quadraticlands.com"
+      data-tweet_text="The Quadratic Lands is where we fund public goods + build stronger digital infrastructure. I went to the Quadratic Lands + claimed my GTC tokens at"
+      data-tweet_hashtags="quadraticlands"
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".3"
+      data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7"
+    >
+      Tweet
+    </a>
+
+    <a href="/quadraticlands/dashboard" class="btn"
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".3"
+      data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7"
+    >
+      Dashboard
+    </a>
+  </div>
 </section>
 
 {% endblock %}
-
-
 
 
 {% block 'scripts' %}
@@ -50,25 +52,25 @@
 
 <!-- add a custom tweet button from data-attributes -->
 <script>
-	document.addEventListener("DOMContentLoaded",function(){
-		const tweet_button = document.getElementById("tweet_button")
-		const twitter_url = "https://twitter.com/intent/tweet"
-		tweet_button.href = twitter_url + "?text=" + tweet_button.dataset.tweet_text + "&url=" + tweet_button.dataset.tweet_url+ "&hashtags=" + tweet_button.dataset.tweet_hashtags
-		tweet_button.target = "_blank"
-	});
+  document.addEventListener("DOMContentLoaded", function () {
+    const tweet_button = document.getElementById("tweet_button")
+    const twitter_url = "https://twitter.com/intent/tweet"
+    tweet_button.href = twitter_url + "?text=" + tweet_button.dataset.tweet_text + "&url=" + tweet_button.dataset.tweet_url + "&hashtags=" + tweet_button.dataset.tweet_hashtags
+    tweet_button.target = "_blank"
+  });
 </script>
 
 <script>
-	const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	document.addEventListener("DOMContentLoaded",function(){
-		// update user state
-		var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', {'mission':'proof_of_receive'}, {'X-CSRFToken': csrftoken});
-		$.when(setMissionStatus).then((response, status, statusCode) => {
-			console.debug('Missions status set successfully', status);
-	    }).catch((error) => {
-           console.error('There was an issue setting missions status', error.message);
-	   });
-	});
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  document.addEventListener("DOMContentLoaded", function () {
+    // update user state
+    var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', { 'mission': 'proof_of_receive' }, { 'X-CSRFToken': csrftoken });
+    $.when(setMissionStatus).then((response, status, statusCode) => {
+      console.debug('Missions status set successfully', status);
+    }).catch((error) => {
+      console.error('There was an issue setting missions status', error.message);
+    });
+  });
 </script>
 
 

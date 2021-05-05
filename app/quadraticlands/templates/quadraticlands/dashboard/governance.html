@@ -2,243 +2,238 @@
 
 <!-- governance module hidden by default - available only when user have tokens -->
 <div id="governance" class="section full hide">
- 
-	<a class="noparticles">
-		<div class="header">
-			<div class="icon">
-				<img loading="lazy" src="{% static "v2/quadraticlands/images/icons/delegation.svg" %}" />
-			</div>
-			<div class="title">
-				Delegation Mode:
-				<span id="delegation_mode"></span>
-				<span id="delegate_address"></span>
-			</div>
-		</div>
-	</a>
 
-	<div class="content">
-		<div class="content-governance">
-			<div class="wrapper">
-				
-				<div id="txt_disable_delegate" class="hide">
-					<p>To participate actively in governance, disable Delegation Mode.</p>
-				</div>
+  <a class="noparticles">
+    <div class="header">
+      <div class="icon">
+        <img loading="lazy" src="{% static " v2/images/quadraticlands/icons/delegation.svg" %}" />
+      </div>
+      <div class="title">
+        Delegation Mode:
+        <span id="delegation_mode"></span>
+        <span id="delegate_address"></span>
+      </div>
+    </div>
+  </a>
 
-				<!--enabled button-->
-				<div id="toggle_enabled" class="delegation-toggle hide">
-					<div class="label">Delegation Mode</div>
-					<div id="toggle_button_enabled" class="toggle enabled">
-						<div class="enabled">Enabled</div>
-						<div class="circle"></div>
-						<div class="disabled">Disable</div>
-					</div>					
-				</div>
+  <div class="content">
+    <div class="content-governance">
+      <div class="wrapper">
 
-				<!--disabled button-->
-				<div id="toggle_disabled" class="delegation-toggle disablehover hide">
-					<div class="label">Delegation Mode</div>
-					<div class="toggle disabled disablehover">
-						<div class="enabled">Enabled</div>
-						<div class="circle"></div>
-						<div class="disabled">Disabled</div>
-					</div>					
-				</div>
+        <div id="txt_disable_delegate" class="hide">
+          <p>To participate actively in governance, disable Delegation Mode.</p>
+        </div>
+
+        <!--enabled button-->
+        <div id="toggle_enabled" class="delegation-toggle hide">
+          <div class="label">Delegation Mode</div>
+          <div id="toggle_button_enabled" class="toggle enabled">
+            <div class="enabled">Enabled</div>
+            <div class="circle"></div>
+            <div class="disabled">Disable</div>
+          </div>
+        </div>
+
+        <!--disabled button-->
+        <div id="toggle_disabled" class="delegation-toggle disablehover hide">
+          <div class="label">Delegation Mode</div>
+          <div class="toggle disabled disablehover">
+            <div class="enabled">Enabled</div>
+            <div class="circle"></div>
+            <div class="disabled">Disabled</div>
+          </div>
+        </div>
 
 
-				<div id="txt_delegate" class="hide">
-					<p>To enable Delegation Mode & earn passively <a href="stewards">pick a steward</a><br>
-						or explore <a target="_blank" href="https://gov.gitcoin.co">the discourse</a> forum and paste the ethereum address here:</p>
-				</div>
+        <div id="txt_delegate" class="hide">
+          <p>To enable Delegation Mode & earn passively <a href="stewards">pick a steward</a><br>
+            or explore <a target="_blank" href="https://gov.gitcoin.co">the discourse</a> forum and paste the ethereum
+            address here:</p>
+        </div>
 
-				<div id="txt_redelegate" class="hide">
-					<p>To empower someone else & earn passively <a href="stewards">pick a steward</a><br>
-						or explore <a target="_blank" href="https://gov.gitcoin.co">the discourse</a> forum and paste the ethereum address here:</p>
-				</div>
+        <div id="txt_redelegate" class="hide">
+          <p>To empower someone else & earn passively <a href="stewards">pick a steward</a><br>
+            or explore <a target="_blank" href="https://gov.gitcoin.co">the discourse</a> forum and paste the ethereum
+            address here:</p>
+        </div>
 
-				<div id="delegate_form">
-					<input id="delegate_input" type="text" placeholder="Paste Ethereum Address">
-					<a id="delegate_button" class="btn disabled">Delegate</a>
-				</div>
+        <div id="delegate_form">
+          <input id="delegate_input" type="text" placeholder="Paste Ethereum Address">
+          <a id="delegate_button" class="btn disabled">Delegate</a>
+        </div>
 
-			</div>
-		</div>
-	</div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
 <!-- pending transaction -->
 <div id="tx_pending" class="section full hide">
-	<div class="content-tx-pending">
-		<div class="wrapper">
-			<div class="spinner">
-				{% include "quadraticlands/_inlinesvg/spinner.svg" %}
-			</div>
-			<div>
-				<p>Delegation transaction pending, please wait. <span id="transaction_link_pending"></span></p>
-			</div>
-			
-		</div>
-	</div>
+  <div class="content-tx-pending">
+    <div class="wrapper">
+      <div class="spinner">
+        {% include "quadraticlands/_inlinesvg/spinner.svg" %}
+      </div>
+      <div>
+        <p>Delegation transaction pending, please wait. <span id="transaction_link_pending"></span></p>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <!-- error transaction -->
 <div id="tx_error" class="section full hide">
-	<div class="content-tx-error">
-		<div class="wrapper">
-			<div class="text">
-				<p>We're sorry, we were unable to complete your delegation. Please check Etherscan for more infos. <span id="transaction_link_error"></span></p>
-			</div>
-		</div>
-	</div>
+  <div class="content-tx-error">
+    <div class="wrapper">
+      <div class="text">
+        <p>We're sorry, we were unable to complete your delegation. Please check Etherscan for more infos. <span
+            id="transaction_link_error"></span></p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
 
-document.addEventListener("DOMContentLoaded",function(){
+  document.addEventListener("DOMContentLoaded", function () {
 
-	// every time web3 is ready / address changes this calls the async function delegationInterface()
-	document.addEventListener("dataWalletReady", delegationInterface);
+    // every time web3 is ready / address changes this calls the async function delegationInterface()
+    document.addEventListener("dataWalletReady", delegationInterface);
 
-	// defining the interface elements
-	const governance = document.getElementById("governance")
-	const delegation_mode = document.getElementById("delegation_mode")
-	const toggle_disabled = document.getElementById("toggle_disabled")
-	const toggle_enabled = document.getElementById("toggle_enabled")
-	const delegate_address = document.getElementById("delegate_address")
-	const txt_delegate = document.getElementById("txt_delegate")
-	const txt_redelegate = document.getElementById("txt_redelegate")
-	const txt_disable_delegate = document.getElementById("txt_disable_delegate")
-	const delegate_button = document.getElementById("delegate_button")
-	const delegate_input = document.getElementById("delegate_input")
-	const toggle_button_enabled = document.getElementById("toggle_button_enabled")
+    // defining the interface elements
+    const governance = document.getElementById("governance")
+    const delegation_mode = document.getElementById("delegation_mode")
+    const toggle_disabled = document.getElementById("toggle_disabled")
+    const toggle_enabled = document.getElementById("toggle_enabled")
+    const delegate_address = document.getElementById("delegate_address")
+    const txt_delegate = document.getElementById("txt_delegate")
+    const txt_redelegate = document.getElementById("txt_redelegate")
+    const txt_disable_delegate = document.getElementById("txt_disable_delegate")
+    const delegate_button = document.getElementById("delegate_button")
+    const delegate_input = document.getElementById("delegate_input")
+    const toggle_button_enabled = document.getElementById("toggle_button_enabled")
 
-	// validate delegate address input field > recolor delegate button
-	delegate_input.addEventListener("input", () => {
-		delegate_button.classList.add("disabled")
-		// check if this address is a valid address
-		if (web3.utils.toChecksumAddress(delegate_input.value)){
-			delegate_button.classList.remove("disabled")
-		}
-	});
+    // validate delegate address input field > recolor delegate button
+    delegate_input.addEventListener("input", () => {
+      delegate_button.classList.add("disabled")
+      // check if this address is a valid address
+      if (web3.utils.toChecksumAddress(delegate_input.value)) {
+        delegate_button.classList.remove("disabled")
+      }
+    });
 
-	// defining enabled delegate button : web3 delegate(selectedAccount)
-	toggle_enabled.addEventListener("click", () => {
-		if (selectedAccount){
-			console.debug("DELEGATE TO (SELF) : " + selectedAccount)
-			// call a function like delegate(selectedAccount) ( what is basically selfdelegation )
-			setDelegateAddress(selectedAccount, gtc_address());
-		}
-	});
+    // defining enabled delegate button : web3 delegate(selectedAccount)
+    toggle_enabled.addEventListener("click", () => {
+      if (selectedAccount) {
+        console.debug("DELEGATE TO (SELF) : " + selectedAccount)
+        // call a function like delegate(selectedAccount) ( what is basically selfdelegation )
+        setDelegateAddress(selectedAccount, gtc_address());
+      }
+    });
 
-	// special effect : on enbled button on hover show disabled button
-	toggle_enabled.addEventListener("mouseover", () => {
-		toggle_button_enabled.classList.add("disabled")
-		toggle_button_enabled.classList.remove("enabled")
-	});
-	toggle_enabled.addEventListener("mouseout", () => {
-		toggle_button_enabled.classList.add("enabled")
-		toggle_button_enabled.classList.remove("disabled")
-	});
+    // special effect : on enbled button on hover show disabled button
+    toggle_enabled.addEventListener("mouseover", () => {
+      toggle_button_enabled.classList.add("disabled")
+      toggle_button_enabled.classList.remove("enabled")
+    });
+    toggle_enabled.addEventListener("mouseout", () => {
+      toggle_button_enabled.classList.add("enabled")
+      toggle_button_enabled.classList.remove("disabled")
+    });
 
-	// defining the delegate button : web3 delegate(delegate_input.value)
-	delegate_button.addEventListener("click", () => {
-		if (selectedAccount){
-			console.debug("DELEGATE TO " + delegate_input.value)
-			setDelegateAddress(delegate_input.value, gtc_address());
-	    }
-	});
+    // defining the delegate button : web3 delegate(delegate_input.value)
+    delegate_button.addEventListener("click", () => {
+      if (selectedAccount) {
+        console.debug("DELEGATE TO " + delegate_input.value)
+        setDelegateAddress(delegate_input.value, gtc_address());
+      }
+    });
 
-});
+  });
 
 
-async function delegationInterface() {
-   
+  async function delegationInterface() {
+
     try {
 
-        let balance = await getTokenBalances(gtc_address())
-        let delegateAddress = await getDelegateAddress(gtc_address(), selectedAccount)
+      let balance = await getTokenBalances(gtc_address())
+      let delegateAddress = await getDelegateAddress(gtc_address(), selectedAccount)
 
-        console.debug("Balance", balance.balance)
-        console.debug("DelegateAddress", delegateAddress)
+      console.debug("Balance", balance.balance)
+      console.debug("DelegateAddress", delegateAddress)
 
-		if(selectedAccount && balance.balance > 0) {
+      if (selectedAccount && balance.balance > 0) {
 
-			governance.classList.remove("hide")
+        governance.classList.remove("hide")
 
-			// DISABLED
-			if (selectedAccount == delegateAddress){
-				delegation_mode.innerHTML = "disabled"
-				toggle_disabled.classList.remove("hide")
-				toggle_enabled.classList.add("hide")
-				txt_delegate.classList.remove("hide")
-				txt_redelegate.classList.add("hide")
-				txt_disable_delegate.classList.add("hide")	
-				console.debug("DELEGATION MODE : DISABLED")
-				}
+        if (selectedAccount == delegateAddress) {
+          // DISABLED
+          delegation_mode.innerHTML = "disabled"
+          toggle_disabled.classList.remove("hide")
+          toggle_enabled.classList.add("hide")
+          txt_delegate.classList.remove("hide")
+          txt_redelegate.classList.add("hide")
+          txt_disable_delegate.classList.add("hide")
+          console.debug("DELEGATION MODE : DISABLED")
+        } else {
+          // ENABLED
+          delegation_mode.innerHTML = "enabled"
+          toggle_disabled.classList.add("hide")
+          toggle_enabled.classList.remove("hide")
+          delegate_address.innerHTML = "( " + truncate(delegateAddress) + " )"
+          txt_delegate.classList.add("hide")
+          txt_redelegate.classList.remove("hide")
+          txt_disable_delegate.classList.remove("hide")
+          delegate_input.value = delegateAddress;
+          console.debug("DELEGATION MODE : ENABLED")
+        }
 
-			// ENABLED
-			else {
-				delegation_mode.innerHTML = "enabled"
-				toggle_disabled.classList.add("hide")
-				toggle_enabled.classList.remove("hide")
-				delegate_address.innerHTML = "( " + truncate(delegateAddress) + " )"
-				txt_delegate.classList.add("hide")
-				txt_redelegate.classList.remove("hide")
-				txt_disable_delegate.classList.remove("hide")
-				delegate_input.value = delegateAddress;
-				console.debug("DELEGATION MODE : ENABLED")
-				}
+      }
 
-			}
+      else {
+        // hide governance module
+        governance.classList.add("hide")
+      }
 
-		else{
-			// hide governance module
-			governance.classList.add("hide")
-		}
-
-      
-    } catch(e) {
-        console.log(e);
+    } catch (e) {
+      console.log(e);
     }
-}
+  }
 
-// tx interface handling
-function updateInterface(status="pending", transactionHash="") {
-	blockExplorerName ="Etherscan";
+  // tx interface handling
+  function updateInterface(status = "pending", transactionHash = "") {
+    blockExplorerName = "Etherscan";
 
-	tx_pending = document.getElementById("tx_pending")
-	tx_error = document.getElementById("tx_error")
-	transaction_link_pending = document.getElementById("transaction_link_pending")
-	transaction_link_error = document.getElementById("transaction_link_error")
+    tx_pending = document.getElementById("tx_pending")
+    tx_error = document.getElementById("tx_error")
+    transaction_link_pending = document.getElementById("transaction_link_pending")
+    transaction_link_error = document.getElementById("transaction_link_error")
 
-	if (status=="pending")
-	{
-		tx_link = get_etherscan_url(transactionHash, document.web3network);
-		link = "<a target='_blank' href='"+tx_link+"'>"+blockExplorerName+"</a>"
-		transaction_link_pending.innerHTML = link
-		transaction_link_error.innerHTML = link
-		
-		flashMessage("Transaction pending",5000);
-		governance.classList.add("hide")
-		tx_pending.classList.remove("hide")
-	}
-	
-	if (status=="success")
-	{
-		flashMessage("Transaction successful",5000);
-		window.location = "/quadraticlands/dashboard";
-	}
-	
-	if (status=="error")
-	{
-		tx_pending.classList.add("hide")
-		tx_error.classList.remove("hide")
-		flashMessage("Transaction Error",3000);
-	}
-}
+    if (status == "pending") {
+
+      tx_link = get_etherscan_url(transactionHash, document.web3network);
+      link = "<a target='_blank' href='" + tx_link + "'>" + blockExplorerName + "</a>"
+      transaction_link_pending.innerHTML = link
+      transaction_link_error.innerHTML = link
+
+      flashMessage("Transaction pending", 5000);
+      governance.classList.add("hide");
+      tx_pending.classList.remove("hide");
+
+    } else if (status == "success") {
+
+      flashMessage("Transaction successful", 5000);
+      window.location = "/quadraticlands/dashboard";
+
+    } else if (status == "error") {
+
+      tx_pending.classList.add("hide");
+      tx_error.classList.remove("hide");
+      flashMessage("Transaction Error", 3000);
+
+    }
+  }
 
 </script>
-
-
-
-

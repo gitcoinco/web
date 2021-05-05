@@ -19,44 +19,44 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    {% include 'quadraticlands/components/head.html' %}
-    {% block 'twittercard' %}{% endblock %}
-  </head>
 
-  <body>
-    
-    <!-- flash message -->
-    {% include 'quadraticlands/components/flashmessage.html' %}
+<head>
+  {% include 'quadraticlands/components/head.html' %}
+  {% block 'twittercard' %}{% endblock %}
+</head>
 
-    <!-- navigation -->
-    {% include 'quadraticlands/components/nav.html' %}
+<body>
 
-    <!-- just load wallet menu when user is auth -->
-    {% if user.is_authenticated %}
-      {% include 'quadraticlands/components/wallet-provider.html' %}
-    {% endif %}
+  <!-- flash message -->
+  {% include 'quadraticlands/components/flashmessage.html' %}
 
-    <!-- content -->
-    {% block 'content' %}
-    {% endblock %}
+  <!-- navigation -->
+  {% include 'quadraticlands/components/nav.html' %}
 
-    <!-- social media icons-->
-    {% include 'quadraticlands/components/footersocial.html' %}
+  <!-- just load wallet menu when user is auth -->
+  {% if user.is_authenticated %}
+    {% include 'quadraticlands/components/wallet-provider.html' %}
+  {% endif %}
 
-    <!-- footer -->
-    {% include 'quadraticlands/components/footer.html' %}
-   
-    <!-- javascripts -->
-    {% include 'quadraticlands/components/footer_scripts.html' %}
-
-    <!-- cookielaw ( rewritten ! its not the same anymore ^^ ) -->
-    {% include 'quadraticlands/components/cookielaw.html' %}
-
-  </body>
-
-  {% block 'scripts' %}
+  <!-- content -->
+  {% block 'content' %}
   {% endblock %}
 
+  <!-- social media icons-->
+  {% include 'quadraticlands/components/footersocial.html' %}
+
+  <!-- footer -->
+  {% include 'quadraticlands/components/footer.html' %}
+
+  <!-- javascripts -->
+  {% include 'quadraticlands/components/footer_scripts.html' %}
+
+  <!-- cookielaw ( rewritten ! its not the same anymore ^^ ) -->
+  {% include 'quadraticlands/components/cookielaw.html' %}
+
+</body>
+
+{% block 'scripts' %}
+{% endblock %}
 
 </html>

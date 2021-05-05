@@ -7,20 +7,25 @@
 
 <article>
 
-	<section class="column">
-		<h2>Quadratic Lands - Postcard Generator</h2>
-		<div class="intro">GTC is a governance token, and the vehicle we’ll use to fully decentralize Gitcoin — eventually into a community governed GitcoinDAO</div>
+  <section class="column">
+    <h2>Quadratic Lands - Postcard Generator</h2>
+    <div class="intro">GTC is a governance token, and the vehicle we’ll use to fully decentralize Gitcoin — eventually
+      into a community governed GitcoinDAO</div>
 
-		<p>While the GitcoinDAO is an end in itself, it is also a means to another end: To chart a course to the Quadratic Lands- a place where communities are empowered to build for the common good.</p>
-	</section>
+    <p>While the GitcoinDAO is an end in itself, it is also a means to another end: To chart a course to the Quadratic
+      Lands- a place where communities are empowered to build for the common good.</p>
+  </section>
 
-	<section class="column">
-		<h3>We envision the Quadratic Lands as this place</h3>
-		<li>There are numerous opportunities to create financial sovereignty while working side-by-side with people who share similar values.</li>
-		<li>Individuals have sovereignty to make their own choices, but incentives are aligned for cooperation that generates both individual and community benefit.</li>
-		<li>The economic infrastructure is a set of economic games with transparent rules that cannot be changed on us.</li>
-		<li>Because of composability of blockchain-based systems, the surface area of opportunity is growing exponentially as the tools compound upon each other.</li>
-	</section>
+  <section class="column">
+    <h3>We envision the Quadratic Lands as this place</h3>
+    <li>There are numerous opportunities to create financial sovereignty while working side-by-side with people who
+      share similar values.</li>
+    <li>Individuals have sovereignty to make their own choices, but incentives are aligned for cooperation that
+      generates both individual and community benefit.</li>
+    <li>The economic infrastructure is a set of economic games with transparent rules that cannot be changed on us.</li>
+    <li>Because of composability of blockchain-based systems, the surface area of opportunity is growing exponentially
+      as the tools compound upon each other.</li>
+  </section>
 
 </article>
 
@@ -28,54 +33,50 @@
 
 <article>
 
-	<section class="postcard" style="margin-bottom:2em;">
+  <section class="postcard" style="margin-bottom:2em;">
 
-		<figure>
-			<img id='target' src="/quadraticlands/mission/postcard/svg">
-		</figure>
-		
-	</section>
+    <figure>
+      <img id='target' src="/quadraticlands/mission/postcard/svg">
+    </figure>
 
-
-	<section class="postcard column" style="margin-bottom:2em;">
-	
-		<div class="input">
-			{% for key, package in attrs.items %}
-			<div class="backgrounds">
-				{{key | title}}
-				<div class="parent">
-						<ul>
-							{% for item in package %}
-								<li class="btn sm" name='{{key}}' value='{{item}}' {% if forloop.counter0 == 0 %}selected="selected"{%endif%}>
-									{{item}}
-								</li>
-							{% endfor %}
-						</ul>
-				</div>
-			</div>
-			{% endfor %}
-
-			</div>
-		</div>
-		
-	</section>
+  </section>
 
 
-	<section class="postcard column">
-		<div class="textarea-wrapper">
-			<textarea rows="10" id="text">Hello from the Quadratic Lands
-- {{github_handle}}
-</textarea>
-		</div>
-	</section>
+  <section class="postcard column" style="margin-bottom:2em;">
+
+    <div class="input">
+      {% for key, package in attrs.items %}
+        <div class="backgrounds">
+          {{key | title}}
+          <div class="parent">
+            <ul>
+              {% for item in package %}
+                <li class="btn sm" name='{{key}}' value='{{item}}' {% if forloop.counter0==0 %}selected="selected"
+                  {%endif%}>
+                  {{item}}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+    </div>
+
+  </section>
 
 
-	<section class="postcaerd column">
-		<a class="btn" href="#">submit / send / tweet / whatever</a>
-	</section>
+  <section class="postcard column">
+    <div class="textarea-wrapper">
+      <textarea rows="10" id="text">Hello from the Quadratic Lands - {{github_handle}}</textarea>
+    </div>
+  </section>
 
 
-
+  <section class="postcaerd column">
+    <a class="btn" href="#">submit / send / tweet / whatever</a>
+  </section>
 
 </article>
 
@@ -93,19 +94,7 @@
   });
 </script>
 
-<script src="{% static "v2/quadraticlands/js/postcard.js" %}"></script>
-
+<script src="{% static " v2/quadraticlands/js/postcard.js" %}"></script>
 
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
