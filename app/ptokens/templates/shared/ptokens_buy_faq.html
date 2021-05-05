@@ -14,11 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static humanize i18n compress %}
+{% load static humanize i18n bundle %}
 
-{% compress css file kudos_styles %}
+{% bundle css file kudos_styles %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
-{% endcompress %}
+{% endbundle %}
 
 <h3 id='faq' class="text-center my-5">FAQ</h3>
 

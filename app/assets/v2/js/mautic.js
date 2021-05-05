@@ -173,12 +173,12 @@ class MauticEvent {
 /**  Mautic code to handle form embeds * */
 /** This section is only needed once per page if manually copying * */
 
-let MauticSDKLoaded;
+this.MauticSDKLoaded;
 
 if (typeof MauticSDKLoaded == 'undefined') {
   MauticSDKLoaded = true;
-  var MauticDomain = 'https://engage.gitcoin.co';
-  var MauticLang = {
+  this.MauticDomain = 'https://engage.gitcoin.co';
+  this.MauticLang = {
     'submittingMessage': 'Please wait...'
   };
   const head = document.getElementsByTagName('head')[0];

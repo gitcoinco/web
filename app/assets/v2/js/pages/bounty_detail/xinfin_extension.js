@@ -1,10 +1,10 @@
-const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => {
+const payWithXinfinExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
 
   try {
-    web3.version.getNetwork(async (err, providerNetworkId) => {
+    web3.version.getNetwork(async(err, providerNetworkId) => {
       // 1. init provider
       await ethereum.enable();
       xdc3Client = await new xdc3(web3.currentProvider);
@@ -29,7 +29,7 @@ const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => 
         let txArgs = {
           to: to_address.toLowerCase(),
           from: web3.eth.defaultAccount,
-          value: (amount * 10 ** 18).toString(),
+          value: (amount * 10 ** 18).toString()
         };
 
         xdc3Client.eth.sendTransaction(
@@ -61,7 +61,7 @@ const payWithXinfinExtension = async (fulfillment_id, to_address, vm, modal) => 
         tenant: 'XINFIN',
         amount: amount,
         token_name: token_name,
-        funder_address: from_address.replace(/^(0x)/,"xdc"),
+        funder_address: from_address.replace(/^(0x)/, 'xdc'),
         payout_tx_id: txn
       };
 

@@ -1,5 +1,5 @@
 {% extends 'quests/base.html' %}
-{% load humanize static i18n compress %}
+{% load humanize static i18n bundle %}
 {% comment %}
   Copyright (C) 2020 Gitcoin Core
 
@@ -18,9 +18,9 @@
 {% endcomment %}
 
 {% block 'extrahead' %}
-{% compress css file quest_example %}
+{% bundle css file quest_example %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quests.example.scss" %} />
-{% endcompress %}
+{% endbundle %}
 {% endblock %}
 
 {% block 'content' %}
