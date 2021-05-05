@@ -51,7 +51,7 @@
           <div class="parent">
             <ul>
               {% for item in package %}
-                <li class="btn sm" name='{{key}}' value='{{item}}' {% if forloop.counter0==0 %}selected="selected"
+                <li class="btn sm" name='{{key}}' value='{{item}}' {% if forloop.counter0 == 0 %}selected="selected"
                   {%endif%}>
                   {{item}}
                 </li>
