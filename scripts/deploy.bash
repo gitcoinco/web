@@ -65,6 +65,8 @@ cd app || echo "Cannot find app directory!"
 
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
+    python3 manage.py bundle;
+    yarn run build;
     python3 manage.py collectstatic --noinput -i other;
     python3 manage.py compress;
 fi

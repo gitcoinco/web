@@ -13,6 +13,7 @@ app/output/*.pdf
 app/assets/other/wp.pdf
 app/assets/tmp/*
 app/assets/other/avatars/
+app/assets/**/bundle*/
 app/gcoin/
 app/media/
 .idea/
