@@ -1377,6 +1377,7 @@ def new_bounty_daily(es):
         bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status__in=['open'],
+            web3_created__gt=timezone.now() - timezone.timedelta(hours=24),
         ).exclude(bounty_reserved_for_user__isnull=False).order_by('-_val_usd_db')[0:3]
 
     to_emails = [to_email]

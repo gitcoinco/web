@@ -87,13 +87,15 @@ def index(request):
         data_results = {
             'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
             'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
-            'mau': data['mau'] if data['mau'] else 0
+            'mau': data['mau'] if data['mau'] else 0,
+            'bounties_gmv': data['bounties_gmv'] if data['bounties_gmv'] else 0
         }
     except:
         data_results = {
             'universe_total_usd': 18874053.680999957,
             'human_universe_total_usd': "$18.9m",
-            'mau': 161205.0
+            'mau': 161205.0,
+            'bounties_gmv': '3.43m'
         }
     context.update(data_results)
 
@@ -729,25 +731,6 @@ def jobs(request):
         'job_listings': job_listings
     }
     return TemplateResponse(request, 'jobs.html', context)
-
-
-def vision(request):
-    """Render the Vision response."""
-    videoLinks = [
-        'https://www.youtube.com/embed/wo0KkSH-6eg',
-        'https://www.youtube.com/embed/nZTVMEh9k5U',
-        'https://www.youtube.com/embed/F2yeOFlRE0E'
-    ]
-    context = {
-        'is_outside': True,
-        'active': 'vision',
-        'avatar_url': static('v2/images/vision/triangle.jpg'),
-        'title': 'Vision',
-        'videoLinks': videoLinks,
-        'card_title': _("Gitcoin's Vision for a Web3 World"),
-        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
-    }
-    return TemplateResponse(request, 'vision.html', context)
 
 
 def avatar(request):
