@@ -49,10 +49,9 @@ class Command(BaseCommand):
         static_close_pattern = re.compile(r'(\s?%}(\"|\')?\s?\/?>)')
 
         # remove the previously bundled files
-        rmdirs('assets', 'js')
-        rmdirs('assets', 'scss')
-        rmdirs('static', 'js')
-        rmdirs('static', 'scss')
+        for ext in ['js', 'scss', 'css']:
+            rmdirs('assets', ext)
+            rmdirs('static', ext)
 
         print('\nStart generating bundle files\n')
 
