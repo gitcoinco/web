@@ -173,8 +173,11 @@ def render(block, kind, mode, name='asset', forced=False):
                 # print so that we have concise output in the bundle command
                 print('- Generated: %s' % outputFile)
 
+    # all bundled css will be stored at bundled/css/*.css
+    ext = 'css' if ext == 'scss' else ext
+
     # in production and not forced we will just return the static bundle
-    return get_tag(ext, static('v2/%s/%s/%s.%s.%s' % (bundled, ext, name, blockHash[0:6], 'css' if ext == 'scss' else ext)))
+    return get_tag(ext, static('v2/%s/%s/%s.%s.%s' % (bundled, ext, name, blockHash[0:6], ext)))
 
 
 class CompressorNode(template.Node):

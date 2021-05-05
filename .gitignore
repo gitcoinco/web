@@ -16,8 +16,7 @@ app/assets/other/avatars/
 app/assets/**/bundle*/
 app/gcoin/
 app/media/
-app/assets/**/bundles/
-app/assets/**/bundled/
+app/assets/**/bundle*/
 .idea/
 venv/
 .coverage
