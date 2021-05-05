@@ -19,7 +19,7 @@ import time
 import warnings
 import csv
 
-show_debug = True
+show_debug = False
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
