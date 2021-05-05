@@ -346,7 +346,7 @@ body #mc_embed_signup label {
 
 textarea.loading,
 input[type=text].loading {
-  background-image: url('/static/v2/images/loading_v2.gif');
+  background-image: url(static('v2/images/loading_v2.gif'));
   background-repeat: no-repeat;
   background-position: right;
   background-size: 30px;
@@ -480,7 +480,7 @@ input[type=text].loading {
 }
 
 .closebtn.purple {
-  content: url('/static/v2/images/close-purple.svg');
+  content: url(static('v2/images/close-purple.svg'));
 }
 
 /* When moving the mouse over the close button */
@@ -620,7 +620,7 @@ input[type=text].loading {
 }
 
 .dashboard .w-75 .github-comment {
-  background: url('/static/v2/images/icon-msg-16.png') no-repeat left;
+  background: url(static('v2/images/icon-msg-16.png')) no-repeat left;
   padding-left: 18px;
   margin-right: 10px;
   display: inline-block;
@@ -727,7 +727,7 @@ input.is-invalid {
 }
 
 .ui-selectmenu-icon.ui-icon {
-  background: url('/static/v2/images/caret-down.png') !important;
+  background: url(static('v2/images/caret-down.png')) !important;
   background-repeat: no-repeat;
   background-position: 0 !important;
   background-size: 10px 6px !important;
@@ -1250,7 +1250,7 @@ div.busyOverlay {
   background-repeat: no-repeat;
   background-size: 12em;
   background-position: center;
-  background-image: url('/static/v2/images/loading_v2.gif');
+  background-image: url(static('v2/images/loading_v2.gif'));
 }
 
 .expandable {

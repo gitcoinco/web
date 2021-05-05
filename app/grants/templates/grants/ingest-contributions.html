@@ -15,17 +15,17 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
-    {% compress css file grants_simple %}
+    {% bundle css file grants_simple %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
 
   <body class="interior {{ active }} grant g-font-muli">

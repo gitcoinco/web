@@ -15,16 +15,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    {% compress css file bounty_fullfill %}
+    {% bundle css file bounty_fullfill %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
   <body class="interior {{active}} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
