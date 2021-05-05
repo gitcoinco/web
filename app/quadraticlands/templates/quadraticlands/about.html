@@ -1,6 +1,7 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+
 {% block 'twittercard' %}
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@gitcoin" />
@@ -14,9 +15,14 @@
 {% block 'content' %}
 
 
+
 <!-- Hero -->
-<section class="hero knightrider" data-kinetics-mode data-kinetics-mode-type="party" data-kinetics-mode-speed="5"
-  data-kinetics-mode-boundery="endless">
+<section class="hero knightrider"
+  data-kinetics-mode
+  data-kinetics-mode-type="party"
+  data-kinetics-mode-speed="5"
+  data-kinetics-mode-boundery="endless"
+>
 
   <div class="background">
     <!-- svg needs preserveAspectRatio="xMidYMid slice" -->
@@ -32,9 +38,12 @@
 
 
 
-
 <!-- Developers -->
-<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
+<article
+  data-kinetics-mode
+  data-kinetics-mode-type="space"
+  data-kinetics-mode-speed="1"
+>
   <section class="column">
     <h2>By Developers, for Developers</h2>
     <div class="intro">Gitcoin is focused on creating impact that lasts, putting the community first, and creating
@@ -52,15 +61,22 @@
 
 
 <!-- Economically Empower Builders of the open web -->
+
 <article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
   <section class="column">
     <h2>Economically Empower Builders of the open web</h2>
   </section>
 
   <section class="column full">
-    <figure data-kinetics-attraction data-kinetics-attraction-chance=".5" data-kinetics-attraction-force=".5"
-      data-kinetics-attraction-grow="3">
-      <img loading="lazy" src="{% static " v2/images/quadraticlands/about/empower.svg" %}" />
+    <figure
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".6"
+      data-kinetics-attraction-force="1"
+      data-kinetics-attraction-grow="0.99"
+      data-kinetics-attraction-type="swing"
+      data-kinetics-attraction-speed="1"
+    >
+      <img loading="lazy" src="{% static " v2/quadraticlands/images/about/empower.svg" %}" />
     </figure>
   </section>
 
@@ -76,6 +92,7 @@
 
 
 <!-- How We Help -->
+
 <article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
   <section class="column">
     <h2>How We Help</h2>
@@ -84,7 +101,7 @@
   <section class="column full">
     <figure data-kinetics-attraction data-kinetics-attraction-chance=".5" data-kinetics-attraction-force=".5"
       data-kinetics-attraction-grow="3">
-      <img loading="lazy" src="{% static " v2/images/quadraticlands/about/help.svg" %}" />
+      <img loading="lazy" src="{% static " v2/quadraticlands/images/about/help.svg" %}" />
     </figure>
   </section>
 
@@ -101,6 +118,7 @@
 
 
 
+
 <!-- Architecture -->
 <article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
   <section class="column">
@@ -111,10 +129,19 @@
   </section>
 
 
+
   <section class="column full">
-    <figure data-kinetics-attraction data-kinetics-attraction-chance="1" data-kinetics-attraction-force="1.1"
-      data-kinetics-attraction-grow="1" data-kinetics-attraction-type="bee" data-kinetics-attraction-speed="1.5">
-      <img loading="lazy" src="{% static " v2/images/quadraticlands/about/quote.svg" %}" />
+    <figure
+      data-kinetics-attraction
+      data-kinetics-attraction-chance="1"
+      data-kinetics-attraction-force="1"
+      data-kinetics-attraction-grow="1"
+      data-kinetics-attraction-type="orbit"
+      data-kinetics-attraction-radius="0.5"
+      data-kinetics-attraction-speed="1.5"
+
+        >
+      <img loading="lazy" src="{% static " v2/quadraticlands/images/about/quote.svg" %}" />
     </figure>
   </section>
 
@@ -128,9 +155,13 @@
   </section>
 
   <section class="column full">
-    <figure data-kinetics-attraction data-kinetics-attraction-chance=".5" data-kinetics-attraction-force=".5"
-      data-kinetics-attraction-grow="3">
-      <img loading="lazy" src="{% static " v2/images/quadraticlands/about/graph.svg" %}" />
+    <figure
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".5"
+      data-kinetics-attraction-force=".5"
+      data-kinetics-attraction-grow="3"
+    >
+      <img loading="lazy" src="{% static " v2/quadraticlands/images/about/graph.svg" %}" />
     </figure>
   </section>
 
@@ -143,9 +174,14 @@
   </section>
 
   <section class="column full">
-    <figure data-kinetics-attraction data-kinetics-attraction-chance=".5" data-kinetics-attraction-force=".5"
-      data-kinetics-attraction-grow="3">
-      <img loading="lazy" src="{% static " v2/images/quadraticlands/about/graph2.svg" %}" />
+    <figure
+      data-kinetics-attraction
+      data-kinetics-attraction-chance=".5"
+      data-kinetics-attraction-force=".5"
+      data-kinetics-attraction-grow="3"
+
+      >
+      <img loading="lazy" src="{% static " v2/quadraticlands/images/about/graph2.svg" %}" />
     </figure>
   </section>
 </article>
@@ -160,7 +196,7 @@
 
     <p>Gitcoin’s community is home to over 400,000 web3 ecosystem builders, a home for events, a source of funding,
       aligned around one mission. The mission of Gitcoin is to <span>economically empower builders + develop robust
-      creator ecosystems.</span> As of 2021, creators in the Gitcoin network are earning over 5 million dollars each
+        creator ecosystems.</span> As of 2021, creators in the Gitcoin network are earning over 5 million dollars each
       year.</p>
   </section>
 
@@ -205,7 +241,7 @@
   <section class="column full">
     <figure data-kinetics-attraction data-kinetics-attraction-chance=".5" data-kinetics-attraction-force=".5"
       data-kinetics-attraction-grow="3">
-      <img loading="lazy" src="{% static 'v2/images/quadraticlands/about/pie.svg' %}">
+      <img loading="lazy" src="{% static 'v2/quadraticlands/images/about/pie.svg' %}">
     </figure>
   </section>
 </article>
@@ -269,12 +305,19 @@
   </section>
 </article>
 
+
+
+
 {% endblock %}
+
+
 
 {% block 'scripts' %}
 
 <!-- sfx library-->
 <script src="{% static " v2/quadraticlands/js/tone.js" %}"></script>
+
+
 
 <!-- animate about page header image ( hero-about.svg ) -->
 <script>
