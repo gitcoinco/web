@@ -6,14 +6,14 @@
   <div class="logos">
 
     <a class="gitcoin" href="/" data-kinetics-attraction data-kinetics-attraction-chance=".2" 
-    data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="bee" >
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="bee" >
       {% include "quadraticlands/_inlinesvg/logo_gitcoin.svg" %}
     </a>
 
     <span class="arrow">{% include "quadraticlands/_inlinesvg/logo_arrow.svg" %}</span>
 
     <a class="quadraticlands" href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".2" 
-    data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="bee" >
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="bee" >
       {% include "quadraticlands/_inlinesvg/ql.svg" %}
     </a>
 
@@ -31,13 +31,13 @@
 
       <ul>
         <a href="/quadraticlands/about" data-kinetics-attraction data-kinetics-attraction-chance=".2" 
-    data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz"
+          data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz"
           {% if "about" in request.path %} aria-current="page" {% endif %}>
           <li>About</li>
         </a>
 
         <a href="/quadraticlands/mission" data-kinetics-attraction data-kinetics-attraction-chance=".2" 
-    data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz"
+          data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz"
           {% if "mission" in request.path %} aria-current="page" {% endif %}>
           <li>Mission Control</li>
         </a>
@@ -49,11 +49,11 @@
 
     <!-- user avatar / username -->
     <div id="nav-user" data-kinetics-attraction data-kinetics-attraction-chance=".2" 
-    data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz" >
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz" >
       <a href="/quadraticlands/dashboard">
         <div>
-            <img src="/dynamic/avatar/{{user.username}}" >
-            <span>{{user.username}}</span>
+          <img src="/dynamic/avatar/{{user.username}}" >
+          <span>{{user.username}}</span>
         </div>
       </a>
     </div>
@@ -61,7 +61,7 @@
     <!-- default wallet button / wallet status
     what TRIGGER another div to pop up (components/wallet-provider.html) -->
     <div id="nav-wallet" data-kinetics-attraction data-kinetics-attraction-chance=".2" 
-    data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz" >
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz" >
 
       <!-- NETWORK -->
       <span id="web3network" class="web3network hide"></span>
@@ -69,7 +69,7 @@
       <!-- CLAIMABLE AMOUNT -->
       <!-- IF :  proof_of_receive and total_claimable_gtc != 0 -->
       {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False %}
-      <span class="claimable"><a href="/quadraticlands/mission">+ {{ total_claimable_gtc | floatformat:2 }}</a></span>
+        <span class="claimable"><a href="/quadraticlands/mission">+ {{ total_claimable_gtc | floatformat:2 }}</a></span>
       {% endif %}
 
       <div id="noproviderIcon">
@@ -79,7 +79,7 @@
       <!-- this will add an image inside this div, if a provider  -->
       <div id="navbarDropdownWallet">
         <!-- mandatory to not fuck the wallet.js code -->
-        <svg class="provider-icon" style="display:none;">
+        <svg class="provider-icon" style="display:none;"></svg>
       </div>
     </div>
 
@@ -128,19 +128,19 @@ function showNoprovider(){
 
 async function getWeb3Network() {
   try {
-      let network = await web3.eth.net.getNetworkType()
-      if (network == "main") {
-        web3network.classList.add("hide")
-        web3network.innerHTML = ""
-      }
-      else{
-        web3network.innerHTML = network
-        web3network.classList.remove("hide")
-      }
-      
-    } catch(e) {
-        console.log(e);
+    let network = await web3.eth.net.getNetworkType()
+    if (network == "main") {
+      web3network.classList.add("hide")
+      web3network.innerHTML = ""
     }
+    else {
+      web3network.innerHTML = network
+      web3network.classList.remove("hide")
+    }
+    
+  } catch(e) {
+    console.log(e);
+  }
 }
 </script>
 

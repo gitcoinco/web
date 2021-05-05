@@ -2,85 +2,84 @@
 
 <div class="section">
 
-	<a href="/quadraticlands/mission" class="noparticles">
-		<div class="header">
-			<div class="icon">
-				<img loading="lazy" src="{% static "v2/quadraticlands/images/icons/missioncontrol.svg" %}" />
-			</div>
-			<div class="title">
-				Mission Control
-			</div>
-			<div class="arrow">
-				{% include "quadraticlands/_inlinesvg/arrow.svg" %}
-			</div>
-		</div>
-	</a>
+  <a href="/quadraticlands/mission" class="noparticles">
+    <div class="header">
+      <div class="icon">
+        <img loading="lazy" src="{% static " v2/images/quadraticlands/icons/missioncontrol.svg" %}" />
+      </div>
+      <div class="title">
+        Mission Control
+      </div>
+      <div class="arrow">
+        {% include "quadraticlands/_inlinesvg/arrow.svg" %}
+      </div>
+    </div>
+  </a>
 
-	<div class="content">
-		<div class="content-mission">
-			<div class="wrapper">
+  <div class="content">
+    <div class="content-mission">
+      <div class="wrapper">
 
-				<!-- PROOF OF KNOWLEDGE -->
-				<!-- add in with proof_of_knowledge=false to simulate available mission -->
+        <!-- PROOF OF KNOWLEDGE -->
+        <!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-				{% with name="1. Proof of Knowledge" %}
+        {% with name="1. Proof of Knowledge" %}
 
-					{% if not proof_of_knowledge %}
-						{% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available"  url="/quadraticlands/mission/knowledge" %}
-					{% else %}
-						{% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
-					{% endif %}
+          {% if not proof_of_knowledge %}
+            {% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/knowledge" %}
+          {% else %}
+            {% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
+          {% endif %}
 
-				{% endwith %}
-
-
-				<!-- PROOF OF USE -->
-				<!-- user have to finish proof_of_knowledge first -->
-				<!-- add in with proof_of_use=false to simulate available mission -->
-
-				{% with name="2. Proof of Use" %}
-
-					{% if not proof_of_knowledge  %}
-						<!-- User can not this mission yet -->
-						{% include 'quadraticlands/dashboard/mission_item.html' with message="locked" locked="true" %}
-					{% else %}
-
-						<!-- User can Play -->
-						{% if not proof_of_use %}
-							{% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/use" %}
-						{% else %}
-							{% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
-						{% endif %}	
-
-					{% endif %}
-
-				{% endwith %}
+        {% endwith %}
 
 
-				<!-- PROOF OF RECEIVE -->
-				<!-- user have to finish proof_of_use first -->
-				<!-- add in with proof_of_receive=false to simulate available mission -->
+        <!-- PROOF OF USE -->
+        <!-- user have to finish proof_of_knowledge first -->
+        <!-- add in with proof_of_use=false to simulate available mission -->
 
-				{% with name="3. Proof of Receive"  %}
+        {% with name="2. Proof of Use" %}
 
-					{% if not proof_of_use  %}
-						<!-- User can not this mission yet -->
-						{% include 'quadraticlands/dashboard/mission_item.html' with message="locked" locked="true" %}
-					{% else %}
+          {% if not proof_of_knowledge %}
+          <!-- User can not this mission yet -->
+            {% include 'quadraticlands/dashboard/mission_item.html' with message="locked" locked="true" %}
+          {% else %}
 
-						<!-- User can Play -->
-						{% if not proof_of_receive%}
-							{% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/receive" %}
-						{% else %}
-							{% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
-						{% endif %}
+            <!-- User can Play -->
+            {% if not proof_of_use %}
+              {% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/use" %}
+            {% else %}
+              {% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
+            {% endif %}
 
-					{% endif %}
+          {% endif %}
 
-				{% endwith %}
-		
-			</div>
-		</div>
-	</div>
-	
+        {% endwith %}
+
+
+        <!-- PROOF OF RECEIVE -->
+        <!-- user have to finish proof_of_use first -->
+        <!-- add in with proof_of_receive=false to simulate available mission -->
+
+        {% with name="3. Proof of Receive" %}
+
+          {% if not proof_of_use %}
+            <!-- User can not this mission yet -->
+            {% include 'quadraticlands/dashboard/mission_item.html' with message="locked" locked="true" %}
+          {% else %}
+
+            <!-- User can Play -->
+            {% if not proof_of_receive%}
+              {% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/receive" %}
+            {% else %}
+              {% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
+            {% endif %}
+
+          {% endif %}
+
+        {% endwith %}
+
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,42 +1,27 @@
 {% load static %}
 
 <div class="col">
-	<div class="mission-name">
-		
-		{% if playable %}<a href="{{url}}">{% endif %}
-			{{name}}
-		{% if playable %}</a>{% endif %}
+  <div class="mission-name">
+    {% if playable %}<a href="{{url}}">{% endif %}
+    {{name}}
+    {% if playable %}</a>{% endif %}
+  </div>
 
-	</div>
-
-
-	<!-- set font colors per class : active, disabled -->
-	<div class="mission-status 
+  <!-- set font colors per class : active, disabled -->
+  <div class="mission-status 
 		{% if locked %}locked{% endif %}
 		{% if playable %}playable{% endif %}
 		{% if done %}done{% endif %}
 	">
-		
-	{{message}}
+    {{message}}
+  </div>
 
-	</div>
-
-
-
-	<!-- set icon colors per class : active, disabled -->
-	<div class="mission-status-icon
+  <!-- set icon colors per class : active, disabled -->
+  <div class="mission-status-icon
 		{% if locked %}locked{% endif %}
 		{% if playable %}playable{% endif %}
 		{% if done %}done{% endif %}
 	">
-		{% include "quadraticlands/_inlinesvg/rhombus.svg" %}
-	</div>											
+    {% include "quadraticlands/_inlinesvg/rhombus.svg" %}
+  </div>
 </div>
-
-
-
-
-
-
-
-
