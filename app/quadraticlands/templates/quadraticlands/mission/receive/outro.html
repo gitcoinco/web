@@ -43,35 +43,18 @@
 
 {% block 'scripts' %}
 
-<!-- kinetics particles -->
+<!-- set the mission -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    new Kinetics().interactionHook();
-  });
+  const mission = 'proof_of_receive';
 </script>
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
 
 <!-- add a custom tweet button from data-attributes -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const tweet_button = document.getElementById("tweet_button")
-    const twitter_url = "https://twitter.com/intent/tweet"
-    tweet_button.href = twitter_url + "?text=" + tweet_button.dataset.tweet_text + "&url=" + tweet_button.dataset.tweet_url + "&hashtags=" + tweet_button.dataset.tweet_hashtags
-    tweet_button.target = "_blank"
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/mission/receive/custom_tweet.js" %}"></script>
 
-<script>
-  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  document.addEventListener("DOMContentLoaded", function () {
-    // update user state
-    var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', { 'mission': 'proof_of_receive' }, { 'X-CSRFToken': csrftoken });
-    $.when(setMissionStatus).then((response, status, statusCode) => {
-      console.debug('Missions status set successfully', status);
-    }).catch((error) => {
-      console.error('There was an issue setting missions status', error.message);
-    });
-  });
-</script>
-
+<!-- set the mission's status -->
+<script src="{% static "v2/js/quadraticlands/mission/set_status.js" %}"></script>
 
 {% endblock %}

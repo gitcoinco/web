@@ -25,25 +25,15 @@
 
 {% block 'scripts' %}
 
+<!-- set the mission -->
+<script>
+  const mission = 'proof_of_use';
+</script>
+
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    new Kinetics().interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
 
-<script>
-  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  document.addEventListener("DOMContentLoaded", function () {
-    // update user state
-    var setMissionStatus = fetchData('/quadraticlands/set_mission_status', 'POST', { 'mission': 'proof_of_use' }, { 'X-CSRFToken': csrftoken });
-    $.when(setMissionStatus).then((response, status, statusCode) => {
-      console.debug('Missions status set successfully', status);
-    }).catch(error => {
-      console.error('There was an issue setting missions status', error.message);
-    });
-  });
-</script>
-
+<!-- set the mission's status -->
+<script src="{% static "v2/js/quadraticlands/mission/set_status.js" %}"></script>
 
 {% endblock %}

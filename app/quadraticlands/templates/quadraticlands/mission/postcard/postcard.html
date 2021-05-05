@@ -88,13 +88,9 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    new Kinetics().interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
 
+<!-- postcard generator -->
 <script src="{% static "v2/js/quadraticlands/postcard.js" %}"></script>
-
 
 {% endblock %}

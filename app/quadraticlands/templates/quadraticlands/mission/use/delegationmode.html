@@ -71,78 +71,12 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    window.kinetics = new Kinetics({
-      particles: {
-        count: 8, sizes: { min: 100, max: 200 }, rotate: { speed: 0.2 }, toColor: "#6F3FF5",
-        mode: { type: "linear", boundery: "endless", speed: "1" }
-      }
-    })
-    window.kinetics.interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/mission/use/kinetics_delegatemode.js" %}"></script>
 
 <!-- force web3modal to popup automatically when no provider selected-->
 <script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
 
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-    updateInterface("enabled")
-
-    const mode_toggle = document.getElementById("mode_toggle")
-
-    mode_toggle.addEventListener("click", () => {
-
-      mode = mode_toggle.getAttribute("data-mode")
-
-      if (mode == "disabled") {
-        mode_toggle.setAttribute("data-mode", "enabled");
-        mode_toggle.classList.remove("disabled")
-        mode_toggle.classList.add("enabled")
-        updateInterface("enabled")
-        window.kinetics.set({ particles: { toColor: "#6F3FF5" } });
-      }
-
-      else {
-        mode_toggle.setAttribute("data-mode", "disabled");
-        mode_toggle.classList.remove("enabled")
-        mode_toggle.classList.add("disabled")
-        updateInterface("disabled")
-        window.kinetics.set({ particles: { toColor: "#02E2AC" } });
-      }
-
-      console.debug('mode: ', mode)
-
-    });
-
-  });
-
-
-  /*********** VIEWS */
-  function updateInterface(status) {
-
-    const explain_text = document.getElementById("explain_text")
-    const btn_continue = document.getElementById("btn_continue")
-
-    // ENABLED
-    if (status == "enabled") {
-      explain_text.innerHTML = "I prefer to delegate my voting power to a Gitcoin Steward, so that I can earn a reward passively. You can always change this setting in your dashboard settings."
-      btn_continue.href = "/quadraticlands/mission/use/delegate"
-      console.debug("INTERFACE:ENABLED")
-    }
-
-    // DISABLED
-    if (status == "disabled") {
-      explain_text.innerHTML = "I want to use my voting power to actively participate in Gitcoin’s governance and only earn a reward through my active participation. You can always change this setting in your dashboard settings."
-      btn_continue.href = "/quadraticlands/mission/use/vote"
-      console.debug("INTERFACE:ENABLED")
-    }
-
-  }
-
-</script>
+<!-- delegate views -->
+<script src="{% static "v2/js/quadraticlands/mission/use/delegatemode.js" %}"></script>
 
 {% endblock %}

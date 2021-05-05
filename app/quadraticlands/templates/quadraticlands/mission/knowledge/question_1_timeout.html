@@ -57,17 +57,6 @@
 {% block 'scripts' %}
 
 <!-- kinetics particles -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // new Kinetics().interactionHook();
-    const kinetics = new Kinetics({
-      particles: {
-        count: 8, sizes: { min: 10, max: 20 }, rotate: { speed: 0.4 },
-        mode: { type: "rain", boundery: "endless", speed: "10" }
-      }
-    })
-    kinetics.interactionHook();
-  });
-</script>
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question_timeout.js" %}"></script>
 
 {% endblock %}
