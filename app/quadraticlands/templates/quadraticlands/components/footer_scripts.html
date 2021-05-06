@@ -1,4 +1,4 @@
-{% load static compress%}
+{% load static bundle %}
 
 <script>
   var static_url = "{{ STATIC_URL }}";
@@ -25,7 +25,7 @@
 
 
 <!-- JS Gitcoin Network -->
-{% compress js file gitcoin %}
+{% bundle merge_js file gitcoin %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/lib/fortmatic.js" %}"></script>
 <script src="{% static "v2/js/data-chains.js" %}"></script>
@@ -38,11 +38,11 @@
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>
 <script src="{% static "v2/js/abi.js" %}"></script>
-{% endcompress %}
+{% endbundle %}
 
 
 <!-- JS Quadratic Lands -->
-{% compress js file quadraticlands %}
+{% bundle merge_js file quadraticlands %}
 <!-- kinetics ( open source particles kinetics.li )-->
 <script src="{% static "v2/js/lib/quadraticlands/kinetics.umd.js" %}"></script>
 <!-- QL custom cookielaw script ( not the same as in gitcoin! )-->
@@ -52,7 +52,7 @@
 <!-- QL APP - burger menu, wallet menu, provider select-->
 <script src="{% static "v2/js/quadraticlands/app.js" %}"></script>
 
-{% endcompress %}
+{% endbundle %}
 
 
 <!-- Artefact - not sure if we need this -->
