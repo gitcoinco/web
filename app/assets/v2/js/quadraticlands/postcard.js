@@ -4,7 +4,7 @@ $(document).ready(function() {
 
   $('#text').keyup(function() {
     update_output();
-  });
+  }); 
   $('.backgrounds li').click(function() {
     $(this).parents('.parent').find('li').removeAttr('selected');
     $(this).attr('selected', 'selected');
@@ -26,7 +26,27 @@ $(document).ready(function() {
     const url = base_url + attrs;
 
     $target.attr('src', url);
+    var new_url = '/quadraticlands/mission/postcard';
+    history.pushState({}, null, new_url + '?' + attrs);
   };
 
+  var keys = [
+    'front_background',
+    'back_background',
+    'front_frame',
+  ]
+  for(var i=0; i<keys.length; i++){
+    var key = keys[i];
+    if(getParam(key)){
+      $('li[name='+key+']').removeAttr('selected');
+      $('li[name='+key+'][value='+getParam(key)+']').attr('selected', 'selected');
+    }
+  }
+  var key = 'text';
+  if(getParam(key)){
+    var text = getParam(key).replaceAll(' NEWLINE ',"\n");
+    $('#text').val(text);
+
+  }
   update_output();
 });
