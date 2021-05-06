@@ -27,7 +27,7 @@ fulfillBounty = data => {
   } else {
     $('#payoutAddress-container input').addClass('valid');
     $('#payoutAddress-container input').removeClass('invalid');
-    $('#payoutAddress-container').removeClass('invalid')
+    $('#payoutAddress-container').removeClass('invalid');
     $('#payoutAddress-container .text-danger').addClass('hidden');
   }
 
@@ -133,8 +133,10 @@ const is_valid_address = (address) => {
         return true;
       }
 
+      break;
+
     default:
       return true;
   }
 
-}
+};

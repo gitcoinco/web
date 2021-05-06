@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize i18n static compress grants_extra %}
+{% load humanize i18n static bundle grants_extra %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,9 +24,9 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 
 <body>

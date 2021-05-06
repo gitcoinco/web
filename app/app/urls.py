@@ -193,11 +193,11 @@ urlpatterns = [
     path('api/v0.1/profile/verify_ens', dashboard.views.verify_profile_with_ens, name='verify_with_ens'),
     url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
-    url(
-        r'^api/v0.1/profile/verify_user_duniter',
-        dashboard.views.verify_user_duniter,
-        name='verify_user_duniter'
-    ),
+    # url(
+    #     r'^api/v0.1/profile/verify_user_duniter',
+    #     dashboard.views.verify_user_duniter,
+    #     name='verify_user_duniter'
+    # ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -486,6 +486,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
+    re_path(r'^bundle_experiment/?', retail.views.bundle_experiment, name='bundle_experiment'),
     re_path(r'^homeold/?$', retail.views.index_old, name='homeold'),
     re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),

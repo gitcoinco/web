@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags compress %}
+{% load i18n static cookielaw_tags bundle %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,10 +30,10 @@
     })(window,document.documentElement,'async-hide','dataLayer',4000,
     {'GTM-NP2J8TX':true});</script>
     {% include 'shared/analytics.html' %}
-    {% compress css file howitworks %}
+    {% bundle css file howitworks %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/landing_page.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/howitworks.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </head>
   <body class="index d-flex flex-column g-font-muli contributor-page">

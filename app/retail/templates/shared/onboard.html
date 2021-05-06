@@ -16,10 +16,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load static bundle %}
+{% bundle css file onboard %}
 <style>
   #onboard-modal {
-    background-image: url(/static/v2/images/tribes/promo-decoration.svg);
+    background-image: url(static('v2/images/tribes/promo-decoration.svg'));
     background-color: rgba(111, 63, 245, 0.94);
     background-size: cover;
   }
@@ -31,6 +32,7 @@
     fill: white;
   }
 </style>
+{% endbundle %}
 <div id="gc-onboard">
   <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" backdrop="static" keyboard="false">
     <template v-if="step === 1">

@@ -146,7 +146,7 @@ li.select2-tag__choice {
 }
 
 .form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow::after {
-  background-image: url('/static/v2/images/arrow-down.png');
+  background-image: url(static('v2/images/arrow-down.png'));
   background-size: contain;
   content: '';
   display: block;

@@ -19,15 +19,15 @@
   new name. Personal tokens and Time tokens are the same thing, so you will likely see those two
   phrases used interchangeably throughout the codebase
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
-    {% compress css file tabs %}
+    {% bundle css file tabs %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <style>
       .minihero .header-line {
         color: #fff;

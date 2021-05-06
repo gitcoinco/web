@@ -1639,3 +1639,8 @@ def jtbd_fund(request):
         'Gitcoin - Support open web development.',
         'Fund open source projects that make the most difference.'
     )
+
+def bundle_experiment(request):
+    context = {
+    }
+    return TemplateResponse(request, 'home/bundle_experiment.html', context)

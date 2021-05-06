@@ -14,30 +14,30 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list matches compress %}
+{% load i18n static is_in_list matches bundle %}
 
 <meta charset="utf-8">
 
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 {% include 'shared/tag_manager_1.html' %}
 
-{% compress css file libs %}
+{% bundle css file libs %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/index.scss" %} />
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search.scss" %}>
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/top-nav.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/navbar.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/base.scss" %} />
-{% endcompress %}
+{% endbundle %}
 
 {% if not slim %}
-  {% compress css file jquery %}
+  {% bundle css file jquery %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.modal.min.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 {% endif %}
 
-{% compress css file components %}
+{% bundle css file components %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.select2.min.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/buttons.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/timeline.scss" %} />
@@ -54,20 +54,20 @@
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/select.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/external_bounties/checkboxes.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/notifications.scss" %} />
-{% endcompress %}
+{% endbundle %}
 
 <!-- Grants -->
 {% if 'grants' in request.path %}
-  {% compress css file grants %}
+  {% bundle css file grants %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/grant.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/cancel.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 {% endif %}
 
 <!-- Cookie Consent -->
-{% compress css file cookielaw %}
+{% bundle css file cookielaw %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/cookielaw/cookielaw.scss" %} />
-{% endcompress %}
+{% endbundle %}
 
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}

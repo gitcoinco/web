@@ -77,14 +77,12 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
-
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
     'csp',
-    'compressor',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -442,45 +440,11 @@ else:
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
 
-# Sass precompiler settings
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
+# Staticfinder finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 ]
-# number of demicals allowed in sass numbers
-LIBSASS_PRECISION = 8
-# minify sass output in production (offline)
-if ENV not in ['local', 'test', 'staging', 'preview']:
-    # get current commit hash to feed into the manifest's name
-    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
-    # compress offline (use './manage.py compress' to build manifest.*.json)
-    COMPRESS_OFFLINE = True
-    # make manifest deploy specific (new manifest for each deployment)
-    COMPRESS_OFFLINE_MANIFEST = 'manifest.' + commit.decode('utf8') + '.json'
-    # allow for the full path (url) to be included in the manifest
-    COMPRESS_INCLUDE_URLS = True
-    # allow the placeholder insertion to be skipped
-    COMPRESS_SKIP_PLACEHOLDER = True
-    # use content based hashing so that we always match between servers
-    COMPRESS_CSS_HASHING_METHOD = 'content'
-    # minification of sass output
-    COMPRESS_CSS_FILTERS = [
-        'compressor.filters.css_default.CssAbsoluteFilter',
-        'compressor.filters.cssmin.rCSSMinFilter'
-    ]
-    # drop line comments
-    LIBSASS_SOURCE_COMMENTS = False
-
-COMPRESS_OUTPUT_DIR = "v2"
-COMPRESS_ROOT = STATIC_ROOT
-COMPRESS_HOST = STATIC_HOST
-COMPRESS_URL = STATIC_URL
-COMPRESS_STORAGE = STATICFILES_STORAGE
-COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
