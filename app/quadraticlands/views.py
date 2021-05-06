@@ -132,9 +132,9 @@ def workstream_base(request, stream_name):
 def mission_postcard(request):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
     attrs = {
-        'front_frame': ['1', '2', '3', '4'],
-        'front_background': ['a', 'b', 'c', 'd'],
-        'back_background': ['a', 'b', 'c', 'd'],
+        'front_frame': ['1', '2', '3', '4', '5', '6'],
+        'front_background': ['a', 'b', 'c', 'd', 'e'],
+        'back_background': ['a', 'b', 'c', 'd', 'e'],
     }
     context = {
         'attrs': attrs,
@@ -149,7 +149,7 @@ def mission_postcard_svg(request):
 
     width = 100
     height = 100
-    viewBox = ''
+    viewBox = request.GET.get('viewbox', '')
     tags = ['{http://www.w3.org/2000/svg}style']
     ET.register_namespace('', "http://www.w3.org/2000/svg")
     prepend = f'''<?xml version="1.0" encoding="utf-8"?>
@@ -168,7 +168,7 @@ def mission_postcard_svg(request):
             output = ET.tostring(item).decode('utf-8')
 
             _id = item.attrib.get('id')
-            include_item = None
+            include_item = _id == 'include'
             if _id == 'text':
 
                 # get text
