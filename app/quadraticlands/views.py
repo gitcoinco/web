@@ -135,6 +135,7 @@ def mission_postcard(request):
         'front_frame': ['1', '2', '3', '4', '5', '6'],
         'front_background': ['a', 'b', 'c', 'd', 'e'],
         'back_background': ['a', 'b', 'c', 'd', 'e'],
+        'color': ['light', 'dark'],
     }
     context = {
         'attrs': attrs,
@@ -208,6 +209,8 @@ def mission_postcard_svg(request):
                 # actually insert the text
                 replace_text = " ".join(new_words)
                 output = output.replace('POSTCARD_TEXT_GOES_HERE', replace_text)
+                replace_color = '#1a103d' if request.GET.get('color','') == 'light' else '#FFFFFF'
+                output = output.replace('POSTCARD_COLOR_GOES_HERE', replace_color)
             if _id:
                 val = _id.split(":")[-1]
                 key = _id.split(":")[0]

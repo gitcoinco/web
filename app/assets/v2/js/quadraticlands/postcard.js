@@ -28,6 +28,14 @@ $(document).ready(function() {
     $target.attr('src', url);
     var new_url = '/quadraticlands/mission/postcard';
     history.pushState({}, null, new_url + '?' + attrs);
+
+    var color = $('li[name=color][selected=selected]').attr('value');
+    if(color == 'light'){
+      $("#target").css('background-color', '#ffffff');
+    } else {
+      $("#target").css('background-color', '#0E0333');
+    }
+
   };
 
   var keys = [
