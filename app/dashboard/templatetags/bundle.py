@@ -95,11 +95,11 @@ def get_content(elems, attr, kind, merge):
                 c = f.read()
                 # for production we should minifiy the assets
                 if settings.ENV in ['prod'] and kind == 'merge_js':
-                    import jsmin
-                    c = jsmin.jsmin(c, quote_chars="'\"`")
+                    import rjsmin
+                    c = rjsmin.jsmin(c)
                 elif settings.ENV in ['prod'] and kind == 'merge_css':
-                    import cssmin
-                    c = cssmin.cssmin(c)
+                    import rcssmin
+                    c = rcssmin.cssmin(c)
                 # place the content with a new line sep
                 content += c + '\n'
             else:
