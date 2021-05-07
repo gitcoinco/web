@@ -6,81 +6,97 @@
 
 {% block 'content' %}
 
-<section class="introduction" style="margin-bottom: 3em;">
-  <h1>Token Distribution</h1>
-  <p>Complete all 3 missions, to receive your tokens.</p>
-</section>
+
+{% if total_claimable_gtc >= 1 %}
+
+  <!--token distribution-->
+  <section class="introduction" style="margin-bottom: 3em;">
+    <h1>Token Distribution</h1>
+    <p>Complete all 3 missions to receive your tokens.</p>
+  </section>
 
 
+  <!--token distribution missions-->
+  <section class="mission">
 
-<!--token distribution missions-->
-<section class="mission">
+    <!-- PROOF OF KNOWLEDGE CARD -->
+    <!-- no dependencies in other missions -->
+    <!-- add in with proof_of_knowledge=false to simulate available mission -->
 
-  <!-- PROOF OF KNOWLEDGE CARD -->
-  <!-- no dependencies in other missions -->
-  <!-- add in with proof_of_knowledge=false to simulate available mission -->
+    {% with name="1. Proof of Knowledge" %}
 
-  {% with name="1. Proof of Knowledge" %}
+      {% if not proof_of_knowledge %}
+        {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="mission/knowledge" %}
+      {% else %}
+        {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-know-end.svg" done="true" locked="true" %}
+      {% endif %}
 
-    {% if not proof_of_knowledge %}
-      {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="mission/knowledge" %}
-    {% else %}
-      {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-know-end.svg" done="true" locked="true" %}
-    {% endif %}
-
-  {% endwith %}
+    {% endwith %}
 
 
-  <!-- PROOF OF USE CARD -->
-  <!-- user have to finish proof_of_knowledge first -->
-  <!-- add in with proof_of_use=false to simulate available mission -->
+    <!-- PROOF OF USE CARD -->
+    <!-- user have to finish proof_of_knowledge first -->
+    <!-- add in with proof_of_use=false to simulate available mission -->
 
-  {% with name="2. Proof of Use" %}
+    {% with name="2. Proof of Use" %}
 
-    {% if not proof_of_knowledge %}
+      {% if not proof_of_knowledge %}
 
-      <!-- User can not this mission yet -->
-      {% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-use-start.svg" locked="true" %}
+        <!-- User can not this mission yet -->
+        {% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-use-start.svg" locked="true" %}
 
-    {% else %}
+      {% else %}
 
-      <!-- User can Play -->
+        <!-- User can Play -->
+        {% if not proof_of_use %}
+          {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-use-start.svg" url="mission/use" %}
+        {% else %}
+          {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-use-end.svg" done="true" locked="true" %}
+        {% endif %}
+
+      {% endif %}
+
+    {% endwith %}
+
+
+    <!-- PROOF OF RECEIVE CARD -->
+    <!-- user have to finish proof_of_use first -->
+    <!-- add in with proof_of_receive=false to simulate available mission -->
+
+    {% with name="3. Proof of Receive" %}
+
       {% if not proof_of_use %}
-        {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-use-start.svg" url="mission/use" %}
+
+        <!-- User can not this mission yet -->
+        {% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
+
       {% else %}
-        {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-use-end.svg" done="true" locked="true" %}
+
+        <!-- User can Play -->
+        {% if not proof_of_receive %}
+          {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-receive-start.svg" url="mission/receive" tokens=total_claimable_gtc %}
+        {% else %}
+          {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-receive-end.svg" done="true" locked="true" %}
+        {% endif %}
+
       {% endif %}
 
-    {% endif %}
+    {% endwith %}
 
-  {% endwith %}
+  </section>
+
+{% else %}
+
+  <!--no token distribution-->
+  <section class="introduction" style="margin-bottom: 3em;">
+    <h1>Token Distribution</h1>
+    <p>You have no GTC. get involved in the DAO by joining a workstream, and you could earn GTC from governance.</p>
+  </section>
+
+{% endif %}
 
 
-  <!-- PROOF OF RECEIVE CARD -->
-  <!-- user have to finish proof_of_use first -->
-  <!-- add in with proof_of_receive=false to simulate available mission -->
 
-  {% with name="3. Proof of Receive" %}
-
-    {% if not proof_of_use %}
-
-      <!-- User can not this mission yet -->
-      {% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
-
-    {% else %}
-
-      <!-- User can Play -->
-      {% if not proof_of_receive %}
-        {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-receive-start.svg" url="mission/receive" tokens=total_claimable_gtc %}
-      {% else %}
-        {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-receive-end.svg" done="true" locked="true" %}
-      {% endif %}
-
-    {% endif %}
-
-  {% endwith %}
-
-</section>
 
 <section class="introduction" style="margin-bottom: 3em;">
   <h1>Missions</h1>

@@ -38,7 +38,7 @@ urlpatterns = [
     re_path(r'^(?P<base>about|faq)/?$', base, name='quadraticlands_base'),
     re_path(r'^(?P<base>|dashboard|stewards)/?$', base_auth, name='quadraticlands_auth_base'),
 
-    re_path(r'^workstream/(?P<stream_name>public-goods-funding|anti-collusion|decentralize-gitcoin|stewards)/?$', workstream_base, name='workstream_base'),
+    re_path(r'^workstream/(?P<stream_name>publicgoods|sybil|decentralization|labs)/?$', workstream_base, name='workstream_base'),
     re_path(r'^workstream/?$', workstream_index, name='workstream'),
 
     # mission
