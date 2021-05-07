@@ -1,7 +1,7 @@
 #!/usr/local/bin/dumb-init /bin/bash
 
 # Load the .env file into the environment.
-if [ "$ENV" == 'staging' ]; then
+if [ "$ENV" == "staging" ]; then
     # shellcheck disable=SC2046
     export $(grep -v '^#' app/app/.env | xargs)
 fi
@@ -51,7 +51,7 @@ then
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
         yarn install
         python3 manage.py bundle
-        if [ "$ENV" == 'prod' ];
+        if [ "$ENV" == "prod" ];
         then
             yarn run build
         else
@@ -84,7 +84,7 @@ then
     echo "Provisioning complete!"
 else
     # Build assets using bundle and webpack
-    if [ "$DISABLE_WEBPACK_ASSETS" != "on" && "$ENV" != 'prod' ]; then
+    if [ "$DISABLE_WEBPACK_ASSETS" != "on" && "$ENV" != "prod" ]; then
         python3 manage.py bundle && yarn run webpack &
     fi
 fi

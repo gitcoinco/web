@@ -69,7 +69,7 @@ class Command(BaseCommand):
                         details = re.search(open_pattern, block)
 
                         # kind and name from the tag
-                        kind = 'scss' if details.group(2) == 'css' else details.group(2)
+                        kind = details.group(2)
                         name = details.group(4)
 
                         # remove open/close from the block
@@ -84,7 +84,7 @@ class Command(BaseCommand):
                         rendered[render(block, kind, 'file', name, True)] = True
 
             except Exception as e:
-                # print('-- X - failed to parse %s: %s' % (template, e))
+                print('-- X - failed to parse %s: %s' % (template, e))
                 pass
 
-        print('\nGenerated %s bundle files%s' % (len(rendered), ' - remember to run `yarn run build` then `./manage.py collectstatic --i other --no-input`\n' if settings.ENV in ['prod'] else ''))
+        print('\nGenerated %s bundle files' % len(rendered))
