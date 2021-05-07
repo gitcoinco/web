@@ -540,7 +540,7 @@ Vue.component('poh-verify-modal', {
                 <template v-slot:default="{ hide }">
                   <div class="mx-5 mt-5 mb-4 text-center">
                     <div class="mb-3">
-                      <img src="/static/v2/images/project_logos/poh.ico" alt="POH Logo" width="100">
+                      <img src="/static/v2/images/project_logos/poh.svg" alt="POH Logo" width="100">
                       <h1 class="font-bigger-4 font-weight-bold mt-2">Verify your Proof of Humanity Registration</h1>
                     </div>
                     <div v-if="validationStep === 'validate-address'">
