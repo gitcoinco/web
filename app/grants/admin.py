@@ -478,6 +478,24 @@ class GrantCLRAdmin(admin.ModelAdmin):
             for grant in obj.grants:
                 recalc_clr.delay(grant.pk)
             self.message_user(request, "submitted recaclulation to queue")
+
+        if "_set_current_grant_clr_calculations_to_false" in request.POST:
+            latest_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, latest=True)
+
+            if latest_calculations.count() == 0:
+                self.message_user(request, "Latest Flag is already false. No action taken")
+            else:
+                latest_calculations.update(latest=False)
+                self.message_user(request, "Current Grant CLR Calculations's latest flag is set to false")
+
+        if "_set_all_grant_clr_calculations_to_false" in request.POST:
+            latest_calculations = GrantCLRCalculation.objects.filter(latest=True)
+            if latest_calculations.count() == 0:
+                self.message_user(request, "Latest Flag is already false for all CLRs. No action taken")
+            else:
+                latest_calculations.update(latest=False)
+                self.message_user(request, "All Grant CLR Calculations's latest flag is set to false")
+
         return redirect(obj.admin_url)
 
 

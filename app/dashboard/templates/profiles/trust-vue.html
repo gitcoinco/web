@@ -2,16 +2,50 @@
 
 {% if not profile.is_org and is_my_profile %}
 
+<!-- Passport Modal -->
+<div class="modal fade" id="passportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Generate your Proof of Personhood Passport</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img class="float-left p-2" src="/static/v2/images/passport-cover.png" style="max-width:200px;">
+        <div class="subbody">
+          <strong>What:</strong> PoPP aggregates the top personhood-identity providers in the web3 space into one transportable identity that proves your personhood.
+          <hr>
+          <strong>How:</strong> You can generate your Proof of Personhood Passport via the following methods.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="gen_passport" class="btn btn-primary">NFT</button>
+        <button type="button" class="btn btn-secondary disabled">3Box (coming soon)</button>
+        <button type="button" class="btn btn-secondary disabled">SpruceID (coming soon)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <div id="gc-trust-manager-app" v-cloak>
     <active-trust-manager inline-template>
       <div>
+
         <brightid-verify-modal
           :show-validation="visibleModal === 'brightid-modal'"
           @modal-dismissed="hideModal()"
           brightid-uuid="{{profile.brightid_uuid}}"
-          :validation-step="'{{brightid_status}}' === 'not_connected' ? 'connect-brightid' : 'verify-brightid'"
+          :validation-step="'{{brightid_status}}' === 'not_connected' ? 'connect-brightid' : ( '{{brightid_status}}' === 'unknown' ? 'pull_status' : 'verify-brightid')"
           >
         </brightid-verify-modal>
+
+        <sms-verify-modal
+          :show-validation="visibleModal === 'sms-modal'"
+          @modal-dismissed="hideModal()">
+        </sms-verify-modal>
+
 
         <sms-verify-modal
           :show-validation="visibleModal === 'sms-modal'"
@@ -27,6 +61,26 @@
           :show-validation="visibleModal === 'poap-modal'"
           @modal-dismissed="hideModal()">
         </poap-verify-modal>
+
+        <ens-verify-modal
+          :show-validation="visibleModal === 'ens-modal'"
+          @modal-dismissed="hideModal()">
+        </ens-verify-modal>
+        <duniter-verify-modal :show-validation="visibleModal === 'duniter-modal'" @modal-dismissed="hideModal()">
+        </duniter-verify-modal>
+        <poh-verify-modal
+          :show-validation="visibleModal === 'poh-modal'"
+          @modal-dismissed="hideModal()">
+        </poh-verify-modal>
+
+        {% if is_staff %}
+        <div class="float-right text-right" style="padding: 5px;">
+          <img class="float-right p-2" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
+          <strong>STAFF ONLY</strong> Take your TrustBonus with you across the web <br>with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
+          <br>
+          <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="btn btn-primary float-right text-nowrap">Try It!</a>
+        </div>
+        {% endif %}
 
         <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
         The higher the Trust
@@ -46,12 +100,15 @@
             :title="'{{brightid_status}}' === 'not_connected' ? 'Connect with BrightID' : 'Verify with BrightID'"
             :match-percent=25
             :is-verified="'{{brightid_status}}' === 'verified'"
-            :button-text="'{{brightid_status}}' === 'not_connected' ? 'Connect' : 'Verify'"
+            :button-text="'{{brightid_status}}' === 'not_connected' ? 'Connect' : ('{{brightid_status}}' === 'unknown' ? 'Check' : 'Verify')"
             @verify-button-pressed="showModal('brightid-modal')"
             >
             <template v-slot:description>
               {% if brightid_status == 'not_connected' %}
                 Connect to <a href="https://brightid.org" target="new">BrightID</a> and verify yourself by connecting with other humans.
+              {% elif brightid_status == 'unknown' %}
+                Check your <a href="https://brightid.org" target="new">BrightID</a> verification status to continue.
+
               {% elif brightid_status == 'not_verified' %}
                 Verify yourself on <a href="https://brightid.org" target="new">BrightID</a> by proving you're human to other humans. 
 
@@ -135,7 +192,6 @@
             </template>
           </active-trust-row-template>
 
-
           <active-trust-row-template
             icon-type="image"
             icon-path="/static/v2/images/project_logos/google.png"
@@ -176,17 +232,78 @@
             </template>
           </active-trust-row-template>
 
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify with ENS"
+            :match-percent=0
+            :is-verified="'{{is_ens_verified}}' === 'True'"
+            button-text="Verify"
+            @verify-button-pressed="showModal('ens-modal')"
+            >
+            <template v-slot:icon>
+              <img src="/static/v2/images/project_logos/ens.svg" alt="ENS Logo" class="img-fluid">
+            </template>
+            <template v-slot:description>
+              Verify with your ENS domain.
+            </template>
+          </active-trust-row-template>
+
+
+          <active-trust-row-template
+            icon-type="markup"
+            title="Verify with Facebook"
+            :match-percent=0
+            :is-verified="'{{is_facebook_verified}}' === 'True'"
+            button-text="Verify"
+            >
+            <template v-slot:icon>
+              <span style="color: #1877F2">
+                <i class="fab fa-facebook fa-3x" aria-hidden="true"></i>
+              </span>
+            </template>
+            <template v-slot:description>
+              Verify your Facebook account.
+            </template>
+            {% if not is_facebook_verified %}
+              <template v-slot:verify>
+                <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
+                  {% csrf_token %}
+                  <input type="submit" value="Verify" class="btn btn-primary text-nowrap" />
+                </form>
+              </template>
+            {% endif %}
+          </active-trust-row-template>
+
+          <active-trust-row-template
+            icon-type="image"
+            icon-path="/static/v2/images/project_logos/poh.ico"
+            title="Verify with Proof of Humanity"
+            :match-percent=25
+            :is-verified="'{{is_poh_verified}}' === 'True'"
+            button-text="Verify"
+            @verify-button-pressed="showModal('poh-modal')"
+          >
+            <template v-slot:description>
+              <a href="https://www.proofofhumanity.id/" target="new">POH</a> is the internet of humans.
+            </template>
+          </active-trust-row-template>
         </div>
 
         <div class="container mt-4">
           <h5>Coming Soon ™️</h5>
           <p>
-            Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds. 
+            Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds.
           </p>
 
-        {% include "profiles/trust_soon_row.html" with service="Facebook" when="Coming Soon" %}
-        {% include "profiles/trust_soon_row.html" with service="ENS Reverse Lookup" when="Coming Soon" %}
-        {% include "profiles/trust_soon_row.html" with service="Duniter" when="Coming Soon" %}
+          <!-- <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
+            title="Verify with Duniter" :match-percent=0 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
+            @verify-button-pressed="showModal('duniter-modal')">
+            <template v-slot:description>
+              Verify your Duniter Account
+            </template>
+          </active-trust-row-template> -->
+          {% include "profiles/trust_soon_row.html" with service="Duniter" when="Coming Soon" %}
+
         </div>
       </div>
     </active-trust-manager>
@@ -195,12 +312,11 @@
         <h5>Roadmap</h5>
         <a class="py-2 d-block" href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
-        {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" when="On the Roadmap" %}
-        {% include "profiles/trust_soon_row.html" with service="Proof of Humanity" when="On the Roadmap" %}
         {% include "profiles/trust_soon_row.html" with service="Upala" when="On the Roadmap" %}
+        {% include "profiles/trust_soon_row.html" with service="PASS" when="On the Roadmap" %}
         {% include "profiles/trust_soon_row.html" with service="Equality Protocol" when="On the Roadmap" %}
         {% include "profiles/trust_soon_row.html" with service="Zero Knowledge KYC" when="On the Roadmap" %}
-        {% include "profiles/trust_soon_row.html" with service="PASS" when="On the Roadmap" %}
+        {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" when="On the Roadmap" %}
       </div>
     </div>
   </div>

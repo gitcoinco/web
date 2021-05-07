@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat %}
+{% load i18n static bundle date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,9 +25,9 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 
 <body>
@@ -39,7 +39,7 @@ along with this program. If not,see
       {% include 'home/nav.html' %}
     </div>
 
-    <div class="container px-5">
+    <div class="container pt-5">
 
       <div class="row mt-5">
         <div class="col-12 col-md-8">
@@ -213,9 +213,6 @@ along with this program. If not,see
               {% endwith %}
             {% endfor %}
           </div>
-          <div class="my-4">
-            <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://gitcoin.typeform.com/to/Sy0qlDwu" target="_blank">Apply to Kernel</a>
-          </div>
         </div>
       </section>
 
@@ -300,7 +297,7 @@ along with this program. If not,see
           <div class="row">
             <div class="col-12 col-md-9 py-5">
               <h2>Have questions before you start with Gitcoin?</h2>
-              <p class="text-grey-400 font-bigger-2">Connect with the Gitcoin community in Discord</p>
+              <p class="text-grey-400 font-bigger-2">Meet the Gitcoin community in Discord.</p>
               <div class="row mt-4 mx-0">
                 <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://discord.com/invite/83BK5z55yB" target="_blank">Join Discord</a>
               </div>
@@ -333,7 +330,7 @@ along with this program. If not,see
               <h4 class="py-2 font-weight-normal">Connect through building</h4>
               <p class="py-2 font-bigger-1">Connect with your peers while working on top open source projects.</p>
             </div>
-            <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
+            <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'get_hackathons' %}">Explore Hackathons</a>
           </div>
         </div>
       </section>

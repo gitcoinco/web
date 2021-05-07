@@ -492,6 +492,19 @@ Vue.component('grants-cart', {
         if (response.success_contributions && response.success_contributions.length) {
           if (grant.grant_id === response.success_contributions[0].grant_id) {
             // grant.error= response.invalid_contributions[0].message;
+            MauticEvent.createEvent({
+              'alias': 'products',
+              'data': [
+                {
+                  'name': 'product',
+                  'attributes': {
+                    'product': 'grants',
+                    'persona': 'grants-contributor',
+                    'action': 'contribute'
+                  }
+                }
+              ]
+            });
             vm.$set(grant, 'success', response.success_contributions[0].message);
           }
         }
@@ -1111,6 +1124,20 @@ Vue.component('grants-cart', {
       const res = await fetch(url, saveSubscriptionParams);
       const json = await res.json();
 
+      MauticEvent.createEvent({
+        'alias': 'products',
+        'data': [
+          {
+            'name': 'product',
+            'attributes': {
+              'product': 'grants',
+              'persona': 'grants-contributor',
+              'action': 'contribute'
+            }
+          }
+        ]
+      });
+
       // if (json.failures.length > 0) {
       //   // Something went wrong, so we create a backup of the users cart
       //   await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
@@ -1452,8 +1479,9 @@ Vue.component('grants-cart', {
 });
 
 var update_cart_title = function() {
-  var num_grants = JSON.parse(localStorage.getItem('grants_cart')).length;
-  let new_title = 'Grants Cart (' + num_grants + ') | Gitcoin';
+  const grants_cart = localStorage.getItem('grants_cart');
+  const num_grants = grants_cart ? JSON.parse(grants_cart).length : 0;
+  const new_title = 'Grants Cart (' + num_grants + ') | Gitcoin';
 
   $('title').text(new_title);
 };

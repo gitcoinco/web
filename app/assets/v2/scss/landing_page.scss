@@ -397,7 +397,7 @@ body.funder-page {
   text-align: left;
   padding-left: 4rem;
   margin-bottom: 0;
-  list-style-image: url("/static/v2/images/check_green.svg");
+  list-style-image: url(static('v2/images/check_green.svg'));
 }
 
 .pricing-tier__features li {

@@ -1,6 +1,6 @@
 language: python
 python: 3.7
-dist: xenial
+dist: bionic
 sudo: true
 
 node_js: 14
@@ -31,7 +31,7 @@ jobs:
         - cp app/app/travis.env app/app/.env
         - pip install pip==20.0.2 setuptools --upgrade
         # Fetch and Install GeoIP database files.
-        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
+        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
         # Download links no more valid
         - cp dist/*.gz ./
         - gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz

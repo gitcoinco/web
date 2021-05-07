@@ -43,6 +43,7 @@ import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
+import passport.views
 import perftools.views
 import ptokens.views
 import quests.views
@@ -177,11 +178,26 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
+        r'^api/v0.1/profile/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
+    ),
+    url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
         dashboard.views.request_verify_google,
         name='request_verify_google'
     ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_facebook',
+        dashboard.views.request_verify_facebook,
+        name='request_verify_facebook'
+    ),
+    path('api/v0.1/profile/verify_ens', dashboard.views.verify_profile_with_ens, name='verify_with_ens'),
+    url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
     url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
+    url(
+        r'^api/v0.1/profile/verify_user_duniter',
+        dashboard.views.verify_user_duniter,
+        name='verify_user_duniter'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -254,14 +270,15 @@ urlpatterns = [
     re_path(r'^quests/new/?', quests.views.editquest, name='newquest'),
     re_path(r'^quests/edit/(?P<pk>\d+)/?', quests.views.editquest, name='editquest'),
 
+    #passport
+    re_path(r'^passport/$', passport.views.index, name='passport_gen'),
+    path('passport/<str:pattern>', passport.views.passport, name='view_passport'),
+
     # Contributor dashboard
     path(
         'contributor_dashboard/<str:bounty_type>/', dashboard.views.contributor_dashboard, name='contributor_dashboard'
     ),
 
-    # Hackathon static page
-    url(r'^hackathon/ethhack2019', dashboard.views.ethhack, name='ethhack_2019'),
-    url(r'^hackathon/beyondblocks', dashboard.views.beyond_blocks_2019, name='beyond_blocks_2019'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
@@ -469,6 +486,7 @@ urlpatterns = [
     re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
+    re_path(r'^bundle_experiment/?', retail.views.bundle_experiment, name='bundle_experiment'),
     re_path(r'^homeold/?$', retail.views.index_old, name='homeold'),
     re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),
@@ -487,7 +505,7 @@ urlpatterns = [
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
-    re_path(r'^$', townsquare.views.landing_toggle, name='index'),
+    re_path(r'^$', retail.views.index, name='index'),
     re_path(r'^styleguide/components/?', retail.views.styleguide_components, name='styleguide_components'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
     path('action/new', townsquare.views.offer_new, name='townsquare_offer_new'),
@@ -535,6 +553,7 @@ urlpatterns = [
     re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
     re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
     re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
+    re_path(r'^discord/?', retail.views.discord, name='discord'),
     re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
     re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
     re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
@@ -718,7 +737,6 @@ urlpatterns = [
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # settings
-    re_path(r'^static_proxy/(.*)', marketing.views.static_proxy, name='static_proxy'),
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),

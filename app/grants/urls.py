@@ -28,9 +28,9 @@ from grants.views import (
     get_interrupted_contributions, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_details_api,
     grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grants,
     grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
-    grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data,
-    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, toggle_grant_favorite,
-    verify_grant,
+    grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
+    manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
+    toggle_grant_favorite, verify_grant,
 )
 
 app_name = 'grants/'

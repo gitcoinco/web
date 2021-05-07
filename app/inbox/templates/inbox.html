@@ -23,14 +23,14 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="{{ active }} bg-lightblue g-font-muli">
+  <body class="{{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       <header class="header">
         {% include 'shared/minihero.html' with h1='Notifications' suppress_logo=1 %}
       </header>
-      <section class="container inbox__notifications" id="gc-inbox">
+      <section class="container inbox__notifications shadow-lg" id="gc-inbox">
 
         <div class="notifications_button-group">
           <div class="align-items-center d-flex">

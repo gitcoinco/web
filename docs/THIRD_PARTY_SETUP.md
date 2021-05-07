@@ -67,6 +67,26 @@ Please `docker-compose down; docker-compose up -d` to have the environment varia
 
 Note: Update the `OAUTHLIB_INSECURE_TRANSPORT` in `web/app/app/.env` to `0` for production.
 
+## Setup Facebook Integration
+
+Navigate to: [Facebook - Create App](https://developers.facebook.com/apps/), select `Build Connected Experiences` and continue with similar values to:
+* App Display Name: `MyGitcoinApp`
+* App Contact Email: Your email address
+
+Set Up Facebook Login in **Add Products to Your App**.
+
+On the page: `Facebook Login > Settings`:
+* Valid OAuth Redirect URIs: `http://localhost:8000`
+
+Update the `web/app/app/.env` file to include the values provided by Facebook on your created app `Settings > Basic`:
+
+```sell
+FACEBOOK_CLIENT_ID=xxx
+FACEBOOK_CLIENT_SECRET=xxx
+```
+
+Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local Gitcoin environment.
+
 ## Setup SendGrid to Send Emails (Recommended)
 
 1. Create a new SendGrid Account at https://sendgrid.com

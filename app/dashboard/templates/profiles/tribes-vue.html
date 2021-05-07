@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static avatar_tags add_url_schema email_obfuscator humanize compress %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,7 +27,7 @@
       {% include 'shared/cards.html' %}
     {% endif %}
     <!-- Include stylesheet -->
-    {% compress css file tribes_vue %}
+    {% bundle css file tribes_vue %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.core.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
@@ -42,7 +42,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/explorer.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
 
     <style type="text/css">
       @media (min-width: 992px) {
@@ -415,8 +415,8 @@
     <div class="content__main min-vh-100 d-md-flex flex-column">
 
       {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       <div class="header sticky-top dash">
-        {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'home/nav.html' %}
       </div>
       {% if is_staff %}

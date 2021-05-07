@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +26,7 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    {% compress css file dashboard_index_vue %}
+    {% bundle css file dashboard_index_vue %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
@@ -39,7 +39,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-vue-hackathon.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
 
     <style type="text/css">
       .hackathon-logo {
@@ -102,8 +102,8 @@
   <body class="interior {{active}} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       <div class="header sticky-top dash">
-        {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'shared/nav_hackathons.html' %}
       </div>
       {% if is_staff %}
@@ -779,7 +779,8 @@
       {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' %}
       {% include 'shared/footer.html' %}
-      {% include "dashboard/hackathon/onboarding_v2.html"%}
+      <!-- hackathon modal temparilly disabled  -->
+      <!-- {% include "dashboard/hackathon/onboarding_v2.html"%} -->
       <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
       <script type="text/x-template" id="select2-template">
         <select>

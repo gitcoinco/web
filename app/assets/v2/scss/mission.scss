@@ -17,7 +17,7 @@
 @media (min-width: 319px) {
   /* The Background Image. */
   #we-want-section {
-    background-image: url('/static/v2/images/bg/we_want_bg_mobile.svg');
+    background-image: url(static('v2/images/bg/we_want_bg_mobile.svg'));
     background-repeat: no-repeat;
     background-size: contain;
     height: 70rem;
@@ -69,7 +69,7 @@
 }
 @media (min-width: 959px) {
   #we-want-section {
-    background-image: url('/static/v2/images/bg/we_want_bg.svg');
+    background-image: url(static('v2/images/bg/we_want_bg.svg'));
     background-size: cover;
     background-position: 0px -136px;
     height: 39.5rem;
@@ -229,7 +229,7 @@
 }
 @media (min-width: 319px) {
   #we-value-bg_mobile {
-    background-image: url('/static/v2/images/bg/we_value_bg_mobile.svg');
+    background-image: url(static('v2/images/bg/we_value_bg_mobile.svg'));
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 0 350px;
@@ -255,7 +255,7 @@
 }
 @media (min-width: 959px) {
   #we-value-bg_mobile {
-    background-image: url('/static/v2/images/bg/we_value_bg.svg');
+    background-image: url(static('v2/images/bg/we_value_bg.svg'));
     background-size: 90% 80%;
     background-position: 40px -4px;
     height: 75rem;
@@ -294,7 +294,7 @@
 /* We Interact - Section */
 @media (min-width: 319px) {
   #we-interact-section {
-    background-image: url('/static/v2/images/bg/we_interact_bg_mobile.svg');
+    background-image: url(static('v2/images/bg/we_interact_bg_mobile.svg'));
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -313,7 +313,7 @@
 }
 @media (min-width: 767px) {
   #we-interact-section {
-    background-image: url('/static/v2/images/bg/we_interact_bg.svg');
+    background-image: url(static('v2/images/bg/we_interact_bg.svg'));
     height: 105rem;
   }
 }

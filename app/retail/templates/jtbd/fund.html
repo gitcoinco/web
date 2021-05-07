@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize i18n static compress grants_extra %}
+{% load humanize i18n static bundle grants_extra %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,9 +24,9 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 
 <body>
@@ -38,7 +38,7 @@ along with this program. If not,see
       {% include 'home/nav.html' %}
     </div>
 
-    <div class="container px-5">
+    <div class="container pt-5">
 
       <div class="row mt-5">
         <div class="col-12 col-md-8">
@@ -61,7 +61,7 @@ along with this program. If not,see
 
       <section class="row my-5 pt-5">
         <header class="col-12 mb-4 pt-4">
-          <h2>Why Quadratic Funding?</h2>
+          <h2>Why quadratic funding?</h2>
         </header>
         <div class="col-12">
           <div class="row">
@@ -80,17 +80,17 @@ along with this program. If not,see
             <div class="col-12 col-lg-6">
               <h2 class="mt-5">Traditional matching</h2>
               <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
-                <li>Grant 1 gets $100</li>
-                <li>Grant 2 gets $100</li>
-                <li>At the end of the round, both grants get $100 in matching</li>
+                <li>Grant 1 gets $100.</li>
+                <li>Grant 2 gets $100.</li>
+                <li>At the end of the round, both grants get $100 in matching.</li>
               </ul>
             </div>
             <div class="col-12 col-lg-6">
-              <h2 class="mt-5">Gitcoin Quadratic matching</h2>
+              <h2 class="mt-5">Gitcoin quadratic matching</h2>
               <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
                 <li>Grant 1 gets $100 from 1 funder.</li>
                 <li>Grant 2 gets $100 from 10 funders.</li>
-                <li>At the end of the round, Grant 1 gets $10 in matching, Grant 2 gets $190 in matching</li>
+                <li>At the end of the round, Grant 1 gets $10 in matching, Grant 2 gets $190 in matching.</li>
               </ul>
             </div>
           </div>
@@ -231,7 +231,7 @@ along with this program. If not,see
             <div class="row">
               <div class="col-12 col-md-9 py-5 ">
                 <h2>Have questions before you fund through Gitcoin?</h2>
-                <p class="text-grey-400 font-bigger-2">Connect with the Gitcoin community in Discord</p>
+                <p class="text-grey-400 font-bigger-2">Meet with the Gitcoin community in Discord</p>
                 <div class="row mt-4 mx-0">
                   <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://discord.com/invite/83BK5z55yB" target="_blank">Join Discord</a>
                 </div>
@@ -251,11 +251,11 @@ along with this program. If not,see
             <div class="col-12 col-md-6 mb-3">
               <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
                 <div class="mb-4">
-                  <h4 class="py-2 font-weight-normal">Make an Impact</h4>
+                  <h4 class="py-2 font-weight-normal">Make an impact</h4>
                   <p class="font-bigger-1">With Gitcoin Grants you can support the most impactful projects in web3.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'grants:grants' %}">Explore Grants</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:grants' %}">Explore Grants</a>
                 </div>
               </div>
             </div>
@@ -266,7 +266,8 @@ along with this program. If not,see
                   <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'grants:new_matching_partner' %}">Pledge Support</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:new_matching_partner' %}">Pledge support</a>
+
                 </div>
               </div>
             </div>

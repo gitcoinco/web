@@ -78,8 +78,28 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
     context = {
+        'title': 'Build and Fund the Open Web Together',
+        'card_title': 'Gitcoin - Build and Fund the Open Web Together',
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
     }
-    return TemplateResponse(request, 'home/index2020.html', context)
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0,
+            'bounties_gmv': data['bounties_gmv'] if data['bounties_gmv'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'human_universe_total_usd': "$18.9m",
+            'mau': 161205.0,
+            'bounties_gmv': '3.43m'
+        }
+    context.update(data_results)
+
+    return TemplateResponse(request, 'home/index2021.html', context)
 
 def index_old(request):
     products = [
@@ -964,7 +984,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     elif 'activity:' in what:
         view_count_threshold = 0
         pk = what.split(':')[1]
-        activities = Activity.objects.filter(pk=pk)
+        activities = Activity.objects.filter(pk=pk) if pk and pk.isdigit() else Activity.objects.none()
         if request:
             page = int(request.GET.get('page', 1))
             if page > 1:
@@ -1013,9 +1033,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 7
-    page = int(request.GET.get('page', 1))
+    page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0))
+    trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     # store last seen
@@ -1411,6 +1431,10 @@ def twitter(request):
     return redirect('http://twitter.com/gitcoin')
 
 
+def discord(request):
+    return redirect('https://discord.gg/jWUzf7b8Yr')
+
+
 def telegram(request):
     return redirect('https://t.me/joinchat/DwEd_xps7gJqWt-Quf-tPA')
 
@@ -1598,8 +1622,8 @@ def jtbd_earn(request):
         request,
         'earn',
         'Earn',
-        'Gitcoin - Support digital public goods, support open source',
-        'Earn a living working on open source projects that matter'
+        'Gitcoin - Build the open internet.',
+        'Earn a living building open source projects that matter.'
     )
 
 
@@ -1609,8 +1633,8 @@ def jtbd_learn(request):
         request,
         'learn',
         'Learn',
-        'Gitcoin - Support digital public goods, support open source',
-        'Learn how to build the decentralized web'
+        'Gitcoin - Learn open source development.',
+        'Learn how to build open source projects that matter.'
     )
 
 
@@ -1620,8 +1644,8 @@ def jtbd_connect(request):
         request,
         'connect',
         'Connect',
-        'Gitcoin - Support digital public goods, support open source',
-        'Connect and build with top open source developers'
+        'Gitcoin - A community of open web builders.',
+        'Connect and build with top open source developers.'
     )
 
 
@@ -1631,6 +1655,11 @@ def jtbd_fund(request):
         request,
         'fund',
         'Fund',
-        'Gitcoin - Support digital public goods, support open source',
-        'Fund open source projects that make a difference'
+        'Gitcoin - Support open web development.',
+        'Fund open source projects that make the most difference.'
     )
+
+def bundle_experiment(request):
+    context = {
+    }
+    return TemplateResponse(request, 'home/bundle_experiment.html', context)
