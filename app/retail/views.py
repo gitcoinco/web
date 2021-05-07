@@ -780,7 +780,7 @@ def products(request):
             'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
             'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
-            'link': 'https://discord.gg/jWUzf7b8Yr',
+            'link': 'https://discord.gg/gitcoin',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',
@@ -1413,7 +1413,7 @@ def twitter(request):
 
 
 def discord(request):
-    return redirect('https://discord.gg/jWUzf7b8Yr')
+    return redirect('https://discord.gg/gitcoin')
 
 
 def telegram(request):
