@@ -86,7 +86,7 @@ function submit() {
 
   if (delegate_address) {
     address = delegate_address;
-    console.debut('STEWARD DELEGATE ADDRESS :' + delegate_address);
+    console.debug('STEWARD DELEGATE ADDRESS :' + delegate_address);
   }
 
   if (custom_delegate_address) {
