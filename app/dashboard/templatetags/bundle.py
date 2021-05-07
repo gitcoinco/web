@@ -138,7 +138,7 @@ def get_sass_extras():
             }
             @return '%s' + $url;
         };
-    ''' % (settings.BASE_DIR, settings.STATIC_URL)
+    ''' % (settings.ENV, settings.STATIC_URL)
 
     # attach variable files to sassExtras
     for varFile in sassVars:
