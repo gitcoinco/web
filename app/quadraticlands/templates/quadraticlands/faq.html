@@ -1,6 +1,16 @@
 {% extends 'quadraticlands/components/base.html' %}
 {% load humanize static i18n %}
 
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Gitcoin Quadratic Lands - FAQ" />
+<meta name="twitter:description"
+  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
 {% block 'content' %}
 
 <section class="introduction" style="margin-bottom: 3em;">

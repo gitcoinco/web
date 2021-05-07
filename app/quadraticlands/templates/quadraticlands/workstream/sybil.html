@@ -1,0 +1,57 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Gitcoin Quadratic Lands - Workstream" />
+<meta name="twitter:description"
+  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- subnavigation -->
+{% include 'quadraticlands/workstream/nav.html' %}
+
+
+<article>
+
+  <section class="column">
+    <h2>Sybil Defenders</h2>
+    <p>Workstream Driver: <a target="_blank" href="https://www.linkedin.com/in/mczargham/">Mike Zargam</a></p>
+    <div class="intro purple">Gitcoin Grants is one of the largest community funding mechanisms in the Ethereum ecosystem, delivering millions/quarter to builders of digital public goods. It’s also the first real world implementation of quadratic funding, a democratic mechanism that’s built on the assumption of sybil/collusion/fraud resistance.</div>
+
+    <p>This working group will dive deep to solve these unsolved research issues, with the goal of keeping the Gitcoin Grants fraud tax down while maintaining Gitcoin’s legitimacy.</p>
+
+  </section>
+
+  <section class="column">
+    <h3 class="aqua">Example Quests:</h3>
+    <li>Support ecosystem efforts to create sybil resistance, and research the current state of public research</li>
+    <li>Analyze Gitcoin Grants data and design policy proposals to prevent collusion</li>
+    <li>Develop decentralized identity and other ecosystem tools that leverage GTC, raising the cost to attack QF or stopping it entirely without the negative consequences of big-tech</li>
+  </section>
+
+  <section class="column">
+    <a href="https://discord.gg/gitcoin" target="_blank" class="btn purple" data-kinetics-attraction
+      data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7">Discord</a>
+  </section>
+
+</article>
+
+{% endblock %}
+
+
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+{% endblock %}

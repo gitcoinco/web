@@ -37,14 +37,14 @@ function updateInterface(status) {
 
   // ENABLED
   if (status == 'enabled') {
-    explain_text.innerHTML = 'I prefer to delegate my voting power to a Gitcoin Steward, so that I can earn a reward passively. You can always change this setting in your dashboard settings.';
+    explain_text.innerHTML = 'I prefer to delegate my voting power to a Gitcoin Steward who will be active and represent my views. You can always change this in your dashboard settings.';
     btn_continue.href = '/quadraticlands/mission/use/delegate';
     console.debug('INTERFACE:ENABLED');
   }
 
   // DISABLED
   if (status == 'disabled') {
-    explain_text.innerHTML = 'I want to use my voting power to actively participate in Gitcoin’s governance and only earn a reward through my active participation. You can always change this setting in your dashboard settings.';
+    explain_text.innerHTML = 'I want to use my voting power to actively participate in Gitcoin’s governance. You can always change this in your dashboard settings.';
     btn_continue.href = '/quadraticlands/mission/use/vote';
     console.debug('INTERFACE:ENABLED');
   }
