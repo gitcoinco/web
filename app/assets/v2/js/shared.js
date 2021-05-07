@@ -24,7 +24,7 @@ this.show_modal_handler = (modalUrl) => {
 /**
  * how many decimals are allowed in token displays
  */
-let token_round_decimals = 3;
+this.token_round_decimals = 3;
 
 /**
  * Validates if input is a valid URL
@@ -536,7 +536,7 @@ this.retrieveAmount = function() {
   });
 };
 
-var updateAmountUI = function(target_ele, usd_amount) {
+this.updateAmountUI = function(target_ele, usd_amount) {
   usd_amount = Math.round(usd_amount * 100) / 100;
 
   if (usd_amount > 1000000) {
@@ -547,7 +547,7 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
-const showChoices = (choice_id, selector_id, choices) => {
+this.showChoices = (choice_id, selector_id, choices) => {
   let html = '';
   let selected_choices = [];
 
@@ -1199,7 +1199,7 @@ this.caseInsensitiveCompare = (val1, val2) => {
  * A popup to notify users to approve metamask transaction
  * @param {*} closePopup [boolean]
  */
-const indicateMetamaskPopup = (closePopup) => {
+this.indicateMetamaskPopup = (closePopup) => {
   // Don't show popup if user is not using Metamask
   if (web3Modal.cachedProvider !== 'injected') {
     return;

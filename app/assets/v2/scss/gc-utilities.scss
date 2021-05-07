@@ -1,3 +1,6 @@
+// import variables and mixins
+@import "./gc-mixins";
+
 // .border-top-[1-5]
 @include border('top', 1, 5);
 
