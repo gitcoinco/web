@@ -32,12 +32,15 @@ from marketing.models import LeaderboardRank
 from pytz import UTC
 from test_plus.test import TestCase
 
+MOCK_TODAY=datetime(2021, 4, 25, 11, 00, tzinfo=UTC)
 
 class TestAssembleLeaderboards(TestCase):
     """Define tests for assemble leaderboards."""
 
     def setUp(self):
         """Perform setup for the testcase."""
+        patch('marketing.management.commands.assemble_leaderboards.DAILY_CUTOFF', MOCK_TODAY).start()
+
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
@@ -159,31 +162,11 @@ class TestAssembleLeaderboards(TestCase):
         )
 
     def tearDown(self):
+        patch.stopall()
         self.bounty_payer_profile.delete()
         self.bounty_earner_profile.delete()
         self.tip_username_profile.delete()
         self.tip_from_username_profile.delete()
-
-    def suppress_leaderboard_when_missing_user_handle(self):
-        assert should_suppress_leaderboard() == True
-
-    def suppress_leaderboard_when_options_set(self):
-        hidden_profile = Profile.objects.create(
-            data={},
-            handle="hidden_user",
-            hide_profile=True,
-        )
-        assert should_suppress_leaderboard("hidden_user") == True
-        hidden_profile.delete()
-
-        suppressed_profile = Profile.objects.create(
-            data={},
-            handle="suppressed_user",
-            suppress_leaderboard=True,
-            hide_profile=False
-        )
-        assert should_suppress_leaderboard("suppressed_user") == True
-        suppressed_profile.delete()
 
     def mock_run_cadence_datetimes(self, func, passing, failing):
         with patch.object(timezone, 'now', return_value=passing) as mock_now:
@@ -229,6 +212,27 @@ class TestAssembleLeaderboards(TestCase):
             assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_payers").count() == 2
 
             assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_tokens").count() == 1
+
+    def suppress_leaderboard_when_missing_user_handle(self):
+        assert should_suppress_leaderboard() == True
+
+    def suppress_leaderboard_when_options_set(self):
+        hidden_profile = Profile.objects.create(
+            data={},
+            handle="hidden_user",
+            hide_profile=True,
+        )
+        assert should_suppress_leaderboard("hidden_user") == True
+        hidden_profile.delete()
+
+        suppressed_profile = Profile.objects.create(
+            data={},
+            handle="suppressed_user",
+            suppress_leaderboard=True,
+            hide_profile=False
+        )
+        assert should_suppress_leaderboard("suppressed_user") == True
+        suppressed_profile.delete()
 
     def show_leaderboard_when_profile_does_not_exist(self):
         assert should_suppress_leaderboard("random_user_name_9876") == False
