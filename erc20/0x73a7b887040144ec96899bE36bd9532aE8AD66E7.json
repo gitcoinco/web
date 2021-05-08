@@ -1,0 +1,16 @@
+{
+    "symbol": "SNF",
+    "address": "0x73a7b887040144ec96899bE36bd9532aE8AD66E7",
+    "overview": {
+        "en": "Supre NFT is an all-inclusive diversified and integrated NFT platform, which consists of NFT creation, trading, auctions, NFT mapping of real objects, mortgage, NFT social networkings and other applications. It is developed based on the Supre NFT protocol, and STU certification, and through integrating the ERC-721, ERC-1155 NFT, Bigdipper, BEP2, FLOW, WAX, BSV protocols. The platform includes SupreNFT, SupreART, SupreMe, SupreFi, and will eventually converge all of the above to build a super NFT platform SupreTop, the 'Amazon/Taobao' of the NFT world."
+    },
+    "email": "",
+    "website": "http://suprenft.com/",
+    "state": "NORMAL",
+    "links": {
+        "blog": "",
+        "twitter": "https://twitter.com/suprenft",
+        "telegram": "https://t.me/SupreNFT",
+        "github": ""
+    }
+}
