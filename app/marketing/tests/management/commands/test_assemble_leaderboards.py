@@ -213,10 +213,10 @@ class TestAssembleLeaderboards(TestCase):
 
             assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_tokens").count() == 1
 
-    def suppress_leaderboard_when_missing_user_handle(self):
-        assert should_suppress_leaderboard() == True
+    def test_suppress_leaderboard_when_missing_user_handle(self):
+        assert should_suppress_leaderboard(None) == True
 
-    def suppress_leaderboard_when_options_set(self):
+    def test_suppress_leaderboard_when_options_set(self):
         hidden_profile = Profile.objects.create(
             data={},
             handle="hidden_user",
@@ -234,10 +234,10 @@ class TestAssembleLeaderboards(TestCase):
         assert should_suppress_leaderboard("suppressed_user") == True
         suppressed_profile.delete()
 
-    def show_leaderboard_when_profile_does_not_exist(self):
+    def test_show_leaderboard_when_profile_does_not_exist(self):
         assert should_suppress_leaderboard("random_user_name_9876") == False
 
-    def show_leaderboard_when_user_exists_and_not_hiding(self):
+    def test_show_leaderboard_when_user_exists_and_not_hiding(self):
         public_profile = Profile.objects.create(
             data={},
             handle="public_user",
