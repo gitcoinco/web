@@ -46,17 +46,6 @@
   margin-bottom: 0;
 }
 
-#CookielawBanner #CookielawCross {
-  background: url('../img/close.png') no-repeat 0 0;
-  cursor: pointer;
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 15px;
-  height: 15px;
-}
-
 @media (max-width: 767.98px) {
 
   #CookielawBanner .container .d-flex {
@@ -74,7 +63,7 @@
   #CookielawBanner .container a.button {
     float: right;
   }
-  
+
 }
 
 @media (max-width: 575.98px) {

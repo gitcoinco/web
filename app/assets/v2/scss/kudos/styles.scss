@@ -8,10 +8,10 @@
 
 .transaction {
   background-color: #0d023b;
-  background-image: -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
-  background-image: -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
-  background-image: -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
-  background-image: linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+  background-image: -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url(static('v2/images/header-bg.png'));
+  background-image: -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url(static('v2/images/header-bg.png'));
+  background-image: -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url(static('v2/images/header-bg.png'));
+  background-image: linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url(static('v2/images/header-bg.png'));
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -494,7 +494,7 @@ a.cellarius-partner:before {
   bottom: 3rem;
   width: 16%;
   height: 16%;
-  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+  background: url(static('v2/images/kudos/assets/cellarius-logo.svg'));
   background-size: cover;
   background-repeat: no-repeat; }
 
@@ -503,7 +503,7 @@ a.cellarius-partner:before {
   bottom: 3rem;
   width: 16%;
   height: 16%;
-  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+  background: url(static('v2/images/kudos/assets/cellarius-logo.svg'));
   background-size: cover;
   background-repeat: no-repeat;
   background-color: #fff;
@@ -678,7 +678,7 @@ a.cellarius-partner:before {
 
 /* CK Enggagement */
 body.ck{
-  background-image: url("/static/v2/images/ck.png") !important;
+  background-image: url(static('v2/images/ck.png')) !important;
 }
 body.ck .top-nav{
   display: none !important;

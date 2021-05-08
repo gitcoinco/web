@@ -7,7 +7,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
     modal.closeModal();
     return onConnect().then(() => {
       modal.openModal();
-    });;
+    });
   }
 
   if (token_name == 'ETH') {

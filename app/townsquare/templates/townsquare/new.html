@@ -15,9 +15,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 {% block 'content' %}
-{% compress css file townsquare_new %}
+{% bundle css file townsquare_new %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
   <style type="text/css">
     .add_answer,
@@ -30,13 +30,13 @@
     .kudos-module .msg-alert {
       display: none !important;
     }
-  
+
     .new_quest_background.selected {
       border: 2px solid #F9006C;
     }
   </style>
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
-{% endcompress %}
+{% endbundle %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
