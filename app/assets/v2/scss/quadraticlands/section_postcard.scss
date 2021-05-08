@@ -9,8 +9,8 @@ section.postcard {
       display: block;
       margin: 0 auto;
       padding: 0;
-      width: 1400px;
-      height: 500px;
+      max-width: 1400px;
+      max-height: 500px;
     }
   }
   .btn[selected=selected]{

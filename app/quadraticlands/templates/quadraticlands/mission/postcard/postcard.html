@@ -54,11 +54,11 @@
     </div>
     <div>
       <figure>
-        <img id='target' src="/quadraticlands/mission/postcard/svg" style="background-color: #ffffff">
+        <img id='target' src="" >
       </figure>
     </div>
   </section>
-
+  <canvas id="canvas" width="1400" height="500" style="display: none;"></canvas>
 
   <section class="postcard column" style="margin-bottom:2em;">
 
@@ -89,8 +89,10 @@
     <div class="textarea-wrapper">
       <textarea rows="10" id="text">Hello from the Quadratic Lands - {{github_handle}}</textarea>
     </div>
+    <div style="text-align: center; margin-top: 2em;">
+      <button class="btn md" onclick="download()">Download</button>
+    </div>
   </section>
-
 
 </article>
 
@@ -106,5 +108,43 @@
 
 <!-- postcard generator -->
 <script src="{% static "v2/js/quadraticlands/postcard.js" %}"></script>
+<script type="text/javascript">
+
+  function download(){
+    fetch(document.getElementById('target').src, {
+    method: 'GET',
+  }).then(response => response.text())
+    .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(data =>  {
+      const svgContent = data.getElementsByTagName('svg')[0]
+      const svgString = new XMLSerializer().serializeToString(svgContent);
+
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const DOMURL = self.URL || self.webkitURL || self;
+      const img = new Image();
+      const svg = new Blob([svgString], {
+        type: "image/svg+xml;charset=utf-8"
+      });
+
+      const url = DOMURL.createObjectURL(svg);
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        const imgURL = canvas.toDataURL("image/png");
+        DOMURL.revokeObjectURL(imgURL);
+        const dlLink = document.createElement('a');
+        dlLink.download = "image";
+        dlLink.href = imgURL;
+        dlLink.dataset.downloadurl = ["image/png", dlLink.download, dlLink.href].join(':');
+        document.body.appendChild(dlLink);
+        dlLink.click();
+        document.body.removeChild(dlLink);
+      }
+
+      img.src = url;
+    })
+  }
+
+  </script>
 
 {% endblock %}
