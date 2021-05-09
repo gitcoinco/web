@@ -39,6 +39,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         total = 0
+        num_staff_total = 0
         not_found_total = 0
         outer_amount = 0
         desired_total = 14100000
@@ -57,12 +58,18 @@ class Command(BaseCommand):
                         tokens = float(row[2].replace(",",'').strip())
                         amount = int(round(tokens, round_to) * 10 ** decimals)
                         amount = amount - (amount % 10 ** 9) # handle floating arithmetic
+                        # TODO: if delphi updates their spreadsheet remove this
                         if file == 'Intermediary Worksheet - KERNEL.csv':
                             amount = amount * 33.33333
                         outer_amount += amount
                         profile_id = -1
                         try:
-                            profile_id = Profile.objects.get(handle=handle.lower()).pk
+                            profile = Profile.objects.get(handle=handle.lower())
+                            profile_id = profile.pk
+                            if profile and hasattr(profile, 'user') and profile.user.is_staff:
+                                profile_id = profile.pk * -1
+                                num_staff_total += amount
+
                         except:
                             handle = 'not_found'
 
@@ -101,6 +108,7 @@ class Command(BaseCommand):
             print(f"outer_amount: {round(outer_amount/10**18)}")
             print(f"total: {round(total/10**18)}")
             print(f"not_found_total: {round(not_found_total/10**18)}")
+            print(f"num_staff_total: {round(num_staff_total/10**18)}")
             for key, val in totals.items():
                 print(f"- {key}: {round(val/10**18)}")
             print("=========================")
