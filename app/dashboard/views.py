@@ -5654,7 +5654,7 @@ def create_bounty_v1(request):
         except Exception as e:
             logger.error(e)
 
-    if bounty.web3_type == 'manual' and bounty.token_name != 'CKB' and not bounty.event:
+    if bounty.web3_type == 'manual' and not bounty.event:
         response['message'] = 'error: web3_type manual is eligible only for hackathons'
         return JsonResponse(response)
 
