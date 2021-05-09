@@ -1,4 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 import django_filters.rest_framework
 from rest_framework import routers, viewsets
@@ -6,8 +8,10 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
-from .models import Contribution, Grant, Subscription
-from .serializers import DonorSerializer, GranteeSerializer, GrantSerializer, SubscriptionSerializer
+from .models import CLRMatch, Contribution, Grant, Subscription
+from .serializers import (
+    CLRPayoutsSerializer, DonorSerializer, GrantSerializer, SubscriptionSerializer, TransactionsSerializer,
+)
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
@@ -88,59 +92,159 @@ class GrantViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    @action(detail=False)
-    def report(self, request):
-        return Response({'error': 'reports temporarily offline'})
 
     @action(detail=False)
-    def report_real(self, request):
-        """Generate Grants report for an ethereum address"""
+    def contributions_rec_report(self, request):
+        """Genrate Grantee Report for an Grant"""
 
-        grants_queryset = Grant.objects.all()
-        contributions_queryset = Contribution.objects.all()
+        results_limit = 30
 
-        grantee_serializer = GranteeSerializer
-        donor_serializer = DonorSerializer
+        page = self.request.query_params.get('page', '1')
+        if not page or not page.isdigit():
+            page = 1
 
-        param_keys = self.request.query_params.keys()
-        if 'eth_address' not in param_keys:
-            raise NotFound(detail='Missing required parameter: eth_address')
-        eth_address = self.request.query_params.get('eth_address')
+        grant_pk = self.request.query_params.get('id')
+        if not grant_pk or not grant_pk.isdigit():
+            return Response({
+                'error': 'missing manadatory parameter id'
+            })
 
-        # Filter Grants and Contributions by the given eth_address
-        grants_queryset = grants_queryset.filter(admin_address=eth_address)
-        contributions_queryset = contributions_queryset.filter(subscription__contributor_address=eth_address)
+        now = datetime.now()
+        to_timestamp = self.request.query_params.get('to_timestamp')
+        from_timestamp = self.request.query_params.get('from_timestamp')
 
-        # Filter Grantee info by from_timestamp
-        format = '%Y-%m-%dT%H:%M:%SZ'
-        if 'from_timestamp' in param_keys:
-            from_timestamp = self.request.query_params.get('from_timestamp')
+        # Check timestamp
+        if not from_timestamp:
+            from_timestamp = now - timedelta(days=30)
+        else:
             try:
                 from_timestamp = datetime.strptime(from_timestamp, format)
             except ValueError:
-                raise NotFound(detail="Please provide from_timestamp in the format: "+format)
-        else:
-            from_timestamp = datetime(1, 1, 1, 0, 0)
-        grants_queryset = grants_queryset.filter(subscriptions__subscription_contribution__created_on__gte=from_timestamp)
+                return Response({
+                    'error': 'from_timestamp is not in format YYYY-MM-DD'
+                })
 
-        # Filter Grantee info by to_timestamp
-        if 'to_timestamp' in param_keys:
-            to_timestamp = self.request.query_params.get('to_timestamp')
+        if not to_timestamp:
+            to_timestamp = now
+        else:
             try:
                 to_timestamp = datetime.strptime(to_timestamp, format)
             except ValueError:
-                raise NotFound(detail="Please provide to_timestamp in the format: "+format)
-        else:
-            to_timestamp = datetime.now()
-        grants_queryset = grants_queryset.filter(subscriptions__subscription_contribution__created_on__lte=to_timestamp)
-        grants_queryset = grants_queryset.distinct()
+                return Response({
+                    'error': 'to_timestamp is is not in the format YYYY-MM-DD'
+                })
 
-        grantee_data = grantee_serializer(grants_queryset, many=True).data
-        donor_data = donor_serializer(contributions_queryset, many=True).data
+        if (to_timestamp - from_timestamp).days > 32:
+            return Response({
+                'error': 'timeperiod should be less than 32 days'
+            })
+
+        try:
+            grant = Grant.objects.get(pk=grant_pk)
+        except Exception:
+            return Response({
+                'error': 'unable to find grant id'
+            })
+
+        txn_serializer = TransactionsSerializer
+
+        contributions_queryset = Contribution.objects.prefetch_related(
+            'subscription__grant'
+        ).filter(
+            subscription__grant=grant,
+            created_on__lte=to_timestamp,
+            created_on__gt=from_timestamp
+        )
+        all_contributions = Paginator(contributions_queryset, results_limit)
+
+        contributions_queryset = all_contributions.page(page)
+        transactions = txn_serializer(contributions_queryset, many=True).data
+
+        clr_serializer = CLRPayoutsSerializer
+        clr_payouts = clr_serializer(CLRMatch.objects.filter(grant=grant), many=True).data
+
+        return Response({
+            'transactions': transactions,
+            'clr_payouts': clr_payouts,
+            'metadata' : {
+                'grant_name': grant.title,
+                'from_timestamp': from_timestamp,
+                'to_timestamp': to_timestamp,
+                'count': all_contributions.count,
+                'current_page': page,
+                'num_pages': all_contributions.num_pages,
+                'has_next': all_contributions.page(page).has_next()
+            }
+
+        })
+
+
+    @action(detail=False)
+    def contributions_sent_report(self, request):
+        """Generate report for grant contributions made by an address"""
+
+        donor_serializer = DonorSerializer
+        results_limit = 30
+
+        # Validate input pararms
+        page = self.request.query_params.get('page', '1')
+        if not page or not page.isdigit():
+            page = 1
+
+        address = self.request.query_params.get('address', None)
+        if not address:
+            return Response({
+                'error': 'address is a mandatory parameter'
+            })
+
+        now = datetime.now()
+        to_timestamp = self.request.query_params.get('to_timestamp')
+        from_timestamp = self.request.query_params.get('from_timestamp')
+
+        # Check timestamp
+        if not from_timestamp:
+            from_timestamp = now - timedelta(days=30)
+        else:
+            try:
+                from_timestamp = datetime.strptime(from_timestamp, format)
+            except ValueError:
+                return Response({
+                    'error': 'from_timestamp is not in format YYYY-MM-DD'
+                })
+
+        if not to_timestamp:
+            to_timestamp = now
+        else:
+            try:
+                to_timestamp = datetime.strptime(to_timestamp, format)
+            except ValueError:
+                return Response({
+                    'error': 'to_timestamp is is not in the format YYYY-MM-DD'
+                })
+
+        if (to_timestamp - from_timestamp).days > 32:
+            return Response({
+                'error': 'timeperiod should be less than 32 days'
+            })
+
+        # Filter Contributions made by given address
+
+        contributions_queryset = Contribution.objects.prefetch_related('subscription').filter(subscription__contributor_address=address)
+
+        all_contributions = Paginator(contributions_queryset, results_limit)
+        contributions_queryset = all_contributions.page(page)
+        data = donor_serializer(contributions_queryset, many=True).data
 
         response = Response({
-            'grantee': grantee_data,
-            'donor': donor_data
+            'metadata' : {
+                'from': from_timestamp,
+                'to': to_timestamp,
+                'count': all_contributions.count,
+                'current_page': page,
+                'num_pages': all_contributions.num_pages,
+                'has_next': all_contributions.page(page).has_next()
+            },
+            'data': data,
         })
 
         return response
