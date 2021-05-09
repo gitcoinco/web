@@ -23,23 +23,23 @@ from unittest.mock import patch
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
+import pytest
+from dashboard.models import Activity, Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
 from marketing.management.commands import assemble_leaderboards
 from marketing.management.commands.assemble_leaderboards import (
-    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
+    BREAKDOWNS, DAILY, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
 )
 from marketing.models import LeaderboardRank
 from pytz import UTC
 from test_plus.test import TestCase
 
-MOCK_TODAY=datetime(2021, 4, 25, 11, 00, tzinfo=UTC)
 
 class TestAssembleLeaderboards(TestCase):
     """Define tests for assemble leaderboards."""
 
     def setUp(self):
         """Perform setup for the testcase."""
-        patch('marketing.management.commands.assemble_leaderboards.DAILY_CUTOFF', MOCK_TODAY).start()
+        patch('marketing.management.commands.assemble_leaderboards.DAILY_CUTOFF', datetime(2021, 4, 27, 10, 00, tzinfo=UTC)).start()
 
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
