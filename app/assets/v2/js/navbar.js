@@ -269,23 +269,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isActive) {
       // display the el
       menuEl.classList.add('show');
+      // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
+      const dimension = getDimension(navLink, menuEl);
+
+      // set spacers height
+      menuSpacer.style.height = `${ dimension.height }px`;
+      // cleanUp menuEl before adding new css
+      menuEl.style.cssText = '';
+      // resize and position content (on top of the spacer)
+      menuEl.style.top = `${ dimension.menuY + navbarContainerEl.scrollTop }px`;
+      menuEl.style.height = `${ dimension.height }px`;
       // wait for .show to paint
       window.requestAnimationFrame(() => {
         // mark this menu as active
         menuEl.classList.add('active');
         menuSpacer.classList.add('active');
         navLink.parentElement.classList.add('active');
-
-        // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
-        const dimension = getDimension(navLink, menuEl);
-
-        // set spacers height
-        menuSpacer.style.height = `${ dimension.height }px`;
-        // cleanUp menuEl before adding new css
-        menuEl.style.cssText = '';
-        // resize and position content (on top of the spacer)
-        menuEl.style.top = `${ dimension.menuY + navbarContainerEl.scrollTop }px`;
-        menuEl.style.height = `${ dimension.height }px`;
       });
     }
   };
@@ -345,16 +344,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // scroll to the start of the menu/close if we move out of mobile
   const posMobileMenu = () => {
     if (document.body.classList.contains('navbar-menu-open')) {
-      // get the top pos of the nav so that we can check if we need to scroll it into view (navBar is 100vh)
-      navPos = Math.ceil(window.scrollY + navbarContainerEl.getBoundingClientRect().top);
       // scroll beyond the topNav and lock
       if (window.innerWidth >= breakpoint_md) {
         // close menu if we move into md
-        navPos = 0;
         $navbarSupportedContent.collapse('hide');
         document.body.classList.remove('navbar-menu-open');
-      } else if (navPos !== 0) {
-        window.scrollTo(0, navPos);
       }
     }
   };

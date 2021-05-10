@@ -1,0 +1,142 @@
+#ql-banner {
+  align-items: center;
+  background-color:$gc-grey-500;
+  display: flex;
+  height: 400px;
+  overflow: hidden;
+  top: -240px;
+  z-index: 4;
+}
+
+#ql-banner-inner {
+  margin-top: -240px;
+  height: 160px;
+}
+
+#ql-banner-inner .row {
+  opacity: 0;
+  will-change: opacity padding-top;
+  transition: 0.5s opacity ease-in-out, 0.3s padding-top ease-in-out;
+}
+
+#ql-banner-lhs {
+  z-index: 2;
+}
+
+#ql-banner-h1 {
+  max-width: 700px;
+  min-width: 630px;
+  font-size: 3rem;
+}
+
+#ql-banner-h1 span {
+  background-color: rgba(48, 16, 65, 0.8);
+}
+
+#ql-banner-hero {
+  margin-bottom: 1px;
+
+}
+
+#ql-banner-h1, #ql-banner-hero {
+  transition: 100ms all;
+  will-change: font-size padding-top max-width;
+}
+
+#ql-banner-rhs {
+  max-height: 400px;
+}
+
+#ql-banner-btn {
+  background-color: $gc-pink-300;
+  border: none;
+  box-shadow: unset;
+  color: $gc-grey-500;
+}
+
+#ql-banner-btn:hover {
+  animation: colorcycle 1s ease-in-out infinite;
+}
+
+#ql-banner-btn:active, #ql-banner-btn:focus {
+  background-color: $gc-pink-400;
+  box-shadow: unset;
+}
+
+#ql-banner-coin {
+  margin-bottom: 0px;
+  margin-top: -16%;
+  position: relative;
+  top: 50px;
+  width: 15%;
+}
+
+#ql-banner-rhs, #ql-banner-town, body.navbar-menu-open #ql-banner {
+  z-index: 0;
+}
+
+body:not(.navbar-menu-open) .sticky-nav {
+  top: 160px;
+}
+
+.spin {
+  animation: spin 0.5s 2 linear;
+  -webkit-transform-style: preserve-3d;
+  -webkit-perspective: 1000px;
+}
+
+@keyframes spin{
+  0%{
+    transform: rotateY(0deg);
+  }
+  100%{
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes colorcycle {
+  0% {
+    background-color: #f35890;
+  }
+  33% {
+    background-color: #02e2ac;
+  }
+  66% {
+    background-color: #6f3ff5;
+  }
+  100% {
+    background-color: #f35890;
+  }
+}
+
+@media (max-width: 768px) {
+  #ql-banner {
+    height: 600px;
+    top: -440px;
+    z-index: 4;
+  }
+
+  #ql-banner-inner {
+    margin-top: -440px;
+    height: 160px;
+  }
+
+  #ql-banner-inner h1 {
+    min-width: unset;
+    font-size: 2rem;
+  }
+
+  #ql-banner-h1 span {
+    background-color: unset;
+  }
+
+  #ql-banner-hero {
+    max-width: unset!important;
+  }
+
+  #ql-banner-coin {
+    top: 70px;
+    max-width: 60px;
+    margin-top: -12%;
+  }
+}

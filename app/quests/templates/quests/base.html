@@ -34,7 +34,9 @@
       {% endif %}
 
       {% include 'shared/tag_manager_2.html' %}
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% if not quest %}
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% endif %}
       <div class="header dash">
       {% if nav == 'home' %}
         {% include 'home/nav.html' %}

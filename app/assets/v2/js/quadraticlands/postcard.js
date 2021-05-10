@@ -27,6 +27,7 @@ $(document).ready(function() {
 
     $target.attr('src', url);
     var new_url = '/quadraticlands/mission/postcard';
+
     history.pushState({}, null, new_url + '?' + attrs);
   };
 
@@ -34,20 +35,25 @@ $(document).ready(function() {
     'front_background',
     'back_background',
     'front_frame',
-    'color',
-  ]
-  for(var i=0; i<keys.length; i++){
+    'color'
+  ];
+
+  for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
-    if(getParam(key)){
-      $('li[name='+key+']').removeAttr('selected');
-      $('li[name='+key+'][value='+getParam(key)+']').attr('selected', 'selected');
+
+    if (getParam(key)) {
+      $('li[name=' + key + ']').removeAttr('selected');
+      $('li[name=' + key + '][value=' + getParam(key) + ']').attr('selected', 'selected');
     }
   }
-  var key = 'text';
-  if(getParam(key)){
-    var text = getParam(key).replaceAll(' NEWLINE ',"\n");
-    $('#text').val(text);
 
+  var text = getParam('text');
+
+  if (text) {
+    text = text.replaceAll(' NEWLINE ', '\n');
+
+    $('#text').val(text);
   }
+
   update_output();
 });
