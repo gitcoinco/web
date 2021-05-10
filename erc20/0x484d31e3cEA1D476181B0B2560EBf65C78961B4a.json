@@ -1,0 +1,26 @@
+{
+  "symbol": "SUBT",
+  "address": "0x484d31e3cEA1D476181B0B2560EBf65C78961B4a",
+  "overview":{
+        "en":"SubGift is a new generation of NFT comprehensive ecological platform based on Polkadot. It is equipped with cross-chain auctions, revenue aggregation mining pools, NFT lending pools and a complete front end for NFT exchanges. SubGift supports crypto artist application, NFT casting, buying and selling, airdrops, auctions, mining, lending and social services. The SubGift developed based on the subscript language is compatible with any blockchain developed based on the substrate framework, which makes SubGift launch the Polkadot ecological parachain to run its own business. The resident Polkadot ecological SubGift chooses the middleware of the Apron Network as the general API service. The solution, through the compatible Crust Network API, enables the digital native NFT project to realize copyright confirmation in a decentralized storage method. It is the first NFT integrated platform that provides on-chain copyright protection for native digital artworks. Investment from Sequoia Capital, A16Z top venture capital institution.",
+        "zh":"SubGift是基于波卡的新一代NFT综合生态平台，配置了可跨链的拍卖会、收益聚合矿池、NFT借贷池和NFT交易所的完备前端。SubGift支持加密艺术家申请、NFT铸造、买卖、空投、拍卖、 挖矿、借贷和社交服务。基于Subscript语言开发的SubGift可兼容任何基于Substrate框架开发的区块链，这赋予了SubGift上线波卡生态多个平行链运行自身业务以常驻波卡生态的能力，摆脱了波卡平行链插槽任期的限制，共享波卡全域平行链的互操作性。SubGift选择Apron Network的中间件作为通用的API服务解决方案，并通过兼容Crust Network API使数字原生NFT作品以去中心化存储的方式实现版权确权，是波卡生态首个为原生数字艺术品提供链上版权保护的NFT综合平台。核心团队来自美国、英国、欧盟等地。目前已收到来自美国红杉资本、A16Z顶级风投机构的投资"
+  },
+  "email": "official@subgift.vip",
+  "website": "https://www.subgift.vip",
+  "whitepaper": "https://drive.google.com/file/d/1QwmAtmrAfeX8U2i2PuYAqrBOrTadmMIK/view?usp=sharing",
+  "state": "NORMAL",
+  "published_on": "2021-05-07",
+  "initial_price":{
+        "ETH":"0.0002 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00001 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/SubGiftGlobal",
+    "twitter": "https://twitter.com/SubGift2021"
+
+  }
+}
+
+
+
