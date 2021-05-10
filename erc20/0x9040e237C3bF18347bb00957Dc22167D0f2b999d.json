@@ -1,0 +1,23 @@
+{
+  "symbol": "STND",
+  "address": "0x9040e237C3bF18347bb00957Dc22167D0f2b999d",
+  "overview": {
+    "en": "Standard Protocol is the first Collateralized Rebasable Stablecoins(CRS) protocol for synthetic assets, and will operate in the Polkadot ecosystem. It introduces a new paradigm for liquidity aggregation. In contrast to the previous generation of algorithmic stablecoins, Standard introduces collateralization in the protocol in order to provide a more reliable peg on top of its algorithm. It will act as the catalyst for the financial activities of other para-chains to enable leveraged trading and arbitrage via a built-in AMM. It will also include a protocol for synthetic asset markets by way of a decentralized oracle.",
+    "zh": "Standard协议是首个基于波卡生态的以合成资产为基础的混合式抵押弹性供应稳定币, 并且获得了web3基金会grant。我们实现了铸造稳定币的混合机制,并包括了流动性的新范式。与其他算法稳定币相比，我们通过抵押率调节来间接调节供需关系，在资本充足率上更有保障。。并且Standard通过内置的AMM实现杠杆交易和套利,成为其他平行链的金融活动的催化剂。Standard还可以通过去中心化预言机生成可用于合成资产市场的协议。"
+  },
+  "email": "contact@standard.tech",
+  "website": "https://standard.tech",
+  "whitepaper": "https://docsend.com/view/sp6antfgeqiziaqb",
+  "state": "NORMAL",
+  "published_on": "2019-03-14",
+  "initial_price": {
+    "USD": "0.25 USD"
+  },
+  "links": {
+    "blog": "https://blog.standard.tech",
+    "twitter": "https://twitter.com/standarddef",
+    "telegram": "https://t.me/standard_protocol",
+    "github": "https://github.com/digitalnativeinc",
+    "medium": "https://blog.standard.tech"
+  }
+}
