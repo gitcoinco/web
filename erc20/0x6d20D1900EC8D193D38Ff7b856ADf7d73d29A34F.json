@@ -1,0 +1,14 @@
+{
+  "symbol": "LPOA",
+  "address": "0x6d20D1900EC8D193D38Ff7b856ADf7d73d29A34F",
+  "overview":{
+        "en": "A leading DeFi lending platform based on The LPOA Protocol, LPOA is committed to providing decentralized lending services for crypto asset enthusiasts around the world. It supports a majority of popular assets in the world.",
+        "zh": "LPOA基于智能合约和自动化算法技术，支持ETH、TRON、Heco、Bsc，用户可以存币获得利息，抵押借币支付利息。LPOA的利率由市场供需决定，资产由用户掌握，在全球支持随存随取、随借随还。"
+  },
+  "website": "https://lpoa.network/",
+  "state": "NORMAL",
+  "published_on": "2021-04-20",
+  "initial_price":{
+        "USD":"1 USD"
+  }
+}
