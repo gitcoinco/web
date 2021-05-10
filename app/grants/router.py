@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 import django_filters.rest_framework
+from ratelimit.decorators import ratelimit
 from rest_framework import routers, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
@@ -94,6 +95,7 @@ class GrantViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=False)
+    @ratelimit(key='ip', rate='5/s')
     def contributions_rec_report(self, request):
         """Genrate Grantee Report for an Grant"""
 
@@ -180,6 +182,7 @@ class GrantViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=False)
+    @ratelimit(key='ip', rate='5/s')
     def contributions_sent_report(self, request):
         """Generate report for grant contributions made by an address"""
 
