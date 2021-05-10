@@ -27,7 +27,7 @@ import pytest
 from dashboard.models import Activity, Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
 from marketing.management.commands import assemble_leaderboards
 from marketing.management.commands.assemble_leaderboards import (
-    BREAKDOWNS, DAILY, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
+    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
 )
 from marketing.models import LeaderboardRank
 from pytz import UTC
