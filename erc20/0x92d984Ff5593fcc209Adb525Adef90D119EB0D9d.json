@@ -1,0 +1,22 @@
+{
+  "symbol": "YFS",
+  "address": "0x92d984Ff5593fcc209Adb525Adef90D119EB0D9d",
+  "overview":{
+    "en": "YFS is a DeFi protocol and ecosystem that manifests decentralized finance vision by offering DeFi services to anyone with an internet connection. YFS is unique in that it provides a fully secure and transparent DeFi experience, complete with audited smart contracts and a robust token lock system. YFS provides a suite of decentralized financial services such as farming, lending, borrowing and staking. Yet YFS’s utility doesn’t stopat being a protocol. Initiatives such as the LaunchPad (a DeFi incubator) and FastSwap exchange aim to usher in the next generation of DeFi projects and applications.",
+    "zh": "YFS 是一个 DeFi 协议和生态系统，它通过向任何有互联网连接的人提供 DeFi 服务，体现了去中心化的金融愿景。YFS 的独特之处在于它提供了完全安全和透明的 DeFi 体验，并配有经过审计的智能合约和健壮的令牌锁系统。YFS提供一套分散的金融服务，如种田，放贷，借款和下注。然而，YFS的实用性并不仅限于成为一种协议。Launch Pad （一个 DeFi 孵化器）和 Fast Swap 交换等举措旨在迎来下一代 DeFI 项目和应用。"
+  },
+  "email": "yfsinance@gmail.com",
+  "website": "https://www.yfsfinance.org/",
+  "whitepaper": "https://www.yfsfinance.org/wp-content/uploads/2021/03/YFSWhitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-22",
+  "initial_price":{
+    "ETH":"0.009 ETH",
+    "USD":"19 USD",
+    "BTC":"0.00003 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/yfs_finance",
+    "medium": "https://link.medium.com/DUMnBCwiOeb"
+  }
+}
