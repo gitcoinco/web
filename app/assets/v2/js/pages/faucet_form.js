@@ -97,6 +97,9 @@ $('document').ready(function() {
 });
 
 var trigger_faucet_form_web3_hooks = function(data) {
+  if (!data) {
+    return;
+  }
   let cb_address = data.selectedAddress;
 
   if ($('#faucet_form').length) {
@@ -143,9 +146,8 @@ var trigger_faucet_form_web3_hooks = function(data) {
       if (errors) {
         return;
       }
-      var balance = result.toNumber();
 
-      if (balance == 0) {
+      if (result.toNumber()) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
       }
@@ -158,15 +160,3 @@ window.addEventListener('dataWalletReady', function(e) {
   // BN = web3.utils.BN;
   trigger_faucet_form_web3_hooks(provider);
 }, false);
-
-// window.addEventListener('load', async() => {
-//   if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
-//     onConnect().then(() => {
-//       trigger_faucet_form_web3_hooks(provider);
-//     });
-//   } else {
-//     web3Modal.on('connect', async(data) => {
-//       trigger_faucet_form_web3_hooks(data);
-//     });
-//   }
-// });
