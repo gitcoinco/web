@@ -15,7 +15,6 @@
 
 #ql-banner-inner .row {
   opacity: 0;
-  will-change: opacity padding-top;
   transition: 0.5s opacity ease-in-out, 0.3s padding-top ease-in-out;
 }
 
@@ -39,8 +38,7 @@
 }
 
 #ql-banner-h1, #ql-banner-hero {
-  transition: 100ms all;
-  will-change: font-size padding-top max-width;
+  will-change: font-size, padding-top, max-width;
 }
 
 #ql-banner-rhs {

@@ -54,6 +54,7 @@ const targets = {
 };
 
 // grab the elements
+const banner = document.getElementById('ql-banner');
 const bannerH1 = document.getElementById('ql-banner-h1');
 const bannerBtn = document.getElementById('ql-banner-btn');
 const bannerHero = document.getElementById('ql-banner-hero');
@@ -75,18 +76,31 @@ const shrink = (low, high, percent) => low + ((high - low) * (Math.max(0, percen
 
 // scroll-to-shrink --- alter font-size/padding/maxWidth based on scrollY
 const styleOnScroll = () => {
+  // manually calulate the distance travelled (max of 240 px)
   const percent = (100 - (100 / targets[target].heightDiff * window.scrollY));
 
   // transition between the large and small banners using the % travelled to decide sizes
   bannerH1.style.fontSize = `${Math.max(shrink(targets[target].fontSizeLow, targets[target].fontSizeHigh, percent), targets[target].fontSizeLow)}rem`;
   bannerH1.style.paddingTop = `${Math.min(shrink(targets[target].paddingTopLow, targets[target].paddingTopHigh, 100 - percent), targets[target].paddingTopHigh)}px`;
 
-  // because we're only setting the min/max space - all variants can use the same guide
+  // this low and high is fixed because we can overide with css - we don't need to cover edge cases
   const width = `${Math.max(shrink(258, 540, percent), 258)}px`;
 
   // set to both so that fullsize is locked to 540 (only shrinking when moving to smaller banner size)
   bannerHero.style.maxWidth = width;
   bannerHero.style.minWidth = width;
+};
+
+// ensure that we only fire 100 times to gather the styleOnScroll percentages
+const createIntersectionObserver = () => {
+  // create a new intersectionObserver that will call styleOnScroll for 100 steps (as the header intersects)
+  new IntersectionObserver((entries) => entries.forEach(() => {
+      // no need to send the per because we will caluclate it manually to stay responsive (md/sm/xs)
+      styleOnScroll();
+    }), {
+    // fire for 100 steps
+    threshold: [...new Array(100)].map((_, k) => (k/100))
+  }).observe(banner);
 };
 
 // set-up the targets size based on window width
@@ -119,6 +133,9 @@ setTimeout(() => {
 // spin on click
 bannerCoin.addEventListener('click', spinCoin);
 
+// watch for intersection on the sticky banner (calling styleOnScroll)
+createIntersectionObserver();
+
 // shrink on scroll and make sure the shrink target sizes are correct on resize
-window.addEventListener('resize', RAFThrottle(setTarget), { passive: false });
-window.addEventListener('scroll', RAFThrottle(styleOnScroll), { passive: false });
+window.addEventListener('resize', RAFThrottle(setTarget), { passive: true });
+
