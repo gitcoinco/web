@@ -10,7 +10,7 @@ const payWithHarmonyExtension = async(fulfillment_id, to_address, vm, modal) => 
   // step 2: check balance
   const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
 
-  if (account_balance < amount) {
+  if (Number(account_balance) < amount) {
     _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'danger');
     return;
   }
