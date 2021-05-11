@@ -1,6 +1,6 @@
 # note: only use this if the admin is failling
 
-token_req_id = 314
+token_req_id = 2235
 
 import time
 
@@ -16,8 +16,6 @@ gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplie
 tx_id = obj.mint(gas_price)
 while not has_tx_mined(tx_id, obj.network):
     time.sleep(1)
-sync_latest(0)
-sync_latest(1)
-sync_latest(2)
-sync_latest(3)
+for i in range(0, 9):
+    sync_latest(i, obj.network)
 notify_kudos_minted(obj)
