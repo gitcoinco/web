@@ -20,13 +20,17 @@ document.addEventListener('DOMContentLoaded', function() {
 // hide noproviderIcon on existing provider
 function hideNoprovider() {
   noproviderIcon = document.querySelector('#noproviderIcon');
-  noproviderIcon.classList.add('hide');
+  if (noproviderIcon) {
+    noproviderIcon.classList.add('hide');
+  }
 }
 
 // hide noproviderIcon on existing provider
 function showNoprovider() {
   noproviderIcon = document.querySelector('#noproviderIcon');
-  noproviderIcon.classList.remove('hide');
+  if (noproviderIcon) {
+    noproviderIcon.classList.remove('hide');
+  }
 }
 
 async function getWeb3Network() {
