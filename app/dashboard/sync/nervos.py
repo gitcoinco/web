@@ -13,7 +13,7 @@ def get_nervos_txn_status(txnid, network='mainnet'):
     if not txnid:
         return None
 
-    if network != 'mainnet': # TODO: network == 'mainnet'
+    if network == 'mainnet':
         base_url = 'https://api.explorer.nervos.org/api/v1'
     else:
         base_url = 'https://api.explorer.nervos.org/testnet/api/v1'
@@ -21,8 +21,7 @@ def get_nervos_txn_status(txnid, network='mainnet'):
     explorer_url = f'{base_url}/transactions/{txnid}'
     tip_block_number_url = f'{base_url}/statistics/tip_block_number'
 
-    tx_response = requests.get(
-        explorer_url, headers=HEADERS).json()['data']['attributes']
+    tx_response = requests.get(explorer_url, headers=HEADERS)
 
     tx_data = tx_response.json()['data']['attributes']
 
