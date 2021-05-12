@@ -1,4 +1,4 @@
-const contributeWithRskExtension = async (grant, vm, modal) => {
+const contributeWithRskExtension = async(grant, vm, modal) => {
   const token_name = grant.grant_donation_currency;
   const amount = grant.grant_donation_amount;
   const to_address = grant.rsk_payout_address;
@@ -6,8 +6,9 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
 
   // 1. init rsk provider
   // const rskHost = "https://public-node.testnet.rsk.co";
-  const rskHost = "https://public-node.rsk.co";
+  const rskHost = 'https://public-node.rsk.co';
   const rskClient = new Web3();
+
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
@@ -85,7 +86,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
   const txHash = await ethereum.request(
     {
       method: 'eth_sendTransaction',
-      params: [txArgs],
+      params: [txArgs]
     }
   );
 
@@ -110,17 +111,30 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
         }]
       };
 
-      const apiUrlBounty = `v1/api/contribute`;
+      const apiUrlBounty = 'v1/api/contribute';
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
           _alert('Unable to make contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
         _alert('Unable to make contribute to grant. Please try again later', 'danger');
         console.log(error);

@@ -1,7 +1,7 @@
 const contributeWithHarmonyExtension = async(grant, vm, modal) => {
 
   if (!harmony_utils.isOnewalletInstalled()) {
-    _alert({ message: `Please ensure your Harmony One wallet is installed and unlocked`}, 'danger');
+    _alert({ message: 'Please ensure your Harmony One wallet is installed and unlocked'}, 'danger');
     return;
   }
 
@@ -59,13 +59,26 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
         }]
       };
 
-      const apiUrlBounty = `v1/api/contribute`;
+      const apiUrlBounty = 'v1/api/contribute';
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         console.log(response);
         console.log(payload);
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 

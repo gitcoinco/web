@@ -25,7 +25,7 @@
   border-radius: 50%;
   font-size: 1.2rem;
   line-height: 1.2rem;
-  content: url('/static/v2/images/check.svg');
+  content: url(static('v2/images/check.svg'));
   background-color: #150069;
 }
 

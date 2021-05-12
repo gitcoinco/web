@@ -3,7 +3,7 @@ const initPolkadotConnection = async(grant, vm) => {
   // step 1: check if web3 is injected
   if (!polkadot_utils.isWeb3Injected()) {
     vm.updatePaymentStatus(grant.grant_id, 'failed');
-    _alert({ message: `Please ensure your Polkadot One wallet is installed and unlocked`}, 'danger');
+    _alert({ message: 'Please ensure your Polkadot One wallet is installed and unlocked'}, 'danger');
     return;
   }
 
@@ -11,6 +11,7 @@ const initPolkadotConnection = async(grant, vm) => {
   let polkadot_endpoint;
   let decimals;
   let format;
+
   if (grant.grant_donation_currency == 'KSM') {
     polkadot_endpoint = KUSAMA_ENDPOINT;
     decimals = 12;
@@ -43,8 +44,10 @@ const initPolkadotConnection = async(grant, vm) => {
     }
 
     const addresses = await polkadot_utils.getExtensionConnectedAccounts();
+
     for (let i = 0; i < addresses.length; i++) {
       const balance = (await polkadot_utils.getAddressBalance(addresses[i].address)) / 10 ** decimals;
+
       addresses[i].balance = balance;
       addresses[i].token_symbol = grant.grant_donation_currency;
       addresses[i].chain_address = polkadot_keyring.encodeAddress(addresses[i].address, format);
@@ -53,7 +56,7 @@ const initPolkadotConnection = async(grant, vm) => {
 
     vm.updatePaymentStatus(grant.grant_id, 'waiting-on-user-input', null, {addresses: addresses});
   }
-}
+};
 
 
 const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
@@ -72,6 +75,7 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
   const amount = grant.grant_donation_amount;
 
   let to_address;
+
   if (grant.grant_donation_currency == 'DOT') {
     to_address = grant.polkadot_payout_address;
   } else if (grant.grant_donation_currency == 'KSM') {
@@ -80,6 +84,7 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
 
   // step 2. balance check
   const account_balance = await polkadot_utils.getAddressBalance(from_address);
+
   if (account_balance < amount * 10 ** decimals) {
     _alert({ message: `Account needs to have more than ${amount} ${grant.grant_donation_currency}`}, 'danger');
     return;
@@ -105,6 +110,7 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
     } else {
 
       let tenant;
+
       if (grant.grant_donation_currency == 'DOT') {
         tenant = 'POLKADOT';
       } else if (grant.grant_donation_currency == 'KSM') {
@@ -123,12 +129,25 @@ const contributeWithPolkadotExtension = async(grant, vm, from_address) => {
         }]
       };
 
-      const apiUrlBounty = `v1/api/contribute`;
+      const apiUrlBounty = 'v1/api/contribute';
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
 
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          MauticEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 

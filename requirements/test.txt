@@ -1,5 +1,4 @@
 -r base.txt
-attrs==19.1.0
 pytest==4.0.1
 pytest-cov==2.6.0
 pytest-isort==0.2.1

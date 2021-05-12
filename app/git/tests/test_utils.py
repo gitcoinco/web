@@ -48,14 +48,13 @@ class GitUtilitiesTest(TestCase):
 
     def test_build_auth_dict(self):
         """Test the github utility build_auth_dict method."""
-        auth_dict = build_auth_dict(self.user_oauth_token)
+        auth_dict = build_auth_dict()
 
         assert isinstance(auth_dict, dict)
         assert auth_dict == {
             'api_url': settings.GITHUB_API_BASE_URL,
             'client_id': settings.GITHUB_CLIENT_ID,
-            'client_secret': settings.GITHUB_CLIENT_SECRET,
-            'oauth_token': self.user_oauth_token
+            'client_secret': settings.GITHUB_CLIENT_SECRET
         }
 
     def test_repo_url(self):
@@ -84,9 +83,10 @@ class GitUtilitiesTest(TestCase):
     @responses.activate
     def test_revoke_token(self):
         """Test the github utility revoke_token method."""
-        auth_dict = build_auth_dict(self.user_oauth_token)
+        auth_dict = build_auth_dict()
         url = TOKEN_URL.format(**auth_dict)
-        responses.add(responses.DELETE, url, headers=HEADERS, status=204)
+        data = {'access_token': self.user_oauth_token}
+        responses.add(responses.DELETE, url, json=data, headers=HEADERS, status=204)
         result = revoke_token(self.user_oauth_token)
 
         assert responses.calls[0].request.url == url
@@ -95,11 +95,11 @@ class GitUtilitiesTest(TestCase):
     @responses.activate
     def test_reset_token(self):
         """Test the github utility reset_token method."""
-        auth_dict = build_auth_dict(self.user_oauth_token)
+        auth_dict = build_auth_dict()
         url = TOKEN_URL.format(**auth_dict)
         data = {'token': self.user_oauth_token}
-        responses.add(responses.POST, url, json=data, headers=HEADERS, status=200)
-        responses.add(responses.POST, url, headers=HEADERS, status=404)
+        responses.add(responses.PATCH, url, json=data, headers=HEADERS, status=200)
+        responses.add(responses.PATCH, url, headers=HEADERS, status=404)
         result = reset_token(self.user_oauth_token)
         result_not_found = reset_token(self.user_oauth_token)
 
@@ -156,9 +156,10 @@ class GitUtilitiesTest(TestCase):
         expired = (now - timedelta(hours=2)).isoformat()
         return_false = is_github_token_valid()
         return_valid = is_github_token_valid(self.user_oauth_token, now.isoformat())
-        params = build_auth_dict(self.user_oauth_token)
+        params = build_auth_dict()
+        data = {'access_token': self.user_oauth_token}
         url = TOKEN_URL.format(**params)
-        responses.add(responses.GET, url, headers=HEADERS, status=200)
+        responses.add(responses.POST, url, json=data, headers=HEADERS, status=200)
         return_expired = is_github_token_valid(self.user_oauth_token, expired)
 
         assert responses.calls[0].request.url == url

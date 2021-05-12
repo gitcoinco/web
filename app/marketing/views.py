@@ -1005,6 +1005,20 @@ def upcoming_hackathon():
         except HackathonEvent.DoesNotExist:
             return None
 
+def get_hackathons():
+    from perftools.models import JSONStore
+    from dateutil.parser import parse
+
+    hackathons = JSONStore.objects.get(key='hackathons', view='hackathons').data
+
+    if hackathons and hackathons[0] not in ['current', 'upcoming']:
+        return None
+    else:
+        current_hackathons = [hack for hack in hackathons[1] if parse(hack['start_date']) < timezone.now() and parse(hack['end_date']) > timezone.now()]
+        upcoming_hackathons = [hack for hack in hackathons[1] if parse(hack['start_date']) > timezone.now()]
+
+        return current_hackathons, upcoming_hackathons
+
 def latest_activities(user):
     from retail.views import get_specific_activities
     from townsquare.tasks import increment_view_counts
@@ -1014,14 +1028,6 @@ def latest_activities(user):
     increment_view_counts.delay(activities_pks)
     return activities
 
-def static_proxy(request, filepath):
-    # TODO: if this is ever extended with a dynamic filepath
-    # make sure it is VERY VERY security conscious
-    filepath = 'assets/landingpage/fusion/fusion-interface.svg'
-    content_type = 'image/svg+xml'
-    with open(filepath) as file:
-        response = HttpResponse(file, content_type=content_type)
-        return response
 
 @staff_member_required
 def new_bounty_daily_preview(request):
@@ -1034,5 +1040,5 @@ def new_bounty_daily_preview(request):
     max_bounties = 5
     if len(new_bounties) > max_bounties:
         new_bounties = new_bounties[0:max_bounties]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), latest_activities=latest_activities(request.user))
     return HttpResponse(response_html)

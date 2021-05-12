@@ -297,6 +297,7 @@ class Bounty(SuperModel):
         ('rsk_ext', 'RSK Ext'),
         ('xinfin_ext', 'Xinfin Ext'),
         ('nervos_ext', 'Nervos Ext'),
+        ('algorand_ext', 'Algorand Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1416,6 +1417,7 @@ class BountyFulfillment(SuperModel):
         ('rsk_ext', 'rsk_ext'),
         ('xinfin_ext', 'xinfin_ext'),
         ('nervos_ext', 'nervos_ext'),
+        ('algorand_ext', 'algorand_ext'),
         ('manual', 'manual')
     ]
 
@@ -1433,6 +1435,7 @@ class BountyFulfillment(SuperModel):
         ('RSK', 'RSK'),
         ('XINFIN', 'XINFIN'),
         ('NERVOS', 'NERVOS'),
+        ('ALGORAND', 'ALGORAND'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -2996,17 +2999,28 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     is_brightid_verified=models.BooleanField(default=False)
+    is_duniter_verified=models.BooleanField(default=False)
     is_twitter_verified=models.BooleanField(default=False)
+    poap_owner_account=models.CharField(max_length=255, blank=True, null=True)
     is_poap_verified=models.BooleanField(default=False)
     twitter_handle=models.CharField(blank=True, null=True, max_length=15)
-    is_google_verified = models.BooleanField(default=False)
+    ens_verification_address = models.CharField(max_length=255, default='', blank=True)
+    is_ens_verified = models.BooleanField(default=False)
+    is_google_verified=models.BooleanField(default=False)
     identity_data_google = JSONField(blank=True, default=dict, null=True)
+    google_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
+    is_facebook_verified = models.BooleanField(default=False)
+    identity_data_facebook = JSONField(blank=True, default=dict, null=True)
+    facebook_user_id = models.CharField(unique=True, blank=True, null=True, max_length=25)
     bio = models.TextField(default='', blank=True, help_text=_('User bio.'))
     interests = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     products_choose = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     contact_email = models.EmailField(max_length=255, blank=True)
     is_pro = models.BooleanField(default=False, help_text=_('Is this user upgraded to pro?'))
     mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, help_text=_('Mautic id to be able to do api requests without user being logged'))
+
+    is_poh_verified=models.BooleanField(default=False)
+    poh_handle = models.CharField(blank=True, null=True, max_length=64, unique=True)
 
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
@@ -3042,6 +3056,14 @@ class Profile(SuperModel):
         if self.is_poap_verified:
             tb *= 1.10
         if self.is_idena_verified:
+            tb *= 1.25
+        if self.is_facebook_verified:
+            tb *= 1.001
+        if self.is_ens_verified:
+            tb *= 1.001
+        if self.is_duniter_verified:
+            tb *= 1.001
+        if self.is_poh_verified:
             tb *= 1.25
         return tb
 
@@ -4033,10 +4055,11 @@ class Profile(SuperModel):
         if not self.github_access_token:
             return False
 
-        _params = build_auth_dict(self.github_access_token)
+        _params = build_auth_dict()
         url = TOKEN_URL.format(**_params)
         response = requests.get(
             url,
+            data=json.dumps({'access_token': self.github_access_token}),
             auth=(_params['client_id'], _params['client_secret']),
             headers=HEADERS)
 
@@ -5777,6 +5800,16 @@ class Investigation(SuperModel):
 
         htmls.append(f'POAP Verified: {instance.is_poap_verified}')
         if instance.is_poap_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'Facebook Verified: {instance.is_facebook_verified}')
+        if instance.is_facebook_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'POH Verified: {instance.is_poh_verified}')
+        if instance.is_poh_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 

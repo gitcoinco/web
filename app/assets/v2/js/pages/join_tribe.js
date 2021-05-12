@@ -1,6 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 
-const joinTribe = () => {
+this.joinTribe = () => {
   $('[data-jointribe]').each(function(index, elem) {
 
     $(elem).on('click', function(e) {
@@ -39,7 +39,7 @@ const joinTribe = () => {
 
 joinTribe();
 
-const joinTribeDirect = (elem) => {
+this.joinTribeDirect = (elem) => {
 
   if (!document.contxt.github_handle) {
     _alert('Please login first.', 'danger');
@@ -66,7 +66,7 @@ const joinTribeDirect = (elem) => {
 };
 
 
-const followRequest = (handle, elem, cb, cbError) => {
+this.followRequest = (handle, elem, cb, cbError) => {
   if (!document.contxt.github_handle) {
     _alert('Please login first.', 'danger');
     return;
@@ -83,7 +83,7 @@ const followRequest = (handle, elem, cb, cbError) => {
 };
 
 
-const tribeLeader = () => {
+this.tribeLeader = () => {
   $('[data-tribeleader]').each(function(index, elem) {
 
     $(elem).on('click', function() {
@@ -109,7 +109,7 @@ const tribeLeader = () => {
 
 tribeLeader();
 
-const build_suggested_tribe = (tribe) => {
+this.build_suggested_tribe = (tribe) => {
   return `
     <li class="nav-item d-flex justify-content-between align-items-center my-1">
       <a style="max-width: 70%;" href="/profile/${ tribe.title }" class="d-flex nav-link nav-line pr-0 mr-0">
@@ -162,13 +162,12 @@ $(document).on('click', '.remove-tribe', function(e) {
 
     });
 
-
   });
 
 });
 
 
-const newManageTribe = () => {
+this.newManageTribe = () => {
   $('[data-tribe]').each(function(index, elem) {
     $(elem).on('mouseenter focus', function(e) {
       if ($(elem).hasClass('btn-primary')) {

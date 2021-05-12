@@ -61,6 +61,8 @@ QUARTERLY_CUTOFF = timezone.now() - timezone.timedelta(days=90)
 YEARLY_CUTOFF = timezone.now() - timezone.timedelta(days=365)
 ALL_CUTOFF = timezone.now() - timezone.timedelta(days=365*10)
 
+only_save_below_rank = 9999
+
 
 def should_suppress_leaderboard(handle):
     if not handle:
@@ -153,7 +155,7 @@ def do_leaderboard():
         'all': None
         }
 
-    tag_to_datetime = {
+    tag_to_datetime_full = {
         DAILY: DAILY_CUTOFF,
         WEEKLY: WEEKLY_CUTOFF,
         MONTHLY: MONTHLY_CUTOFF,
@@ -161,12 +163,25 @@ def do_leaderboard():
         YEARLY: YEARLY_CUTOFF,
         ALL: ALL_CUTOFF,
     }
+    tag_to_datetime = {
+        DAILY: DAILY_CUTOFF,
+    }
+
+    if run_weekly():
+        tag_to_datetime[WEEKLY] = WEEKLY_CUTOFF
+    if run_monthly():
+        tag_to_datetime[MONTHLY] = MONTHLY_CUTOFF
+    if run_quarterly():
+        tag_to_datetime[QUARTERLY] = QUARTERLY_CUTOFF
+        tag_to_datetime[ALL] = ALL_CUTOFF
+    if run_yearly():
+        tag_to_datetime[YEARLY_CUTOFF] = YEARLY_CUTOFF
 
     products = ['kudos', 'grants', 'bounties', 'tips', 'all']
     for breakdown in BREAKDOWNS:
         for tag, from_date in tag_to_datetime.items():
             for product in products:
-                
+
                 print(breakdown, tag, product)
 
                 ct = products_to_content_type.get(product)
@@ -187,13 +202,13 @@ def do_leaderboard():
 
                 print('---')
 
-                # set old LR as inactive
+                # set old LeaderboardRank as inactive
                 created_on = timezone.now()
                 with transaction.atomic():
                     print(" - saving -")
                     key = f"{tag}_{breakdown}"
                     lrs = LeaderboardRank.objects.active()
-                    lrs = lrs.filter(leaderboard=key)
+                    lrs = lrs.filter(leaderboard=key, product=product)
                     lrs.update(active=False)
 
                     # save new LR in DB
@@ -201,6 +216,10 @@ def do_leaderboard():
                     if True:
                         rank = 1
                         for item in results:
+
+                            if rank > only_save_below_rank:
+                                continue
+
                             idx = item[0]
                             count = item[1]
                             amount = item[2]
@@ -220,17 +239,33 @@ def do_leaderboard():
                             }
 
                             profile = None
-                            try:
-                                profile = Profile.objects.get(handle=idx.lower())
-                                if profile.suppress_leaderboard:
-                                    continue
-                            except Exception as e:
-                                print(e)
+                            if (index_on is not 'token_name'):
+                                try:
+                                    profile = Profile.objects.get(handle=idx.lower())
+                                    if profile.suppress_leaderboard:
+                                        continue
+                                except Exception as e:
+                                    print(e)
                             lbr_kwargs['profile'] = profile
 
                             LeaderboardRank.objects.create(**lbr_kwargs)
                             rank += 1
 
+
+def run_weekly():
+    return (timezone.now().strftime('%A')) == "Friday"
+
+
+def run_monthly():
+    return int(timezone.now().strftime('%d')) == 1
+
+
+def run_quarterly():
+    return run_monthly() and (int(timezone.now().strftime('%m'))-1) % 3 == 0
+
+
+def run_yearly():
+    return int(timezone.now().strftime('%j')) == 1
 
 
 class Command(BaseCommand):
@@ -241,13 +276,17 @@ class Command(BaseCommand):
         do_leaderboard()
 
         cadences = [
-            (DAILY, 'Daily'),
         ]
-        if (timezone.now().strftime('%A')) == "Friday":
+
+        if not run_quarterly():
+            cadences.append((DAILY, 'Daily'))
+        if run_weekly():
             cadences.append((WEEKLY, 'Weekly'))
-        if int(timezone.now().strftime('%d')) == 1:
+        if run_monthly():
             cadences.append((MONTHLY, 'Monthly'))
-        if int(timezone.now().strftime('%j')) == 1:
+        if run_quarterly():
+            cadences.append((QUARTERLY, 'Quarterly'))
+        if run_yearly():
             cadences.append((YEARLY, 'Yearly'))
         for ele in cadences:
             do_leaderboard_feed(ele[0], ele[1])

@@ -15,21 +15,21 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    {% compress css file dashboard_explorer %}
+    {% bundle css file dashboard_explorer %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/explorer.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
 
   <body class="interior {{active}} g-font-muli">

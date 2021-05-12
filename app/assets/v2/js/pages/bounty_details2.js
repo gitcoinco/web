@@ -152,6 +152,12 @@ Vue.mixin({
           url = `https://explorer.xinfin.network/tx/${txn}`;
           break;
 
+        case 'ALGO':
+        case 'USDTa':
+        case 'USDCa':
+          url = `https://algoexplorer.io/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -214,6 +220,12 @@ Vue.mixin({
 
         case 'XDC':
           url = `https://explorer.xinfin.network/addr/${address}`;
+          break;
+
+        case 'ALGO':
+        case 'USDTa':
+        case 'USDCa':
+          url = `https://algoexplorer.io/tx/${address}`;
           break;
 
         default:
@@ -452,6 +464,12 @@ Vue.mixin({
           tenant = 'XINFIN';
           break;
 
+        case 'ALGO':
+        case 'USDTa':
+        case 'USDCa':
+          tenant = 'ALGORAND';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -545,6 +563,10 @@ Vue.mixin({
 
         case 'nervos_ext':
           payWithNervosExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'algorand_ext':
+          payWithAlgorandExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -763,6 +785,7 @@ Vue.mixin({
         case 'polkadot_ext':
         case 'rsk_ext':
         case 'xinfin_ext':
+        case 'algorand_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

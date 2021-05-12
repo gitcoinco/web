@@ -29,28 +29,3 @@
       &times;
   </span>
 </div>
-<!--- /Top Row Notification -->
-
-<div class="top-nav g-font-muli d-md-none {{class}}">
-  <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
-  <a class="{% if request.path == '/explorer' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url 'explorer' %}">
-    <img src="{% static "v2/images/top-bar/bounties-symbol-neg.svg" %}" height="22" alt="">
-    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Bounties</span>
-  </a>
-  <a class="{% if request.path|matches:'^\/((hackathon.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url 'get_hackathons' %}">
-    <img src="{% static "v2/images/top-bar/hackathons-symbol-neg.svg" %}" height="22" alt="">
-    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Hackathons</span>
-  </a>
-  <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url "grants:grants" %}">
-    <img src="{% static "v2/images/top-bar/grants-symbol-neg.svg" %}" height="22" alt="">
-    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Grants</span>
-  </a>
-  <a class="{% if request.path|matches:'^\/((quests.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url "quests_index" %}">
-    <img src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}" height="22" alt="">
-    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Quests</span>
-  </a>
-  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url 'kudos_marketplace' %}">
-    <img src="{% static "v2/images/top-bar/kudos-symbol-neg.svg" %}" height="22" alt="">
-    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Kudos</span>
-  </a>
-</div>

@@ -15,16 +15,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static humanize compress %}
+{% load i18n static humanize bundle %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
-  {% compress css file dashboard_hackathons %}
+  {% bundle css file dashboard_hackathons %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/home.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
   <style>
     .hackathon-logo-svg {
       height: 4.5rem;
@@ -75,7 +75,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav_hackathons.html' %}
-    <div class="container-fluid header dash text-white" style="background-image: url('/static/v2/images/bg/4.jpg');">
+    <div class="container-fluid header dash text-white" style="background-image: url('/static/v2/images/bg/space.png'); background-size: cover;">
 
       <div class="row justify-content-center" style="padding:5rem 0 5rem 0">
         <div class="col-12 col-lg-12 col-xl-6 mt-3">
@@ -121,9 +121,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id="tabs" class="row my-4">
         <div class="container">
           <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
-            {% for id, title in tabs %}
+            {% for id, title, num in tabs %}
             <li class="nav-item">
-              <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
+              <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{num}})</a>
             </li>
             {% endfor %}
           </ul>
@@ -139,6 +139,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% block 'scripts' %}
     <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
     {% endblock %}
-    {% include "dashboard/hackathon/onboarding_v2.html"%}
+    <!-- hackathon modal temparilly disabled  -->
+    <!-- {% include "dashboard/hackathon/onboarding_v2.html"%} -->
   </div>
 </body>

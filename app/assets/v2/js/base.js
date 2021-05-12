@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
     var elementBottom = elementTop + $(this).outerHeight();
@@ -136,7 +137,6 @@ $(document).ready(function() {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
-      console.log(toggle);
       $('.navbar-collapse').toggleClass('show');
       if (toggle === 'false') {
         $(this).attr('aria-expanded', 'true');
@@ -229,7 +229,7 @@ $(document).ready(function() {
 });
 
 
-const attach_close_button = function() {
+this.attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
     $('.alert').not('.alert-static').each(function(index) {
@@ -243,19 +243,19 @@ const attach_close_button = function() {
   });
 };
 
-const closeButton = function(msg) {
+this.closeButton = function(msg) {
   var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
 
   return html;
 };
 
-const alertMessage = function(msg) {
+this.alertMessage = function(msg) {
   var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
 
   return html;
 };
 
-const _alert = function(msg, _class, remove_after_ms) {
+this._alert = function(msg, _class, remove_after_ms) {
   if (typeof msg == 'string') {
     msg = {
       'message': msg
@@ -294,7 +294,7 @@ const _alert = function(msg, _class, remove_after_ms) {
 
 };
 
-var show_persona_modal = function(e) {
+this.show_persona_modal = function(e) {
   const content = $.parseHTML(
     `<div id="persona_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -323,18 +323,18 @@ var show_persona_modal = function(e) {
   $('#persona_modal').bootstrapModal('show');
 };
 
-function popOnboard(step) {
+this.popOnboard = function(step) {
   if (step) {
     appOnboard.step = step;
   }
   appOnboard.$refs['onboard-modal'].openModal();
-}
+};
 
 $('body').on('click', '[data-persona]', function(e) {
   sendPersonal($(this).data('persona'));
 });
 
-const sendPersonal = (persona) => {
+this.sendPersonal = (persona) => {
   let postPersona = fetchData('/api/v0.1/choose_persona/', 'POST',
     {persona, 'access_token': document.contxt.access_token}
   );
@@ -382,7 +382,7 @@ const sendPersonal = (persona) => {
 };
 
 
-const gitcoinUpdates = () => {
+this.gitcoinUpdates = () => {
   const urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
 
   const getUpdates = fetchData (urlUpdates, 'GET');
@@ -422,13 +422,8 @@ const gitcoinUpdates = () => {
   });
 
 };
-// carousel/collabs/... inside menu
 
-$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
-  e.stopPropagation();
-});
-
-function applyCartMenuStyles() {
+this.applyCartMenuStyles = function() {
   let dot = $('#cart-notification-dot');
 
   if (CartData.hasItems()) {
@@ -440,10 +435,10 @@ function applyCartMenuStyles() {
       $('#cart-nav').addClass('hidden');
     }
   }
-}
+};
 
 // Turn form data pulled form page into a JS object
-function objectifySerialized(data) {
+this.objectifySerialized = function(data) {
   let objectData = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -453,4 +448,4 @@ function objectifySerialized(data) {
   }
 
   return objectData;
-}
+};

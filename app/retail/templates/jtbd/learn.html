@@ -16,7 +16,7 @@ along with this program. If not,see
 <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress date_fromisoformat %}
+{% load i18n static bundle date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,9 +24,9 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 
 <body>
@@ -38,7 +38,7 @@ along with this program. If not,see
       {% include 'home/nav.html' %}
     </div>
 
-    <div class="container px-5">
+    <div class="container pt-5">
 
       <div class="row mt-5">
         <div class="col-12 col-md-8">
@@ -307,7 +307,7 @@ along with this program. If not,see
             <div class="col-auto m-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
             <div class="col text-grey-400 pr-5 pb-4">
               <div class="row">
-                <p class="font-bigger-1 line-height-2">{{ testimonial.comment }}</p>
+                <p class="font-bigger-1 line-height-2" style="white-space: pre-line;">{{ testimonial.comment }}</p>
               </div>
               <div class="row">
                 <p class="font-bigger-1">{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
@@ -336,25 +336,38 @@ along with this program. If not,see
             Ready to learn?
           </h2>
         </header>
-        <div class="col-12 col-md-6 mt-4 pr-md-1">
-          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 mr-0 mr-md-2 h-100">
-            <div class="mb-4">
-              <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
-              <p class="py-2 font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
-            </div>
-            <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'get_hackathons' %}">Explore Hackathons</a>
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
+                <p class="font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
+              </div>
+              <div>
+                <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-12 col-md-6 mt-4 pl-md-1">
-          <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50  p-5 ml-0 ml-md-2 h-100">
-            <div class="mb-4">
-              <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
-              <p class="py-2 font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
+                <p class="font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+              </div>
+              <div>
+                <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="https://kernel.community/">{% trans "Explore Kernel" %}</a>
+              </div>
             </div>
-            <div>
-              <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="https://kernel.community/">Explore Kernel</a>
+          </div>
+          <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3 mt-lg-0">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn through Quests</h4>
+                <p class="font-bigger-1">Gitcoin Quests are a fun, gamified, way to learn about web3 ecosystems and earn rewards.</p>
+              </div>
+              <div>
+                <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'quests_index' %}">{% trans "Explore Quests" %}</a>
+              </div>
             </div>
           </div>
         </div>

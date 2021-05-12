@@ -7,7 +7,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
     modal.closeModal();
     return onConnect().then(() => {
       modal.openModal();
-    });;
+    });
   }
 
   if (token_name == 'ETH') {
@@ -60,7 +60,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
           console.log('success', response);
 
           vm.fetchBounty();
-          _alert('Payment Successful');
+          _alert('Payment Successful', 'success');
 
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');

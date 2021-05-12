@@ -61,6 +61,7 @@ FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-F
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 XINFIN_API_KEY = env('XINFIN_API_KEY', default='')
+ALGORAND_API_KEY = env('ALGORAND_API_KEY', default='')
 
 # Ratelimit
 MARKETING_QUEUE_RATE_LIMIT = env('MARKETING_QUEUE_RATE_LIMIT', default='32/m')
@@ -76,14 +77,12 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
-
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
     'csp',
-    'compressor',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -156,6 +155,7 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
+    'passport',
 ]
 
 MIDDLEWARE = [
@@ -439,45 +439,11 @@ else:
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
 
-# Sass precompiler settings
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
+# Staticfinder finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 ]
-# number of demicals allowed in sass numbers
-LIBSASS_PRECISION = 8
-# minify sass output in production (offline)
-if ENV not in ['local', 'test', 'staging', 'preview']:
-    # get current commit hash to feed into the manifest's name
-    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
-    # compress offline (use './manage.py compress' to build manifest.*.json)
-    COMPRESS_OFFLINE = True
-    # make manifest deploy specific (new manifest for each deployment)
-    COMPRESS_OFFLINE_MANIFEST = 'manifest.' + commit.decode('utf8') + '.json'
-    # allow for the full path (url) to be included in the manifest
-    COMPRESS_INCLUDE_URLS = True
-    # allow the placeholder insertion to be skipped
-    COMPRESS_SKIP_PLACEHOLDER = True
-    # use content based hashing so that we always match between servers
-    COMPRESS_CSS_HASHING_METHOD = 'content'
-    # minification of sass output
-    COMPRESS_CSS_FILTERS = [
-        'compressor.filters.css_default.CssAbsoluteFilter',
-        'compressor.filters.cssmin.rCSSMinFilter'
-    ]
-    # drop line comments
-    LIBSASS_SOURCE_COMMENTS = False
-
-COMPRESS_OUTPUT_DIR = "v2"
-COMPRESS_ROOT = STATIC_ROOT
-COMPRESS_HOST = STATIC_HOST
-COMPRESS_URL = STATIC_URL
-COMPRESS_STORAGE = STATICFILES_STORAGE
-COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
@@ -668,6 +634,12 @@ GOOGLE_SCOPE = env('GOOGLE_SCOPE', default='https://www.googleapis.com/auth/user
 # OATHLIB
 OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
 
+# Facebook
+FACEBOOK_AUTH_BASE_URL = env('FACEBOOK_AUTH_BASE_URL', default='https://www.facebook.com/v9.0/dialog/oauth')
+FACEBOOK_TOKEN_URL = env('FACEBOOK_TOKEN_URL', default='https://graph.facebook.com/v9.0/oauth/access_token')
+FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID', default='')
+FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET', default='')
+
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xAD278911Ad07534F921eD7D757b6c0e6730FCB16')
 
@@ -740,6 +712,10 @@ KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
 KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
+
+# Passport
+PASSPORT_PK_MAINNET = env('PASSPORT_PK_MAINNET', default='')
+PASSPORT_PK_RINKEBY = env('PASSPORT_PK_RINKEBY', default='')
 
 # Grants
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
@@ -938,6 +914,11 @@ ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
 ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+
+# Duniter
+BMAS_ENDPOINT = env('BMAS_ENDPOINT', default='BMAS g1.duniter.org 443')
+ES_CORE_ENDPOINT = env('ES_CORE_ENDPOINT', default='ES_CORE_API g1.data.duniter.fr 443')
+ES_USER_ENDPOINT = env('ES_USER_ENDPOINT', default='ES_USER_API g1.data.duniter.fr 443')
 
 # Idena
 IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours

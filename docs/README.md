@@ -4,7 +4,6 @@
 
 Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
-
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60" alt="Open bounties widget">
 </a>

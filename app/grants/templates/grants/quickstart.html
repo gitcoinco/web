@@ -14,15 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
-    {% compress css file tabs %}
+    {% bundle css file tabs %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <style>
       #grant-quickstart-tabs-sections img {
         max-width: 15rem;
@@ -58,10 +58,9 @@
   <body class="interior {{active}} quickstart g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
-      <div class="container-fluid header dash">
-        {% include 'shared/top_nav.html' with class='d-md-flex' %}
-        {% include 'shared/nav.html' %}
-      </div>
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+
       <div class="container-fluid content my-3 text-left">
         <h4 class="title text-center">GRANT GUIDE</h4>
 

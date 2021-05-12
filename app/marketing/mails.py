@@ -1364,20 +1364,30 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(es):
-
+    from dashboard.models import Bounty
     to_email = es.email
     keywords = es.keywords
     bounties, old_bounties = get_bounties_for_keywords(keywords, 24)
     max_bounties = 5
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
+
+    # fallback from tag matching
+    if not bounties:
+        bounties = Bounty.objects.current().filter(
+            network='mainnet',
+            idx_status__in=['open'],
+            web3_created__gt=timezone.now() - timezone.timedelta(hours=24),
+        ).exclude(bounty_reserved_for_user__isnull=False).order_by('-_val_usd_db')[0:3]
+
     to_emails = [to_email]
 
     from townsquare.utils import is_email_townsquare_enabled
-    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates, upcoming_dates, email_announcements
+    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, latest_activities, upcoming_dates, upcoming_dates, email_announcements
     quest = quest_of_the_day()
     grant = upcoming_grant()
-    dates = list(upcoming_hackathon()) + list(upcoming_dates())
+    hackathons = get_hackathons()
+    dates = hackathons[0] + hackathons[1] + list(upcoming_dates())
     announcements = email_announcements()
     town_square_enabled = is_email_townsquare_enabled(to_email)
     should_send = (len(bounties) > 0) or town_square_enabled
@@ -1433,7 +1443,7 @@ def new_bounty_daily(es):
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, hackathons=get_hackathons(), latest_activities=activities)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])

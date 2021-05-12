@@ -1,12 +1,13 @@
-const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
+const payWithRSKExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
 
   // 1. init rsk provider
   // const rskHost = "https://public-node.testnet.rsk.co";
-  const rskHost = "https://public-node.rsk.co";
+  const rskHost = 'https://public-node.rsk.co';
   const rskClient = new Web3();
+
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
@@ -82,11 +83,11 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
   const txHash = await ethereum.request(
     {
       method: 'eth_sendTransaction',
-      params: [txArgs],
+      params: [txArgs]
     }
   );
 
-  callback(null, ethereum.selectedAddress, txHash)
+  callback(null, ethereum.selectedAddress, txHash);
 
   function callback(error, from_address, txn) {
     if (error) {
@@ -111,13 +112,13 @@ const payWithRSKExtension = async (fulfillment_id, to_address, vm, modal) => {
           console.log('success', response);
 
           vm.fetchBounty();
-          _alert('Payment Successful');
+          _alert('Payment Successful', 'success');
 
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         _alert('Unable to make payout bounty. Please try again later', 'danger');
         console.log(error);
       });

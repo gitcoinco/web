@@ -1061,7 +1061,7 @@ def grants_by_grant_type(request, grant_type):
             logger.debug(e)
             pass
 
-    if collection_id:
+    if collection_id and collection_id.isdigit():
         collections = GrantCollection.objects.filter(pk=collection_id)
         if collections.exists():
             collection = collections.first()
@@ -1417,7 +1417,7 @@ def grant_details(request, grant_id, grant_slug):
 
         # calculate whether is available
         # TODO - do this asyncronously so as not to block the pageload
-        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc:
+        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc and grant.admin_address != '0x0':
             if is_team_member or is_staff or is_admin:
                 w3 = get_web3(grant.network)
                 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
@@ -1427,7 +1427,7 @@ def grant_details(request, grant_id, grant_slug):
                 is_match_available_to_claim = True if amount_available > 0 else False
 
         # Determine if we should show the claim match button on the grant details page
-        should_show_claim_match_button = (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
+        should_show_claim_match_button = grant.active and (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
 
     except Exception as e:
         logger.exception(e)
@@ -2333,7 +2333,7 @@ def grants_cart_view(request):
 
         context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
                                             profile.is_poap_verified and profile.is_twitter_verified and \
-                                            profile.is_google_verified)
+                                            profile.is_google_verified and profile.is_poh_verified)
     else:
         return redirect('/login/github/?next=' + request.get_full_path())
 

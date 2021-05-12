@@ -14,17 +14,19 @@
   this.truncate = function(elem, _number) {
     var number = !_number ? _number = 4 : _number;
 
-    if (elem.textContent === undefined) {
+    if (elem && elem.textContent === undefined) {
       let content = elem.trim();
 
       content = content.substr(0, number + 2) + '\u2026' + content.substr(-number);
       return (this.elem = content);
     }
-    let content = elem.textContent.trim();
+    let content = !elem ? '' : elem.textContent.trim();
 
     content = content.substr(0, number + 2) + '\u2026' + content.substr(-number);
-    elem.textContent = content;
+    if (elem)
+      elem.textContent = content;
   };
+
 
   this.truncateHash = function() {
     const elem = document.querySelectorAll('[data-truncatehash]');

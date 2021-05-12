@@ -14,17 +14,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     {% include 'shared/current_profile.html' %}
-    {% compress css file bulk_payout_bounty %}
+    {% bundle css file bulk_payout_bounty %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bulk_payout_bounty.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
 
   <body class="interior {{ active }} g-font-muli">
