@@ -1986,12 +1986,10 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
         Defaults to: None.</p>
 <h2 id="git.utils.build_auth_dict">build_auth_dict</h2>
 
-<pre><code class="python">build_auth_dict(oauth_token)
+<pre><code class="python">build_auth_dict()
 </code></pre>
 
 <p>Collect authentication details.</p>
-<p>Args:
-    oauth_token (str): The Github OAuth token.</p>
 <p>Returns:
     dict: An authentication dictionary.</p>
 <h2 id="git.utils.check_github">check_github</h2>
@@ -2026,7 +2024,7 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 
 <p>Reset the provided token.</p>
 <p>Args:
-    access_token (str): The Github OAuth token.</p>
+    oauth_token (str): The Github OAuth token.</p>
 <p>Returns:
     str: The new Github OAuth token.</p>
 <h2 id="git.utils.get_auth_url">get_auth_url</h2>

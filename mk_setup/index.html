@@ -295,6 +295,26 @@
     Special instructions for Windows WSL contributors
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-toolbox" title="Docker Toolbox" class="md-nav__link">
+    Docker Toolbox
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure" title="Configure" class="md-nav__link">
+    Configure
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -360,6 +380,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#initial-test-data" title="Initial test data" class="md-nav__link">
+    Initial test data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#create-django-admin" title="Create Django Admin" class="md-nav__link">
     Create Django Admin
   </a>
@@ -369,13 +396,6 @@
         <li class="md-nav__item">
   <a href="#add-a-custom-erc20-token-to-your-local-gitcoin" title="Add a Custom ERC20 Token To your Local Gitcoin" class="md-nav__link">
     Add a Custom ERC20 Token To your Local Gitcoin
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initial-test-data" title="Initial test data" class="md-nav__link">
-    Initial test data
   </a>
   
 </li>
@@ -2219,6 +2239,26 @@
     Special instructions for Windows WSL contributors
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-toolbox" title="Docker Toolbox" class="md-nav__link">
+    Docker Toolbox
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure" title="Configure" class="md-nav__link">
+    Configure
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2284,6 +2324,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#initial-test-data" title="Initial test data" class="md-nav__link">
+    Initial test data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#create-django-admin" title="Create Django Admin" class="md-nav__link">
     Create Django Admin
   </a>
@@ -2293,13 +2340,6 @@
         <li class="md-nav__item">
   <a href="#add-a-custom-erc20-token-to-your-local-gitcoin" title="Add a Custom ERC20 Token To your Local Gitcoin" class="md-nav__link">
     Add a Custom ERC20 Token To your Local Gitcoin
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initial-test-data" title="Initial test data" class="md-nav__link">
-    Initial test data
   </a>
   
 </li>
@@ -2458,26 +2498,18 @@ cp app/app/local.env app/app/.env
 </code></pre>
 
 <h2 id="special-instructions-for-windows-wsl-contributors">Special instructions for Windows WSL contributors</h2>
-<p><em>If you are using Windows 10 Professional or Enterprise</em></p>
-<p>Download Docker Desktop for Windows <a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">here</a>.</p>
-<p><em>If you are NOT using Windows 10 Professional or Enterprise</em></p>
-<p>Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:</p>
+<p>If you are using Windows 10 Professional or Enterprise, you can download <a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">Docker Desktop for Windows</a>. Otherwise, you will need to install and configure Docker Toolbox.</p>
+<h3 id="docker-toolbox">Docker Toolbox</h3>
 <ol>
-<li>
-<p>Follow the installation instructions on the <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">manual for installing Docker Toolbox on Windows</a>.</p>
-</li>
-<li>
-<p>WSL by default mounts your C: drive on <code>/mnt/c</code>, but Docker Toolkit instead expects it to be mounted on <code>/c/</code>. To instruct WSL to mount it in the correct location, create a config file in <code>/etc/wsl.conf</code> using WSL and enter the following:</p>
-</li>
-</ol>
-<pre><code>[automount]
-root = /
-options = &quot;metadata&quot;
-</code></pre>
-
-<ol>
+<li>Follow the installation instructions on the <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">manual for installing Docker Toolbox on Windows</a>.</li>
+<li>WSL by default mounts your C: drive on <code>/mnt/c</code>, but Docker Toolkit instead expects it to be mounted on <code>/c/</code>. To instruct WSL to mount it in the correct location, create a config file in <code>/etc/wsl.conf</code> using WSL and enter the following:
+    <code>ini
+    [automount]
+    root = /
+    options = "metadata"</code></li>
 <li>Lastly, ensure that you are sharing the folders of your project directory to your VirtualBox VM, i.e. if your Gitcoin repository is located in <code>C:/Projects/web</code>, you will have to go to the VirtualBox UI, click on <code>Settings &gt; Shared Folders</code>, and ensure that there is an entry with a name of <code>c/Projects</code> and a path of <code>C:\Projects</code>.</li>
 </ol>
+<h3 id="configure">Configure</h3>
 <p>Once Docker is installed (either via Docker Desktop for Windows or Docker Toolkit), install the Docker packages on WSL as you normally would for Ubuntu:</p>
 <pre><code class="shell"># Update the apt package list.
 $ sudo apt-get update -y
@@ -2553,7 +2585,6 @@ docker-compose version 1.24.1, build 4667896b
 <p>For background build, Gitcoin server runs as a service and its always there. You can stop it using <code>kill process</code>, docker-compose to stop it  or other means.</p>
 <p><em>Note: Running <code>docker-compose logs --tail=50 -f &lt;optional container_name&gt;</code> will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. <code>--tail</code> is optional.</em>
 Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compose CLI Reference</a> for more information.</p>
-<p>You will need to edit the <code>app/.env</code> file with your local environment variables. Look for config items that are marked <code># required</code>.</p>
 <h2 id="a-note-on-performance">A note on performance</h2>
 <p>The Gitcoin docker containers contain serval containers for many purposes (web development, task pipeline dev, ganache for blockchain development). Because of this, the whole package can take several GB of RAM.   If all you want to do is work on the site, and you experience slowness while running Gitcoin, we recommend running these commands</p>
 <blockquote>
@@ -2569,39 +2600,58 @@ Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compos
 <h2 id="static-asset-handling-optional">Static Asset Handling (optional)</h2>
 <p>If you're testing in a staging or production style environment behind a CDN, pass the <code>DJANGO_STATIC_HOST</code> environment variable to your django web instance specifying the CDN URL.</p>
 <p>For example:</p>
-<p><code>DJANGO_STATIC_HOST='https://gitcoin.co'</code></p>
+<pre><code class="sh">DJANGO_STATIC_HOST='https://gitcoin.co'
+</code></pre>
+
+<h2 id="initial-test-data">Initial test data</h2>
+<p>The development server is conditioned with a representative sampling of test data fixtures outlined below:</p>
+<ul>
+<li>20ish users doing a variety things</li>
+<li>Bounties in various statuses - so you can get to work!</li>
+<li>Grants - ask some friends to support your work on Gitcoin</li>
+<li>A variety of Kudos for you to send to everybody hard at work on bounties</li>
+<li>A default superuser - usage below<ol>
+<li>Go to <a href="http://localhost:8000/_administration">http://localhost:8000/_administrationeconomy/</a></li>
+<li>Login with<ul>
+<li>username: root</li>
+<li>password: gitcoinco</li>
+</ul>
+</li>
+<li>Poke around the database tables</li>
+<li>Click the <em>Impersonate User</em> link,  pick any user and poke around the site</li>
+</ol>
+</li>
+</ul>
 <h2 id="create-django-admin">Create Django Admin</h2>
+<p>The <a href="#initial-test-data">initial test data</a> comes with a pre-configured
+superuser. You can also create a new one using the following command:</p>
 <pre><code class="shell">docker-compose exec web python3 app/manage.py createsuperuser
 </code></pre>
 
+<p>Make sure that the services are already running. See <a href="#startup-server">Startup server</a> for an example.</p>
+<p>If the script worked correctly, you will be asked for the following information:</p>
+<ul>
+<li>username</li>
+<li>password</li>
+<li>email - optional, blank is ok</li>
+</ul>
 <h2 id="add-a-custom-erc20-token-to-your-local-gitcoin">Add a Custom ERC20 Token To your Local Gitcoin</h2>
 <ol>
 <li><a href="https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md#create-django-admin">Create a django admin</a></li>
 <li>Go to <a href="http://localhost:8000/_administrationeconomy/token/">http://localhost:8000/_administrationeconomy/token/</a> and click <code>Add New Token</code>.</li>
 <li>Open another tab and go to <a href="http://tokenfactory.surge.sh">http://tokenfactory.surge.sh</a></li>
-<li>Mint a new token on the network of ur choice.</li>
+<li>Mint a new token on the network of your choice.</li>
 <li>Go back to your Gitcoin local tab, and enter the token.</li>
 <li>Click Save</li>
 <li>Congratulations, your local environment now supports your custom token!</li>
 <li>You may continue administering your token over at <a href="http://tokenfactory.surge.sh">http://tokenfactory.surge.sh</a>.  Hint:  Maybe you should mint some? 🤔</li>
 </ol>
-<h2 id="initial-test-data">Initial test data</h2>
-<p>The development server is conditioned with a representative sampling of test data fixtures outlined below:
-* 20ish users doing a variety things
-* Bounties in various statuses - so you can get to work!
-* Grants - ask some friends to support your work on Gitcoin
-* A variety of Kudos for you to send to everybody hahrd at work on bounties
-* A default superuser - usage below
-    1. Go to <a href="http://localhost:8000/_administration">http://localhost:8000/_administrationeconomy/</a> 
-    2. Login with - username - root - password - gitcoinco 
-    3. Poke around the database tables.
-    4. Click the "Impersonate User" link,  pick any user and poke around the site.</p>
-<p>Note, using the sync_geth command described below can potentially break some of the fixtures outlined above.</p>
 <h2 id="optional-import-bounty-data-from-web3-to-your-database">Optional: Import bounty data from web3 to your database</h2>
-<p>This can be useful if you'd like data to test with:</p>
+<p>This can be useful if you'd like data to test with shared data:</p>
 <pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
 </code></pre>
 
+<p><strong>Note:</strong> using the <code>sync_geth</code> command can potentially break some of the <a href="#initial-test-data">Initial test data</a> fixtures.</p>
 <h3 id="faq">FAQ</h3>
 <h4 id="running-tests">Running Tests</h4>
 <p><code>Q: How can I run the tests locally?</code></p>
@@ -2681,7 +2731,7 @@ update_stable                  Update the stable branch with master.
 </code></pre>
 
 <p>Copy and paste</p>
-<pre><code>{ 
+<pre><code class="json">{
     &quot;experimental&quot;: true 
 } 
 </code></pre>

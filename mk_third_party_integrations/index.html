@@ -336,6 +336,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#setup-facebook-integration" title="Setup Facebook Integration" class="md-nav__link">
+    Setup Facebook Integration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#setup-sendgrid-to-send-emails-recommended" title="Setup SendGrid to Send Emails (Recommended)" class="md-nav__link">
     Setup SendGrid to Send Emails (Recommended)
   </a>
@@ -2091,6 +2098,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#setup-facebook-integration" title="Setup Facebook Integration" class="md-nav__link">
+    Setup Facebook Integration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#setup-sendgrid-to-send-emails-recommended" title="Setup SendGrid to Send Emails (Recommended)" class="md-nav__link">
     Setup SendGrid to Send Emails (Recommended)
   </a>
@@ -2213,6 +2227,19 @@ GOOGLE_CLIENT_SECRET=xxx
 
 <p>Please <code>docker-compose down; docker-compose up -d</code> to have the environment variable changes reflect in your local Google environment.</p>
 <p>Note: Update the <code>OAUTHLIB_INSECURE_TRANSPORT</code> in <code>web/app/app/.env</code> to <code>0</code> for production.</p>
+<h2 id="setup-facebook-integration">Setup Facebook Integration</h2>
+<p>Navigate to: <a href="https://developers.facebook.com/apps/">Facebook - Create App</a>, select <code>Build Connected Experiences</code> and continue with similar values to:
+* App Display Name: <code>MyGitcoinApp</code>
+* App Contact Email: Your email address</p>
+<p>Set Up Facebook Login in <strong>Add Products to Your App</strong>.</p>
+<p>On the page: <code>Facebook Login &gt; Settings</code>:
+* Valid OAuth Redirect URIs: <code>http://localhost:8000</code></p>
+<p>Update the <code>web/app/app/.env</code> file to include the values provided by Facebook on your created app <code>Settings &gt; Basic</code>:</p>
+<pre><code class="sell">FACEBOOK_CLIENT_ID=xxx
+FACEBOOK_CLIENT_SECRET=xxx
+</code></pre>
+
+<p>Please <code>docker-compose down; docker-compose up -d</code> to have the environment variable changes reflect in your local Gitcoin environment.</p>
 <h2 id="setup-sendgrid-to-send-emails-recommended">Setup SendGrid to Send Emails (Recommended)</h2>
 <ol>
 <li>Create a new SendGrid Account at https://sendgrid.com</li>
