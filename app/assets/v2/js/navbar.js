@@ -298,8 +298,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbarOffset = navbarContainerEl.getBoundingClientRect();
     // push the positions taken from the event
     mousePositions[menu].push({
-      x: e.pageX,
-      y: e.pageY - navbarOffset.y
+      x: e.clientX,
+      y: e.clientY - navbarOffset.y
     });
     // ensure the arr is no longer than 2 entries
     if (mousePositions[menu].length > 2)
