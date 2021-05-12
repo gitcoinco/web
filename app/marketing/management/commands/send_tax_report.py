@@ -204,7 +204,7 @@ def get_profile_location(profile):
             if code == US:
                 us_worker = True
     elif profile.locations:
-        location_components = profile.locations[-1]
+        location_components = profile.locations[-1] if len(profile.locations) > 0 else None
         if CITY in location_components:
             location_temp += location_components[CITY]
         if COUNTRY_NAME in location_components:

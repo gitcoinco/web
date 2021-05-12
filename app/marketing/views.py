@@ -743,7 +743,7 @@ def tax_settings(request):
     # location dict is empty
     else:
         # set it to the last location registered for the user
-        location_components = profile.locations[-1]
+        location_components = profile.locations[-1] if len(profile.locations) > 0 else None
         if 'city' in location_components:
             if location_components['city']:
                 location += location_components['city']
