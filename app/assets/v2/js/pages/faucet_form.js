@@ -147,7 +147,7 @@ var trigger_faucet_form_web3_hooks = function(data) {
         return;
       }
 
-      if (result.toNumber()) {
+      if (!result.toNumber()) {
         $('#zero_balance_error').css('display', 'block');
         $('#admin_faucet_form').remove();
       }

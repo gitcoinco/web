@@ -205,22 +205,23 @@ def get_profile_location(profile):
                 us_worker = True
     elif profile.locations:
         location_components = profile.locations[-1] if len(profile.locations) > 0 else None
-        if CITY in location_components:
-            location_temp += location_components[CITY]
-        if COUNTRY_NAME in location_components:
-            country_name = location_components[COUNTRY_NAME]
-            if location_temp:
-                location_temp += ', ' + country_name
-            else:
-                location_temp += country_name
-        if COUNTRY_CODE in location_components:
-            country_code = location_components[COUNTRY_CODE]
-            if location_temp:
-                location_temp += ', ' + country_code
-            else:
-                location_temp += country_code
-            if location_components[COUNTRY_CODE] == US:
-                us_worker = True
+        if location_components:
+            if CITY in location_components:
+                location_temp += location_components[CITY]
+            if COUNTRY_NAME in location_components:
+                country_name = location_components[COUNTRY_NAME]
+                if location_temp:
+                    location_temp += ', ' + country_name
+                else:
+                    location_temp += country_name
+            if COUNTRY_CODE in location_components:
+                country_code = location_components[COUNTRY_CODE]
+                if location_temp:
+                    location_temp += ', ' + country_code
+                else:
+                    location_temp += country_code
+                if location_components[COUNTRY_CODE] == US:
+                    us_worker = True
     if location_temp:
         location = location_temp
     return location, us_worker
