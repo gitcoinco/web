@@ -1,9 +1,10 @@
-from django.core.management.base import BaseCommand
-
 from django.contrib.contenttypes.models import ContentType
+
+from django.core.management.base import BaseCommand
 
 from dashboard.models import Earning
 from grants.models import Contribution
+
 
 class Command(BaseCommand):
 
@@ -15,7 +16,7 @@ class Command(BaseCommand):
         # iterate and correct network
         for contribution in rinkeby_contributions:
             # only need to correct if earning table lists mainnet
-            earning = Earning.objects.filter(network='mainnet', source_id=contribution.pk).first()
+            earning = Earning.objects.filter(network='mainnet', source_type=ContentType.objects.get(app_label='grants', model='contribution'), source_id=contribution.pk).first()
             if earning:
                 print("correcting %s" % contribution.pk)
                 earning.network = 'rinkeby'
