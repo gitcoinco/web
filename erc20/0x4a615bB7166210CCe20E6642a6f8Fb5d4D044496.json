@@ -1,0 +1,19 @@
+{
+    "symbol": "NAOS",
+    "address": "0x4a615bB7166210CCe20E6642a6f8Fb5d4D044496",
+    "overview":{
+          "en": "NAOS Finance is a DeFi lending protocol allowing lenders and SME borrowers to facilitate permissionless and borderless loaning/borrowing transactions on the blockchain. Built on Ethereum, our platform lets users tokenize real-world assets and subsequent lending.",
+          "zh": "NAOS Finance 旨在允许链外借款方通过 DeFi 协议获取资金，并通过 KYC 和保险池为贷款方提供风险敞口，连接 DeFi 和链下资产。"
+    },
+    "email": "team@naos.finance",
+    "website": "https://naos.finance/",
+    "whitepaper": "https://medium.com/naos-finance/introducing-naos-finance-75d3e3a1b0ab",
+    "state": "NORMAL",
+    "published_on": "2021-04-27",
+    "links": {
+        "discord": "https://discord.com/invite/6AhpYb992p",
+        "medium": "https://medium.com/naos-finance",
+        "telegram": "https://t.me/naos_finance",
+        "twitter": "https://twitter.com/naos_finance"
+      }
+}
