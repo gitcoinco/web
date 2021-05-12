@@ -46,7 +46,7 @@ const targets = {
   },
   xs: {
     heightDiff: 440,
-    fontSizeLow: 0.9,
+    fontSizeLow: 1.1,
     fontSizeHigh: 2,
     paddingTopLow: 0,
     paddingTopHigh: 415

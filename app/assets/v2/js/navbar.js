@@ -294,10 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // record mousePositions for each movement over submenus container
   const pushMousePosition = (e, menu) => {
+    // ensure that the mouse is always offset by whatever is above the nav
+    const navbarOffset = navbarContainerEl.getBoundingClientRect();
     // push the positions taken from the event
     mousePositions[menu].push({
       x: e.pageX,
-      y: e.pageY
+      y: e.pageY - navbarOffset.y
     });
     // ensure the arr is no longer than 2 entries
     if (mousePositions[menu].length > 2)
