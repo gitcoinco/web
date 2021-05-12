@@ -31,13 +31,8 @@ def get_nervos_txn_status(txnid, network='mainnet'):
             tip_block_number_url, headers=HEADERS
         ).json()['data']['attributes']['tip_block_number']
         confirmations = tip_block_number - int(tx_data['block_number'])
-        output_status = tx_data['display_outputs'][0]['status']
 
-        if (
-            confirmations > 0 and
-            tx_data['tx_status'] == 'committed' and
-            output_status == 'live'
-        ):
+        if confirmations > 0 and tx_data['tx_status'] == 'committed':
             return True
         else:
             return False
