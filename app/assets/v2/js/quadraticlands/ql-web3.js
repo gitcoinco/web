@@ -95,10 +95,10 @@ async function setDelegateAddress(_delegateAddress, tokenAddress) {
 
 /**
  *  * calls the isClaimed function on TokenDistributor
- *  * @param {uint32} user_id (will maybe change to uint256)
+ *  * @param {uint32} user_id 
  *  */
 async function isClaimed(user_id) {
-  // Get GTC Token contract instance
+  // Get TokenDistributor contract instance
   const TokenDistributor = new web3.eth.Contract(
     token_distributor_abi,
     token_distributor_address()
@@ -114,4 +114,82 @@ async function isClaimed(user_id) {
     return;
   }
   return is_claimed;
+}
+
+/**
+ *  * retrieve active proposal counts from GovernorAlpha
+ *  * 
+ *  */
+ async function proposalState() {
+  // Get GovernorAlpha Token contract instance
+  const GovernorAlpha = new web3.eth.Contract(
+    governor_alpha_abi,
+    governor_alpha_address()
+  );
+
+  // 1) get total proposal count 
+  try {
+    proposal_count = GovernorAlpha.methods
+      .proposalCount()
+      .call({ from: selectedAccount });
+  } catch (e) {
+    console.error('Could not get proposalCount from GovernorAlpha: ', e);
+    return;
+  }
+  console.debug('ProposalCount: ', proposal_count);
+
+  // 2) loop through proposals and get state
+  var proposal_states = {
+    Pending:0, 
+    Active:0, 
+    Canceled:0,
+    Defeated:0,
+    Succeeded:0,
+    Queued:0,
+    Expired:0,
+    Executed:0 
+  };
+
+  for (let proposal = 1; proposal <= proposal_count; proposal++) {
+    try {
+      proposal_status = GovernorAlpha.methods
+        .state(proposal)
+        .call({ from: selectedAccount });
+    } catch (e) {
+      console.error('Could not get proposal state from GovernorAlpha: ', e);
+      return;
+    }
+    // add to proposal state to object
+    bumpCounts(proposal_status);
+  }
+  return proposal_states;
+
+  function bumpCounts(status){
+      if (status == 0) {
+        // bump Pending count
+        proposal_states.Pending=++proposal_states.Pending;
+      } else if (status == 1) {
+        // bump Active count
+        proposal_states.Active=++proposal_states.Active;
+      } else if (status == 2) {
+        // bump Canceled count
+        proposal_states.Canceled=++proposal_states.Canceled;
+      } else if (status == 3) {
+        // bump Defeated count
+        proposal_states.Defeated=++proposal_states.Defeated;
+      } else if (status == 4) {
+        // bump Succeeded count
+        proposal_states.Succeeded=++proposal_states.Succeeded;
+      } else if (status == 5) {
+        // bump Queued count
+        proposal_states.Queued=++proposal_states.Queued;
+      } else if (status == 6) {
+        // bump Expired count
+        proposal_states.Expired=++proposal_states.Expired;
+      } else if (status == 7) {
+        // bump Executed count
+        proposal_states.Executed=++proposal_states.Executed;
+      }
+  }
+
 }

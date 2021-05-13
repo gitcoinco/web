@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   fetch(snapshot_api).then(res => res.json()).then(data => updateSnapshotStats(data));
 
   // compound
-  updateCompoundStats();
+  updateOnchainStats();
 
   // discourse
   updateDiscourseStats();
@@ -38,14 +38,14 @@ function updateSnapshotStats(data) {
 }
 
 
-// count active compound proposals
-function updateCompoundStats() {
-  x = 1337;
-  const stats_compound = document.getElementById('stats-compound');
+// count active on-chain proposals
+function updateOnchainStats() {
+  proposal_states = proposalState()
+  const stats_on_chain = document.getElementById('stats-on-chain');
 
-  stats_compound.innerHTML = x;
-  if (x >= 1) {
-    stats_compound.classList.add('aqua');
+  stats_on_chain.innerHTML = proposal_states.Active;
+  if (proposal_states.Active >= 1) {
+    stats_on_chain.classList.add('aqua');
   }
 }
 
