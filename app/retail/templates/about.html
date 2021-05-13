@@ -68,7 +68,6 @@
       }
 
       @keyframes scroll {
-        /* 0% { transform: translateX(0); } */
         100% { transform: translateX(calc(var(--cardSize ) * var(--cardCount) * var(--direction)))}
       }
 
@@ -136,8 +135,6 @@
 
       </header>
       <main>
-
-
         <section class="bg-pink-300 text-white py-5">
           <div class="container my-4">
             <div class="row pb-5">
@@ -290,10 +287,6 @@
         </section>
 
       </main>
-
-
-
-
     </div>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
@@ -303,7 +296,6 @@
 
     <script>
       __SVGATOR_PLAYER__.build({"root":"eqoavvqpcxqo1","animations":[{"duration":3300,"direction":1,"iterations":1,"fill":1,"alternate":false,"elements":{"eqoavvqpcxqo4":{"transform":{"data":{"o":{"x":146,"y":162.17167282104492,"type":"corner"},"t":{"x":-131.66162490844727,"y":-162.17167282104492}},"keys":{"r":[{"t":0,"v":0},{"t":1200,"v":-5},{"t":2700,"v":0}]}}},"eqoavvqpcxqo57":{"opacity":[{"t":0,"v":0},{"t":1200,"v":1},{"t":2000,"v":0},{"t":2600,"v":1}]},"eqoavvqpcxqo62":{"transform":{"data":{"t":{"x":-203.87667083740234,"y":-151.95000457763672}},"keys":{"o":[{"t":0,"v":{"x":203.87667083740234,"y":151.95000457763672,"type":"corner"}},{"t":1800,"v":{"x":203.87667083740234,"y":172,"type":"corner"}},{"t":3300,"v":{"x":203.87667083740234,"y":151.95000457763672,"type":"corner"}}]}}},"eqoavvqpcxqo158":{"transform":{"data":{"t":{"x":-66.61759948730469,"y":-220.52007293701172}},"keys":{"o":[{"t":0,"v":{"x":66.61759948730469,"y":220.52007293701172,"type":"corner"}},{"t":1200,"v":{"x":66.61759948730469,"y":218,"type":"corner"}},{"t":2700,"v":{"x":66.61759948730469,"y":220.52007293701172,"type":"corner"}}]}}},"eqoavvqpcxqo226":{"transform":{"data":{"t":{"x":-114.03750610351562,"y":-221.00643157958984}},"keys":{"o":[{"t":0,"v":{"x":114.03750610351562,"y":221.00643157958984,"type":"corner"}},{"t":1200,"v":{"x":113,"y":224,"type":"corner"}},{"t":2700,"v":{"x":114.03750610351562,"y":221.00643157958984,"type":"corner"}}],"r":[{"t":0,"v":0},{"t":1200,"v":2},{"t":2700,"v":0}]}}}}}],"options":{"start":"scroll","hover":"freeze","click":"freeze","scroll":25,"font":"embed","exportedIds":"unique","title":"Frame 8"},"animationSettings":{"duration":3300,"direction":1,"iterations":1,"fill":1,"alternate":false}})
-
 
       const SCROLL_SPEED = 0.3;
       const NOISE_SPEED = 0.004;
@@ -364,26 +356,21 @@
         }
       }
 
-
       class Bubble {
-        constructor(index, {x, y, s = 1, url = 'https://source.unsplash.com/random'}) {
+        constructor(index, {x, y, s = 1}) {
           this.index = index;
           this.x = x;
           this.y = y;
           this.scale = s;
-          this.url = url
 
           this.noiseSeedX = Math.floor(Math.random() * 64000);
           this.noiseSeedY = Math.floor(Math.random() * 64000);
-
-          /* this.el = document.createElement("img"); */
           this.el = bubblesEl.children[index]
           if (!this.el) {
             return;
           }
-          /* this.el.src = `${this.url}`; */
+
           this.el.classList.add (`logo${this.index + 1}`);
-          /* bubblesEl.appendChild(this.el); */
         }
 
         update() {
