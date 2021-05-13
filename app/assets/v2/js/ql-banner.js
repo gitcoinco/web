@@ -95,11 +95,11 @@ const styleOnScroll = () => {
 const createIntersectionObserver = () => {
   // create a new intersectionObserver that will call styleOnScroll for 100 steps (as the header intersects)
   new IntersectionObserver((entries) => entries.forEach(() => {
-      // no need to send the per because we will caluclate it manually to stay responsive (md/sm/xs)
-      styleOnScroll();
-    }), {
+    // no need to send the per because we will caluclate it manually to stay responsive (md/sm/xs)
+    styleOnScroll();
+  }), {
     // fire for 100 steps
-    threshold: [...new Array(100)].map((_, k) => (k/100))
+    threshold: [...new Array(100)].map((_, k) => (k / 100))
   }).observe(banner);
 };
 
