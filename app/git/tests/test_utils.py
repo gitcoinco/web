@@ -97,7 +97,7 @@ class GitUtilitiesTest(TestCase):
         """Test the github utility reset_token method."""
         auth_dict = build_auth_dict()
         url = TOKEN_URL.format(**auth_dict)
-        data = {'access_token': self.user_oauth_token}
+        data = {'token': self.user_oauth_token}
         responses.add(responses.PATCH, url, json=data, headers=HEADERS, status=200)
         responses.add(responses.PATCH, url, headers=HEADERS, status=404)
         result = reset_token(self.user_oauth_token)

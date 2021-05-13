@@ -23,10 +23,11 @@ from unittest.mock import patch
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
+import pytest
+from dashboard.models import Activity, Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
 from marketing.management.commands import assemble_leaderboards
 from marketing.management.commands.assemble_leaderboards import (
-    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly,
+    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
 )
 from marketing.models import LeaderboardRank
 from pytz import UTC
@@ -38,6 +39,7 @@ class TestAssembleLeaderboards(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
+        patch('marketing.management.commands.assemble_leaderboards.DAILY_CUTOFF', datetime(2021, 4, 27, 10, 00, tzinfo=UTC)).start()
 
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
@@ -160,11 +162,11 @@ class TestAssembleLeaderboards(TestCase):
         )
 
     def tearDown(self):
+        patch.stopall()
         self.bounty_payer_profile.delete()
         self.bounty_earner_profile.delete()
         self.tip_username_profile.delete()
         self.tip_from_username_profile.delete()
-
 
     def mock_run_cadence_datetimes(self, func, passing, failing):
         with patch.object(timezone, 'now', return_value=passing) as mock_now:
@@ -211,157 +213,36 @@ class TestAssembleLeaderboards(TestCase):
 
             assert LeaderboardRank.objects.filter(product='all', active=True, leaderboard="daily_tokens").count() == 1
 
+    def test_suppress_leaderboard_when_missing_user_handle(self):
+        assert should_suppress_leaderboard(None) == True
 
-    '''
-    def test_default_ranks(self):
-        """Test default ranks dictionary."""
-        ranks = default_ranks()
+    def test_suppress_leaderboard_when_options_set(self):
+        hidden_profile = Profile.objects.create(
+            data={},
+            handle="hidden_user",
+            hide_profile=True,
+        )
+        assert should_suppress_leaderboard("hidden_user") == True
+        hidden_profile.delete()
 
-        assert len(ranks) == len(TIMES) * len(BREAKDOWNS)
-    '''
+        suppressed_profile = Profile.objects.create(
+            data={},
+            handle="suppressed_user",
+            suppress_leaderboard=True,
+            hide_profile=False
+        )
+        assert should_suppress_leaderboard("suppressed_user") == True
+        suppressed_profile.delete()
 
-    '''
-    def test_bounty_index_terms(self):
-        """Test bounty index terms list."""
-        index_terms = bounty_index_terms(self.bounty)
-        assert len(index_terms) == 12
-        assert 'USDT' in index_terms
-        assert {self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco'}.issubset(set(index_terms))
+    def test_show_leaderboard_when_profile_does_not_exist(self):
+        assert should_suppress_leaderboard("random_user_name_9876") == False
 
-        # these asserts are not worth testing as they break every time the
-        # underlying geoip data gets updated
-        # assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
-        # assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
-        # assert {'Australia', 'Oceania'}.issubset(set(index_terms))
-
-        assert {'python', 'shell'}.issubset(set(index_terms))
-    '''
-
-    '''
-    def test_tip_index_terms(self):
-        """Test tip index terms list."""
-        index_terms = tip_index_terms(self.tip)
-
-        assert len(index_terms) == 10
-        assert 'USDT' in index_terms
-        assert {self.tip_payer_handle, self.tip_earner_handle, 'gitcoinco'}.issubset(set(index_terms))
-
-        # these asserts are not worth testing as they break every time the
-        # underlying geoip data gets updated
-        # assert {'Tallmadge', 'United States', 'North America'}.issubset(set(index_terms))
-        # assert {'London', 'United Kingdom', 'Europe'}.issubset(set(index_terms))
-    '''
-
-    '''
-    def test_sum_bounties_payer(self):
-        """Test sum bounties leaderboards."""
-        sum_bounties(self.bounty, [self.bounty_payer_handle])
-
-        rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_payers',
-            'yearly_all', 'yearly_fulfilled', 'yearly_payers',
-            'monthly_all', 'monthly_fulfilled', 'monthly_payers',
-            'weekly_all', 'weekly_fulfilled', 'weekly_payers',
-        ]
-        for rank_type in rank_types_exists:
-            assert assemble_leaderboards.ranks[rank_type][self.bounty_payer_handle] == self.bounty_value
-
-        rank_types_not_exists = [
-            'all_earners', 'all_orgs', 'all_keywords', 'all_tokens',
-            'all_countries', 'all_cities', 'all_continents',
-            'yearly_earners', 'yearly_orgs', 'yearly_keywords', 'yearly_tokens',
-            'yearly_countries', 'yearly_cities', 'yearly_continents',
-            'monthly_earners', 'monthly_orgs', 'monthly_keywords', 'monthly_tokens',
-            'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_earners', 'weekly_orgs', 'weekly_keywords', 'weekly_tokens',
-            'weekly_countries', 'weekly_cities', 'weekly_continents',
-        ]
-        for rank_type in rank_types_not_exists:
-            assert not dict(assemble_leaderboards.ranks[rank_type])
-    '''
-    '''
-    def test_sum_bounties_earner(self):
-        """Test sum bounties leaderboards."""
-        sum_bounties(self.bounty, [self.bounty_earner_handle])
-
-        rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_earners',
-            'yearly_all', 'yearly_fulfilled', 'yearly_earners',
-            'monthly_all', 'monthly_fulfilled', 'monthly_earners',
-            'weekly_all', 'weekly_fulfilled', 'weekly_earners',
-        ]
-        for rank_type in rank_types_exists:
-            assert assemble_leaderboards.ranks[rank_type][self.bounty_earner_handle] == self.bounty_value
-
-        rank_types_not_exists = [
-            'all_payers', 'all_orgs', 'all_keywords', 'all_tokens',
-            'all_countries', 'all_cities', 'all_continents',
-            'yearly_payers', 'yearly_orgs', 'yearly_keywords', 'yearly_tokens',
-            'yearly_countries', 'yearly_cities', 'yearly_continents',
-            'monthly_payers', 'monthly_orgs', 'monthly_keywords', 'monthly_tokens',
-            'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_payers', 'weekly_orgs', 'weekly_keywords', 'weekly_tokens',
-            'weekly_countries', 'weekly_cities', 'weekly_continents',
-        ]
-        for rank_type in rank_types_not_exists:
-            assert not dict(assemble_leaderboards.ranks[rank_type])
-    '''
-
-    '''
-    def test_sum_tips_payer(self):
-        """Test sum tips leaderboards."""
-        sum_tips(self.tip, [self.tip_payer_handle])
-
-        rank_types_exists = [
-            'monthly_all', 'monthly_fulfilled', 'monthly_payers',
-            'weekly_all', 'weekly_fulfilled', 'weekly_payers',
-        ]
-        for rank_type in rank_types_exists:
-            assert assemble_leaderboards.ranks[rank_type][self.tip_payer_handle] == self.tip_value
-
-        rank_types_not_exists = [
-            'monthly_earners', 'monthly_orgs', 'monthly_tokens',
-            'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_earners', 'weekly_orgs', 'weekly_tokens',
-            'weekly_countries', 'weekly_cities', 'weekly_continents',
-        ]
-        for rank_type in rank_types_not_exists:
-            assert not dict(assemble_leaderboards.ranks[rank_type])
-    '''
-
-    '''
-    def test_sum_tips_earner(self):
-        """Test sum tips leaderboards."""
-        sum_tips(self.tip, [self.tip_earner_handle])
-
-        rank_types_exists = [
-            'monthly_all', 'monthly_fulfilled', 'monthly_earners',
-            'weekly_all', 'weekly_fulfilled', 'weekly_earners',
-        ]
-        for rank_type in rank_types_exists:
-            assert assemble_leaderboards.ranks[rank_type][self.tip_earner_handle] == self.tip_value
-
-        rank_types_not_exists = [
-            'monthly_payers', 'monthly_orgs', 'monthly_tokens',
-            'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_payers', 'weekly_orgs', 'weekly_tokens',
-            'weekly_countries', 'weekly_cities', 'weekly_continents',
-        ]
-        for rank_type in rank_types_not_exists:
-            assert not dict(assemble_leaderboards.ranks[rank_type])
-    '''
-
-    '''
-    def test_command_handle(self):
-        """Test command assemble leaderboards."""
-        Command().handle()
-
-        assert LeaderboardRank.objects.filter(product='all').all().count() == 225
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_all").count() == 15
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_fulfilled").count() == 15
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_earners").count() == 1
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_payers").count() == 1
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_tokens").count() == 1
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_countries").count() == 3
-        assert LeaderboardRank.objects.filter(product='all').filter(leaderboard="all_keywords").count() == 2
-    '''
+    def test_show_leaderboard_when_user_exists_and_not_hiding(self):
+        public_profile = Profile.objects.create(
+            data={},
+            handle="public_user",
+            hide_profile=False,
+            suppress_leaderboard=False,
+        )
+        assert should_suppress_leaderboard("public_user") == False
+        public_profile.delete()
