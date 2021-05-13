@@ -49,6 +49,7 @@ from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
+from dashboard.sync.sia import sync_sia_payout
 from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
 from ens.auto import ns
@@ -612,6 +613,9 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'algorand_ext':
         sync_algorand_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'sia_ext':
+        sync_sia_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
