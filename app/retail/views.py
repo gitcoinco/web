@@ -482,57 +482,57 @@ def about(request):
         kernel = JSONStore.objects.get(view='about', key='kernel').data
 
     except JSONStore.DoesNotExist:
-        kernel = None
+        kernel = [{
+            "img": "harshricha.jpg",
+            "name": "Harsh & Richa",
+            "position": "Founders",
+            "company": "EPNS"
+        },
+        {
+            "img": "tomgreenaway.jpg",
+            "name": "Tom Greenaway",
+            "position": "Senior Dev Advocate",
+            "company": "Google"
+        },
+        {
+            "img": "sparrowread.jpg",
+            "name": "Sparrow Read",
+            "position": "Cofounder",
+            "company": "DADA, WOCA"
+        },
+        {
+            "img": "colinfortuner.jpg",
+            "name": "Colin Fortuner",
+            "position": "Indie Game Developer",
+            "company": "ex-Twitch"
+        },
+        {
+            "img": "shreyashariharan.jpg",
+            "name": "Shreyas Hariharan",
+            "position": "Founder",
+            "company": "Llama Community"
+        },
+        {
+            "img": "ramanshalupau.jpg",
+            "name": "Raman Shalupau",
+            "position": "Founder",
+            "company": "CryptoJobList"
+        },
+        {
+            "img": "omergoldberg.jpg",
+            "name": "Omer Goldberg",
+            "position": "Founder",
+            "company": "devclass.io, ex-Instagram"
+        },
+        {
+            "img": "kristiehuang.jpg",
+            "name": "Kristie Huang ",
+            "position": "Member",
+            "company": "Pantera Capital, she256"
+        }]
 
 
-    # kernel = [{
-    #         "img": "harshricha.jpg",
-    #         "name": "Harsh & Richa",
-    #         "position": "Founders",
-    #         "company": "EPNS"
-    #     },
-    #     {
-    #         "img": "tomgreenaway.jpg",
-    #         "name": "Tom Greenaway",
-    #         "position": "Senior Dev Advocate",
-    #         "company": "Google"
-    #     },
-    #     {
-    #         "img": "sparrowread.jpg",
-    #         "name": "Sparrow Read",
-    #         "position": "Cofounder",
-    #         "company": "DADA, WOCA"
-    #     },
-    #     {
-    #         "img": "colinfortuner.jpg",
-    #         "name": "Colin Fortuner",
-    #         "position": "Indie Game Developer",
-    #         "company": "ex-Twitch"
-    #     },
-    #     {
-    #         "img": "shreyashariharan.jpg",
-    #         "name": "Shreyas Hariharan",
-    #         "position": "Founder",
-    #         "company": "Llama Community"
-    #     },
-    #     {
-    #         "img": "ramanshalupau.jpg",
-    #         "name": "Raman Shalupau",
-    #         "position": "Founder",
-    #         "company": "CryptoJobList"
-    #     },
-    #     {
-    #         "img": "omergoldberg.jpg",
-    #         "name": "Omer Goldberg",
-    #         "position": "Founder",
-    #         "company": "devclass.io, ex-Instagram"
-    #     },
-    #     {
-    #         "img": "kristiehuang.jpg",
-    #         "name": "Kristie Huang ",
-    #         "position": "Member",
-    #         "company": "Pantera Capital, she256"
-    #     }]
+
 
     context = {
         'title': 'Gitcoin - Support open web development.',
