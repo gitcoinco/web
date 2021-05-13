@@ -1,7 +1,28 @@
 section.dashboard .content-proposals {
-  .col {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1em;
-  }
+
+	.wrapper{
+
+		.item{
+			width: 100%;
+			display: flex;
+			margin-bottom: 1em;
+
+			.item-link{
+
+			}
+
+			.item-stats{
+				margin-left: auto;
+				&.aqua{
+					color: var(--aqua);
+				}
+			}
+
+		}
+
+
+
+	}
+
+
 }
