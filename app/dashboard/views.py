@@ -6840,7 +6840,8 @@ def verify_user_poh(request):
             'msg': 'Ethereum address is already registered.',
         })
 
-    if not is_registered_on_poh(signer):
+    web3 = get_web3('mainnet')
+    if not is_registered_on_poh(web3, signer):
         return JsonResponse({
             'ok': False,
             'msg': 'Ethereum address is not registered on Proof of Humanity, please try after registration.',

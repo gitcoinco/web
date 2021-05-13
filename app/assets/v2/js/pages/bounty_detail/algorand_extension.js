@@ -41,7 +41,7 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
 
       if (
         token_name == 'ALGO' &&
-        balance.amount <= amount * 10 ** vm.decimals
+        Number(balance.amount) <= amount * 10 ** vm.decimals
       ) {
         // ALGO token
         _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
