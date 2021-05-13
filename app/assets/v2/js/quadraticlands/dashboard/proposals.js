@@ -5,9 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   fetch(snapshot_api).then(res => res.json()).then(data => updateSnapshotStats(data));
 
-  // compound
-  updateOnchainStats();
-
   // discourse
   updateDiscourseStats();
 
@@ -38,19 +35,7 @@ function updateSnapshotStats(data) {
 }
 
 
-// count active on-chain proposals
-function updateOnchainStats() {
-  proposal_states = proposalState()
-  const stats_on_chain = document.getElementById('stats-on-chain');
-
-  stats_on_chain.innerHTML = proposal_states.Active;
-  if (proposal_states.Active >= 1) {
-    stats_on_chain.classList.add('aqua');
-  }
-}
-
-
-// count active compound proposals
+// count active Discourse proposals
 function updateDiscourseStats() {
   x = 23;
   const stats_discourse = document.getElementById('stats-discourse');

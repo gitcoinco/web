@@ -129,14 +129,14 @@ async function isClaimed(user_id) {
 
   // 1) get total proposal count 
   try {
-    proposal_count = GovernorAlpha.methods
+    proposal_count = await GovernorAlpha.methods
       .proposalCount()
       .call({ from: selectedAccount });
   } catch (e) {
     console.error('Could not get proposalCount from GovernorAlpha: ', e);
     return;
   }
-  console.debug('ProposalCount: ', proposal_count);
+  //console.debug('ProposalCount: ', proposal_count);
 
   // 2) loop through proposals and get state
   var proposal_states = {
@@ -152,7 +152,7 @@ async function isClaimed(user_id) {
 
   for (let proposal = 1; proposal <= proposal_count; proposal++) {
     try {
-      proposal_status = GovernorAlpha.methods
+      proposal_status = await GovernorAlpha.methods
         .state(proposal)
         .call({ from: selectedAccount });
     } catch (e) {
@@ -162,33 +162,34 @@ async function isClaimed(user_id) {
     // add to proposal state to object
     bumpCounts(proposal_status);
   }
+  // console.debug("proposal_states", proposal_states)
   return proposal_states;
 
   function bumpCounts(status){
       if (status == 0) {
         // bump Pending count
-        proposal_states.Pending=++proposal_states.Pending;
+        proposal_states.Pending+=1;
       } else if (status == 1) {
         // bump Active count
-        proposal_states.Active=++proposal_states.Active;
+        proposal_states.Active+=1;
       } else if (status == 2) {
         // bump Canceled count
-        proposal_states.Canceled=++proposal_states.Canceled;
+        proposal_states.Canceled+=1;
       } else if (status == 3) {
         // bump Defeated count
-        proposal_states.Defeated=++proposal_states.Defeated;
+        proposal_states.Defeated+=1;
       } else if (status == 4) {
         // bump Succeeded count
-        proposal_states.Succeeded=++proposal_states.Succeeded;
+        proposal_states.Succeeded+=1;
       } else if (status == 5) {
         // bump Queued count
-        proposal_states.Queued=++proposal_states.Queued;
+        proposal_states.Queued+=1;
       } else if (status == 6) {
         // bump Expired count
-        proposal_states.Expired=++proposal_states.Expired;
+        proposal_states.Expired+=1;
       } else if (status == 7) {
         // bump Executed count
-        proposal_states.Executed=++proposal_states.Executed;
+        proposal_states.Executed+=1;
       }
   }
 
