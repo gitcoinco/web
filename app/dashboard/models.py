@@ -4052,10 +4052,11 @@ class Profile(SuperModel):
         if not self.github_access_token:
             return False
 
-        _params = build_auth_dict(self.github_access_token)
+        _params = build_auth_dict()
         url = TOKEN_URL.format(**_params)
         response = requests.get(
             url,
+            data=json.dumps({'access_token': self.github_access_token}),
             auth=(_params['client_id'], _params['client_secret']),
             headers=HEADERS)
 

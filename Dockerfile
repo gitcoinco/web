@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip inkscape libmagic-dev"
-ARG BUILD_DEPS="gcc g++ postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
+ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
 WORKDIR /code
 
 # Inkscape
@@ -22,6 +22,8 @@ RUN apt-get install -y $BUILD_DEPS
 RUN apt-get install -y wget
 RUN apt-get install -y libsodium-dev
 
+RUN add-apt-repository universe
+RUN apt-get update
 RUN apt-get install -y python3-pip
 
 COPY dist/* ./
@@ -48,6 +50,13 @@ COPY bin/docker-command.bash /bin/docker-command.bash
 RUN dos2unix /bin/docker-command.bash
 
 COPY app/ /code/app/
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update
+RUN apt-get install -y yarn
+RUN yarn global add n
+RUN n stable
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/bin/docker-command.bash"]

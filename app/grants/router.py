@@ -84,7 +84,7 @@ class GrantViewSet(viewsets.ModelViewSet):
             offset = 0
         offset = int(offset)
         limit = int(limit)
-        queryset = queryset[offset:limit]
+        queryset = queryset[offset:(offset+limit)]
 
         return queryset
 

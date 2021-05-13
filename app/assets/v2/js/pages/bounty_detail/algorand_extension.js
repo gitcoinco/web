@@ -1,4 +1,4 @@
-const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) => {
+const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
@@ -9,7 +9,7 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
 
   try {
 
-    // step1: init connection 
+    // step1: init connection
     if (!AlgoSigner) {
       _alert({ message: 'Please download or enable AlgoSigner extension' }, 'danger');
       modal.closeModal();
@@ -17,13 +17,15 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
     }
 
     // const connect = await AlgoSigner.connect();
-    AlgoSigner.connect().then(async () => {
+    AlgoSigner.connect().then(async() => {
       // step2: get connected accounts
       const accounts = await AlgoSigner.accounts({ ledger: NETWORK });
 
       let is_account_present = false;
+
       accounts.map(account=> {
-        if (account.address == from_address) is_account_present = true;
+        if (account.address == from_address)
+          is_account_present = true;
       });
       if (!is_account_present) {
         _alert({ message: `Unable to access address ${from_address} in wallet` }, 'danger');
@@ -34,46 +36,48 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
       // step3: check if enough balance is present
       const balance = await AlgoSigner.algod({
         ledger: NETWORK,
-        path: `/v2/accounts/${from_address}`,
-      })
+        path: `/v2/accounts/${from_address}`
+      });
 
       if (
         token_name == 'ALGO' &&
-        balance.amount <= amount * 10 ** vm.decimals
+        Number(balance.amount) <= amount * 10 ** vm.decimals
       ) {
         // ALGO token
         _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
         modal.closeModal();
         return;
 
-      } else {
-        // ALGO assets
-        let is_asset_present = false;
-
-        if (balance.assets && balance.assets.length > 0) {
-          balance.assets.map(asset => {
-            if (asset['asset-id'] == asset_index) is_asset_present = true;
-          })
-        }
-
-        if (is_asset_present) {
-          _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
-          modal.closeModal();
-          return;
-        }
-
-        let has_enough_asset_balance = false;
-        balance.assets.map(asset => {
-          if (asset['asset-id'] == asset_index && asset['amount'] <= amount * 10 ** vm.decimals)
-            has_enough_asset_balance = true;
-        })
-
-        if (has_enough_asset_balance) {
-          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-          modal.closeModal();
-          return;
-        }
       }
+      // ALGO assets
+      let is_asset_present = false;
+
+      if (balance.assets && balance.assets.length > 0) {
+        balance.assets.map(asset => {
+          if (asset['asset-id'] == asset_index)
+            is_asset_present = true;
+        });
+      }
+
+      if (is_asset_present) {
+        _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
+        modal.closeModal();
+        return;
+      }
+
+      let has_enough_asset_balance = false;
+
+      balance.assets.map(asset => {
+        if (asset['asset-id'] == asset_index && asset['amount'] <= amount * 10 ** vm.decimals)
+          has_enough_asset_balance = true;
+      });
+
+      if (has_enough_asset_balance) {
+        _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+        modal.closeModal();
+        return;
+      }
+      
 
       // step4: get txnParams
       const txParams = await AlgoSigner.algod({
@@ -83,6 +87,7 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
 
       let txn;
       // step5: sign transaction
+
       if (token_name == 'ALGO') {
         // ALGO token
         txn = {
@@ -95,7 +100,7 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
           lastRound: txParams['last-round'] + 1000,
           genesisID: txParams['genesis-id'],
           genesisHash: txParams['genesis-hash'],
-          note: 'paying out gitcoin bounty',
+          note: 'paying out gitcoin bounty'
         };
       } else {
         // ALGO assets
@@ -111,7 +116,7 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
           lastRound: txParams['last-round'] + 1000,
           genesisID: txParams['genesis-id'],
           genesisHash: txParams['genesis-hash']
-        }
+        };
       }
 
       AlgoSigner.sign(txn).then(signedTx => {
@@ -121,19 +126,19 @@ const payWithAlgorandExtension = async (fulfillment_id, to_address, vm, modal) =
           ledger: NETWORK,
           tx: signedTx.blob
         })
-        .then(tx => {
-          callback(null, from_address, tx.txId);
-        })
-        .catch((e) => {
-          console.log(e);
-          _alert({ message: `Unable to broadcast txn. Please try again` }, 'danger');
-          modal.closeModal();
-          return;
-        });
+          .then(tx => {
+            callback(null, from_address, tx.txId);
+          })
+          .catch((e) => {
+            console.log(e);
+            _alert({ message: 'Unable to broadcast txn. Please try again' }, 'danger');
+            modal.closeModal();
+            return;
+          });
 
       }).catch(e => {
         console.log(e);
-        _alert({ message: `Unable to sign txn. Please try again` }, 'danger');
+        _alert({ message: 'Unable to sign txn. Please try again' }, 'danger');
         modal.closeModal();
         return;
       });

@@ -146,7 +146,7 @@ async function fetchAccountData(provider) {
   }
 
   // Go through all accounts and get their ETH balance
-  const rowResolvers = accounts.map(async(address) => {
+  const rowResolvers = accounts.filter((val, indx, orig) => orig.indexOf(val) === indx).map(async(address) => {
 
     if (!accounts.length || provider.isFortmatic) {
       return;

@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat grants_extra split %}
+{% load i18n static bundle date_fromisoformat grants_extra split %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,13 +25,13 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 
-  {% compress css file jtbd_earn %}
+  {% bundle css file jtbd_earn %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 
 <body>
