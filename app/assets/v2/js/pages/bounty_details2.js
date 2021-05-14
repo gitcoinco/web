@@ -820,14 +820,23 @@ Vue.mixin({
           break;
       }
     },
-    validateFunderAddress: function() {
+    validateFunderAddress: function(token_name) {
       let vm = this;
+      let hasError = false;
 
       vm.errors = {};
 
-      // if (!validateSia()) {
-      //   vm.$set(vm.errors, 'funderAddress', 'Please enter a valid Sia address');
-      // }
+      switch (token_name) {
+        case 'SC': {
+          // TODO
+        }
+
+        // include validation for other tokens here
+      }
+
+      if (hasError) {
+        vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);
+      }
     }
   },
   computed: {
