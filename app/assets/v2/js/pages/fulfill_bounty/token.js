@@ -110,9 +110,9 @@ const is_valid_address = (address) => {
 
     case 'nervos_ext': {
       const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
-      const isValid = ADDRESS_REGEX.test(address);
+      const isNervosValid = ADDRESS_REGEX.test(address);
 
-      if (isValid) {
+      if (isNervosValid || address.toLowerCase().startsWith('0x')) {
         return true;
       }
 

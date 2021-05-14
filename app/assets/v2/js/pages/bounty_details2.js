@@ -841,9 +841,9 @@ Vue.mixin({
       switch (token_name) {
         case 'CKB': {
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
-          const isValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
+          const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
     
-          if (!isValid) {
+          if (!isNervosValid && !address.toLowerCase().startsWith('0x')) {
             hasError = true;
           }
         }
