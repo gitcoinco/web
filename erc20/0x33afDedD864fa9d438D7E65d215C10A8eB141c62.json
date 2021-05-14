@@ -1,0 +1,15 @@
+{
+  "symbol": "STS",
+  "address": "0x33afDedD864fa9d438D7E65d215C10A8eB141c62",
+  "overview":{
+        "en": "STARFISH Exchange is a cryptocurrency trading platform. At present, the number of users of STARFISH Exchange has reached several millions. Through user experience and satisfaction degree survey, it has received 99% users’ recognition, which is the core competitiveness of STARFISH Exchange.",
+        "zh": "STARFISH交易所是一个加密货币交易平台。 目前，STARFISH交易所的用户数已达数百万。 通过用户体验和满意度调查，它已经获得了99％的用户认可，这是STARFISH Exchange的核心竞争力。"
+  },
+  "email": "support@starfish3.com",
+  "website": "https://www.starfish3.com",
+  "state": "NORMAL",
+  "published_on": "2021-05-02",
+  "links": {
+    "github": "https://github.com/STARFISHAPI",
+  }
+}
