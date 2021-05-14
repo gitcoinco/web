@@ -820,18 +820,6 @@ Vue.mixin({
           break;
       }
     },
-    showWorkSubmitted: function(handle) {
-      let vm = this;
-
-      if (
-        vm.contxt.is_staff ||
-        vm.isOwner ||
-        (handle && handle == vm.contxt.github_handle)
-      ) {
-        return true;
-      }
-      return false;
-    },
     validateFunderAddress: function(token_name) {
       let vm = this;
       let hasError = false;
