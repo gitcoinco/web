@@ -154,6 +154,10 @@ Vue.mixin({
           url = `https://algoexplorer.io/tx/${txn}`;
           break;
 
+        case 'SC':
+          url = `https://siastats.info/navigator?search=${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -218,6 +222,10 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           url = `https://algoexplorer.io/tx/${address}`;
+          break;
+
+        case 'SC':
+          url = `https://siastats.info/navigator?search=${address}`;
           break;
 
         default:
@@ -392,10 +400,15 @@ Vue.mixin({
     },
     getTenant: function(token_name, web3_type) {
       let tenant;
+      let vm = this;
 
       if (web3_type == 'manual') {
         tenant = 'OTHERS';
         return tenant;
+      }
+
+      if (web3_type in ['sia_ext']) {
+        vm.canChangeFunderAddress = true;
       }
 
       switch (token_name) {
@@ -451,6 +464,10 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           tenant = 'ALGORAND';
+          break;
+
+        case 'SC':
+          tenant = 'SIA';
           break;
 
         default:
@@ -546,6 +563,10 @@ Vue.mixin({
 
         case 'algorand_ext':
           payWithAlgorandExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'sia_ext':
+          payWithSiaExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -754,7 +775,9 @@ Vue.mixin({
       switch (fulfillment.payout_type) {
         case 'qr':
         case 'manual':
+        case 'sia_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
+          vm.getTenant(vm.bounty.token_name, fulfillment.payout_type);
           break;
 
         case 'fiat':
@@ -803,6 +826,15 @@ Vue.mixin({
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
+    },
+    validateFunderAddress: function() {
+      let vm = this;
+
+      vm.errors = {};
+
+      // if (!validateSia()) {
+      //   vm.$set(vm.errors, 'funderAddress', 'Please enter a valid Sia address');
+      // }
     }
   },
   computed: {
@@ -844,6 +876,7 @@ if (document.getElementById('gc-bounty-detail')) {
     el: '#gc-bounty-detail',
     data() {
       return {
+        errors: {},
         loadingState: loadingState['loading'],
         bounty: bounty,
         url: url,
@@ -859,7 +892,8 @@ if (document.getElementById('gc-bounty-detail')) {
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: [],
-        pollInterval: null
+        pollInterval: null,
+        canChangeFunderAddress: false
       };
     },
     mounted() {

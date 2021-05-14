@@ -42,7 +42,6 @@ class Command(BaseCommand):
             for fulfillment in ext_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
-
         # QR
         qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')
         if qr_pending_fulfillments:
