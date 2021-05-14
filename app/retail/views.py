@@ -82,8 +82,11 @@ def index(request):
     context = {
         'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
-        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
+
     try:
         data = JSONStore.objects.get(view='results').data
         data_results = {
