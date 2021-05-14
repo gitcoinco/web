@@ -1,0 +1,16 @@
+{
+  "symbol": "goofy",
+  "address": "0x6466165eF085C4b5Bc9C978397b128A85d12c184",
+  "overview":{
+        "en": "Goofytoken ensures that a project starts from scratch decentralized way with the implementation of blockchain technology",
+  },
+  "email": "goofytoken@gmail.com",
+  "website": "https://goofytoken.com/",
+  "whitepaper": "https://goofytoken.com/whitepaper/goofy.pdf",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/goofytoken",
+    "telegram": "https://t.me/goofytoken",
+    "github": "https://github.com/goofytoken",
+    "facebook": "https://facebook.com/goofytoken",
+  }
