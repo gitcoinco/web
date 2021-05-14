@@ -407,10 +407,6 @@ Vue.mixin({
         return tenant;
       }
 
-      if (web3_type in ['sia_ext']) {
-        vm.canChangeFunderAddress = true;
-      }
-
       switch (token_name) {
 
         case 'ETC':
@@ -468,6 +464,7 @@ Vue.mixin({
 
         case 'SC':
           tenant = 'SIA';
+          vm.canChangeFunderAddress = true;
           break;
 
         default:
@@ -563,10 +560,6 @@ Vue.mixin({
 
         case 'algorand_ext':
           payWithAlgorandExtension(fulfillment_id, fulfiller_address, vm, modal);
-          break;
-
-        case 'sia_ext':
-          payWithSiaExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },

@@ -649,7 +649,7 @@
                                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funderAddress">Funder Address</label>
                                   <input v-model="bounty.bounty_owner_address" @input="validateFunderAddress" name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out">
                                   <div class="text-danger" v-if="errors.funderAddress">
-                                    Please enter a valid <span class="text-capitalize">[[ getTenant(fulfillment.token_name, fulfillment.payout_type) ]]</span> wallet address
+                                    Please enter a valid [[ bounty.token_name ]] wallet address
                                   </div>
                                 </div>
                                 <p v-else>
@@ -1150,10 +1150,6 @@
     {% elif web3_type == 'algorand_ext' %}
 
       <script src="{% static "v2/js/pages/bounty_detail/algorand_extension.js" %}"></script>
-
-    {% elif web3_type == 'sia_ext' %}
-
-      <script src="{% static "v2/js/pages/bounty_detail/sia_extension.js" %}"></script>
 
     {% elif web3_type == 'fiat' %}
 

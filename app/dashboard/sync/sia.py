@@ -27,7 +27,7 @@ def find_txn_on_sia_explorer(fulfillment):
             if (
                 txn['TxType'] == 'ScTx'
                 and txn['ScChange'] < 0
-                and abs(txn['ScChange']) / 10 ** 24 == amount
+                and abs(txn['ScChange']) / 10 ** 24 == amount / 10 ** 24
                 and not txn_already_used(txn['MasterHash'], token_name)
             ):
                 return txn
@@ -50,7 +50,7 @@ def get_sia_txn_status(txnid, network='mainnet'):
 
         if (
             tx_response[0]['Type'] == 'ScTx'
-            and tx_response[0]['MasterHash'] == txnid
+            and tx_response[0]['MasterHash'].strip() == txnid
             and confirmations > 0
         ):
             return True
