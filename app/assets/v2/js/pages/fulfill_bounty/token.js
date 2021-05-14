@@ -108,7 +108,7 @@ const is_valid_address = (address) => {
       }
       return true;
 
-    case 'nervos_ext':
+    case 'nervos_ext': {
       const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
       const isValid = ADDRESS_REGEX.test(address);
 
@@ -117,6 +117,7 @@ const is_valid_address = (address) => {
       }
 
       return false;
+    }
 
     case 'qr':
 

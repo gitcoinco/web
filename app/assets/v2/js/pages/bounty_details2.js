@@ -407,10 +407,6 @@ Vue.mixin({
         return tenant;
       }
 
-      if (vm.bounty.web3_type == 'nervos_ext') {
-        vm.canChangeFunderAddress = true;
-      }
-
       switch (token_name) {
 
         case 'ETC':
@@ -458,6 +454,7 @@ Vue.mixin({
 
         case 'CKB':
           tenant = 'NERVOS';
+          vm.canChangeFunderAddress = true;
           break;
 
         case 'XDC':
@@ -559,10 +556,6 @@ Vue.mixin({
 
         case 'xinfin_ext':
           payWithXinfinExtension(fulfillment_id, fulfiller_address, vm, modal);
-          break;
-
-        case 'nervos_ext':
-          payWithNervosExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
         case 'algorand_ext':
@@ -777,7 +770,7 @@ Vue.mixin({
         case 'manual':
         case 'nervos_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
-          vm.getTenant(fulfillment.payout_type);
+          vm.getTenant(vm.bounty.token_name, fulfillment.payout_type);
           break;
 
         case 'fiat':
