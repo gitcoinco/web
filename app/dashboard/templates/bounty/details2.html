@@ -647,9 +647,9 @@
                               <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
                                 <div class="funder-address-container mt-4" v-if="canChangeFunderAddress">
                                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funderAddress">Funder Address</label>
-                                  <input v-model="bounty.bounty_owner_address" @input="validateFunderAddress" name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out">
+                                  <input v-model="bounty.bounty_owner_address" @input="validateFunderAddress(bounty.token_name)" name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out">
                                   <div class="text-danger" v-if="errors.funderAddress">
-                                    Please enter a valid [[ bounty.token_name ]] wallet address
+                                    [[ errors.funderAddress ]]
                                   </div>
                                 </div>
                                 <p v-else>

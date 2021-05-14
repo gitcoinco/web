@@ -832,25 +832,29 @@ Vue.mixin({
       }
       return false;
     },
-    validateNervos: function() {
+    validateFunderAddress: function(token_name) {
       let vm = this;
-
-      const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
-      const isValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
-
-      if (isValid) {
-        return true;
-      }
-
-      return false;
-    },
-    validateFunderAddress: function() {
-      let vm = this;
+      let hasError = false;
 
       vm.errors = {};
 
-      if (!vm.validateNervos()) {
-        vm.$set(vm.errors, 'funderAddress', 'Please enter a valid Nervos address');
+      switch (token_name) {
+        case 'CKB': {
+          let vm = this;
+
+          const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+          const isValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
+    
+          if (!isValid) {
+            hasError = true;
+          }
+        }
+
+        // include validation for other tokens here
+      }
+
+      if (hasError) {
+        vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);
       }
     }
   },
