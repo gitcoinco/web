@@ -1,0 +1,18 @@
+{
+  "symbol": "EQZ",
+  "address": "0x1Da87b114f35E1DC91F72bF57fc07A768Ad40Bb0",
+  "overview":{
+        "en": "DeFi Flash Loans Made Easy. The first dedicated platform that equalizes the decentralized markets.",
+        "zh": ""
+  },
+  "email": "contact@equalizer.finance",
+  "website": "https://equalizer.finance/",
+  "whitepaper": "https://whitepaper.equalizer.finance/",
+  "state": "NORMAL",
+  "published_on": "2021-04-09",
+  "links": {
+    "twitter": "https://twitter.com/EqualizerFlash",
+    "telegram": "https://t.me/EqualizerFlash",
+    "medium": "https://equalizer-finance.medium.com/"
+  }
+}
