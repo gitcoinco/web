@@ -1191,30 +1191,7 @@ def schwag(request):
 
 
 def slack(request):
-    context = {
-        'active': 'slack',
-        'msg': None,
-        'nav': 'home',
-    }
-
-    if request.POST:
-        email = request.POST.get('email')
-        context['msg'] = _('You must provide an email address')
-        if email:
-            context['msg'] = _('Your invite has been sent.')
-            context['success'] = True
-            try:
-                validate_email(email)
-                get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email, True)
-
-                if not response.get('ok'):
-                    context['msg'] = response.get('error', _('Unknown error'))
-                context['success'] = False
-            except ValidationError:
-                context['msg'] = _('Invalid email')
-
-    return TemplateResponse(request, 'slack.html', context)
+    return discord(request)
 
 
 @csrf_exempt
