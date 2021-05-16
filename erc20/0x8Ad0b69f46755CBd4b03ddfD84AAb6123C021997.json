@@ -1,0 +1,17 @@
+{
+    "symbol": "ICC",
+    "address": "0x8Ad0b69f46755CBd4b03ddfD84AAb6123C021997",
+    "overview":{
+          "en": "ICC is a distributed financial system based on blockchain. It is committed to promoting the development and improvement of the distributed financial DeFi ecosystem, creating on-chain finance, and then building an efficient distributed financial DeFi ecological infrastructure.",
+          "zh": "ICC是基于区块链的分布式金融系统，致力于推动分布式金融DeFi生态的发展和完善，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "icc3460@gmail.com",
+    "website": "http://chainicc.com/",
+    "whitepaper": "http://chainicc.com/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2021-03-02",
+    "links": {
+        "telegram": "https://t.me/joinchat/p_VfBkMdhiczOGY9",
+        "twitter": "https://twitter.com/chainicc"
+      }
+}
