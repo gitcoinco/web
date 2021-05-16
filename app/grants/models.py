@@ -1182,7 +1182,7 @@ class Subscription(SuperModel):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
 
-        return f"id: {self.pk}; {round(self.amount_per_period,1)} {self.token_symbol} (${round(self.amount_per_period_usdt)}) {int(self.num_tx_approved)} times, created {naturaltime(self.created_on)} by {self.contributor_profile}"
+        return f"id: {self.pk}; {round(float(self.amount_per_period),1)} {self.token_symbol} (${round(float(self.amount_per_period_usdt))}) {int(self.num_tx_approved)} times, created {naturaltime(self.created_on)} by {self.contributor_profile}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -1914,7 +1914,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "to_profile":instance.subscription.grant.admin_profile,
                     "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
                     "url":instance.subscription.grant.url,
-                    "network":instance.subscription.grant.network,
+                    "network":instance.subscription.network,
                     "txid":instance.subscription.split_tx_id,
                     "token_name":instance.subscription.token_symbol,
                     "token_value":instance.subscription.amount_per_period,

@@ -297,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ensure that the mouse is always offset by whatever is above the nav
     const navbarOffset = navbarContainerEl.getBoundingClientRect();
     // push the positions taken from the event
+
     mousePositions[menu].push({
       x: e.clientX,
       y: e.clientY - navbarOffset.y
