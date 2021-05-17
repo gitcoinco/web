@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
 
-from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
@@ -34,6 +34,7 @@ from ratelimit.decorators import ratelimit
 logger = logging.getLogger(__name__)
 
 
+@staff_member_required
 def index(request):
     '''render template for base index page'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
@@ -41,6 +42,7 @@ def index(request):
     return TemplateResponse(request, 'quadraticlands/index.html', context)
 
 
+@staff_member_required
 def base(request, base):
     '''render templates for /quadraticlands/'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
@@ -50,6 +52,7 @@ def base(request, base):
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 
+@staff_member_required
 @login_required
 def base_auth(request, base):
     '''render templates for /quadraticlands/'''
@@ -61,6 +64,7 @@ def base_auth(request, base):
 
 
 @login_required
+@staff_member_required
 def mission_index(request):
     '''render quadraticlands/mission/index.html'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
@@ -68,6 +72,7 @@ def mission_index(request):
     return TemplateResponse(request, 'quadraticlands/mission/index.html', context)
 
 
+@staff_member_required
 @login_required
 def mission_base(request, mission_name):
     '''used to handle quadraticlands/<mission_name>'''
@@ -76,6 +81,7 @@ def mission_base(request, mission_name):
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
 
 
+@staff_member_required
 @login_required
 def dashboard_index(request):
     '''render quadraticlands/dashboard/index.html'''
@@ -84,6 +90,7 @@ def dashboard_index(request):
     return TemplateResponse(request, 'quadraticlands/dashboard/index.html', context)
 
 
+@staff_member_required
 @login_required
 def mission_state(request, mission_name, mission_state):
     '''quadraticlands/<mission_name>/<mission_state>'''
@@ -96,6 +103,7 @@ def mission_state(request, mission_name, mission_state):
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
 
 
+@staff_member_required
 @login_required
 def mission_question(request, mission_name, question_num):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
@@ -104,6 +112,7 @@ def mission_question(request, mission_name, question_num):
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}.html', context)
 
 
+@staff_member_required
 @login_required
 def mission_answer(request, mission_name, question_num, answer):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>/<answer>'''
@@ -112,16 +121,19 @@ def mission_answer(request, mission_name, question_num, answer):
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)
 
 
+@staff_member_required
 def workstream_index(request):
     '''Use to render quadraticlands/workstream/index.html'''
     return TemplateResponse(request, 'quadraticlands/workstream/index.html')
 
 
+@staff_member_required
 def workstream_base(request, stream_name):
     '''Used to render quadraticlands/workstream/<stream_name>.html'''
     return TemplateResponse(request, f'quadraticlands/workstream/{stream_name}.html')
 
 
+@staff_member_required
 @login_required
 def mission_postcard(request):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
@@ -137,6 +149,7 @@ def mission_postcard(request):
     return TemplateResponse(request, f'quadraticlands/mission/postcard/postcard.html', context)
 
 
+@staff_member_required
 @ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
 def mission_postcard_svg(request):
     import xml.etree.ElementTree as ET
