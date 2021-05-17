@@ -1,0 +1,26 @@
+{
+  "symbol": "EZX",
+  "address": "0x9e8bfe46f9af27c5ea5c9c72b86d71bb86953a0c",
+  "overview":{
+        "en": "EZDex development team united with community development forces to deeply cultivate the underlying technology, and through the value transfer protocol (Value Transfer Protocol), proposed and implemented a series of technological upgrades and innovative solutions. Build a sustainable public blockchain blockchain",
+        "zh": "EZDex开发团队与社区发展力量紧密合作，深耕基础技术，并通过价值转移协议（Value Transfer Protocol）提出并实施了一系列技术升级和创新解决方案。 建立可持续的公共区块链"
+  },
+  "email": "support@ezdex.market",
+  "website": "https://ezdex.market",
+  "whitepaper": "https://mp.weixin.qq.com/s/fAXI2vfmCYasCD7yIMQrRQ",
+  "state": "NORMAL",
+  "published_on": "2021-03-15",
+  "initial_price":{
+        "ETH":"0.0000721 ETH",
+        "USD":"0.3 USD",
+        "BTC":"0.000005254 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ExchangeEzdex",
+    "github": "https://github.com/ezdex-IT",
+    "facebook": "https://www.facebook.com/EZDexExchange/",
+    "reddit": "https://www.reddit.com/user/EZDexExchage",
+    "slack": "https://ezdexexchange.slack.com/",
+    "medium": "https://medium.com/@EZDex"
+  }
+}
