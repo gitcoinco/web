@@ -8,7 +8,6 @@ from django.templatetags.static import static
 
 from bs4 import BeautifulSoup
 
-
 register = template.Library()
 
 
@@ -181,10 +180,10 @@ def get_bundled(elems, attr, kind, merge):
     # minify the content in production
     if isProduction and 'js' in kind:
         import rjsmin
-        c = rjsmin.jsmin(c)
+        content = rjsmin.jsmin(content)
     elif isProduction and 'css' in kind:
         import rcssmin
-        c = rcssmin.cssmin(c)
+        content = rcssmin.cssmin(content)
 
     # content is compiled and minified (if in production)
     return content
