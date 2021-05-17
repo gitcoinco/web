@@ -31,8 +31,9 @@
   </span>
 </div>
 
+{% comment %}
 
-<!-- <header id="ql-banner" class="sticky-top">
+<header id="ql-banner" class="sticky-top">
   <div id="ql-banner-inner" class="w-100">
     <div class="row px-lg-5" style="height: 400px;">
       <div id="ql-banner-lhs" class="col-12 col-md-8 col-lg-7 m-auto p-5 py-4 sticky-top">
@@ -62,7 +63,7 @@
       </div>
     </div>
   </div>
-</header> -->
+</header>
 
 {% bundle merge_js file ql_banner %}
   <!-- lets load these in as a blocking script to make sure the banner is presented sooner rather than later -->
@@ -70,3 +71,5 @@
   <script src="{% static "v2/js/RAFThrottle.js" %}"></script>
   <script src="{% static "v2/js/ql-banner.js" %}"></script>
 {% endbundle %}
+
+{% endcomment %}
