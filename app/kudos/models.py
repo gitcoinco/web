@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 import urllib.request
-from io import BytesIO
 from os import path
 
 from django.conf import settings
@@ -589,7 +588,7 @@ def psave_kt(sender, instance, **kwargs):
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
-            "token_value":token.price_in_eth,
+            "token_value":token.price_in_eth if token else 0,
             "success":instance.tx_status == 'success',
         }
         )
