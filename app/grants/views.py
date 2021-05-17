@@ -3446,7 +3446,7 @@ def ingest_contributions(request):
                     .order_by("-positive_round_contributor_count")
                     .first()
                 )
-                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
             except Exception as e:
                 logger.exception(e)
                 logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
@@ -3520,7 +3520,7 @@ def ingest_contributions(request):
                         logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
                         logger.warning("Skipping unknown grant\n")
                         continue
-                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
                 except Exception as e:
                     logger.exception(e)
                     logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
