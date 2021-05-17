@@ -27,7 +27,6 @@ async function walletInterface() {
     voting_power = voting_power / 10 ** 18;
     dashboard_wallet_voting_power.innerHTML = voting_power.toFixed(2);
 
-
     let delegateAddress = await getDelegateAddress(gtc_address(), selectedAccount);
 
     if (delegateAddress != selectedAccount) {
@@ -35,6 +34,15 @@ async function walletInterface() {
     } else {
       dashboard_wallet_delegate_address.innerHTML = '';
     }
+    
+    // get proposal states from GovernorAlpha
+    let proposal_states = await proposalState();
+    const stats_on_chain = document.getElementById('stats-on-chain');
+    stats_on_chain.innerHTML = proposal_states.Active;
+    if (proposal_states.Active >= 1) {
+      stats_on_chain.classList.add('aqua');
+    }
+
 
   } catch (e) {
     console.error(e);

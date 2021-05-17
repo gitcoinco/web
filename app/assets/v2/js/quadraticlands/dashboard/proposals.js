@@ -5,9 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   fetch(snapshot_api).then(res => res.json()).then(data => updateSnapshotStats(data));
 
-  // compound
-  updateCompoundStats();
-
   // discourse
   updateDiscourseStats();
 
@@ -38,19 +35,7 @@ function updateSnapshotStats(data) {
 }
 
 
-// count active compound proposals
-function updateCompoundStats() {
-  x = 1337;
-  const stats_compound = document.getElementById('stats-compound');
-
-  stats_compound.innerHTML = x;
-  if (x >= 1) {
-    stats_compound.classList.add('aqua');
-  }
-}
-
-
-// count active compound proposals
+// count active Discourse proposals
 function updateDiscourseStats() {
   x = 23;
   const stats_discourse = document.getElementById('stats-discourse');
