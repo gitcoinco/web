@@ -111,7 +111,7 @@ var gtc_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0x23AAE5FB029F9805067e9613089Caf385f29b0D0'; // post audit 
+      return '0xC6808af75C4077012ab36bBE60EB3D10DE354988'; // 5/17 
   }
 };
 
@@ -128,7 +128,7 @@ var token_distributor_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0x5486cc6931E56FDE0f6FbcF5a15d1480E43bc36e'; // post audit
+      return '0x853A4aee91D8975F3f6312Fc5600363127736327'; // 5/17
   }
 };
 
@@ -145,7 +145,7 @@ var governor_alpha_address = function() {
     case 'kovan':
       throw 'this network is not supported in GTC for gitcoin';
     case 'rinkeby':
-      return '0x7D2257D6Bbb734D3C180cA03068e79820e6ba585'; // post audit
+      return '0x616179dA774A15309C3ad68c301624C486e91CeD'; // 5/17
   }
 };
 
