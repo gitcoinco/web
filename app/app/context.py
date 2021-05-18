@@ -35,7 +35,7 @@ from perftools.models import JSONStore
 from ptokens.models import PersonalToken
 from retail.helpers import get_ip
 from townsquare.models import Announcement
-from quadraticlands.helpers import get_initial_dist
+from quadraticlands.helpers import get_initial_dist, get_mission_status
 
 RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 
@@ -198,7 +198,8 @@ def preprocess(request):
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
         'mautic_id': profile.mautic_id if profile else None,
-        'total_claimable_gtc': get_initial_dist(request)['total_claimable_gtc']
+        'total_claimable_gtc': get_initial_dist(request)['total_claimable_gtc'],
+        'proof_of_receive': get_mission_status(request)['proof_of_receive'] if request.method == "GET" else False
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)
