@@ -69,7 +69,7 @@ def get_FAQ(request):
 def get_profile_from_username(request):
     '''Return profile object for a given request'''
     try:
-        profile = Profile.objects.get(handle=request.user.username)
+        profile = request.user.profile
     except Exception as e:
         logger.info(f'QuadLands - There was an issue getting user profile object - {e}')
         profile = False
