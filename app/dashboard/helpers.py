@@ -55,7 +55,7 @@ from .models import Profile
 logger = logging.getLogger(__name__)
 
 def load_files_in_directory(dir_name):
-    path = os.path.join(settings.STATIC_ROOT, dir_name)
+    path = os.path.join(settings.BASE_DIR, 'assets', dir_name)
     images = []
     for f in os.listdir(path):
         if f.endswith('jpg') or f.endswith('png') or f.endswith('jpeg'):
