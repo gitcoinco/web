@@ -7,7 +7,7 @@
 {% block 'content' %}
 
 
-{% if total_claimable_gtc >= 1 %}
+{% if total_claimable_gtc >= 1%}
 
   <!--token distribution-->
   <section class="introduction" style="margin-bottom: 3em;">
@@ -90,7 +90,7 @@
   <!--no token distribution-->
   <section class="introduction" style="margin-bottom: 3em;">
     <h1>Token Distribution</h1>
-    <p>There are no GTC associated with your account. If you think this is in error, please reach out on Discord [link]. Otherwise join a workstream to participate in Gitcoin governance!</p>
+    <p>There are no GTC associated with your account. If you think this is in error, please reach out on <a href="{% url "discord" %}">Discord</a>. Otherwise join a workstream to participate in Gitcoin governance!</p>
   </section>
 
 {% endif %}
@@ -108,7 +108,7 @@
 
   <!-- Postcard Generator Game -->
   {% with name="Postcard Generator" %}
-    {% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="Send a message to your friends from the digital democratic future!" playable="true" url="mission/postcard" %}
+    {% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="available" playable="true" url="mission/postcard" %}
   {% endwith %}
 
   <!-- Empower a Steward -->
