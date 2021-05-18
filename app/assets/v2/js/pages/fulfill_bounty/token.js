@@ -133,7 +133,6 @@ const is_valid_address = (address) => {
         return true;
       }
 
-      break;
 
     default:
       return true;
