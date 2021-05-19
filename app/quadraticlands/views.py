@@ -143,7 +143,7 @@ def mission_postcard(request):
     return TemplateResponse(request, f'quadraticlands/mission/postcard/postcard.html', context)
 
 
-@ratelimit(key='ip', rate='1/s', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
 def mission_postcard_svg(request):
     import xml.etree.ElementTree as ET
     from django.http import HttpResponse
