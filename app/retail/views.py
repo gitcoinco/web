@@ -82,8 +82,11 @@ def index(request):
     context = {
         'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
-        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
+
     try:
         data = JSONStore.objects.get(view='results').data
         data_results = {
@@ -531,16 +534,16 @@ def about(request):
             "company": "Pantera Capital, she256"
         }]
 
-
-
-
     context = {
         'title': 'Gitcoin - Support open web development.',
         'card_title': 'Gitcoin - Support open web development.',
-        'card_desc': " We are the community of builders, creators, and protocols at the center of the open web.",
+        'card_desc': "We are the community of builders, creators, and protocols at the center of the open web.",
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
         'data': data_about if data_about else None,
         'kernel': kernel if kernel else None,
     }
+
     try:
         data = JSONStore.objects.get(view='results').data
         data_results = {
@@ -564,13 +567,13 @@ def mission(request):
     context = {
         'is_outside': True,
         'active': 'mission',
-        'card_type': 'summary_large_image',
         'avatar_width': 2614,
         'avatar_height': 1286,
-        'title': 'Mission',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
-        'avatar_url': static('v2/images/mission.png'),
+        'title': 'Gitcoin - Support open web development.',
+        'card_title': _('Gitcoin - Support open web development.'),
+        'card_desc': _('We empower open source builders.'),
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
     return TemplateResponse(request, 'mission.html', context)
 
@@ -1221,30 +1224,7 @@ def schwag(request):
 
 
 def slack(request):
-    context = {
-        'active': 'slack',
-        'msg': None,
-        'nav': 'home',
-    }
-
-    if request.POST:
-        email = request.POST.get('email')
-        context['msg'] = _('You must provide an email address')
-        if email:
-            context['msg'] = _('Your invite has been sent.')
-            context['success'] = True
-            try:
-                validate_email(email)
-                get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email, True)
-
-                if not response.get('ok'):
-                    context['msg'] = response.get('error', _('Unknown error'))
-                context['success'] = False
-            except ValidationError:
-                context['msg'] = _('Invalid email')
-
-    return TemplateResponse(request, 'slack.html', context)
+    return discord(request)
 
 
 @csrf_exempt
@@ -1476,7 +1456,9 @@ def jtbd_template(request, template, title, card_title, card_desc):
     context = {
         'title': _(title),
         'card_title': _(card_title),
-        'card_desc': _(card_desc)
+        'card_desc': _(card_desc),
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
     context.update(data)
     return TemplateResponse(request, 'jtbd/' + template + '.html', context)
