@@ -24,7 +24,7 @@
       </div>
       <div class="col-lg-8 mt-lg-0 mt-3">
         <div class="row">
-          {% for colorName, colorHex, colorRGB in brand_colors %}
+          {% for colorName, colorHex, colorRGB, colorHSL in brand_colors %}
           <div class="col-md-6 col-lg-3 mb-5">
             <div class="card color-card border-light h-100">
               <div class="card-header" style="background-color: {{ colorHex }};">
@@ -33,6 +33,7 @@
                 <span class="font-weight-bold">{{ colorName }}</span>
                 <p class="my-0">Hex: {{ colorHex }}</p>
                 <p class="my-0">RGB: {{ colorRGB }}</p>
+                <p class="my-0">HSL: {{ colorHSL }}</p>
               </div>
             </div>
           </div>

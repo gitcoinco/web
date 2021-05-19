@@ -3,7 +3,7 @@
 }
 
 .presskit .presskit_section:nth-of-type(even) {
-  background-color: #f9f9f9;
+  background-color: #F5F2FF;
 }
 
 .presskit h2 {
@@ -39,6 +39,14 @@
 
 .presskit_svg {
   width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 15rem;
+  padding: 2rem;
+}
+
+.figma_svg {
+  width: 75%;
   height: auto;
   object-fit: contain;
   max-height: 15rem;
