@@ -99,16 +99,20 @@
 
 
 <section class="introduction" style="margin-bottom: 3em;">
-  <h1>Missions</h1>
+  <h1>Governance Missions</h1>
 </section>
-
 
 <!-- upcoming missions-->
 <section class="mission">
 
-  <!-- Postcard Generator Game -->
-  {% with name="Postcard Generator" %}
-    {% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="available" playable="true" url="mission/postcard" %}
+  <!-- Discourse Forum -->
+  {% with name="Discourse Forum" %}
+    {% include 'quadraticlands/mission/card.html' with svg="discourse.svg" message="available" playable="true" url="https://gov.gitcoin.co" external="true" %}
+  {% endwith %}
+
+  <!-- Snapshot.page -->
+  {% with name="Snapshot.page" %}
+    {% include 'quadraticlands/mission/card.html' with svg="snapshot.svg" message="available" playable="true" url="http://snapshot.page" external="true" %}
   {% endwith %}
 
   <!-- Empower a Steward -->
@@ -117,16 +121,28 @@
   {% endwith %}
 
 
-  <!-- Discourse Forum -->
-  {% with name="Discourse Forum" %}
-    {% include 'quadraticlands/mission/card.html' with svg="discourse.svg" message="available" playable="true" url="https://gov.gitcoin.co" external="true" %}
-  {% endwith %}
+</section>
+
+<section class="introduction" style="margin-bottom: 3em;">
+  <h1>Git Involved</h1>
+</section>
+
+
+
+<!-- upcoming missions-->
+<section class="mission">
 
 
   <!-- Join a Workstream -->
   {% with name="Join a Workstream" %}
     {% include 'quadraticlands/mission/card.html' with svg="workstream.svg" message="available" playable="true" url="workstream" %}
   {% endwith %}
+
+  <!-- Postcard Generator Game -->
+  {% with name="Postcard Generator" %}
+    {% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="available" playable="true" url="mission/postcard" %}
+  {% endwith %}
+
 
 
   <!-- Propose a Mission -->
@@ -135,12 +151,17 @@
   {% endwith %}
 
 
-  <!-- Snapshot.page -->
-  {% with name="Snapshot.page" %}
-    {% include 'quadraticlands/mission/card.html' with svg="snapshot.svg" message="available" playable="true" url="http://snapshot.page" external="true" %}
-  {% endwith %}
 
 
+</section>
+
+<section class="introduction" style="margin-bottom: 3em;">
+  <h1>Coming Soon</h1>
+</section>
+
+
+<!-- upcoming missions-->
+<section class="mission">
 
   <!-- SybilHunt -->
   {% with name="SybilHunt" %}

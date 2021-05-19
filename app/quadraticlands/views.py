@@ -176,7 +176,7 @@ def mission_postcard_svg(request):
                 replace_text = package.get('text')
 
                 # chop up the text by word length to create line breaks.
-                line_words_length = 7
+                line_words_length = int(request.GET.get('line_words_length', 8))
                 include_item = True
                 end_wrap = '</tspan>'
                 words = replace_text.split(' ')
