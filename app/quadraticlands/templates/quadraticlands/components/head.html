@@ -6,7 +6,84 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 {% bundle css file quadraticlands %}
-  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/app.scss" %} />
+  /* core */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/breakpoints.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/core.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/typography.scss" %} />
+
+  /* nav */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/nav.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/nav/user.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/nav/links.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/nav/wallet.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/nav/signin.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/nav/burger.scss" %} />
+
+  /* components */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/header.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/buttons.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/figure.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/wallet-provider.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/keyframes.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/web3modal.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/table.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/flashmessage.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/cookielaw.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/glass.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/selection.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/delegation-toggle.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/roadmap.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/tabs.scss" %} />
+
+  /* article  */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/article.scss" %} />
+
+  /* sections */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_column.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_table.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_grid.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_headline.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_hero.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_faq.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_mission.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_background.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_footersocial.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_footer.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_introduction.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_stewards.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_status.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_workstream.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/section_postcard.scss" %} />
+
+  /* section quest */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/section.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-intro.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-video.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-quiz.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-claim.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-vote.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-setup.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-delegationmode.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/quest-delegateaddress.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/quest/progressbar.scss" %} />
+
+  /* section dashboard */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/section_dashboard.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/header.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-governance.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-leaderboard.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-mission.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-proposals.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-wallet.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-tx-pending.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-tx-error.scss" %} />
+
+  /* element overrides */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/figure_introoutro.scss" %} />
+
+  /* some little modules / playground ^^ */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/helpers.scss" %} />
+
 {% endbundle %}
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
