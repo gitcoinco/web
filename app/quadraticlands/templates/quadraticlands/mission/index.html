@@ -144,12 +144,6 @@
   {% endwith %}
 
 
-  <!-- Propose a Mission -->
-  {% with name="Propose a Mission" %}
-    {% include 'quadraticlands/mission/card.html' with svg="propose.svg" message="available" playable="true" url="https://gov.gitcoin.co" external="true" %}
-  {% endwith %}
-
-
   <!-- Lore Comic + Audio -->
   {% with name="Gitcoin Lore" %}
     {% if completed_missions == 3 %}
@@ -161,12 +155,17 @@
 
 
   <!-- Swag Store -->
-  {% with name="Schwag" %}
+  {% with name="Gitcoin Collectibles" %}
     {% if completed_missions == 3 %}
       {% include 'quadraticlands/mission/card.html' with svg="swag.svg" message="available" playable="true" url="/quadraticlands/mission/schwag" %}
     {% else %}
       {% include 'quadraticlands/mission/card.html' with svg="swag.svg" message="locked" pending=True %}
     {% endif%}
+  {% endwith %}
+
+  <!-- Propose a Mission -->
+  {% with name="Propose a Mission" %}
+    {% include 'quadraticlands/mission/card.html' with svg="propose.svg" message="available" playable="true" url="https://gov.gitcoin.co" external="true" %}
   {% endwith %}
 
 
