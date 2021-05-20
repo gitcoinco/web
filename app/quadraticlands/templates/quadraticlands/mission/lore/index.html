@@ -1,0 +1,57 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+
+<article>
+
+  <section class="column">
+    <h2>Gitcoin Lore</h2>
+    <div class="intro">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+    </div>
+  </section>
+
+  <section class="column">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+    <p style=" text-align:center; margin: auto;">
+      <audio controls>
+        <source src="https://www.computerhope.com/jargon/m/example.mp3" />
+      </audio>
+    </p>
+  </section>
+
+  <section class="column">
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
+    </p>
+
+    <div style="text-align: center;">
+      <img style="height: 18rem; width: auto; margin: auto; margin-bottom: 2rem;" src="{% static "v2/images/quadraticlands/mission/comic-cover.jpg" %}" />
+
+      <a class="btn" href="https://www.dropbox.com/s/lt45wemibcd81rl/Ethbot_05182021-r01.pdf?dl=0"
+        data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">
+        Read
+      </a>
+
+    </div>
+
+  </section>
+
+</article>
+
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+
+{% endblock %}

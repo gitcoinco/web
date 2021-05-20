@@ -23,8 +23,8 @@ from django.urls import path, re_path
 from quadraticlands.helpers import claim, set_mission_status, vote
 from quadraticlands.views import (
     base, base_auth, dashboard_index, handler400, handler403, handler404, handler500, index, mission_answer,
-    mission_base, mission_index, mission_postcard, mission_postcard_svg, mission_question, mission_state,
-    workstream_base, workstream_index,
+    mission_base, mission_index, mission_lore, mission_postcard, mission_postcard_svg, mission_question, mission_schwag,
+    mission_state, workstream_base, workstream_index,
 )
 
 app_name = 'quadraticlands'
@@ -49,6 +49,8 @@ urlpatterns = [
     re_path(r'^mission/?$', mission_index, name='mission'),
     re_path(r'^mission/postcard$', mission_postcard, name='mission_postcard'),
     re_path(r'^mission/postcard/svg$', mission_postcard_svg, name='mission_postcard_svg'),
+    re_path(r'^mission/ql-lore$', mission_lore, name='mission_lore'),
+    re_path(r'^mission/schwag$', mission_schwag, name='mission_schwag'),
 ]
 
 

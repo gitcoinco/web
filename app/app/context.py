@@ -33,9 +33,9 @@ from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from perftools.models import JSONStore
 from ptokens.models import PersonalToken
+from quadraticlands.helpers import get_initial_dist, get_mission_status
 from retail.helpers import get_ip
 from townsquare.models import Announcement
-from quadraticlands.helpers import get_initial_dist, get_mission_status
 
 RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 

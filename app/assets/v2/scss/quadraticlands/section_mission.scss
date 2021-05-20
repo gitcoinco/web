@@ -43,6 +43,10 @@ section.mission .card {
         &.active {
           color: var(--pink_light);
         }
+
+        .additional-info {
+          font-size: 70%;
+        }
       }
     }
 

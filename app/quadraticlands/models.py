@@ -168,3 +168,33 @@ class GTCSteward(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.profile.handle}, {self.real_name}, {self.bio}, {self.gtc_address}, {self.profile_link}'
+
+
+class SchwagCoupon(models.Model):
+    '''Coupon Code for users who have completed missions'''
+    DISCOUNT_TYPE = [
+        ('20_off', '20 OFF'),
+        ('40_off', '40 OFF'),
+        ('60_off', '60 OFF'),
+    ]
+    profile = models.ForeignKey(
+        'dashboard.Profile', 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text=_('profile which has claimed the coupon'),
+    )
+    coupon_code = models.CharField(
+        default=False, 
+        max_length=20,
+        help_text=_('actual coupon code'),
+    )
+    discount_type = models.CharField(
+        max_length=10,
+        choices=DISCOUNT_TYPE,
+        help_text="discount"
+    )
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.discount_type}, {self.coupon_code}, {self.profile}'

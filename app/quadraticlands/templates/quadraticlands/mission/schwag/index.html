@@ -1,0 +1,56 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+
+<article>
+
+  <section class="column">
+    <h2>Quadratic Lands - Schwag Store</h2>
+
+    {% if coupon_code %}
+      <p class="intro">
+        Thank you for being a part of the Gitcoin Community.
+        Now that you've claimed your GTC tokens, we would like to gift a discount coupon code
+        which you can use to at our Schwag Store
+      </p>
+    {% else %}
+      <p class="intro">Check out gitcoin schwag store for our quadraticlands collectibles</p>
+    {% endif %}
+  </section>
+
+  <section class="column">
+    <main id="claiming">
+      <div class="quest-claim">
+        <div class="claiming glass" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+          data-kinetics-attraction-force="1" data-kinetics-attraction-grow="3">
+          <figure><img src="{% static "v2/images/quadraticlands/mission/swag.svg" %}" /></figure>
+
+          {% if coupon_code %}
+            <h1>{{ coupon_code }}</h1>
+            <p>Use this coupon while making a purchase on our store</p>
+          {% endif %}
+
+          <a class="btn" style="margin-top: 1rem; margin-bottom: 0rem;" href="http://store.gitcoin.co/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">
+            Visit Schwag Store
+          </a> 
+        </div>
+      </div>
+    </main>
+  </section>
+
+</article>
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+
+{% endblock %}

@@ -38,7 +38,9 @@ from django.views.decorators.http import require_http_methods
 import requests
 from dashboard.models import Profile
 from eth_utils import is_address, is_checksum_address, to_checksum_address
-from quadraticlands.models import GTCSteward, InitialTokenDistribution, MissionStatus, QLVote, QuadLandsFAQ
+from quadraticlands.models import (
+    GTCSteward, InitialTokenDistribution, MissionStatus, QLVote, QuadLandsFAQ, SchwagCoupon,
+)
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
@@ -83,11 +85,21 @@ def get_mission_status(request):
         profile = get_profile_from_username(request)
         try:
             mission_status = MissionStatus.objects.get(profile=profile)
+
+            completed_missions = 0
+            if mission_status.proof_of_use:
+                completed_missions += 1
+            if mission_status.proof_of_knowledge:
+                completed_missions += 1
+            if mission_status.proof_of_receive:
+                completed_missions += 1
+
             game_state = {
                 "id" : mission_status.id,
                 "proof_of_use" : mission_status.proof_of_use,
                 "proof_of_knowledge" : mission_status.proof_of_knowledge,
                 "proof_of_receive" : mission_status.proof_of_receive,
+                "completed_missions": completed_missions 
             }
             return game_state
         except MissionStatus.DoesNotExist:
@@ -355,3 +367,46 @@ def get_stewards():
         stewards = {'stewards' : False}
         logger.info(f'QuadLands - There was an issue getting stewards from the DB - {e}')
         return stewards
+
+
+
+def get_coupon_code(request):
+    '''Return coupon code if user has completed missions and has claimable GTC'''
+
+    coupon_code = None
+    initial_dist, game_status = get_initial_dist(request), get_mission_status(request)
+    print(initial_dist)
+    total_claimable_gtc = initial_dist['total_claimable_gtc']
+    profile = get_profile_from_username(request)
+
+    # check to ensure user has completeg missions and has gtc to claim
+    if game_status['completed_missions'] < 3 or total_claimable_gtc == 0:
+        return coupon_code
+
+    # return coupon code is user already has been assigned
+    coupon = SchwagCoupon.objects.filter(profile=profile).first()
+    if coupon:
+        return coupon.coupon_code
+
+    total_claimable_gtc = total_claimable_gtc / (10 ** 18)
+
+    # fetch empty coupons
+    coupons = SchwagCoupon.objects.filter(profile__isnull=True)
+    # assign coupon code based on claimable GTC tokens 
+    if total_claimable_gtc < 50:
+        # 20% coupon
+        coupon = coupons.filter(discount_type='20_off').first()
+
+    elif total_claimable_gtc < 1000:
+        # 40% coupon
+        coupon = coupons.filter(discount_type='40_off').first()
+
+    else:
+        # 60% coupon
+        coupon = coupons.filter(discount_type='60_off').first()
+
+    if coupon:
+        coupon.profile = profile
+        coupon.save()
+    
+    return coupon.coupon_code
