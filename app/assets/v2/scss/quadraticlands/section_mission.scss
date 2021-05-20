@@ -79,6 +79,7 @@ section.mission .card {
           animation: colorcycle-shadow 3s ease-in-out infinite;
           span {
             color: var(--space);
+            white-space: nowrap;
           }
         }
 

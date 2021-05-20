@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches bundle humanize %}
+{% load i18n static matches bundle humanize token_format %}
 
 
 <!--- Top Row Notification -->
@@ -39,7 +39,7 @@
         <h1 id="ql-banner-h1" class="text-white pb-3 line-height-1 mb-1"><span>Shape the Future Of Digital Public Goods with Gitcoin’s Governance Token.</span></h1>
         <a id="ql-banner-btn" class="btn btn-lg col-12 col-md-auto btn-lg font-weight-bold" href="{% url "quadraticlands:quadraticlands" %}" data-kinetics-attraction data-kinetics-attraction-mode="bee" data-kinetics-attraction-chance="0.5" >
           {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is not True %}
-            Claim {{total_claimable_gtc | floatformat:2 | intcomma}} GTC
+            Claim {{total_claimable_gtc | token_format | intcomma}} GTC
           {% else %}
             Learn more
           {% endif %}
