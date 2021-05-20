@@ -14,6 +14,7 @@ class InitialTokenDistributionAdmin(admin.ModelAdmin):
 class MissionStatusAdmin(admin.ModelAdmin):
     search_fields = ['profile']
     list_display = ['id', 'profile', 'proof_of_use', 'proof_of_receive', 'proof_of_knowledge']
+    raw_id_fields = ['profile']
 
 
 class GTCStewardAdmin(admin.ModelAdmin):

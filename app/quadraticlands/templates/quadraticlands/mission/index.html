@@ -153,7 +153,7 @@
   <!-- Lore Comic + Audio -->
   {% with name="Gitcoin Lore" %}
     {% if completed_missions == 3 %}
-      {% include 'quadraticlands/mission/card.html' with svg="moloch-vs-bot.svg" message="available" playable="true" url="ql-lore" external="true" %}
+      {% include 'quadraticlands/mission/card.html' with svg="moloch-vs-bot.svg" message="available" playable="true" url="/quadraticlands/mission/ql-lore" external="true" %}
     {% else %}
       {% include 'quadraticlands/mission/card.html' with svg="moloch-vs-bot.svg" message="locked" pending=True %}
     {% endif%}
@@ -163,7 +163,7 @@
   <!-- Swag Store -->
   {% with name="Schwag" %}
     {% if completed_missions == 3 %}
-      {% include 'quadraticlands/mission/card.html' with svg="swag.svg" message="available" playable="true" url="schwag" external="true" %}
+      {% include 'quadraticlands/mission/card.html' with svg="swag.svg" message="available" playable="true" url="/quadraticlands/mission/schwag" external="true" %}
     {% else %}
       {% include 'quadraticlands/mission/card.html' with svg="swag.svg" message="locked" pending=True %}
     {% endif%}

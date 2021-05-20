@@ -221,7 +221,15 @@ def mission_postcard_svg(request):
 @login_required
 @ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
 def mission_lore(request):
-    return TemplateResponse(request, f'quadraticlands/mission/lore/index.html')
+    from perftools.models import JSONStore
+    data = JSONStore.objects.get(view='QLLORE', key='QLLORE').data
+    MOLOCH_COMIC_LINK = data['MOLOCH_COMIC_LINK']
+    QL_SONG_LINK = data['QL_SONG_LINK']
+    params = {
+        'MOLOCH_COMIC_LINK': MOLOCH_COMIC_LINK,
+        'QL_SONG_LINK': QL_SONG_LINK,
+    }
+    return TemplateResponse(request, f'quadraticlands/mission/lore/index.html', params)
 
 
 @login_required

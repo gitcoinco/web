@@ -13,11 +13,13 @@
     {% if coupon_code %}
       <p class="intro">
         Thank you for being a part of the Gitcoin Community.
+        <BR>
+        <BR>
         Now that you've claimed your GTC tokens, we would like to gift a discount coupon code
-        which you can use to at our Schwag Store
+        which you can use to at our Schwag Store.
       </p>
     {% else %}
-      <p class="intro">Check out gitcoin schwag store for our quadraticlands collectibles</p>
+      <p class="intro">Check out Gitcoin schwag store for our Quadratic Lands collectibles.</p>
     {% endif %}
   </section>
 
@@ -29,7 +31,7 @@
           <figure><img src="{% static "v2/images/quadraticlands/mission/swag.svg" %}" /></figure>
 
           {% if coupon_code %}
-            <h1>{{ coupon_code }}</h1>
+            <h1>Your Coupon Code: {{ coupon_code }}</h1>
             <p>Use this coupon while making a purchase on our store</p>
           {% endif %}
 
