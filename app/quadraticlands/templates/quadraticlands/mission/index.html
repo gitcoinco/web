@@ -6,6 +6,13 @@
 
 {% block 'content' %}
 
+<!-- proof_of_receive & user.id & user.profile.id available in jscript via data-atributes -->
+
+<div id="receive_check" class="hide"
+  data-proof_of_receive="{% if proof_of_receive %}true{% else %}false{% endif %}"
+  data-user_profile_id="{{user.profile.id}}" >
+</div>
+
 
 {% if total_claimable_gtc > 0 %}
 
@@ -195,6 +202,9 @@
 {% endblock %}
 
 {% block 'scripts' %}
+
+<!-- mission receive check -->
+<script src="{% static "v2/js/quadraticlands/mission/mission_receive_check.js" %}"></script>
 
 <!-- kinetics particles -->
 <script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
